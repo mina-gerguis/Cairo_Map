@@ -1,0 +1,297 @@
+/*============================
+    PREFIXES
+============================*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: var(--linear-200ms);
+}
+
+html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    scroll-padding-top: 9rem;
+}
+
+html::-webkit-scrollbar {
+    width: .8rem;
+}
+
+html::-webkit-scrollbar-track {
+    background: var(--black);
+}
+
+html::-webkit-scrollbar-thumb {
+    background: var(--main-color);
+}
+
+section {
+    padding: 2rem 4rem;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    font-family: "Tajawal";
+    cursor: pointer;
+    text-decoration: none;
+}
+
+img:not(.navbar .logo img) {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+a,
+ul,
+li,
+button,
+img {
+    user-select: none;
+}
+
+h1,
+h2 {
+    font-family: var(--title-h1-h2);
+    font-size: 28px;
+}
+
+h3,
+h4 {
+    font-family: "Alexandria";
+}
+
+h5,
+h6 {
+    font-family: "Almarai";
+}
+
+p {
+    font-family: "Almarai";
+}
+
+input:focus {
+    outline: none;
+}
+
+:root {
+    --main-color: rgb(38, 80, 195);
+    --second-color: rgb(69, 216, 208);
+    --second-color-1: rgb(41, 52, 81);
+    --second-color-2: rgb(36, 124, 125);
+    --second-color-3: rgb(8, 29, 76);
+    --subject-color: rgb(212, 0, 0);
+
+
+    /* --primary */
+    --primary: rgb(239, 238, 243);
+
+
+    --pink: rgb(255, 61, 77);
+    --gray: rgb(242, 242, 237);
+    --gray-1: rgb(102, 102, 102);
+    --black: rgb(0, 0, 0);
+    --white: rgb(255, 255, 255);
+    --red: rgb(255, 0, 0);
+    --orange: rgb(255, 165, 0);
+    --yellow: rgb(255, 255, 0);
+    --darkred: rgb(139, 0, 0);
+
+
+    --light-mode-bg: rgb(255, 255, 255);
+    --light-mode-cr: rgb(0, 0, 0);
+    --dark-mode-bg: rgb(0, 0, 0);
+    --dark-mode-cr: rgb(250, 250, 250);
+    --dark-mode-box: rgb(23, 23, 32);
+    --light-mode-box-glass: rgba(0, 0, 0, 0.10);
+    --dark-mode-box-glass: rgba(225, 225, 225, 0.03);
+
+
+
+
+
+
+
+    --second-color-4: rgb(0, 152, 235);
+    --second-color-5: rgb(23, 23, 32);
+    --second-color-6: rgb(54, 54, 54);
+    --second-color-7: rgb(36, 0, 198);
+    --second-color-8: rgb(13, 187, 177);
+    --second-color-9: rgb(239, 238, 243);
+    --second-color-10: rgba(51, 94, 234, .1);
+    --second-color-11: rgb(0, 140, 228);
+    --second-color-12: rgb(70, 105, 220);
+    --second-color-13: rgba(51, 94, 234, .3);
+
+    --gradient-1: linear-gradient(to bottom, #2eadff, #3d83ff, #7e61ff);
+    --gradient-2: linear-gradient(#2eadff, #045bf3);
+    --header-navbar-background: rgb(240, 246, 249);
+    --header-mobile-only: rgb(235, 238, 247);
+    --buttom: rgb(235, 238, 247);
+    --box: rgb(240, 246, 249);
+
+
+
+    /* box shadow */
+    --box-shadow-2: 0 20px 34px rgba(129, 129, 129, 0.26);
+
+    /* border radius */
+    --border-radius-10: 10px;
+    --border-radius-20: 20px;
+    /* font */
+    --arabicFont-1: 'Cairo';
+    --title-h1-h2: 'Cooper';
+
+
+    --linear-200ms: all 200ms linear;
+}
+
+
+
+/*====================
+    FONT 
+====================*/
+/* FONT ARABIC */
+@font-face {
+    font-family: "Cooper";
+    src: url(../../fonts/CooperArabic.ttf);
+}
+
+@font-face {
+    font-family: "Cairo";
+    src: url(../../fonts/Cairo.ttf);
+}
+
+@font-face {
+    font-family: "Graphik";
+    src: url(../../fonts/GraphikArabic.ttf);
+}
+
+@font-face {
+    font-family: "Bigx";
+    src: url(../../fonts/BIGX.otf);
+}
+
+@font-face {
+    font-family: "Tajawal";
+    src: url(../../fonts/Tajawal.ttf);
+}
+
+
+
+
+
+
+@font-face {
+    font-family: "Inter";
+    src: url(../../fonts/Inter.ttf);
+}
+
+
+
+
+
+
+
+
+@font-face {
+    font-family: "Sukar";
+    src: url(../../fonts/Sukar.ttf);
+}
+
+@font-face {
+    font-family: "ElMessiri";
+    src: url(../../fonts/ElMessiri.ttf);
+}
+
+@font-face {
+    font-family: "Dubai";
+    src: url(../../fonts/Dubai.ttf);
+}
+
+@font-face {
+    font-family: "NotoKufi";
+    src: url(../../fonts/NotoKufi.ttf);
+}
+
+@font-face {
+    font-family: "Nizar";
+    src: url(../../fonts/nizar.ttf);
+}
+
+@font-face {
+    font-family: "Almarai";
+    src: url(../../fonts/Almarai.ttf);
+}
+
+@font-face {
+    font-family: "Expo";
+    src: url(../fonts/Expo.ttf);
+}
+
+@font-face {
+    font-family: "Alexandria";
+    src: url(../fonts/Alexandria.ttf);
+}
+
+
+
+@font-face {
+    font-family: "Roboto";
+    src: url(../fonts/Roboto.ttf);
+}
+
+@font-face {
+    font-family: "NewAmsterdam";
+    src: url(../fonts/NewAmsterdam.ttf);
+}
+
+@font-face {
+    font-family: "Coptic";
+    src: url(../fonts/Coptic.ttf);
+}
+
+/* border */
+.border-right-blue {
+    border-right-style: solid;
+    border-right-color: rgb(0, 117, 255);
+    border-right-width: .5rem;
+}
+
+.border-right-red {
+    border-right-style: solid;
+    border-right-color: rgb(226, 0, 38);
+    border-right-width: .5rem;
+}
+
+.border-right-pink {
+    border-right-style: solid;
+    border-right-color: rgb(240, 2, 157);
+    border-right-width: .5rem;
+}
+
+.border-right-purple {
+    border-right-style: solid;
+    border-right-color: rgb(58, 162, 180);
+    border-right-width: .5rem;
+}
