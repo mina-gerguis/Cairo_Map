@@ -3,6 +3,7 @@ import { Cairo } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 const cairo = Cairo({
   subsets: ["arabic"],
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <MobileBottomNav />
       </body>
     </html>
   );

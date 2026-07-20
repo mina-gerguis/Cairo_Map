@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Place, PlaceCategory, initialPlaces } from "../data/places";
 
 /* ─── Helpers ─── */
@@ -36,7 +37,8 @@ type PlaceWithDist = Place & { distanceKm?: number };
 /* ═══════════════════════════════════════════════
    HOME PAGE
 ═══════════════════════════════════════════════ */
-export default function Home() {
+function HomeContent() {
+  const searchParams = useSearchParams();
   const [places, setPlaces] = useState<Place[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -98,6 +100,28 @@ export default function Home() {
       { enableHighAccuracy: true, timeout: 8000 }
     );
   };
+
+  /* Listen to Mobile Nav queries */
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("nearby") === "true") {
+        if (!isProximityEnabled) {
+          handleToggleProximity();
+        }
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      if (urlParams.get("search") === "focus") {
+        const input = document.getElementById("search-input");
+        if (input) input.focus();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      if (urlParams.get("q")) {
+        setSearchQuery(urlParams.get("q") as string);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }, [isProximityEnabled, searchParams]);
 
   /* Enrich places with distance */
   const enrichedPlaces = React.useMemo<PlaceWithDist[]>(() => {
@@ -191,6 +215,7 @@ export default function Home() {
         <form onSubmit={(e) => e.preventDefault()} style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
           <div style={{ position: "relative", flexGrow: 1 }}>
             <input
+              id="search-input"
               type="text"
               className="ios-input"
               placeholder="ابحث بالاسم، الفئة، أو المنطقة..."
@@ -491,6 +516,14 @@ export default function Home() {
         </div>
       )}
     </>
+  );
+}
+
+export default function Home() {
+  return (
+    <React.Suspense fallback={<div style={{ padding: "40px", textAlign: "center", color: "var(--text-secondary)" }}>جاري التحميل...</div>}>
+      <HomeContent />
+    </React.Suspense>
   );
 }
 
