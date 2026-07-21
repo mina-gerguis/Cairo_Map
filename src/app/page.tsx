@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 import { Place, PlaceCategory, initialPlaces } from "../data/places";
 
 /* ─── Helpers ─── */
@@ -38,8 +41,10 @@ type PlaceWithDist = Place & { distanceKm?: number };
    HOME PAGE
 ═══════════════════════════════════════════════ */
 function HomeContent() {
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const [places, setPlaces] = useState<Place[]>([]);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -72,7 +77,35 @@ function HomeContent() {
       setPlaces(initialPlaces);
       localStorage.setItem("dftry_places", JSON.stringify(initialPlaces));
     }
-  }, []);
+
+    const fetchFavorites = async () => {
+      if (user && supabase) {
+        const { data } = await supabase.from('favorite_places').select('place_id').eq('user_id', user.id);
+        if (data) {
+          setFavoriteIds(new Set(data.map(d => d.place_id)));
+        }
+      }
+    };
+    fetchFavorites();
+  }, [user]);
+
+  const toggleFavorite = async (e: React.MouseEvent, placeId: string) => {
+    e.stopPropagation();
+    if (!user || !supabase) {
+      alert("يرجى تسجيل الدخول أولاً لإضافة الأماكن المفضلة.");
+      return;
+    }
+    
+    const newFavs = new Set(favoriteIds);
+    if (newFavs.has(placeId)) {
+      newFavs.delete(placeId);
+      await supabase.from('favorite_places').delete().match({ user_id: user.id, place_id: placeId });
+    } else {
+      newFavs.add(placeId);
+      await supabase.from('favorite_places').insert({ user_id: user.id, place_id: placeId });
+    }
+    setFavoriteIds(newFavs);
+  };
 
   /* Geolocation */
   const handleToggleProximity = () => {
@@ -201,37 +234,111 @@ function HomeContent() {
 
   return (
     <>
-      <div className="app-container">
-        {/* ── Page Title ── */}
-        <div style={{ marginBottom: "28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-          <h1 className="title-ios">دليل الأماكن 📍</h1>
-          <button className="ios-btn" onClick={() => setShowAddModal(true)} style={{ padding: "10px 18px", fontSize: "0.95rem" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            إضافة مكان
-          </button>
+      {/* ══════════════ HERO SECTION ══════════════ */}
+      <section className="hero-section">
+        <div className="hero-bg" />
+        <div className="hero-orb hero-orb-1" />
+        <div className="hero-orb hero-orb-2" />
+        <div className="hero-orb hero-orb-3" />
+
+        {/* Floating 3D Cards */}
+        <div className="hero-3d-card hero-3d-card-1">
+          <span>🏦</span>
+          <div>
+            <div style={{ fontSize: "0.7rem", opacity: 0.7, marginBottom: 2 }}>مكان مميز</div>
+            <div>مطعم لورا الكائن</div>
+          </div>
+          <span style={{ color: "#fbbf24" }}>★ 4.9</span>
+        </div>
+        <div className="hero-3d-card hero-3d-card-2">
+          <span>🏏</span>
+          <div>
+            <div style={{ fontSize: "0.7rem", opacity: 0.7, marginBottom: 2 }}>حديقة عائلية</div>
+            <div>حديقة النوزها</div>
+          </div>
+          <span style={{ color: "#fbbf24" }}>★ 4.7</span>
+        </div>
+        <div className="hero-3d-card hero-3d-card-3">
+          <span>☕</span>
+          <div>
+            <div style={{ fontSize: "0.7rem", opacity: 0.7, marginBottom: 2 }}>كافيه ترندي</div>
+            <div>ستاربكس ميدان التحرير</div>
+          </div>
+          <span style={{ color: "#fbbf24" }}>★ 4.8</span>
         </div>
 
-        {/* ── Search ── */}
-        <form onSubmit={(e) => e.preventDefault()} style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
-          <div style={{ position: "relative", flexGrow: 1 }}>
+        <div className="hero-content">
+          <div className="hero-badge">
+            <div className="hero-badge-dot" />
+            دليلك الشامل لأفضل الأماكن في مصر ✨
+          </div>
+
+          <h1 className="hero-title">
+            اكتشف أفضل<br />
+            <span className="hero-title-gradient">الأماكن</span><br />
+            بالقرب منك
+          </h1>
+
+          <p className="hero-subtitle">
+            دفتري هو رفيقك الأمثل لاكتشاف المطاعم، الكافيهات، الحدائق، وأكثر بحسب موقعك. كل مكان تحتاجه الآن بضغطة واحدة.
+          </p>
+
+          {/* Integrated Search in Hero */}
+          <div className="hero-search-wrapper">
+            <div className="hero-search-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
             <input
               id="search-input"
               type="text"
-              className="ios-input"
-              placeholder="ابحث بالاسم، الفئة، أو المنطقة..."
+              className="hero-search-input"
+              placeholder="ابحث عن مطعم، كافيه، حديقة..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <div style={{ position: "absolute", right: "18px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", pointerEvents: "none" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            {searchQuery && (
-              <button type="button" onClick={() => setSearchQuery("")} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "rgba(120,120,120,0.2)", border: "none", borderRadius: "50%", width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-primary)", cursor: "pointer" }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
-              </button>
-            )}
           </div>
-        </form>
+
+          <div className="hero-actions">
+            <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              استكشف الأماكن
+            </button>
+            <button className="hero-btn-secondary" onClick={() => setIsProximityEnabled(!isProximityEnabled)}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              {isProximityEnabled ? "إيقاف القرب" : "بالقرب مني"}
+            </button>
+          </div>
+
+          {/* Stats Row */}
+          <div className="hero-stats">
+            <div className="hero-stat">
+              <div className="hero-stat-number">{places.length}+</div>
+              <div className="hero-stat-label">مكان مسجل</div>
+            </div>
+            <div className="hero-stat-divider" />
+            <div className="hero-stat">
+              <div className="hero-stat-number">27</div>
+              <div className="hero-stat-label">محافظة</div>
+            </div>
+            <div className="hero-stat-divider" />
+            <div className="hero-stat">
+              <div className="hero-stat-number">8</div>
+              <div className="hero-stat-label">تصنيفات</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="hero-scroll-indicator">
+          <span>اكتشف</span>
+          <div className="hero-scroll-arrow" />
+        </div>
+      </section>
+
+      {/* ══════════════ MAIN CONTENT ══════════════ */}
+      <div className="app-container" id="places-section">
 
         {/* ── Categories + Proximity ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "32px", flexWrap: "wrap" }}>
@@ -277,8 +384,8 @@ function HomeContent() {
                 {nearbyPlaces.length > 0 ? (
                   <div className="places-scroll-row">
                     {nearbyPlaces.map((place) => (
-                      <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer" }}>
-                        <PlaceCardContent place={place} getCategoryColor={getCategoryColor} />
+                      <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
+                        <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
                       </div>
                     ))}
                   </div>
@@ -298,8 +405,8 @@ function HomeContent() {
               </div>
               <div className="places-scroll-row">
                 {topRatedPlaces.map((place) => (
-                  <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer" }}>
-                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} showRating />
+                  <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
+                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} showRating toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
                   </div>
                 ))}
               </div>
@@ -314,8 +421,8 @@ function HomeContent() {
                 </div>
                 <div className="places-scroll-row">
                   {familyPlaces.map((place) => (
-                    <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer" }}>
-                      <PlaceCardContent place={place} getCategoryColor={getCategoryColor} />
+                    <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
+                      <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
                     </div>
                   ))}
                 </div>
@@ -331,8 +438,8 @@ function HomeContent() {
                 </div>
                 <div className="places-scroll-row">
                   {entertainmentPlaces.map((place) => (
-                    <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer" }}>
-                      <PlaceCardContent place={place} getCategoryColor={getCategoryColor} />
+                    <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
+                      <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
                     </div>
                   ))}
                 </div>
@@ -347,8 +454,8 @@ function HomeContent() {
               </div>
               <div className="grid-places">
                 {enrichedPlaces.map((place) => (
-                  <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer" }}>
-                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} />
+                  <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
+                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
                   </div>
                 ))}
               </div>
@@ -363,8 +470,8 @@ function HomeContent() {
             {filteredPlaces.length > 0 ? (
               <div className="grid-places">
                 {filteredPlaces.map((place) => (
-                  <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer" }}>
-                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} />
+                  <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
+                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
                   </div>
                 ))}
               </div>
@@ -528,10 +635,12 @@ export default function Home() {
 }
 
 /* ─── Shared Place Card Content ─── */
-function PlaceCardContent({ place, getCategoryColor, showRating }: {
+function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite, favoriteIds }: {
   place: PlaceWithDist;
   getCategoryColor: (cat: string) => string;
   showRating?: boolean;
+  toggleFavorite?: (e: React.MouseEvent, placeId: string) => void;
+  favoriteIds?: Set<string>;
 }) {
   return (
     <>
@@ -542,6 +651,17 @@ function PlaceCardContent({ place, getCategoryColor, showRating }: {
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
           onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80"; }}
         />
+        {toggleFavorite && favoriteIds && (
+          <button
+            onClick={(e) => toggleFavorite(e, place.id.toString())}
+            style={{
+              position: "absolute", top: "12px", left: "12px", zIndex: 1, background: "rgba(255,255,255,0.8)", backdropFilter: "blur(4px)", border: "none",
+              borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "1.1rem"
+            }}
+          >
+            {favoriteIds.has(place.id.toString()) ? "❤️" : "🤍"}
+          </button>
+        )}
         <span style={{ position: "absolute", top: "12px", right: "12px", background: getCategoryColor(place.category), color: "#fff", fontSize: "0.78rem", fontWeight: "700", padding: "5px 10px", borderRadius: "10px", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", gap: "5px" }}>
           {CATEGORY_EMOJIS[place.category]} {place.categoryLabel}
         </span>

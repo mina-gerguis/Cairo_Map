@@ -36,11 +36,22 @@ export default function MobileBottomNav() {
     setIsSearchOpen(false);
   }, [pathname]);
 
+  // Hide entirely on auth pages
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
+  if (isAuthPage) return null;
+
   return (
     <>
       <div className="mobile-bottom-nav">
-        {/* Left Pill with 3 Tabs */}
-        {/* Note: In RTL layout, the first DOM element appears on the Right. */}
+        {/* Search Button — RIGHT side in RTL (first in DOM) */}
+        <button className="mobile-nav-search-btn" onClick={() => setIsSearchOpen(true)} style={{ border: "none", outline: "none", cursor: "pointer" }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+
+        {/* Pill — LEFT side in RTL (second in DOM) */}
         <div className="mobile-nav-pill">
           <Link href="/help" className={`mobile-nav-item ${pathname === "/help" ? "active" : ""}`}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -50,12 +61,12 @@ export default function MobileBottomNav() {
             </svg>
             <span>المساعدة</span>
           </Link>
-          <Link href="/?nearby=true" className="mobile-nav-item">
+          <Link href="/profile" className={`mobile-nav-item ${pathname === "/profile" ? "active" : ""}`}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-              <circle cx="12" cy="12" r="3" />
+              <circle cx="12" cy="8" r="5" />
+              <path d="M20 21a8 8 0 0 0-16 0" />
             </svg>
-            <span>قريب مني</span>
+            <span>البروفايل</span>
           </Link>
           <Link href="/" className={`mobile-nav-item ${pathname === "/" ? "active" : ""}`}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -65,15 +76,6 @@ export default function MobileBottomNav() {
             <span>الرئيسية</span>
           </Link>
         </div>
-
-        {/* Right Circular Button for Search */}
-        {/* Note: In RTL layout, the second DOM element appears on the Left. */}
-        <button className="mobile-nav-search-btn" onClick={() => setIsSearchOpen(true)} style={{ border: "none", outline: "none", cursor: "pointer" }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-        </button>
       </div>
 
       {/* Full-Screen Search Modal */}
