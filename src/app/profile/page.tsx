@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
+  const [selectedFavCategory, setSelectedFavCategory] = useState<string>("الكل");
 
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
@@ -69,14 +70,35 @@ export default function ProfilePage() {
       .select('place_id')
       .eq('user_id', user.id);
 
-    if (favs) {
-      // Load places from localStorage based on favs
-      const localPlacesStr = localStorage.getItem("dftry_places");
-      if (localPlacesStr) {
-        const allPlaces = JSON.parse(localPlacesStr);
-        const favPlaces = allPlaces.filter((p: any) => favs.some(f => f.place_id === p.id.toString()));
-        setFavorites(favPlaces);
+    if (favs && favs.length > 0) {
+      const placeIds = favs.map((f: any) => f.place_id);
+      const { data: favPlaces } = await supabase
+        .from('places')
+        .select('*')
+        .in('id', placeIds);
+      
+      if (favPlaces) {
+        const mappedFavs = favPlaces.map(dbPlace => ({
+          id: dbPlace.id,
+          name: dbPlace.name,
+          category: dbPlace.category,
+          categoryLabel: dbPlace.category_label,
+          briefLocation: dbPlace.brief_location,
+          fullAddress: dbPlace.full_address,
+          phones: dbPlace.phones || [],
+          googleMapsUrl: dbPlace.google_maps_url || "",
+          images: dbPlace.images || [],
+          menuImages: dbPlace.menu_images || [],
+          workingHours: dbPlace.working_hours || "",
+          rating: dbPlace.rating || 0,
+          description: dbPlace.description || "",
+          latitude: dbPlace.latitude || undefined,
+          longitude: dbPlace.longitude || undefined,
+        }));
+        setFavorites(mappedFavs);
       }
+    } else {
+      setFavorites([]);
     }
 
     setLoading(false);
@@ -305,7 +327,7 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {/* Favorite Places Section (Slider) */}
+      {/* Favorite Places Section */}
       <div style={{ marginTop: "40px" }}>
         <h2 className="title-ios" style={{ fontSize: "1.5rem", marginBottom: "20px" }}>الأماكن المفضلة 🤍</h2>
         {favorites.length === 0 ? (
@@ -313,35 +335,111 @@ export default function ProfilePage() {
             لم تقم بإضافة أي أماكن للمفضلة بعد.
           </div>
         ) : (
-          <div className="places-scroll-row" style={{ padding: "10px 0" }}>
-            {favorites.map((place) => (
-              <div key={place.id} className="glass-card place-card-scroll" style={{ position: "relative", cursor: "pointer" }} onClick={() => router.push(`/places/${place.id}`)}>
-                <div style={{ width: "100%", height: "180px", position: "relative", overflow: "hidden" }}>
-                  <img src={place.images?.[0] || ""} alt={place.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  <span style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(0,0,0,0.6)", color: "#fff", fontSize: "0.75rem", padding: "4px 8px", borderRadius: "12px" }}>
-                    {place.category}
-                  </span>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (!supabase || !user) return;
-                      supabase.from('favorite_places').delete().match({ user_id: user.id, place_id: place.id.toString() }).then(() => {
-                        setFavorites(prev => prev.filter(p => p.id !== place.id));
-                      });
+          <div>
+            {/* Tabs Row */}
+            <div 
+              style={{ 
+                display: "flex", 
+                gap: "10px", 
+                overflowX: "auto", 
+                paddingBottom: "16px", 
+                marginBottom: "20px", 
+                WebkitOverflowScrolling: "touch",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none"
+              }}
+              className="hide-scrollbar"
+            >
+              <button
+                onClick={() => setSelectedFavCategory("الكل")}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  border: "none",
+                  background: selectedFavCategory === "الكل" ? "var(--accent-ios)" : "var(--border-glass-bright)",
+                  color: selectedFavCategory === "الكل" ? "#fff" : "var(--text-primary)",
+                  fontWeight: "600",
+                  fontSize: "0.95rem",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  flexShrink: 0
+                }}
+              >
+                الكل
+                <span style={{ background: selectedFavCategory === "الكل" ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === "الكل" ? "#fff" : "var(--text-secondary)" }}>
+                  {favorites.length}
+                </span>
+              </button>
+              
+              {Array.from(new Set(favorites.map(f => f.categoryLabel || f.category))).map(catLabel => {
+                const count = favorites.filter(f => (f.categoryLabel || f.category) === catLabel).length;
+                return (
+                  <button
+                    key={catLabel}
+                    onClick={() => setSelectedFavCategory(catLabel)}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "20px",
+                      border: "none",
+                      background: selectedFavCategory === catLabel ? "var(--accent-ios)" : "var(--border-glass-bright)",
+                      color: selectedFavCategory === catLabel ? "#fff" : "var(--text-primary)",
+                      fontWeight: "600",
+                      fontSize: "0.95rem",
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      flexShrink: 0
                     }}
-                    style={{ position: "absolute", top: "12px", left: "12px", background: "rgba(255,255,255,0.8)", border: "none", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "1.1rem" }}
                   >
-                    ❤️
+                    {catLabel}
+                    <span style={{ background: selectedFavCategory === catLabel ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === catLabel ? "#fff" : "var(--text-secondary)" }}>
+                      {count}
+                    </span>
                   </button>
-                </div>
-                <div style={{ padding: "12px" }}>
-                  <h3 style={{ fontSize: "1.1rem", marginBottom: "4px", color: "var(--text-primary)" }}>{place.name}</h3>
-                  <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "4px" }}>
-                    <span>📍</span> {place.briefLocation}
-                  </p>
-                </div>
-              </div>
-            ))}
+                );
+              })}
+            </div>
+
+            {/* Filtered Places Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "16px" }}>
+              {favorites
+                .filter(p => selectedFavCategory === "الكل" || (p.categoryLabel || p.category) === selectedFavCategory)
+                .map((place) => (
+                  <div 
+                    key={place.id} 
+                    className="glass-card place-card-scroll" 
+                    style={{ position: "relative", cursor: "pointer", width: "100%" }} 
+                    onClick={() => router.push(`/places/${place.id}`)}
+                  >
+                    <div style={{ width: "100%", height: "160px", position: "relative", overflow: "hidden" }}>
+                      <img src={place.images?.[0] || "/placeholder.jpg"} alt={place.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!supabase || !user) return;
+                          supabase.from('favorite_places').delete().match({ user_id: user.id, place_id: place.id.toString() }).then(() => {
+                            setFavorites(prev => prev.filter(p => p.id !== place.id));
+                          });
+                        }}
+                        style={{ position: "absolute", top: "12px", left: "12px", background: "rgba(255,255,255,0.9)", border: "none", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "1.1rem" }}
+                      >
+                        ❤️
+                      </button>
+                    </div>
+                    <div style={{ padding: "12px" }}>
+                      <h4 style={{ fontSize: "1.1rem", marginBottom: "4px", color: "var(--text-primary)", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{place.name}</h4>
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <span>📍</span> {place.briefLocation}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         )}
       </div>

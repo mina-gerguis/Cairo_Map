@@ -5,7 +5,10 @@ export interface Place {
   name: string;
   category: PlaceCategory;
   categoryLabel: string;
-  briefLocation: string;
+  governorate?: string;
+  city?: string;
+  briefLocation?: string;
+  shortDescription?: string;
   fullAddress: string;
   phones: string[];
   googleMapsUrl: string;
@@ -13,6 +16,7 @@ export interface Place {
   menuImages?: string[];
   workingHours?: string;
   rating?: number;
+  reviewsCount?: number;
   description?: string;
   latitude?: number;
   longitude?: number;

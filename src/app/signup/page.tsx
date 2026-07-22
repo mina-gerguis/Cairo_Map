@@ -207,8 +207,17 @@ export default function SignupPage() {
   }, [formData.fullName]);
 
   useEffect(() => {
-    if (formData.phone.length > 0) setFieldErrors(p => ({...p, phone: formData.phone.length !== 10 ? "يجب أن يتكون الرقم من 10 أرقام" : ""}));
-    else setFieldErrors(p => ({...p, phone: ""}));
+    if (formData.phone.length > 0) {
+      if (!formData.phone.startsWith("1")) {
+        setFieldErrors(p => ({...p, phone: "يجب أن يبدأ الرقم بـ 1"}));
+      } else if (formData.phone.length !== 10) {
+        setFieldErrors(p => ({...p, phone: "يجب أن يتكون الرقم من 10 أرقام"}));
+      } else {
+        setFieldErrors(p => ({...p, phone: ""}));
+      }
+    } else {
+      setFieldErrors(p => ({...p, phone: ""}));
+    }
   }, [formData.phone]);
 
   useEffect(() => {

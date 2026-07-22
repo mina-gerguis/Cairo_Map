@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
+import ReviewSection from "@/components/ReviewSection";
+import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK } from "@/lib/workingHours";
 import { Place, PlaceCategory, initialPlaces } from "../data/places";
 
 /* ─── Helpers ─── */
@@ -49,7 +51,23 @@ function HomeContent() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [activeMenuImage, setActiveMenuImage] = useState<string | null>(null);
+  const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (activeMenuIndex === null || !selectedPlace?.menuImages) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        setActiveMenuIndex(prev => (prev! + 1) % selectedPlace.menuImages!.length);
+      } else if (e.key === 'ArrowLeft') {
+        setActiveMenuIndex(prev => (prev! - 1 + selectedPlace.menuImages!.length) % selectedPlace.menuImages!.length);
+      } else if (e.key === 'Escape') {
+        setActiveMenuIndex(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeMenuIndex, selectedPlace?.menuImages]);
 
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isProximityEnabled, setIsProximityEnabled] = useState(false);
@@ -70,13 +88,40 @@ function HomeContent() {
 
   /* Load places on mount */
   useEffect(() => {
-    const saved = localStorage.getItem("dftry_places");
-    if (saved) {
-      try { setPlaces(JSON.parse(saved)); } catch { setPlaces(initialPlaces); }
-    } else {
-      setPlaces(initialPlaces);
-      localStorage.setItem("dftry_places", JSON.stringify(initialPlaces));
-    }
+    const fetchPlaces = async () => {
+      if (!supabase) return;
+      try {
+        const { data, error } = await supabase.from('places').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        if (data) {
+          const mappedPlaces: Place[] = data.map(dbPlace => ({
+            id: dbPlace.id,
+            name: dbPlace.name,
+            category: dbPlace.category,
+            categoryLabel: dbPlace.category_label,
+            governorate: dbPlace.governorate,
+            city: dbPlace.city,
+            shortDescription: dbPlace.short_description,
+            fullAddress: dbPlace.full_address,
+            phones: dbPlace.phones || [],
+            googleMapsUrl: dbPlace.google_maps_url || "",
+            images: dbPlace.images || [],
+            menuImages: dbPlace.menu_images || [],
+            workingHours: dbPlace.working_hours || "",
+            rating: dbPlace.rating || 0,
+            reviewsCount: dbPlace.reviews_count || 0,
+            description: dbPlace.description || "",
+            latitude: dbPlace.latitude || undefined,
+            longitude: dbPlace.longitude || undefined,
+          }));
+          setPlaces(mappedPlaces);
+        }
+      } catch (err) {
+        console.error("Error fetching places:", err);
+      }
+    };
+
+    fetchPlaces();
 
     const fetchFavorites = async () => {
       if (user && supabase) {
@@ -175,7 +220,8 @@ function HomeContent() {
       const matchSearch =
         !q ||
         p.name.toLowerCase().includes(q) ||
-        p.briefLocation.toLowerCase().includes(q) ||
+        (p.city && p.city.toLowerCase().includes(q)) ||
+        (p.governorate && p.governorate.toLowerCase().includes(q)) ||
         p.categoryLabel.toLowerCase().includes(q) ||
         p.fullAddress.toLowerCase().includes(q);
       return matchCat && matchSearch;
@@ -510,23 +556,69 @@ function HomeContent() {
                 </span>
               </div>
 
-              {selectedPlace.rating && (
+              {selectedPlace.rating !== undefined && (
                 <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
                   <span style={{ color: "#ff9f0a", fontSize: "1.1rem" }}>⭐</span>
-                  <span style={{ fontWeight: "700" }}>{selectedPlace.rating}</span>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>/ 5.0</span>
+                  <span style={{ fontWeight: "700" }}>{Number(selectedPlace.rating).toFixed(1)}</span>
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>({selectedPlace.reviewsCount || 0} تقييم)</span>
                 </div>
               )}
 
+              {selectedPlace.shortDescription && (
+                <p style={{ color: "var(--text-primary)", fontSize: "1.05rem", fontWeight: "500", marginBottom: "12px" }}>
+                  {selectedPlace.shortDescription}
+                </p>
+              )}
+
               <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.92rem", marginBottom: "6px" }}>
-                <span>📍</span> {selectedPlace.briefLocation}
+                <span>📍</span> {selectedPlace.city} / {selectedPlace.governorate}
               </div>
               <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: selectedPlace.workingHours ? "6px" : "20px" }}>
                 {selectedPlace.fullAddress}
               </div>
               {selectedPlace.workingHours && (
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: "20px" }}>
-                  <span>🕐</span> {selectedPlace.workingHours}
+                <div style={{ borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px", marginTop: "14px", marginBottom: "20px" }}>
+                  <h4 style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span>🕐</span> مواعيد العمل
+                  </h4>
+                  {(() => {
+                    const parsed = parseWorkingHours(selectedPlace.workingHours);
+                    if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{selectedPlace.workingHours}</div>;
+
+                    if (parsed.type === "24/7") {
+                      return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
+                    }
+
+                    if (parsed.type === "custom" && parsed.schedule) {
+                      const todayName = DAYS_OF_WEEK[new Date().getDay()];
+                      return (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                          {parsed.schedule.map((day) => {
+                            const isToday = day.day === todayName;
+                            return (
+                              <div 
+                                key={day.day} 
+                                style={{ 
+                                  display: "flex", justifyContent: "space-between", alignItems: "center", 
+                                  padding: "6px 10px", borderRadius: "8px", 
+                                  background: isToday ? "rgba(47, 128, 237, 0.1)" : "rgba(120, 120, 120, 0.04)",
+                                  border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
+                                }}
+                              >
+                                <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--text-secondary)", fontSize: "0.9rem" }}>
+                                  {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--accent-ios)", marginRight: "6px" }}>(اليوم)</span>}
+                                </div>
+                                <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.9rem" }}>
+                                  {day.isWorking ? `من ${day.openTime} ${day.openPeriod} حتي ${day.closeTime} ${day.closePeriod}` : "إجازة"}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
               )}
 
@@ -556,8 +648,8 @@ function HomeContent() {
                   className="ios-btn ios-btn-primary" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
                   🗺️ فتح الخريطة
                 </a>
-                {userLocation && selectedPlace.latitude && selectedPlace.longitude && (
-                  <a href={`https://www.google.com/maps/dir/${userLocation.latitude},${userLocation.longitude}/${selectedPlace.latitude},${selectedPlace.longitude}`}
+                {selectedPlace.latitude && selectedPlace.longitude && (
+                  <a href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.latitude},${selectedPlace.longitude}`}
                     target="_blank" rel="noopener noreferrer" className="ios-btn" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
                     🧭 الاتجاهات
                   </a>
@@ -570,21 +662,79 @@ function HomeContent() {
                   <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📋 المنيو</h3>
                   <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
                     {selectedPlace.menuImages.map((img, i) => (
-                      <img key={i} src={img} alt="منيو" onClick={() => setActiveMenuImage(img)}
+                      <img key={i} src={img} alt="منيو" onClick={() => setActiveMenuIndex(i)}
                         style={{ width: "140px", height: "180px", objectFit: "cover", borderRadius: "var(--radius-sm)", cursor: "pointer", flexShrink: 0 }} />
                     ))}
                   </div>
                 </div>
               )}
+
+              {/* Reviews Section inside modal */}
+              <ReviewSection 
+                place={selectedPlace} 
+                onRatingUpdate={(r, c) => setSelectedPlace({ ...selectedPlace, rating: r, reviewsCount: c })}
+              />
             </div>
           </div>
         </div>
       )}
 
       {/* ═══════════════════════════════════ MENU IMAGE LIGHTBOX ═══════════════════════════════════ */}
-      {activeMenuImage && (
-        <div className="ios-sheet-overlay" onClick={() => setActiveMenuImage(null)} style={{ alignItems: "center" }}>
-          <img src={activeMenuImage} alt="منيو" style={{ maxWidth: "90vw", maxHeight: "85vh", borderRadius: "var(--radius-md)", objectFit: "contain" }} />
+      {activeMenuIndex !== null && selectedPlace?.menuImages && (
+        <div className="ios-sheet-overlay" onClick={() => setActiveMenuIndex(null)} style={{ alignItems: "center", justifyContent: "center" }}>
+          
+          <button 
+            onClick={() => setActiveMenuIndex(null)}
+            style={{
+              position: "absolute",
+              top: "24px",
+              right: "24px",
+              background: "rgba(255,255,255,0.15)",
+              border: "none",
+              borderRadius: "50%",
+              width: "40px",
+              height: "40px",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              fontSize: "1.5rem"
+            }}
+          >
+            ✕
+          </button>
+          
+          {selectedPlace.menuImages.length > 1 && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); setActiveMenuIndex((activeMenuIndex - 1 + selectedPlace.menuImages!.length) % selectedPlace.menuImages!.length); }}
+              style={{ position: "absolute", right: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
+            >
+              ❯
+            </button>
+          )}
+
+          <img 
+            src={selectedPlace.menuImages[activeMenuIndex]} 
+            alt="منيو" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: "90vw", maxHeight: "85vh", borderRadius: "var(--radius-md)", objectFit: "contain", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }} 
+          />
+
+          {selectedPlace.menuImages.length > 1 && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); setActiveMenuIndex((activeMenuIndex + 1) % selectedPlace.menuImages!.length); }}
+              style={{ position: "absolute", left: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
+            >
+              ❮
+            </button>
+          )}
+
+          {selectedPlace.menuImages.length > 1 && (
+            <div style={{ position: "absolute", bottom: "24px", color: "#fff", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "12px", fontSize: "0.9rem" }}>
+              {activeMenuIndex + 1} / {selectedPlace.menuImages.length}
+            </div>
+          )}
         </div>
       )}
 
@@ -665,9 +815,9 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
         <span style={{ position: "absolute", top: "12px", right: "12px", background: getCategoryColor(place.category), color: "#fff", fontSize: "0.78rem", fontWeight: "700", padding: "5px 10px", borderRadius: "10px", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", gap: "5px" }}>
           {CATEGORY_EMOJIS[place.category]} {place.categoryLabel}
         </span>
-        {(showRating || place.rating) && place.rating && (
+        {(showRating || place.rating !== undefined) && place.rating !== undefined && (
           <span style={{ position: "absolute", bottom: "12px", left: "12px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", color: "#fff", padding: "4px 10px", borderRadius: "10px", fontSize: "0.82rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "4px" }}>
-            ⭐ {place.rating}
+            ⭐ {Number(place.rating).toFixed(1)} {place.reviewsCount ? `(${place.reviewsCount})` : ''}
           </span>
         )}
         {place.distanceKm !== undefined && (
@@ -677,10 +827,20 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
         )}
       </div>
       <div style={{ padding: "16px 16px 18px" }}>
-        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.05rem", fontWeight: "800", marginBottom: "6px", color: "var(--text-primary)" }}>{place.name}</h3>
+        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.05rem", fontWeight: "800", marginBottom: "4px", color: "var(--text-primary)" }}>{place.name}</h3>
+        {place.shortDescription && (
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginBottom: "6px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {place.shortDescription}
+          </p>
+        )}
         <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px" }}>
-          <span>📍</span> {place.briefLocation}
+          <span>📍</span> {place.city} / {place.governorate}
         </p>
+        {place.workingHours && (
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px" }}>
+            <span>🕐</span> {getTodayWorkingHoursText(place.workingHours)}
+          </p>
+        )}
       </div>
     </>
   );
