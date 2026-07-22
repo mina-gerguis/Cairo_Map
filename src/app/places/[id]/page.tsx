@@ -26,6 +26,7 @@ export default function PlaceDetailsPage() {
   const id = params?.id as string;
 
   const [place, setPlace] = useState<Place | null>(null);
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
 
@@ -59,7 +60,7 @@ export default function PlaceDetailsPage() {
       try {
         const { data: dbPlace, error } = await supabase
           .from('places')
-          .select('*')
+          .select('*, branches(*)')
           .eq('id', id)
           .single();
           
@@ -85,6 +86,22 @@ export default function PlaceDetailsPage() {
             description: dbPlace.description || "",
             latitude: dbPlace.latitude || undefined,
             longitude: dbPlace.longitude || undefined,
+            branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
+              id: b.id,
+              place_id: b.place_id,
+              name: b.name,
+              governorate: b.governorate,
+              city: b.city,
+              fullAddress: b.full_address,
+              latitude: b.latitude,
+              longitude: b.longitude,
+              phones: b.phones || [],
+              googleMapsUrl: b.google_maps_url,
+              workingHours: b.working_hours,
+              media: b.media || [],
+              isMain: b.is_main,
+              createdAt: b.created_at,
+            })) : []
           };
           setPlace(mappedPlace);
         } else {
@@ -125,6 +142,25 @@ export default function PlaceDetailsPage() {
       );
     }
   }, [id]);
+
+  useEffect(() => {
+    if (place && place.branches && place.branches.length > 0 && !selectedBranchId) {
+      if (userLocation) {
+        let minDist = Infinity;
+        let closestId = place.branches[0].id;
+        place.branches.forEach(b => {
+          if (b.latitude && b.longitude) {
+            const d = calculateDistance(userLocation.latitude, userLocation.longitude, b.latitude, b.longitude);
+            if (d < minDist) { minDist = d; closestId = b.id; }
+          }
+        });
+        setSelectedBranchId(closestId);
+      } else {
+        const main = place.branches.find(b => b.isMain);
+        setSelectedBranchId(main ? main.id : place.branches[0].id);
+      }
+    }
+  }, [place, userLocation, selectedBranchId]);
 
   // Haversine distance
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -217,10 +253,12 @@ export default function PlaceDetailsPage() {
     );
   }
 
+  const displayBranch = place.branches?.find(b => b.id === selectedBranchId) || place;
+
   // Calculate distance if coordinates are available
   const currentDistance =
-    userLocation && place.latitude && place.longitude
-      ? calculateDistance(userLocation.latitude, userLocation.longitude, place.latitude, place.longitude)
+    userLocation && displayBranch.latitude && displayBranch.longitude
+      ? calculateDistance(userLocation.latitude, userLocation.longitude, displayBranch.latitude, displayBranch.longitude)
       : null;
 
   return (
@@ -319,20 +357,59 @@ export default function PlaceDetailsPage() {
             )}
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "1rem", marginTop: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "1rem", marginTop: "16px", flexWrap: "wrap" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
               <circle cx="12" cy="10" r="3"/>
             </svg>
-            <span>{place.city} / {place.governorate}</span>
-          </div>
+            <span>{displayBranch.city} / {displayBranch.governorate}</span>
+
+          {/* Branch Selector Chips */}
+          {place.branches && place.branches.length > 1 && (
+            <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
+              <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--text-secondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
+              <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
+                {place.branches.map(b => {
+                  const isSelected = b.id === selectedBranchId;
+                  return (
+                    <button
+                      key={b.id}
+                      onClick={() => setSelectedBranchId(b.id)}
+                      style={{
+                        background: isSelected ? "var(--accent-ios)" : "rgba(120,120,120,0.1)",
+                        color: isSelected ? "#fff" : "var(--text-primary)",
+                        border: isSelected ? "none" : "1px solid var(--border-glass)",
+                        borderRadius: "20px",
+                        padding: "8px 16px",
+                        fontSize: "0.95rem",
+                        fontWeight: isSelected ? "bold" : "normal",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        transition: "all 0.2s ease",
+                        boxShadow: isSelected ? "0 4px 12px rgba(0, 122, 255, 0.3)" : "none",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      {b.isMain && <span style={{ fontSize: "0.8rem" }}>⭐</span>}
+                      {b.name} {b.city ? `- ${b.city}` : ""}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+        </div>
 
           {/* Action Call / Map Box */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", margin: "30px 0" }}>
             <a
-              href={`tel:${place.phones[0]}`}
+              href={`tel:${displayBranch.phones && displayBranch.phones[0] ? displayBranch.phones[0] : ""}`}
               className="ios-btn ios-btn-primary"
               style={{ textDecoration: "none", padding: "14px" }}
+              onClick={(e) => { if (!displayBranch.phones || !displayBranch.phones[0]) { e.preventDefault(); alert("لا يوجد رقم هاتف متاح."); } }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -342,9 +419,9 @@ export default function PlaceDetailsPage() {
 
             <a
               href={
-                place.latitude && place.longitude
-                  ? `https://www.google.com/maps/dir/?api=1&destination=${place.latitude},${place.longitude}`
-                  : place.googleMapsUrl
+                displayBranch.latitude && displayBranch.longitude
+                  ? `https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`
+                  : displayBranch.googleMapsUrl || "#"
               }
               target="_blank"
               rel="noopener noreferrer"
@@ -356,7 +433,7 @@ export default function PlaceDetailsPage() {
                 <line x1="9" y1="3" x2="9" y2="18"/>
                 <line x1="15" y1="6" x2="15" y2="21"/>
               </svg>
-              {place.latitude && place.longitude ? "رسم اتجاهات الطريق" : "خرائط جوجل"}
+              {displayBranch.latitude && displayBranch.longitude ? "رسم اتجاهات الطريق" : "خرائط جوجل"}
             </a>
           </div>
 
@@ -382,27 +459,48 @@ export default function PlaceDetailsPage() {
               </div>
               <div>
                 <span style={{ display: "block", fontSize: "0.75rem", color: "var(--text-muted)" }}>ساعات العمل</span>
-                <span style={{ fontSize: "0.95rem", fontWeight: "600" }}>{place.workingHours ? getTodayWorkingHoursText(place.workingHours) : "غير محدد"}</span>
+                <span style={{ display: "block", fontSize: "1.05rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                  {displayBranch.workingHours ? getTodayWorkingHoursText(displayBranch.workingHours) : "غير محدد"}
+                </span>
               </div>
             </div>
 
             {/* Address */}
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px" }}>
-              <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(120,120,120,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)", flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(120,120,120,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                   <circle cx="12" cy="10" r="3"/>
                 </svg>
               </div>
               <div>
                 <span style={{ display: "block", fontSize: "0.75rem", color: "var(--text-muted)" }}>العنوان التفصيلي</span>
-                <span style={{ fontSize: "0.95rem", fontWeight: "600", lineHeight: "1.5" }}>{place.fullAddress}</span>
+                <span style={{ display: "block", fontSize: "1.05rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                  {displayBranch.fullAddress}
+                </span>
               </div>
             </div>
 
+            {/* Phones */}
+            {displayBranch.phones && displayBranch.phones.length > 0 && (
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(120,120,120,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </div>
+                <div>
+                  <span style={{ display: "block", fontSize: "0.75rem", color: "var(--text-muted)" }}>أرقام التليفون</span>
+                  <span style={{ display: "block", fontSize: "1.05rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                    {displayBranch.phones.join(" - ")}
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Coordinates */}
-            {place.latitude && place.longitude && (
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px" }}>
+            {displayBranch.latitude && displayBranch.longitude && (
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(120,120,120,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <circle cx="12" cy="12" r="10"/>
@@ -412,55 +510,20 @@ export default function PlaceDetailsPage() {
                 </div>
                 <div>
                   <span style={{ display: "block", fontSize: "0.75rem", color: "var(--text-muted)" }}>الإحداثيات الجغرافية</span>
-                  <span style={{ fontSize: "0.9rem", fontWeight: "bold", fontFamily: "monospace" }}>{place.latitude.toFixed(5)}, {place.longitude.toFixed(5)}</span>
+                  <span style={{ fontSize: "0.9rem", fontWeight: "bold", fontFamily: "monospace" }}>{displayBranch.latitude.toFixed(5)}, {displayBranch.longitude.toFixed(5)}</span>
                 </div>
               </div>
             )}
 
-            {/* Phones */}
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px" }}>
-              <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "rgba(120,120,120,0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)", flexShrink: 0 }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
-              </div>
-              <div>
-                <span style={{ display: "block", fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "4px" }}>أرقام التواصل</span>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                  {place.phones.map((phone, idx) => (
-                    <a
-                      key={idx}
-                      href={`tel:${phone}`}
-                      style={{
-                        background: "rgba(120, 120, 120, 0.08)",
-                        border: "1px solid var(--border-glass)",
-                        borderRadius: "10px",
-                        padding: "6px 14px",
-                        fontSize: "0.9rem",
-                        fontWeight: "bold",
-                        color: "var(--accent-ios)",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        textDecoration: "none"
-                      }}
-                    >
-                      ☎ {phone}
-                    </a>
-                  ))}
-                </div>
-                </div>
-              </div>
-
             {/* Working Hours Schedule */}
-            {place.workingHours && (
+            {displayBranch.workingHours && (
               <div style={{ borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "20px", marginTop: "20px" }}>
                 <h4 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "14px", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
                   <span>🕐</span> مواعيد العمل
                 </h4>
                 {(() => {
-                  const parsed = parseWorkingHours(place.workingHours);
-                  if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{place.workingHours}</div>;
+                  const parsed = parseWorkingHours(displayBranch.workingHours);
+                  if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
 
                   if (parsed.type === "24/7") {
                     return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
@@ -524,21 +587,24 @@ export default function PlaceDetailsPage() {
             </div>
           )}
 
-          {/* Menu Section */}
-          {place.menuImages && place.menuImages.length > 0 && (
+          {/* Media Section */}
+          {((displayBranch?.media && displayBranch.media.length > 0) || (place.menuImages && place.menuImages.length > 0)) && (
             <div>
-              <h4 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "14px", color: "var(--text-primary)" }}>قائمة الطعام والخدمات (المنيو)</h4>
+              <h4 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "14px", color: "var(--text-primary)" }}>الميديا (صور، قائمة طعام)</h4>
               <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "10px" }}>
-                {place.menuImages.map((menuUrl, idx) => (
+                {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!).map((mediaUrl, idx) => (
                   <div
                     key={idx}
                     onClick={() => setActiveMenuIndex(idx)}
                     style={{ width: "130px", height: "170px", borderRadius: "12px", overflow: "hidden", flexShrink: 0, border: "1px solid var(--border-glass)", cursor: "pointer", position: "relative" }}
                   >
                     <img
-                      src={menuUrl}
-                      alt={`menu-${idx}`}
+                      src={mediaUrl}
+                      alt={`ميديا-${idx}`}
                       style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80";
+                      }}
                     />
                     <div style={{ position: "absolute", bottom: "8px", left: "50%", transform: "translateX(-50%)", background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: "8px", color: "#fff", fontSize: "0.75rem", whiteSpace: "nowrap", border: "1px solid rgba(255,255,255,0.1)" }}>
                       تكبير 🔍
@@ -552,91 +618,87 @@ export default function PlaceDetailsPage() {
           {/* Reviews Section */}
           <ReviewSection 
             place={place} 
+            selectedBranchId={selectedBranchId}
             onRatingUpdate={(r, c) => setPlace({ ...place, rating: r, reviewsCount: c })}
           />
         </div>
       </div>
 
       {/* Lightbox / Zoom component */}
-      {activeMenuIndex !== null && place?.menuImages && (
-        <div 
-          onClick={() => setActiveMenuIndex(null)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0,0,0,0.92)",
-            backdropFilter: "blur(12px)",
-            zIndex: 1100,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-            animation: "fade-in 0.25s ease"
-          }}
-        >
-          <button 
-            onClick={() => setActiveMenuIndex(null)}
-            style={{
-              position: "absolute",
-              top: "24px",
-              right: "24px",
-              background: "rgba(255,255,255,0.15)",
-              border: "none",
-              borderRadius: "50%",
-              width: "40px",
-              height: "40px",
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              fontSize: "1.5rem"
-            }}
-          >
+      {activeMenuIndex !== null && ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place?.menuImages) && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.9)", zIndex: 10000,
+          display: "flex", flexDirection: "column",
+          justifyContent: "center", alignItems: "center",
+          backdropFilter: "blur(10px)"
+        }} onClick={() => setActiveMenuIndex(null)}>
+          
+          <button style={{
+            position: "absolute", top: "20px", right: "20px",
+            background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
+            width: "40px", height: "40px", borderRadius: "50%",
+            fontSize: "1.5rem", display: "flex", justifyContent: "center", alignItems: "center",
+            cursor: "pointer", zIndex: 10001
+          }} onClick={(e) => { e.stopPropagation(); setActiveMenuIndex(null); }}>
             ✕
           </button>
-          
-          {place.menuImages.length > 1 && (
-            <button 
-              onClick={(e) => { e.stopPropagation(); setActiveMenuIndex((activeMenuIndex - 1 + place.menuImages!.length) % place.menuImages!.length); }}
-              style={{ position: "absolute", right: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
-            >
+
+          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!).length > 1 && (
+            <button style={{
+              position: "absolute", right: "20px", top: "50%", transform: "translateY(-50%)",
+              background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
+              width: "40px", height: "40px", borderRadius: "50%",
+              fontSize: "1.5rem", display: "flex", justifyContent: "center", alignItems: "center", cursor: "pointer"
+            }} onClick={(e) => { 
+              e.stopPropagation(); 
+              const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!);
+              setActiveMenuIndex((activeMenuIndex - 1 + arr.length) % arr.length); 
+            }}>
               ❯
             </button>
           )}
 
-          <img
-            src={place.menuImages[activeMenuIndex]}
-            alt="Expanded Menu"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image itself
-            style={{
-              maxWidth: "100%",
-              maxHeight: "85vh",
-              objectFit: "contain",
-              borderRadius: "12px",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.6)"
+          <img 
+            src={((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!)[activeMenuIndex]} 
+            alt="ميديا مكبرة" 
+            style={{ maxWidth: "90%", maxHeight: "80vh", objectFit: "contain", borderRadius: "12px" }}
+            onClick={(e) => e.stopPropagation()}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80";
             }}
           />
 
-          {place.menuImages.length > 1 && (
-            <button 
-              onClick={(e) => { e.stopPropagation(); setActiveMenuIndex((activeMenuIndex + 1) % place.menuImages!.length); }}
-              style={{ position: "absolute", left: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
-            >
+          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!).length > 1 && (
+            <button style={{
+              position: "absolute", left: "20px", top: "50%", transform: "translateY(-50%)",
+              background: "rgba(255,255,255,0.2)", color: "#fff", border: "none",
+              width: "40px", height: "40px", borderRadius: "50%",
+              fontSize: "1.5rem", display: "flex", justifyContent: "center", alignItems: "center", cursor: "pointer"
+            }} onClick={(e) => { 
+              e.stopPropagation(); 
+              const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!);
+              setActiveMenuIndex((activeMenuIndex + 1) % arr.length); 
+            }}>
               ❮
             </button>
           )}
 
-          {place.menuImages.length > 1 && (
-            <div style={{ position: "absolute", bottom: "24px", color: "#fff", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "12px", fontSize: "0.9rem" }}>
-              {activeMenuIndex + 1} / {place.menuImages.length}
+          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!).length > 1 && (
+            <div style={{
+              position: "absolute", bottom: "30px", background: "rgba(0,0,0,0.6)",
+              color: "#fff", padding: "6px 16px", borderRadius: "20px", fontSize: "0.9rem", fontWeight: "600"
+            }}>
+              {activeMenuIndex + 1} / {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!).length}
             </div>
           )}
         </div>
       )}
+      <style dangerouslySetInnerHTML={{__html: `
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}} />
     </div>
   );
 }

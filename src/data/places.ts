@@ -1,5 +1,21 @@
 export type PlaceCategory = 'restaurant' | 'cafe' | 'pharmacy' | 'hospital' | 'garden' | 'family' | 'entertainment';
 
+export interface Branch {
+  id: string;
+  place_id: string;
+  name: string;
+  governorate?: string;
+  city?: string;
+  fullAddress: string;
+  latitude?: number;
+  longitude?: number;
+  phones: string[];
+  googleMapsUrl: string;
+  workingHours: string;
+  media?: string[];
+  isMain: boolean;
+}
+
 export interface Place {
   id: string;
   name: string;
@@ -14,12 +30,14 @@ export interface Place {
   googleMapsUrl: string;
   images: string[];
   menuImages?: string[];
+  media?: string[];
   workingHours?: string;
   rating?: number;
   reviewsCount?: number;
   description?: string;
   latitude?: number;
   longitude?: number;
+  branches?: Branch[];
 }
 
 export const initialPlaces: Place[] = [

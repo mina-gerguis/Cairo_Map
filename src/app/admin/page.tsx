@@ -32,6 +32,7 @@ interface DBPlace {
   latitude: number;
   longitude: number;
   created_at?: string;
+  branches?: any[];
 }
 
 export default function AdminDashboard() {
@@ -49,7 +50,7 @@ export default function AdminDashboard() {
     name: "", category: "restaurant", category_label: "مطعم", 
     governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
     full_address: "", phones: "", google_maps_url: "", image_url: "", 
-    menu_image_url: "", description: "", 
+    menu_images: "", description: "", 
     latitude: "", longitude: ""
   });
   
@@ -66,6 +67,32 @@ export default function AdminDashboard() {
   );
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Branch Management States
+  const [selectedPlaceForBranch, setSelectedPlaceForBranch] = useState<DBPlace | null>(null);
+  const [editingBranchId, setEditingBranchId] = useState<string | null>(null);
+  const [branchFormData, setBranchFormData] = useState({
+    name: "", governorate: governoratesList[0] || "القاهرة", city: "",
+    full_address: "", phones: "", google_maps_url: "", latitude: "", longitude: "", media: ""
+  });
+  const [branchScheduleType, setBranchScheduleType] = useState<"24/7" | "custom">("24/7");
+  const [branchScheduleData, setBranchScheduleData] = useState<ScheduleDay[]>(
+    DAYS_OF_WEEK.map(day => ({
+      day, isWorking: true, openTime: "09:00", openPeriod: "ص", closeTime: "11:00", closePeriod: "م"
+    }))
+  );
+  const [isSubmittingBranch, setIsSubmittingBranch] = useState(false);
+
+  // Edit Category State
+  const [editingCategoryPlace, setEditingCategoryPlace] = useState<DBPlace | null>(null);
+  const [editingCategory, setEditingCategory] = useState("");
+  const [isUpdatingCategory, setIsUpdatingCategory] = useState(false);
+
+  // Unified Edit Place State (name + category)
+  const [editingPlace, setEditingPlace] = useState<DBPlace | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [editingPlaceCategory, setEditingPlaceCategory] = useState("");
+  const [isUpdatingPlace, setIsUpdatingPlace] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -96,7 +123,7 @@ export default function AdminDashboard() {
         // Fetch places
         const { data: placesData, error: placesError } = await supabase
           .from("places")
-          .select("*")
+          .select("*, branches(*)")
           .order("created_at", { ascending: false });
 
         if (placesError) throw placesError;
@@ -126,7 +153,7 @@ export default function AdminDashboard() {
     try {
       const phonesArray = formData.phones.split(",").map(p => p.trim()).filter(Boolean);
       const imagesArray = formData.image_url ? [formData.image_url.trim()] : [];
-      const menuImagesArray = formData.menu_image_url.split(",").map(m => m.trim()).filter(Boolean);
+      const menuImagesArray = formData.menu_images.split(",").map(m => m.trim()).filter(Boolean);
       
       const newPlace = {
         name: formData.name,
@@ -158,14 +185,51 @@ export default function AdminDashboard() {
       if (insertError) throw insertError;
       
       if (data) {
-        setPlaces([data, ...places]);
+        // Create initial main branch
+        const { error: branchError } = await supabase
+          .from("branches")
+          .insert([{
+            place_id: data.id,
+            name: "الفرع الرئيسي",
+            governorate: data.governorate,
+            city: data.city,
+            full_address: data.full_address,
+            phones: data.phones,
+            google_maps_url: data.google_maps_url,
+            working_hours: data.working_hours,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            is_main: true
+          }]);
+        
+        if (branchError) {
+          console.error("Failed to create main branch:", branchError);
+        }
+
+        const newBranch = {
+            id: branchError ? undefined : "temp-id",
+            place_id: data.id,
+            name: "الفرع الرئيسي",
+            governorate: data.governorate,
+            city: data.city,
+            full_address: data.full_address,
+            phones: data.phones,
+            google_maps_url: data.google_maps_url,
+            working_hours: data.working_hours,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            is_main: true
+        };
+
+        const placeWithBranch = { ...data, branches: [newBranch] };
+        setPlaces([placeWithBranch, ...places]);
         setShowAddForm(false);
         // Reset form
         setFormData({
           name: "", category: "restaurant", category_label: "مطعم", 
           governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
           full_address: "", phones: "", google_maps_url: "", image_url: "", 
-          menu_image_url: "", description: "", 
+          menu_images: "", description: "", 
           latitude: "", longitude: ""
         });
       }
@@ -173,6 +237,153 @@ export default function AdminDashboard() {
       setError("فشل إضافة المكان: " + (err.message || ""));
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleAddBranch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase || !selectedPlaceForBranch) return;
+
+    setIsSubmittingBranch(true);
+    setError("");
+
+    try {
+      const phonesArray = branchFormData.phones.split(",").map(p => p.trim()).filter(Boolean);
+      const mediaArray = branchFormData.media.split(",").map(m => m.trim()).filter(Boolean);
+      
+      let savedData, insertOrUpdateError;
+
+      if (editingBranchId) {
+        const { data, error } = await supabase
+          .from("branches")
+          .update({
+            name: branchFormData.name,
+            governorate: branchFormData.governorate,
+            city: branchFormData.city,
+            full_address: branchFormData.full_address,
+            phones: phonesArray,
+            google_maps_url: branchFormData.google_maps_url,
+            working_hours: branchScheduleType === "24/7" ? "24/7" : JSON.stringify({ type: "custom", schedule: branchScheduleData }),
+            latitude: parseFloat(branchFormData.latitude) || null,
+            longitude: parseFloat(branchFormData.longitude) || null,
+            media: mediaArray
+          })
+          .eq("id", editingBranchId)
+          .select()
+          .single();
+        savedData = data;
+        insertOrUpdateError = error;
+      } else {
+        const newBranch = {
+          place_id: selectedPlaceForBranch.id,
+          name: branchFormData.name,
+          governorate: branchFormData.governorate,
+          city: branchFormData.city,
+          full_address: branchFormData.full_address,
+          phones: phonesArray,
+          google_maps_url: branchFormData.google_maps_url,
+          working_hours: branchScheduleType === "24/7" ? "24/7" : JSON.stringify({ type: "custom", schedule: branchScheduleData }),
+          latitude: parseFloat(branchFormData.latitude) || null,
+          longitude: parseFloat(branchFormData.longitude) || null,
+          media: mediaArray,
+          is_main: false
+        };
+
+        const { data, error } = await supabase
+          .from("branches")
+          .insert([newBranch])
+          .select()
+          .single();
+        savedData = data;
+        insertOrUpdateError = error;
+      }
+
+      if (insertOrUpdateError) throw insertOrUpdateError;
+
+      if (savedData) {
+        // Update local state
+        const updatedPlaces = places.map(p => {
+          if (p.id === selectedPlaceForBranch.id) {
+            const branches = p.branches || [];
+            if (editingBranchId) {
+              return { ...p, branches: branches.map(b => b.id === editingBranchId ? savedData : b) };
+            } else {
+              return { ...p, branches: [...branches, savedData] };
+            }
+          }
+          return p;
+        });
+        setPlaces(updatedPlaces);
+        
+        // Reset form but keep modal open
+        setEditingBranchId(null);
+        setBranchFormData({
+          name: "", governorate: selectedPlaceForBranch.governorate || "القاهرة", city: "",
+          full_address: "", phones: "", google_maps_url: "", latitude: "", longitude: "", media: ""
+        });
+        
+        alert(editingBranchId ? "تم تعديل الفرع بنجاح!" : "تم إضافة الفرع بنجاح!");
+      }
+    } catch (err: any) {
+      alert((editingBranchId ? "فشل تعديل الفرع: " : "فشل إضافة الفرع: ") + (err.message || ""));
+    } finally {
+      setIsSubmittingBranch(false);
+    }
+  };
+
+  const handleEditBranch = (b: any) => {
+    setEditingBranchId(b.id);
+    setBranchFormData({
+      name: b.name || "",
+      governorate: b.governorate || selectedPlaceForBranch?.governorate || "القاهرة",
+      city: b.city || "",
+      full_address: b.full_address || "",
+      phones: (b.phones || []).join(", "),
+      google_maps_url: b.google_maps_url || "",
+      latitude: b.latitude?.toString() || "",
+      longitude: b.longitude?.toString() || "",
+      media: (b.media || []).join(", ")
+    });
+
+    const hw = b.working_hours;
+    if (!hw || hw === "24/7") {
+      setBranchScheduleType("24/7");
+    } else {
+      try {
+        const parsed = JSON.parse(hw);
+        if (parsed.type === "custom" && parsed.schedule) {
+          setBranchScheduleType("custom");
+          setBranchScheduleData(parsed.schedule);
+        } else {
+          setBranchScheduleType("24/7");
+        }
+      } catch(e) {
+        setBranchScheduleType("24/7");
+      }
+    }
+  };
+
+  const handleDeleteBranch = async (branchId: string, placeId: string, isMain: boolean) => {
+    if (isMain) {
+      alert("لا يمكن حذف الفرع الرئيسي مباشرة. يمكنك حذف المكان بالكامل.");
+      return;
+    }
+    if (!confirm("هل أنت متأكد من حذف هذا الفرع؟")) return;
+    if (!supabase) return;
+
+    try {
+      const { error: deleteError } = await supabase.from("branches").delete().eq("id", branchId);
+      if (deleteError) throw deleteError;
+      
+      const updatedPlaces = places.map(p => {
+        if (p.id === placeId) {
+          return { ...p, branches: (p.branches || []).filter(b => b.id !== branchId) };
+        }
+        return p;
+      });
+      setPlaces(updatedPlaces);
+    } catch (err: any) {
+      alert("فشل حذف الفرع: " + err.message);
     }
   };
 
@@ -192,6 +403,21 @@ export default function AdminDashboard() {
     }
   };
 
+  const extractBranchCoordinates = async (url: string) => {
+    if (!url || !url.includes("maps")) return;
+    try {
+      const res = await fetch(`/api/extract-location?url=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.latitude && data.longitude) {
+          setBranchFormData(p => ({ ...p, latitude: data.latitude.toString(), longitude: data.longitude.toString() }));
+        }
+      }
+    } catch (err) {
+      console.error("Failed to extract branch coordinates", err);
+    }
+  };
+
   const handleDeletePlace = async (id: string) => {
     if (!confirm("هل أنت متأكد من حذف هذا المكان؟")) return;
     if (!supabase) return;
@@ -202,6 +428,56 @@ export default function AdminDashboard() {
       setPlaces(places.filter(p => p.id !== id));
     } catch (err: any) {
       alert("فشل الحذف: " + err.message);
+    }
+  };
+
+  const handleUpdateCategory = async () => {
+    if (!editingCategoryPlace || !supabase) return;
+    setIsUpdatingCategory(true);
+    const labels: any = { restaurant: "مطعم", cafe: "كافيه", pharmacy: "صيدلية", hospital: "مستشفى", garden: "حديقة", family: "عائلية", entertainment: "ترفيهية" };
+    try {
+      const { error } = await supabase
+        .from("places")
+        .update({ category: editingCategory, category_label: labels[editingCategory] || editingCategory })
+        .eq("id", editingCategoryPlace.id);
+      if (error) throw error;
+      setPlaces(places.map(p =>
+        p.id === editingCategoryPlace.id
+          ? { ...p, category: editingCategory, category_label: labels[editingCategory] || editingCategory }
+          : p
+      ));
+      setEditingCategoryPlace(null);
+    } catch (err: any) {
+      alert("فشل تحديث التصنيف: " + err.message);
+    } finally {
+      setIsUpdatingCategory(false);
+    }
+  };
+
+  const handleUpdatePlace = async () => {
+    if (!editingPlace || !supabase || !editingName.trim()) return;
+    setIsUpdatingPlace(true);
+    const labels: any = { restaurant: "مطعم", cafe: "كافيه", pharmacy: "صيدلية", hospital: "مستشفى", garden: "حديقة", family: "عائلية", entertainment: "ترفيهية" };
+    try {
+      const { error } = await supabase
+        .from("places")
+        .update({
+          name: editingName.trim(),
+          category: editingPlaceCategory,
+          category_label: labels[editingPlaceCategory] || editingPlaceCategory
+        })
+        .eq("id", editingPlace.id);
+      if (error) throw error;
+      setPlaces(places.map(p =>
+        p.id === editingPlace.id
+          ? { ...p, name: editingName.trim(), category: editingPlaceCategory, category_label: labels[editingPlaceCategory] || editingPlaceCategory }
+          : p
+      ));
+      setEditingPlace(null);
+    } catch (err: any) {
+      alert("فشل تحديث البيانات: " + err.message);
+    } finally {
+      setIsUpdatingPlace(false);
     }
   };
 
@@ -355,7 +631,7 @@ export default function AdminDashboard() {
             
             {/* Image URLs */}
             <div><label className="help-label">رابط الصورة الرئيسية (URL)</label><input className="ios-input" type="url" value={formData.image_url} onChange={e => updateForm("image_url", e.target.value)} placeholder="https://..." style={{ direction: "ltr", textAlign: "right" }} /></div>
-            <div><label className="help-label">روابط المنيو (مفصولة بفاصلة)</label><input className="ios-input" type="text" value={formData.menu_image_url} onChange={e => updateForm("menu_image_url", e.target.value)} placeholder="https://link1.jpg, https://link2.jpg..." style={{ direction: "ltr", textAlign: "right" }} /></div>
+            <div style={{ gridColumn: "1 / -1" }}><label className="help-label">روابط الميديا (صور، قائمة طعام) - مفصولة بفاصلة</label><textarea className="ios-input" rows={2} value={formData.menu_images} onChange={e => updateForm("menu_images", e.target.value)} placeholder="https://..., https://..." style={{ direction: "ltr", textAlign: "left" }}></textarea></div>
             
             {/* Working Hours UI */}
             <div style={{ gridColumn: "1 / -1", background: "rgba(120, 120, 120, 0.05)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
@@ -471,13 +747,27 @@ export default function AdminDashboard() {
                     </td>
                     <td style={{ padding: "12px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
                       {place.city} / {place.governorate}
+                      <br/>
+                      <span style={{ fontSize: "0.8rem", color: "var(--accent-ios)", fontWeight: "bold" }}>{place.branches ? place.branches.length : 1} فروع</span>
                     </td>
-                    <td style={{ padding: "12px" }}>
+                    <td style={{ padding: "12px", display: "flex", gap: "8px", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                      <button
+                        onClick={() => { setEditingPlace(place); setEditingName(place.name); setEditingPlaceCategory(place.category); }}
+                        style={{ background: "rgba(52,199,89,0.1)", color: "#34c759", border: "1px solid rgba(52,199,89,0.2)", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", fontWeight: "bold", fontSize: "0.85rem" }}
+                      >
+                        تعديل ✏️
+                      </button>
+                      <button 
+                        onClick={() => setSelectedPlaceForBranch(place)}
+                        style={{ background: "rgba(47, 128, 237, 0.1)", color: "#2f80ed", border: "1px solid rgba(47, 128, 237, 0.2)", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", transition: "all 0.2s ease", fontWeight: "bold" }}
+                      >
+                        إدارة الفروع 🏢
+                      </button>
                       <button 
                         onClick={() => handleDeletePlace(place.id)}
                         style={{ background: "rgba(255, 59, 48, 0.1)", color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.2)", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", transition: "all 0.2s ease" }}
                       >
-                        حذف
+                        حذف 🗑️
                       </button>
                     </td>
                   </tr>
@@ -487,6 +777,203 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+
+      {/* Unified Edit Place Modal (Name + Category) */}
+      {editingPlace && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 2000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+          <div style={{ background: "var(--card-bg)", borderRadius: "20px", padding: "28px", width: "100%", maxWidth: "440px", border: "1px solid var(--border-glass)" }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem", marginBottom: "6px" }}>تعديل المكان</h3>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginBottom: "20px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px" }}>{editingPlace.name}</p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
+              <div>
+                <label className="help-label">اسم المكان</label>
+                <input
+                  className="ios-input"
+                  value={editingName}
+                  onChange={e => setEditingName(e.target.value)}
+                  placeholder="اكتب الاسم الجديد..."
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="help-label">التصنيف</label>
+                <select className="ios-input help-select" value={editingPlaceCategory} onChange={e => setEditingPlaceCategory(e.target.value)}>
+                  <option value="restaurant">مطعم</option>
+                  <option value="cafe">كافيه</option>
+                  <option value="pharmacy">صيدلية</option>
+                  <option value="hospital">مستشفى</option>
+                  <option value="garden">حديقة</option>
+                  <option value="family">عائلية</option>
+                  <option value="entertainment">ترفيهية</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button onClick={handleUpdatePlace} disabled={isUpdatingPlace || !editingName.trim()} className="ios-btn ios-btn-primary" style={{ flex: 1 }}>
+                {isUpdatingPlace ? "جاري الحفظ..." : "حفظ التعديلات"}
+              </button>
+              <button onClick={() => setEditingPlace(null)} className="ios-btn" style={{ flex: 1 }}>إلغاء</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Branches Modal */}
+      {selectedPlaceForBranch && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000,
+          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(5px)",
+          display: "flex", alignItems: "center", justifyContent: "center", padding: "20px"
+        }}>
+          <div className="glass-panel" style={{ width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto", position: "relative" }}>
+            <button
+              onClick={() => setSelectedPlaceForBranch(null)}
+              style={{ position: "absolute", top: "20px", left: "20px", background: "rgba(120,120,120,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              ✕
+            </button>
+            <h2 style={{ fontSize: "1.5rem", marginBottom: "10px" }}>إدارة فروع: {selectedPlaceForBranch.name}</h2>
+            
+            {/* Existing Branches List */}
+            <div style={{ marginBottom: "30px" }}>
+              <h3 style={{ fontSize: "1.1rem", marginBottom: "14px", color: "var(--text-secondary)" }}>الفروع الحالية ({selectedPlaceForBranch.branches?.length || 0})</h3>
+              <div style={{ display: "grid", gap: "10px" }}>
+                {(selectedPlaceForBranch.branches || []).map(b => (
+                  <div key={b.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", background: "rgba(120,120,120,0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
+                    <div>
+                      <div style={{ fontWeight: "bold", fontSize: "1.05rem" }}>{b.name} {b.is_main ? <span style={{ color: "var(--accent-success)", fontSize: "0.8rem", marginLeft: "8px" }}>(فرع رئيسي)</span> : ""}</div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>{b.city} / {b.governorate}</div>
+                    </div>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <button 
+                        onClick={() => handleEditBranch(b)}
+                        style={{ background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>
+                        تعديل
+                      </button>
+                      {!b.is_main && (
+                        <button onClick={() => handleDeleteBranch(b.id, selectedPlaceForBranch.id, b.is_main)} style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>حذف</button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Add New Branch Form */}
+            <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <h3 style={{ fontSize: "1.1rem", color: "var(--text-primary)" }}>{editingBranchId ? "تعديل الفرع" : "إضافة فرع جديد"}</h3>
+                {editingBranchId && (
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setEditingBranchId(null);
+                      setBranchFormData({
+                        name: "", governorate: selectedPlaceForBranch.governorate || "القاهرة", city: "",
+                        full_address: "", phones: "", google_maps_url: "", latitude: "", longitude: "", media: ""
+                      });
+                      setBranchScheduleType("24/7");
+                    }}
+                    style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.9rem" }}>
+                    إلغاء التعديل
+                  </button>
+                )}
+              </div>
+              <form onSubmit={handleAddBranch} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <div><label className="help-label">اسم الفرع</label><input required className="ios-input" value={branchFormData.name} onChange={e => setBranchFormData(p => ({...p, name: e.target.value}))} placeholder="مثال: فرع مدينة نصر" /></div>
+                <div><label className="help-label">المحافظة</label>
+                  <select required className="ios-input" value={branchFormData.governorate} onChange={e => setBranchFormData(p => ({...p, governorate: e.target.value, city: ""}))}>
+                    {governoratesList.map(g => <option key={g} value={g}>{g}</option>)}
+                  </select>
+                </div>
+                <div><label className="help-label">المدينة / المنطقة</label>
+                  <select required className="ios-input" value={branchFormData.city} onChange={e => setBranchFormData(p => ({...p, city: e.target.value}))}>
+                    <option value="">اختر المدينة</option>
+                    {(egyptLocations[branchFormData.governorate as keyof typeof egyptLocations] || []).map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div><label className="help-label">العنوان التفصيلي</label><input required className="ios-input" value={branchFormData.full_address} onChange={e => setBranchFormData(p => ({...p, full_address: e.target.value}))} /></div>
+                <div><label className="help-label">أرقام التليفون (مفصولين بفاصلة)</label><input className="ios-input" value={branchFormData.phones} onChange={e => setBranchFormData(p => ({...p, phones: e.target.value}))} style={{ direction: "ltr", textAlign: "right" }} /></div>
+                <div>
+                  <label className="help-label">رابط خرائط جوجل</label>
+                  <input className="ios-input" value={branchFormData.google_maps_url} 
+                    onChange={e => setBranchFormData(p => ({...p, google_maps_url: e.target.value}))} 
+                    onBlur={e => extractBranchCoordinates(e.target.value)}
+                    style={{ direction: "ltr", textAlign: "right" }} 
+                  />
+                </div>
+                <div><label className="help-label">خط العرض</label><input className="ios-input" type="number" step="any" value={branchFormData.latitude} onChange={e => setBranchFormData(p => ({...p, latitude: e.target.value}))} /></div>
+                <div><label className="help-label">خط الطول</label><input className="ios-input" type="number" step="any" value={branchFormData.longitude} onChange={e => setBranchFormData(p => ({...p, longitude: e.target.value}))} /></div>
+                
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label className="help-label">الميديا الخاصة بالفرع (روابط مفصولة بفاصلة)</label>
+                  <textarea className="ios-input" rows={2} value={branchFormData.media} onChange={e => setBranchFormData(p => ({...p, media: e.target.value}))} placeholder="https://..., https://..." style={{ direction: "ltr", textAlign: "left" }}></textarea>
+                </div>
+
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label className="help-label">ساعات العمل</label>
+                  <select className="ios-input" value={branchScheduleType} onChange={e => setBranchScheduleType(e.target.value as any)} style={{ marginBottom: "10px" }}>
+                    <option value="24/7">مفتوح طول أيام الأسبوع 24 ساعة</option>
+                    <option value="custom">مواعيد مخصصة</option>
+                  </select>
+                  {branchScheduleType === "custom" && (
+                    <div style={{ background: "rgba(120,120,120,0.05)", borderRadius: "var(--radius-md)", padding: "16px", border: "1px solid var(--border-glass)" }}>
+                      {branchScheduleData.map((dayData, index) => (
+                        <div key={dayData.day} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 0", borderBottom: index < branchScheduleData.length - 1 ? "1px solid rgba(120,120,120,0.1)" : "none", flexWrap: "wrap" }}>
+                          <div style={{ width: "80px", fontWeight: "bold" }}>{dayData.day}</div>
+                          
+                          <select 
+                            className="ios-input help-select" 
+                            style={{ width: "100px", padding: "6px" }}
+                            value={dayData.isWorking ? "working" : "off"}
+                            onChange={e => {
+                              const newData = [...branchScheduleData];
+                              newData[index].isWorking = e.target.value === "working";
+                              setBranchScheduleData(newData);
+                            }}
+                          >
+                            <option value="working">شغل</option>
+                            <option value="off">إجازة</option>
+                          </select>
+
+                          {dayData.isWorking && (
+                            <div style={{ display: "flex", gap: "10px", alignItems: "center", flex: 1, flexWrap: "wrap" }}>
+                              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>من</span>
+                              <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.openTime} onChange={e => { const newData = [...branchScheduleData]; newData[index].openTime = e.target.value; setBranchScheduleData(newData); }}>
+                                {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
+                              </select>
+                              <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.openPeriod} onChange={e => { const newData = [...branchScheduleData]; newData[index].openPeriod = e.target.value as "ص"|"م"; setBranchScheduleData(newData); }}>
+                                <option value="ص">ص</option><option value="م">م</option>
+                              </select>
+                              
+                              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem", margin: "0 5px" }}>حتي</span>
+                              <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.closeTime} onChange={e => { const newData = [...branchScheduleData]; newData[index].closeTime = e.target.value; setBranchScheduleData(newData); }}>
+                                {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
+                              </select>
+                              <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.closePeriod} onChange={e => { const newData = [...branchScheduleData]; newData[index].closePeriod = e.target.value as "ص"|"م"; setBranchScheduleData(newData); }}>
+                                <option value="ص">ص</option><option value="م">م</option>
+                              </select>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
+                  <button type="submit" disabled={isSubmittingBranch} className="ios-btn ios-btn-primary" style={{ marginTop: "10px" }}>
+                  {isSubmittingBranch ? "جاري الحفظ..." : (editingBranchId ? "حفظ التعديلات" : "إضافة الفرع")}
+                </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

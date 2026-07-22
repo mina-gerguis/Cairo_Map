@@ -14,17 +14,25 @@ export interface Review {
   comment: string;
   created_at: string;
   updated_at: string;
-      profiles?: {
+  branch_id?: string;
+  profiles?: {
     full_name: string;
+  };
+  branches?: {
+    name: string;
+    city: string;
+    governorate: string;
+    full_address: string;
   };
 }
 
 interface ReviewSectionProps {
   place: Place;
   onRatingUpdate?: (newTotalRating: number, newCount: number) => void;
+  selectedBranchId?: string | null;
 }
 
-export default function ReviewSection({ place, onRatingUpdate }: ReviewSectionProps) {
+export default function ReviewSection({ place, onRatingUpdate, selectedBranchId }: ReviewSectionProps) {
   const { user } = useAuth();
   const router = useRouter();
 
@@ -44,7 +52,7 @@ export default function ReviewSection({ place, onRatingUpdate }: ReviewSectionPr
       try {
         const { data, error } = await supabase
           .from('reviews')
-          .select('*, profiles(full_name)')
+          .select('*, profiles(full_name), branches(name, city, governorate, full_address)')
           .eq('place_id', place.id)
           .order('created_at', { ascending: false });
 
@@ -97,6 +105,7 @@ export default function ReviewSection({ place, onRatingUpdate }: ReviewSectionPr
       const payload = {
         place_id: place.id,
         user_id: user.id,
+        branch_id: selectedBranchId || (place.branches?.find(b => b.isMain)?.id) || (place.branches?.[0]?.id) || null,
         rating: ratingInput,
         comment: commentInput,
         updated_at: new Date().toISOString()
@@ -109,7 +118,7 @@ export default function ReviewSection({ place, onRatingUpdate }: ReviewSectionPr
           .from('reviews')
           .update(payload)
           .eq('id', userReview.id)
-          .select('*, profiles(full_name)')
+          .select('*, profiles(full_name), branches(name, city, governorate, full_address)')
           .single();
         if (error) throw error;
         newReviewData = data;
@@ -118,7 +127,7 @@ export default function ReviewSection({ place, onRatingUpdate }: ReviewSectionPr
         const { data, error } = await supabase
           .from('reviews')
           .insert(payload)
-          .select('*, profiles(full_name)')
+          .select('*, profiles(full_name), branches(name, city, governorate, full_address)')
           .single();
         if (error) throw error;
         newReviewData = data;
@@ -194,12 +203,22 @@ export default function ReviewSection({ place, onRatingUpdate }: ReviewSectionPr
         {reviews.length > 0 ? (
           reviews.map(review => (
             <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                <div style={{ color: "#ff9f0a", fontSize: "1.1rem" }}>
-                  {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "10px" }}>
+                <div>
+                  <div style={{ color: "#ff9f0a", fontSize: "1.1rem", marginBottom: "4px" }}>
+                    {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                  </div>
+                  {review.branches && (
+                    <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px", background: "rgba(120,120,120,0.1)", padding: "4px 8px", borderRadius: "8px", width: "fit-content" }}>
+                      <span>🏢</span>
+                      <span style={{ fontWeight: "600" }}>{review.branches.name}</span>
+                      <span>-</span>
+                      <span style={{ opacity: 0.8 }}>{review.branches.city}</span>
+                    </div>
+                  )}
                 </div>
                 <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span>{review.profiles?.full_name || "مستخدم"}</span>
+                  <span style={{ fontWeight: "600" }}>{review.profiles?.full_name || "مستخدم"}</span>
                   <span>•</span>
                   <span>
                     {new Date(review.created_at).toLocaleDateString("ar-EG", { month: "short", year: "numeric" })}
@@ -207,7 +226,7 @@ export default function ReviewSection({ place, onRatingUpdate }: ReviewSectionPr
                 </div>
               </div>
               {review.comment && (
-                <p style={{ color: "var(--text-primary)", fontSize: "0.95rem", lineHeight: "1.5" }}>
+                <p style={{ color: "var(--text-primary)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px", paddingRight: review.branches ? "4px" : "0" }}>
                   {review.comment}
                 </p>
               )}

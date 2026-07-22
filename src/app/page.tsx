@@ -37,7 +37,7 @@ function getCategoryColor(cat: string) {
   return colors[cat] ?? "#2f80ed";
 }
 
-type PlaceWithDist = Place & { distanceKm?: number };
+type PlaceWithDist = Place & { distanceKm?: number; closestBranchName?: string };
 
 /* ═══════════════════════════════════════════════
    HOME PAGE
@@ -50,6 +50,7 @@ function HomeContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
 
@@ -91,7 +92,7 @@ function HomeContent() {
     const fetchPlaces = async () => {
       if (!supabase) return;
       try {
-        const { data, error } = await supabase.from('places').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabase.from('places').select('*, branches(*)').order('created_at', { ascending: false });
         if (error) throw error;
         if (data) {
           const mappedPlaces: Place[] = data.map(dbPlace => ({
@@ -113,6 +114,21 @@ function HomeContent() {
             description: dbPlace.description || "",
             latitude: dbPlace.latitude || undefined,
             longitude: dbPlace.longitude || undefined,
+            branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
+              id: b.id,
+              place_id: b.place_id,
+              name: b.name,
+              governorate: b.governorate,
+              city: b.city,
+              fullAddress: b.full_address,
+              latitude: b.latitude,
+              longitude: b.longitude,
+              phones: b.phones || [],
+              googleMapsUrl: b.google_maps_url,
+              workingHours: b.working_hours,
+              isMain: b.is_main,
+              createdAt: b.created_at,
+            })) : []
           }));
           setPlaces(mappedPlaces);
         }
@@ -203,13 +219,32 @@ function HomeContent() {
 
   /* Enrich places with distance */
   const enrichedPlaces = React.useMemo<PlaceWithDist[]>(() => {
-    return places.map((p) => ({
-      ...p,
-      distanceKm:
-        userLocation && p.latitude && p.longitude
-          ? haversineDistance(userLocation.latitude, userLocation.longitude, p.latitude, p.longitude)
-          : undefined,
-    }));
+    return places.map((p) => {
+      let minDistance: number | undefined = undefined;
+      let closestBranchName: string | undefined = undefined;
+
+      if (userLocation) {
+        if (p.branches && p.branches.length > 0) {
+          p.branches.forEach(b => {
+            if (b.latitude && b.longitude) {
+              const d = haversineDistance(userLocation.latitude, userLocation.longitude, b.latitude, b.longitude);
+              if (minDistance === undefined || d < minDistance) {
+                minDistance = d;
+                closestBranchName = b.name;
+              }
+            }
+          });
+        } else if (p.latitude && p.longitude) {
+          minDistance = haversineDistance(userLocation.latitude, userLocation.longitude, p.latitude, p.longitude);
+        }
+      }
+
+      return {
+        ...p,
+        distanceKm: minDistance,
+        closestBranchName,
+      };
+    });
   }, [places, userLocation]);
 
   /* Main filtered + searched list */
@@ -533,10 +568,17 @@ function HomeContent() {
 
       {/* ═══════════════════════════════════ DETAIL SHEET ═══════════════════════════════════ */}
       {selectedPlace && (
-        <div className="ios-sheet-overlay" onClick={() => setSelectedPlace(null)}>
+        <div className="ios-sheet-overlay" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}>
           <div className="ios-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="ios-sheet-drag-handle" onClick={() => setSelectedPlace(null)} />
+            <div className="ios-sheet-drag-handle" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }} />
             <div className="ios-sheet-content">
+              {(() => {
+                const displayBranch = selectedPlace.branches?.find(b => b.id === selectedBranchId) 
+                  || selectedPlace.branches?.find(b => b.isMain) 
+                  || (selectedPlace.branches && selectedPlace.branches[0]) 
+                  || selectedPlace;
+                return (
+                  <>
               {/* Images */}
               {selectedPlace.images && selectedPlace.images.length > 0 && (
                 <div style={{ display: "flex", gap: "10px", overflowX: "auto", marginBottom: "20px", scrollbarWidth: "none" }}>
@@ -548,7 +590,6 @@ function HomeContent() {
                 </div>
               )}
 
-              {/* Header Info */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
                 <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800" }}>{selectedPlace.name}</h2>
                 <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "5px" }}>
@@ -570,20 +611,53 @@ function HomeContent() {
                 </p>
               )}
 
+              {/* Branch Selector Chips */}
+              {selectedPlace.branches && selectedPlace.branches.length > 1 && (
+                <div style={{ marginTop: "16px", marginBottom: "16px", paddingTop: "12px", borderTop: "1px solid var(--border-glass)" }}>
+                  <h4 style={{ fontSize: "0.95rem", marginBottom: "10px", color: "var(--text-secondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
+                  <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
+                    {selectedPlace.branches.map(b => {
+                      const isSelected = b.id === displayBranch.id;
+                      return (
+                        <button
+                          key={b.id}
+                          onClick={() => setSelectedBranchId(b.id)}
+                          style={{
+                            background: isSelected ? "var(--accent-ios)" : "rgba(120,120,120,0.1)",
+                            color: isSelected ? "#fff" : "var(--text-primary)",
+                            border: isSelected ? "none" : "1px solid var(--border-glass)",
+                            borderRadius: "16px",
+                            padding: "6px 12px",
+                            fontSize: "0.9rem",
+                            fontWeight: isSelected ? "bold" : "normal",
+                            cursor: "pointer",
+                            whiteSpace: "nowrap",
+                            transition: "all 0.2s ease"
+                          }}
+                        >
+                          {b.isMain && <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>⭐</span>}
+                          {b.name} {b.city ? `- ${b.city}` : ""}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.92rem", marginBottom: "6px" }}>
-                <span>📍</span> {selectedPlace.city} / {selectedPlace.governorate}
+                <span>📍</span> {displayBranch.city} / {displayBranch.governorate}
               </div>
-              <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: selectedPlace.workingHours ? "6px" : "20px" }}>
-                {selectedPlace.fullAddress}
+              <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: displayBranch.workingHours ? "6px" : "20px" }}>
+                {displayBranch.fullAddress}
               </div>
-              {selectedPlace.workingHours && (
+              {displayBranch.workingHours && (
                 <div style={{ borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px", marginTop: "14px", marginBottom: "20px" }}>
                   <h4 style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
                     <span>🕐</span> مواعيد العمل
                   </h4>
                   {(() => {
-                    const parsed = parseWorkingHours(selectedPlace.workingHours);
-                    if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{selectedPlace.workingHours}</div>;
+                    const parsed = parseWorkingHours(displayBranch.workingHours);
+                    if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
 
                     if (parsed.type === "24/7") {
                       return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
@@ -629,11 +703,11 @@ function HomeContent() {
               )}
 
               {/* Phones */}
-              {selectedPlace.phones && selectedPlace.phones.length > 0 && (
+              {displayBranch.phones && displayBranch.phones.length > 0 && (
                 <div style={{ marginBottom: "20px" }}>
                   <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📞 أرقام التليفون</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {selectedPlace.phones.map((phone, i) => (
+                    {displayBranch.phones.map((phone: string, i: number) => (
                       <a key={i} href={`tel:${phone}`} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 16px", background: "rgba(52,199,89,0.08)", border: "1px solid rgba(52,199,89,0.2)", borderRadius: "var(--radius-sm)", color: "var(--accent-success)", fontWeight: "600", fontSize: "1.1rem", direction: "ltr", textDecoration: "none" }}>
                         📞 {phone}
                       </a>
@@ -644,25 +718,25 @@ function HomeContent() {
 
               {/* Action Buttons */}
               <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
-                <a href={selectedPlace.googleMapsUrl} target="_blank" rel="noopener noreferrer"
+                <a href={displayBranch.googleMapsUrl || "#"} target="_blank" rel="noopener noreferrer"
                   className="ios-btn ios-btn-primary" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
                   🗺️ فتح الخريطة
                 </a>
-                {selectedPlace.latitude && selectedPlace.longitude && (
-                  <a href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPlace.latitude},${selectedPlace.longitude}`}
+                {displayBranch.latitude && displayBranch.longitude && (
+                  <a href={`https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`}
                     target="_blank" rel="noopener noreferrer" className="ios-btn" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
                     🧭 الاتجاهات
                   </a>
                 )}
               </div>
 
-              {/* Menu Images */}
-              {selectedPlace.menuImages && selectedPlace.menuImages.length > 0 && (
+              {/* Media Images */}
+              {((displayBranch?.media && displayBranch.media.length > 0) || (selectedPlace.menuImages && selectedPlace.menuImages.length > 0)) && (
                 <div style={{ marginBottom: "20px" }}>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📋 المنيو</h3>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📋 الميديا (صور، قائمة طعام)</h3>
                   <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
-                    {selectedPlace.menuImages.map((img, i) => (
-                      <img key={i} src={img} alt="منيو" onClick={() => setActiveMenuIndex(i)}
+                    {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace.menuImages!).map((img, i) => (
+                      <img key={i} src={img} alt="ميديا" onClick={() => setActiveMenuIndex(i)}
                         style={{ width: "140px", height: "180px", objectFit: "cover", borderRadius: "var(--radius-sm)", cursor: "pointer", flexShrink: 0 }} />
                     ))}
                   </div>
@@ -672,15 +746,21 @@ function HomeContent() {
               {/* Reviews Section inside modal */}
               <ReviewSection 
                 place={selectedPlace} 
+                selectedBranchId={selectedBranchId}
                 onRatingUpdate={(r, c) => setSelectedPlace({ ...selectedPlace, rating: r, reviewsCount: c })}
               />
+                  </>
+                );
+              })()}
             </div>
           </div>
         </div>
       )}
 
-      {/* ═══════════════════════════════════ MENU IMAGE LIGHTBOX ═══════════════════════════════════ */}
-      {activeMenuIndex !== null && selectedPlace?.menuImages && (
+      {/* ═══════════════════════════════════ MEDIA LIGHTBOX ═══════════════════════════════════ */}
+      {(() => {
+        const displayBranch = selectedBranchId && selectedPlace ? (selectedPlace.branches?.find(b => b.id === selectedBranchId) || selectedPlace) : selectedPlace;
+        return activeMenuIndex !== null && ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace?.menuImages) && (
         <div className="ios-sheet-overlay" onClick={() => setActiveMenuIndex(null)} style={{ alignItems: "center", justifyContent: "center" }}>
           
           <button 
@@ -699,15 +779,20 @@ function HomeContent() {
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              fontSize: "1.5rem"
+              fontSize: "1.5rem",
+              zIndex: 1102
             }}
           >
             ✕
           </button>
           
-          {selectedPlace.menuImages.length > 1 && (
+          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
             <button 
-              onClick={(e) => { e.stopPropagation(); setActiveMenuIndex((activeMenuIndex - 1 + selectedPlace.menuImages!.length) % selectedPlace.menuImages!.length); }}
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!);
+                setActiveMenuIndex((activeMenuIndex - 1 + arr.length) % arr.length); 
+              }}
               style={{ position: "absolute", right: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
             >
               ❯
@@ -715,28 +800,33 @@ function HomeContent() {
           )}
 
           <img 
-            src={selectedPlace.menuImages[activeMenuIndex]} 
-            alt="منيو" 
+            src={((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!)[activeMenuIndex]} 
+            alt="ميديا" 
             onClick={(e) => e.stopPropagation()}
             style={{ maxWidth: "90vw", maxHeight: "85vh", borderRadius: "var(--radius-md)", objectFit: "contain", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }} 
           />
 
-          {selectedPlace.menuImages.length > 1 && (
+          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
             <button 
-              onClick={(e) => { e.stopPropagation(); setActiveMenuIndex((activeMenuIndex + 1) % selectedPlace.menuImages!.length); }}
+              onClick={(e) => { 
+                e.stopPropagation(); 
+                const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!);
+                setActiveMenuIndex((activeMenuIndex + 1) % arr.length); 
+              }}
               style={{ position: "absolute", left: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
             >
               ❮
             </button>
           )}
 
-          {selectedPlace.menuImages.length > 1 && (
+          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
             <div style={{ position: "absolute", bottom: "24px", color: "#fff", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "12px", fontSize: "0.9rem" }}>
-              {activeMenuIndex + 1} / {selectedPlace.menuImages.length}
+              {activeMenuIndex + 1} / {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length}
             </div>
           )}
         </div>
-      )}
+        );
+      })()}
 
       {/* ═══════════════════════════════════ ADD PLACE MODAL ═══════════════════════════════════ */}
       {showAddModal && (
@@ -823,6 +913,7 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
         {place.distanceKm !== undefined && (
           <span style={{ position: "absolute", bottom: "12px", right: "12px", background: "rgba(47,128,237,0.75)", backdropFilter: "blur(6px)", color: "#fff", padding: "4px 10px", borderRadius: "10px", fontSize: "0.8rem", fontWeight: "700" }}>
             {place.distanceKm < 1 ? `${Math.round(place.distanceKm * 1000)} م` : `${place.distanceKm.toFixed(1)} كم`}
+            {place.closestBranchName && ` (${place.closestBranchName})`}
           </span>
         )}
       </div>
@@ -839,6 +930,11 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
         {place.workingHours && (
           <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px" }}>
             <span>🕐</span> {getTodayWorkingHoursText(place.workingHours)}
+          </p>
+        )}
+        {place.branches && place.branches.length > 1 && (
+          <p style={{ color: "var(--accent-ios)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px", fontWeight: "600" }}>
+            <span>🏢</span> عدد الفروع: {place.branches.length}
           </p>
         )}
       </div>
