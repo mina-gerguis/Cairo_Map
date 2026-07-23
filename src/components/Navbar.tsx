@@ -34,6 +34,8 @@ export default function Navbar() {
 
   const links = [
     { href: "/", label: "الصفحة الرئيسية" },
+    { href: "/metro", label: "اعرف طريقك" },
+    { href: "/directory", label: "دليل الهاتف" },
     { href: "/about", label: "عن الموقع" },
     { href: "/help", label: "مركز المساعدة" },
   ];

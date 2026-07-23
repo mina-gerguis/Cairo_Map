@@ -552,7 +552,12 @@ export default function AdminDashboard() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
         <div>
           <h1 className="title-ios">لوحة تحكم المشرفين 🛠️</h1>
-          <p style={{ color: "var(--text-secondary)", marginTop: "8px" }}>إدارة الأماكن والبيانات في تطبيق دفتري</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
+            <p style={{ color: "var(--text-secondary)", margin: 0 }}>إدارة الأماكن والبيانات في تطبيق دفتري</p>
+            <a href="/admin/directory" className="ios-btn" style={{ padding: "4px 12px", fontSize: "0.8rem", background: "rgba(52,199,89,0.1)", color: "#34c759", border: "1px solid rgba(52,199,89,0.2)" }}>
+              ☎️ إدارة دليل الهاتف
+            </a>
+          </div>
         </div>
         
         <div style={{ display: "flex", gap: "10px" }}>

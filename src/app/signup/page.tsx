@@ -165,7 +165,7 @@ export default function SignupPage() {
   const [step, setStep] = useState(0);
 
   const [formData, setFormData] = useState({
-    fullName: "", username: "", phone: "", email: "",
+    fullName: "", username: "", phone: "", email: "", dob: "",
     gender: "ذكر", governorate: "", city: "", avatarUrl: "",
     password: "", confirmPassword: "",
   });
@@ -299,7 +299,7 @@ export default function SignupPage() {
     setLoading(true); setError("");
     const { error: signUpError } = await supabase.auth.signUp({
       email: formData.email, password: formData.password,
-      options: { data: { full_name: formData.fullName, username: formData.username, phone: `+20${formData.phone}`, gender: formData.gender, governorate: formData.governorate, city: formData.city, avatar_url: formData.avatarUrl } },
+      options: { data: { full_name: formData.fullName, username: formData.username, phone: `+20${formData.phone}`, gender: formData.gender, governorate: formData.governorate, city: formData.city, avatar_url: formData.avatarUrl, dob: formData.dob } },
     });
     if (signUpError) { setError(signUpError.message); setLoading(false); }
     else { setSuccess(true); setLoading(false); setTimeout(() => router.push("/"), 2500); }
@@ -413,6 +413,17 @@ export default function SignupPage() {
                     <input type="email" required className="ios-input" value={formData.email} onChange={(e) => updateData("email", e.target.value)} placeholder="example@email.com" style={{ textAlign: "left", direction: "ltr", paddingRight: "44px", borderColor: fieldErrors.email ? "rgba(255,63,142,0.6)" : "" }} />
                   </div>
                   {fieldErrors.email && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "6px" }}>⚠ {fieldErrors.email}</div>}
+                </div>
+
+                {/* Date of Birth */}
+                <div>
+                  <label className="help-label">تاريخ الميلاد</label>
+                  <div style={{ position: "relative" }}>
+                    <div style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", pointerEvents: "none" }}>
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                    </div>
+                    <input type="date" required className="ios-input" value={formData.dob} onChange={(e) => updateData("dob", e.target.value)} style={{ textAlign: "left", direction: "ltr", paddingRight: "44px" }} />
+                  </div>
                 </div>
 
                 {/* Gender */}

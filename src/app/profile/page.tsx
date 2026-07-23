@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
@@ -25,11 +26,63 @@ export default function ProfilePage() {
     email: "", // Added email to editable fields
     governorate: "",
     city: "",
+    dob: "",
   });
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const deleteString = `أريد حذف حسابي أنا ${profile?.full_name}`;
+
+  // Folding sections
+  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
+  const [isHelpExpanded, setIsHelpExpanded] = useState(false);
+
+  // Help Section: Tabs
+  const [helpTab, setHelpTab] = useState<"faq" | "social" | "contact">("faq");
+
+  // FAQ State
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [faqQuestion, setFaqQuestion] = useState("");
+  const [faqAnswer, setFaqAnswer] = useState("");
+  const [faqLoading, setFaqLoading] = useState(false);
+
+  // Contact Form State
+  const [contactForm, setContactForm] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    governorate: "",
+    city: "",
+    contactType: "",
+    message: ""
+  });
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("dftry_theme") as "dark" | "light" | null;
+      const initial = saved ?? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      setTheme(initial);
+
+      const handleThemeChange = (e: any) => {
+        setTheme(e.detail);
+      };
+      window.addEventListener("themechange", handleThemeChange);
+      return () => window.removeEventListener("themechange", handleThemeChange);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    localStorage.setItem("dftry_theme", next);
+    document.documentElement.classList.toggle("light", next === "light");
+    window.dispatchEvent(new CustomEvent("themechange", { detail: next }));
+  };
 
   useEffect(() => {
     if (authLoading) return;
@@ -39,7 +92,71 @@ export default function ProfilePage() {
     }
     
     fetchProfileData();
+    fetchFAQs();
+
+    // Check for parameter to expand help
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("expand") === "help") {
+        setIsHelpExpanded(true);
+      }
+    }
   }, [user, authLoading]);
+
+  const fetchFAQs = async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase
+      .from("faqs")
+      .select("*")
+      .order("created_at", { ascending: true });
+    if (data) {
+      setFaqs(data);
+    }
+  };
+
+  const handleAddFAQ = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase || !faqQuestion.trim() || !faqAnswer.trim()) return;
+    setFaqLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("faqs")
+        .insert([{ question: faqQuestion.trim(), answer: faqAnswer.trim() }])
+        .select();
+      if (error) throw error;
+      if (data) {
+        setFaqs([...faqs, data[0]]);
+        setFaqQuestion("");
+        setFaqAnswer("");
+      }
+    } catch (err: any) {
+      alert("فشل إضافة السؤال الشائع: " + err.message);
+    } finally {
+      setFaqLoading(false);
+    }
+  };
+
+  const handleDeleteFAQ = async (id: string) => {
+    if (!confirm("هل أنت متأكد من حذف هذا السؤال الشائع؟")) return;
+    if (!supabase) return;
+    try {
+      const { error } = await supabase.from("faqs").delete().eq("id", id);
+      if (error) throw error;
+      setFaqs(faqs.filter(f => f.id !== id));
+    } catch (err: any) {
+      alert("فشل الحذف: " + err.message);
+    }
+  };
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactLoading(true);
+    // Simulate sending email
+    setTimeout(() => {
+      setContactLoading(false);
+      setContactSubmitted(true);
+    }, 1500);
+  };
 
   const fetchProfileData = async () => {
     if (!supabase || !user) return;
@@ -61,6 +178,7 @@ export default function ProfilePage() {
         email: user.email || "",
         governorate: profileData.governorate || "",
         city: profileData.city || "",
+        dob: profileData.dob || "",
       });
     }
 
@@ -171,6 +289,7 @@ export default function ProfilePage() {
       phone: newPhone,
       governorate: formData.governorate,
       city: formData.city,
+      dob: formData.dob || null,
     };
 
     if (isUsernameChanged) {
@@ -222,109 +341,458 @@ export default function ProfilePage() {
 
   return (
     <div style={{ maxWidth: "600px", margin: "40px auto", padding: "0 20px" }}>
-      <div className="ios-sheet" style={{ position: "static", height: "auto", padding: "32px", animation: "fade-in 0.4s ease" }}>
-        
-        {/* Profile Header */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="Profile" style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover", border: "4px solid var(--accent-ios)" }} />
-          ) : (
-            <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "4px solid var(--accent-ios)" }}>
-              <span style={{ fontSize: "2rem" }}>👤</span>
-            </div>
-          )}
-          <div style={{ textAlign: "center" }}>
-            <h1 className="title-ios" style={{ fontSize: "1.8rem", marginBottom: "4px" }}>{profile?.full_name}</h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>@{profile?.username}</p>
-          </div>
-          
-          {!editMode && (
-            <button className="ios-btn" onClick={() => setEditMode(true)} style={{ padding: "8px 16px", fontSize: "0.9rem" }}>
-              تعديل البيانات
-            </button>
-          )}
-        </div>
-
-        {message && (
-          <div style={{ background: message.type === 'error' ? "rgba(255, 59, 48, 0.15)" : "rgba(52, 199, 89, 0.15)", border: `1px solid ${message.type === 'error' ? 'rgba(255, 59, 48, 0.3)' : 'rgba(52, 199, 89, 0.3)'}`, padding: "12px", borderRadius: "var(--radius-sm)", color: message.type === 'error' ? "#ff3b30" : "#34c759", marginBottom: "20px", fontSize: "0.85rem", textAlign: "center" }}>
-            {message.text}
-          </div>
-        )}
-
-        {/* User Info Form */}
-        {editMode ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <div>
-              <label className="help-label">الاسم بالكامل</label>
-              <input type="text" className="ios-input" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
-            </div>
-            <div>
-              <label className="help-label">اسم المستخدم (مرة كل 30 يوم)</label>
-              <input type="text" className="ios-input" value={formData.username} onChange={e => setFormData({...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')})} style={{ textAlign: "left", direction: "ltr" }} />
-            </div>
-            <div>
-              <label className="help-label">البريد الإلكتروني (يتطلب تأكيد)</label>
-              <input type="email" className="ios-input" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{ textAlign: "left", direction: "ltr" }} />
-            </div>
-            <div>
-              <label className="help-label">رقم الهاتف (بدون صفر البداية)</label>
-              <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-                <div style={{ position: "absolute", left: "12px", display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", zIndex: 1, direction: "ltr" }}>
-                  <span>🇪🇬</span>
-                  <span style={{ fontSize: "0.9rem", fontWeight: "600" }}>+20</span>
-                  <span style={{ height: "20px", width: "1px", background: "var(--border-glass-bright)", margin: "0 4px" }} />
-                </div>
-                <input type="tel" className="ios-input" value={formData.phone} onChange={e => {
-                  const numbersOnly = e.target.value.replace(/[^0-9]/g, '');
-                  if (numbersOnly.length <= 10) setFormData({...formData, phone: numbersOnly});
-                }} style={{ textAlign: "left", direction: "ltr", paddingLeft: "85px" }} />
-              </div>
-            </div>
-            <div>
-              <label className="help-label">المحافظة</label>
-              <select className="ios-input help-select" value={formData.governorate} onChange={(e) => setFormData({...formData, governorate: e.target.value, city: ""})}>
-                {governoratesList.map(gov => <option key={gov} value={gov}>{gov}</option>)}
-              </select>
-            </div>
-            {formData.governorate && (
-              <div>
-                <label className="help-label">المدينة</label>
-                <select className="ios-input help-select" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})}>
-                  <option value="" disabled>اختر المدينة...</option>
-                  {egyptLocations[formData.governorate]?.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+      {/* ─── 1. PROFILE RECTANGLE CARD ─── */}
+      <div 
+        className="glass-panel" 
+        onClick={() => setIsProfileExpanded(!isProfileExpanded)}
+        style={{ 
+          borderRadius: "20px", 
+          padding: "20px", 
+          cursor: "pointer", 
+          display: "flex", 
+          flexDirection: "column",
+          gap: "16px",
+          marginBottom: "24px",
+          transition: "transform 0.2s, background-color 0.2s",
+          border: isProfileExpanded ? "1px solid var(--accent-ios)" : "1px solid var(--border-glass)"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="Profile" style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent-ios)" }} />
+            ) : (
+              <div style={{ width: "60px", height: "60px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid var(--accent-ios)" }}>
+                <span style={{ fontSize: "1.5rem" }}>👤</span>
               </div>
             )}
-            
-            <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
-              <button className="ios-btn" onClick={() => setEditMode(false)} style={{ flex: 1 }}>إلغاء</button>
-              <button className="ios-btn ios-btn-primary" onClick={handleSave} disabled={saving} style={{ flex: 1 }}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
+            <div style={{ textAlign: "right" }}>
+              <h3 style={{ margin: "0 0 4px", fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)" }}>{profile?.full_name}</h3>
+              <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem" }}>{profile?.email}</p>
             </div>
           </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px", background: "var(--border-glass-bright)", padding: "20px", borderRadius: "var(--radius-md)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>البريد الإلكتروني</span>
-              <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile?.email}</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>رقم الهاتف</span>
-              <span style={{ fontWeight: "500", fontSize: "0.95rem" }} dir="ltr">{profile?.phone}</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>الجنس</span>
-              <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile?.gender}</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>المنطقة</span>
-              <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile?.city}، {profile?.governorate}</span>
-            </div>
-            
-            <button className="ios-btn" onClick={() => setShowDeleteModal(true)} style={{ marginTop: "20px", background: "rgba(255, 59, 48, 0.1)", color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.3)" }}>
-              حذف الحساب نهائياً
-            </button>
+          <i className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+        </div>
+
+        {/* Expanded Profile Info / Form */}
+        {isProfileExpanded && (
+          <div onClick={(e) => e.stopPropagation()} style={{ cursor: "default", borderTop: "1px solid var(--border-glass)", paddingTop: "16px" }}>
+            {message && (
+              <div style={{ background: message.type === 'error' ? "rgba(255, 59, 48, 0.15)" : "rgba(52, 199, 89, 0.15)", border: `1px solid ${message.type === 'error' ? 'rgba(255, 59, 48, 0.3)' : 'rgba(52, 199, 89, 0.3)'}`, padding: "12px", borderRadius: "var(--radius-sm)", color: message.type === 'error' ? "#ff3b30" : "#34c759", marginBottom: "20px", fontSize: "0.85rem", textAlign: "center" }}>
+                {message.text}
+              </div>
+            )}
+
+            {editMode ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div>
+                  <label className="help-label">الاسم بالكامل</label>
+                  <input type="text" className="ios-input" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
+                </div>
+                <div>
+                  <label className="help-label">اسم المستخدم (مرة كل 30 يوم)</label>
+                  <input type="text" className="ios-input" value={formData.username} onChange={e => setFormData({...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')})} style={{ textAlign: "left", direction: "ltr" }} />
+                </div>
+                <div>
+                  <label className="help-label">البريد الإلكتروني (يتطلب تأكيد)</label>
+                  <input type="email" className="ios-input" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{ textAlign: "left", direction: "ltr" }} />
+                </div>
+                <div>
+                  <label className="help-label">تاريخ الميلاد</label>
+                  <input type="date" className="ios-input" value={formData.dob} onChange={e => setFormData({...formData, dob: e.target.value})} style={{ textAlign: "left", direction: "ltr" }} />
+                </div>
+                <div>
+                  <label className="help-label">رقم الهاتف (بدون صفر البداية)</label>
+                  <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
+                    <div style={{ position: "absolute", left: "12px", display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", zIndex: 1, direction: "ltr" }}>
+                      <span>🇪🇬</span>
+                      <span style={{ fontSize: "0.9rem", fontWeight: "600" }}>+20</span>
+                      <span style={{ height: "20px", width: "1px", background: "var(--border-glass-bright)", margin: "0 4px" }} />
+                    </div>
+                    <input type="tel" className="ios-input" value={formData.phone} onChange={e => {
+                      const numbersOnly = e.target.value.replace(/[^0-9]/g, '');
+                      if (numbersOnly.length <= 10) setFormData({...formData, phone: numbersOnly});
+                    }} style={{ textAlign: "left", direction: "ltr", paddingLeft: "85px" }} />
+                  </div>
+                </div>
+                <div>
+                  <label className="help-label">المحافظة</label>
+                  <select className="ios-input help-select" value={formData.governorate} onChange={(e) => setFormData({...formData, governorate: e.target.value, city: ""})}>
+                    {governoratesList.map(gov => <option key={gov} value={gov}>{gov}</option>)}
+                  </select>
+                </div>
+                {formData.governorate && (
+                  <div>
+                    <label className="help-label">المدينة</label>
+                    <select className="ios-input help-select" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})}>
+                      <option value="" disabled>اختر المدينة...</option>
+                      {egyptLocations[formData.governorate]?.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                )}
+                
+                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                  <button className="ios-btn" onClick={() => setEditMode(false)} style={{ flex: 1 }}>إلغاء</button>
+                  <button className="ios-btn ios-btn-primary" onClick={handleSave} disabled={saving} style={{ flex: 1 }}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>اسم المستخدم</span>
+                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>@{profile?.username}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>رقم الهاتف</span>
+                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }} dir="ltr">{profile?.phone}</span>
+                </div>
+                {profile?.dob && (
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>تاريخ الميلاد</span>
+                    <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile.dob}</span>
+                  </div>
+                )}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>الجنس</span>
+                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile?.gender}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>المنطقة</span>
+                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile?.city}، {profile?.governorate}</span>
+                </div>
+                
+                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                  <button className="ios-btn ios-btn-primary" onClick={() => setEditMode(true)} style={{ flex: 1 }}>
+                    تعديل البيانات
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
+      </div>
+
+      {/* ─── 2. APPEARANCE SECTION ─── */}
+      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>العرض</div>
+      <div 
+        className="glass-panel" 
+        onClick={toggleTheme}
+        style={{ 
+          borderRadius: "20px", 
+          padding: "20px", 
+          cursor: "pointer", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "space-between",
+          marginBottom: "24px",
+          transition: "transform 0.2s, background-color 0.2s",
+          border: "1px solid var(--border-glass)"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
+            <i className={`bx ${theme === 'dark' ? 'bx-sun' : 'bx-moon'}`} style={{ fontSize: "1.4rem" }}></i>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              {theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
+            </h3>
+            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>
+              {theme === "dark" ? "الموقع حالياً بالوضع الداكن" : "الموقع حالياً بالوضع الفاتح"}
+            </p>
+          </div>
+        </div>
+        <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+      </div>
+
+      {/* ─── 3. SUPPORT & HELP SECTION ─── */}
+      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>المساعدة</div>
+      <div 
+        className="glass-panel" 
+        onClick={() => setIsHelpExpanded(!isHelpExpanded)}
+        style={{ 
+          borderRadius: "20px", 
+          padding: "20px", 
+          cursor: "pointer", 
+          display: "flex", 
+          flexDirection: "column",
+          gap: "16px",
+          marginBottom: "24px",
+          transition: "transform 0.2s, background-color 0.2s",
+          border: isHelpExpanded ? "1px solid var(--accent-ios)" : "1px solid var(--border-glass)"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
+              <i className="bx bx-help-circle" style={{ fontSize: "1.4rem" }}></i>
+            </div>
+            <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>التواصل والمساعدة</h3>
+          </div>
+          <i className={`bx ${isHelpExpanded ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+        </div>
+
+        {/* Expanded Help Center (Tabs) */}
+        {isHelpExpanded && (
+          <div onClick={(e) => e.stopPropagation()} style={{ cursor: "default", borderTop: "1px solid var(--border-glass)", paddingTop: "16px" }}>
+            {/* Tabs Selector */}
+            <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", padding: "4px", borderRadius: "12px", marginBottom: "20px" }}>
+              <button 
+                onClick={() => setHelpTab("faq")} 
+                style={{ 
+                  flex: 1, padding: "8px", border: "none", borderRadius: "10px", 
+                  background: helpTab === "faq" ? "var(--accent-ios)" : "transparent",
+                  color: helpTab === "faq" ? "#fff" : "var(--text-secondary)",
+                  fontWeight: "600", fontSize: "0.88rem", cursor: "pointer"
+                }}
+              >
+                الأسئلة الشائعة
+              </button>
+              <button 
+                onClick={() => setHelpTab("social")} 
+                style={{ 
+                  flex: 1, padding: "8px", border: "none", borderRadius: "10px", 
+                  background: helpTab === "social" ? "var(--accent-ios)" : "transparent",
+                  color: helpTab === "social" ? "#fff" : "var(--text-secondary)",
+                  fontWeight: "600", fontSize: "0.88rem", cursor: "pointer"
+                }}
+              >
+                مواقع التواصل
+              </button>
+              <button 
+                onClick={() => setHelpTab("contact")} 
+                style={{ 
+                  flex: 1, padding: "8px", border: "none", borderRadius: "10px", 
+                  background: helpTab === "contact" ? "var(--accent-ios)" : "transparent",
+                  color: helpTab === "contact" ? "#fff" : "var(--text-secondary)",
+                  fontWeight: "600", fontSize: "0.88rem", cursor: "pointer"
+                }}
+              >
+                مراسلتنا
+              </button>
+            </div>
+
+            {/* TAB CONTENT 1: FAQ */}
+            {helpTab === "faq" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {faqs.length === 0 ? (
+                  <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", textAlign: "center", padding: "12px" }}>لا توجد أسئلة شائعة حالياً.</p>
+                ) : (
+                  faqs.map((faq, index) => {
+                    const isFaqExpanded = expandedFaq === index;
+                    return (
+                      <div key={faq.id} style={{ borderBottom: "1px solid var(--border-glass)", paddingBottom: "12px" }}>
+                        <div 
+                          onClick={() => setExpandedFaq(isFaqExpanded ? null : index)}
+                          style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", padding: "4px 0" }}
+                        >
+                          <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>{faq.question}</h4>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            {profile?.is_admin && (
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleDeleteFAQ(faq.id); }}
+                                style={{ background: "transparent", border: "none", color: "var(--accent-danger)", cursor: "pointer", fontSize: "0.9rem" }}
+                              >
+                                🗑️
+                              </button>
+                            )}
+                            <span style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>
+                              {isFaqExpanded ? "−" : "+"}
+                            </span>
+                          </div>
+                        </div>
+                        {isFaqExpanded && (
+                          <p style={{ margin: "8px 0 0", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>{faq.answer}</p>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+
+                {/* Admin Add FAQ Form */}
+                {profile?.is_admin && (
+                  <form onSubmit={handleAddFAQ} style={{ marginTop: "20px", borderTop: "1px dashed var(--border-glass)", paddingTop: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--accent-ios)" }}>💡 إضافة سؤال شائع جديد (المسؤولين فقط)</h4>
+                    <input 
+                      required className="ios-input" placeholder="السؤال..." 
+                      value={faqQuestion} onChange={e => setFaqQuestion(e.target.value)} 
+                    />
+                    <textarea 
+                      required className="ios-input" placeholder="الإجابة..." 
+                      value={faqAnswer} onChange={e => setFaqAnswer(e.target.value)} 
+                      style={{ minHeight: "80px", resize: "vertical", fontFamily: "inherit" }}
+                    />
+                    <button type="submit" disabled={faqLoading} className="ios-btn ios-btn-primary" style={{ height: "40px", fontSize: "0.9rem" }}>
+                      {faqLoading ? "جاري الإضافة..." : "حفظ السؤال الشائع"}
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
+
+            {/* TAB CONTENT 2: SOCIAL LINKS */}
+            {helpTab === "social" && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
+                <a href="https://wa.me/201234567890" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
+                  <i className="bx bxl-whatsapp" style={{ fontSize: "1.3rem", color: "#25d366" }}></i>
+                  <span>واتساب</span>
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
+                  <i className="bx bxl-facebook-circle" style={{ fontSize: "1.3rem", color: "#1877f2" }}></i>
+                  <span>فيسبوك</span>
+                </a>
+                <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
+                  <i className="bx bxl-telegram" style={{ fontSize: "1.3rem", color: "#0088cc" }}></i>
+                  <span>تلجرام</span>
+                </a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
+                  <i className="bx bxl-instagram" style={{ fontSize: "1.3rem", color: "#e1306c" }}></i>
+                  <span>إنستغرام</span>
+                </a>
+                <a href="https://stagekode.com" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none", gridColumn: "1 / -1" }}>
+                  <i className="bx bx-globe" style={{ fontSize: "1.2rem", color: "var(--accent-ios)" }}></i>
+                  <span>الموقع الرسمي (STAGE KODE)</span>
+                </a>
+              </div>
+            )}
+
+            {/* TAB CONTENT 3: CONTACT FORM */}
+            {helpTab === "contact" && (
+              <div>
+                {contactSubmitted ? (
+                  <div style={{ textAlign: "center", padding: "20px" }}>
+                    <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>✅</div>
+                    <h4 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "8px" }}>تم إرسال رسالتك بنجاح!</h4>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", margin: "0 0 16px" }}>شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بالرد عليك في أقرب وقت.</p>
+                    <button className="ios-btn" onClick={() => setContactSubmitted(false)}>إرسال رسالة أخرى</button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleContactSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                      <input 
+                        required className="ios-input" placeholder="الاسم الأول" 
+                        value={contactForm.firstName} onChange={e => setContactForm({ ...contactForm, firstName: e.target.value })} 
+                      />
+                      <input 
+                        required className="ios-input" placeholder="الاسم الأخير" 
+                        value={contactForm.lastName} onChange={e => setContactForm({ ...contactForm, lastName: e.target.value })} 
+                      />
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                      <input 
+                        required className="ios-input" placeholder="رقم الهاتف" style={{ direction: "ltr", textAlign: "right" }}
+                        value={contactForm.phone} onChange={e => setContactForm({ ...contactForm, phone: e.target.value })} 
+                      />
+                      <input 
+                        required className="ios-input" type="email" placeholder="البريد الإلكتروني" style={{ direction: "ltr", textAlign: "right" }}
+                        value={contactForm.email} onChange={e => setContactForm({ ...contactForm, email: e.target.value })} 
+                      />
+                    </div>
+                    <select 
+                      required className="ios-input help-select" 
+                      value={contactForm.contactType} onChange={e => setContactForm({ ...contactForm, contactType: e.target.value })}
+                    >
+                      <option value="">نوع التواصل...</option>
+                      <option value="إبلاغ">إبلاغ</option>
+                      <option value="شكوى">شكوى</option>
+                      <option value="طلب مساعدة">طلب مساعدة</option>
+                      <option value="اقتراح تطوير">اقتراح تطوير</option>
+                    </select>
+                    <textarea 
+                      required className="ios-input" placeholder="اكتب تفاصيل رسالتك هنا..." 
+                      value={contactForm.message} onChange={e => setContactForm({ ...contactForm, message: e.target.value })} 
+                      style={{ minHeight: "100px", resize: "vertical", fontFamily: "inherit" }}
+                    />
+                    <button type="submit" disabled={contactLoading} className="ios-btn ios-btn-primary" style={{ height: "45px", fontSize: "0.95rem" }}>
+                      {contactLoading ? "جاري الإرسال..." : "إرسال الرسالة"}
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ─── 4. INFORMATION SECTION ─── */}
+      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>معلومات</div>
+      <Link href="/privacy" style={{ textDecoration: "none" }}>
+        <div 
+          className="glass-panel" 
+          style={{ 
+            borderRadius: "20px", 
+            padding: "20px", 
+            cursor: "pointer", 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "space-between",
+            marginBottom: "12px",
+            transition: "transform 0.2s, background-color 0.2s",
+            border: "1px solid var(--border-glass)"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
+              <i className="bx bx-shield-quarter" style={{ fontSize: "1.4rem" }}></i>
+            </div>
+            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>سياسة الخصوصية</h3>
+          </div>
+          <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+        </div>
+      </Link>
+      <Link href="/terms" style={{ textDecoration: "none" }}>
+        <div 
+          className="glass-panel" 
+          style={{ 
+            borderRadius: "20px", 
+            padding: "20px", 
+            cursor: "pointer", 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "space-between",
+            marginBottom: "24px",
+            transition: "transform 0.2s, background-color 0.2s",
+            border: "1px solid var(--border-glass)"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
+              <i className="bx bx-file" style={{ fontSize: "1.4rem" }}></i>
+            </div>
+            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>شروط الاستخدام</h3>
+          </div>
+          <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+        </div>
+      </Link>
+
+      {/* ─── 5. ADVANCED SECTION ─── */}
+      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>متقدم</div>
+      <div 
+        className="glass-panel" 
+        onClick={() => { setShowDeleteModal(true); setDeleteConfirmation(""); }}
+        style={{ 
+          borderRadius: "20px", 
+          padding: "20px", 
+          cursor: "pointer", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "space-between",
+          marginBottom: "16px",
+          transition: "transform 0.2s, background-color 0.2s",
+          border: "1px solid rgba(255, 59, 48, 0.2)",
+          background: "rgba(255, 59, 48, 0.03)"
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255, 59, 48, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ff3b30" }}>
+            <i className="bx bx-user-minus" style={{ fontSize: "1.4rem" }}></i>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#ff3b30" }}>حذف الحساب نهائياً</h3>
+            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>حذف كافة البيانات وإلغاء تنشيط الحساب</p>
+          </div>
+        </div>
+        <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "#ff3b30" }}></i>
       </div>
 
       {/* Favorite Places Section */}
@@ -446,8 +914,22 @@ export default function ProfilePage() {
 
       {/* Delete Account Modal */}
       {showDeleteModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div className="ios-sheet" style={{ maxWidth: "400px", width: "100%", padding: "24px", animation: "fade-in 0.3s ease" }}>
+        <div style={{ 
+          position: "fixed", 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0, 
+          background: "rgba(10, 15, 30, 0.72)", 
+          backdropFilter: "blur(16px)", 
+          WebkitBackdropFilter: "blur(16px)", 
+          zIndex: 1000, 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          padding: "20px" 
+        }}>
+          <div className="glass-panel" style={{ maxWidth: "440px", width: "100%", padding: "30px", animation: "fade-in 0.3s ease", border: "1px solid rgba(255, 59, 48, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", borderRadius: "28px" }}>
             <h3 style={{ fontSize: "1.3rem", color: "#ff3b30", marginBottom: "16px", textAlign: "center" }}>⚠️ تحذير: حذف الحساب</h3>
             <p style={{ fontSize: "0.95rem", color: "var(--text-primary)", marginBottom: "12px", lineHeight: "1.6" }}>
               أنت على وشك حذف حسابك نهائياً. سيؤدي ذلك إلى فقدان كافة بياناتك، صورك، وأماكنك المفضلة ولا يمكن التراجع عن هذه الخطوة.

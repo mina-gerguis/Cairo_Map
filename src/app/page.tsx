@@ -18,9 +18,29 @@ function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
+function normalizeArabic(text: string) {
+  if (!text) return "";
+  return text
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/ـ/g, ""); // remove tatweel
+}
+
 const CATEGORY_EMOJIS: Record<string, string> = {
   restaurant: "🍽️", cafe: "☕", pharmacy: "💊",
   hospital: "🏥", garden: "🌳", family: "👨‍👩‍👧‍👦", entertainment: "🎭", all: "🗂️",
+};
+
+const CATEGORY_ICONS: Record<string, string> = {
+  all: "bx-grid-alt",
+  restaurant: "bx-restaurant",
+  cafe: "bx-coffee",
+  pharmacy: "bx-capsule",
+  hospital: "bx-plus-medical",
+  garden: "bx-tree",
+  family: "bx-group",
+  entertainment: "bx-party",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -249,16 +269,35 @@ function HomeContent() {
 
   /* Main filtered + searched list */
   const filteredPlaces = React.useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
+    const q = normalizeArabic(searchQuery.trim().toLowerCase());
+    
+    // Split query into words, ignore common stop words
+    const stopWords = ["في", "من", "ب", "بـ", "بمنطقة", "بمحافظة", "مدينة", "حي"];
+    const queryWords = q.split(/\s+/).filter(w => !stopWords.includes(w) && w.length > 0);
+
     return enrichedPlaces.filter((p) => {
       const matchCat = selectedCategory === "all" || p.category === selectedCategory;
-      const matchSearch =
-        !q ||
-        p.name.toLowerCase().includes(q) ||
-        (p.city && p.city.toLowerCase().includes(q)) ||
-        (p.governorate && p.governorate.toLowerCase().includes(q)) ||
-        p.categoryLabel.toLowerCase().includes(q) ||
-        p.fullAddress.toLowerCase().includes(q);
+      
+      if (queryWords.length === 0) return matchCat;
+
+      // Build a comprehensive searchable string for the place
+      const searchableText = normalizeArabic([
+        p.name,
+        p.categoryLabel,
+        p.category === "restaurant" ? "مطعم مطاعم" : "",
+        p.category === "cafe" ? "كافيه كافيهات مقهى قهاوي" : "",
+        p.category === "pharmacy" ? "صيدلية صيدليات" : "",
+        p.category === "hospital" ? "مستشفى مستشفيات عيادة مركز طبي" : "",
+        p.category === "garden" ? "حديقة حدائق منتزه ملاهي" : "",
+        p.city,
+        p.governorate,
+        p.fullAddress,
+        p.description || ""
+      ].filter(Boolean).join(" ").toLowerCase());
+
+      // Check if ALL searched words exist somewhere in the searchable text
+      const matchSearch = queryWords.every(word => searchableText.includes(word));
+      
       return matchCat && matchSearch;
     });
   }, [enrichedPlaces, searchQuery, selectedCategory]);
@@ -421,6 +460,59 @@ function HomeContent() {
       {/* ══════════════ MAIN CONTENT ══════════════ */}
       <div className="app-container" id="places-section">
 
+        {/* ── New Features Banners ── */}
+        <div style={{ display: "flex", gap: "16px", marginBottom: "32px", flexWrap: "wrap" }}>
+          {/* Metro Banner */}
+          <Link href="/metro" style={{ flex: "1 1 300px", textDecoration: "none", display: "block" }}>
+            <div style={{
+              background: "linear-gradient(135deg, #101528, #182542)",
+              borderRadius: "16px",
+              padding: "20px",
+              border: "1px solid rgba(108, 99, 255, 0.3)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+              position: "relative",
+              overflow: "hidden",
+            }}>
+              <div style={{ position: "absolute", top: "-20px", left: "-20px", width: "100px", height: "100px", background: "radial-gradient(circle, rgba(108,99,255,0.4) 0%, transparent 70%)", pointerEvents: "none" }} />
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ fontSize: "2.5rem" }}>🚇</div>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#fff" }}>اعرف طريقك بالمترو</h3>
+                    <span style={{ background: "#ff3f8e", color: "#fff", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "8px", fontWeight: "800" }}>جديد</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>خريطة محطات المترو وأسعار التذاكر ومسارات الرحلات بدقة.</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Phone Directory Banner */}
+          <Link href="/directory" style={{ flex: "1 1 300px", textDecoration: "none", display: "block" }}>
+            <div style={{
+              background: "linear-gradient(135deg, #101528, #182542)",
+              borderRadius: "16px",
+              padding: "20px",
+              border: "1px solid rgba(52, 199, 89, 0.3)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+              position: "relative",
+              overflow: "hidden",
+            }}>
+              <div style={{ position: "absolute", top: "-20px", left: "-20px", width: "100px", height: "100px", background: "radial-gradient(circle, rgba(52,199,89,0.3) 0%, transparent 70%)", pointerEvents: "none" }} />
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ fontSize: "2.5rem" }}>☎️</div>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#fff" }}>دليل الهاتف والخدمات</h3>
+                    <span style={{ background: "#ff3f8e", color: "#fff", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "8px", fontWeight: "800" }}>جديد</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>أرقام الشركات، الطوارئ، وخدمات العملاء في مكان واحد.</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+
         {/* ── Categories + Proximity ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "32px", flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", flexGrow: 1 }}>
@@ -431,7 +523,7 @@ function HomeContent() {
                 onClick={() => setSelectedCategory(cat)}
                 style={{ display: "flex", alignItems: "center", gap: "6px" }}
               >
-                <span>{CATEGORY_EMOJIS[cat]}</span>
+                <i className={`bx ${CATEGORY_ICONS[cat]}`} style={{ fontSize: "1.1rem" }}></i>
                 {CATEGORY_LABELS[cat]}
               </button>
             ))}
@@ -593,7 +685,7 @@ function HomeContent() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
                 <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800" }}>{selectedPlace.name}</h2>
                 <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "5px" }}>
-                  {CATEGORY_EMOJIS[selectedPlace.category]} {selectedPlace.categoryLabel}
+                  <i className={`bx ${CATEGORY_ICONS[selectedPlace.category]}`} style={{ fontSize: "1rem" }}></i> {selectedPlace.categoryLabel}
                 </span>
               </div>
 
@@ -903,7 +995,7 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
           </button>
         )}
         <span style={{ position: "absolute", top: "12px", right: "12px", background: getCategoryColor(place.category), color: "#fff", fontSize: "0.78rem", fontWeight: "700", padding: "5px 10px", borderRadius: "10px", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", gap: "5px" }}>
-          {CATEGORY_EMOJIS[place.category]} {place.categoryLabel}
+          <i className={`bx ${CATEGORY_ICONS[place.category]}`} style={{ fontSize: "0.95rem" }}></i> {place.categoryLabel}
         </span>
         {(showRating || place.rating !== undefined) && place.rating !== undefined && (
           <span style={{ position: "absolute", bottom: "12px", left: "12px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", color: "#fff", padding: "4px 10px", borderRadius: "10px", fontSize: "0.82rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "4px" }}>
