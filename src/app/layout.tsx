@@ -23,6 +23,12 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "دفتر - دليل الأماكن والخدمات الذكي",
   description: "دليلك الشامل لأرقام، عناوين، ومواقع المطاعم، الكافيهات، الصيدليات، المستشفيات والحدائق — تطوير STAGE KODE",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "دفتر",
+  },
 };
 
 export default function RootLayout({
