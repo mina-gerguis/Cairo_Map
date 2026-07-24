@@ -4,10 +4,12 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useNotifications } from "@/context/NotificationContext";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { unreadCount } = useNotifications();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -89,22 +91,39 @@ export default function Navbar() {
 
         {/* Right Actions */}
         <div className="navbar-actions">
-          {/* Facebook */}
-          <a href="https://www.facebook.com/reposts3" target="_blank" rel="noopener noreferrer" className="navbar-icon-btn" title="فيسبوك" aria-label="صفحة الفيسبوك">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-            </svg>
-          </a>
 
           {/* Auth Controls */}
           {user ? (
             <div style={{ position: "relative" }} className="navbar-auth-dropdown">
-              <Link href="/profile" className="navbar-icon-btn" title={user.user_metadata?.full_name || user.email} style={{ gap: "8px", padding: "0 14px" }}>
-                {user.user_metadata?.avatar_url ? (
-                  <img src={user.user_metadata.avatar_url} alt="Avatar" style={{ width: "26px", height: "26px", borderRadius: "50%", objectFit: "cover" }} />
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-                )}
+              <Link href="/profile" className="navbar-icon-btn" title={user.user_metadata?.full_name || user.email} style={{ gap: "8px", padding: "0 14px", position: "relative" }}>
+                <div style={{ position: "relative" }}>
+                  {user.user_metadata?.avatar_url ? (
+                    <img src={user.user_metadata.avatar_url} alt="Avatar" style={{ width: "26px", height: "26px", borderRadius: "50%", objectFit: "cover" }} />
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                  )}
+                  {unreadCount > 0 && (
+                    <span style={{
+                      position: "absolute",
+                      top: "-4px",
+                      right: "-4px",
+                      background: "#ff3b30",
+                      color: "#fff",
+                      fontSize: "0.6rem",
+                      fontWeight: "bold",
+                      minWidth: "14px",
+                      height: "14px",
+                      borderRadius: "7px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "0 3px",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.2)"
+                    }}>
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
+                </div>
                 <span style={{ fontSize: "0.85rem", fontWeight: "700" }}>{user.user_metadata?.username || "حسابي"}</span>
               </Link>
               <div className="navbar-auth-menu">
@@ -122,14 +141,9 @@ export default function Navbar() {
             </Link>
           )}
 
-          {/* Theme Toggle */}
-          <button className="navbar-icon-btn" onClick={toggleTheme} title={theme === "dark" ? "الوضع المضيء" : "الوضع الداكن"} aria-label="تبديل الوضع">
-            {theme === "dark" ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            )}
-          </button>
+
+
+
 
           {/* Mobile Hamburger */}
           <button className="navbar-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="القائمة">

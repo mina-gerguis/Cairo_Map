@@ -301,7 +301,18 @@ export default function SignupPage() {
       email: formData.email, password: formData.password,
       options: { data: { full_name: formData.fullName, username: formData.username, phone: `+20${formData.phone}`, gender: formData.gender, governorate: formData.governorate, city: formData.city, avatar_url: formData.avatarUrl, dob: formData.dob } },
     });
-    if (signUpError) { setError(signUpError.message); setLoading(false); }
+    if (signUpError) {
+      let msg = signUpError.message;
+      if (typeof msg === 'object') msg = JSON.stringify(msg);
+      
+      // Fallback translations for common Supabase errors
+      if (msg && msg.includes("User already registered")) msg = "هذا البريد الإلكتروني مسجل مسبقاً.";
+      else if (msg && msg.includes("Database error saving new user")) msg = "حدث خطأ أثناء الحفظ. قد يكون رقم الهاتف أو اسم المستخدم محجوزاً.";
+      else if (!msg || msg === "{}") msg = "تفاصيل الخطأ: " + JSON.stringify(signUpError);
+      
+      setError(msg); 
+      setLoading(false); 
+    }
     else { setSuccess(true); setLoading(false); setTimeout(() => router.push("/"), 2500); }
   };
 

@@ -44,6 +44,43 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewError, setReviewError] = useState("");
 
+  const [branchFilter, setBranchFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("newest");
+
+  useEffect(() => {
+    if (selectedBranchId) {
+      setBranchFilter(selectedBranchId);
+    } else {
+      setBranchFilter("all");
+    }
+  }, [selectedBranchId]);
+
+  const filteredAndSortedReviews = React.useMemo(() => {
+    let result = [...reviews];
+
+    if (branchFilter !== "all") {
+      result = result.filter(r => r.branch_id === branchFilter);
+    }
+
+    result.sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+      if (sortBy === "oldest") {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      }
+      if (sortBy === "highest") {
+        return b.rating - a.rating;
+      }
+      if (sortBy === "lowest") {
+        return a.rating - b.rating;
+      }
+      return 0;
+    });
+
+    return result;
+  }, [reviews, branchFilter, sortBy]);
+
   useEffect(() => {
     if (!place?.id || !supabase) return;
 
@@ -153,7 +190,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
   return (
     <div id="reviews-section" style={{ marginTop: "40px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "24px" }}>
       <h4 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "20px", color: "var(--text-primary)" }}>
-        التقييمات والتعليقات ({reviews.length})
+        التقييمات والتعليقات ({filteredAndSortedReviews.length !== reviews.length ? `${filteredAndSortedReviews.length} من ${reviews.length}` : reviews.length})
       </h4>
 
       {user ? (
@@ -199,9 +236,59 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
         </div>
       )}
 
+      {/* ─── Reviews Filter & Sort Controls Bar ─── */}
+      {reviews.length > 0 && (
+        <div style={{ 
+          display: "flex", 
+          gap: "12px", 
+          marginBottom: "24px", 
+          flexWrap: "wrap", 
+          alignItems: "center",
+          background: "rgba(120, 120, 120, 0.04)",
+          padding: "14px 16px",
+          borderRadius: "16px",
+          border: "1px solid var(--border-glass)"
+        }}>
+          {/* Branch Filter Dropdown */}
+          {place.branches && place.branches.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 200px" }}>
+              <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600", whiteSpace: "nowrap" }}>📍 الفرع:</span>
+              <select 
+                className="ios-input help-select" 
+                value={branchFilter} 
+                onChange={(e) => setBranchFilter(e.target.value)}
+                style={{ margin: 0, padding: "6px 12px", fontSize: "0.85rem", height: "36px", flex: 1, background: "rgba(255, 255, 255, 0.05)" }}
+              >
+                <option value="all">كل الفروع</option>
+                {place.branches.map(b => (
+                  <option key={b.id} value={b.id}>{b.name} ({b.city})</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Sort Order Dropdown */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 200px" }}>
+            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600", whiteSpace: "nowrap" }}>⇅ الترتيب حسب:</span>
+            <select 
+              className="ios-input help-select" 
+              value={sortBy} 
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{ margin: 0, padding: "6px 12px", fontSize: "0.85rem", height: "36px", flex: 1, background: "rgba(255, 255, 255, 0.05)" }}
+            >
+              <option value="newest">الوقت: الأحدث أولاً</option>
+              <option value="oldest">الوقت: الأقدم أولاً</option>
+              <option value="highest">التقييم: الأعلى للادنى</option>
+              <option value="lowest">التقييم: الادنى للاعلى</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* Reviews List */}
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {reviews.length > 0 ? (
-          reviews.map(review => (
+        {filteredAndSortedReviews.length > 0 ? (
+          filteredAndSortedReviews.map(review => (
             <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "10px" }}>
                 <div>
@@ -233,8 +320,8 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
             </div>
           ))
         ) : (
-          <div style={{ textAlign: "center", color: "var(--text-secondary)", padding: "20px" }}>
-            لا توجد تقييمات حتى الآن. كن أول من يقيّم!
+          <div style={{ textAlign: "center", color: "var(--text-secondary)", padding: "40px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px" }}>
+            {reviews.length > 0 ? "لا توجد تعليقات تطابق خيارات التصفية المحددة." : "لا توجد تقييمات حتى الآن. كن أول من يقيّم!"}
           </div>
         )}
       </div>
