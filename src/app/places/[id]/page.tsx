@@ -270,10 +270,7 @@ export default function PlaceDetailsPage() {
           onClick={() => router.push("/")}
           style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px" }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 19 12 12 5"></polyline>
-          </svg>
+          <i className="bx bx-arrow-back" style={{ fontSize: "1.2rem" }}></i>
           العودة
         </button>
 
@@ -411,9 +408,7 @@ export default function PlaceDetailsPage() {
               style={{ textDecoration: "none", padding: "14px" }}
               onClick={(e) => { if (!displayBranch.phones || !displayBranch.phones[0]) { e.preventDefault(); alert("لا يوجد رقم هاتف متاح."); } }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-              </svg>
+              <i className="bx bx-phone" style={{ fontSize: "1.2rem" }}></i>
               اتصال مباشر
             </a>
 
@@ -428,11 +423,7 @@ export default function PlaceDetailsPage() {
               className="ios-btn"
               style={{ textDecoration: "none", padding: "14px" }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
-                <line x1="9" y1="3" x2="9" y2="18"/>
-                <line x1="15" y1="6" x2="15" y2="21"/>
-              </svg>
+              <i className="bx bx-map-alt" style={{ fontSize: "1.2rem" }}></i>
               {displayBranch.latitude && displayBranch.longitude ? "رسم اتجاهات الطريق" : "خرائط جوجل"}
             </a>
           </div>
@@ -641,7 +632,7 @@ export default function PlaceDetailsPage() {
             fontSize: "1.5rem", display: "flex", justifyContent: "center", alignItems: "center",
             cursor: "pointer", zIndex: 10001
           }} onClick={(e) => { e.stopPropagation(); setActiveMenuIndex(null); }}>
-            ✕
+            <i className="bx bx-x"></i>
           </button>
 
           {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!).length > 1 && (
@@ -655,7 +646,7 @@ export default function PlaceDetailsPage() {
               const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!);
               setActiveMenuIndex((activeMenuIndex - 1 + arr.length) % arr.length); 
             }}>
-              ❯
+              <i className="bx bx-chevron-right"></i>
             </button>
           )}
 
@@ -680,7 +671,7 @@ export default function PlaceDetailsPage() {
               const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place.menuImages!);
               setActiveMenuIndex((activeMenuIndex + 1) % arr.length); 
             }}>
-              ❮
+              <i className="bx bx-chevron-left"></i>
             </button>
           )}
 

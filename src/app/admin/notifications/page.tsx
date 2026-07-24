@@ -1,8 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AdminNotificationsPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [type, setType] = useState("info");
@@ -10,9 +19,40 @@ export default function AdminNotificationsPage() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
 
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
+    const checkAdmin = async () => {
+      if (!supabase) return;
+      try {
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError || !profileData?.is_admin) {
+          setIsAdmin(false);
+        } else {
+          setIsAdmin(true);
+        }
+      } catch (error) {
+        setIsAdmin(false);
+      } finally {
+        setAuthChecking(false);
+      }
+    };
+
+    checkAdmin();
+  }, [user, authLoading, router]);
+
   const handleBroadcast = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!supabase) return;
+    if (!supabase || !isAdmin) return;
     setLoading(true);
     setStatus("");
 
@@ -37,6 +77,30 @@ export default function AdminNotificationsPage() {
       setLoading(false);
     }
   };
+
+  if (authLoading || authChecking) {
+    return (
+      <div style={{ textAlign: "center", padding: "50px", marginTop: "100px" }}>
+        <div style={{ width: "40px", height: "40px", border: "3px solid var(--border-glass)", borderTop: "3px solid var(--accent-primary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
+        <p style={{ color: "var(--text-secondary)" }}>جاري التحقق من الصلاحيات...</p>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div style={{ textAlign: "center", padding: "50px", marginTop: "100px", maxWidth: "400px", margin: "100px auto" }}>
+        <div style={{ width: "80px", height: "80px", background: "rgba(255, 59, 48, 0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+          <i className="bx bxs-error-circle" style={{ fontSize: "3rem", color: "#ff3b30" }}></i>
+        </div>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--text-primary)" }}>صلاحيات غير كافية</h2>
+        <p style={{ color: "var(--text-secondary)", marginBottom: "32px", lineHeight: "1.6" }}>
+          عفواً، حسابك لا يمتلك صلاحيات المسؤول للوصول إلى هذه الصفحة. يرجى التواصل مع الإدارة إذا كنت تعتقد أن هذا خطأ.
+        </p>
+        <Link href="/" className="ios-btn ios-btn-primary" style={{ padding: "14px 24px" }}><i className="bx bx-home" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-home" style={{ fontSize: "1.2rem" }}></i> العودة للرئيسية</Link>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px" }}>

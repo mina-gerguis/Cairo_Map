@@ -44,7 +44,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     const { data, error } = await supabase
       .from("notifications")
       .select("*")
-      .or(`user_id.eq.${user.id},user_id.is.null`)
+      .or(`user_id.eq.${user.id},and(user_id.is.null,created_at.gte.${user.created_at})`)
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -156,8 +156,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
           position: "fixed",
           bottom: "24px",
           right: "24px",
-          background: "rgba(12, 16, 40, 0.9)",
-          backdropFilter: "blur(20px)",
+          background: "rgba(12, 16, 40, 0.97)",
           border: "1px solid rgba(108, 99, 255, 0.3)",
           boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
           padding: "16px",

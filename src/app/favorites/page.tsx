@@ -15,7 +15,7 @@ export default function FavoritesPage() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
-      router.push("/login");
+      setLoading(false);
       return;
     }
     fetchFavorites();
@@ -87,7 +87,39 @@ export default function FavoritesPage() {
       </div>
 
       <div style={{ maxWidth: "600px", margin: "20px auto", padding: "0 20px" }}>
-        {favorites.length === 0 ? (
+        {!user ? (
+          <div style={{ position: "relative" }}>
+            <div style={{ filter: "blur(6px)", opacity: 0.5, pointerEvents: "none", userSelect: "none" }}>
+              <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                <div style={{ width: "60px", height: "35px", background: "var(--border-glass-bright)", borderRadius: "20px" }}></div>
+                <div style={{ width: "80px", height: "35px", background: "var(--border-glass-bright)", borderRadius: "20px" }}></div>
+                <div style={{ width: "70px", height: "35px", background: "var(--border-glass-bright)", borderRadius: "20px" }}></div>
+              </div>
+              <div style={{ display: "grid", gap: "16px" }}>
+                {[1, 2, 3].map(i => (
+                   <div key={i} className="glass-card" style={{ height: "114px", borderRadius: "12px", background: "var(--border-glass-bright)" }}></div>
+                ))}
+              </div>
+            </div>
+            
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 10, marginTop: "40px" }}>
+              <div className="glass-panel" style={{ padding: "30px 20px", borderRadius: "24px", textAlign: "center", width: "95%", maxWidth: "340px", border: "1px solid rgba(108, 99, 255, 0.3)", boxShadow: "0 24px 60px rgba(0,0,0,0.3)" }}>
+                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", color: "var(--accent-ios)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+                  <i className="bx bxs-lock-alt" style={{ fontSize: "2rem" }}></i>
+                </div>
+                <h3 style={{ margin: "0 0 10px", fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)" }}>سجل الدخول أولاً</h3>
+                <p style={{ margin: "0 0 20px", fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                  يجب عليك تسجيل الدخول لتتمكن من رؤية الأماكن المفضلة لديك وإدارتها.
+                </p>
+                <div style={{ display: "flex", gap: "12px", width: "100%" }}>
+                  <button onClick={() => router.push('/login')} className="ios-btn ios-btn-primary" style={{ flex: 1, padding: "12px", fontSize: "1rem" }}>
+                    تسجيل الدخول
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : favorites.length === 0 ? (
           <div style={{ textAlign: "center", color: "var(--text-muted)", padding: "40px", background: "var(--bg-glass-card)", borderRadius: "var(--radius-md)" }}>
             <div style={{ fontSize: "3rem", marginBottom: "16px" }}>💔</div>
             <p style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary)", fontWeight: "600" }}>لا يوجد أماكن مفضلة</p>

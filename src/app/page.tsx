@@ -73,10 +73,9 @@ function HomeContent() {
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
-
   useEffect(() => {
     if (activeMenuIndex === null || !selectedPlace?.menuImages) return;
-    
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') {
         setActiveMenuIndex(prev => (prev! + 1) % selectedPlace.menuImages!.length);
@@ -176,7 +175,7 @@ function HomeContent() {
       alert("يرجى تسجيل الدخول أولاً لإضافة الأماكن المفضلة.");
       return;
     }
-    
+
     const newFavs = new Set(favoriteIds);
     if (newFavs.has(placeId)) {
       newFavs.delete(placeId);
@@ -270,14 +269,14 @@ function HomeContent() {
   /* Main filtered + searched list */
   const filteredPlaces = React.useMemo(() => {
     const q = normalizeArabic(searchQuery.trim().toLowerCase());
-    
+
     // Split query into words, ignore common stop words
     const stopWords = ["في", "من", "ب", "بـ", "بمنطقة", "بمحافظة", "مدينة", "حي"];
     const queryWords = q.split(/\s+/).filter(w => !stopWords.includes(w) && w.length > 0);
 
     return enrichedPlaces.filter((p) => {
       const matchCat = selectedCategory === "all" || p.category === selectedCategory;
-      
+
       if (queryWords.length === 0) return matchCat;
 
       // Build a comprehensive searchable string for the place
@@ -297,7 +296,7 @@ function HomeContent() {
 
       // Check if ALL searched words exist somewhere in the searchable text
       const matchSearch = queryWords.every(word => searchableText.includes(word));
-      
+
       return matchCat && matchSearch;
     });
   }, [enrichedPlaces, searchQuery, selectedCategory]);
@@ -313,7 +312,7 @@ function HomeContent() {
 
   /* Section: Top Rated */
   const topRatedPlaces = React.useMemo(() => {
-    return [...enrichedPlaces].filter((p) => p.rating).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).slice(0, 6);
+    return [...enrichedPlaces].filter((p) => p.rating).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
   }, [enrichedPlaces]);
 
   /* Section: Family */
@@ -407,7 +406,7 @@ function HomeContent() {
           <div className="hero-search-wrapper">
             <div className="hero-search-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </div>
             <input
@@ -422,11 +421,11 @@ function HomeContent() {
 
           <div className="hero-actions">
             <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
               استكشف الأماكن
             </button>
             <button className="hero-btn-secondary" onClick={() => setIsProximityEnabled(!isProximityEnabled)}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>
               {isProximityEnabled ? "إيقاف القرب" : "بالقرب مني"}
             </button>
           </div>
@@ -538,7 +537,7 @@ function HomeContent() {
             {locationLoading ? (
               <span style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
             ) : (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /></svg>
             )}
             {isProximityEnabled ? "قريب مني ✓" : "قريب مني"}
           </button>
@@ -547,78 +546,52 @@ function HomeContent() {
         {/* ═══════════════════════════════════ SECTIONS MODE ═══════════════════════════════════ */}
         {showSections ? (
           <>
+            
+            
             {/* Section 1: Nearby */}
             {isProximityEnabled && (
-              <section style={{ animation: "slide-in-section 0.5s ease both" }}>
-                <div className="section-header">
-                  <h2 className="section-title">📍 أماكن بالقرب منك</h2>
-                  {nearbyPlaces.length === 0 && <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>لا توجد أماكن في نطاق 10 كم</span>}
-                </div>
-                {nearbyPlaces.length > 0 ? (
-                  <div className="places-scroll-row">
-                    {nearbyPlaces.map((place) => (
-                      <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
-                        <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="glass-panel" style={{ padding: "28px", textAlign: "center", color: "var(--text-muted)", fontSize: "0.95rem" }}>
-                    فعّل الموقع للعثور على أماكن قريبة منك 📍
-                  </div>
-                )}
-                <hr className="section-divider" />
-              </section>
+              <PaginatedSection 
+                title={<>📍 أقرب الأماكن إليك {nearbyPlaces.length === 0 && <span style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginRight: "12px" }}>بحث في نطاق 10 كم</span>}</>}
+                places={nearbyPlaces} 
+                setSelectedPlace={setSelectedPlace} 
+                getCategoryColor={getCategoryColor} 
+                toggleFavorite={toggleFavorite} 
+                favoriteIds={favoriteIds} 
+                emptyMessage="فعّل الموقع للعثور على أماكن قريبة منك 📍"
+              />
             )}
 
             {/* Section 2: Top Rated */}
-            <section style={{ animation: "slide-in-section 0.5s 0.05s ease both" }}>
-              <div className="section-header">
-                <h2 className="section-title">⭐ الأكثر زيارة</h2>
-              </div>
-              <div className="places-scroll-row">
-                {topRatedPlaces.map((place) => (
-                  <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
-                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} showRating toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
-                  </div>
-                ))}
-              </div>
-              <hr className="section-divider" />
-            </section>
+            <PaginatedSection 
+              title="⭐ الأكثر زيارة" 
+              places={topRatedPlaces} 
+              setSelectedPlace={setSelectedPlace} 
+              getCategoryColor={getCategoryColor} 
+              toggleFavorite={toggleFavorite} 
+              favoriteIds={favoriteIds} 
+              showRating 
+              itemsPerPage={4}
+            />
 
             {/* Section 3: Family */}
-            {familyPlaces.length > 0 && (
-              <section style={{ animation: "slide-in-section 0.5s 0.1s ease both" }}>
-                <div className="section-header">
-                  <h2 className="section-title">👨‍👩‍👧‍👦 أماكن عائلية</h2>
-                </div>
-                <div className="places-scroll-row">
-                  {familyPlaces.map((place) => (
-                    <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
-                      <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
-                    </div>
-                  ))}
-                </div>
-                <hr className="section-divider" />
-              </section>
-            )}
+            <PaginatedSection 
+              title="👨‍👩‍👧‍👦 أماكن عائلية" 
+              places={familyPlaces} 
+              setSelectedPlace={setSelectedPlace} 
+              getCategoryColor={getCategoryColor} 
+              toggleFavorite={toggleFavorite} 
+              favoriteIds={favoriteIds} 
+            />
 
             {/* Section 4: Entertainment */}
-            {entertainmentPlaces.length > 0 && (
-              <section style={{ animation: "slide-in-section 0.5s 0.15s ease both" }}>
-                <div className="section-header">
-                  <h2 className="section-title">🎭 أماكن ترفيهية</h2>
-                </div>
-                <div className="places-scroll-row">
-                  {entertainmentPlaces.map((place) => (
-                    <div key={place.id} className="glass-card place-card-scroll" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
-                      <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
-                    </div>
-                  ))}
-                </div>
-                <hr className="section-divider" />
-              </section>
-            )}
+            <PaginatedSection 
+              title="🎭 أماكن ترفيهية" 
+              places={entertainmentPlaces} 
+              setSelectedPlace={setSelectedPlace} 
+              getCategoryColor={getCategoryColor} 
+              toggleFavorite={toggleFavorite} 
+              favoriteIds={favoriteIds} 
+            />
 
             {/* Section 5: All Places */}
             <section style={{ animation: "slide-in-section 0.5s 0.2s ease both" }}>
@@ -661,186 +634,186 @@ function HomeContent() {
       {/* ═══════════════════════════════════ DETAIL SHEET ═══════════════════════════════════ */}
       {selectedPlace && (
         <div className="ios-sheet-overlay" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}>
-          <div className="ios-sheet" onClick={(e) => e.stopPropagation()}>
+          <div className="ios-sheet" onClick={(e: any) => e.stopPropagation()}>
             <div className="ios-sheet-drag-handle" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }} />
             <div className="ios-sheet-content">
               {(() => {
-                const displayBranch = selectedPlace.branches?.find(b => b.id === selectedBranchId) 
-                  || selectedPlace.branches?.find(b => b.isMain) 
-                  || (selectedPlace.branches && selectedPlace.branches[0]) 
+                const displayBranch = selectedPlace.branches?.find(b => b.id === selectedBranchId)
+                  || selectedPlace.branches?.find(b => b.isMain)
+                  || (selectedPlace.branches && selectedPlace.branches[0])
                   || selectedPlace;
                 return (
                   <>
-              {/* Images */}
-              {selectedPlace.images && selectedPlace.images.length > 0 && (
-                <div style={{ display: "flex", gap: "10px", overflowX: "auto", marginBottom: "20px", scrollbarWidth: "none" }}>
-                  {selectedPlace.images.map((img, i) => (
-                    <img key={i} src={img} alt={`${selectedPlace.name} ${i + 1}`}
-                      style={{ width: "100%", minWidth: "100%", height: "230px", objectFit: "cover", borderRadius: "var(--radius-md)", flexShrink: 0 }}
-                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800"; }} />
-                  ))}
-                </div>
-              )}
+                    {/* Images */}
+                    {selectedPlace.images && selectedPlace.images.length > 0 && (
+                      <div style={{ display: "flex", gap: "10px", overflowX: "auto", marginBottom: "20px", scrollbarWidth: "none" }}>
+                        {selectedPlace.images.map((img, i) => (
+                          <ImageWithSkeleton key={i} src={img} alt={`${selectedPlace.name} ${i + 1}`}
+                            style={{ width: "100%", minWidth: "100%", height: "230px", objectFit: "cover", borderRadius: "var(--radius-md)", flexShrink: 0 }}
+                            onError={(e: any) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800"; }} />
+                        ))}
+                      </div>
+                    )}
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
-                <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800" }}>{selectedPlace.name}</h2>
-                <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "5px" }}>
-                  <i className={`bx ${CATEGORY_ICONS[selectedPlace.category]}`} style={{ fontSize: "1rem" }}></i> {selectedPlace.categoryLabel}
-                </span>
-              </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
+                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800" }}>{selectedPlace.name}</h2>
+                      <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "5px" }}>
+                        <i className={`bx ${CATEGORY_ICONS[selectedPlace.category]}`} style={{ fontSize: "1rem" }}></i> {selectedPlace.categoryLabel}
+                      </span>
+                    </div>
 
-              {selectedPlace.rating !== undefined && (
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
-                  <span style={{ color: "#ff9f0a", fontSize: "1.1rem" }}>⭐</span>
-                  <span style={{ fontWeight: "700" }}>{Number(selectedPlace.rating).toFixed(1)}</span>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>({selectedPlace.reviewsCount || 0} تقييم)</span>
-                </div>
-              )}
+                    {selectedPlace.rating !== undefined && (
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
+                        <span style={{ color: "#ff9f0a", fontSize: "1.1rem" }}>⭐</span>
+                        <span style={{ fontWeight: "700" }}>{Number(selectedPlace.rating).toFixed(1)}</span>
+                        <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>({selectedPlace.reviewsCount || 0} تقييم)</span>
+                      </div>
+                    )}
 
-              {selectedPlace.shortDescription && (
-                <p style={{ color: "var(--text-primary)", fontSize: "1.05rem", fontWeight: "500", marginBottom: "12px" }}>
-                  {selectedPlace.shortDescription}
-                </p>
-              )}
+                    {selectedPlace.shortDescription && (
+                      <p style={{ color: "var(--text-primary)", fontSize: "1.05rem", fontWeight: "500", marginBottom: "12px" }}>
+                        {selectedPlace.shortDescription}
+                      </p>
+                    )}
 
-              {/* Branch Selector Chips */}
-              {selectedPlace.branches && selectedPlace.branches.length > 1 && (
-                <div style={{ marginTop: "16px", marginBottom: "16px", paddingTop: "12px", borderTop: "1px solid var(--border-glass)" }}>
-                  <h4 style={{ fontSize: "0.95rem", marginBottom: "10px", color: "var(--text-secondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
-                  <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
-                    {selectedPlace.branches.map(b => {
-                      const isSelected = b.id === displayBranch.id;
-                      return (
-                        <button
-                          key={b.id}
-                          onClick={() => setSelectedBranchId(b.id)}
-                          style={{
-                            background: isSelected ? "var(--accent-ios)" : "rgba(120,120,120,0.1)",
-                            color: isSelected ? "#fff" : "var(--text-primary)",
-                            border: isSelected ? "none" : "1px solid var(--border-glass)",
-                            borderRadius: "16px",
-                            padding: "6px 12px",
-                            fontSize: "0.9rem",
-                            fontWeight: isSelected ? "bold" : "normal",
-                            cursor: "pointer",
-                            whiteSpace: "nowrap",
-                            transition: "all 0.2s ease"
-                          }}
-                        >
-                          {b.isMain && <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>⭐</span>}
-                          {b.name} {b.city ? `- ${b.city}` : ""}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.92rem", marginBottom: "6px" }}>
-                <span>📍</span> {displayBranch.city} / {displayBranch.governorate}
-              </div>
-              <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: displayBranch.workingHours ? "6px" : "20px" }}>
-                {displayBranch.fullAddress}
-              </div>
-              {displayBranch.workingHours && (
-                <div style={{ borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px", marginTop: "14px", marginBottom: "20px" }}>
-                  <h4 style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <span>🕐</span> مواعيد العمل
-                  </h4>
-                  {(() => {
-                    const parsed = parseWorkingHours(displayBranch.workingHours);
-                    if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
-
-                    if (parsed.type === "24/7") {
-                      return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
-                    }
-
-                    if (parsed.type === "custom" && parsed.schedule) {
-                      const todayName = DAYS_OF_WEEK[new Date().getDay()];
-                      return (
-                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                          {parsed.schedule.map((day) => {
-                            const isToday = day.day === todayName;
+                    {/* Branch Selector Chips */}
+                    {selectedPlace.branches && selectedPlace.branches.length > 1 && (
+                      <div style={{ marginTop: "16px", marginBottom: "16px", paddingTop: "12px", borderTop: "1px solid var(--border-glass)" }}>
+                        <h4 style={{ fontSize: "0.95rem", marginBottom: "10px", color: "var(--text-secondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
+                        <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
+                          {selectedPlace.branches.map(b => {
+                            const isSelected = b.id === displayBranch.id;
                             return (
-                              <div 
-                                key={day.day} 
-                                style={{ 
-                                  display: "flex", justifyContent: "space-between", alignItems: "center", 
-                                  padding: "6px 10px", borderRadius: "8px", 
-                                  background: isToday ? "rgba(47, 128, 237, 0.1)" : "rgba(120, 120, 120, 0.04)",
-                                  border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
+                              <button
+                                key={b.id}
+                                onClick={() => setSelectedBranchId(b.id)}
+                                style={{
+                                  background: isSelected ? "var(--accent-ios)" : "rgba(120,120,120,0.1)",
+                                  color: isSelected ? "#fff" : "var(--text-primary)",
+                                  border: isSelected ? "none" : "1px solid var(--border-glass)",
+                                  borderRadius: "16px",
+                                  padding: "6px 12px",
+                                  fontSize: "0.9rem",
+                                  fontWeight: isSelected ? "bold" : "normal",
+                                  cursor: "pointer",
+                                  whiteSpace: "nowrap",
+                                  transition: "all 0.2s ease"
                                 }}
                               >
-                                <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--text-secondary)", fontSize: "0.9rem" }}>
-                                  {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--accent-ios)", marginRight: "6px" }}>(اليوم)</span>}
-                                </div>
-                                <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.9rem" }}>
-                                  {day.isWorking ? `من ${day.openTime} ${day.openPeriod} حتي ${day.closeTime} ${day.closePeriod}` : "إجازة"}
-                                </div>
-                              </div>
+                                {b.isMain && <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>⭐</span>}
+                                {b.name} {b.city ? `- ${b.city}` : ""}
+                              </button>
                             );
                           })}
                         </div>
-                      );
-                    }
-                    return null;
-                  })()}
-                </div>
-              )}
+                      </div>
+                    )}
 
-              {selectedPlace.description && (
-                <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", marginBottom: "20px", padding: "14px", background: "rgba(120,120,120,0.05)", borderRadius: "var(--radius-sm)", borderRight: "3px solid var(--accent-ios)" }}>
-                  {selectedPlace.description}
-                </p>
-              )}
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.92rem", marginBottom: "6px" }}>
+                      <span>📍</span> {displayBranch.city} / {displayBranch.governorate}
+                    </div>
+                    <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: displayBranch.workingHours ? "6px" : "20px" }}>
+                      {displayBranch.fullAddress}
+                    </div>
+                    {displayBranch.workingHours && (
+                      <div style={{ borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px", marginTop: "14px", marginBottom: "20px" }}>
+                        <h4 style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span>🕐</span> مواعيد العمل
+                        </h4>
+                        {(() => {
+                          const parsed = parseWorkingHours(displayBranch.workingHours);
+                          if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
 
-              {/* Phones */}
-              {displayBranch.phones && displayBranch.phones.length > 0 && (
-                <div style={{ marginBottom: "20px" }}>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📞 أرقام التليفون</h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {displayBranch.phones.map((phone: string, i: number) => (
-                      <a key={i} href={`tel:${phone}`} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 16px", background: "rgba(52,199,89,0.08)", border: "1px solid rgba(52,199,89,0.2)", borderRadius: "var(--radius-sm)", color: "var(--accent-success)", fontWeight: "600", fontSize: "1.1rem", direction: "ltr", textDecoration: "none" }}>
-                        📞 {phone}
+                          if (parsed.type === "24/7") {
+                            return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
+                          }
+
+                          if (parsed.type === "custom" && parsed.schedule) {
+                            const todayName = DAYS_OF_WEEK[new Date().getDay()];
+                            return (
+                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                                {parsed.schedule.map((day) => {
+                                  const isToday = day.day === todayName;
+                                  return (
+                                    <div
+                                      key={day.day}
+                                      style={{
+                                        display: "flex", justifyContent: "space-between", alignItems: "center",
+                                        padding: "6px 10px", borderRadius: "8px",
+                                        background: isToday ? "rgba(47, 128, 237, 0.1)" : "rgba(120, 120, 120, 0.04)",
+                                        border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
+                                      }}
+                                    >
+                                      <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--text-secondary)", fontSize: "0.9rem" }}>
+                                        {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--accent-ios)", marginRight: "6px" }}>(اليوم)</span>}
+                                      </div>
+                                      <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.9rem" }}>
+                                        {day.isWorking ? `من ${day.openTime} ${day.openPeriod} حتي ${day.closeTime} ${day.closePeriod}` : "إجازة"}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </div>
+                    )}
+
+                    {selectedPlace.description && (
+                      <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", marginBottom: "20px", padding: "14px", background: "rgba(120,120,120,0.05)", borderRadius: "var(--radius-sm)", borderRight: "3px solid var(--accent-ios)" }}>
+                        {selectedPlace.description}
+                      </p>
+                    )}
+
+                    {/* Phones */}
+                    {displayBranch.phones && displayBranch.phones.length > 0 && (
+                      <div style={{ marginBottom: "20px" }}>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📞 أرقام التليفون</h3>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                          {displayBranch.phones.map((phone: string, i: number) => (
+                            <a key={i} href={`tel:${phone}`} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 16px", background: "rgba(52,199,89,0.08)", border: "1px solid rgba(52,199,89,0.2)", borderRadius: "var(--radius-sm)", color: "var(--accent-success)", fontWeight: "600", fontSize: "1.1rem", direction: "ltr", textDecoration: "none" }}>
+                              📞 {phone}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
+                      <a href={displayBranch.googleMapsUrl || "#"} target="_blank" rel="noopener noreferrer"
+                        className="ios-btn ios-btn-primary" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
+                        🗺️ فتح الخريطة
                       </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+                      {displayBranch.latitude && displayBranch.longitude && (
+                        <a href={`https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`}
+                          target="_blank" rel="noopener noreferrer" className="ios-btn" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
+                          🧭 الاتجاهات
+                        </a>
+                      )}
+                    </div>
 
-              {/* Action Buttons */}
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
-                <a href={displayBranch.googleMapsUrl || "#"} target="_blank" rel="noopener noreferrer"
-                  className="ios-btn ios-btn-primary" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
-                  🗺️ فتح الخريطة
-                </a>
-                {displayBranch.latitude && displayBranch.longitude && (
-                  <a href={`https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`}
-                    target="_blank" rel="noopener noreferrer" className="ios-btn" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
-                    🧭 الاتجاهات
-                  </a>
-                )}
-              </div>
+                    {/* Media Images */}
+                    {((displayBranch?.media && displayBranch.media.length > 0) || (selectedPlace.menuImages && selectedPlace.menuImages.length > 0)) && (
+                      <div style={{ marginBottom: "20px" }}>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📋 الميديا (صور، قائمة طعام)</h3>
+                        <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
+                          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace.menuImages!).map((img, i) => (
+                            <ImageWithSkeleton key={i} src={img} alt="ميديا" onClick={() => setActiveMenuIndex(i)}
+                              style={{ width: "140px", height: "180px", objectFit: "cover", borderRadius: "var(--radius-sm)", cursor: "pointer", flexShrink: 0 }} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-              {/* Media Images */}
-              {((displayBranch?.media && displayBranch.media.length > 0) || (selectedPlace.menuImages && selectedPlace.menuImages.length > 0)) && (
-                <div style={{ marginBottom: "20px" }}>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📋 الميديا (صور، قائمة طعام)</h3>
-                  <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
-                    {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace.menuImages!).map((img, i) => (
-                      <img key={i} src={img} alt="ميديا" onClick={() => setActiveMenuIndex(i)}
-                        style={{ width: "140px", height: "180px", objectFit: "cover", borderRadius: "var(--radius-sm)", cursor: "pointer", flexShrink: 0 }} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Reviews Section inside modal */}
-              <ReviewSection 
-                place={selectedPlace} 
-                selectedBranchId={selectedBranchId}
-                onRatingUpdate={(r, c) => setSelectedPlace({ ...selectedPlace, rating: r, reviewsCount: c })}
-              />
+                    {/* Reviews Section inside modal */}
+                    <ReviewSection
+                      place={selectedPlace}
+                      selectedBranchId={selectedBranchId}
+                      onRatingUpdate={(r, c) => setSelectedPlace({ ...selectedPlace, rating: r, reviewsCount: c })}
+                    />
                   </>
                 );
               })()}
@@ -853,84 +826,84 @@ function HomeContent() {
       {(() => {
         const displayBranch = selectedBranchId && selectedPlace ? (selectedPlace.branches?.find(b => b.id === selectedBranchId) || selectedPlace) : selectedPlace;
         return activeMenuIndex !== null && ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace?.menuImages) && (
-        <div className="ios-sheet-overlay" onClick={() => setActiveMenuIndex(null)} style={{ alignItems: "center", justifyContent: "center" }}>
-          
-          <button 
-            onClick={() => setActiveMenuIndex(null)}
-            style={{
-              position: "absolute",
-              top: "24px",
-              right: "24px",
-              background: "rgba(255,255,255,0.15)",
-              border: "none",
-              borderRadius: "50%",
-              width: "40px",
-              height: "40px",
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              fontSize: "1.5rem",
-              zIndex: 1102
-            }}
-          >
-            ✕
-          </button>
-          
-          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
-            <button 
-              onClick={(e) => { 
-                e.stopPropagation(); 
-                const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!);
-                setActiveMenuIndex((activeMenuIndex - 1 + arr.length) % arr.length); 
+          <div className="ios-sheet-overlay" onClick={() => setActiveMenuIndex(null)} style={{ alignItems: "center", justifyContent: "center" }}>
+
+            <button
+              onClick={() => setActiveMenuIndex(null)}
+              style={{
+                position: "absolute",
+                top: "24px",
+                right: "24px",
+                background: "rgba(255,255,255,0.15)",
+                border: "none",
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                color: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                fontSize: "1.5rem",
+                zIndex: 1102
               }}
-              style={{ position: "absolute", right: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
             >
-              ❯
+              ✕
             </button>
-          )}
 
-          <img 
-            src={((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!)[activeMenuIndex]} 
-            alt="ميديا" 
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: "90vw", maxHeight: "85vh", borderRadius: "var(--radius-md)", objectFit: "contain", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }} 
-          />
+            {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!);
+                  setActiveMenuIndex((activeMenuIndex - 1 + arr.length) % arr.length);
+                }}
+                style={{ position: "absolute", right: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
+              >
+                ❯
+              </button>
+            )}
 
-          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
-            <button 
-              onClick={(e) => { 
-                e.stopPropagation(); 
-                const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!);
-                setActiveMenuIndex((activeMenuIndex + 1) % arr.length); 
-              }}
-              style={{ position: "absolute", left: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
-            >
-              ❮
-            </button>
-          )}
+            <ImageWithSkeleton
+              src={((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!)[activeMenuIndex]}
+              alt="ميديا"
+              onClick={(e: any) => e.stopPropagation()}
+              style={{ maxWidth: "90vw", maxHeight: "85vh", borderRadius: "var(--radius-md)", objectFit: "contain", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }}
+            />
 
-          {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
-            <div style={{ position: "absolute", bottom: "24px", color: "#fff", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "12px", fontSize: "0.9rem" }}>
-              {activeMenuIndex + 1} / {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length}
-            </div>
-          )}
-        </div>
+            {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const arr = ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!);
+                  setActiveMenuIndex((activeMenuIndex + 1) % arr.length);
+                }}
+                style={{ position: "absolute", left: "20px", top: "50%", transform: "translateY(-50%)", background: "rgba(255,255,255,0.2)", color: "#fff", border: "none", borderRadius: "50%", width: "44px", height: "44px", fontSize: "1.5rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1101 }}
+              >
+                ❮
+              </button>
+            )}
+
+            {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (
+              <div style={{ position: "absolute", bottom: "24px", color: "#fff", background: "rgba(0,0,0,0.5)", padding: "4px 12px", borderRadius: "12px", fontSize: "0.9rem" }}>
+                {activeMenuIndex + 1} / {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length}
+              </div>
+            )}
+          </div>
         );
       })()}
 
       {/* ═══════════════════════════════════ ADD PLACE MODAL ═══════════════════════════════════ */}
       {showAddModal && (
         <div className="ios-sheet-overlay" onClick={() => setShowAddModal(false)}>
-          <div className="ios-sheet" onClick={(e) => e.stopPropagation()}>
+          <div className="ios-sheet" onClick={(e: any) => e.stopPropagation()}>
             <div className="ios-sheet-drag-handle" onClick={() => setShowAddModal(false)} />
             <div className="ios-sheet-content">
               <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: "800", marginBottom: "24px" }}>➕ إضافة مكان جديد</h2>
               <form onSubmit={handleAddPlace} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 <input className="ios-input" style={{ paddingRight: "16px" }} placeholder="اسم المكان *" value={newName} onChange={(e) => setNewName(e.target.value)} required />
                 <select className="ios-input help-select" style={{ paddingRight: "16px" }} value={newCategory} onChange={(e) => setNewCategory(e.target.value as PlaceCategory)}>
-                  {(["restaurant","cafe","pharmacy","hospital","garden","family","entertainment"] as PlaceCategory[]).map((c) => (
+                  {(["restaurant", "cafe", "pharmacy", "hospital", "garden", "family", "entertainment"] as PlaceCategory[]).map((c) => (
                     <option key={c} value={c}>{CATEGORY_EMOJIS[c]} {CATEGORY_LABELS[c]}</option>
                   ))}
                 </select>
@@ -947,7 +920,7 @@ function HomeContent() {
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <button type="submit" className="ios-btn ios-btn-primary" style={{ flex: 1 }}>إضافة المكان</button>
-                  <button type="button" className="ios-btn" onClick={() => setShowAddModal(false)} style={{ flex: 1 }}>إلغاء</button>
+                  <button type="button" className="ios-btn" onClick={() => setShowAddModal(false)} style={{ flex: 1 }}><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء</button>
                 </div>
               </form>
             </div>
@@ -967,6 +940,113 @@ export default function Home() {
 }
 
 /* ─── Shared Place Card Content ─── */
+
+
+/* ── Shared Image Component ── */
+function ImageWithSkeleton({ src, alt, style, className, onClick, onError }: any) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div style={{ position: "relative", ...style, overflow: "hidden" }} className={className} onClick={onClick}>
+      {!loaded && (
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "var(--bg-glass-card)", animation: "pulse 1.5s infinite" }} />
+      )}
+      <img
+        src={src}
+        alt={alt}
+        style={{ width: "100%", height: "100%", objectFit: style?.objectFit || "cover", opacity: loaded ? 1 : 0, transition: "opacity 0.3s ease" }}
+        onLoad={() => setLoaded(true)}
+        onError={(e: any) => {
+          setLoaded(true);
+          if (onError) onError(e);
+        }}
+      />
+    </div>
+  );
+}
+
+/* ── Shared Paginated Section ── */
+function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, toggleFavorite, favoriteIds, showRating = false, emptyMessage, itemsPerPage = 6 }: {
+  title: React.ReactNode;
+  places: any[]; // Avoid typing issues
+  setSelectedPlace: (place: any) => void;
+  getCategoryColor: (cat: string) => string;
+  toggleFavorite: (e: React.MouseEvent, placeId: string) => void;
+  favoriteIds: Set<string>;
+  showRating?: boolean;
+  emptyMessage?: React.ReactNode;
+  itemsPerPage?: number;
+}) {
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(places.length / itemsPerPage);
+  
+  useEffect(() => {
+    setPage(1);
+  }, [places.length]);
+
+  if (places.length === 0 && !emptyMessage) return null;
+
+  const startIndex = (page - 1) * itemsPerPage;
+  const paginatedPlaces = places.slice(startIndex, startIndex + itemsPerPage);
+
+  return (
+    <section style={{ animation: "slide-in-section 0.5s ease both" }}>
+      <div className="section-header">
+        <h2 className="section-title">{title}</h2>
+      </div>
+      
+      {places.length === 0 && emptyMessage ? (
+        <div className="glass-panel" style={{ padding: "28px", textAlign: "center", color: "var(--text-muted)", fontSize: "0.95rem" }}>
+          {emptyMessage}
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px", width: "100%" }}>
+            {paginatedPlaces.map((place) => (
+              <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative", width: "100%", maxWidth: "320px", flex: "1 1 280px" }}>
+                <PlaceCardContent place={place} getCategoryColor={getCategoryColor} showRating={showRating} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginTop: "12px", width: "100%" }}>
+              <button 
+                onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                disabled={page === 1}
+                className="pagination-btn"
+              >
+                <i className="bx bx-chevron-right"></i>
+              </button>
+              
+              {Array.from({ length: totalPages }).map((_, idx) => {
+                const pageNum = idx + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    className={`pagination-btn ${page === pageNum ? 'active' : ''}`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+
+              <button 
+                onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={page === totalPages}
+                className="pagination-btn"
+              >
+                <i className="bx bx-chevron-left"></i>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      <hr className="section-divider" />
+    </section>
+  );
+}
+
 function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite, favoriteIds }: {
   place: PlaceWithDist;
   getCategoryColor: (cat: string) => string;
@@ -977,11 +1057,11 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
   return (
     <>
       <div style={{ width: "100%", height: "180px", position: "relative", overflow: "hidden" }}>
-        <img
+        <ImageWithSkeleton
           src={place.images?.[0] ?? ""}
           alt={place.name}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80"; }}
+          onError={(e: any) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80"; }}
         />
         {toggleFavorite && favoriteIds && (
           <button

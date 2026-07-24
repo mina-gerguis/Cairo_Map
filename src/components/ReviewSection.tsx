@@ -225,14 +225,14 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
               className="ios-btn ios-btn-primary"
               style={{ width: "100%" }}
             >
-              {submittingReview ? "جاري الإرسال..." : "حفظ التقييم"}
+              {submittingReview ? "جاري الإرسال..." : <><i className="bx bx-save" style={{ fontSize: "1.2rem" }}></i> حفظ التقييم</>}
             </button>
           </form>
         </div>
       ) : (
         <div style={{ textAlign: "center", padding: "20px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px", marginBottom: "30px" }}>
           <p style={{ color: "var(--text-secondary)", marginBottom: "12px" }}>سجل دخولك لتتمكن من تقييم هذا المكان</p>
-          <button className="ios-btn ios-btn-primary" onClick={() => router.push("/login")}>تسجيل الدخول</button>
+          <button className="ios-btn ios-btn-primary" onClick={() => router.push("/login")}><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
         </div>
       )}
 

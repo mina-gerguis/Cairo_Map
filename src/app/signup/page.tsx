@@ -143,12 +143,12 @@ const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
               onClick={onStartSignup}
               style={{ padding: "15px", fontSize: "1rem", fontWeight: "800", borderRadius: "16px", border: "none", background: "linear-gradient(135deg, #6c63ff, #3b82f6, #00d4aa)", backgroundSize: "200%", animation: "gradient-move 4s ease infinite", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", boxShadow: "0 8px 32px rgba(108,99,255,0.4)", width: "100%", fontFamily: "var(--font-body)" }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+              <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }}></i>
               مستخدم جديد، أريد إنشاء حساب ✨
             </button>
             <Link href="/login" style={{ padding: "14px", fontSize: "0.95rem", fontWeight: "700", borderRadius: "16px", border: "1px solid rgba(108,99,255,0.3)", background: "rgba(108,99,255,0.08)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", textDecoration: "none", transition: "all 0.3s ease" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/></svg>
-              أمتلك حساب، تسجيل الدخول
+              <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i>
+              لدي حساب بالفعل
             </Link>
           </div>
         </div>
@@ -266,6 +266,13 @@ export default function SignupPage() {
   const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (fieldErrors.fullName || fieldErrors.username || fieldErrors.phone || fieldErrors.email) { setError("يرجى تصحيح الأخطاء قبل المتابعة."); return; }
+    if (!formData.dob) { setError("يرجى إدخال تاريخ الميلاد."); return; }
+    const dobDate = new Date(formData.dob);
+    const today = new Date();
+    let age = today.getFullYear() - dobDate.getFullYear();
+    const m = today.getMonth() - dobDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) age--;
+    if (age < 6) { setError("يجب أن يكون العمر 6 سنوات على الأقل للتسجيل."); return; }
     if (formData.username.length < 3) { setError("اسم المستخدم يجب أن يكون 3 حروف على الأقل."); return; }
     if (formData.phone.length !== 10) { setError("رقم الهاتف يجب أن يتكون من 10 أرقام."); return; }
     if (!supabase) return;
@@ -317,6 +324,10 @@ export default function SignupPage() {
   };
 
   if (step === 0) return <OnboardingSlider onStartSignup={() => setStep(1)} />;
+
+  const maxDobDate = new Date();
+  maxDobDate.setFullYear(maxDobDate.getFullYear() - 6);
+  const maxDobDateStr = maxDobDate.toISOString().split("T")[0];
 
   /* ── Step labels & colors ── */
   const stepInfo = [
@@ -427,14 +438,22 @@ export default function SignupPage() {
                 </div>
 
                 {/* Date of Birth */}
-                <div>
-                  <label className="help-label">تاريخ الميلاد</label>
-                  <div style={{ position: "relative" }}>
-                    <div style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", pointerEvents: "none" }}>
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                    </div>
-                    <input type="date" required className="ios-input" value={formData.dob} onChange={(e) => updateData("dob", e.target.value)} style={{ textAlign: "left", direction: "ltr", paddingRight: "44px" }} />
-                  </div>
+                <div className="ios-input" style={{ display: "flex", flexDirection: "column", padding: "8px 16px", background: "var(--bg-glass-card)" }}>
+                  <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "4px" }}>تاريخ الميلاد</label>
+                  <input 
+                    type="date" 
+                    required 
+                    max={maxDobDateStr}
+                    lang="en-US" 
+                    value={formData.dob} 
+                    onChange={(e) => updateData("dob", e.target.value)} 
+                    style={{ 
+                      background: "transparent", border: "none", outline: "none", 
+                      color: "var(--text-primary)", fontSize: "0.95rem", width: "100%", padding: 0,
+                      direction: "ltr", fontFamily: "system-ui, -apple-system, sans-serif"
+                    }} 
+                    className="date-field-input"
+                  />
                 </div>
 
                 {/* Gender */}
@@ -466,7 +485,7 @@ export default function SignupPage() {
                 )}
 
                 <button type="submit" disabled={loading} style={{ marginTop: "8px", padding: "15px", fontSize: "1rem", fontWeight: "800", borderRadius: "16px", border: "none", background: "linear-gradient(135deg, #6c63ff, #3b82f6)", color: "#fff", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", boxShadow: "0 8px 28px rgba(108,99,255,0.4)", width: "100%", fontFamily: "var(--font-body)" }}>
-                  {loading ? <><div className="spinner" /> جاري التحقق...</> : <>التالي <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m15 18-6-6 6-6"/></svg></>}
+                  {loading ? <><div className="spinner" /> جاري التحقق...</> : <>التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i></>}
                 </button>
               </div>
             )}
@@ -505,9 +524,9 @@ export default function SignupPage() {
                 </div>
 
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <button type="button" onClick={() => setStep(1)} style={{ flex: 1, padding: "13px", borderRadius: "14px", border: "1px solid rgba(108,99,255,0.25)", background: "rgba(108,99,255,0.08)", color: "var(--text-secondary)", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-body)", fontSize: "0.95rem" }}>رجوع</button>
-                  <button type="button" onClick={() => { updateData("avatarUrl", ""); setStep(3); }} style={{ flex: 1, padding: "13px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-muted)", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-body)", fontSize: "0.95rem" }}>تخطي</button>
-                  <button type="submit" style={{ flex: 2, padding: "13px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #00d4aa, #3b82f6)", color: "#fff", cursor: "pointer", fontWeight: "800", fontFamily: "var(--font-body)", fontSize: "0.95rem", boxShadow: "0 6px 20px rgba(0,212,170,0.35)" }}>التالي</button>
+                  <button type="button" onClick={() => setStep(1)} style={{ flex: 1, padding: "13px", borderRadius: "14px", border: "1px solid rgba(108,99,255,0.25)", background: "rgba(108,99,255,0.08)", color: "var(--text-secondary)", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-body)", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}><i className="bx bx-right-arrow-alt" style={{ fontSize: "1.2rem" }}></i> رجوع</button>
+                  <button type="button" onClick={() => { updateData("avatarUrl", ""); setStep(3); }} style={{ flex: 1, padding: "13px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-muted)", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-body)", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>تخطي <i className="bx bx-fast-forward" style={{ fontSize: "1.2rem" }}></i></button>
+                  <button type="submit" style={{ flex: 2, padding: "13px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #00d4aa, #3b82f6)", color: "#fff", cursor: "pointer", fontWeight: "800", fontFamily: "var(--font-body)", fontSize: "0.95rem", boxShadow: "0 6px 20px rgba(0,212,170,0.35)", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i></button>
                 </div>
               </div>
             )}
@@ -554,9 +573,9 @@ export default function SignupPage() {
                 </div>
 
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <button type="button" onClick={() => setStep(2)} style={{ flex: 1, padding: "13px", borderRadius: "14px", border: "1px solid rgba(108,99,255,0.25)", background: "rgba(108,99,255,0.08)", color: "var(--text-secondary)", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-body)", fontSize: "0.95rem" }}>رجوع</button>
+                  <button type="button" onClick={() => setStep(2)} style={{ flex: 1, padding: "13px", borderRadius: "14px", border: "1px solid rgba(108,99,255,0.25)", background: "rgba(108,99,255,0.08)", color: "var(--text-secondary)", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-body)", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}><i className="bx bx-right-arrow-alt" style={{ fontSize: "1.2rem" }}></i> رجوع</button>
                   <button type="submit" disabled={loading || !isPasswordValid} style={{ flex: 2, padding: "14px", borderRadius: "14px", border: "none", background: "linear-gradient(135deg, #ff3f8e, #6c63ff)", color: "#fff", cursor: loading || !isPasswordValid ? "not-allowed" : "pointer", opacity: loading || !isPasswordValid ? 0.6 : 1, fontWeight: "800", fontFamily: "var(--font-body)", fontSize: "0.95rem", boxShadow: isPasswordValid ? "0 6px 24px rgba(255,63,142,0.4)" : "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "all 0.3s ease" }}>
-                    {loading ? <><div className="spinner" style={{ width: "18px", height: "18px" }} /> جاري الإنشاء...</> : "🎉 إنهاء وإنشاء حساب"}
+                    {loading ? <><div className="spinner" style={{ width: "18px", height: "18px" }} /> جاري الإنشاء...</> : <><i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }}></i> إنهاء وإنشاء حساب</>}
                   </button>
                 </div>
               </div>

@@ -705,7 +705,7 @@ export default function AdminDashboard() {
             </div>
 
             <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-              <button type="button" className="ios-btn" onClick={() => setShowAddForm(false)}>إلغاء</button>
+              <button type="button" className="ios-btn" onClick={() => setShowAddForm(false)}><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء</button>
               <button type="submit" className="ios-btn ios-btn-primary" disabled={isSubmitting}>
                 {isSubmitting ? "جاري الإضافة..." : "حفظ المكان"}
               </button>
@@ -785,7 +785,7 @@ export default function AdminDashboard() {
 
       {/* Unified Edit Place Modal (Name + Category) */}
       {editingPlace && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 2000, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 2000, background: "rgba(0, 0, 0, 0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
           <div style={{ background: "var(--card-bg)", borderRadius: "20px", padding: "28px", width: "100%", maxWidth: "440px", border: "1px solid var(--border-glass)" }}>
             <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem", marginBottom: "6px" }}>تعديل المكان</h3>
             <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginBottom: "20px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px" }}>{editingPlace.name}</p>
@@ -819,7 +819,7 @@ export default function AdminDashboard() {
               <button onClick={handleUpdatePlace} disabled={isUpdatingPlace || !editingName.trim()} className="ios-btn ios-btn-primary" style={{ flex: 1 }}>
                 {isUpdatingPlace ? "جاري الحفظ..." : "حفظ التعديلات"}
               </button>
-              <button onClick={() => setEditingPlace(null)} className="ios-btn" style={{ flex: 1 }}>إلغاء</button>
+              <button onClick={() => setEditingPlace(null)} className="ios-btn" style={{ flex: 1 }}><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء</button>
             </div>
           </div>
         </div>
@@ -829,7 +829,7 @@ export default function AdminDashboard() {
       {selectedPlaceForBranch && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000,
-          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(5px)",
+          background: "rgba(0, 0, 0, 0.7)",
           display: "flex", alignItems: "center", justifyContent: "center", padding: "20px"
         }}>
           <div className="glass-panel" style={{ width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto", position: "relative" }}>
@@ -854,11 +854,9 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", gap: "10px" }}>
                       <button 
                         onClick={() => handleEditBranch(b)}
-                        style={{ background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>
-                        تعديل
-                      </button>
+                        style={{ background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}><i className="bx bx-edit" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-edit" style={{ fontSize: "1.2rem" }}></i> تعديل</button>
                       {!b.is_main && (
-                        <button onClick={() => handleDeleteBranch(b.id, selectedPlaceForBranch.id, b.is_main)} style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}>حذف</button>
+                        <button onClick={() => handleDeleteBranch(b.id, selectedPlaceForBranch.id, b.is_main)} style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}><i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i> حذف</button>
                       )}
                     </div>
                   </div>

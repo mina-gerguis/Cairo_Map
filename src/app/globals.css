@@ -5,24 +5,24 @@
    Design Tokens
    ============================================================ */
 :root {
-  --font-display: "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-body: "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-almarai), "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: var(--font-almarai), "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Premium Calm Dark Palette (Eye-friendly Slate/Charcoal) */
-  --bg-primary: #0b0f19;       /* Deep slate-blue/black, warmer than #000 */
-  --bg-secondary: #151c2c;     /* Elevated dark slate card */
-  --bg-glass: rgba(11, 15, 25, 0.85);
-  --bg-glass-card: rgba(21, 28, 44, 0.7);
-  --bg-glass-active: rgba(30, 41, 59, 0.9);
-  --bg-glass-hover: rgba(21, 28, 44, 0.9);
-  --border-glass: rgba(255, 255, 255, 0.05);
-  --border-glass-bright: rgba(255, 255, 255, 0.1);
-  --text-primary: #f1f5f9;     /* Soft slate white */
-  --text-secondary: #94a3b8;   /* Slate 400 */
-  --text-muted: #64748b;       /* Slate 500 */
+  /* HeroUI Dark Palette */
+  --bg-primary: #000000;       /* Pure black */
+  --bg-secondary: #18181b;     /* Zinc 900 */
+  --bg-glass: rgba(0, 0, 0, 0.7);
+  --bg-glass-card: rgba(24, 24, 27, 0.7);
+  --bg-glass-active: rgba(39, 39, 42, 0.9);
+  --bg-glass-hover: rgba(39, 39, 42, 0.8);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --border-glass-bright: rgba(255, 255, 255, 0.15);
+  --text-primary: #f4f4f5;     /* Zinc 100 */
+  --text-secondary: #a1a1aa;   /* Zinc 400 */
+  --text-muted: #71717a;       /* Zinc 500 */
 
-  /* Calm Muted Accent Colors (Eye-friendly) */
-  --accent-primary: #3b82f6;   /* Clean modern blue */
+  /* HeroUI Vibrant Colors */
+  --accent-primary: #006FEE;   /* HeroUI Blue */
   --accent-secondary: #10b981; /* Soft green */
   --accent-pink: #ec4899;
   --accent-orange: #f59e0b;
@@ -39,8 +39,8 @@
   --gradient-cta: var(--accent-primary);
 
   --radius-xs: 8px;
-  --radius-sm: 12px;
-  --radius-md: 16px;
+  --radius-sm: 14px;
+  --radius-md: 18px;
   --radius-lg: 24px;
   --radius-xl: 32px;
   --radius-full: 999px;
@@ -60,24 +60,29 @@
   --navbar-height: 72px;
 }
 
-/* Calm Light Mode */
+/* HeroUI Light Mode */
 html.light {
-  --bg-primary: #f8fafc;       /* Slate 50 - extremely calm warm/cool white */
-  --bg-secondary: #ffffff;     /* White card bg */
-  --bg-glass: rgba(248, 250, 252, 0.85);
+  --bg-primary: #ffffff;       /* Pure white */
+  --bg-secondary: #f4f4f5;     /* Zinc 100 */
+  --bg-glass: rgba(255, 255, 255, 0.8);
   --bg-glass-card: rgba(255, 255, 255, 0.8);
-  --bg-glass-active: rgba(226, 232, 240, 0.9);
-  --bg-glass-hover: rgba(241, 245, 249, 0.9);
-  --border-glass: rgba(148, 163, 184, 0.12); /* Very soft slate border */
-  --border-glass-bright: rgba(148, 163, 184, 0.25);
-  --text-primary: #0f172a;     /* Slate 900 - dark slate, not pure black */
-  --text-secondary: #475569;   /* Slate 600 - comfortable readability */
-  --text-muted: #64748b;       /* Slate 500 */
-  --accent-primary: #2563eb;   /* Modern brand blue */
+  --bg-glass-active: rgba(228, 228, 231, 0.9);
+  --bg-glass-hover: rgba(244, 244, 245, 0.9);
+  --border-glass: rgba(0, 0, 0, 0.08); 
+  --border-glass-bright: rgba(0, 0, 0, 0.15);
+  --text-primary: #18181b;     /* Zinc 900 */
+  --text-secondary: #52525b;   /* Zinc 600 */
+  --text-muted: #71717a;       /* Zinc 500 */
+  --accent-primary: #006FEE;   /* HeroUI Blue */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
   --shadow-card: 0 2px 4px 0 rgba(0, 0, 0, 0.02), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+}
+
+/* Custom Profile Background */
+html.light .profile-page-wrapper {
+  background-color: #f0f0f0;
 }
 
 /* ============================================================
@@ -336,18 +341,64 @@ html.light .navbar {
   position: absolute;
   top: calc(100% + 12px);
   left: 0;
-  min-width: 220px;
+  min-width: 240px;
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-glass);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-  animation: slide-in-section 0.25s ease;
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 8px;
+  animation: pop-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 100;
 }
 
 html.light .navbar-auth-menu { background: var(--bg-glass); }
+
+/* HeroUI Dropdown Inner Elements */
+.heroui-dropdown-header {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heroui-dropdown-divider {
+  height: 1px;
+  background: var(--border-glass);
+  margin: 6px 0;
+}
+
+.heroui-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: right;
+  font-family: var(--font-body);
+}
+
+.heroui-dropdown-item:hover, .heroui-dropdown-item:focus {
+  background: var(--bg-glass-active);
+  outline: none;
+}
+
+.heroui-dropdown-item.danger {
+  color: #f31260; /* HeroUI Danger Color */
+}
+.heroui-dropdown-item.danger:hover {
+  background: rgba(243, 18, 96, 0.1);
+}
 
 .navbar-hamburger {
   display: none;
@@ -770,7 +821,8 @@ html.light .footer { background: var(--bg-primary); }
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-glass);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse;
   box-shadow: var(--shadow-card);
   transition: var(--transition-smooth);
 }
@@ -780,7 +832,8 @@ html.light .footer { background: var(--bg-primary); }
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-glass);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse;
   box-shadow: var(--shadow-card);
   transition: var(--transition-spring);
   position: relative;
@@ -819,9 +872,13 @@ html.light .footer { background: var(--bg-primary); }
 .ios-btn-primary {
   background: var(--accent-primary);
   color: #ffffff !important;
+  box-shadow: 0 4px 14px 0 rgba(0, 111, 238, 0.39);
 }
 
-.ios-btn-primary:hover { opacity: 0.9; }
+.ios-btn-primary:hover {
+  background: var(--accent-primary);
+  opacity: 0.9;
+}
 
 /* ============================================================
    Input Fields — Premium
@@ -843,6 +900,22 @@ html.light .ios-input { background: var(--bg-secondary); }
 .ios-input:focus { border-color: var(--accent-primary); }
 html.light .ios-input:focus { border-color: var(--accent-primary); }
 .ios-input::placeholder { color: var(--text-muted); }
+
+/* Improve Date Picker */
+input[type="date"] {
+  position: relative;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  opacity: 0;
+}
 
 .help-select {
   padding-right: 16px;
@@ -1357,3 +1430,59 @@ html.light .auth-card { background: var(--bg-secondary); }
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+
+/* HeroUI DateField style */
+.date-field-input::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+.date-field-input::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+}
+
+/* Pagination UI */
+.pagination-btn {
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.pagination-btn:hover:not(:disabled) {
+  background: rgba(108, 99, 255, 0.1);
+  color: var(--accent-primary);
+  border-color: rgba(108, 99, 255, 0.3);
+}
+.pagination-btn.active {
+  background: var(--accent-primary);
+  color: #fff;
+  font-weight: 700;
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 14px rgba(108, 99, 255, 0.3);
+}
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* HeroUI Accordion */
+.accordion-item { border-bottom: 1px solid var(--border-glass); }
+.accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 8px; cursor: pointer; border-radius: 12px; transition: background 0.2s ease; user-select: none; }
+.accordion-header:hover { background: rgba(255, 255, 255, 0.05); }
+.accordion-title { font-size: 1.05rem; font-weight: 500; color: var(--text-primary); margin: 0; }
+.accordion-icon { font-size: 1.5rem; color: var(--text-secondary); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.accordion-icon.expanded { transform: rotate(180deg); }
+.accordion-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.accordion-content.expanded { grid-template-rows: 1fr; }
+.accordion-inner { overflow: hidden; padding: 0 8px; color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+.accordion-inner.expanded { padding-bottom: 16px; }

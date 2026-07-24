@@ -166,7 +166,8 @@ export default function ProfilePage() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
-      router.push("/login");
+      // Don't redirect - show guest view
+      setLoading(false);
       return;
     }
     
@@ -603,25 +604,42 @@ export default function ProfilePage() {
           border: isProfileExpanded ? "1px solid var(--accent-ios)" : "1px solid var(--border-glass)"
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="Profile" style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent-ios)" }} />
-            ) : (
-              <div style={{ width: "60px", height: "60px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid var(--accent-ios)" }}>
-                <i className="bx bxs-user" style={{ fontSize: "1.8rem", color: "var(--text-secondary)" }}></i>
-              </div>
-            )}
-            <div style={{ textAlign: "right" }}>
-              <h3 style={{ margin: "0 0 4px", fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)" }}>{profile?.full_name}</h3>
-              <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem" }}>{profile?.email}</p>
+        {!user ? (
+          /* ── Guest: Login Prompt ── */
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "10px 0" }}>
+            <div style={{ width: "70px", height: "70px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px dashed var(--border-glass-bright)" }}>
+              <i className="bx bx-user" style={{ fontSize: "2rem", color: "var(--text-muted)" }}></i>
             </div>
+            <div style={{ textAlign: "center" }}>
+              <h3 style={{ margin: "0 0 6px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>أهلاً بك!</h3>
+              <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem" }}>سجل دخولك للوصول إلى ملفك الشخصي وكل مزايا التطبيق</p>
+            </div>
+            <Link href="/login" className="ios-btn ios-btn-primary" style={{ width: "100%", textDecoration: "none", justifyContent: "center" }}>
+              <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول
+            </Link>
+            <Link href="/signup" style={{ color: "var(--accent-ios)", fontSize: "0.85rem", textDecoration: "none" }}>ليس لديك حساب؟ إنشاء حساب جديد</Link>
           </div>
-          <i className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
-        </div>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Profile" style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent-ios)" }} />
+              ) : (
+                <div style={{ width: "60px", height: "60px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid var(--accent-ios)" }}>
+                  <i className="bx bxs-user" style={{ fontSize: "1.8rem", color: "var(--text-secondary)" }}></i>
+                </div>
+              )}
+              <div style={{ textAlign: "right" }}>
+                <h3 style={{ margin: "0 0 4px", fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)" }}>{profile?.full_name}</h3>
+                <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem" }}>{profile?.email}</p>
+              </div>
+            </div>
+            <i className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+          </div>
+        )}
 
         {/* Expanded Profile Info / Form */}
-        {isProfileExpanded && (
+        {user && isProfileExpanded && (
           <div onClick={(e) => e.stopPropagation()} style={{ cursor: "default", borderTop: "1px solid var(--border-glass)", paddingTop: "16px" }}>
             {message && (
               <div style={{ background: message.type === 'error' ? "rgba(255, 59, 48, 0.15)" : "rgba(52, 199, 89, 0.15)", border: `1px solid ${message.type === 'error' ? 'rgba(255, 59, 48, 0.3)' : 'rgba(52, 199, 89, 0.3)'}`, padding: "12px", borderRadius: "var(--radius-sm)", color: message.type === 'error' ? "#ff3b30" : "#34c759", marginBottom: "20px", fontSize: "0.85rem", textAlign: "center" }}>
@@ -956,6 +974,8 @@ export default function ProfilePage() {
       </div>
 
       {/* ─── SECURITY SECTION ─── */}
+      {user && (
+      <>
       <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>الأمان</div>
       
       <div 
@@ -1020,6 +1040,9 @@ export default function ProfilePage() {
           <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
         )}
       </div>
+
+      </>
+      )}
 
       {/* ─── 3. SUPPORT & HELP SECTION ─── */}
       <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>المساعدة</div>
@@ -1282,6 +1305,8 @@ export default function ProfilePage() {
       </Link>
 
       {/* ─── 5. ADVANCED SECTION ─── */}
+      {user && (
+      <>
       <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>متقدم</div>
       <div 
         className="glass-panel" 
@@ -1339,47 +1364,68 @@ export default function ProfilePage() {
       </div>
 
 
-      {/* Delete Account Modal */}
+      </>
+      )}
+
+      {/* Delete Account Modal - HeroUI AlertDialog Style */}
       {showDeleteModal && (
-        <div style={{ 
-          position: "fixed", 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0, 
-          background: "rgba(10, 15, 30, 0.72)", 
-          backdropFilter: "blur(16px)", 
-          WebkitBackdropFilter: "blur(16px)", 
-          zIndex: 1000, 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "center", 
-          padding: "20px" 
-        }}>
-          <div className="glass-panel" style={{ maxWidth: "440px", width: "100%", padding: "30px", animation: "fade-in 0.3s ease", border: "1px solid rgba(255, 59, 48, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", borderRadius: "28px" }}>
-            <h3 style={{ fontSize: "1.3rem", color: "#ff3b30", marginBottom: "16px", textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}><i className="bx bx-error" style={{ fontSize: "1.5rem" }}></i> تحذير: حذف الحساب</h3>
-            <p style={{ fontSize: "0.95rem", color: "var(--text-primary)", marginBottom: "12px", lineHeight: "1.6" }}>
-              أنت على وشك حذف حسابك نهائياً. سيؤدي ذلك إلى فقدان كافة بياناتك، صورك، وأماكنك المفضلة ولا يمكن التراجع عن هذه الخطوة.
-            </p>
-            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "16px" }}>
-              يرجى كتابة العبارة التالية بدقة للتأكيد:<br/>
-              <strong style={{ userSelect: "none", color: "var(--text-primary)", display: "block", marginTop: "8px", padding: "8px", background: "var(--border-glass-bright)", borderRadius: "var(--radius-sm)", textAlign: "center" }}>{deleteString}</strong>
-            </p>
-            
-            <input 
-              type="text" 
-              className="ios-input" 
-              placeholder="اكتب العبارة هنا..." 
-              value={deleteConfirmation} 
-              onChange={e => setDeleteConfirmation(e.target.value)} 
-              style={{ marginBottom: "20px", textAlign: "center" }}
-            />
-            
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button className="ios-btn" onClick={() => { setShowDeleteModal(false); setDeleteConfirmation(""); }} style={{ flex: 1 }}>إلغاء</button>
-              <button className="ios-btn" onClick={handleDeleteAccount} disabled={deleteConfirmation !== deleteString || loading} style={{ flex: 1, background: "#ff3b30", color: "#fff", opacity: deleteConfirmation !== deleteString ? 0.5 : 1 }}>
-                {loading ? "جاري الحذف..." : "حذف نهائي"}
-              </button>
+        <div 
+          className="modal-backdrop"
+          onClick={() => { setShowDeleteModal(false); setDeleteConfirmation(""); }}
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0, 0, 0, 0.85)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.2s ease" }}
+        >
+          <div 
+            className="glass-panel alert-dialog"
+            onClick={e => e.stopPropagation()}
+            style={{ maxWidth: "440px", width: "100%", padding: "0", animation: "slide-up 0.25s ease", border: "1px solid rgba(255, 59, 48, 0.25)", boxShadow: "0 32px 80px rgba(0,0,0,0.7)", borderRadius: "20px", overflow: "hidden" }}
+          >
+            {/* Header */}
+            <div style={{ background: "rgba(255, 59, 48, 0.08)", borderBottom: "1px solid rgba(255, 59, 48, 0.15)", padding: "24px 28px 20px", textAlign: "center" }}>
+              <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "rgba(255, 59, 48, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}>
+                <i className="bx bx-error" style={{ fontSize: "1.8rem", color: "#ff3b30" }}></i>
+              </div>
+              <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "#ff3b30", margin: 0 }}>تحذير: حذف الحساب</h3>
+              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "8px 0 0", lineHeight: "1.5" }}>
+                هذا الإجراء لا يمكن التراجع عنه. سيتم حذف جميع بياناتك نهائياً.
+              </p>
+            </div>
+
+            {/* Body */}
+            <div style={{ padding: "20px 28px 24px" }}>
+              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "16px", lineHeight: "1.6", textAlign: "center" }}>
+                يرجى كتابة العبارة التالية للتأكيد:
+              </p>
+              <div style={{ userSelect: "none", color: "var(--text-primary)", padding: "10px 14px", background: "rgba(255,59,48,0.06)", border: "1px dashed rgba(255,59,48,0.3)", borderRadius: "10px", textAlign: "center", fontSize: "0.88rem", fontWeight: "700", marginBottom: "16px" }}>
+                {deleteString}
+              </div>
+              <input 
+                type="text" 
+                className="ios-input" 
+                placeholder="اكتب العبارة هنا..." 
+                value={deleteConfirmation} 
+                onChange={e => setDeleteConfirmation(e.target.value)} 
+                style={{ marginBottom: "20px", textAlign: "center" }}
+              />
+              
+              {/* Actions */}
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button 
+                  className="ios-btn" 
+                  onClick={() => { setShowDeleteModal(false); setDeleteConfirmation(""); }} 
+                  style={{ flex: 1 }}
+                >
+                  <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
+                </button>
+                <button 
+                  className="ios-btn" 
+                  onClick={handleDeleteAccount} 
+                  disabled={deleteConfirmation !== deleteString || loading} 
+                  style={{ flex: 1, background: "#ff3b30", color: "#fff", opacity: deleteConfirmation !== deleteString ? 0.45 : 1, transition: "opacity 0.2s" }}
+                >
+                  <i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i>
+                  {loading ? "جاري الحذف..." : "حذف نهائي"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1704,7 +1750,7 @@ export default function ProfilePage() {
       )}
       {/* ── Notification Modal ── */}
       {selectedNotification && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(5px)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.3s ease" }} onClick={() => setSelectedNotification(null)}>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0, 0, 0, 0.85)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.3s ease" }} onClick={() => setSelectedNotification(null)}>
           <div style={{ background: "var(--glass-bg)", border: "1px solid var(--border-glass)", borderRadius: "24px", padding: "30px 24px", width: "100%", maxWidth: "400px", boxShadow: "0 24px 60px rgba(0,0,0,0.4)", position: "relative", animation: "pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)" }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setSelectedNotification(null)} style={{ position: "absolute", top: "16px", right: "16px", background: "rgba(255,255,255,0.1)", border: "none", width: "32px", height: "32px", borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", cursor: "pointer" }}>
               <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>
