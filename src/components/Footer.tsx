@@ -13,8 +13,8 @@ export default function Footer() {
           {/* Brand */}
           <div className="footer-brand">
             <div className="footer-logo">
-              <span>📋</span>
-              <span className="footer-logo-text">دفتر</span>
+              <img src="/logo/darkMode_logo.png" alt="دفتر" className="logo-img-dark" style={{ height: "36px", width: "auto", objectFit: "contain" }} />
+              <img src="/logo/lightMode_logo%5D.png" alt="دفتر" className="logo-img-light" style={{ height: "36px", width: "auto", objectFit: "contain" }} />
             </div>
             <p className="footer-tagline">
               دليلك الذكي الشامل لأرقام وعناوين ومواقع الأماكن والخدمات في مصر — في متناول يدك دائماً.

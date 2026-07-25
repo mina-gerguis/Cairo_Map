@@ -8,8 +8,10 @@ import { useAuth } from "@/context/AuthContext";
 import ReviewSection from "@/components/ReviewSection";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK } from "@/lib/workingHours";
 import { Place, PlaceCategory, initialPlaces } from "../data/places";
+import { Pagination } from "@/components/ui/Pagination";
 
-/* ─── Helpers ─── */
+/* ─── الدوال المساعدة (Helper Functions) ─── */
+// دالة حساب المسافة الجغرافية بين نقطتين (عرض وطول) بالكيلومترات
 function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -18,6 +20,7 @@ function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
+// دالة توحيد وتنظيف النصوص العربية لبحث دقيق (إزالة الهمزات والتاء المربوطة والتطويل)
 function normalizeArabic(text: string) {
   if (!text) return "";
   return text
@@ -27,6 +30,7 @@ function normalizeArabic(text: string) {
     .replace(/ـ/g, ""); // remove tatweel
 }
 
+// خرائط التصنيفات والأيقونات والألوان للأماكن
 const CATEGORY_EMOJIS: Record<string, string> = {
   restaurant: "🍽️", cafe: "☕", pharmacy: "💊",
   hospital: "🏥", garden: "🌳", family: "👨‍👩‍👧‍👦", entertainment: "🎭", all: "🗂️",
@@ -62,14 +66,18 @@ type PlaceWithDist = Place & { distanceKm?: number; closestBranchName?: string }
 /* ═══════════════════════════════════════════════
    HOME PAGE
 ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   الصفحة الرئيسية والتفاعلات (Home Page Component)
+═══════════════════════════════════════════════ */
 function HomeContent() {
-  const { user } = useAuth();
+  // ── الحالات الأساسية (State Management) ──
+  const { user } = useAuth(); // حالة المستخدم الحالي
   const searchParams = useSearchParams();
-  const [places, setPlaces] = useState<Place[]>([]);
-  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [places, setPlaces] = useState<Place[]>([]); // قائمة الأماكن
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set()); // الأماكن المفضلة
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null); // المكان المفتوح في تفاصيل المكان
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
@@ -570,7 +578,7 @@ function HomeContent() {
               toggleFavorite={toggleFavorite} 
               favoriteIds={favoriteIds} 
               showRating 
-              itemsPerPage={4}
+              itemsPerPage={3}
             />
 
             {/* Section 3: Family */}
@@ -594,18 +602,16 @@ function HomeContent() {
             />
 
             {/* Section 5: All Places */}
-            <section style={{ animation: "slide-in-section 0.5s 0.2s ease both" }}>
-              <div className="section-header">
-                <h2 className="section-title">🗂️ جميع الأماكن</h2>
-              </div>
-              <div className="grid-places">
-                {enrichedPlaces.map((place) => (
-                  <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
-                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
-                  </div>
-                ))}
-              </div>
-            </section>
+            <PaginatedSection 
+              title="🗂️ جميع الأماكن" 
+              places={enrichedPlaces} 
+              setSelectedPlace={setSelectedPlace} 
+              getCategoryColor={getCategoryColor} 
+              toggleFavorite={toggleFavorite} 
+              favoriteIds={favoriteIds} 
+              itemsPerPage={6}
+              forceThreeColumns={true}
+            />
           </>
         ) : (
           /* ═══════════════════════════════════ SEARCH / FILTER MODE ═══════════════════════════════════ */
@@ -656,7 +662,23 @@ function HomeContent() {
                     )}
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
-                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800" }}>{selectedPlace.name}</h2>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800" }}>{selectedPlace.name}</h2>
+                        <button
+                          onClick={(e) => toggleFavorite(e, selectedPlace.id.toString())}
+                          style={{
+                            background: "rgba(120, 120, 120, 0.1)", border: "none",
+                            borderRadius: "50%", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.2s"
+                          }}
+                          title="حفظ إلى المفضلة"
+                        >
+                          {favoriteIds.has(selectedPlace.id.toString()) ? (
+                            <i className="bx bxs-heart" style={{ color: "#ff3b30", fontSize: "1.3rem" }}></i>
+                          ) : (
+                            <i className="bx bx-heart" style={{ color: "var(--text-secondary)", fontSize: "1.3rem" }}></i>
+                          )}
+                        </button>
+                      </div>
                       <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "5px" }}>
                         <i className={`bx ${CATEGORY_ICONS[selectedPlace.category]}`} style={{ fontSize: "1rem" }}></i> {selectedPlace.categoryLabel}
                       </span>
@@ -964,8 +986,8 @@ function ImageWithSkeleton({ src, alt, style, className, onClick, onError }: any
   );
 }
 
-/* ── Shared Paginated Section ── */
-function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, toggleFavorite, favoriteIds, showRating = false, emptyMessage, itemsPerPage = 6 }: {
+/* ─── مكون الأقسام المقسمة لصفحات (Paginated Section Component) ─── */
+function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, toggleFavorite, favoriteIds, showRating = false, emptyMessage, itemsPerPage = 6, forceThreeColumns = false }: {
   title: React.ReactNode;
   places: any[]; // Avoid typing issues
   setSelectedPlace: (place: any) => void;
@@ -975,6 +997,7 @@ function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, t
   showRating?: boolean;
   emptyMessage?: React.ReactNode;
   itemsPerPage?: number;
+  forceThreeColumns?: boolean;
 }) {
   const [page, setPage] = useState(1);
   const totalPages = Math.ceil(places.length / itemsPerPage);
@@ -1000,46 +1023,19 @@ function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, t
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px", width: "100%" }}>
+          <div className={forceThreeColumns ? "grid-3-cols" : ""} style={forceThreeColumns ? { width: "100%" } : { display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "16px", width: "100%" }}>
             {paginatedPlaces.map((place) => (
-              <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative", width: "100%", maxWidth: "320px", flex: "1 1 280px" }}>
+              <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative", width: "100%", maxWidth: "320px", flex: forceThreeColumns ? "unset" : "1 1 280px" }}>
                 <PlaceCardContent place={place} getCategoryColor={getCategoryColor} showRating={showRating} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
               </div>
             ))}
           </div>
 
-          {totalPages > 1 && (
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginTop: "12px", width: "100%" }}>
-              <button 
-                onClick={() => setPage(prev => Math.max(prev - 1, 1))}
-                disabled={page === 1}
-                className="pagination-btn"
-              >
-                <i className="bx bx-chevron-right"></i>
-              </button>
-              
-              {Array.from({ length: totalPages }).map((_, idx) => {
-                const pageNum = idx + 1;
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => setPage(pageNum)}
-                    className={`pagination-btn ${page === pageNum ? 'active' : ''}`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-
-              <button 
-                onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={page === totalPages}
-                className="pagination-btn"
-              >
-                <i className="bx bx-chevron-left"></i>
-              </button>
-            </div>
-          )}
+          <Pagination 
+            currentPage={page} 
+            totalPages={totalPages} 
+            onPageChange={setPage} 
+          />
         </div>
       )}
       <hr className="section-divider" />
@@ -1047,6 +1043,7 @@ function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, t
   );
 }
 
+/* ─── مكون كارد المكان الفردي (Place Card Content Component) ─── */
 function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite, favoriteIds }: {
   place: PlaceWithDist;
   getCategoryColor: (cat: string) => string;
@@ -1071,7 +1068,11 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
               borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "1.1rem"
             }}
           >
-            {favoriteIds.has(place.id.toString()) ? "❤️" : "🤍"}
+            {favoriteIds.has(place.id.toString()) ? (
+              <i className="bx bxs-heart" style={{ color: "#ff3b30", fontSize: "1.2rem" }}></i>
+            ) : (
+              <i className="bx bx-heart" style={{ color: "var(--text-secondary)", fontSize: "1.2rem" }}></i>
+            )}
           </button>
         )}
         <span style={{ position: "absolute", top: "12px", right: "12px", background: getCategoryColor(place.category), color: "#fff", fontSize: "0.78rem", fontWeight: "700", padding: "5px 10px", borderRadius: "10px", backdropFilter: "blur(5px)", display: "flex", alignItems: "center", gap: "5px" }}>

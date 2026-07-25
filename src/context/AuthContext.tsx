@@ -7,6 +7,7 @@ interface AuthContextProps {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  mfaPending: boolean;
   logout: () => Promise<void>;
 }
 
@@ -14,13 +15,47 @@ const AuthContext = createContext<AuthContextProps>({
   user: null,
   session: null,
   loading: true,
+  mfaPending: false,
   logout: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [mfaPending, setMfaPending] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const checkAuthAndMfa = async (currentSession: Session | null) => {
+    if (!currentSession || !supabase) {
+      setSession(null);
+      setUser(null);
+      setMfaPending(false);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (aalData && aalData.currentLevel === "aal1" && aalData.nextLevel === "aal2") {
+        // Password verified, BUT MFA (2FA) is required and NOT YET verified!
+        // DO NOT set user as authenticated until 2FA code is verified!
+        setSession(currentSession);
+        setUser(null);
+        setMfaPending(true);
+      } else {
+        // MFA not required OR MFA already verified (aal2)
+        setSession(currentSession);
+        setUser(currentSession.user);
+        setMfaPending(false);
+      }
+    } catch (e) {
+      setSession(currentSession);
+      setUser(currentSession.user);
+      setMfaPending(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!supabase) {
@@ -28,23 +63,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    // Get initial session
-    const getSession = async () => {
-      if (!supabase) return;
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user || null);
-      setLoading(false);
-    };
-
-    getSession();
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      checkAuthAndMfa(session);
+    });
 
     // Listen for auth state changes
-    if (!supabase) return;
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user || null);
-      setLoading(false);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      await checkAuthAndMfa(session);
     });
 
     return () => {
@@ -55,11 +81,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     if (supabase) {
       await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setMfaPending(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, logout }}>
+    <AuthContext.Provider value={{ user, session, loading, mfaPending, logout }}>
       {children}
     </AuthContext.Provider>
   );

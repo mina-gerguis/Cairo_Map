@@ -23,6 +23,7 @@ const AVAILABLE_INTERESTS = [
   { id: "parks", label: "الحدائق", icon: "bx bx-tree" }
 ];
 
+/* ─── صفحة الملف الشخصي والإعدادات (Profile Page Component) ─── */
 export default function ProfilePage() {
   const router = useRouter();
   const { user, session, loading: authLoading } = useAuth();
@@ -789,7 +790,7 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {/* ─── 2. APPEARANCE SECTION ─── */}
+      {/* ─── القسم الثاني: مظهر التطبيق (Dark / Light Mode) ─── */}
       <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>العامة</div>
       <div 
         className="glass-panel" 
@@ -973,7 +974,7 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {/* ─── SECURITY SECTION ─── */}
+      {/* ─── القسم الثالث: إعدادات الأمان والمصادقة الثنائية (خوص للمسجلين) ─── */}
       {user && (
       <>
       <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>الأمان</div>
@@ -1044,7 +1045,7 @@ export default function ProfilePage() {
       </>
       )}
 
-      {/* ─── 3. SUPPORT & HELP SECTION ─── */}
+      {/* ─── القسم الرابع: الدعم والروابط الهامة (Support & Links) ─── */}
       <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>المساعدة</div>
       <div 
         className="glass-panel" 
@@ -1304,7 +1305,7 @@ export default function ProfilePage() {
         </div>
       </Link>
 
-      {/* ─── 5. ADVANCED SECTION ─── */}
+      {/* ─── القسم الخامس: إعدادات متقدمة وتسجيل الخروج (خوص للمسجلين) ─── */}
       {user && (
       <>
       <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>متقدم</div>
@@ -1436,9 +1437,7 @@ export default function ProfilePage() {
         <div style={{ 
           position: "fixed", 
           top: 0, left: 0, right: 0, bottom: 0, 
-          background: "rgba(10, 15, 30, 0.72)", 
-          backdropFilter: "blur(16px)", 
-          WebkitBackdropFilter: "blur(16px)", 
+          background: "rgba(0, 0, 0, 0.85)", 
           zIndex: 1000, 
           display: "flex", 
           alignItems: "center", 
@@ -1648,9 +1647,7 @@ export default function ProfilePage() {
           left: 0, 
           right: 0, 
           bottom: 0, 
-          background: "rgba(10, 15, 30, 0.72)", 
-          backdropFilter: "blur(16px)", 
-          WebkitBackdropFilter: "blur(16px)", 
+          background: "rgba(0, 0, 0, 0.85)", 
           zIndex: 1000, 
           display: "flex", 
           alignItems: "center", 
@@ -1724,9 +1721,7 @@ export default function ProfilePage() {
           left: 0, 
           right: 0, 
           bottom: 0, 
-          background: "rgba(10, 15, 30, 0.72)", 
-          backdropFilter: "blur(16px)", 
-          WebkitBackdropFilter: "blur(16px)", 
+          background: "rgba(0, 0, 0, 0.85)", 
           zIndex: 1000, 
           display: "flex", 
           alignItems: "center", 
@@ -1740,9 +1735,15 @@ export default function ProfilePage() {
             </p>
             
             <div style={{ display: "flex", gap: "12px" }}>
-              <button className="ios-btn" onClick={() => setShowLogoutModal(false)} style={{ flex: 1 }}>إلغاء</button>
-              <button className="ios-btn" onClick={handleLogout} disabled={loading} style={{ flex: 1, background: "#ff9500", color: "#fff" }}>
-                {loading ? "جاري الخروج..." : "تأكيد"}
+              <button className="ios-btn" onClick={() => setShowLogoutModal(false)} style={{ flex: 1 }}>
+                <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
+              </button>
+              <button className="ios-btn" onClick={handleLogout} disabled={loading} style={{ flex: 1, background: "#ff9500", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                {loading ? "جاري الخروج..." : (
+                  <>
+                    <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تأكيد
+                  </>
+                )}
               </button>
             </div>
           </div>

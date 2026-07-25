@@ -6,12 +6,15 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 
+/* ─── مكون الشريط العلوي للرأس والقوائم (Navbar Component) ─── */
 export default function Navbar() {
   const pathname = usePathname();
+  // ── جلب حالات المصادقة والإشعارات والمسار ──
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
@@ -34,50 +37,22 @@ export default function Navbar() {
     document.documentElement.classList.toggle("light", next === "light");
   };
 
+  // ── قائمة الروابط الرئيسية للموقع ──
   const links = [
     { href: "/", label: "الصفحة الرئيسية" },
     { href: "/metro", label: "اعرف طريقك" },
     { href: "/directory", label: "دليل الهاتف" },
-    { href: "/about", label: "عن الموقع" },
-    { href: "/help", label: "مركز المساعدة" },
+    { href: "/help", label: "المساعدة" },
   ];
 
-  /* ── AUTH PAGE: Minimal Navbar ── */
-  if (isAuthPage) {
-    return (
-      <nav className="navbar">
-        <div className="navbar-inner">
-          <Link href="/" className="navbar-logo">
-            <span className="navbar-logo-icon">📋</span>
-            <span className="navbar-logo-text">دفتر</span>
-          </Link>
-          <div style={{ flex: 1 }} />
-          {/* Theme toggle */}
-          <button className="navbar-icon-btn" onClick={toggleTheme} title={theme === "dark" ? "الوضع المضيء" : "الوضع الداكن"} style={{ marginLeft: "10px" }}>
-            {theme === "dark" ? (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></svg>
-            ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
-            )}
-          </button>
-          {/* Guest browse button */}
-          <Link href="/" className="ios-btn ios-btn-primary" style={{ padding: "8px 20px", fontSize: "0.9rem", height: "42px", width: "auto", gap: "8px" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
-            تصفح كزائر
-          </Link>
-        </div>
-      </nav>
-    );
-  }
-
-  /* ── NORMAL Navbar ── */
+  /* ── Navbar ── */
   return (
     <nav className="navbar">
       <div className="navbar-inner">
         {/* Logo */}
         <Link href="/" className="navbar-logo">
-          <span className="navbar-logo-icon">📋</span>
-          <span className="navbar-logo-text">دفتر</span>
+          <img src="/logo/darkMode_logo.png" alt="Map Cairo" className="logo-img-dark" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
+          <img src="/logo/lightMode_logo%5D.png" alt="Map Cairo" className="logo-img-light" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
         </Link>
 
         {/* Desktop Links */}
@@ -94,7 +69,7 @@ export default function Navbar() {
 
           {/* Auth Controls */}
           <div style={{ position: "relative" }} className="navbar-auth-dropdown">
-            <button className="navbar-icon-btn" title={user ? (user.user_metadata?.full_name || user.email) : "القائمة"} style={{ gap: "8px", padding: "0 14px", position: "relative", border: "none", background: "transparent", cursor: "pointer", outline: "none" }}>
+            <button className="navbar-icon-btn" title={user ? (user.user_metadata?.full_name || user.email) : "الأعدادات"} style={{ gap: "8px", padding: "0 14px", position: "relative", border: "1px solid var(--border-glass)", background: "transparent", cursor: "pointer", outline: "none" }}>
               {user ? (
                 <>
                   <div style={{ position: "relative" }}>
@@ -132,7 +107,7 @@ export default function Navbar() {
                   <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", width: "26px", height: "26px", borderRadius: "50%", background: "var(--bg-secondary)" }}>
                     <i className="bx bx-user" style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}></i>
                   </div>
-                  <span style={{ fontSize: "0.85rem", fontWeight: "700" }}>تسجيل الدخول</span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "500", fontFamily: "Tajawal" }}>تسجيل الدخول</span>
                 </>
               )}
             </button>
@@ -201,7 +176,7 @@ export default function Navbar() {
               {user && (
                 <>
                   <div className="heroui-dropdown-divider"></div>
-                  <button onClick={logout} className="heroui-dropdown-item danger">
+                  <button onClick={() => setShowLogoutModal(true)} className="heroui-dropdown-item danger">
                     <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i>
                     تسجيل الخروج
                   </button>
@@ -225,7 +200,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ── قائمة الجوال الهامبرغر (Mobile Navigation Drawer) ── */}
       {menuOpen && (
         <div className="navbar-mobile-menu" onClick={() => setMenuOpen(false)}>
           {links.map((link) => (
@@ -238,13 +213,46 @@ export default function Navbar() {
               <Link href="/profile" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
                 الملف الشخصي (@{user.user_metadata?.username || "حسابي"})
               </Link>
-              <button onClick={() => { logout(); setMenuOpen(false); }} className="navbar-mobile-link" style={{ color: "#ff3f8e", textAlign: "right", background: "none", border: "none", width: "100%", fontSize: "1rem", fontWeight: "700" }}><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تسجيل الخروج</button>
+              <button onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="navbar-mobile-link" style={{ color: "#ff3f8e", textAlign: "right", background: "none", border: "none", width: "100%", fontSize: "1rem", fontWeight: "700" }}><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تسجيل الخروج</button>
             </>
           ) : (
             <Link href="/login" className="navbar-mobile-link" style={{ color: "var(--accent-primary)", fontWeight: "700" }} onClick={() => setMenuOpen(false)}>
               تسجيل الدخول / حساب جديد
             </Link>
           )}
+        </div>
+      )}
+
+      {/* ── نافذة تأكيد تسجيل الخروج المعتمة (Logout Confirmation Modal) ── */}
+      {showLogoutModal && (
+        <div style={{ 
+          position: "fixed", 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0, 
+          background: "rgba(0, 0, 0, 0.85)", 
+          zIndex: 20000, 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          padding: "20px" 
+        }}>
+          <div className="glass-panel" style={{ maxWidth: "440px", width: "100%", padding: "30px", animation: "fade-in 0.3s ease", border: "1px solid rgba(255, 149, 0, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", borderRadius: "28px" }}>
+            <h3 style={{ fontSize: "1.3rem", color: "#ff9500", marginBottom: "16px", textAlign: "center" }}>تسجيل الخروج</h3>
+            <p style={{ fontSize: "0.95rem", color: "var(--text-primary)", marginBottom: "24px", lineHeight: "1.6", textAlign: "center" }}>
+              هل أنت متأكد من تسجيل الخروج؟
+            </p>
+            
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button className="ios-btn" onClick={() => setShowLogoutModal(false)} style={{ flex: 1 }}>
+                <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
+              </button>
+              <button className="ios-btn" onClick={() => { logout(); setShowLogoutModal(false); }} style={{ flex: 1, background: "#ff9500", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تأكيد
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </nav>

@@ -211,9 +211,9 @@ export default function FavoritesPage() {
                       <img src={place.images?.[0] || "/placeholder.jpg"} alt={place.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       <button 
                         onClick={(e) => handleRemoveFavorite(e, place.id)}
-                        style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(255,255,255,0.9)", border: "none", borderRadius: "50%", width: "26px", height: "26px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "0.9rem" }}
+                        style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(255,255,255,0.9)", border: "none", borderRadius: "50%", width: "26px", height: "26px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
                       >
-                        ❤️
+                        <i className="bx bxs-heart" style={{ color: "#ff3b30", fontSize: "1.1rem" }}></i>
                       </button>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>

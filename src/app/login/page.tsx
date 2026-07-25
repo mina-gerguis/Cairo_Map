@@ -4,9 +4,13 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { Field, Label, Description, FieldError } from "@/components/ui/Field";
+
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { user, mfaPending, logout } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +22,38 @@ export default function LoginPage() {
   const [factorId, setFactorId] = useState("");
   const [challengeId, setChallengeId] = useState("");
   const [keepSignedIn, setKeepSignedIn] = useState(true);
+
+  // Auto redirect if fully authenticated
+  React.useEffect(() => {
+    if (user && !mfaPending) {
+      router.push("/");
+    }
+  }, [user, mfaPending, router]);
+
+  // Handle pending MFA on page load/refresh
+  React.useEffect(() => {
+    const initMfaStep = async () => {
+      if (!supabase) return;
+      try {
+        const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (aalData && aalData.currentLevel === 'aal1' && aalData.nextLevel === 'aal2') {
+          const { data: factors } = await supabase.auth.mfa.listFactors();
+          const totpFactor = factors?.totp?.[0];
+          if (totpFactor && totpFactor.status === 'verified') {
+            setFactorId(totpFactor.id);
+            const challenge = await supabase.auth.mfa.challenge({ factorId: totpFactor.id });
+            if (challenge.data) {
+              setChallengeId(challenge.data.id);
+              setLoginStep("mfa");
+            }
+          }
+        }
+      } catch (err) {
+        console.error("MFA init error:", err);
+      }
+    };
+    initMfaStep();
+  }, []);
 
   const [codeDigits, setCodeDigits] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -129,15 +165,9 @@ export default function LoginPage() {
         
         {/* Logo / Brand Header */}
         <div style={{ textAlign: "center", marginBottom: "40px", animation: "slide-in-section 0.6s ease both" }}>
-          <div style={{
-            width: "72px", height: "72px", borderRadius: "22px",
-            background: "linear-gradient(135deg, #6c63ff, #00d4aa)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "2rem", margin: "0 auto 20px",
-            boxShadow: "0 12px 40px rgba(108,99,255,0.4)",
-            animation: "float-y 4s ease-in-out infinite"
-          }}>
-            📋
+          <div style={{ margin: "0 auto 20px", display: "flex", justifyContent: "center" }}>
+            <img src="/logo/darkMode_logo.png" alt="دفتر" className="logo-img-dark" style={{ height: "54px", width: "auto", objectFit: "contain" }} />
+            <img src="/logo/lightMode_logo%5D.png" alt="دفتر" className="logo-img-light" style={{ height: "54px", width: "auto", objectFit: "contain" }} />
           </div>
           <h1 style={{
             fontFamily: "var(--font-display)",
@@ -188,45 +218,47 @@ export default function LoginPage() {
 
           {loginStep === "credentials" ? (
             <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              <div>
-              <label className="help-label">البريد الإلكتروني</label>
-              <div style={{ position: "relative" }}>
-                <div style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", pointerEvents: "none" }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <Field>
+                <Label htmlFor="email" required>البريد الإلكتروني</Label>
+                <div style={{ position: "relative" }}>
+                  <div style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", pointerEvents: "none" }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  </div>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    className="ios-input"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="example@email.com"
+                    style={{ textAlign: "left", direction: "ltr", paddingRight: "48px" }}
+                  />
                 </div>
-                <input
-                  type="email"
-                  required
-                  className="ios-input"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="example@email.com"
-                  style={{ textAlign: "left", direction: "ltr", paddingRight: "48px" }}
-                />
-              </div>
-            </div>
+              </Field>
 
-            <div>
-              <label className="help-label">كلمة المرور</label>
-              <div style={{ position: "relative" }}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  className="ios-input"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  style={{ textAlign: "left", direction: "ltr", paddingLeft: "48px" }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontSize: "1.1rem", display: "flex", alignItems: "center" }}
-                >
-                  {showPassword ? "🙈" : "👁️"}
-                </button>
-              </div>
-            </div>
+              <Field>
+                <Label htmlFor="password" required>كلمة المرور</Label>
+                <div style={{ position: "relative" }}>
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    className="ios-input"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    style={{ textAlign: "left", direction: "ltr", paddingLeft: "48px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontSize: "1.1rem", display: "flex", alignItems: "center" }}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
+              </Field>
 
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <input 
