@@ -910,7 +910,7 @@ export default function ProfilePage() {
       {/* ─── القسم الثاني: مظهر التطبيق (Dark / Light Mode) ─── */}
       <div className={styles.sectionCard}>
         <div
-          className={`glass-panel ${styles.navCard}`}
+          className={styles.navCard}
           onClick={toggleTheme}
         >
           <div className={styles.themeToggleLeft}>
@@ -930,7 +930,7 @@ export default function ProfilePage() {
 
         {/* Favorite Places Card */}
         <div
-          className={`glass-panel ${styles.navCard}`}
+          className={styles.navCard}
           onClick={() => router.push('/favorites')}
         >
           <div className={styles.themeToggleLeft}>
