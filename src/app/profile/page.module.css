@@ -520,7 +520,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0px;
-  transition: transform 0.2s, background-color 0.2s;
+  /* transition: transform 0.2s, background-color 0.2s; */
   /* border: 1px solid var(--border-glass); */
 }
 
