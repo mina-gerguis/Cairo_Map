@@ -961,12 +961,12 @@ export default function ProfilePage() {
         <hr className={styles.dividerDashed} />
         {/* Start Notifications Card */}
         <div
-          className= {styles.cardContainer}
+          className={styles.cardContainer}
           style={{ flexDirection: "column" }}
           onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
         >
           <div className={styles.cardContent}
-          style={{justifyContent: "space-between"}}>
+            style={{ justifyContent: "space-between" }}>
             <div className={styles.notifHeaderLeft}>
               <div style={{ color: "var(--accent-ios)" }}>
                 <i className={`bx bxs-bell ${styles.cardIcon}`}></i>
@@ -989,11 +989,11 @@ export default function ProfilePage() {
           {isNotificationsExpanded && (
             <div className={styles.notifExpandedContent}>
               <div className={styles.notifExpandedHeader}>
-                <h4 className={styles.notifExpandedTitle}>سجل الإشعارات</h4>
+                <h4 className={styles.notifExpandedTitle}>السجل</h4>
                 <div className={styles.notifActions}>
                   {unreadCount > 0 && (
                     <button onClick={(e) => { e.stopPropagation(); markAllAsRead(); }} className={`ios-btn ${styles.notifBtnSmall}`}>
-                      جعل الكل مقروء
+                      قراءة الكل
                     </button>
                   )}
                   {notifications.length > 0 && (
@@ -1033,77 +1033,78 @@ export default function ProfilePage() {
             </div>
           )}
         </div>
-
-        {/* Propose Place Card */}
+        {/*End Notifications Card */}
+        <hr className={styles.dividerDashed} />
+        {/*Start Propose Place Card */}
         {user && (
           <div
-            className={`glass-panel ${styles.navCard}`}
+            className={`glass-panel ${styles.cardContainer}`}
             onClick={() => router.push('/propose-place')}
           >
-            <div className={styles.themeToggleLeft}>
-              <div className={styles.proposeIconWrapper}>
-                <i className={`bx bx-map-pin ${styles.proposeIcon}`}></i>
+            <div className={styles.cardContent}>
+              <div style={{ color: "var(--accent-secondary)" }}>
+                <i className={`bx bx-map-pin ${styles.cardIcon}`}></i>
               </div>
               <div>
                 <h3 className={styles.cardTitle}>اقتراحات الأماكن</h3>
-                <p className={styles.proposeSubtitle}>
-                  اقترح مكان جديد وساهم في إضافته للموقع بعد مراجعة الإدارة
-                </p>
               </div>
             </div>
-            <div className={styles.proposeAction}>
-              <span>إضافة مكان</span>
+            <div className={styles.badgeRight}>
               <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             </div>
           </div>
         )}
+        {/*End Propose Place Card */}
       </div>
 
-      {/* ─── القسم الثالث: إعدادات الأمان والمصادقة الثنائية (خاص للمسجلين) ─── */}
+      {/* ─── Section 3: Security & 2FA (For logged in users) ─── */}
       {user && (
-        <>
-          <div className={styles.sectionHeaderLabel}>الأمان</div>
-
+        <div className={styles.sectionCard}>
+          {/* Start Change password Card */}
           <div
-            className={`glass-panel ${styles.securityCard}`}
+            className={styles.cardContainer}
             onClick={() => setShowPasswordModal(true)}
           >
-            <div className={styles.themeToggleLeft}>
-              <div className={styles.securityIconWrapper}>
+            <div className={styles.cardContent}>
+              <div style={{ color: "var(--accent-ios)" }}>
                 <i className={`bx bx-lock-alt ${styles.securityIcon}`}></i>
               </div>
               <div>
                 <h3 className={styles.cardTitle}>تغيير كلمة المرور</h3>
-                <p className={styles.securitySubtitle}>تحديث كلمة المرور الخاصة بحسابك</p>
               </div>
             </div>
             <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
 
+          {/*End Change password Card */}
+          <hr className={styles.dividerDashed} />
+          {/*Start 2FA Card */}
+
           <div
-            className={`glass-panel ${styles.securityCard} ${styles.securityCardMargin} ${activeCount > 0 ? styles.mfaCardActive : styles.mfaCardInactive}`}
+            className={`${styles.cardContainer} ${activeCount > 0 ? styles.mfaCardActive : styles.mfaCardInactive}`}
             onClick={() => setShow2FAModal(true)}
           >
-            <div className={styles.themeToggleLeft}>
-              <div className={activeCount > 0 ? styles.mfaIconWrapperActive : styles.mfaIconWrapperInactive}>
-                <i className={`bx bx-shield-check ${styles.securityIcon}`}></i>
+            <div className={styles.cardContent}>
+              <div style={{ color: "var(--accent-secondary)" }}>
+                <i className={`bx bx-key ${styles.cardIcon}`}></i>
               </div>
               <div>
                 <h3 className={styles.cardTitle}>
                   المصادقة الثنائية ({activeCount} من 3)
                 </h3>
-                <p className={styles.securitySubtitle}>
-                  إضافة طبقات حماية إضافية لحسابك
-                </p>
+
               </div>
+
             </div>
             {activeCount > 0 ? (
               <i className={`bx bxs-check-circle ${styles.mfaCheckIcon}`}></i>
             ) : (
               <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             )}
+
           </div>
-        </>
+        </div>
+
       )}
 
       {/* ─── القسم الرابع: الدعم والروابط الهامة (Support & Links) ─── */}
