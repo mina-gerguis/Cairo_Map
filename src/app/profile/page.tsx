@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
+import styles from "./page.module.css";
 
 const PROFILE_AVATARS = [
   "https://api.dicebear.com/7.x/notionists/svg?seed=Ahmed&backgroundColor=b6e3f4",
@@ -44,7 +45,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { user, session, loading: authLoading } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteAll } = useNotifications();
-  
+
   const [profile, setProfile] = useState<any>(null);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +54,7 @@ export default function ProfilePage() {
   const [selectedFavCategory, setSelectedFavCategory] = useState<string>("الكل");
 
   const [editMode, setEditMode] = useState(false);
-  
+
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const handleAvatarFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -212,7 +213,7 @@ export default function ProfilePage() {
       setLoading(false);
       return;
     }
-    
+
     fetchProfileData();
     fetchFAQs();
     fetchMfaStatus();
@@ -299,7 +300,7 @@ export default function ProfilePage() {
   const fetchProfileData = async () => {
     if (!supabase || !user) return;
     setLoading(true);
-    
+
     // Fetch profile
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
@@ -334,7 +335,7 @@ export default function ProfilePage() {
         .from('places')
         .select('*')
         .in('id', placeIds);
-      
+
       if (favPlaces) {
         const mappedFavs = favPlaces.map(dbPlace => ({
           id: dbPlace.id,
@@ -403,7 +404,7 @@ export default function ProfilePage() {
         .select('id')
         .eq('username', formData.username)
         .neq('id', user.id);
-      
+
       if (existing && existing.length > 0) {
         setMessage({ type: 'error', text: "اسم المستخدم هذا مأخوذ مسبقاً." });
         setSaving(false);
@@ -466,11 +467,11 @@ export default function ProfilePage() {
     if (error) {
       setMessage({ type: 'error', text: "حدث خطأ أثناء حفظ البيانات." });
     } else {
-      setMessage({ 
-        type: 'success', 
-        text: emailChanged 
-          ? "تم حفظ البيانات. راجع بريدك الإلكتروني لتأكيد العنوان الجديد." 
-          : "تم تحديث البيانات بنجاح!" 
+      setMessage({
+        type: 'success',
+        text: emailChanged
+          ? "تم حفظ البيانات. راجع بريدك الإلكتروني لتأكيد العنوان الجديد."
+          : "تم تحديث البيانات بنجاح!"
       });
       setEditMode(false);
       fetchProfileData(); // Refresh data
@@ -558,7 +559,7 @@ export default function ProfilePage() {
         code: verificationCode
       });
       if (verify.error) throw verify.error;
-      
+
       setActiveMfaFactors(prev => ({ ...prev, totp: true }));
       setShow2FAModal(false);
       setMfaStep("selection");
@@ -636,7 +637,7 @@ export default function ProfilePage() {
   };
 
   if (loading || authLoading) {
-    return <div style={{ textAlign: "center", padding: "50px" }}>جاري تحميل الملف الشخصي...</div>;
+    return <div className={styles.loadingContainer}>جاري تحميل الملف الشخصي...</div>;
   }
 
   const pwdRules = {
@@ -650,111 +651,91 @@ export default function ProfilePage() {
   const isPasswordValid = Object.values(pwdRules).every(Boolean);
 
   return (
-    <div style={{ maxWidth: "600px", margin: "40px auto", padding: "0 20px" }}>
+    <div className={styles.container}>
       {/* ─── 1. PROFILE RECTANGLE CARD ─── */}
-      <div 
-        className="glass-panel" 
+      <div
+        className={`glass-panel ${styles.profileCard} ${isProfileExpanded ? styles.profileCardExpanded : ''}`}
         onClick={() => setIsProfileExpanded(!isProfileExpanded)}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          flexDirection: "column",
-          gap: "16px",
-          marginBottom: "24px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: isProfileExpanded ? "1px solid var(--accent-ios)" : "1px solid var(--border-glass)"
-        }}
       >
         {!user ? (
           /* ── Guest: Login Prompt ── */
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "10px 0" }}>
-            <div style={{ width: "70px", height: "70px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px dashed var(--border-glass-bright)" }}>
-              <i className="bx bx-user" style={{ fontSize: "2rem", color: "var(--text-muted)" }}></i>
+          <div className={styles.guestContainer}>
+            <div className={styles.guestAvatarBg}>
+              <i className={`bx bx-user ${styles.guestAvatarIcon}`}></i>
             </div>
-            <div style={{ textAlign: "center" }}>
-              <h3 style={{ margin: "0 0 6px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>أهلاً بك!</h3>
-              <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem" }}>سجل دخولك للوصول إلى ملفك الشخصي وكل مزايا التطبيق</p>
+            <div className={styles.guestTextWrapper}>
+              <h3 className={styles.guestTitle}>أهلاً بك!</h3>
+              <p className={styles.guestSubtitle}>سجل دخولك للوصول إلى ملفك الشخصي وكل مزايا التطبيق</p>
             </div>
-            <Link href="/login" className="ios-btn ios-btn-primary" style={{ width: "100%", textDecoration: "none", justifyContent: "center" }}>
-              <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول
+            <Link href="/login" className={`ios-btn ios-btn-primary ${styles.guestLoginBtn}`}>
+              <i className={`bx bx-log-in ${styles.guestLoginIcon}`}></i> تسجيل الدخول
             </Link>
-            <Link href="/signup" style={{ color: "var(--accent-ios)", fontSize: "0.85rem", textDecoration: "none" }}>ليس لديك حساب؟ إنشاء حساب جديد</Link>
+            <Link href="/signup" className={styles.guestSignupLink}>ليس لديك حساب؟ إنشاء حساب جديد</Link>
           </div>
         ) : (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div className={styles.profileHeader}>
+            <div className={styles.profileHeaderLeft}>
               {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="Profile" style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--accent-ios)" }} />
+                <img src={profile.avatar_url} alt="Profile" className={styles.profileAvatar} />
               ) : (
-                <div style={{ width: "60px", height: "60px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid var(--accent-ios)" }}>
-                  <i className="bx bxs-user" style={{ fontSize: "1.8rem", color: "var(--text-secondary)" }}></i>
+                <div className={styles.profileAvatarPlaceholder}>
+                  <i className={`bx bxs-user ${styles.profileAvatarIcon}`}></i>
                 </div>
               )}
-              <div style={{ textAlign: "right" }}>
-                <h3 style={{ margin: "0 0 4px", fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)" }}>{profile?.full_name}</h3>
-                <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem" }}>{profile?.email}</p>
+              <div className={styles.profileInfoText}>
+                <h3 className={styles.profileName}>{profile?.full_name}</h3>
+                <p className={styles.profileEmail}>{profile?.email}</p>
               </div>
             </div>
-            <i className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+            <i className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${styles.profileChevron}`}></i>
           </div>
         )}
 
         {/* Expanded Profile Info / Form */}
         {user && isProfileExpanded && (
-          <div onClick={(e) => e.stopPropagation()} style={{ cursor: "default", borderTop: "1px solid var(--border-glass)", paddingTop: "16px" }}>
+          <div onClick={(e) => e.stopPropagation()} className={styles.profileExpandedContent}>
             {message && (
-              <div style={{ background: message.type === 'error' ? "rgba(255, 59, 48, 0.15)" : "rgba(52, 199, 89, 0.15)", border: `1px solid ${message.type === 'error' ? 'rgba(255, 59, 48, 0.3)' : 'rgba(52, 199, 89, 0.3)'}`, padding: "12px", borderRadius: "var(--radius-sm)", color: message.type === 'error' ? "#ff3b30" : "#34c759", marginBottom: "20px", fontSize: "0.85rem", textAlign: "center" }}>
+              <div className={`${styles.messageBanner} ${message.type === 'error' ? styles.messageError : styles.messageSuccess}`}>
                 {message.text}
               </div>
             )}
 
             {editMode ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-
+              <div className={styles.formGap}>
                 {/* Profile Picture / Avatar Selection */}
                 <div>
                   <label className="help-label">الصورة الشخصية / الأفتار</label>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "rgba(255,255,255,0.02)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-glass)" }}>
-                    <div style={{ position: "relative" }}>
+                  <div className={styles.avatarSection}>
+                    <div className={styles.avatarRelative}>
                       {formData.avatarUrl ? (
-                        <img src={formData.avatarUrl} alt="Avatar" style={{ width: "80px", height: "80px", borderRadius: "50%", objectFit: "cover", border: "3px solid var(--accent-ios)" }} />
+                        <img src={formData.avatarUrl} alt="Avatar" className={styles.formAvatarImg} />
                       ) : (
-                        <div style={{ width: "80px", height: "80px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "3px solid var(--border-glass-bright)" }}>
-                          <i className="bx bxs-user" style={{ fontSize: "2.5rem", color: "var(--text-secondary)" }}></i>
+                        <div className={styles.formAvatarPlaceholder}>
+                          <i className={`bx bxs-user ${styles.formAvatarIcon}`}></i>
                         </div>
                       )}
                       {uploadingAvatar && (
-                        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <div className="spinner" style={{ width: "20px", height: "20px" }} />
+                        <div className={styles.avatarOverlay}>
+                          <div className={`spinner ${styles.avatarSpinner}`} />
                         </div>
                       )}
                     </div>
 
-                    <label className="ios-btn" style={{ fontSize: "0.85rem", padding: "8px 16px", cursor: "pointer", background: "rgba(108, 99, 255, 0.15)", border: "1px solid rgba(108, 99, 255, 0.3)", color: "var(--accent-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
-                      <i className="bx bx-upload" style={{ fontSize: "1.1rem" }}></i>
+                    <label className={`ios-btn ${styles.uploadBtnLabel}`}>
+                      <i className={`bx bx-upload ${styles.uploadIcon}`}></i>
                       {uploadingAvatar ? "جاري الرفع..." : "رفع صورة جديدة من جهازك"}
-                      <input type="file" accept="image/*" onChange={handleAvatarFileUpload} style={{ display: "none" }} disabled={uploadingAvatar} />
+                      <input type="file" accept="image/*" onChange={handleAvatarFileUpload} className={styles.hiddenInput} disabled={uploadingAvatar} />
                     </label>
 
-                    <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px" }}>أو اختر أفتار جاهز:</span>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px", width: "100%", maxWidth: "320px" }}>
+                    <span className={styles.uploadMutedText}>أو اختر أفتار جاهز:</span>
+                    <div className={styles.avatarsGrid}>
                       {PROFILE_AVATARS.map((url, i) => (
-                        <div 
-                          key={i} 
+                        <div
+                          key={i}
                           onClick={() => setFormData(prev => ({ ...prev, avatarUrl: url }))}
-                          style={{ 
-                            border: formData.avatarUrl === url ? "3px solid var(--accent-ios)" : "2px solid transparent", 
-                            borderRadius: "50%", 
-                            overflow: "hidden", 
-                            cursor: "pointer", 
-                            transition: "all 0.2s ease",
-                            opacity: formData.avatarUrl && formData.avatarUrl !== url ? 0.5 : 1,
-                            boxShadow: formData.avatarUrl === url ? "0 0 12px rgba(108, 99, 255, 0.5)" : "none" 
-                          }}
+                          className={`${styles.avatarPresetItem} ${formData.avatarUrl === url ? styles.avatarPresetItemActive : (formData.avatarUrl ? styles.avatarPresetItemDimmed : '')}`}
                         >
-                          <img src={url} alt={`Avatar ${i}`} style={{ width: "100%", height: "auto", display: "block", aspectRatio: "1" }} />
+                          <img src={url} alt={`Avatar ${i}`} className={styles.avatarPresetImg} />
                         </div>
                       ))}
                     </div>
@@ -763,38 +744,36 @@ export default function ProfilePage() {
 
                 <div>
                   <label className="help-label">الاسم بالكامل</label>
-                  <input type="text" className="ios-input" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
+                  <input type="text" className="ios-input" value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} />
                 </div>
                 <div>
                   <label className="help-label">تاريخ الميلاد</label>
-                  <input 
-                    type="date" 
-                    disabled 
+                  <input
+                    type="date"
+                    disabled
                     readOnly
-                    className="ios-input" 
-                    value={formData.dob} 
-                    style={{ textAlign: "left", direction: "ltr", opacity: 0.65, cursor: "not-allowed", background: "rgba(255, 255, 255, 0.03)" }} 
+                    className={`ios-input ${styles.inputDobDisabled}`}
+                    value={formData.dob}
                   />
-                  <p style={{ marginTop: "8px", fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.55 }}>
-                    لا يمكنك تغير تاريخ ميلادك اذا كنت قد ادخلت تاريخ ميلادك خطا فيرجى <Link href="/help" style={{ color: "var(--accent-primary)", textDecoration: "underline", fontWeight: "600" }}>التواصل مع الإدارة للتغير</Link>
+                  <p className={styles.dobWarningText}>
+                    لا يمكنك تغير تاريخ ميلادك اذا كنت قد ادخلت تاريخ ميلادك خطا فيرجى <Link href="/help" className={styles.dobWarningLink}>التواصل مع الإدارة للتغير</Link>
                   </p>
                 </div>
                 <div>
                   <label className="help-label">اسم المستخدم (مرة كل 30 يوم)</label>
-                  <input 
-                    type="text" 
-                    className="ios-input" 
-                    value={formData.username} 
-                    onChange={e => setFormData({...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')})} 
-                    style={{ textAlign: "left", direction: "ltr", borderColor: (formData.username.length > 0 && formData.username.length < 3) ? "#ff6eb4" : "" }} 
+                  <input
+                    type="text"
+                    className={`ios-input ${styles.usernameInput} ${(formData.username.length > 0 && formData.username.length < 3) ? styles.usernameInputInvalid : ''}`}
+                    value={formData.username}
+                    onChange={e => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') })}
                   />
                   {formData.username.length > 0 && (
                     formData.username.length < 3 ? (
-                      <p style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "4px" }}>
+                      <p className={styles.usernameWarningText}>
                         ⚠️ اسم المستخدم يجب أن يكون 3 حروف على الأقل.
                       </p>
                     ) : /^\d+$/.test(formData.username) || !/[a-z]/i.test(formData.username) ? (
-                      <p style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "4px" }}>
+                      <p className={styles.usernameWarningText}>
                         ⚠️ اسم المستخدم لا يمكن أن يتكون من أرقام فقط (يجب أن يحتوي على حروف إنجليزية).
                       </p>
                     ) : null
@@ -802,49 +781,49 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <label className="help-label">البريد الإلكتروني (يتطلب تأكيد)</label>
-                  <input type="email" className="ios-input" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{ textAlign: "left", direction: "ltr" }} />
+                  <input type="email" className={`ios-input ${styles.emailInput}`} value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                 </div>
-                
+
                 <div>
                   <label className="help-label">رقم الهاتف (بدون صفر البداية)</label>
-                  <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
-                    <div style={{ position: "absolute", left: "12px", display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", zIndex: 1, direction: "ltr" }}>
+                  <div className={styles.phoneInputContainer}>
+                    <div className={styles.phonePrefix}>
                       <span>🇪🇬</span>
-                      <span style={{ fontSize: "0.9rem", fontWeight: "600" }}>+20</span>
-                      <span style={{ height: "20px", width: "1px", background: "var(--border-glass-bright)", margin: "0 4px" }} />
+                      <span className={styles.phonePrefixCode}>+20</span>
+                      <span className={styles.phonePrefixDivider} />
                     </div>
-                    <input type="tel" className="ios-input" value={formData.phone} onChange={e => {
+                    <input type="tel" className={`ios-input ${styles.phoneInput}`} value={formData.phone} onChange={e => {
                       const numbersOnly = e.target.value.replace(/[^0-9]/g, '');
-                      if (numbersOnly.length <= 10) setFormData({...formData, phone: numbersOnly});
-                    }} style={{ textAlign: "left", direction: "ltr", paddingLeft: "85px" }} />
+                      if (numbersOnly.length <= 10) setFormData({ ...formData, phone: numbersOnly });
+                    }} />
                   </div>
                 </div>
                 <div>
                   <label className="help-label">المحافظة</label>
-                  <select className="ios-input help-select" value={formData.governorate} onChange={(e) => setFormData({...formData, governorate: e.target.value, city: ""})}>
+                  <select className="ios-input help-select" value={formData.governorate} onChange={(e) => setFormData({ ...formData, governorate: e.target.value, city: "" })}>
                     {governoratesList.map(gov => <option key={gov} value={gov}>{gov}</option>)}
                   </select>
                 </div>
                 {formData.governorate && (
                   <div>
                     <label className="help-label">المدينة</label>
-                    <select className="ios-input help-select" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})}>
+                    <select className="ios-input help-select" value={formData.city} onChange={e => setFormData({ ...formData, city: e.target.value })}>
                       <option value="" disabled>اختر المدينة...</option>
                       {egyptLocations[formData.governorate]?.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
                 )}
-                
+
                 {/* Interests Selection */}
-                <div style={{ marginTop: "8px" }}>
+                <div className={styles.interestsSection}>
                   <label className="help-label">اهتماماتي (يمكنك اختيار أكثر من خيار)</label>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  <div className={styles.interestsGrid}>
                     {AVAILABLE_INTERESTS.map(interest => {
                       const isSelected = formData.interests.includes(interest.id);
                       return (
-                        <button 
+                        <button
                           key={interest.id}
-                          className={`category-pill ${isSelected ? 'active' : ''}`}
+                          className={`category-pill ${isSelected ? 'active' : ''} ${styles.interestPillBtn}`}
                           onClick={() => {
                             if (isSelected) {
                               setFormData({ ...formData, interests: formData.interests.filter(id => id !== interest.id) });
@@ -852,74 +831,73 @@ export default function ProfilePage() {
                               setFormData({ ...formData, interests: [...formData.interests, interest.id] });
                             }
                           }}
-                          style={{ fontSize: "0.85rem", padding: "6px 12px", cursor: "pointer" }}
                         >
-                          <i className={interest.icon} style={{ fontSize: "1.1rem" }} /> {interest.label}
+                          <i className={`${interest.icon} ${styles.interestPillIcon}`} /> {interest.label}
                         </button>
                       );
                     })}
                   </div>
                 </div>
 
-                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
-                  <button className="ios-btn" onClick={() => setEditMode(false)} style={{ flex: 1 }}>إلغاء</button>
-                  <button className="ios-btn ios-btn-primary" onClick={handleSave} disabled={saving} style={{ flex: 1 }}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
+                <div className={styles.formButtonsRow}>
+                  <button className={`ios-btn ${styles.flex1}`} onClick={() => setEditMode(false)}>إلغاء</button>
+                  <button className={`ios-btn ios-btn-primary ${styles.flex1}`} onClick={handleSave} disabled={saving}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
                 </div>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>اسم المستخدم</span>
-                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>@{profile?.username}</span>
+              <div className={styles.formGap}>
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>اسم المستخدم</span>
+                  <span className={styles.infoValue}>@{profile?.username}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>رقم الهاتف</span>
-                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }} dir="ltr">{profile?.phone}</span>
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>رقم الهاتف</span>
+                  <span className={styles.infoValue} dir="ltr">{profile?.phone}</span>
                 </div>
                 {profile?.dob && (
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>تاريخ الميلاد</span>
-                    <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile.dob}</span>
+                  <div className={styles.infoRow}>
+                    <span className={styles.infoLabel}>تاريخ الميلاد</span>
+                    <span className={styles.infoValue}>{profile.dob}</span>
                   </div>
                 )}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>الجنس</span>
-                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile?.gender}</span>
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>الجنس</span>
+                  <span className={styles.infoValue}>{profile?.gender}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>المنطقة</span>
-                  <span style={{ fontWeight: "500", fontSize: "0.95rem" }}>{profile?.city}، {profile?.governorate}</span>
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>المنطقة</span>
+                  <span className={styles.infoValue}>{profile?.city}، {profile?.governorate}</span>
                 </div>
-                
+
                 {/* Interests Display */}
-                <div style={{ marginTop: "4px", borderTop: "1px solid var(--border-glass)", paddingTop: "12px" }}>
-                  <div style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "8px", fontWeight: "600" }}>اهتماماتي</div>
+                <div className={styles.interestsDisplaySection}>
+                  <div className={styles.interestsDisplayTitle}>اهتماماتي</div>
                   {profile?.interests && profile.interests.length > 0 ? (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    <div className={styles.interestsGrid}>
                       {profile.interests.map((intId: string) => {
                         const interest = AVAILABLE_INTERESTS.find(i => i.id === intId);
                         if (!interest) return null;
                         return (
-                          <div key={intId} className="category-pill active" style={{ fontSize: "0.85rem", padding: "6px 12px", pointerEvents: "none" }}>
-                            <i className={interest.icon} style={{ fontSize: "1.1rem" }} /> {interest.label}
+                          <div key={intId} className={`category-pill active ${styles.interestPillReadonly}`}>
+                            <i className={`${interest.icon} ${styles.interestPillIcon}`} /> {interest.label}
                           </div>
                         );
                       })}
                     </div>
                   ) : (
-                    <div style={{ background: "var(--bg-glass-card)", padding: "16px", borderRadius: "12px", textAlign: "center", border: "1px dashed var(--border-glass)" }}>
-                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "12px", lineHeight: "1.6" }}>
+                    <div className={styles.noInterestsCard}>
+                      <p className={styles.noInterestsText}>
                         قم بإضافة اهتماماتك الآن لنتمكن من إرسال أقوى العروض والإشعارات التي تناسبك خصيصاً!
                       </p>
-                      <button className="ios-btn" onClick={(e) => { e.stopPropagation(); setEditMode(true); }} style={{ padding: "6px 16px", fontSize: "0.85rem", margin: "0 auto" }}>
+                      <button className={`ios-btn ${styles.addInterestsBtn}`} onClick={(e) => { e.stopPropagation(); setEditMode(true); }}>
                         أضف الآن
                       </button>
                     </div>
                   )}
                 </div>
 
-                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
-                  <button className="ios-btn ios-btn-primary" onClick={() => setEditMode(true)} style={{ flex: 1 }}>
+                <div className={styles.formButtonsRow}>
+                  <button className={`ios-btn ios-btn-primary ${styles.flex1}`} onClick={() => setEditMode(true)}>
                     تعديل البيانات
                   </button>
                 </div>
@@ -930,366 +908,231 @@ export default function ProfilePage() {
       </div>
 
       {/* ─── القسم الثاني: مظهر التطبيق (Dark / Light Mode) ─── */}
-      <div className="test" style={{
-        backgroundColor: "var(--bg-primary)",
-        border: "1px solid var(--border-glass)",
-        borderRadius: "20px",
-        padding: "20px",
-        marginBottom: "24px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-      }}>
-
-      
-      <div style={{ fontFamily: "var(--font-cairo)", fontSize: "1.01rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "700", marginRight: "6px", 
-       
-       }}>العامة</div>
-      <div 
-        className="glass-panel" 
-        onClick={toggleTheme}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "24px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: "1px solid var(--border-glass)"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ color: "var(--accent-ios)" }}>
-            <i className={`bx ${theme === 'dark' ? 'bx-sun' : 'bx-moon'}`} style={{ fontSize: "1.4rem" }}></i>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <h3 style={{ fontFamily:"var(--font-cairo)", margin: 0, fontSize: "1rem", fontWeight: "600", color: "var(--text-primary)" }}>
-              {theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
-            </h3>
-          </div>
-        </div>
-        <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
-      </div>
-
-      {/* Favorite Places Card */}
-      <div 
-        className="glass-panel" 
-        onClick={() => router.push('/favorites')}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "24px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: "1px solid var(--border-glass)"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255, 59, 48, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ff3b30" }}>
-            <i className="bx bxs-heart" style={{ fontSize: "1.4rem" }}></i>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>الأماكن المفضلة</h3>
-            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>
-              عرض وتعديل قائمة أماكنك المفضلة
-            </p>
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          {favorites.length > 0 && (
-            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", background: "var(--bg-glass-card)", padding: "4px 10px", borderRadius: "12px", fontWeight: "bold" }}>
-              {favorites.length}
-            </span>
-          )}
-          <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
-        </div>
-      </div>
-
-      {/* Notifications Card */}
-      <div 
-        className="glass-panel" 
-        onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "15px 20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          flexDirection: "column",
-          marginBottom: "24px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: "1px solid var(--border-glass)",
-          overflow: "hidden"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ color: "var(--accent-ios)" }}>
-              <i className="bx bxs-bell" style={{ fontSize: "1.4rem" }}></i>
+      <div className={styles.sectionCard}>
+        <div
+          className={`glass-panel ${styles.navCard}`}
+          onClick={toggleTheme}
+        >
+          <div className={styles.themeToggleLeft}>
+            <div className={styles.themeToggleIconWrapper}>
+              <i className={`bx ${theme === 'dark' ? 'bx-sun' : 'bx-moon'} ${styles.themeToggleIcon}`}></i>
             </div>
-            <div style={{ textAlign: "right" }}>
-              <h3 style={{ margin: 0, fontFamily: "Cairo", fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)" }}>الإشعارات</h3>
+            <div>
+              <h3 className={styles.cardTitle}>
+                {theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
+              </h3>
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            {unreadCount > 0 && (
-              <span style={{ 
-                fontSize: "0.75rem", 
-                color: "#fff", 
-                background: "#ff3b30", 
-                padding: "4px 8px", 
-                borderRadius: "12px", 
-                fontWeight: "bold",
-                boxShadow: "0 2px 8px rgba(255, 59, 48, 0.4)"
-              }}>
-                {unreadCount > 99 ? '99+' : unreadCount} جديد
+          <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+        </div>
+
+        <hr className={styles.dividerDashed} />
+
+        {/* Favorite Places Card */}
+        <div
+          className={`glass-panel ${styles.navCard}`}
+          onClick={() => router.push('/favorites')}
+        >
+          <div className={styles.themeToggleLeft}>
+            <div className={styles.favIconWrapper}>
+              <i className={`bx bxs-heart ${styles.favIcon}`}></i>
+            </div>
+            <div>
+              <h3 className={styles.cardTitle}>الأماكن المفضلة</h3>
+            </div>
+          </div>
+          <div className={styles.badgeRight}>
+            {favorites.length > 0 && (
+              <span className={styles.favBadge}>
+                {favorites.length}
               </span>
             )}
-            <i className={`bx bx-chevron-${isNotificationsExpanded ? "down" : "left"}`} style={{ fontSize: "1.5rem", color: "var(--text-secondary)", transition: "transform 0.3s" }}></i>
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
         </div>
 
-        {/* Notifications Expanded Section */}
-        {isNotificationsExpanded && (
-          <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)", animation: "fade-in 0.3s ease" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <h4 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary)" }}>سجل الإشعارات</h4>
-              <div style={{ display: "flex", gap: "8px" }}>
-                {unreadCount > 0 && (
-                  <button onClick={(e) => { e.stopPropagation(); markAllAsRead(); }} className="ios-btn" style={{ padding: "6px 12px", fontSize: "0.8rem", height: "auto" }}>
-                    جعل الكل مقروء
-                  </button>
-                )}
-                {notifications.length > 0 && (
-                  <button onClick={(e) => { e.stopPropagation(); deleteAll(); }} className="ios-btn" style={{ padding: "6px 12px", fontSize: "0.8rem", height: "auto", color: "#ff3b30", border: "1px solid rgba(255,59,48,0.3)" }}>
-                    حذف الكل
-                  </button>
-                )}
+        {/* Notifications Card */}
+        <div
+        style={{display: "none"}}
+          className={`glass-panel ${styles.notifCard}`}
+          onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
+        >
+          <div className={styles.notifHeader}>
+            <div className={styles.notifHeaderLeft}>
+              <div className={styles.notifIconWrapper}>
+                <i className={`bx bxs-bell ${styles.notifIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.notifTitleHeader}>الإشعارات</h3>
               </div>
             </div>
+            <div className={styles.badgeRight}>
+              {unreadCount > 0 && (
+                <span className={styles.notifBadgeRed}>
+                  {unreadCount > 99 ? '99+' : unreadCount} جديد
+                </span>
+              )}
+              <i className={`bx bx-chevron-${isNotificationsExpanded ? "down" : "left"} ${styles.notifChevron}`}></i>
+            </div>
+          </div>
 
-            {notifications.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "24px 0", color: "var(--text-muted)" }}>
-                <i className="bx bx-bell-off" style={{ fontSize: "2.5rem", marginBottom: "8px", opacity: 0.5 }}></i>
-                <p style={{ margin: 0, fontSize: "0.9rem" }}>لا توجد إشعارات حالياً</p>
+          {/* Notifications Expanded Section */}
+          {isNotificationsExpanded && (
+            <div className={styles.notifExpandedContent}>
+              <div className={styles.notifExpandedHeader}>
+                <h4 className={styles.notifExpandedTitle}>سجل الإشعارات</h4>
+                <div className={styles.notifActions}>
+                  {unreadCount > 0 && (
+                    <button onClick={(e) => { e.stopPropagation(); markAllAsRead(); }} className={`ios-btn ${styles.notifBtnSmall}`}>
+                      جعل الكل مقروء
+                    </button>
+                  )}
+                  {notifications.length > 0 && (
+                    <button onClick={(e) => { e.stopPropagation(); deleteAll(); }} className={`ios-btn ${styles.notifBtnDeleteAll}`}>
+                      حذف الكل
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {notifications.length === 0 ? (
+                <div className={styles.notifEmpty}>
+                  <i className={`bx bx-bell-off ${styles.notifEmptyIcon}`}></i>
+                  <p className={styles.notifEmptyText}>لا توجد إشعارات حالياً</p>
+                </div>
+              ) : (
+                <div className={styles.notifList}>
+                  {notifications.map(notif => (
+                    <div key={notif.id} onClick={(e) => { e.stopPropagation(); if (!notif.is_read) markAsRead(notif.id); setSelectedNotification(notif); }} className={`${styles.notifItem} ${notif.is_read ? styles.notifItemRead : styles.notifItemUnread}`}>
+                      <div className={styles.notifEmoji}>
+                        {notif.type === "success" ? "✅" : notif.type === "warning" ? "⚠️" : "🔔"}
+                      </div>
+                      <div className={styles.notifItemBody}>
+                        <h5 className={`${styles.notifItemTitle} ${notif.is_read ? styles.notifItemTitleRead : styles.notifItemTitleUnread}`}>{notif.title}</h5>
+                        <p className={styles.notifItemMsg}>{notif.message}</p>
+                        <span className={styles.notifItemDate}>
+                          {new Date(notif.created_at).toLocaleDateString("ar-EG", { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                      {!notif.is_read && (
+                        <div className={styles.notifUnreadDot} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Propose Place Card */}
+        {user && (
+          <div
+            className={`glass-panel ${styles.navCard}`}
+            onClick={() => router.push('/propose-place')}
+          >
+            <div className={styles.themeToggleLeft}>
+              <div className={styles.proposeIconWrapper}>
+                <i className={`bx bx-map-pin ${styles.proposeIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>اقتراحات الأماكن</h3>
+                <p className={styles.proposeSubtitle}>
+                  اقترح مكان جديد وساهم في إضافته للموقع بعد مراجعة الإدارة
+                </p>
+              </div>
+            </div>
+            <div className={styles.proposeAction}>
+              <span>إضافة مكان</span>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ─── القسم الثالث: إعدادات الأمان والمصادقة الثنائية (خاص للمسجلين) ─── */}
+      {user && (
+        <>
+          <div className={styles.sectionHeaderLabel}>الأمان</div>
+
+          <div
+            className={`glass-panel ${styles.securityCard}`}
+            onClick={() => setShowPasswordModal(true)}
+          >
+            <div className={styles.themeToggleLeft}>
+              <div className={styles.securityIconWrapper}>
+                <i className={`bx bx-lock-alt ${styles.securityIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>تغيير كلمة المرور</h3>
+                <p className={styles.securitySubtitle}>تحديث كلمة المرور الخاصة بحسابك</p>
+              </div>
+            </div>
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+          </div>
+
+          <div
+            className={`glass-panel ${styles.securityCard} ${styles.securityCardMargin} ${activeCount > 0 ? styles.mfaCardActive : styles.mfaCardInactive}`}
+            onClick={() => setShow2FAModal(true)}
+          >
+            <div className={styles.themeToggleLeft}>
+              <div className={activeCount > 0 ? styles.mfaIconWrapperActive : styles.mfaIconWrapperInactive}>
+                <i className={`bx bx-shield-check ${styles.securityIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>
+                  المصادقة الثنائية ({activeCount} من 3)
+                </h3>
+                <p className={styles.securitySubtitle}>
+                  إضافة طبقات حماية إضافية لحسابك
+                </p>
+              </div>
+            </div>
+            {activeCount > 0 ? (
+              <i className={`bx bxs-check-circle ${styles.mfaCheckIcon}`}></i>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingRight: "4px" }}>
-                {notifications.map(notif => (
-                  <div key={notif.id} onClick={(e) => { e.stopPropagation(); if(!notif.is_read) markAsRead(notif.id); setSelectedNotification(notif); }} style={{
-                    padding: "12px",
-                    borderRadius: "12px",
-                    background: notif.is_read ? "rgba(255,255,255,0.02)" : "rgba(108, 99, 255, 0.08)",
-                    border: notif.is_read ? "1px solid transparent" : "1px solid rgba(108, 99, 255, 0.2)",
-                    cursor: "pointer",
-                    display: "flex",
-                    gap: "12px",
-                    alignItems: "flex-start",
-                    transition: "background 0.2s"
-                  }}>
-                    <div style={{ fontSize: "1.5rem", marginTop: "2px" }}>
-                      {notif.type === "success" ? "✅" : notif.type === "warning" ? "⚠️" : "🔔"}
-                    </div>
-                    <div style={{ flex: 1, overflow: "hidden" }}>
-                      <h5 style={{ margin: "0 0 4px", fontSize: "0.95rem", color: notif.is_read ? "var(--text-secondary)" : "var(--text-primary)" }}>{notif.title}</h5>
-                      <p style={{ 
-                        margin: 0, 
-                        fontSize: "0.85rem", 
-                        color: "var(--text-muted)", 
-                        lineHeight: "1.4",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden"
-                      }}>{notif.message}</p>
-                      <span style={{ display: "block", marginTop: "6px", fontSize: "0.75rem", color: "var(--text-muted)", opacity: 0.7 }}>
-                        {new Date(notif.created_at).toLocaleDateString("ar-EG", { hour: "2-digit", minute: "2-digit" })}
-                      </span>
-                    </div>
-                    {!notif.is_read && (
-                      <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#ff3b30", marginTop: "8px" }} />
-                    )}
-                  </div>
-                ))}
-              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             )}
           </div>
-        )}
-      </div>
-
-      {/* Propose Place Card (Under Notifications in General Section) */}
-      {user && (
-        <div 
-          className="glass-panel" 
-          onClick={() => router.push('/propose-place')}
-          style={{ 
-            borderRadius: "20px", 
-            padding: "20px", 
-            cursor: "pointer", 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "space-between",
-            marginBottom: "24px",
-            transition: "transform 0.2s, background-color 0.2s",
-            border: "1px solid var(--border-glass)"
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(0, 212, 170, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#00d4aa" }}>
-              <i className="bx bx-map-pin" style={{ fontSize: "1.4rem" }}></i>
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>اقتراحات الأماكن</h3>
-              <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>
-                اقترح مكان جديد وساهم في إضافته للموقع بعد مراجعة الإدارة
-              </p>
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--accent-primary)", fontWeight: "700", fontSize: "0.85rem" }}>
-            <span>إضافة مكان</span>
-            <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
-          </div>
-        </div>
-      )}
-</div> 
-{/* test */}
-      {/* ─── القسم الثالث: إعدادات الأمان والمصادقة الثنائية (خوص للمسجلين) ─── */}
-      {user && (
-      <>
-      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>الأمان</div>
-      
-      <div 
-        className="glass-panel" 
-        onClick={() => setShowPasswordModal(true)}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "12px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: "1px solid var(--border-glass)"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
-            <i className="bx bx-lock-alt" style={{ fontSize: "1.4rem" }}></i>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>تغيير كلمة المرور</h3>
-            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>تحديث كلمة المرور الخاصة بحسابك</p>
-          </div>
-        </div>
-        <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
-      </div>
-
-      <div 
-        className="glass-panel" 
-        onClick={() => setShow2FAModal(true)}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "24px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: activeCount > 0 ? "1px solid rgba(52, 199, 89, 0.4)" : "1px solid var(--border-glass)",
-          background: activeCount > 0 ? "rgba(52, 199, 89, 0.05)" : "var(--glass-bg)"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: activeCount > 0 ? "rgba(52, 199, 89, 0.2)" : "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", color: activeCount > 0 ? "#34c759" : "var(--text-secondary)" }}>
-            <i className="bx bx-shield-check" style={{ fontSize: "1.4rem" }}></i>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
-              المصادقة الثنائية ({activeCount} من 3)
-            </h3>
-            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>
-              إضافة طبقات حماية إضافية لحسابك
-            </p>
-          </div>
-        </div>
-        {activeCount > 0 ? (
-          <i className="bx bxs-check-circle" style={{ fontSize: "1.5rem", color: "#34c759" }}></i>
-        ) : (
-          <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
-        )}
-      </div>
-
-      </>
+        </>
       )}
 
       {/* ─── القسم الرابع: الدعم والروابط الهامة (Support & Links) ─── */}
-      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>المساعدة</div>
-      <div 
-        className="glass-panel" 
+      <div className={styles.sectionHeaderLabel}>المساعدة</div>
+      <div
+        className={`glass-panel ${styles.helpCard} ${isHelpExpanded ? styles.helpCardExpanded : ''}`}
         onClick={() => setIsHelpExpanded(!isHelpExpanded)}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          flexDirection: "column",
-          gap: "16px",
-          marginBottom: "24px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: isHelpExpanded ? "1px solid var(--accent-ios)" : "1px solid var(--border-glass)"
-        }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
-              <i className="bx bx-help-circle" style={{ fontSize: "1.4rem" }}></i>
+        <div className={styles.helpHeader}>
+          <div className={styles.helpHeaderLeft}>
+            <div className={styles.securityIconWrapper}>
+              <i className={`bx bx-help-circle ${styles.securityIcon}`}></i>
             </div>
-            <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>التواصل والمساعدة</h3>
+            <h3 className={styles.helpTitle}>التواصل والمساعدة</h3>
           </div>
-          <i className={`bx ${isHelpExpanded ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+          <i className={`bx ${isHelpExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${styles.chevronIcon}`}></i>
         </div>
 
         {/* Expanded Help Center (Tabs) */}
         {isHelpExpanded && (
-          <div onClick={(e) => e.stopPropagation()} style={{ cursor: "default", borderTop: "1px solid var(--border-glass)", paddingTop: "16px" }}>
+          <div onClick={(e) => e.stopPropagation()} className={styles.helpExpandedContent}>
             {/* Tabs Selector */}
-            <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", padding: "4px", borderRadius: "12px", marginBottom: "20px" }}>
-              <button 
-                onClick={() => setHelpTab("faq")} 
-                style={{ 
-                  flex: 1, padding: "8px", border: "none", borderRadius: "10px", 
-                  background: helpTab === "faq" ? "var(--accent-ios)" : "transparent",
-                  color: helpTab === "faq" ? "#fff" : "var(--text-secondary)",
-                  fontWeight: "600", fontSize: "0.88rem", cursor: "pointer"
-                }}
+            <div className={styles.tabsContainer}>
+              <button
+                onClick={() => setHelpTab("faq")}
+                className={`${styles.tabBtn} ${helpTab === "faq" ? styles.tabBtnActive : ''}`}
               >
                 الأسئلة الشائعة
               </button>
-              <button 
-                onClick={() => setHelpTab("social")} 
-                style={{ 
-                  flex: 1, padding: "8px", border: "none", borderRadius: "10px", 
-                  background: helpTab === "social" ? "var(--accent-ios)" : "transparent",
-                  color: helpTab === "social" ? "#fff" : "var(--text-secondary)",
-                  fontWeight: "600", fontSize: "0.88rem", cursor: "pointer"
-                }}
+              <button
+                onClick={() => setHelpTab("social")}
+                className={`${styles.tabBtn} ${helpTab === "social" ? styles.tabBtnActive : ''}`}
               >
                 مواقع التواصل
               </button>
-              <button 
-                onClick={() => setHelpTab("contact")} 
-                style={{ 
-                  flex: 1, padding: "8px", border: "none", borderRadius: "10px", 
-                  background: helpTab === "contact" ? "var(--accent-ios)" : "transparent",
-                  color: helpTab === "contact" ? "#fff" : "var(--text-secondary)",
-                  fontWeight: "600", fontSize: "0.88rem", cursor: "pointer"
-                }}
+              <button
+                onClick={() => setHelpTab("contact")}
+                className={`${styles.tabBtn} ${helpTab === "contact" ? styles.tabBtnActive : ''}`}
               >
                 مراسلتنا
               </button>
@@ -1297,35 +1140,35 @@ export default function ProfilePage() {
 
             {/* TAB CONTENT 1: FAQ */}
             {helpTab === "faq" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div className={styles.faqList}>
                 {faqs.length === 0 ? (
-                  <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", textAlign: "center", padding: "12px" }}>لا توجد أسئلة شائعة حالياً.</p>
+                  <p className={styles.faqEmptyText}>لا توجد أسئلة شائعة حالياً.</p>
                 ) : (
                   faqs.map((faq, index) => {
                     const isFaqExpanded = expandedFaq === index;
                     return (
-                      <div key={faq.id} style={{ borderBottom: "1px solid var(--border-glass)", paddingBottom: "12px" }}>
-                        <div 
+                      <div key={faq.id} className={styles.faqItem}>
+                        <div
                           onClick={() => setExpandedFaq(isFaqExpanded ? null : index)}
-                          style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", padding: "4px 0" }}
+                          className={styles.faqQuestionRow}
                         >
-                          <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>{faq.question}</h4>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <h4 className={styles.faqQuestionTitle}>{faq.question}</h4>
+                          <div className={styles.faqActions}>
                             {profile?.is_admin && (
-                              <button 
+                              <button
                                 onClick={(e) => { e.stopPropagation(); handleDeleteFAQ(faq.id); }}
-                                style={{ background: "transparent", border: "none", color: "var(--accent-danger)", cursor: "pointer", fontSize: "0.9rem" }}
+                                className={styles.faqDeleteBtn}
                               >
-                                <i className="bx bx-trash" style={{ fontSize: "1.1rem" }}></i>
+                                <i className={`bx bx-trash ${styles.faqDeleteIcon}`}></i>
                               </button>
                             )}
-                            <span style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>
+                            <span className={styles.faqToggleIcon}>
                               {isFaqExpanded ? "−" : "+"}
                             </span>
                           </div>
                         </div>
                         {isFaqExpanded && (
-                          <p style={{ margin: "8px 0 0", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>{faq.answer}</p>
+                          <p className={styles.faqAnswerText}>{faq.answer}</p>
                         )}
                       </div>
                     );
@@ -1334,18 +1177,19 @@ export default function ProfilePage() {
 
                 {/* Admin Add FAQ Form */}
                 {profile?.is_admin && (
-                  <form onSubmit={handleAddFAQ} style={{ marginTop: "20px", borderTop: "1px dashed var(--border-glass)", paddingTop: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--accent-ios)", display: "flex", alignItems: "center", gap: "6px" }}><i className="bx bx-bulb" style={{ fontSize: "1.2rem" }}></i> إضافة سؤال شائع جديد (المسؤولين فقط)</h4>
-                    <input 
-                      required className="ios-input" placeholder="السؤال..." 
-                      value={faqQuestion} onChange={e => setFaqQuestion(e.target.value)} 
+                  <form onSubmit={handleAddFAQ} className={styles.adminFaqForm}>
+                    <h4 className={styles.adminFaqTitle}>
+                      <i className={`bx bx-bulb ${styles.adminFaqIcon}`}></i> إضافة سؤال شائع جديد (المسؤولين فقط)
+                    </h4>
+                    <input
+                      required className="ios-input" placeholder="السؤال..."
+                      value={faqQuestion} onChange={e => setFaqQuestion(e.target.value)}
                     />
-                    <textarea 
-                      required className="ios-input" placeholder="الإجابة..." 
-                      value={faqAnswer} onChange={e => setFaqAnswer(e.target.value)} 
-                      style={{ minHeight: "80px", resize: "vertical", fontFamily: "inherit" }}
+                    <textarea
+                      required className={`ios-input ${styles.adminFaqTextarea}`} placeholder="الإجابة..."
+                      value={faqAnswer} onChange={e => setFaqAnswer(e.target.value)}
                     />
-                    <button type="submit" disabled={faqLoading} className="ios-btn ios-btn-primary" style={{ height: "40px", fontSize: "0.9rem" }}>
+                    <button type="submit" disabled={faqLoading} className={`ios-btn ios-btn-primary ${styles.adminFaqSubmitBtn}`}>
                       {faqLoading ? "جاري الإضافة..." : "حفظ السؤال الشائع"}
                     </button>
                   </form>
@@ -1355,25 +1199,25 @@ export default function ProfilePage() {
 
             {/* TAB CONTENT 2: SOCIAL LINKS */}
             {helpTab === "social" && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "12px" }}>
-                <a href="https://wa.me/201234567890" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
-                  <i className="bx bxl-whatsapp" style={{ fontSize: "1.3rem", color: "#25d366" }}></i>
+              <div className={styles.socialGrid}>
+                <a href="https://wa.me/201234567890" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                  <i className={`bx bxl-whatsapp ${styles.socialIconWhatsapp}`}></i>
                   <span>واتساب</span>
                 </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
-                  <i className="bx bxl-facebook-circle" style={{ fontSize: "1.3rem", color: "#1877f2" }}></i>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                  <i className={`bx bxl-facebook-circle ${styles.socialIconFacebook}`}></i>
                   <span>فيسبوك</span>
                 </a>
-                <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
-                  <i className="bx bxl-telegram" style={{ fontSize: "1.3rem", color: "#0088cc" }}></i>
+                <a href="https://t.me" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                  <i className={`bx bxl-telegram ${styles.socialIconTelegram}`}></i>
                   <span>تلجرام</span>
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none" }}>
-                  <i className="bx bxl-instagram" style={{ fontSize: "1.3rem", color: "#e1306c" }}></i>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                  <i className={`bx bxl-instagram ${styles.socialIconInstagram}`}></i>
                   <span>إنستغرام</span>
                 </a>
-                <a href="https://stagekode.com" target="_blank" rel="noopener noreferrer" className="category-pill" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", padding: "12px", border: "1px solid var(--border-glass)", textDecoration: "none", gridColumn: "1 / -1" }}>
-                  <i className="bx bx-globe" style={{ fontSize: "1.2rem", color: "var(--accent-ios)" }}></i>
+                <a href="https://stagekode.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill} ${styles.socialPillFull}`}>
+                  <i className={`bx bx-globe ${styles.socialIconGlobe}`}></i>
                   <span>الموقع الرسمي (STAGE KODE)</span>
                 </a>
               </div>
@@ -1383,36 +1227,36 @@ export default function ProfilePage() {
             {helpTab === "contact" && (
               <div>
                 {contactSubmitted ? (
-                  <div style={{ textAlign: "center", padding: "20px" }}>
-                    <div style={{ fontSize: "2.5rem", marginBottom: "12px", color: "#34c759" }}><i className="bx bxs-check-circle"></i></div>
-                    <h4 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "8px" }}>تم إرسال رسالتك بنجاح!</h4>
-                    <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", margin: "0 0 16px" }}>شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بالرد عليك في أقرب وقت.</p>
+                  <div className={styles.contactSuccess}>
+                    <div className={styles.contactSuccessIcon}><i className="bx bxs-check-circle"></i></div>
+                    <h4 className={styles.contactSuccessTitle}>تم إرسال رسالتك بنجاح!</h4>
+                    <p className={styles.contactSuccessMsg}>شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بالرد عليك في أقرب وقت.</p>
                     <button className="ios-btn" onClick={() => setContactSubmitted(false)}>إرسال رسالة أخرى</button>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                      <input 
-                        required className="ios-input" placeholder="الاسم الأول" 
-                        value={contactForm.firstName} onChange={e => setContactForm({ ...contactForm, firstName: e.target.value })} 
+                  <form onSubmit={handleContactSubmit} className={styles.contactForm}>
+                    <div className={styles.grid2Col}>
+                      <input
+                        required className="ios-input" placeholder="الاسم الأول"
+                        value={contactForm.firstName} onChange={e => setContactForm({ ...contactForm, firstName: e.target.value })}
                       />
-                      <input 
-                        required className="ios-input" placeholder="الاسم الأخير" 
-                        value={contactForm.lastName} onChange={e => setContactForm({ ...contactForm, lastName: e.target.value })} 
-                      />
-                    </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                      <input 
-                        required className="ios-input" placeholder="رقم الهاتف" style={{ direction: "ltr", textAlign: "right" }}
-                        value={contactForm.phone} onChange={e => setContactForm({ ...contactForm, phone: e.target.value })} 
-                      />
-                      <input 
-                        required className="ios-input" type="email" placeholder="البريد الإلكتروني" style={{ direction: "ltr", textAlign: "right" }}
-                        value={contactForm.email} onChange={e => setContactForm({ ...contactForm, email: e.target.value })} 
+                      <input
+                        required className="ios-input" placeholder="الاسم الأخير"
+                        value={contactForm.lastName} onChange={e => setContactForm({ ...contactForm, lastName: e.target.value })}
                       />
                     </div>
-                    <select 
-                      required className="ios-input help-select" 
+                    <div className={styles.grid2Col}>
+                      <input
+                        required className={`ios-input ${styles.inputLtrRight}`} placeholder="رقم الهاتف"
+                        value={contactForm.phone} onChange={e => setContactForm({ ...contactForm, phone: e.target.value })}
+                      />
+                      <input
+                        required className={`ios-input ${styles.inputLtrRight}`} type="email" placeholder="البريد الإلكتروني"
+                        value={contactForm.email} onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
+                      />
+                    </div>
+                    <select
+                      required className="ios-input help-select"
                       value={contactForm.contactType} onChange={e => setContactForm({ ...contactForm, contactType: e.target.value })}
                     >
                       <option value="">نوع التواصل...</option>
@@ -1421,12 +1265,11 @@ export default function ProfilePage() {
                       <option value="طلب مساعدة">طلب مساعدة</option>
                       <option value="اقتراح تطوير">اقتراح تطوير</option>
                     </select>
-                    <textarea 
-                      required className="ios-input" placeholder="اكتب تفاصيل رسالتك هنا..." 
-                      value={contactForm.message} onChange={e => setContactForm({ ...contactForm, message: e.target.value })} 
-                      style={{ minHeight: "100px", resize: "vertical", fontFamily: "inherit" }}
+                    <textarea
+                      required className={`ios-input ${styles.contactTextarea}`} placeholder="اكتب تفاصيل رسالتك هنا..."
+                      value={contactForm.message} onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
                     />
-                    <button type="submit" disabled={contactLoading} className="ios-btn ios-btn-primary" style={{ height: "45px", fontSize: "0.95rem" }}>
+                    <button type="submit" disabled={contactLoading} className={`ios-btn ios-btn-primary ${styles.contactSubmitBtn}`}>
                       {contactLoading ? "جاري الإرسال..." : "إرسال الرسالة"}
                     </button>
                   </form>
@@ -1438,173 +1281,117 @@ export default function ProfilePage() {
       </div>
 
       {/* ─── 4. INFORMATION SECTION ─── */}
-      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>معلومات</div>
+      <div className={styles.sectionHeaderLabel}>معلومات</div>
       <Link href="/privacy" style={{ textDecoration: "none" }}>
-        <div 
-          className="glass-panel" 
-          style={{ 
-            borderRadius: "20px", 
-            padding: "20px", 
-            cursor: "pointer", 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "space-between",
-            marginBottom: "12px",
-            transition: "transform 0.2s, background-color 0.2s",
-            border: "1px solid var(--border-glass)"
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
-              <i className="bx bx-shield-quarter" style={{ fontSize: "1.4rem" }}></i>
+        <div className={`glass-panel ${styles.infoCard}`}>
+          <div className={styles.themeToggleLeft}>
+            <div className={styles.infoIconWrapper}>
+              <i className={`bx bx-shield-quarter ${styles.infoIcon}`}></i>
             </div>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>سياسة الخصوصية</h3>
+            <h3 className={styles.cardTitle}>سياسة الخصوصية</h3>
           </div>
-          <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+          <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
         </div>
       </Link>
       <Link href="/terms" style={{ textDecoration: "none" }}>
-        <div 
-          className="glass-panel" 
-          style={{ 
-            borderRadius: "20px", 
-            padding: "20px", 
-            cursor: "pointer", 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "space-between",
-            marginBottom: "24px",
-            transition: "transform 0.2s, background-color 0.2s",
-            border: "1px solid var(--border-glass)"
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
-              <i className="bx bx-file" style={{ fontSize: "1.4rem" }}></i>
+        <div className={`glass-panel ${styles.infoCard} ${styles.infoCardMargin}`}>
+          <div className={styles.themeToggleLeft}>
+            <div className={styles.infoIconWrapper}>
+              <i className={`bx bx-file ${styles.infoIcon}`}></i>
             </div>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>شروط الاستخدام</h3>
+            <h3 className={styles.cardTitle}>شروط الاستخدام</h3>
           </div>
-          <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+          <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
         </div>
       </Link>
 
-      {/* ─── القسم الخامس: إعدادات متقدمة وتسجيل الخروج (خوص للمسجلين) ─── */}
+      {/* ─── القسم الخامس: إعدادات متقدمة وتسجيل الخروج (خاص للمسجلين) ─── */}
       {user && (
-      <>
-      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>متقدم</div>
-      <div 
-        className="glass-panel" 
-        onClick={() => setShowLogoutModal(true)}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "16px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: "1px solid var(--border-glass)"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255, 149, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ff9500" }}>
-            <i className="bx bx-log-out" style={{ fontSize: "1.4rem" }}></i>
+        <>
+          <div className={styles.sectionHeaderLabel}>متقدم</div>
+          <div
+            className={`glass-panel ${styles.logoutCard}`}
+            onClick={() => setShowLogoutModal(true)}
+          >
+            <div className={styles.themeToggleLeft}>
+              <div className={styles.logoutIconWrapper}>
+                <i className={`bx bx-log-out ${styles.logoutIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>تسجيل الخروج</h3>
+                <p className={styles.logoutSubtitle}>تسجيل الخروج من حسابك الحالي</p>
+              </div>
+            </div>
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>تسجيل الخروج</h3>
-            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>تسجيل الخروج من حسابك الحالي</p>
-          </div>
-        </div>
-        <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
-      </div>
 
-      <div 
-        className="glass-panel" 
-        onClick={() => { setShowDeleteModal(true); setDeleteConfirmation(""); }}
-        style={{ 
-          borderRadius: "20px", 
-          padding: "20px", 
-          cursor: "pointer", 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "space-between",
-          marginBottom: "16px",
-          transition: "transform 0.2s, background-color 0.2s",
-          border: "1px solid rgba(255, 59, 48, 0.2)",
-          background: "rgba(255, 59, 48, 0.03)"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255, 59, 48, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ff3b30" }}>
-            <i className="bx bx-user-minus" style={{ fontSize: "1.4rem" }}></i>
+          <div
+            className={`glass-panel ${styles.deleteAccountCard}`}
+            onClick={() => { setShowDeleteModal(true); setDeleteConfirmation(""); }}
+          >
+            <div className={styles.themeToggleLeft}>
+              <div className={styles.deleteAccountIconWrapper}>
+                <i className={`bx bx-user-minus ${styles.deleteAccountIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.deleteAccountTitle}>حذف الحساب نهائياً</h3>
+                <p className={styles.securitySubtitle}>حذف كافة البيانات وإلغاء تنشيط الحساب</p>
+              </div>
+            </div>
+            <i className={`bx bx-chevron-left ${styles.deleteChevron}`}></i>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#ff3b30" }}>حذف الحساب نهائياً</h3>
-            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>حذف كافة البيانات وإلغاء تنشيط الحساب</p>
-          </div>
-        </div>
-        <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "#ff3b30" }}></i>
-      </div>
-
-
-      </>
+        </>
       )}
 
       {/* Delete Account Modal - HeroUI AlertDialog Style */}
       {showDeleteModal && (
-        <div 
-          className="modal-backdrop"
+        <div
+          className={`modal-backdrop ${styles.modalBackdrop}`}
           onClick={() => { setShowDeleteModal(false); setDeleteConfirmation(""); }}
-          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0, 0, 0, 0.85)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.2s ease" }}
         >
-          <div 
-            className="glass-panel alert-dialog"
+          <div
+            className={`glass-panel alert-dialog ${styles.deleteModalDialog}`}
             onClick={e => e.stopPropagation()}
-            style={{ maxWidth: "440px", width: "100%", padding: "0", animation: "slide-up 0.25s ease", border: "1px solid rgba(255, 59, 48, 0.25)", boxShadow: "0 32px 80px rgba(0,0,0,0.7)", borderRadius: "20px", overflow: "hidden" }}
           >
             {/* Header */}
-            <div style={{ background: "rgba(255, 59, 48, 0.08)", borderBottom: "1px solid rgba(255, 59, 48, 0.15)", padding: "24px 28px 20px", textAlign: "center" }}>
-              <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "rgba(255, 59, 48, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}>
-                <i className="bx bx-error" style={{ fontSize: "1.8rem", color: "#ff3b30" }}></i>
+            <div className={styles.deleteModalHeader}>
+              <div className={styles.deleteModalIconWrapper}>
+                <i className={`bx bx-error ${styles.deleteModalHeaderIcon}`}></i>
               </div>
-              <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "#ff3b30", margin: 0 }}>تحذير: حذف الحساب</h3>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "8px 0 0", lineHeight: "1.5" }}>
+              <h3 className={styles.deleteModalHeaderTitle}>تحذير: حذف الحساب</h3>
+              <p className={styles.deleteModalHeaderSub}>
                 هذا الإجراء لا يمكن التراجع عنه. سيتم حذف جميع بياناتك نهائياً.
               </p>
             </div>
 
             {/* Body */}
-            <div style={{ padding: "20px 28px 24px" }}>
-              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "16px", lineHeight: "1.6", textAlign: "center" }}>
+            <div className={styles.deleteModalBody}>
+              <p className={styles.deleteModalPromptText}>
                 يرجى كتابة العبارة التالية للتأكيد:
               </p>
-              <div style={{ userSelect: "none", color: "var(--text-primary)", padding: "10px 14px", background: "rgba(255,59,48,0.06)", border: "1px dashed rgba(255,59,48,0.3)", borderRadius: "10px", textAlign: "center", fontSize: "0.88rem", fontWeight: "700", marginBottom: "16px" }}>
+              <div className={styles.deletePhraseBox}>
                 {deleteString}
               </div>
-              <input 
-                type="text" 
-                className="ios-input" 
-                placeholder="اكتب العبارة هنا..." 
-                value={deleteConfirmation} 
-                onChange={e => setDeleteConfirmation(e.target.value)} 
-                style={{ marginBottom: "20px", textAlign: "center" }}
+              <input
+                type="text"
+                className={`ios-input ${styles.deleteConfirmInput}`}
+                placeholder="اكتب العبارة هنا..."
+                value={deleteConfirmation}
+                onChange={e => setDeleteConfirmation(e.target.value)}
               />
-              
+
               {/* Actions */}
-              <div style={{ display: "flex", gap: "10px" }}>
-                <button 
-                  className="ios-btn" 
-                  onClick={() => { setShowDeleteModal(false); setDeleteConfirmation(""); }} 
-                  style={{ flex: 1 }}
+              <div className={styles.deleteModalActions}>
+                <button
+                  className={`ios-btn ${styles.deleteBtnCancel}`}
+                  onClick={() => { setShowDeleteModal(false); setDeleteConfirmation(""); }}
                 >
                   <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
                 </button>
-                <button 
-                  className="ios-btn" 
-                  onClick={handleDeleteAccount} 
-                  disabled={deleteConfirmation !== deleteString || loading} 
-                  style={{ flex: 1, background: "#ff3b30", color: "#fff", opacity: deleteConfirmation !== deleteString ? 0.45 : 1, transition: "opacity 0.2s" }}
+                <button
+                  className={`ios-btn ${styles.deleteBtnConfirm} ${deleteConfirmation !== deleteString ? styles.btnDisabled : ''}`}
+                  onClick={handleDeleteAccount}
+                  disabled={deleteConfirmation !== deleteString || loading}
                 >
                   <i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i>
                   {loading ? "جاري الحذف..." : "حذف نهائي"}
@@ -1617,80 +1404,71 @@ export default function ProfilePage() {
 
       {/* 2FA Modal */}
       {show2FAModal && (
-        <div style={{ 
-          position: "fixed", 
-          top: 0, left: 0, right: 0, bottom: 0, 
-          background: "rgba(0, 0, 0, 0.85)", 
-          zIndex: 1000, 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "center", 
-          padding: "20px" 
-        }}>
-          <div className="glass-panel" style={{ maxWidth: "440px", width: "100%", padding: "30px", animation: "fade-in 0.3s ease", border: "1px solid var(--border-glass)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", borderRadius: "28px", maxHeight: "90vh", overflowY: "auto" }}>
-            <h3 style={{ fontSize: "1.3rem", color: "var(--text-primary)", marginBottom: "8px", textAlign: "center" }}>المصادقة الثنائية</h3>
-            
+        <div className={styles.modalBackdropSlow}>
+          <div className={`glass-panel ${styles.mfaModalPanel}`}>
+            <h3 className={styles.mfaModalTitle}>المصادقة الثنائية</h3>
+
             {mfaError && (
-              <div style={{ background: "rgba(255, 59, 48, 0.15)", border: "1px solid rgba(255, 59, 48, 0.3)", padding: "12px", borderRadius: "var(--radius-sm)", color: "#ff3b30", marginBottom: "16px", fontSize: "0.85rem", textAlign: "center", animation: "fade-in 0.3s ease" }}>
+              <div className={styles.mfaErrorBanner}>
                 {mfaError}
               </div>
             )}
 
             {mfaStep === "selection" && (
               <>
-                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", marginBottom: "24px", textAlign: "center", lineHeight: "1.6" }}>
+                <p className={styles.mfaStepText}>
                   اختر الطريقة التي تفضلها لاستلام كود التحقق الإضافي عند تسجيل الدخول.
                 </p>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
+                <div className={styles.mfaListGap}>
                   {/* Email */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--border-glass)", background: "rgba(255,255,255,0.02)", display: "flex", alignItems: "center", justifyContent: "space-between", opacity: 0.5, cursor: "not-allowed" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
-                        <i className="bx bx-envelope" style={{ fontSize: "1.4rem" }}></i>
+                  <div className={styles.mfaOptionItemDisabled}>
+                    <div className={styles.mfaOptionLeft}>
+                      <div className={styles.mfaOptionIconDisabled}>
+                        <i className={`bx bx-envelope ${styles.securityIcon}`}></i>
                       </div>
-                      <div style={{ textAlign: "right" }}>
-                        <h4 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary)" }}>البريد الإلكتروني</h4>
+                      <div className={styles.profileInfoText}>
+                        <h4 className={styles.mfaOptionTitle}>البريد الإلكتروني</h4>
                       </div>
                     </div>
-                    <span style={{ fontSize: "0.8rem", background: "var(--border-glass)", padding: "4px 8px", borderRadius: "8px", color: "var(--text-secondary)" }}>قريباً</span>
+                    <span className={styles.mfaOptionBadgeSoon}>قريباً</span>
                   </div>
 
                   {/* WhatsApp */}
-                  <div style={{ padding: "16px", borderRadius: "16px", border: "1px solid var(--border-glass)", background: "rgba(255,255,255,0.02)", display: "flex", alignItems: "center", justifyContent: "space-between", opacity: 0.5, cursor: "not-allowed" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
-                        <i className="bx bxl-whatsapp" style={{ fontSize: "1.4rem" }}></i>
+                  <div className={styles.mfaOptionItemDisabled}>
+                    <div className={styles.mfaOptionLeft}>
+                      <div className={styles.mfaOptionIconDisabled}>
+                        <i className={`bx bxl-whatsapp ${styles.securityIcon}`}></i>
                       </div>
-                      <div style={{ textAlign: "right" }}>
-                        <h4 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary)" }}>تطبيق واتساب</h4>
+                      <div className={styles.profileInfoText}>
+                        <h4 className={styles.mfaOptionTitle}>تطبيق واتساب</h4>
                       </div>
                     </div>
-                    <span style={{ fontSize: "0.8rem", background: "var(--border-glass)", padding: "4px 8px", borderRadius: "8px", color: "var(--text-secondary)" }}>قريباً</span>
+                    <span className={styles.mfaOptionBadgeSoon}>قريباً</span>
                   </div>
 
                   {/* Authenticator App */}
-                  <div 
-                    onClick={() => activeMfaFactors.totp ? null : handleEnrollTOTP()} 
-                    style={{ padding: "16px", borderRadius: "16px", border: activeMfaFactors.totp ? "1px solid rgba(52, 199, 89, 0.4)" : "1px solid var(--accent-ios)", background: activeMfaFactors.totp ? "rgba(52, 199, 89, 0.05)" : "rgba(108, 99, 255, 0.05)", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: activeMfaFactors.totp ? "default" : "pointer", transition: "all 0.2s" }}
+                  <div
+                    onClick={() => activeMfaFactors.totp ? null : handleEnrollTOTP()}
+                    className={`${styles.mfaOptionBase} ${activeMfaFactors.totp ? styles.mfaOptionItemActive : styles.mfaOptionItemInactive}`}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: activeMfaFactors.totp ? "rgba(52, 199, 89, 0.15)" : "rgba(108, 99, 255, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: activeMfaFactors.totp ? "#34c759" : "var(--accent-ios)" }}>
-                        <i className="bx bx-check-shield" style={{ fontSize: "1.4rem" }}></i>
+                    <div className={styles.mfaOptionLeft}>
+                      <div className={activeMfaFactors.totp ? styles.mfaOptionIconActive : styles.mfaOptionIconInactive}>
+                        <i className={`bx bx-check-shield ${styles.securityIcon}`}></i>
                       </div>
-                      <div style={{ textAlign: "right" }}>
-                        <h4 style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary)" }}>تطبيق مصادقة خارجية</h4>
-                        <p style={{ margin: 0, fontSize: "0.8rem", color: activeMfaFactors.totp ? "#34c759" : "var(--text-secondary)" }}>
+                      <div className={styles.profileInfoText}>
+                        <h4 className={styles.mfaOptionTitle}>تطبيق مصادقة خارجية</h4>
+                        <p className={activeMfaFactors.totp ? styles.mfaOptionSubActive : styles.mfaOptionSubInactive}>
                           {activeMfaFactors.totp ? "مفعل" : "مجاني وموصى به"}
                         </p>
                       </div>
                     </div>
                     {mfaLoading ? (
-                      <div className="spinner" style={{ width: "20px", height: "20px", borderTopColor: activeMfaFactors.totp ? "#34c759" : "var(--accent-ios)" }} />
+                      <div className={`spinner ${activeMfaFactors.totp ? styles.mfaSpinnerActive : styles.mfaSpinnerInactive}`} />
                     ) : activeMfaFactors.totp ? (
-                      <button onClick={handleUnenrollClick} style={{ background: "rgba(255, 59, 48, 0.1)", color: "#ff3b30", border: "none", padding: "6px 12px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "700", cursor: "pointer" }}>إلغاء</button>
+                      <button onClick={handleUnenrollClick} className={styles.mfaUnenrollBtn}>إلغاء</button>
                     ) : (
-                      <i className="bx bx-chevron-left" style={{ fontSize: "1.4rem", color: "var(--accent-ios)" }}></i>
+                      <i className={`bx bx-chevron-left ${styles.securityIcon}`}></i>
                     )}
                   </div>
                 </div>
@@ -1700,29 +1478,29 @@ export default function ProfilePage() {
             )}
 
             {mfaStep === "enroll" && (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
-                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", textAlign: "center", lineHeight: "1.6" }}>
-                  1. قم بتحميل تطبيق مصادقة مثل Google Authenticator أو Authy.<br/>
+              <div className={styles.mfaEnrollColumn}>
+                <p className={styles.mfaStepText}>
+                  1. قم بتحميل تطبيق مصادقة مثل Google Authenticator أو Authy.<br />
                   2. امسح رمز الاستجابة السريعة (QR Code) التالي:
                 </p>
-                
+
                 {qrCode ? (
-                  <div style={{ background: "#fff", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-glass-bright)" }}>
+                  <div className={styles.mfaQrBox}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={qrCode} alt="QR Code" style={{ width: "200px", height: "200px" }} />
+                    <img src={qrCode} alt="QR Code" className={styles.mfaQrImg} />
                   </div>
                 ) : (
-                  <div style={{ width: "200px", height: "200px", background: "var(--border-glass-bright)", borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div className={styles.mfaQrPlaceholder}>
                     <div className="spinner" />
                   </div>
                 )}
 
-                <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", textAlign: "center" }}>
-                  أو يمكنك إدخال الرمز السري يدوياً:<br/>
-                  <code style={{ background: "rgba(255,255,255,0.05)", padding: "4px 8px", borderRadius: "4px", marginTop: "4px", display: "inline-block", letterSpacing: "1px", userSelect: "all" }}>{mfaSecret}</code>
+                <p className={styles.mfaSecretText}>
+                  أو يمكنك إدخال الرمز السري يدوياً:<br />
+                  <code className={styles.mfaSecretCode}>{mfaSecret}</code>
                 </p>
 
-                <div style={{ display: "flex", gap: "8px", justifyContent: "center", direction: "ltr", marginTop: "8px", width: "100%" }}>
+                <div className={styles.digitsRow}>
                   {codeDigits.map((digit, idx) => (
                     <input
                       key={`enroll-${idx}`}
@@ -1733,27 +1511,15 @@ export default function ProfilePage() {
                       onChange={(e) => handleDigitChange(idx, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(idx, e)}
                       onPaste={handlePaste}
-                      className="ios-input"
-                      style={{
-                        width: "48px",
-                        height: "56px",
-                        textAlign: "center",
-                        fontSize: "1.5rem",
-                        fontWeight: "700",
-                        padding: "0",
-                        borderRadius: "12px",
-                        border: "2px solid rgba(108, 99, 255, 0.2)",
-                        background: "rgba(108, 99, 255, 0.05)",
-                        color: "var(--text-primary)"
-                      }}
+                      className={`ios-input ${styles.digitInput}`}
                       maxLength={2}
                     />
                   ))}
                 </div>
 
-                <div style={{ display: "flex", gap: "12px", width: "100%", marginTop: "12px" }}>
-                  <button className="ios-btn" onClick={() => setMfaStep("selection")} style={{ flex: 1 }}>رجوع</button>
-                  <button className="ios-btn ios-btn-primary" onClick={handleVerifyTOTP} disabled={mfaLoading || verificationCode.length !== 6} style={{ flex: 2, opacity: verificationCode.length !== 6 ? 0.6 : 1 }}>
+                <div className={styles.formButtonsRow} style={{ width: "100%" }}>
+                  <button className={`ios-btn ${styles.flex1}`} onClick={() => setMfaStep("selection")}>رجوع</button>
+                  <button className={`ios-btn ios-btn-primary ${verificationCode.length !== 6 ? styles.btnOpacity60 : ''}`} onClick={handleVerifyTOTP} disabled={mfaLoading || verificationCode.length !== 6} style={{ flex: 2 }}>
                     {mfaLoading ? "جاري التحقق..." : "تأكيد وتفعيل"}
                   </button>
                 </div>
@@ -1761,27 +1527,25 @@ export default function ProfilePage() {
             )}
 
             {mfaStep === "unenroll_confirm" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "fade-in 0.3s ease", padding: "10px 0" }}>
-                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", textAlign: "center", lineHeight: "1.6" }}>
+              <div className={styles.mfaUnenrollForm}>
+                <p className={styles.mfaStepText}>
                   لأسباب أمنية، يرجى إدخال كلمة المرور والكود المكون من 6 أرقام لتأكيد الإلغاء.
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", marginTop: "8px" }}>
-                  <div style={{ position: "relative", width: "100%" }}>
-                    <input 
+                <div className={styles.formGap} style={{ width: "100%", marginTop: "8px" }}>
+                  <div className={styles.relativeFullWidth}>
+                    <input
                       type={showPassword ? "text" : "password"}
-                      className="ios-input" 
-                      placeholder="كلمة المرور الحالية" 
-                      value={mfaPasswordConfirm} 
-                      onChange={e => setMfaPasswordConfirm(e.target.value)} 
-                      style={{ paddingRight: "40px", width: "100%" }}
+                      className={`ios-input ${styles.passwordInputPaddedRight}`}
+                      placeholder="كلمة المرور الحالية"
+                      value={mfaPasswordConfirm}
+                      onChange={e => setMfaPasswordConfirm(e.target.value)}
                     />
-                    <i 
-                      className={`bx ${showPassword ? 'bx-hide' : 'bx-show'}`} 
+                    <i
+                      className={`bx ${showPassword ? 'bx-hide' : 'bx-show'} ${styles.eyeIconToggle}`}
                       onClick={() => setShowPassword(!showPassword)}
-                      style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--text-secondary)", cursor: "pointer", fontSize: "1.2rem" }}
                     />
                   </div>
-                  <div style={{ display: "flex", gap: "8px", justifyContent: "center", direction: "ltr", width: "100%" }}>
+                  <div className={styles.digitsRow}>
                     {codeDigits.map((digit, idx) => (
                       <input
                         key={`unenroll-${idx}`}
@@ -1792,27 +1556,15 @@ export default function ProfilePage() {
                         onChange={(e) => handleDigitChange(idx, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(idx, e)}
                         onPaste={handlePaste}
-                        className="ios-input"
-                        style={{
-                          width: "48px",
-                          height: "56px",
-                          textAlign: "center",
-                          fontSize: "1.5rem",
-                          fontWeight: "700",
-                          padding: "0",
-                          borderRadius: "12px",
-                          border: "2px solid rgba(108, 99, 255, 0.2)",
-                          background: "rgba(108, 99, 255, 0.05)",
-                          color: "var(--text-primary)"
-                        }}
+                        className={`ios-input ${styles.digitInput}`}
                         maxLength={2}
                       />
                     ))}
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: "12px", marginTop: "12px" }}>
-                  <button className="ios-btn" onClick={() => { setMfaStep("selection"); setVerificationCode(""); setMfaPasswordConfirm(""); setMfaError(""); }} style={{ flex: 1 }}>تراجع</button>
-                  <button className="ios-btn" onClick={handleUnenrollTOTP} disabled={mfaLoading || verificationCode.length !== 6 || !mfaPasswordConfirm} style={{ flex: 1, background: "#ff3b30", color: "#fff", opacity: (verificationCode.length !== 6 || !mfaPasswordConfirm || mfaLoading) ? 0.6 : 1 }}>
+                <div className={styles.formButtonsRow}>
+                  <button className={`ios-btn ${styles.flex1}`} onClick={() => { setMfaStep("selection"); setVerificationCode(""); setMfaPasswordConfirm(""); setMfaError(""); }}>تراجع</button>
+                  <button className={`ios-btn ${styles.unenrollBtnConfirm} ${(verificationCode.length !== 6 || !mfaPasswordConfirm || mfaLoading) ? styles.btnOpacity60 : ''}`} onClick={handleUnenrollTOTP} disabled={mfaLoading || verificationCode.length !== 6 || !mfaPasswordConfirm}>
                     {mfaLoading ? "جاري الإلغاء..." : "تأكيد الإلغاء"}
                   </button>
                 </div>
@@ -1824,54 +1576,40 @@ export default function ProfilePage() {
 
       {/* Change Password Modal */}
       {showPasswordModal && (
-        <div style={{ 
-          position: "fixed", 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0, 
-          background: "rgba(0, 0, 0, 0.85)", 
-          zIndex: 1000, 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "center", 
-          padding: "20px" 
-        }}>
-          <div className="glass-panel" style={{ maxWidth: "440px", width: "100%", padding: "30px", animation: "fade-in 0.3s ease", border: "1px solid var(--border-glass)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", borderRadius: "28px" }}>
-            <h3 style={{ fontSize: "1.3rem", color: "var(--text-primary)", marginBottom: "16px", textAlign: "center" }}>تغيير كلمة المرور</h3>
-            <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", marginBottom: "20px", textAlign: "center" }}>
+        <div className={styles.modalBackdropSlow}>
+          <div className={`glass-panel ${styles.passwordModalPanel}`}>
+            <h3 className={styles.passwordModalTitle}>تغيير كلمة المرور</h3>
+            <p className={styles.passwordModalSubtitle}>
               الرجاء إدخال كلمة المرور الجديدة.
             </p>
-            
-            <div style={{ position: "relative", marginBottom: "12px" }}>
-              <input 
-                type={showPassword ? "text" : "password"} 
-                className="ios-input" 
-                placeholder="كلمة المرور الجديدة" 
-                value={passwordForm.new} 
-                onChange={e => setPasswordForm({ ...passwordForm, new: e.target.value })} 
-                style={{ width: "100%", boxSizing: "border-box", textAlign: "left", direction: "ltr", paddingLeft: "48px" }}
+
+            <div className={styles.passwordInputRelative}>
+              <input
+                type={showPassword ? "text" : "password"}
+                className={`ios-input ${styles.passwordInputLeftPadded}`}
+                placeholder="كلمة المرور الجديدة"
+                value={passwordForm.new}
+                onChange={e => setPasswordForm({ ...passwordForm, new: e.target.value })}
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "1.4rem", color: "var(--text-secondary)", display: "flex", alignItems: "center" }}>
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.eyeIconBtn}>
                 <i className={`bx ${showPassword ? 'bx-hide' : 'bx-show'}`}></i>
               </button>
             </div>
 
-            <div style={{ position: "relative", marginBottom: "24px" }}>
-              <input 
-                type={showConfirmPassword ? "text" : "password"} 
-                className="ios-input" 
-                placeholder="تأكيد كلمة المرور الجديدة" 
-                value={passwordForm.confirm} 
-                onChange={e => setPasswordForm({ ...passwordForm, confirm: e.target.value })} 
-                style={{ width: "100%", boxSizing: "border-box", textAlign: "left", direction: "ltr", paddingLeft: "48px" }}
+            <div className={styles.passwordInputConfirmRelative}>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                className={`ios-input ${styles.passwordInputLeftPadded}`}
+                placeholder="تأكيد كلمة المرور الجديدة"
+                value={passwordForm.confirm}
+                onChange={e => setPasswordForm({ ...passwordForm, confirm: e.target.value })}
               />
-              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "1.4rem", color: "var(--text-secondary)", display: "flex", alignItems: "center" }}>
+              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className={styles.eyeIconBtn}>
                 <i className={`bx ${showConfirmPassword ? 'bx-hide' : 'bx-show'}`}></i>
               </button>
             </div>
-            
-            <div style={{ background: "rgba(108,99,255,0.06)", border: "1px solid rgba(108,99,255,0.15)", borderRadius: "16px", padding: "18px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "0.82rem", marginBottom: "24px", direction: "rtl" }}>
+
+            <div className={styles.pwdRulesBox}>
               {[
                 { ok: pwdRules.length, label: "من 8 إلى 32 حرف" },
                 { ok: pwdRules.upper, label: "حرف كبير (A-Z)" },
@@ -1880,15 +1618,15 @@ export default function ProfilePage() {
                 { ok: pwdRules.special, label: "رمز خاص (@$!...)" },
                 { ok: pwdRules.match, label: "كلمتا المرور متطابقتان" },
               ].map(({ ok, label }) => (
-                <div key={label} style={{ display: "flex", alignItems: "center", gap: "6px", color: ok ? "#00d4aa" : "var(--text-muted)", transition: "color 0.3s ease" }}>
-                  <i className={`bx ${ok ? 'bxs-check-circle' : 'bx-radio-circle'}`} style={{ fontSize: "1.1rem" }}></i> {label}
+                <div key={label} className={`${styles.pwdRuleItem} ${ok ? styles.pwdRuleSuccess : styles.pwdRuleMuted}`}>
+                  <i className={`bx ${ok ? 'bxs-check-circle' : 'bx-radio-circle'} ${styles.ruleCheckIcon}`}></i> {label}
                 </div>
               ))}
             </div>
-            
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button className="ios-btn" onClick={() => { setShowPasswordModal(false); setPasswordForm({ new: "", confirm: "" }); }} style={{ flex: 1 }}>إلغاء</button>
-              <button className="ios-btn ios-btn-primary" onClick={handleChangePassword} disabled={passwordLoading || !isPasswordValid} style={{ flex: 1, opacity: (!isPasswordValid || passwordLoading) ? 0.6 : 1 }}>
+
+            <div className={styles.formButtonsRow}>
+              <button className={`ios-btn ${styles.flex1}`} onClick={() => { setShowPasswordModal(false); setPasswordForm({ new: "", confirm: "" }); }}>إلغاء</button>
+              <button className={`ios-btn ios-btn-primary ${styles.flex1} ${(!isPasswordValid || passwordLoading) ? styles.btnOpacity60 : ''}`} onClick={handleChangePassword} disabled={passwordLoading || !isPasswordValid}>
                 {passwordLoading ? "جاري التغيير..." : "حفظ التغييرات"}
               </button>
             </div>
@@ -1898,30 +1636,18 @@ export default function ProfilePage() {
 
       {/* Logout Modal */}
       {showLogoutModal && (
-        <div style={{ 
-          position: "fixed", 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0, 
-          background: "rgba(0, 0, 0, 0.85)", 
-          zIndex: 1000, 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "center", 
-          padding: "20px" 
-        }}>
-          <div className="glass-panel" style={{ maxWidth: "440px", width: "100%", padding: "30px", animation: "fade-in 0.3s ease", border: "1px solid rgba(255, 149, 0, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", borderRadius: "28px" }}>
-            <h3 style={{ fontSize: "1.3rem", color: "#ff9500", marginBottom: "16px", textAlign: "center" }}>تسجيل الخروج</h3>
-            <p style={{ fontSize: "0.95rem", color: "var(--text-primary)", marginBottom: "24px", lineHeight: "1.6", textAlign: "center" }}>
+        <div className={styles.modalBackdropSlow}>
+          <div className={`glass-panel ${styles.logoutModalPanel}`}>
+            <h3 className={styles.logoutModalTitle}>تسجيل الخروج</h3>
+            <p className={styles.logoutModalPrompt}>
               هل أنت متأكد من تسجيل الخروج؟
             </p>
-            
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button className="ios-btn" onClick={() => setShowLogoutModal(false)} style={{ flex: 1 }}>
+
+            <div className={styles.formButtonsRow}>
+              <button className={`ios-btn ${styles.flex1}`} onClick={() => setShowLogoutModal(false)}>
                 <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
               </button>
-              <button className="ios-btn" onClick={handleLogout} disabled={loading} style={{ flex: 1, background: "#ff9500", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+              <button className={`ios-btn ${styles.logoutBtnConfirm}`} onClick={handleLogout} disabled={loading}>
                 {loading ? "جاري الخروج..." : (
                   <>
                     <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تأكيد
@@ -1932,29 +1658,30 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
-      {/* ── Notification Modal ── */}
+
+      {/* Notification Modal */}
       {selectedNotification && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0, 0, 0, 0.85)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.3s ease" }} onClick={() => setSelectedNotification(null)}>
-          <div style={{ background: "var(--glass-bg)", border: "1px solid var(--border-glass)", borderRadius: "24px", padding: "30px 24px", width: "100%", maxWidth: "400px", boxShadow: "0 24px 60px rgba(0,0,0,0.4)", position: "relative", animation: "pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)" }} onClick={e => e.stopPropagation()}>
-            <button onClick={() => setSelectedNotification(null)} style={{ position: "absolute", top: "16px", right: "16px", background: "rgba(255,255,255,0.1)", border: "none", width: "32px", height: "32px", borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", cursor: "pointer" }}>
+        <div className={styles.notifModalOverlay} onClick={() => setSelectedNotification(null)}>
+          <div className={styles.notifModalPanel} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setSelectedNotification(null)} className={styles.notifModalCloseBtn}>
               <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>
             </button>
-            <div style={{ textAlign: "center", marginBottom: "20px" }}>
-              <div style={{ fontSize: "3rem", marginBottom: "10px" }}>
+            <div className={styles.notifModalHeader}>
+              <div className={styles.notifModalEmoji}>
                 {selectedNotification.type === "success" ? "✅" : selectedNotification.type === "warning" ? "⚠️" : "🔔"}
               </div>
-              <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)" }}>{selectedNotification.title}</h3>
-              <span style={{ display: "block", marginTop: "4px", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+              <h3 className={styles.notifModalTitle}>{selectedNotification.title}</h3>
+              <span className={styles.notifModalDate}>
                 {new Date(selectedNotification.created_at).toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
               </span>
             </div>
-            <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "16px", padding: "20px", maxHeight: "300px", overflowY: "auto", marginBottom: "24px", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <p style={{ margin: 0, fontSize: "1rem", lineHeight: "1.7", color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}>
+            <div className={styles.notifModalBody}>
+              <p className={styles.notifModalMessage}>
                 {selectedNotification.message}
               </p>
             </div>
             {selectedNotification.link && (
-              <button onClick={() => { setSelectedNotification(null); router.push(selectedNotification.link); }} className="ios-btn ios-btn-primary" style={{ width: "100%", padding: "14px", fontSize: "1.05rem" }}>
+              <button onClick={() => { setSelectedNotification(null); router.push(selectedNotification.link); }} className={`ios-btn ios-btn-primary ${styles.notifModalActionBtn}`}>
                 الذهاب للرابط <i className="bx bx-link-external" style={{ marginRight: "6px" }}></i>
               </button>
             )}

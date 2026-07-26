@@ -21,6 +21,7 @@
   --bg-glass-hover: rgba(39, 39, 42, 0.8);
   --border-glass: rgba(255, 255, 255, 0.1);
   --border-glass-bright: rgba(255, 255, 255, 0.15);
+  --border-break: rgba(39, 39, 39, 0.664);
   --text-primary: #f4f4f5;     /* Zinc 100 */
   --text-secondary: #a1a1aa;   /* Zinc 400 */
   --text-muted: #71717a;       /* Zinc 500 */
@@ -74,9 +75,10 @@ html.light {
   --bg-glass-hover: rgba(244, 244, 245, 0.9);
   --border-glass: rgba(0, 0, 0, 0.08); 
   --border-glass-bright: rgba(0, 0, 0, 0.15);
+  --border-break: rgba(114, 114, 114, 0.137);
   --text-primary: #18181b;     /* Zinc 900 */
   --text-secondary: #52525b;   /* Zinc 600 */
-  --text-muted: #71717a;       /* Zinc 500 */
+  --text-muted: #7a7771;       /* Zinc 500 */
   --accent-primary: #006FEE;   /* HeroUI Blue */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
