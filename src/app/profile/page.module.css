@@ -469,66 +469,27 @@
   gap: 12px;
 }
 
-.themeToggleCard {
+/* Card Main Style */
+.cardContainer {
+  border: none !important;
+  padding: 0px;
   cursor: pointer;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  transition: transform 0.2s, background-color 0.2s;
-  border: none;
+  margin-bottom: 0px;
 }
 
-.themeToggleLeft {
+.cardContainer::selection {
+  background-color: transparent !important;
+}
+
+.cardContent {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.themeToggleIconWrapper {
-  color: var(--accent-primary);
-}
-
-.themeToggleIcon {
-  font-size: 1.4rem;
-}
-
-.themeToggleTitle {
-  font-family: var(--font-cairo);
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.chevronIcon {
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-}
-
-.dividerDashed {
-  width: 95%;
-  border: 1px dashed var(--border-break);
-  margin: 0 auto;
-}
-
-/* Favorite Card */
-.navCard {
-  border: none !important;
-  padding: 0px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0px;
-  /* transition: transform 0.2s, background-color 0.2s; */
-  /* border: 1px solid var(--border-glass); */
-}
-
-.favIconWrapper {
-  color: red;
-}
-
-.favIcon {
+.cardIcon {
   font-size: 1.4rem;
 }
 
@@ -540,38 +501,40 @@
   color: var(--text-primary);
 }
 
+.chevronIcon {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.dividerDashed {
+  width: 95%;
+  border: 1px dashed var(--border-break);
+  margin: 0 auto;
+}
+
+/* Favorite Card */
 .badgeRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 
 .favBadge {
   font-size: 0.85rem;
   color: var(--text-secondary);
-  background: var(--bg-glass-card);
-  padding: 4px 10px;
-  border-radius: 12px;
   font-weight: bold;
 }
 
+
+
+
+
+
+
 /* Notifications Card */
 .notifCard {
-  border-radius: 20px;
-  padding: 15px 20px;
-  cursor: pointer;
-  display: flex;
   flex-direction: column;
-  margin-bottom: 24px;
-  transition: transform 0.2s, background-color 0.2s;
-  border: 1px solid var(--border-glass);
   overflow: hidden;
-}
-
-.notifHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .notifHeaderLeft {
@@ -580,28 +543,13 @@
   gap: 10px;
 }
 
-.notifIconWrapper {
-  color: var(--accent-ios);
-}
-
-.notifIcon {
-  font-size: 1.4rem;
-}
-
-.notifTitleHeader {
-  margin: 0;
-  font-family: Cairo;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
 
 .notifBadgeRed {
   font-size: 0.75rem;
   color: #fff;
   background: #ff3b30;
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: 2px 8px;
+  border-radius: 50%;
   font-weight: bold;
   box-shadow: 0 2px 8px rgba(255, 59, 48, 0.4);
 }
@@ -612,6 +560,7 @@
   transition: transform 0.3s;
 }
 
+/* Notification log  */
 .notifExpandedContent {
   margin-top: 20px;
   padding-top: 20px;
@@ -627,6 +576,7 @@
 }
 
 .notifExpandedTitle {
+  font-family: var(--font-cairo);
   margin: 0;
   font-size: 1rem;
   color: var(--text-primary);

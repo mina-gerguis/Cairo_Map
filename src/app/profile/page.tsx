@@ -907,16 +907,20 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {/* ─── القسم الثاني: مظهر التطبيق (Dark / Light Mode) ─── */}
+      {/* ─── Section 2 (Theme, Favorites, Notifications, Add Places) ─── */}
       <div className={styles.sectionCard}>
+
+        {/* ─── Start App Theme (Dark / Light Mode) ─── */}
         <div
-          className={styles.navCard}
+          className={styles.cardContainer}
           onClick={toggleTheme}
         >
-          <div className={styles.themeToggleLeft}>
-            <div className={styles.themeToggleIconWrapper}>
-              <i className={`bx ${theme === 'dark' ? 'bx-sun' : 'bx-moon'} ${styles.themeToggleIcon}`}></i>
+          <div className={styles.cardContent}>
+            {/* Icon */}
+            <div style={{ color: "var(--accent-primary)" }}>
+              <i className={`bx ${theme === 'dark' ? 'bx-sun' : 'bx-moon'} ${styles.cardIcon}`}></i>
             </div>
+            {/* Title */}
             <div>
               <h3 className={styles.cardTitle}>
                 {theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
@@ -925,18 +929,21 @@ export default function ProfilePage() {
           </div>
           <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
         </div>
+        {/* End Theme (Dark / Light Mode) */}
 
         <hr className={styles.dividerDashed} />
 
-        {/* Favorite Places Card */}
+        {/* Start Favorite Places Card */}
         <div
-          className={styles.navCard}
+          className={styles.cardContainer}
           onClick={() => router.push('/favorites')}
         >
-          <div className={styles.themeToggleLeft}>
-            <div className={styles.favIconWrapper}>
-              <i className={`bx bxs-heart ${styles.favIcon}`}></i>
+          <div className={styles.cardContent}>
+            {/* Icon */}
+            <div style={{ color: "var(--accent-red)" }}>
+              <i className={`bx bxs-heart ${styles.cardIcon}`}></i>
             </div>
+            {/* Title */}
             <div>
               <h3 className={styles.cardTitle}>الأماكن المفضلة</h3>
             </div>
@@ -950,29 +957,31 @@ export default function ProfilePage() {
             <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
         </div>
-
-        {/* Notifications Card */}
+        {/* End Favorites Card */}
+        <hr className={styles.dividerDashed} />
+        {/* Start Notifications Card */}
         <div
-        style={{display: "none"}}
-          className={`glass-panel ${styles.notifCard}`}
+          className= {styles.cardContainer}
+          style={{ flexDirection: "column" }}
           onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
         >
-          <div className={styles.notifHeader}>
+          <div className={styles.cardContent}
+          style={{justifyContent: "space-between"}}>
             <div className={styles.notifHeaderLeft}>
-              <div className={styles.notifIconWrapper}>
-                <i className={`bx bxs-bell ${styles.notifIcon}`}></i>
+              <div style={{ color: "var(--accent-ios)" }}>
+                <i className={`bx bxs-bell ${styles.cardIcon}`}></i>
               </div>
               <div>
-                <h3 className={styles.notifTitleHeader}>الإشعارات</h3>
+                <h3 className={styles.cardTitle}>الإشعارات</h3>
               </div>
             </div>
             <div className={styles.badgeRight}>
               {unreadCount > 0 && (
                 <span className={styles.notifBadgeRed}>
-                  {unreadCount > 99 ? '99+' : unreadCount} جديد
+                  {unreadCount > 99 ? '99+' : unreadCount}
                 </span>
               )}
-              <i className={`bx bx-chevron-${isNotificationsExpanded ? "down" : "left"} ${styles.notifChevron}`}></i>
+              <i className={`bx bx-chevron-${isNotificationsExpanded ? "down" : "left"} ${styles.chevronIcon}`}></i>
             </div>
           </div>
 
