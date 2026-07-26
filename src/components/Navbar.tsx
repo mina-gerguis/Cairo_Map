@@ -185,10 +185,6 @@ export default function Navbar() {
             </div>
           </div>
 
-
-
-
-
           {/* Mobile Hamburger */}
           <button className="navbar-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="القائمة">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

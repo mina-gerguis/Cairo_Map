@@ -178,6 +178,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showDobConfirmModal, setShowDobConfirmModal] = useState(false);
 
   const transliterate = (text: string) => {
     const map: Record<string, string> = {
@@ -274,6 +275,7 @@ export default function SignupPage() {
     if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) age--;
     if (age < 6) { setError("يجب أن يكون العمر 6 سنوات على الأقل للتسجيل."); return; }
     if (formData.username.length < 3) { setError("اسم المستخدم يجب أن يكون 3 حروف على الأقل."); return; }
+    if (/^\d+$/.test(formData.username) || !/[a-z]/i.test(formData.username)) { setError("اسم المستخدم لا يمكن أن يتكون من أرقام فقط (يجب أن يحتوي على حروف إنجليزية)."); return; }
     if (formData.phone.length !== 10) { setError("رقم الهاتف يجب أن يتكون من 10 أرقام."); return; }
     if (!supabase) return;
     setLoading(true); setError("");
@@ -286,7 +288,8 @@ export default function SignupPage() {
       else setError("رقم الهاتف مسجل مسبقاً.");
       setLoading(false); return;
     }
-    setLoading(false); setStep(2);
+    setLoading(false);
+    setShowDobConfirmModal(true);
   };
 
   const pwdRules = {
@@ -590,6 +593,109 @@ export default function SignupPage() {
         {" "}و{" "}
         <span style={{ color: "var(--accent-primary)", cursor: "pointer" }}>سياسة الخصوصية</span>
       </p>
+
+      {/* Modal confirmation for Date of Birth */}
+      {showDobConfirmModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0, 0, 0, 0.85)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div className="glass-panel" style={{
+            maxWidth: "420px",
+            width: "100%",
+            padding: "28px",
+            borderRadius: "24px",
+            border: "1px solid rgba(255, 149, 0, 0.3)",
+            background: "rgba(12, 16, 40, 0.95)",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            animation: "slide-up 0.3s ease"
+          }}>
+            <div style={{
+              width: "56px",
+              height: "56px",
+              borderRadius: "50%",
+              background: "rgba(255, 149, 0, 0.15)",
+              color: "#ff9500",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.8rem",
+              margin: "0 auto 16px"
+            }}>
+              ⚠️
+            </div>
+            
+            <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>
+              تأكيد تاريخ الميلاد
+            </h3>
+            
+            <p style={{ fontSize: "0.92rem", color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: "16px" }}>
+              تاريخ الميلاد المدخل هو: <strong style={{ color: "var(--text-primary)", direction: "ltr", display: "inline-block" }}>{formData.dob}</strong>
+              <br />
+              <span style={{ fontSize: "0.85rem", color: "var(--accent-primary)", fontWeight: "700", marginTop: "4px", display: "block" }}>
+                (العمر: {(() => {
+                  const dobDate = new Date(formData.dob);
+                  const today = new Date();
+                  let age = today.getFullYear() - dobDate.getFullYear();
+                  const m = today.getMonth() - dobDate.getMonth();
+                  if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) age--;
+                  return age;
+                })()} سنة)
+              </span>
+            </p>
+
+            <div style={{
+              background: "rgba(255, 63, 142, 0.1)",
+              border: "1px solid rgba(255, 63, 142, 0.25)",
+              borderRadius: "14px",
+              padding: "12px 14px",
+              color: "#ff6eb4",
+              fontSize: "0.83rem",
+              lineHeight: 1.5,
+              marginBottom: "24px",
+              textAlign: "right"
+            }}>
+              🛑 <strong>تنبيه هام:</strong> لن تتمكن من تغيير تاريخ الميلاد لاحقاً بعد إتمام التسجيل.
+            </div>
+
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button 
+                type="button"
+                className="ios-btn"
+                onClick={() => setShowDobConfirmModal(false)}
+                style={{ flex: 1, padding: "12px" }}
+              >
+                تعديل التاريخ
+              </button>
+              <button 
+                type="button"
+                className="ios-btn"
+                onClick={() => {
+                  setShowDobConfirmModal(false);
+                  setStep(2);
+                }}
+                style={{ 
+                  flex: 1, 
+                  padding: "12px", 
+                  background: "linear-gradient(135deg, #6c63ff, #00d4aa)", 
+                  color: "#fff", 
+                  fontWeight: "700" 
+                }}
+              >
+                متابعة واستكمال
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AuthLayout>
   );
 }

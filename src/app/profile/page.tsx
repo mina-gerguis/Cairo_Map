@@ -9,6 +9,19 @@ import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 
+const PROFILE_AVATARS = [
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Ahmed&backgroundColor=b6e3f4",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Omar&backgroundColor=d1d4f9",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Tarek&backgroundColor=b6e3f4",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Youssef&backgroundColor=d1d4f9",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Ali&backgroundColor=b6e3f4",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Sara&backgroundColor=ffdfbf",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Nour&backgroundColor=c0aede",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Layla&backgroundColor=ffdfbf",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Hala&backgroundColor=c0aede",
+  "https://api.dicebear.com/7.x/notionists/svg?seed=Mona&backgroundColor=ffdfbf",
+];
+
 const AVAILABLE_INTERESTS = [
   { id: "restaurants", label: "مطاعم", icon: "bx bx-restaurant" },
   { id: "drinks", label: "مشروبات", icon: "bx bx-coffee" },
@@ -20,7 +33,10 @@ const AVAILABLE_INTERESTS = [
   { id: "cinema", label: "السينما", icon: "bx bx-camera-movie" },
   { id: "medical", label: "خدمات طبية", icon: "bx bx-plus-medical" },
   { id: "health_beauty", label: "الصحة والجمال", icon: "bx bx-spa" },
-  { id: "parks", label: "الحدائق", icon: "bx bx-tree" }
+  { id: "parks", label: "الحدائق", icon: "bx bx-tree" },
+  { id: "work", label: "شغل", icon: "bx bx-briefcase" },
+  { id: "courses_study", label: "كورسات ودراسة", icon: "bx bx-book-reader" },
+  { id: "quiet_places", label: "اماكن هادئه", icon: "bx bx-moon" }
 ];
 
 /* ─── صفحة الملف الشخصي والإعدادات (Profile Page Component) ─── */
@@ -37,6 +53,30 @@ export default function ProfilePage() {
   const [selectedFavCategory, setSelectedFavCategory] = useState<string>("الكل");
 
   const [editMode, setEditMode] = useState(false);
+  
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  const handleAvatarFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !supabase || !user) return;
+    setUploadingAvatar(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}_${Date.now()}.${fileExt}`;
+      const { error: uploadError, data } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
+      if (uploadError) {
+        setMessage({ type: 'error', text: "فشل رفع الصورة: " + uploadError.message });
+      } else if (data) {
+        const { data: pub } = supabase.storage.from('avatars').getPublicUrl(filePath);
+        setFormData(prev => ({ ...prev, avatarUrl: pub.publicUrl }));
+      }
+    } catch (err: any) {
+      setMessage({ type: 'error', text: "حدث خطأ أثناء رفع الصورة." });
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -45,6 +85,7 @@ export default function ProfilePage() {
     governorate: "",
     city: "",
     dob: "",
+    avatarUrl: "",
     interests: [] as string[],
   });
 
@@ -276,6 +317,7 @@ export default function ProfilePage() {
         governorate: profileData.governorate || "",
         city: profileData.city || "",
         dob: profileData.dob || "",
+        avatarUrl: profileData.avatar_url || "",
         interests: profileData.interests || [],
       });
     }
@@ -331,6 +373,21 @@ export default function ProfilePage() {
     let isUsernameChanged = formData.username !== profile.username;
 
     if (isUsernameChanged) {
+      if (formData.username.length < 3) {
+        setMessage({ type: 'error', text: "اسم المستخدم يجب أن يكون 3 حروف على الأقل." });
+        setSaving(false);
+        return;
+      }
+      if (/^\d+$/.test(formData.username) || !/[a-z]/i.test(formData.username)) {
+        setMessage({ type: 'error', text: "اسم المستخدم لا يمكن أن يتكون من أرقام فقط (يجب أن يحتوي على حروف إنجليزية)." });
+        setSaving(false);
+        return;
+      }
+      if (!/^[a-z0-9_]{3,30}$/.test(formData.username)) {
+        setMessage({ type: 'error', text: "اسم المستخدم يجب أن يتكون من أحرف إنجليزية صغيرة وأرقام والشرطة السفلية (_) فقط بدون مسافات." });
+        setSaving(false);
+        return;
+      }
       if (lastChange) {
         const daysSinceChange = (now.getTime() - lastChange.getTime()) / (1000 * 3600 * 24);
         if (daysSinceChange < 30) {
@@ -372,7 +429,11 @@ export default function ProfilePage() {
     // Update Email in Auth if changed
     let emailChanged = false;
     if (formData.email !== profile.email) {
-      const { error: emailError } = await supabase.auth.updateUser({ email: formData.email });
+      const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+      const { error: emailError } = await supabase.auth.updateUser(
+        { email: formData.email },
+        { emailRedirectTo: `${siteUrl}/profile` }
+      );
       if (emailError) {
         setMessage({ type: 'error', text: "حدث خطأ أثناء طلب تغيير البريد. قد يكون مسجلاً مسبقاً." });
         setSaving(false);
@@ -389,6 +450,7 @@ export default function ProfilePage() {
       city: formData.city,
       dob: formData.dob || null,
       interests: formData.interests,
+      avatar_url: formData.avatarUrl,
     };
 
     if (isUsernameChanged) {
@@ -650,22 +712,99 @@ export default function ProfilePage() {
 
             {editMode ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+
+                {/* Profile Picture / Avatar Selection */}
+                <div>
+                  <label className="help-label">الصورة الشخصية / الأفتار</label>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "rgba(255,255,255,0.02)", padding: "16px", borderRadius: "16px", border: "1px solid var(--border-glass)" }}>
+                    <div style={{ position: "relative" }}>
+                      {formData.avatarUrl ? (
+                        <img src={formData.avatarUrl} alt="Avatar" style={{ width: "80px", height: "80px", borderRadius: "50%", objectFit: "cover", border: "3px solid var(--accent-ios)" }} />
+                      ) : (
+                        <div style={{ width: "80px", height: "80px", borderRadius: "50%", background: "var(--border-glass-bright)", display: "flex", alignItems: "center", justifyContent: "center", border: "3px solid var(--border-glass-bright)" }}>
+                          <i className="bx bxs-user" style={{ fontSize: "2.5rem", color: "var(--text-secondary)" }}></i>
+                        </div>
+                      )}
+                      {uploadingAvatar && (
+                        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.6)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <div className="spinner" style={{ width: "20px", height: "20px" }} />
+                        </div>
+                      )}
+                    </div>
+
+                    <label className="ios-btn" style={{ fontSize: "0.85rem", padding: "8px 16px", cursor: "pointer", background: "rgba(108, 99, 255, 0.15)", border: "1px solid rgba(108, 99, 255, 0.3)", color: "var(--accent-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <i className="bx bx-upload" style={{ fontSize: "1.1rem" }}></i>
+                      {uploadingAvatar ? "جاري الرفع..." : "رفع صورة جديدة من جهازك"}
+                      <input type="file" accept="image/*" onChange={handleAvatarFileUpload} style={{ display: "none" }} disabled={uploadingAvatar} />
+                    </label>
+
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px" }}>أو اختر أفتار جاهز:</span>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px", width: "100%", maxWidth: "320px" }}>
+                      {PROFILE_AVATARS.map((url, i) => (
+                        <div 
+                          key={i} 
+                          onClick={() => setFormData(prev => ({ ...prev, avatarUrl: url }))}
+                          style={{ 
+                            border: formData.avatarUrl === url ? "3px solid var(--accent-ios)" : "2px solid transparent", 
+                            borderRadius: "50%", 
+                            overflow: "hidden", 
+                            cursor: "pointer", 
+                            transition: "all 0.2s ease",
+                            opacity: formData.avatarUrl && formData.avatarUrl !== url ? 0.5 : 1,
+                            boxShadow: formData.avatarUrl === url ? "0 0 12px rgba(108, 99, 255, 0.5)" : "none" 
+                          }}
+                        >
+                          <img src={url} alt={`Avatar ${i}`} style={{ width: "100%", height: "auto", display: "block", aspectRatio: "1" }} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <label className="help-label">الاسم بالكامل</label>
                   <input type="text" className="ios-input" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} />
                 </div>
                 <div>
+                  <label className="help-label">تاريخ الميلاد</label>
+                  <input 
+                    type="date" 
+                    disabled 
+                    readOnly
+                    className="ios-input" 
+                    value={formData.dob} 
+                    style={{ textAlign: "left", direction: "ltr", opacity: 0.65, cursor: "not-allowed", background: "rgba(255, 255, 255, 0.03)" }} 
+                  />
+                  <p style={{ marginTop: "8px", fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.55 }}>
+                    لا يمكنك تغير تاريخ ميلادك اذا كنت قد ادخلت تاريخ ميلادك خطا فيرجى <Link href="/help" style={{ color: "var(--accent-primary)", textDecoration: "underline", fontWeight: "600" }}>التواصل مع الإدارة للتغير</Link>
+                  </p>
+                </div>
+                <div>
                   <label className="help-label">اسم المستخدم (مرة كل 30 يوم)</label>
-                  <input type="text" className="ios-input" value={formData.username} onChange={e => setFormData({...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')})} style={{ textAlign: "left", direction: "ltr" }} />
+                  <input 
+                    type="text" 
+                    className="ios-input" 
+                    value={formData.username} 
+                    onChange={e => setFormData({...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')})} 
+                    style={{ textAlign: "left", direction: "ltr", borderColor: (formData.username.length > 0 && formData.username.length < 3) ? "#ff6eb4" : "" }} 
+                  />
+                  {formData.username.length > 0 && (
+                    formData.username.length < 3 ? (
+                      <p style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "4px" }}>
+                        ⚠️ اسم المستخدم يجب أن يكون 3 حروف على الأقل.
+                      </p>
+                    ) : /^\d+$/.test(formData.username) || !/[a-z]/i.test(formData.username) ? (
+                      <p style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "4px" }}>
+                        ⚠️ اسم المستخدم لا يمكن أن يتكون من أرقام فقط (يجب أن يحتوي على حروف إنجليزية).
+                      </p>
+                    ) : null
+                  )}
                 </div>
                 <div>
                   <label className="help-label">البريد الإلكتروني (يتطلب تأكيد)</label>
                   <input type="email" className="ios-input" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} style={{ textAlign: "left", direction: "ltr" }} />
                 </div>
-                <div>
-                  <label className="help-label">تاريخ الميلاد</label>
-                  <input type="date" className="ios-input" value={formData.dob} onChange={e => setFormData({...formData, dob: e.target.value})} style={{ textAlign: "left", direction: "ltr" }} />
-                </div>
+                
                 <div>
                   <label className="help-label">رقم الهاتف (بدون صفر البداية)</label>
                   <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
@@ -791,7 +930,21 @@ export default function ProfilePage() {
       </div>
 
       {/* ─── القسم الثاني: مظهر التطبيق (Dark / Light Mode) ─── */}
-      <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "600", marginRight: "6px" }}>العامة</div>
+      <div className="test" style={{
+        backgroundColor: "var(--bg-primary)",
+        border: "1px solid var(--border-glass)",
+        borderRadius: "20px",
+        padding: "20px",
+        marginBottom: "24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+      }}>
+
+      
+      <div style={{ fontFamily: "var(--font-cairo)", fontSize: "1.01rem", color: "var(--text-muted)", marginBottom: "8px", fontWeight: "700", marginRight: "6px", 
+       
+       }}>العامة</div>
       <div 
         className="glass-panel" 
         onClick={toggleTheme}
@@ -808,16 +961,13 @@ export default function ProfilePage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
+          <div style={{ color: "var(--accent-ios)" }}>
             <i className={`bx ${theme === 'dark' ? 'bx-sun' : 'bx-moon'}`} style={{ fontSize: "1.4rem" }}></i>
           </div>
           <div style={{ textAlign: "right" }}>
-            <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+            <h3 style={{ fontFamily:"var(--font-cairo)", margin: 0, fontSize: "1rem", fontWeight: "600", color: "var(--text-primary)" }}>
               {theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
             </h3>
-            <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>
-              {theme === "dark" ? "الموقع حالياً بالوضع الداكن" : "الموقع حالياً بالوضع الفاتح"}
-            </p>
           </div>
         </div>
         <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
@@ -866,7 +1016,7 @@ export default function ProfilePage() {
         onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
         style={{ 
           borderRadius: "20px", 
-          padding: "20px", 
+          padding: "15px 20px", 
           cursor: "pointer", 
           display: "flex", 
           flexDirection: "column",
@@ -877,15 +1027,12 @@ export default function ProfilePage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(108, 99, 255, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-ios)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{ color: "var(--accent-ios)" }}>
               <i className="bx bxs-bell" style={{ fontSize: "1.4rem" }}></i>
             </div>
             <div style={{ textAlign: "right" }}>
-              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>الإشعارات</h3>
-              <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>
-                عرض جميع الإشعارات الواردة
-              </p>
+              <h3 style={{ margin: 0, fontFamily: "Cairo", fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)" }}>الإشعارات</h3>
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -974,6 +1121,42 @@ export default function ProfilePage() {
         )}
       </div>
 
+      {/* Propose Place Card (Under Notifications in General Section) */}
+      {user && (
+        <div 
+          className="glass-panel" 
+          onClick={() => router.push('/propose-place')}
+          style={{ 
+            borderRadius: "20px", 
+            padding: "20px", 
+            cursor: "pointer", 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "space-between",
+            marginBottom: "24px",
+            transition: "transform 0.2s, background-color 0.2s",
+            border: "1px solid var(--border-glass)"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(0, 212, 170, 0.15)", display: "flex", alignItems: "center", justifyContent: "center", color: "#00d4aa" }}>
+              <i className="bx bx-map-pin" style={{ fontSize: "1.4rem" }}></i>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>اقتراحات الأماكن</h3>
+              <p style={{ margin: "4px 0 0", color: "var(--text-secondary)", fontSize: "0.82rem" }}>
+                اقترح مكان جديد وساهم في إضافته للموقع بعد مراجعة الإدارة
+              </p>
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--accent-primary)", fontWeight: "700", fontSize: "0.85rem" }}>
+            <span>إضافة مكان</span>
+            <i className="bx bx-chevron-left" style={{ fontSize: "1.5rem", color: "var(--text-secondary)" }}></i>
+          </div>
+        </div>
+      )}
+</div> 
+{/* test */}
       {/* ─── القسم الثالث: إعدادات الأمان والمصادقة الثنائية (خوص للمسجلين) ─── */}
       {user && (
       <>

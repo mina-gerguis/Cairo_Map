@@ -407,7 +407,7 @@ function HomeContent() {
           </h1>
 
           <p className="hero-subtitle">
-            دفتري هو رفيقك الأمثل لاكتشاف المطاعم، الكافيهات، الحدائق، وأكثر بحسب موقعك. كل مكان تحتاجه الآن بضغطة واحدة.
+            ماب القاهرة هو رفيقك الأمثل لاكتشاف المطاعم، الكافيهات، الحدائق، وأكثر بحسب موقعك. كل مكان تحتاجه الآن بضغطة واحدة.
           </p>
 
           {/* Integrated Search in Hero */}
@@ -428,11 +428,11 @@ function HomeContent() {
           </div>
 
           <div className="hero-actions">
-            <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })}>
+            <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })} style={{fontFamily: "Cairo"}}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
               استكشف الأماكن
             </button>
-            <button className="hero-btn-secondary" onClick={() => setIsProximityEnabled(!isProximityEnabled)}>
+            <button className="hero-btn-secondary" onClick={() => setIsProximityEnabled(!isProximityEnabled)} style={{fontFamily: "Cairo"}}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>
               {isProximityEnabled ? "إيقاف القرب" : "بالقرب مني"}
             </button>
@@ -458,10 +458,7 @@ function HomeContent() {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="hero-scroll-indicator">
-          <span>اكتشف</span>
-          <div className="hero-scroll-arrow" />
-        </div>
+        
       </section>
 
       {/* ══════════════ MAIN CONTENT ══════════════ */}

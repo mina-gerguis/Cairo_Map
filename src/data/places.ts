@@ -1,5 +1,23 @@
 export type PlaceCategory = 'restaurant' | 'cafe' | 'pharmacy' | 'hospital' | 'garden' | 'family' | 'entertainment';
 
+export interface CategoryItem {
+  id?: string;
+  name: string;
+  label: string;
+  icon: string;
+  color?: string;
+}
+
+export const DEFAULT_CATEGORIES: CategoryItem[] = [
+  { name: 'restaurant', label: 'مطاعم', icon: '🍽️', color: '#ff3b30' },
+  { name: 'cafe', label: 'كافيهات', icon: '☕', color: '#ff9500' },
+  { name: 'pharmacy', label: 'صيدليات', icon: '💊', color: '#34c759' },
+  { name: 'hospital', label: 'مستشفيات', icon: '🏥', color: '#007aff' },
+  { name: 'garden', label: 'حدائق', icon: '🌳', color: '#30b0c7' },
+  { name: 'family', label: 'عائلية', icon: '👨‍👩‍👧‍👦', color: '#af52de' },
+  { name: 'entertainment', label: 'ترفيهية', icon: '🎬', color: '#ff2d55' },
+];
+
 export interface Branch {
   id: string;
   place_id: string;

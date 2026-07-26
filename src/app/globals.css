@@ -10,6 +10,7 @@
 :root {
   --font-display: var(--font-almarai), "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: var(--font-almarai), "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-cairo: var(--font-cairo), "Cairo", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* HeroUI Dark Palette */
   --bg-primary: #000000;       /* Pure black */
@@ -514,7 +515,7 @@ html.light .navbar-auth-menu { background: var(--bg-glass); }
 }
 
 .hero-title {
-  font-family: var(--font-display);
+  font-family: "Cairo";
   font-size: clamp(2.8rem, 7vw, 6rem);
   font-weight: 700;
   line-height: 1.1;
@@ -550,7 +551,7 @@ html.light .navbar-auth-menu { background: var(--bg-glass); }
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 36px;
+  padding: 10px 36px;
   border-radius: var(--radius-full);
   background: var(--accent-primary);
   color: #fff;
@@ -569,7 +570,7 @@ html.light .navbar-auth-menu { background: var(--bg-glass); }
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 15px 34px;
+  padding: 10px 34px;
   border-radius: var(--radius-full);
   background: var(--bg-glass-card);
   color: var(--text-primary);
@@ -1108,7 +1109,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .ios-sheet {
   width: 100%;
-  max-width: 780px;
+  max-width: 80%;
   height: 90vh;
   background: var(--bg-secondary);
   border-top-left-radius: var(--radius-xl);

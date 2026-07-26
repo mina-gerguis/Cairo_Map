@@ -253,7 +253,14 @@ export default function PlaceDetailsPage() {
     );
   }
 
-  const displayBranch = place.branches?.find(b => b.id === selectedBranchId) || place;
+  const selectedBranch = place.branches?.find(b => b.id === selectedBranchId);
+  const displayBranch = {
+    ...place,
+    ...(selectedBranch || {}),
+    phones: (selectedBranch?.phones && selectedBranch.phones.length > 0) ? selectedBranch.phones : (place.phones || []),
+    workingHours: selectedBranch?.workingHours || place.workingHours || "",
+    fullAddress: selectedBranch?.fullAddress || place.fullAddress || "",
+  };
 
   // Calculate distance if coordinates are available
   const currentDistance =
