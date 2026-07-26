@@ -485,7 +485,7 @@
 }
 
 .themeToggleIconWrapper {
-  color: var(--text-secondary);
+  color: var(--accent-primary);
 }
 
 .themeToggleIcon {
@@ -525,7 +525,7 @@
 }
 
 .favIconWrapper {
-  color: var(--text-secondary);
+  color: red;
 }
 
 .favIcon {
