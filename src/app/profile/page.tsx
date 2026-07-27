@@ -1187,7 +1187,7 @@ export default function ProfilePage() {
                   {profile?.is_admin && (
                     <form onSubmit={handleAddFAQ} className={styles.adminFaqForm}>
                       <h4 className={styles.adminFaqTitle}>
-                        <i className={`bx bx-bulb ${styles.adminFaqIcon}`}></i> إضافة سؤال شائع جديد (المسؤولين فقط)
+                        <i className={`bx bx-bulb ${styles.adminFaqIcon}`}></i> إضافة سؤال  جديد
                       </h4>
                       <input
                         required className="ios-input" placeholder="السؤال..."

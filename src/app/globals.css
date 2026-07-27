@@ -1113,7 +1113,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .ios-sheet {
   width: 100%;
-  max-width: 80%;
+  max-width: 90%;
   height: 90vh;
   background: var(--bg-secondary);
   border-top-left-radius: var(--radius-xl);
