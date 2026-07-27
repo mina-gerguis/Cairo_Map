@@ -1301,8 +1301,8 @@ export default function ProfilePage() {
             <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
           {/*End Information Privacy*/}
-          <hr className={styles.dividerDashed} />
         </Link>
+        <hr className={styles.dividerDashed} />
         {/*Start Terms of Use*/}
         <Link href="/terms" style={{ textDecoration: "none" }}>
           <div className={styles.cardContainer}>
@@ -1349,7 +1349,7 @@ export default function ProfilePage() {
                   <i className={`bx bx-user-minus ${styles.cardIcon}`}></i>
                 </div>
                 <div>
-                  <h3 className={styles.cardTitle} style={{color: "#ff3b30"}}>حذف الحساب</h3>
+                  <h3 className={styles.cardTitle} style={{ color: "#ff3b30" }}>حذف الحساب</h3>
                 </div>
               </div>
               <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
