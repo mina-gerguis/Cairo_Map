@@ -962,7 +962,7 @@ export default function ProfilePage() {
         {/* Start Notifications Card */}
         <div
           className={styles.cardContainer}
-          style={{ flexDirection: "column" }}
+          style={{ flexDirection: "column", alignItems: "stretch" }}
           onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
         >
           <div className={styles.cardContent}
@@ -1038,7 +1038,7 @@ export default function ProfilePage() {
         {/*Start Propose Place Card */}
         {user && (
           <div
-            className={`glass-panel ${styles.cardContainer}`}
+            className={styles.cardContainer}
             onClick={() => router.push('/propose-place')}
           >
             <div className={styles.cardContent}>
@@ -1075,11 +1075,9 @@ export default function ProfilePage() {
             </div>
             <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
-
           {/*End Change password Card */}
           <hr className={styles.dividerDashed} />
           {/*Start 2FA Card */}
-
           <div
             className={`${styles.cardContainer} ${activeCount > 0 ? styles.mfaCardActive : styles.mfaCardInactive}`}
             onClick={() => setShow2FAModal(true)}
@@ -1104,251 +1102,258 @@ export default function ProfilePage() {
 
           </div>
         </div>
-
       )}
-
-      {/* ─── القسم الرابع: الدعم والروابط الهامة (Support & Links) ─── */}
-      <div className={styles.sectionHeaderLabel}>المساعدة</div>
-      <div
-        className={`glass-panel ${styles.helpCard} ${isHelpExpanded ? styles.helpCardExpanded : ''}`}
-        onClick={() => setIsHelpExpanded(!isHelpExpanded)}
-      >
-        <div className={styles.helpHeader}>
-          <div className={styles.helpHeaderLeft}>
-            <div className={styles.securityIconWrapper}>
-              <i className={`bx bx-help-circle ${styles.securityIcon}`}></i>
+      {/*End 2FA Card */}
+      {/* ─── Section 4: Help & Support (For logged in users) ─── */}
+      <div className={styles.sectionCard}>
+        <div
+          className={`${styles.cardContainer} ${isHelpExpanded ? styles.helpCardExpanded : ''}`}
+          style={{ flexDirection: "column", alignItems: "normal" }}
+          onClick={() => setIsHelpExpanded(!isHelpExpanded)}
+        >
+          <div className={styles.cardContent} style={{ justifyContent: "space-between", }}>
+            <div className={styles.helpHeaderLeft}>
+              <div style={{ color: "var(--accent-primary)" }}>
+                <i className={`bx bx-help-circle ${styles.cardIcon}`}></i>
+              </div>
+              <h3 className={styles.cardTitle}>التواصل والمساعدة</h3>
             </div>
-            <h3 className={styles.helpTitle}>التواصل والمساعدة</h3>
+            <i className={`bx ${isHelpExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${styles.chevronIcon}`}></i>
           </div>
-          <i className={`bx ${isHelpExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${styles.chevronIcon}`}></i>
-        </div>
 
-        {/* Expanded Help Center (Tabs) */}
-        {isHelpExpanded && (
-          <div onClick={(e) => e.stopPropagation()} className={styles.helpExpandedContent}>
-            {/* Tabs Selector */}
-            <div className={styles.tabsContainer}>
-              <button
-                onClick={() => setHelpTab("faq")}
-                className={`${styles.tabBtn} ${helpTab === "faq" ? styles.tabBtnActive : ''}`}
-              >
-                الأسئلة الشائعة
-              </button>
-              <button
-                onClick={() => setHelpTab("social")}
-                className={`${styles.tabBtn} ${helpTab === "social" ? styles.tabBtnActive : ''}`}
-              >
-                مواقع التواصل
-              </button>
-              <button
-                onClick={() => setHelpTab("contact")}
-                className={`${styles.tabBtn} ${helpTab === "contact" ? styles.tabBtnActive : ''}`}
-              >
-                مراسلتنا
-              </button>
-            </div>
+          {/* Expanded Help Center (Tabs) */}
+          {isHelpExpanded && (
+            <div onClick={(e) => e.stopPropagation()} className={styles.helpExpandedContent}>
+              {/* Tabs Selector */}
+              <div className={styles.tabsContainer}>
+                <button
+                  onClick={() => setHelpTab("faq")}
+                  className={`${styles.tabBtn} ${helpTab === "faq" ? styles.tabBtnActive : ''}`}
+                >
+                  الأسئلة
+                </button>
+                <button
+                  onClick={() => setHelpTab("social")}
+                  className={`${styles.tabBtn} ${helpTab === "social" ? styles.tabBtnActive : ''}`}
+                >
+                  السوشيال
+                </button>
+                <button
+                  onClick={() => setHelpTab("contact")}
+                  className={`${styles.tabBtn} ${helpTab === "contact" ? styles.tabBtnActive : ''}`}
+                >
+                  مراسلتنا
+                </button>
+              </div>
 
-            {/* TAB CONTENT 1: FAQ */}
-            {helpTab === "faq" && (
-              <div className={styles.faqList}>
-                {faqs.length === 0 ? (
-                  <p className={styles.faqEmptyText}>لا توجد أسئلة شائعة حالياً.</p>
-                ) : (
-                  faqs.map((faq, index) => {
-                    const isFaqExpanded = expandedFaq === index;
-                    return (
-                      <div key={faq.id} className={styles.faqItem}>
-                        <div
-                          onClick={() => setExpandedFaq(isFaqExpanded ? null : index)}
-                          className={styles.faqQuestionRow}
-                        >
-                          <h4 className={styles.faqQuestionTitle}>{faq.question}</h4>
-                          <div className={styles.faqActions}>
-                            {profile?.is_admin && (
-                              <button
-                                onClick={(e) => { e.stopPropagation(); handleDeleteFAQ(faq.id); }}
-                                className={styles.faqDeleteBtn}
-                              >
-                                <i className={`bx bx-trash ${styles.faqDeleteIcon}`}></i>
-                              </button>
-                            )}
-                            <span className={styles.faqToggleIcon}>
-                              {isFaqExpanded ? "−" : "+"}
-                            </span>
+              {/* TAB CONTENT 1: FAQ */}
+              {helpTab === "faq" && (
+                <div className={styles.faqList}>
+                  {faqs.length === 0 ? (
+                    <p className={styles.faqEmptyText}>لا توجد أسئلة شائعة حالياً.</p>
+                  ) : (
+                    faqs.map((faq, index) => {
+                      const isFaqExpanded = expandedFaq === index;
+                      return (
+                        <div key={faq.id} className={styles.faqItem}>
+                          <div
+                            onClick={() => setExpandedFaq(isFaqExpanded ? null : index)}
+                            className={styles.faqQuestionRow}
+                          >
+                            <h4 className={styles.faqQuestionTitle}>{faq.question}</h4>
+                            <div className={styles.faqActions}>
+                              {profile?.is_admin && (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleDeleteFAQ(faq.id); }}
+                                  className={styles.faqDeleteBtn}
+                                >
+                                  <i className={`bx bx-trash ${styles.faqDeleteIcon}`}></i>
+                                </button>
+                              )}
+                              <span className={styles.faqToggleIcon}>
+                                {isFaqExpanded ? "−" : "+"}
+                              </span>
+                            </div>
                           </div>
+                          {isFaqExpanded && (
+                            <p className={styles.faqAnswerText}>{faq.answer}</p>
+                          )}
                         </div>
-                        {isFaqExpanded && (
-                          <p className={styles.faqAnswerText}>{faq.answer}</p>
-                        )}
+                      );
+                    })
+                  )}
+
+                  {/* Admin Add FAQ Form */}
+                  {profile?.is_admin && (
+                    <form onSubmit={handleAddFAQ} className={styles.adminFaqForm}>
+                      <h4 className={styles.adminFaqTitle}>
+                        <i className={`bx bx-bulb ${styles.adminFaqIcon}`}></i> إضافة سؤال شائع جديد (المسؤولين فقط)
+                      </h4>
+                      <input
+                        required className="ios-input" placeholder="السؤال..."
+                        value={faqQuestion} onChange={e => setFaqQuestion(e.target.value)}
+                      />
+                      <textarea
+                        required className={`ios-input ${styles.adminFaqTextarea}`} placeholder="الإجابة..."
+                        value={faqAnswer} onChange={e => setFaqAnswer(e.target.value)}
+                      />
+                      <button type="submit" disabled={faqLoading} className={`ios-btn ios-btn-primary ${styles.adminFaqSubmitBtn}`}>
+                        {faqLoading ? "جاري الإضافة..." : "حفظ السؤال الشائع"}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )}
+
+              {/* TAB CONTENT 2: SOCIAL LINKS */}
+              {helpTab === "social" && (
+                <div className={styles.socialGrid}>
+                  <a href="https://wa.me/201234567890" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                    <i className={`bx bxl-whatsapp ${styles.socialIconWhatsapp}`}></i>
+                    <span>واتساب</span>
+                  </a>
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                    <i className={`bx bxl-facebook-circle ${styles.socialIconFacebook}`}></i>
+                    <span>فيسبوك</span>
+                  </a>
+                  <a href="https://t.me" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                    <i className={`bx bxl-telegram ${styles.socialIconTelegram}`}></i>
+                    <span>تلجرام</span>
+                  </a>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
+                    <i className={`bx bxl-instagram ${styles.socialIconInstagram}`}></i>
+                    <span>إنستغرام</span>
+                  </a>
+                  <a href="https://stagekode.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill} ${styles.socialPillFull}`}>
+                    <i className={`bx bx-globe ${styles.socialIconGlobe}`}></i>
+                    <span>الموقع الرسمي (STAGE KODE)</span>
+                  </a>
+                </div>
+              )}
+
+              {/* TAB CONTENT 3: CONTACT FORM */}
+              {helpTab === "contact" && (
+                <div>
+                  {contactSubmitted ? (
+                    <div className={styles.contactSuccess}>
+                      <div className={styles.contactSuccessIcon}><i className="bx bxs-check-circle"></i></div>
+                      <h4 className={styles.contactSuccessTitle}>تم إرسال رسالتك بنجاح!</h4>
+                      <p className={styles.contactSuccessMsg}>شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بالرد عليك في أقرب وقت.</p>
+                      <button className="ios-btn" onClick={() => setContactSubmitted(false)}>إرسال رسالة أخرى</button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleContactSubmit} className={styles.contactForm}>
+                      <div className={styles.grid2Col}>
+                        <input
+                          required className="ios-input" placeholder="الاسم الأول"
+                          value={contactForm.firstName} onChange={e => setContactForm({ ...contactForm, firstName: e.target.value })}
+                        />
+                        <input
+                          required className="ios-input" placeholder="الاسم الأخير"
+                          value={contactForm.lastName} onChange={e => setContactForm({ ...contactForm, lastName: e.target.value })}
+                        />
                       </div>
-                    );
-                  })
-                )}
-
-                {/* Admin Add FAQ Form */}
-                {profile?.is_admin && (
-                  <form onSubmit={handleAddFAQ} className={styles.adminFaqForm}>
-                    <h4 className={styles.adminFaqTitle}>
-                      <i className={`bx bx-bulb ${styles.adminFaqIcon}`}></i> إضافة سؤال شائع جديد (المسؤولين فقط)
-                    </h4>
-                    <input
-                      required className="ios-input" placeholder="السؤال..."
-                      value={faqQuestion} onChange={e => setFaqQuestion(e.target.value)}
-                    />
-                    <textarea
-                      required className={`ios-input ${styles.adminFaqTextarea}`} placeholder="الإجابة..."
-                      value={faqAnswer} onChange={e => setFaqAnswer(e.target.value)}
-                    />
-                    <button type="submit" disabled={faqLoading} className={`ios-btn ios-btn-primary ${styles.adminFaqSubmitBtn}`}>
-                      {faqLoading ? "جاري الإضافة..." : "حفظ السؤال الشائع"}
-                    </button>
-                  </form>
-                )}
-              </div>
-            )}
-
-            {/* TAB CONTENT 2: SOCIAL LINKS */}
-            {helpTab === "social" && (
-              <div className={styles.socialGrid}>
-                <a href="https://wa.me/201234567890" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
-                  <i className={`bx bxl-whatsapp ${styles.socialIconWhatsapp}`}></i>
-                  <span>واتساب</span>
-                </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
-                  <i className={`bx bxl-facebook-circle ${styles.socialIconFacebook}`}></i>
-                  <span>فيسبوك</span>
-                </a>
-                <a href="https://t.me" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
-                  <i className={`bx bxl-telegram ${styles.socialIconTelegram}`}></i>
-                  <span>تلجرام</span>
-                </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill}`}>
-                  <i className={`bx bxl-instagram ${styles.socialIconInstagram}`}></i>
-                  <span>إنستغرام</span>
-                </a>
-                <a href="https://stagekode.com" target="_blank" rel="noopener noreferrer" className={`category-pill ${styles.socialPill} ${styles.socialPillFull}`}>
-                  <i className={`bx bx-globe ${styles.socialIconGlobe}`}></i>
-                  <span>الموقع الرسمي (STAGE KODE)</span>
-                </a>
-              </div>
-            )}
-
-            {/* TAB CONTENT 3: CONTACT FORM */}
-            {helpTab === "contact" && (
-              <div>
-                {contactSubmitted ? (
-                  <div className={styles.contactSuccess}>
-                    <div className={styles.contactSuccessIcon}><i className="bx bxs-check-circle"></i></div>
-                    <h4 className={styles.contactSuccessTitle}>تم إرسال رسالتك بنجاح!</h4>
-                    <p className={styles.contactSuccessMsg}>شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بالرد عليك في أقرب وقت.</p>
-                    <button className="ios-btn" onClick={() => setContactSubmitted(false)}>إرسال رسالة أخرى</button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleContactSubmit} className={styles.contactForm}>
-                    <div className={styles.grid2Col}>
-                      <input
-                        required className="ios-input" placeholder="الاسم الأول"
-                        value={contactForm.firstName} onChange={e => setContactForm({ ...contactForm, firstName: e.target.value })}
+                      <div className={styles.grid2Col}>
+                        <input
+                          required className={`ios-input ${styles.inputLtrRight}`} placeholder="رقم الهاتف"
+                          value={contactForm.phone} onChange={e => setContactForm({ ...contactForm, phone: e.target.value })}
+                        />
+                        <input
+                          required className={`ios-input ${styles.inputLtrRight}`} type="email" placeholder="البريد الإلكتروني"
+                          value={contactForm.email} onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
+                        />
+                      </div>
+                      <select
+                        required className="ios-input help-select"
+                        value={contactForm.contactType} onChange={e => setContactForm({ ...contactForm, contactType: e.target.value })}
+                      >
+                        <option value="">نوع التواصل...</option>
+                        <option value="إبلاغ">إبلاغ</option>
+                        <option value="شكوى">شكوى</option>
+                        <option value="طلب مساعدة">طلب مساعدة</option>
+                        <option value="اقتراح تطوير">اقتراح تطوير</option>
+                      </select>
+                      <textarea
+                        required className={`ios-input ${styles.contactTextarea}`} placeholder="اكتب تفاصيل رسالتك هنا..."
+                        value={contactForm.message} onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
                       />
-                      <input
-                        required className="ios-input" placeholder="الاسم الأخير"
-                        value={contactForm.lastName} onChange={e => setContactForm({ ...contactForm, lastName: e.target.value })}
-                      />
-                    </div>
-                    <div className={styles.grid2Col}>
-                      <input
-                        required className={`ios-input ${styles.inputLtrRight}`} placeholder="رقم الهاتف"
-                        value={contactForm.phone} onChange={e => setContactForm({ ...contactForm, phone: e.target.value })}
-                      />
-                      <input
-                        required className={`ios-input ${styles.inputLtrRight}`} type="email" placeholder="البريد الإلكتروني"
-                        value={contactForm.email} onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
-                      />
-                    </div>
-                    <select
-                      required className="ios-input help-select"
-                      value={contactForm.contactType} onChange={e => setContactForm({ ...contactForm, contactType: e.target.value })}
-                    >
-                      <option value="">نوع التواصل...</option>
-                      <option value="إبلاغ">إبلاغ</option>
-                      <option value="شكوى">شكوى</option>
-                      <option value="طلب مساعدة">طلب مساعدة</option>
-                      <option value="اقتراح تطوير">اقتراح تطوير</option>
-                    </select>
-                    <textarea
-                      required className={`ios-input ${styles.contactTextarea}`} placeholder="اكتب تفاصيل رسالتك هنا..."
-                      value={contactForm.message} onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
-                    />
-                    <button type="submit" disabled={contactLoading} className={`ios-btn ios-btn-primary ${styles.contactSubmitBtn}`}>
-                      {contactLoading ? "جاري الإرسال..." : "إرسال الرسالة"}
-                    </button>
-                  </form>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* ─── 4. INFORMATION SECTION ─── */}
-      <div className={styles.sectionHeaderLabel}>معلومات</div>
-      <Link href="/privacy" style={{ textDecoration: "none" }}>
-        <div className={`glass-panel ${styles.infoCard}`}>
-          <div className={styles.themeToggleLeft}>
-            <div className={styles.infoIconWrapper}>
-              <i className={`bx bx-shield-quarter ${styles.infoIcon}`}></i>
+                      <button type="submit" disabled={contactLoading} className={`ios-btn ios-btn-primary ${styles.contactSubmitBtn}`}>
+                        {contactLoading ? "جاري الإرسال..." : "إرسال الرسالة"}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )}
             </div>
-            <h3 className={styles.cardTitle}>سياسة الخصوصية</h3>
-          </div>
-          <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+          )}
         </div>
-      </Link>
-      <Link href="/terms" style={{ textDecoration: "none" }}>
-        <div className={`glass-panel ${styles.infoCard} ${styles.infoCardMargin}`}>
-          <div className={styles.themeToggleLeft}>
-            <div className={styles.infoIconWrapper}>
-              <i className={`bx bx-file ${styles.infoIcon}`}></i>
-            </div>
-            <h3 className={styles.cardTitle}>شروط الاستخدام</h3>
-          </div>
-          <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-        </div>
-      </Link>
-
-      {/* ─── القسم الخامس: إعدادات متقدمة وتسجيل الخروج (خاص للمسجلين) ─── */}
-      {user && (
-        <>
-          <div className={styles.sectionHeaderLabel}>متقدم</div>
-          <div
-            className={`glass-panel ${styles.logoutCard}`}
-            onClick={() => setShowLogoutModal(true)}
-          >
-            <div className={styles.themeToggleLeft}>
-              <div className={styles.logoutIconWrapper}>
-                <i className={`bx bx-log-out ${styles.logoutIcon}`}></i>
+        {/*End Help Center */}
+        <hr className={styles.dividerDashed} />
+        {/*Start Information Privacy*/}
+        <Link href="/privacy" style={{ textDecoration: "none" }}>
+          <div className={styles.cardContainer}>
+            <div className={styles.cardContent}>
+              <div style={{ color: "#00d2ff" }} className={styles.iconWrapper}>
+                <i className={`bx bx-shield-quarter ${styles.cardIcon}`}></i>
               </div>
-              <div>
-                <h3 className={styles.cardTitle}>تسجيل الخروج</h3>
-                <p className={styles.logoutSubtitle}>تسجيل الخروج من حسابك الحالي</p>
-              </div>
+              <h3 className={styles.cardTitle}>سياسة الخصوصية</h3>
             </div>
             <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
-
-          <div
-            className={`glass-panel ${styles.deleteAccountCard}`}
-            onClick={() => { setShowDeleteModal(true); setDeleteConfirmation(""); }}
-          >
-            <div className={styles.themeToggleLeft}>
-              <div className={styles.deleteAccountIconWrapper}>
-                <i className={`bx bx-user-minus ${styles.deleteAccountIcon}`}></i>
+          {/*End Information Privacy*/}
+          <hr className={styles.dividerDashed} />
+        </Link>
+        {/*Start Terms of Use*/}
+        <Link href="/terms" style={{ textDecoration: "none" }}>
+          <div className={styles.cardContainer}>
+            <div className={styles.cardContent}>
+              <div style={{ color: "#a51c87ff" }}>
+                <i className={`bx bx-file ${styles.cardIcon}`}></i>
               </div>
-              <div>
-                <h3 className={styles.deleteAccountTitle}>حذف الحساب نهائياً</h3>
-                <p className={styles.securitySubtitle}>حذف كافة البيانات وإلغاء تنشيط الحساب</p>
-              </div>
+              <h3 className={styles.cardTitle}>شروط الاستخدام</h3>
             </div>
-            <i className={`bx bx-chevron-left ${styles.deleteChevron}`}></i>
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+          </div>
+          {/*End Terms of Use*/}
+        </Link>
+      </div>
+
+      {/* ─── Section 5: Advanced Settings & Logout ─── */}
+      {user && (
+        <>
+          <div className={styles.sectionCard}>
+            {/* Start Logout */}
+            <div
+              className={`glass-panel ${styles.cardContainer}`}
+              onClick={() => setShowLogoutModal(true)}
+            >
+              <div className={styles.cardContent}>
+                <div style={{ color: "#ff3b30" }}>
+                  <i className={`bx bx-log-out ${styles.cardIcon}`}></i>
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>تسجيل الخروج</h3>
+                </div>
+              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+            </div>
+            {/* End Logout */}
+            <hr className={styles.dividerDashed} />
+            {/* Start Delete Account */}
+            <div
+              className={`glass-panel ${styles.cardContainer}`}
+              onClick={() => { setShowDeleteModal(true); setDeleteConfirmation(""); }}
+            >
+              <div className={styles.cardContent}>
+                <div style={{ color: "#ff3b30" }}>
+                  <i className={`bx bx-user-minus ${styles.cardIcon}`}></i>
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle} style={{color: "#ff3b30"}}>حذف الحساب</h3>
+                </div>
+              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+            </div>
           </div>
         </>
       )}
@@ -1404,7 +1409,7 @@ export default function ProfilePage() {
                   disabled={deleteConfirmation !== deleteString || loading}
                 >
                   <i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i>
-                  {loading ? "جاري الحذف..." : "حذف نهائي"}
+                  {loading ? "جاري الحذف..." : "حذف "}
                 </button>
               </div>
             </div>
@@ -1637,7 +1642,7 @@ export default function ProfilePage() {
             <div className={styles.formButtonsRow}>
               <button className={`ios-btn ${styles.flex1}`} onClick={() => { setShowPasswordModal(false); setPasswordForm({ new: "", confirm: "" }); }}>إلغاء</button>
               <button className={`ios-btn ios-btn-primary ${styles.flex1} ${(!isPasswordValid || passwordLoading) ? styles.btnOpacity60 : ''}`} onClick={handleChangePassword} disabled={passwordLoading || !isPasswordValid}>
-                {passwordLoading ? "جاري التغيير..." : "حفظ التغييرات"}
+                {passwordLoading ? "جاري التغيير..." : "تأكيد"}
               </button>
             </div>
           </div>

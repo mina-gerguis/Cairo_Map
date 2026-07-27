@@ -461,12 +461,12 @@
 .sectionCard {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-glass);
-  border-radius: 20px;
+  border-radius: 15px;
   padding: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 /* Card Main Style */
@@ -476,6 +476,7 @@
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 0px;
 }
 
@@ -536,7 +537,6 @@
   align-items: center;
   gap: 10px;
 }
-
 
 .notifBadgeRed {
   font-size: 0.75rem;
@@ -697,9 +697,6 @@
   background: #ff3b30;
   margin-top: 8px;
 }
-  
-
-
 
 
 /* Section Header Labels */
@@ -787,64 +784,36 @@
 }
 
 /* Help Section */
-.helpCard {
-  border-radius: 20px;
-  padding: 20px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
-  transition: transform 0.2s, background-color 0.2s;
-  border: 1px solid var(--border-glass);
-}
-
-.helpCardExpanded {
-  border-color: var(--accent-ios);
-}
-
-.helpHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .helpHeaderLeft {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.helpTitle {
-  margin: 0;
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--text-primary);
-}
 
 .helpExpandedContent {
   cursor: default;
   border-top: 1px solid var(--border-glass);
-  padding-top: 16px;
+  padding: 20px 0;
 }
 
 .tabsContainer {
   display: flex;
   background: rgba(255, 255, 255, 0.05);
-  padding: 4px;
+  padding: 2px;
   border-radius: 12px;
   margin-bottom: 20px;
 }
 
 .tabBtn {
   flex: 1;
-  padding: 8px;
+  padding: 4px 2px;
   border: none;
   border-radius: 10px;
   background: transparent;
   color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 0.88rem;
+  font-family: var(--font-cairo);
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -953,8 +922,22 @@
 /* Social Grid */
 .socialGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  align-items: center;
+  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 12px;
+}
+
+@media screen and (max-width: 768px) {
+  .socialGrid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .socialGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
 }
 
 .socialPill {
@@ -962,7 +945,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid var(--border-glass);
   text-decoration: none;
 }
