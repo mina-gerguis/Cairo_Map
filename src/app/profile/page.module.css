@@ -814,6 +814,7 @@
   color: var(--text-secondary);
   font-family: var(--font-cairo);
   font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
