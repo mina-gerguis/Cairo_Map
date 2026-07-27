@@ -1079,7 +1079,7 @@ export default function ProfilePage() {
           <hr className={styles.dividerDashed} />
           {/*Start 2FA Card */}
           <div
-            className={`${styles.cardContainer} ${activeCount > 0 ? styles.mfaCardActive : styles.mfaCardInactive}`}
+            className={styles.cardContainer}
             onClick={() => setShow2FAModal(true)}
           >
             <div className={styles.cardContent}>
@@ -1324,7 +1324,7 @@ export default function ProfilePage() {
           <div className={styles.sectionCard}>
             {/* Start Logout */}
             <div
-              className={`glass-panel ${styles.cardContainer}`}
+              className={styles.cardContainer}
               onClick={() => setShowLogoutModal(true)}
             >
               <div className={styles.cardContent}>
@@ -1341,7 +1341,7 @@ export default function ProfilePage() {
             <hr className={styles.dividerDashed} />
             {/* Start Delete Account */}
             <div
-              className={`glass-panel ${styles.cardContainer}`}
+              className={styles.cardContainer}
               onClick={() => { setShowDeleteModal(true); setDeleteConfirmation(""); }}
             >
               <div className={styles.cardContent}>
