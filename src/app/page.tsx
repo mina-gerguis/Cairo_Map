@@ -32,31 +32,79 @@ function normalizeArabic(text: string) {
 
 // خرائط التصنيفات والأيقونات والألوان للأماكن
 const CATEGORY_EMOJIS: Record<string, string> = {
-  restaurant: "🍽️", cafe: "☕", pharmacy: "💊",
-  hospital: "🏥", garden: "🌳", family: "👨‍👩‍👧‍👦", entertainment: "🎭", all: "🗂️",
+  all: "🗂️",
+  restaurant: "🍽️",
+  cafe: "☕",
+  garden: "🌳",
+  medicalCenter: "🏥",
+  health_beauty: "💅",
+  family: "👨‍👩‍👧‍👦",
+  quiet_places: "🌙",
+  kids: "👶",
+  amusement_aqua: "🎡",
+  work: "💼",
+  courses_study: "📚",
+  hotel: "🏨",
+  cinema: "🎬",
+  mall: "🛍️",
+  outings: "🧭",
 };
 
 const CATEGORY_ICONS: Record<string, string> = {
   all: "bx-grid-alt",
   restaurant: "bx-restaurant",
   cafe: "bx-coffee",
-  pharmacy: "bx-capsule",
-  hospital: "bx-plus-medical",
   garden: "bx-tree",
+  medicalCenter: "bx-plus-medical",
+  health_beauty: "bx-spa",
   family: "bx-group",
-  entertainment: "bx-party",
+  quiet_places: "bx-moon",
+  kids: "bx-child",
+  amusement_aqua: "bx-party",
+  work: "bx-briefcase",
+  courses_study: "bx-book-open",
+  hotel: "bx-hotel",
+  cinema: "bx-film",
+  mall: "bx-shopping-bag",
+  outings: "bx-compass",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  all: "الكل", restaurant: "مطاعم", cafe: "كافيهات",
-  pharmacy: "صيدليات", hospital: "مستشفيات", garden: "حدائق",
-  family: "عائلية", entertainment: "ترفيهية",
+  all: "الكل",
+  restaurant: "مطاعم",
+  cafe: "كافيهات",
+  garden: "حدائق",
+  medicalCenter: "مراكز طبية",
+  health_beauty: "الصحة والجمال",
+  family: "اماكن عائلية",
+  quiet_places: "اماكن هادئه",
+  kids: "اماكن للاطفال",
+  amusement_aqua: "ملاهي وأكوابارك",
+  work: "مكاتب عمل",
+  courses_study: "كورسات ودراسة",
+  hotel: "فنادق",
+  cinema: "سينما",
+  mall: "مولات",
+  outings: "أماكن للخروجات",
 };
 
 function getCategoryColor(cat: string) {
   const colors: Record<string, string> = {
-    restaurant: "#ff6b35", cafe: "#c67c52", pharmacy: "#34c759",
-    hospital: "#ff3b30", garden: "#30d158", family: "#af52de", entertainment: "#ff9f0a",
+    restaurant: "#ff3b30",
+    cafe: "#ff9500",
+    garden: "#30b0c7",
+    medicalCenter: "#007aff",
+    health_beauty: "#ff2d55",
+    family: "#af52de",
+    quiet_places: "#5856d6",
+    kids: "#ff9f0a",
+    amusement_aqua: "#00c7be",
+    work: "#a2845e",
+    courses_study: "#34c759",
+    hotel: "#5856d6",
+    cinema: "#ff3f8e",
+    mall: "#ff9500",
+    outings: "#30b0c7",
   };
   return colors[cat] ?? "#2f80ed";
 }
@@ -126,7 +174,8 @@ function HomeContent() {
             id: dbPlace.id,
             name: dbPlace.name,
             category: dbPlace.category,
-            categoryLabel: dbPlace.category_label,
+            categoryLabel: dbPlace.category_label || CATEGORY_LABELS[dbPlace.category] || dbPlace.category,
+            subCategories: Array.isArray(dbPlace.sub_categories) ? dbPlace.sub_categories : [],
             governorate: dbPlace.governorate,
             city: dbPlace.city,
             shortDescription: dbPlace.short_description,
@@ -283,7 +332,10 @@ function HomeContent() {
     const queryWords = q.split(/\s+/).filter(w => !stopWords.includes(w) && w.length > 0);
 
     return enrichedPlaces.filter((p) => {
-      const matchCat = selectedCategory === "all" || p.category === selectedCategory;
+      const matchCat =
+        selectedCategory === "all" ||
+        p.category === selectedCategory ||
+        (p.subCategories && p.subCategories.includes(selectedCategory));
 
       if (queryWords.length === 0) return matchCat;
 
@@ -291,6 +343,8 @@ function HomeContent() {
       const searchableText = normalizeArabic([
         p.name,
         p.categoryLabel,
+        ...(p.subCategories || []).map(sc => CATEGORY_LABELS[sc] || sc),
+        p.city,
         p.category === "restaurant" ? "مطعم مطاعم" : "",
         p.category === "cafe" ? "كافيه كافيهات مقهى قهاوي" : "",
         p.category === "pharmacy" ? "صيدلية صيدليات" : "",
@@ -428,11 +482,11 @@ function HomeContent() {
           </div>
 
           <div className="hero-actions">
-            <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })} style={{fontFamily: "Cairo"}}>
+            <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })} style={{ fontFamily: "Cairo" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
               استكشف الأماكن
             </button>
-            <button className="hero-btn-secondary" onClick={() => setIsProximityEnabled(!isProximityEnabled)} style={{fontFamily: "Cairo"}}>
+            <button className="hero-btn-secondary" onClick={() => setIsProximityEnabled(!isProximityEnabled)} style={{ fontFamily: "Cairo" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>
               {isProximityEnabled ? "إيقاف القرب" : "بالقرب مني"}
             </button>
@@ -458,7 +512,7 @@ function HomeContent() {
         </div>
 
         {/* Scroll Indicator */}
-        
+
       </section>
 
       {/* ══════════════ MAIN CONTENT ══════════════ */}
@@ -520,15 +574,15 @@ function HomeContent() {
         {/* ── Categories + Proximity ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "32px", flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", flexGrow: 1 }}>
-            {["all", "restaurant", "cafe", "pharmacy", "hospital", "garden", "family", "entertainment"].map((cat) => (
+            {["all", "restaurant", "cafe", "garden", "medicalCenter", "health_beauty", "family", "quiet_places", "kids", "amusement_aqua", "work", "courses_study", "hotel", "cinema", "mall", "outings"].map((cat) => (
               <button
                 key={cat}
                 className={`category-pill ${selectedCategory === cat ? "active" : ""}`}
                 onClick={() => setSelectedCategory(cat)}
                 style={{ display: "flex", alignItems: "center", gap: "6px" }}
               >
-                <i className={`bx ${CATEGORY_ICONS[cat]}`} style={{ fontSize: "1.1rem" }}></i>
-                {CATEGORY_LABELS[cat]}
+                <i className={`bx ${CATEGORY_ICONS[cat] || "bx-category"}`} style={{ fontSize: "1.1rem" }}></i>
+                {CATEGORY_LABELS[cat] || cat}
               </button>
             ))}
           </div>
@@ -551,61 +605,61 @@ function HomeContent() {
         {/* ═══════════════════════════════════ SECTIONS MODE ═══════════════════════════════════ */}
         {showSections ? (
           <>
-            
-            
+
+
             {/* Section 1: Nearby */}
             {isProximityEnabled && (
-              <PaginatedSection 
+              <PaginatedSection
                 title={<>📍 أقرب الأماكن إليك {nearbyPlaces.length === 0 && <span style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginRight: "12px" }}>بحث في نطاق 10 كم</span>}</>}
-                places={nearbyPlaces} 
-                setSelectedPlace={setSelectedPlace} 
-                getCategoryColor={getCategoryColor} 
-                toggleFavorite={toggleFavorite} 
-                favoriteIds={favoriteIds} 
+                places={nearbyPlaces}
+                setSelectedPlace={setSelectedPlace}
+                getCategoryColor={getCategoryColor}
+                toggleFavorite={toggleFavorite}
+                favoriteIds={favoriteIds}
                 emptyMessage="فعّل الموقع للعثور على أماكن قريبة منك 📍"
               />
             )}
 
             {/* Section 2: Top Rated */}
-            <PaginatedSection 
-              title="⭐ الأكثر زيارة" 
-              places={topRatedPlaces} 
-              setSelectedPlace={setSelectedPlace} 
-              getCategoryColor={getCategoryColor} 
-              toggleFavorite={toggleFavorite} 
-              favoriteIds={favoriteIds} 
-              showRating 
+            <PaginatedSection
+              title="⭐ الأكثر زيارة"
+              places={topRatedPlaces}
+              setSelectedPlace={setSelectedPlace}
+              getCategoryColor={getCategoryColor}
+              toggleFavorite={toggleFavorite}
+              favoriteIds={favoriteIds}
+              showRating
               itemsPerPage={3}
             />
 
             {/* Section 3: Family */}
-            <PaginatedSection 
-              title="👨‍👩‍👧‍👦 أماكن عائلية" 
-              places={familyPlaces} 
-              setSelectedPlace={setSelectedPlace} 
-              getCategoryColor={getCategoryColor} 
-              toggleFavorite={toggleFavorite} 
-              favoriteIds={favoriteIds} 
+            <PaginatedSection
+              title="👨‍👩‍👧‍👦 أماكن عائلية"
+              places={familyPlaces}
+              setSelectedPlace={setSelectedPlace}
+              getCategoryColor={getCategoryColor}
+              toggleFavorite={toggleFavorite}
+              favoriteIds={favoriteIds}
             />
 
             {/* Section 4: Entertainment */}
-            <PaginatedSection 
-              title="🎭 أماكن ترفيهية" 
-              places={entertainmentPlaces} 
-              setSelectedPlace={setSelectedPlace} 
-              getCategoryColor={getCategoryColor} 
-              toggleFavorite={toggleFavorite} 
-              favoriteIds={favoriteIds} 
+            <PaginatedSection
+              title="🎭 أماكن ترفيهية"
+              places={entertainmentPlaces}
+              setSelectedPlace={setSelectedPlace}
+              getCategoryColor={getCategoryColor}
+              toggleFavorite={toggleFavorite}
+              favoriteIds={favoriteIds}
             />
 
             {/* Section 5: All Places */}
-            <PaginatedSection 
-              title="🗂️ جميع الأماكن" 
-              places={enrichedPlaces} 
-              setSelectedPlace={setSelectedPlace} 
-              getCategoryColor={getCategoryColor} 
-              toggleFavorite={toggleFavorite} 
-              favoriteIds={favoriteIds} 
+            <PaginatedSection
+              title="🗂️ جميع الأماكن"
+              places={enrichedPlaces}
+              setSelectedPlace={setSelectedPlace}
+              getCategoryColor={getCategoryColor}
+              toggleFavorite={toggleFavorite}
+              favoriteIds={favoriteIds}
               itemsPerPage={6}
               forceThreeColumns={true}
             />
@@ -676,9 +730,18 @@ function HomeContent() {
                           )}
                         </button>
                       </div>
-                      <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "5px" }}>
-                        <i className={`bx ${CATEGORY_ICONS[selectedPlace.category]}`} style={{ fontSize: "1rem" }}></i> {selectedPlace.categoryLabel}
-                      </span>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                        <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "5px" }}>
+                          <i className={`bx ${CATEGORY_ICONS[selectedPlace.category] || "bx-category"}`} style={{ fontSize: "1rem" }}></i> {selectedPlace.categoryLabel || CATEGORY_LABELS[selectedPlace.category]}
+                        </span>
+                        {selectedPlace.subCategories && selectedPlace.subCategories.length > 0 && (
+                          selectedPlace.subCategories.map((subCatKey) => (
+                            <span key={subCatKey} style={{ background: "rgba(255,255,255,0.12)", color: "var(--text-primary)", border: "1px solid var(--border-glass)", padding: "4px 12px", borderRadius: "20px", fontSize: "0.8rem", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <i className={`bx ${CATEGORY_ICONS[subCatKey] || "bx-tag"}`} style={{ fontSize: "0.9rem" }}></i> {CATEGORY_LABELS[subCatKey] || subCatKey}
+                            </span>
+                          ))
+                        )}
+                      </div>
                     </div>
 
                     {selectedPlace.rating !== undefined && (
@@ -922,7 +985,7 @@ function HomeContent() {
               <form onSubmit={handleAddPlace} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 <input className="ios-input" style={{ paddingRight: "16px" }} placeholder="اسم المكان *" value={newName} onChange={(e) => setNewName(e.target.value)} required />
                 <select className="ios-input help-select" style={{ paddingRight: "16px" }} value={newCategory} onChange={(e) => setNewCategory(e.target.value as PlaceCategory)}>
-                  {(["restaurant", "cafe", "pharmacy", "hospital", "garden", "family", "entertainment"] as PlaceCategory[]).map((c) => (
+                  {(["restaurant", "cafe", "pharmacy", "medicalCenter", "garden", "family", "entertainment", "work"] as PlaceCategory[]).map((c) => (
                     <option key={c} value={c}>{CATEGORY_EMOJIS[c]} {CATEGORY_LABELS[c]}</option>
                   ))}
                 </select>
@@ -998,7 +1061,7 @@ function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, t
 }) {
   const [page, setPage] = useState(1);
   const totalPages = Math.ceil(places.length / itemsPerPage);
-  
+
   useEffect(() => {
     setPage(1);
   }, [places.length]);
@@ -1013,7 +1076,7 @@ function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, t
       <div className="section-header">
         <h2 className="section-title">{title}</h2>
       </div>
-      
+
       {places.length === 0 && emptyMessage ? (
         <div className="glass-panel" style={{ padding: "28px", textAlign: "center", color: "var(--text-muted)", fontSize: "0.95rem" }}>
           {emptyMessage}
@@ -1028,10 +1091,10 @@ function PaginatedSection({ title, places, setSelectedPlace, getCategoryColor, t
             ))}
           </div>
 
-          <Pagination 
-            currentPage={page} 
-            totalPages={totalPages} 
-            onPageChange={setPage} 
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
           />
         </div>
       )}

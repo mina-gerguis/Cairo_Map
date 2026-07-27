@@ -2,23 +2,47 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Place } from "@/data/places";
+import { Place, DEFAULT_CATEGORIES } from "@/data/places";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK } from "@/lib/workingHours";
 import ReviewSection from "@/components/ReviewSection";
 
-interface Review {
-  id: string;
-  user_id: string;
-  rating: number;
-  comment: string;
-  created_at: string;
-  updated_at: string;
-  profiles: {
-    name: string;
-  };
-}
+const CATEGORY_ICONS: Record<string, string> = {
+  restaurant: "bx-restaurant",
+  cafe: "bx-coffee",
+  garden: "bx-tree",
+  medicalCenter: "bx-plus-medical",
+  health_beauty: "bx-spa",
+  family: "bx-group",
+  quiet_places: "bx-moon",
+  kids: "bx-child",
+  amusement_aqua: "bx-party",
+  work: "bx-briefcase",
+  courses_study: "bx-book-open",
+  hotel: "bx-hotel",
+  cinema: "bx-film",
+  mall: "bx-shopping-bag",
+  outings: "bx-compass",
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  restaurant: "مطاعم",
+  cafe: "كافيهات",
+  garden: "حدائق",
+  medicalCenter: "مراكز طبية",
+  health_beauty: "الصحة والجمال",
+  family: "اماكن عائلية",
+  quiet_places: "اماكن هادئه",
+  kids: "اماكن للاطفال",
+  amusement_aqua: "ملاهي وأكوابارك",
+  work: "مكاتب عمل",
+  courses_study: "كورسات ودراسة",
+  hotel: "فنادق",
+  cinema: "سينما",
+  mall: "مولات",
+  outings: "أماكن للخروجات",
+};
 
 export default function PlaceDetailsPage() {
   const params = useParams();
@@ -29,6 +53,10 @@ export default function PlaceDetailsPage() {
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
+
+  const { user } = useAuth();
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     if (activeMenuIndex === null || !place?.menuImages) return;
@@ -45,12 +73,6 @@ export default function PlaceDetailsPage() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeMenuIndex, place?.menuImages]);
-  
-  const { user } = useAuth();
-
-  // Theme & Location states
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -71,7 +93,8 @@ export default function PlaceDetailsPage() {
             id: dbPlace.id,
             name: dbPlace.name,
             category: dbPlace.category,
-            categoryLabel: dbPlace.category_label,
+            categoryLabel: dbPlace.category_label || CATEGORY_LABELS[dbPlace.category] || dbPlace.category,
+            subCategories: Array.isArray(dbPlace.sub_categories) ? dbPlace.sub_categories : [],
             governorate: dbPlace.governorate,
             city: dbPlace.city,
             shortDescription: dbPlace.short_description,
@@ -117,7 +140,6 @@ export default function PlaceDetailsPage() {
     
     fetchPlace();
 
-    // 2. Load theme
     const savedTheme = localStorage.getItem("dftry_theme") as "dark" | "light" | null;
     if (savedTheme) {
       setTheme(savedTheme);
@@ -128,7 +150,6 @@ export default function PlaceDetailsPage() {
       }
     }
 
-    // 3. Load user location quietly if permission is already granted
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -137,7 +158,7 @@ export default function PlaceDetailsPage() {
             longitude: position.coords.longitude,
           });
         },
-        () => {}, // Ignore errors, keep userLocation as null
+        () => {},
         { enableHighAccuracy: true }
       );
     }
@@ -314,8 +335,8 @@ export default function PlaceDetailsPage() {
               gap: "6px"
             }}
           >
-            {getCategoryIcon(place.category, 14)}
-            {place.categoryLabel}
+            <i className={`bx ${CATEGORY_ICONS[place.category] || "bx-category"}`} style={{ fontSize: "1rem" }}></i>
+            {place.categoryLabel || CATEGORY_LABELS[place.category]}
           </span>
         </div>
 
@@ -333,7 +354,7 @@ export default function PlaceDetailsPage() {
                 </p>
               )}
               
-              {/* Reviews & Rating Badge (Clickable) */}
+              {/* Reviews & Rating Badge */}
               <div 
                 onClick={() => {
                   const el = document.getElementById("reviews-section");
@@ -349,6 +370,33 @@ export default function PlaceDetailsPage() {
                 <span>⭐ {Number(place.rating || 0).toFixed(1)}</span>
                 <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "normal" }}>({place.reviewsCount || 0} تقييم)</span>
               </div>
+
+              {/* Sub-categories Badges */}
+              {place.subCategories && place.subCategories.length > 0 && (
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "14px" }}>
+                  <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", alignSelf: "center" }}>تصنيفات فرعية:</span>
+                  {place.subCategories.map((subCatKey) => (
+                    <span
+                      key={subCatKey}
+                      style={{
+                        background: "rgba(255,255,255,0.08)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-glass)",
+                        padding: "4px 12px",
+                        borderRadius: "16px",
+                        fontSize: "0.85rem",
+                        fontWeight: "600",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <i className={`bx ${CATEGORY_ICONS[subCatKey] || "bx-tag"}`} style={{ fontSize: "1rem" }}></i>
+                      {CATEGORY_LABELS[subCatKey] || subCatKey}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             
             {/* Proximity / Distance Badge */}
@@ -367,6 +415,7 @@ export default function PlaceDetailsPage() {
               <circle cx="12" cy="10" r="3"/>
             </svg>
             <span>{displayBranch.city} / {displayBranch.governorate}</span>
+          </div>
 
           {/* Branch Selector Chips */}
           {place.branches && place.branches.length > 1 && (
@@ -404,8 +453,6 @@ export default function PlaceDetailsPage() {
               </div>
             </div>
           )}
-
-        </div>
 
           {/* Action Call / Map Box */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", margin: "30px 0" }}>
@@ -617,13 +664,15 @@ export default function PlaceDetailsPage() {
           <ReviewSection 
             place={place} 
             selectedBranchId={selectedBranchId}
-            onRatingUpdate={(r, c) => setPlace({ ...place, rating: r, reviewsCount: c })}
+            onRatingUpdate={(r, c) => {
+              if (place) setPlace({ ...place, rating: r, reviewsCount: c });
+            }}
           />
         </div>
       </div>
 
       {/* Lightbox / Zoom component */}
-      {activeMenuIndex !== null && ((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : place?.menuImages) && (
+      {activeMenuIndex !== null && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
           background: "rgba(0,0,0,0.9)", zIndex: 10000,

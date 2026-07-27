@@ -27,6 +27,7 @@ function ProposePlaceContent() {
     name: "",
     category: "",
     category_label: "",
+    sub_categories: [] as string[],
     governorate: "",
     city: "",
     address: "",
@@ -83,6 +84,7 @@ function ProposePlaceContent() {
             name: data.name || "",
             category: data.category || "",
             category_label: data.category_label || "",
+            sub_categories: Array.isArray(data.sub_categories) ? data.sub_categories : [],
             governorate: data.governorate || "",
             city: data.city || "",
             address: data.address || "",
@@ -214,6 +216,7 @@ function ProposePlaceContent() {
       name: formData.name.trim(),
       category: formData.category,
       category_label: formData.category_label || formData.category,
+      sub_categories: formData.sub_categories || [],
       governorate: formData.governorate,
       city: formData.city,
       address: formData.address.trim(),
@@ -235,14 +238,29 @@ function ProposePlaceContent() {
 
     try {
       if (editId) {
-        const { error } = await supabase
+        let { error } = await supabase
           .from("place_proposals")
           .update(payload)
           .eq("id", editId)
           .eq("user_id", user.id);
+        
+        if (error && (error.message?.includes("sub_categories") || error.message?.includes("schema cache") || (error as any).code === "PGRST204")) {
+          const { sub_categories, ...payloadWithoutSub } = payload;
+          const retry = await supabase
+            .from("place_proposals")
+            .update(payloadWithoutSub)
+            .eq("id", editId)
+            .eq("user_id", user.id);
+          error = retry.error;
+        }
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("place_proposals").insert([payload]);
+        let { error } = await supabase.from("place_proposals").insert([payload]);
+        if (error && (error.message?.includes("sub_categories") || error.message?.includes("schema cache") || (error as any).code === "PGRST204")) {
+          const { sub_categories, ...payloadWithoutSub } = payload;
+          const retry = await supabase.from("place_proposals").insert([payloadWithoutSub]);
+          error = retry.error;
+        }
         if (error) throw error;
       }
       setSuccess(true);
@@ -325,7 +343,7 @@ function ProposePlaceContent() {
                 onClick={() => {
                   setSuccess(false);
                   setFormData({
-                    name: "", category: "", category_label: "", governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: ""
+                    name: "", category: "", category_label: "", sub_categories: [], governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: ""
                   });
                   if (editId) router.push("/propose-place");
                 }}
@@ -384,6 +402,45 @@ function ProposePlaceContent() {
                   <p style={{ margin: "6px 0 0", fontSize: "0.8rem", color: "var(--text-muted)" }}>
                     💡 اختر التصنيف الأقرب لنشاط المكان الرئيسي.
                   </p>
+                </div>
+
+                {/* Sub-categories */}
+                <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+                  <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)", display: "block" }}>
+                    تصنيفات فرعية اختيارية
+                  </label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    {categories.filter(c => c.name !== formData.category).map(cat => {
+                      const isSelected = formData.sub_categories?.includes(cat.name);
+                      return (
+                        <button
+                          key={cat.name}
+                          type="button"
+                          onClick={() => {
+                            const current = formData.sub_categories || [];
+                            const next = isSelected ? current.filter(s => s !== cat.name) : [...current, cat.name];
+                            setFormData({ ...formData, sub_categories: next });
+                          }}
+                          style={{
+                            background: isSelected ? "var(--accent-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                            color: isSelected ? "#fff" : "var(--text-primary)",
+                            border: isSelected ? "none" : "1px solid var(--border-glass)",
+                            padding: "6px 14px",
+                            borderRadius: "20px",
+                            fontSize: "0.85rem",
+                            fontWeight: isSelected ? "700" : "500",
+                            cursor: "pointer",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                            transition: "all 0.2s"
+                          }}
+                        >
+                          <i className={`bx ${cat.icon}`}></i> {cat.label} {isSelected && "✓"}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Price Range */}

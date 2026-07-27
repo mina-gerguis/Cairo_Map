@@ -42,6 +42,7 @@ interface DBPlace {
   name: string;
   category: string;
   category_label: string;
+  sub_categories?: string[];
   governorate?: string;
   city?: string;
   short_description?: string;
@@ -60,6 +61,24 @@ interface DBPlace {
   branches?: any[];
 }
 
+const CATEGORY_MAP: Record<string, string> = {
+  restaurant: "مطاعم",
+  cafe: "كافيهات",
+  garden: "حدائق",
+  medicalCenter: "مراكز طبية",
+  health_beauty: "الصحة والجمال",
+  family: "اماكن عائلية",
+  quiet_places: "اماكن هادئه",
+  kids: "اماكن للاطفال",
+  amusement_aqua: "ملاهي وأكوابارك",
+  work: "مكاتب عمل",
+  courses_study: "كورسات ودراسة",
+  hotel: "فنادق",
+  cinema: "سينما",
+  mall: "مولات",
+  outings: "أماكن للخروجات"
+};
+
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -72,7 +91,8 @@ export default function AdminDashboard() {
   // Add Place Form States
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({
-    name: "", category: "restaurant", category_label: "مطعم", 
+    name: "", category: "restaurant", category_label: "مطاعم", 
+    sub_categories: [] as string[],
     governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
     full_address: "", phones: "", google_maps_url: "", image_url: "", 
     menu_images: "", description: "", 
@@ -168,7 +188,8 @@ export default function AdminDashboard() {
     id: "",
     name: "",
     category: "restaurant",
-    category_label: "مطعم",
+    category_label: "مطاعم",
+    sub_categories: [] as string[],
     governorate: "القاهرة",
     city: "مدينة نصر",
     short_description: "",
@@ -210,7 +231,8 @@ export default function AdminDashboard() {
       id: place.id,
       name: place.name || "",
       category: place.category || "restaurant",
-      category_label: place.category_label || "مطعم",
+      category_label: place.category_label || CATEGORY_MAP[place.category] || "مطاعم",
+      sub_categories: Array.isArray(place.sub_categories) ? place.sub_categories : [],
       governorate: place.governorate || "القاهرة",
       city: place.city || "مدينة نصر",
       short_description: place.short_description || "",
@@ -376,7 +398,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const updateForm = (field: string, value: string) => {
+  const updateForm = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -395,7 +417,8 @@ export default function AdminDashboard() {
       const newPlace = {
         name: formData.name,
         category: formData.category,
-        category_label: formData.category_label,
+        category_label: formData.category_label || CATEGORY_MAP[formData.category] || formData.category,
+        sub_categories: formData.sub_categories || [],
         governorate: formData.governorate,
         city: formData.city,
         short_description: formData.short_description,
@@ -413,11 +436,23 @@ export default function AdminDashboard() {
         longitude: parseFloat(formData.longitude) || null,
       };
 
-      const { data, error: insertError } = await supabase
+      let { data, error: insertError } = await supabase
         .from("places")
         .insert([newPlace])
         .select()
         .single();
+
+      if (insertError && (insertError.message?.includes("sub_categories") || insertError.message?.includes("schema cache") || (insertError as any).code === "PGRST204")) {
+        console.warn("sub_categories column missing on Supabase places table, retrying without sub_categories...");
+        const { sub_categories, ...placeWithoutSubCats } = newPlace;
+        const retryResult = await supabase
+          .from("places")
+          .insert([placeWithoutSubCats])
+          .select()
+          .single();
+        data = retryResult.data;
+        insertError = retryResult.error;
+      }
 
       if (insertError) throw insertError;
       
@@ -463,7 +498,8 @@ export default function AdminDashboard() {
         setShowAddForm(false);
         // Reset form
         setFormData({
-          name: "", category: "restaurant", category_label: "مطعم", 
+          name: "", category: "restaurant", category_label: "مطاعم", 
+          sub_categories: [],
           governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
           full_address: "", phones: "", google_maps_url: "", image_url: "", 
           menu_images: "", description: "", 
@@ -787,7 +823,7 @@ export default function AdminDashboard() {
   const handleUpdateCategory = async () => {
     if (!editingCategoryPlace || !supabase) return;
     setIsUpdatingCategory(true);
-    const labels: any = { restaurant: "مطعم", cafe: "كافيه", pharmacy: "صيدلية", hospital: "مستشفى", garden: "حديقة", family: "عائلية", entertainment: "ترفيهية" };
+    const labels: any = { restaurant: "مطعم", cafe: "كافيه", pharmacy: "صيدلية", medicalCenter: "مركز طبي", garden: "حديقة", family: "عائلية", entertainment: "ترفيهية", work: "مكاتب" };
     try {
       const { error } = await supabase
         .from("places")
@@ -825,7 +861,8 @@ export default function AdminDashboard() {
       const updatedFields = {
         name: editPlaceFormData.name.trim(),
         category: editPlaceFormData.category,
-        category_label: editPlaceFormData.category_label || editPlaceFormData.category,
+        category_label: editPlaceFormData.category_label || CATEGORY_MAP[editPlaceFormData.category] || editPlaceFormData.category,
+        sub_categories: editPlaceFormData.sub_categories || [],
         governorate: editPlaceFormData.governorate,
         city: editPlaceFormData.city,
         short_description: editPlaceFormData.short_description,
@@ -840,12 +877,25 @@ export default function AdminDashboard() {
         longitude: parseFloat(editPlaceFormData.longitude) || null,
       };
 
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from("places")
         .update(updatedFields)
         .eq("id", editingPlace.id)
         .select()
         .single();
+
+      if (error && (error.message?.includes("sub_categories") || error.message?.includes("schema cache") || (error as any).code === "PGRST204")) {
+        console.warn("sub_categories column missing on Supabase places table, retrying without sub_categories...");
+        const { sub_categories, ...fieldsWithoutSubCats } = updatedFields;
+        const retryResult = await supabase
+          .from("places")
+          .update(fieldsWithoutSubCats)
+          .eq("id", editingPlace.id)
+          .select()
+          .single();
+        data = retryResult.data;
+        error = retryResult.error;
+      }
 
       if (error) throw error;
 
@@ -1391,20 +1441,54 @@ export default function AdminDashboard() {
           <form onSubmit={handleAddPlace} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
             <div><label className="help-label">اسم المكان</label><input required className="ios-input" value={formData.name} onChange={e => updateForm("name", e.target.value)} /></div>
             <div>
-              <label className="help-label">التصنيف</label>
+              <label className="help-label">التصنيف الرئيسي (يظهر للمستخدم على كارت المكان)</label>
               <select required className="ios-input help-select" value={formData.category} onChange={e => {
-                updateForm("category", e.target.value);
-                const labels: any = { restaurant: "مطعم", cafe: "كافيه", pharmacy: "صيدلية", hospital: "مستشفى", garden: "حديقة", family: "عائلية", entertainment: "ترفيهية" };
-                updateForm("category_label", labels[e.target.value] || "");
+                const val = e.target.value;
+                updateForm("category", val);
+                updateForm("category_label", CATEGORY_MAP[val] || val);
               }}>
-                <option value="restaurant">مطعم</option>
-                <option value="cafe">كافيه</option>
-                <option value="pharmacy">صيدلية</option>
-                <option value="hospital">مستشفى</option>
-                <option value="garden">حديقة</option>
-                <option value="family">عائلية</option>
-                <option value="entertainment">ترفيهية</option>
+                {DEFAULT_CATEGORIES.map(cat => (
+                  <option key={cat.name} value={cat.name}>{cat.label}</option>
+                ))}
               </select>
+            </div>
+
+            <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+              <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-primary)", display: "block" }}>
+                التصنيفات الفرعية (تتيح ظهور المكان عند تصفية التبويبات وتظهر بتفاصيل المكان)
+              </label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {DEFAULT_CATEGORIES.filter(c => c.name !== formData.category).map(cat => {
+                  const isSelected = formData.sub_categories?.includes(cat.name);
+                  return (
+                    <button
+                      key={cat.name}
+                      type="button"
+                      onClick={() => {
+                        const current = formData.sub_categories || [];
+                        const next = isSelected ? current.filter(s => s !== cat.name) : [...current, cat.name];
+                        updateForm("sub_categories", next);
+                      }}
+                      style={{
+                        background: isSelected ? "var(--accent-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                        color: isSelected ? "#fff" : "var(--text-primary)",
+                        border: isSelected ? "none" : "1px solid var(--border-glass)",
+                        padding: "6px 14px",
+                        borderRadius: "20px",
+                        fontSize: "0.85rem",
+                        fontWeight: isSelected ? "700" : "500",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      <i className={`bx ${cat.icon}`}></i> {cat.label} {isSelected && "✓"}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             <div>
               <label className="help-label">المحافظة</label>
@@ -1552,9 +1636,20 @@ export default function AdminDashboard() {
                     </td>
                     <td style={{ padding: "12px", fontWeight: "600" }}>{place.name}</td>
                     <td style={{ padding: "12px" }}>
-                      <span style={{ padding: "4px 10px", borderRadius: "12px", background: "rgba(108,99,255,0.1)", color: "#a78bfa", fontSize: "0.85rem" }}>
-                        {place.category_label}
-                      </span>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                        <span style={{ padding: "4px 10px", borderRadius: "12px", background: "rgba(108,99,255,0.15)", color: "#a78bfa", fontSize: "0.85rem", fontWeight: "700", display: "inline-block", width: "fit-content" }}>
+                          {place.category_label || CATEGORY_MAP[place.category] || place.category}
+                        </span>
+                        {place.sub_categories && place.sub_categories.length > 0 && (
+                          <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                            {place.sub_categories.map(sc => (
+                              <span key={sc} style={{ padding: "2px 6px", borderRadius: "8px", background: "rgba(255,255,255,0.08)", color: "var(--text-secondary)", fontSize: "0.75rem" }}>
+                                {CATEGORY_MAP[sc] || sc}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td style={{ padding: "12px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
                       {place.city} / {place.governorate}
@@ -1615,23 +1710,53 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="help-label" style={{ fontWeight: "700" }}>التصنيف</label>
+                <label className="help-label" style={{ fontWeight: "700" }}>التصنيف الرئيسي (يظهر للمستخدم على كارت المكان)</label>
                 <select required className="ios-input help-select" value={editPlaceFormData.category} onChange={e => {
                   const val = e.target.value;
-                  const labels: any = { restaurant: "مطعم", cafe: "كافيه", pharmacy: "صيدلية", hospital: "مستشفى", garden: "حديقة", family: "عائلية", entertainment: "ترفيهية" };
-                  setEditPlaceFormData({ ...editPlaceFormData, category: val, category_label: labels[val] || val });
+                  setEditPlaceFormData({ ...editPlaceFormData, category: val, category_label: CATEGORY_MAP[val] || val });
                 }}>
-                  <option value="restaurant">مطعم</option>
-                  <option value="cafe">كافيه</option>
-                  <option value="pharmacy">صيدلية</option>
-                  <option value="hospital">مستشفى</option>
-                  <option value="garden">حديقة</option>
-                  <option value="family">عائلية</option>
-                  <option value="entertainment">ترفيهية</option>
-                  {categories.filter(c => !["restaurant","cafe","pharmacy","hospital","garden","family","entertainment"].includes(c.name)).map(cat => (
-                    <option key={cat.id || cat.name} value={cat.name}>{cat.label}</option>
+                  {DEFAULT_CATEGORIES.map(cat => (
+                    <option key={cat.name} value={cat.name}>{cat.label}</option>
                   ))}
                 </select>
+              </div>
+
+              <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-primary)", display: "block" }}>
+                  التصنيفات الفرعية (تتيح ظهور المكان عند تصفية التبويبات وتظهر بتفاصيل المكان)
+                </label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  {DEFAULT_CATEGORIES.filter(c => c.name !== editPlaceFormData.category).map(cat => {
+                    const isSelected = editPlaceFormData.sub_categories?.includes(cat.name);
+                    return (
+                      <button
+                        key={cat.name}
+                        type="button"
+                        onClick={() => {
+                          const current = editPlaceFormData.sub_categories || [];
+                          const next = isSelected ? current.filter(s => s !== cat.name) : [...current, cat.name];
+                          setEditPlaceFormData({ ...editPlaceFormData, sub_categories: next });
+                        }}
+                        style={{
+                          background: isSelected ? "var(--accent-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                          color: isSelected ? "#fff" : "var(--text-primary)",
+                          border: isSelected ? "none" : "1px solid var(--border-glass)",
+                          padding: "6px 14px",
+                          borderRadius: "20px",
+                          fontSize: "0.85rem",
+                          fontWeight: isSelected ? "700" : "500",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        <i className={`bx ${cat.icon}`}></i> {cat.label} {isSelected && "✓"}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div>

@@ -1,4 +1,20 @@
-export type PlaceCategory = 'restaurant' | 'cafe' | 'pharmacy' | 'hospital' | 'garden' | 'family' | 'entertainment';
+export type PlaceCategory = 
+  | 'restaurant' 
+  | 'cafe' 
+  | 'garden' 
+  | 'medicalCenter' 
+  | 'health_beauty' 
+  | 'family' 
+  | 'quiet_places' 
+  | 'kids' 
+  | 'amusement_aqua' 
+  | 'work' 
+  | 'courses_study' 
+  | 'hotel' 
+  | 'cinema' 
+  | 'mall' 
+  | 'outings'
+  | string;
 
 export interface CategoryItem {
   id?: string;
@@ -9,13 +25,21 @@ export interface CategoryItem {
 }
 
 export const DEFAULT_CATEGORIES: CategoryItem[] = [
-  { name: 'restaurant', label: 'مطاعم', icon: '🍽️', color: '#ff3b30' },
-  { name: 'cafe', label: 'كافيهات', icon: '☕', color: '#ff9500' },
-  { name: 'pharmacy', label: 'صيدليات', icon: '💊', color: '#34c759' },
-  { name: 'hospital', label: 'مستشفيات', icon: '🏥', color: '#007aff' },
-  { name: 'garden', label: 'حدائق', icon: '🌳', color: '#30b0c7' },
-  { name: 'family', label: 'عائلية', icon: '👨‍👩‍👧‍👦', color: '#af52de' },
-  { name: 'entertainment', label: 'ترفيهية', icon: '🎬', color: '#ff2d55' },
+  { name: 'restaurant', label: 'مطاعم', icon: 'bx-restaurant', color: '#ff3b30' },
+  { name: 'cafe', label: 'كافيهات', icon: 'bx-coffee', color: '#ff9500' },
+  { name: 'garden', label: 'حدائق', icon: 'bx-tree', color: '#30b0c7' },
+  { name: 'medicalCenter', label: 'مراكز طبية', icon: 'bx-plus-medical', color: '#007aff' },
+  { name: 'health_beauty', label: 'الصحة والجمال', icon: 'bx-spa', color: '#ff2d55' },
+  { name: 'family', label: 'اماكن عائلية', icon: 'bx-group', color: '#af52de' },
+  { name: 'quiet_places', label: 'اماكن هادئه', icon: 'bx-moon', color: '#5856d6' },
+  { name: 'kids', label: 'اماكن للاطفال', icon: 'bx-child', color: '#ff9f0a' },
+  { name: 'amusement_aqua', label: 'ملاهي وأكوابارك', icon: 'bx-party', color: '#00c7be' },
+  { name: 'work', label: 'مكاتب عمل', icon: 'bx-briefcase', color: '#a2845e' },
+  { name: 'courses_study', label: 'كورسات ودراسة', icon: 'bx-book-open', color: '#34c759' },
+  { name: 'hotel', label: 'فنادق', icon: 'bx-hotel', color: '#5856d6' },
+  { name: 'cinema', label: 'سينما', icon: 'bx-film', color: '#ff3f8e' },
+  { name: 'mall', label: 'مولات', icon: 'bx-shopping-bag', color: '#ff9500' },
+  { name: 'outings', label: 'أماكن للخروجات', icon: 'bx-compass', color: '#30b0c7' },
 ];
 
 export interface Branch {
@@ -39,6 +63,7 @@ export interface Place {
   name: string;
   category: PlaceCategory;
   categoryLabel: string;
+  subCategories?: string[];
   governorate?: string;
   city?: string;
   briefLocation?: string;
