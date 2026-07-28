@@ -1,5 +1,6 @@
 "use client";
 import { LuReplaceAll } from "react-icons/lu";
+import { RiEditFill } from "react-icons/ri";
 
 
 const AVAILABLE_INTERESTS_MAP: Record<string, { label: string; icon: string }> = {
@@ -1277,9 +1278,8 @@ export default function AdminDashboard() {
       {/* Modal for Proposer Full Profile */}
       {selectedUserProfile && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.2s ease" }}>
-          <div className="glass-panel" style={{ maxWidth: "480px", width: "100%", padding: "28px", borderRadius: "24px", background: "var(--bg-glass-card, #ffffff)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", border: "1px solid var(--accent-primary)", animation: "slide-up 0.3s ease" }}>
+          <div className="glass-panel" style={{ maxWidth: "480px", width: "100%", padding: "10px 28px", borderRadius: "24px", background: "var(--bg-glass-card, #ffffff)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", border: "1px solid var(--accent-primary)", animation: "slide-up 0.3s ease" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <button onClick={() => setSelectedUserProfile(null)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer" }}>✕</button>
             </div>
 
             {/* Profile Header */}
@@ -1746,16 +1746,15 @@ export default function AdminDashboard() {
 
       {/* Full Comprehensive Edit Place Modal */}
       {editingPlace && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0, 0, 0, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.2s ease" }}>
-          <div className="glass-panel" style={{ width: "100%", maxWidth: "840px", maxHeight: "90vh", overflowY: "auto", borderRadius: "28px", padding: "30px", background: "var(--bg-glass-card, #ffffff)", border: "2px solid var(--accent-primary)", boxShadow: "0 24px 60px rgba(0,0,0,0.4)" }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0, 0, 0, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "10px", animation: "fade-in 0.2s ease" }}>
+          <div className="glass-panel" style={{ width: "100%", maxWidth: "940px", maxHeight: "100vh", overflowY: "auto", borderRadius: "1px", padding: "30px", background: "var(--bg-glass-card, #000000ff)", border: "2px solid var(--accent-primary)"}}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px" }}>
               <div>
-                <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--text-primary)", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
-                  <span>✏️</span> تعديل كافة بيانات المكان: {editingPlace.name}
+                <h2 style={{ fontFamily: "var(--font-cairo)", fontSize: "1.2rem", fontWeight: "600", color: "var(--text-primary)", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+                  <RiEditFill />
+                  تعديل بيانات : {editingPlace.name}
                 </h2>
-                <span style={{ fontSize: "0.83rem", color: "var(--accent-primary)" }}>تعديل تفصيلي كامل ومباشر في قاعدة البيانات</span>
               </div>
-              <button onClick={() => setEditingPlace(null)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.6rem", cursor: "pointer" }}>✕</button>
             </div>
 
             <form onSubmit={handleUpdatePlace} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px" }}>
