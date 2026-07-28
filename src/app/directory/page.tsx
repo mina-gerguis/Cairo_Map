@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
 interface PhoneEntry {
@@ -7,7 +8,7 @@ interface PhoneEntry {
   name: string;
   specialty: string;
   phone_number: string;
-  logo_url: string;
+  logo_url?: string;
   icon?: string;
 }
 
@@ -21,10 +22,10 @@ interface TelecomCodeEntry {
 }
 
 const COMPANY_META: Record<string, { label: string; logo: string; color: string; border: string }> = {
-  vodafone: { label: "فودافون", logo: "🔴", color: "rgba(224, 0, 0, 0.08)", border: "rgba(224, 0, 0, 0.2)" },
-  orange: { label: "اورنج", logo: "🍊", color: "rgba(255, 102, 0, 0.08)", border: "rgba(255, 102, 0, 0.2)" },
-  etisalat: { label: "اتصالات", logo: "🟢", color: "rgba(0, 150, 0, 0.08)", border: "rgba(0, 150, 0, 0.2)" },
-  we: { label: "وي", logo: "🟣", color: "rgba(108, 99, 255, 0.08)", border: "rgba(108, 99, 255, 0.2)" },
+  vodafone: { label: "فودافون", logo: "/image/telCompany/vodafone-logo.png", color: "rgba(224, 0, 0, 0.08)", border: "rgba(224, 0, 0, 0.2)" },
+  orange: { label: "اورنج", logo: "/image/telCompany/orange-logo.png", color: "rgba(255, 102, 0, 0.08)", border: "rgba(255, 102, 0, 0.2)" },
+  etisalat: { label: "اتصالات", logo: "/image/telCompany/etisalat-logo.png", color: "rgba(0, 150, 0, 0.08)", border: "rgba(0, 150, 0, 0.2)" },
+  we: { label: "وي", logo: "/image/telCompany/we-logo.png", color: "rgba(108, 99, 255, 0.08)", border: "rgba(108, 99, 255, 0.2)" },
 };
 
 export default function PhoneDirectoryPage() {
@@ -384,10 +385,15 @@ export default function PhoneDirectoryPage() {
                       gap: "8px",
                       background: activeCompany === key ? "" : "var(--bg-secondary)",
                       border: activeCompany === key ? `1px solid ${meta.border}` : "1px solid var(--border-glass)",
-                      padding: "10px 20px"
+                      padding: "10px 20px",
+                      fontFamily: "Cairo",
+                      fontSize: "14px",
+                      fontWeight: "bold"
                     }}
                   >
-                    <span>{meta.logo}</span>
+                   
+
+                    <Image src={meta.logo} alt={meta.label} width={50} height={50} style={{ borderRadius: "50%"}} />
                     {meta.label}
                   </button>
                 ))}

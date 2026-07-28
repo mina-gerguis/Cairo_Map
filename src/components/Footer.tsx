@@ -1,8 +1,21 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+
+
+
+const payicon = [
+  {name:"vodafone cash", title: "فودافون كاش", icon:"/image/telCompany/vodafone-logo.png"},
+  {name:"instapay", title: "انستاباي", icon:"/image/payment/instapay.png"},
+  {name:"visa", title: "فيزا", icon:"/image/payment/visa.png"},
+  {name:"fawry", title: "فوري", icon:"/image/payment/fawry.png"},
+  {name:"mastercard", title: "ماستركارد", icon:"/image/payment/mastercard.png"},
+  {name:"applepay", title: "ابل باي", icon:"/image/payment/applepay.png"},
+]
 
 export default function Footer() {
   const pathname = usePathname();
@@ -90,42 +103,30 @@ export default function Footer() {
         <div className="footer-payments">
           <span className="footer-payments-title">وسائل الدفع المدعومة:</span>
           <div className="footer-payments-icons">
-            {/* InstaPay */}
-            <div className="payment-badge" title="InstaPay">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-              <span>InstaPay</span>
-            </div>
             {/* Vodafone Cash */}
+            <div className="payment-badge" title="InstaPay">
+             <Image src={payicon[0].icon} alt="Vodafone Cash" width={20} height={20} />
+              <span>{payicon[0].title}</span>
+            </div>
+            {/* instaPay */}
             <div className="payment-badge" title="Vodafone Cash">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="#e60026"/>
-              </svg>
-              <span>Vodafone Cash</span>
+              <Image src={payicon[1].icon} alt="Vodafone Cash" width={20} height={20} />
+              <span>{payicon[1].title}</span>
             </div>
             {/* Visa */}
             <div className="payment-badge" title="Visa">
-              <svg width="32" height="20" viewBox="0 0 48 16" fill="none">
-                <text x="0" y="14" fontFamily="Arial" fontWeight="bold" fontSize="16" fill="#1a1f71">VISA</text>
-              </svg>
+              <Image src={payicon[2].icon} alt="Visa" width={20} height={20} />
+              <span>{payicon[2].title}</span>
             </div>
             {/* Fawry */}
             <div className="payment-badge" title="Fawry">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f7931e" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-                <line x1="9" y1="9" x2="9.01" y2="9"/>
-                <line x1="15" y1="9" x2="15.01" y2="9"/>
-              </svg>
-              <span>Fawry</span>
+              <Image src={payicon[3].icon} alt="Visa" width={20} height={20} />
+              <span>{payicon[3].title}</span>
             </div>
             {/* Apple Pay */}
             <div className="payment-badge" title="Apple Pay">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
-              </svg>
-              <span>Apple Pay</span>
+             <Image src={payicon[4].icon} alt="Visa" width={20} height={20} />
+              <span>{payicon[4].title}</span>
             </div>
           </div>
         </div>
