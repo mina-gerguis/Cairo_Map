@@ -1,4 +1,6 @@
 "use client";
+import { LuReplaceAll } from "react-icons/lu";
+
 
 const AVAILABLE_INTERESTS_MAP: Record<string, { label: string; icon: string }> = {
   restaurants: { label: "مطاعم", icon: "bx bx-restaurant" },
@@ -258,6 +260,8 @@ export default function AdminDashboard() {
   const [proposalsError, setProposalsError] = useState<string | null>(null);
 
   const [showProposalsSection, setShowProposalsSection] = useState(true);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
   const fetchProposals = async () => {
     if (!supabase) return;
@@ -294,6 +298,14 @@ export default function AdminDashboard() {
     }
   };
 
+
+  // Close dropdown menu when clicking outside
+  useEffect(() => {
+    if (!openMenuId) return;
+    const handleClickOutside = () => setOpenMenuId(null);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openMenuId]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -1097,7 +1109,7 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="app-container" style={{ paddingTop: "120px", paddingBottom: "60px", maxWidth: "100%", width: "100%", paddingLeft: "32px", paddingRight: "32px" }}>
+    <div className="app-container" style={{ paddingTop: "120px", paddingBottom: "60px", maxWidth: "100%", width: "100%", paddingLeft: "10px", paddingRight: "10px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
         <div>
           <h1 className="title-ios">🛠️ Admin dashboard </h1>
@@ -1123,10 +1135,10 @@ export default function AdminDashboard() {
 
       {/* ─── PROPOSALS MODERATION SECTION ─── */}
       {showProposalsSection && (
-        <div className="glass-panel" style={{ padding: "28px", borderRadius: "24px", marginBottom: "32px", border: "1px solid rgba(108, 99, 255, 0.3)", animation: "slide-down 0.3s ease" }}>
+        <div className="glass-panel" style={{ padding: "28px 20px", borderRadius: "15px", marginBottom: "32px", border: "1px solid rgba(108, 99, 255, 0.3)", animation: "slide-down 0.3s ease" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
             <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-              <i className="bx bx-map-pin" style={{ color: "var(--accent-primary)" }}></i> مراجعة اقتراحات الأماكن 
+              <i className="bx bx-map-pin" style={{ color: "var(--accent-primary)" }}></i> مراجعة اقتراحات الأماكن
             </h2>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <button
@@ -1134,7 +1146,7 @@ export default function AdminDashboard() {
                 className="ios-btn"
                 style={{ padding: "6px 14px", fontSize: "0.82rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--accent-primary)" }}
               >
-                🔄 تحديث الجلب
+                🔄 تحديث
               </button>
               <button onClick={() => setShowProposalsSection(false)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer" }}>✕</button>
             </div>
@@ -1149,7 +1161,7 @@ export default function AdminDashboard() {
           {/* Proposal Filters */}
           <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
             {[
-              { id: "pending", label: "الطلبات المعلقة", count: proposals.filter(p => p.status === "pending").length },
+              { id: "pending", label: "المعلقة", count: proposals.filter(p => p.status === "pending").length },
               { id: "approved", label: "المقبولة", count: proposals.filter(p => p.status === "approved").length },
               { id: "rejected", label: "المرفوضة", count: proposals.filter(p => p.status === "rejected").length },
               { id: "all", label: "الكل", count: proposals.length },
@@ -1177,7 +1189,7 @@ export default function AdminDashboard() {
               لا توجد اقتراحات أصلية في قسم ({proposalsFilter}) حالياً.
             </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "10px" }}>
               {proposals
                 .filter(p => proposalsFilter === "all" || p.status === proposalsFilter)
                 .map((prop) => (
@@ -1190,8 +1202,8 @@ export default function AdminDashboard() {
                         <h3 style={{ margin: "8px 0 2px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>{prop.name}</h3>
 
                         {/* Proposer Info Badge */}
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(108, 99, 255, 0.08)", border: "1px solid rgba(108, 99, 255, 0.2)", borderRadius: "12px", padding: "8px 12px", margin: "8px 0" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div style={{ background: "rgba(108, 99, 255, 0.08)", border: "1px solid rgba(108, 99, 255, 0.2)", borderRadius: "12px", padding: "8px 12px", margin: "8px 0" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <img
                               src={prop.user_profile?.avatar_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&h=120&q=80"}
                               alt="proposer avatar"
@@ -1242,7 +1254,7 @@ export default function AdminDashboard() {
                           className="ios-btn"
                           style={{ flex: 1, padding: "10px", background: "linear-gradient(135deg, #34c759, #00d4aa)", color: "#fff", fontWeight: "700", border: "none" }}
                         >
-                          ✓ موافقة ونشر
+                          ✓ نشر
                         </button>
                         <button
                           onClick={() => { setRejectingProposal(prop); setRejectionReasonInput(""); }}
@@ -1250,7 +1262,7 @@ export default function AdminDashboard() {
                           className="ios-btn"
                           style={{ flex: 1, padding: "10px", background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", fontWeight: "700", border: "1px solid rgba(255, 59, 48, 0.3)" }}
                         >
-                          ✕ رفض مع السبب
+                          ✕ رفض
                         </button>
                       </div>
                     )}
@@ -1267,9 +1279,6 @@ export default function AdminDashboard() {
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.2s ease" }}>
           <div className="glass-panel" style={{ maxWidth: "480px", width: "100%", padding: "28px", borderRadius: "24px", background: "var(--bg-glass-card, #ffffff)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", border: "1px solid var(--accent-primary)", animation: "slide-up 0.3s ease" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ fontSize: "1.2rem", fontWeight: "800", margin: 0, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>👤</span> تفاصيل بروفايل صاحب الاقتراح
-              </h3>
               <button onClick={() => setSelectedUserProfile(null)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer" }}>✕</button>
             </div>
 
@@ -1419,7 +1428,7 @@ export default function AdminDashboard() {
                 disabled={isProcessingProposal || !rejectionReasonInput.trim()}
                 style={{ flex: 1, padding: "12px", background: "linear-gradient(135deg, #ff3b30, #ff6eb4)", color: "#fff", fontWeight: "700", border: "none" }}
               >
-                {isProcessingProposal ? "جاري الحفظ..." : "تأكيد الرفض والإرسال"}
+                {isProcessingProposal ? "جاري الحفظ..." : "تأكيد الرفض"}
               </button>
             </div>
           </div>
@@ -1608,11 +1617,10 @@ export default function AdminDashboard() {
         <div className={styles.tableHeaderBar}>
           <div className={styles.tableTitleGroup}>
             <div className={styles.tableIcon}>
-              <i className="bx bx-map-pin" />
+              <LuReplaceAll />
             </div>
             <div>
-              <h2 className={styles.tableTitle}>الأماكن المضافة ({places.length})</h2>
-              <p className={styles.tableSubtitle}>قائمة شاملة بجميع الأماكن والخدمات المسجلة في المنصة</p>
+              <h2 className={styles.tableTitle}>الأماكن المسجلة ({places.length})</h2>
             </div>
           </div>
         </div>
@@ -1668,15 +1676,23 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td className={styles.adminTd}>
-                      <div className={styles.actionGroup}>
-                        <button onClick={() => handleStartEditPlace(place)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`}>
-                          <i className="bx bx-edit" /> تعديل
-                        </button>
-                        <button onClick={() => setSelectedPlaceForBranch(place)} className={`${styles.actionBtn} ${styles.actionBtnBranch}`}>
-                          <i className="bx bx-buildings" /> الفروع
-                        </button>
-                        <button onClick={() => handleDeletePlace(place.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
-                          <i className="bx bx-trash" /> حذف
+                      <div className={styles.actionMenuWrapper}>
+                        {/* Trigger Button */}
+                        <button
+                          className={`${styles.actionMenuTrigger} ${openMenuId === place.id ? styles.actionMenuTriggerOpen : ""}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (openMenuId === place.id) {
+                              setOpenMenuId(null);
+                            } else {
+                              const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                              setMenuPos({ top: rect.bottom + 6, left: rect.left });
+                              setOpenMenuId(place.id);
+                            }
+                          }}
+                        >
+                          <span>إجراءات</span>
+                          <i className="bx bx-chevron-down chevron" style={{ fontSize: "1rem", transition: "transform 0.2s ease", transform: openMenuId === place.id ? "rotate(180deg)" : "rotate(0deg)" }} />
                         </button>
                       </div>
                     </td>
@@ -1687,6 +1703,46 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
+
+      {/* ── Floating Action Dropdown (rendered outside table to avoid overflow clipping) ── */}
+      {openMenuId && (
+        <div
+          className={styles.actionDropdown}
+          style={{ top: menuPos.top, left: menuPos.left }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {(() => {
+            const place = places.find(p => p.id === openMenuId);
+            if (!place) return null;
+            return (
+              <>
+                <button
+                  className={`${styles.dropdownItem} ${styles.dropdownItemEdit}`}
+                  onClick={() => { handleStartEditPlace(place); setOpenMenuId(null); }}
+                >
+                  <i className="bx bx-edit" style={{ fontSize: "1.1rem", color: "#4ade80" }} />
+                  تعديل المكان
+                </button>
+                <button
+                  className={`${styles.dropdownItem} ${styles.dropdownItemBranch}`}
+                  onClick={() => { setSelectedPlaceForBranch(place); setOpenMenuId(null); }}
+                >
+                  <i className="bx bx-buildings" style={{ fontSize: "1.1rem", color: "#818cf8" }} />
+                  إدارة الفروع
+                </button>
+                <div className={styles.dropdownDivider} />
+                <button
+                  className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`}
+                  onClick={() => { handleDeletePlace(place.id); setOpenMenuId(null); }}
+                >
+                  <i className="bx bx-trash" style={{ fontSize: "1.1rem", color: "#f87171" }} />
+                  حذف المكان
+                </button>
+              </>
+            );
+          })()}
+        </div>
+      )}
 
       {/* Full Comprehensive Edit Place Modal */}
       {editingPlace && (
