@@ -1747,7 +1747,7 @@ export default function AdminDashboard() {
       {/* Full Comprehensive Edit Place Modal */}
       {editingPlace && (
         <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0, 0, 0, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "10px", animation: "fade-in 0.2s ease" }}>
-          <div className="glass-panel" style={{ width: "100%", maxWidth: "940px", maxHeight: "100vh", overflowY: "auto", borderRadius: "1px", padding: "30px", background: "var(--bg-glass-card, #000000ff)", border: "2px solid var(--accent-primary)"}}>
+          <div className="glass-panel" style={{ width: "100%", maxWidth: "940px", maxHeight: "90vh", overflowY: "auto", borderRadius: "15px", padding: "30px", background: "var(--bg-glass-card, #000000ff)", border: "2px solid var(--accent-primary)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px" }}>
               <div>
                 <h2 style={{ fontFamily: "var(--font-cairo)", fontSize: "1.2rem", fontWeight: "600", color: "var(--text-primary)", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
@@ -1781,7 +1781,7 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
-                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-primary)", display: "block" }}>
+                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-secondary)", display: "block" }}>
                   التصنيفات الفرعية (تتيح ظهور المكان عند تصفية التبويبات وتظهر بتفاصيل المكان)
                 </label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -1801,7 +1801,8 @@ export default function AdminDashboard() {
                           color: isSelected ? "#fff" : "var(--text-primary)",
                           border: isSelected ? "none" : "1px solid var(--border-glass)",
                           padding: "6px 14px",
-                          borderRadius: "20px",
+                          borderRadius: "10px",
+                          fontFamily: "var(--font-cairo)",
                           fontSize: "0.85rem",
                           fontWeight: isSelected ? "700" : "500",
                           cursor: "pointer",
@@ -1851,7 +1852,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="help-label">رابط خريطة جوجل m.maps</label>
+                <label className="help-label">رابط خريطة جوجل</label>
                 <input className="ios-input" type="url" value={editPlaceFormData.google_maps_url} onChange={e => setEditPlaceFormData({ ...editPlaceFormData, google_maps_url: e.target.value })} placeholder="https://maps.app.goo.gl/..." style={{ direction: "ltr", textAlign: "right" }} />
               </div>
 
@@ -1866,19 +1867,18 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.06)", padding: "20px", borderRadius: "18px", border: "1px solid var(--border-glass)" }}>
-                <label className="help-label" style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "12px", color: "var(--text-primary)", display: "block" }}>⏰ مواعيد وساعات العمل (يوم بيوم)</label>
+                <label className="help-label" style={{ fontSize: "1.1rem", fontWeight: "600", marginBottom: "12px", color: "var(--text-primary)", display: "block" }}>⏰ مواعيد العمل</label>
 
                 <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
                   <button type="button" onClick={() => setEditScheduleType("24/7")} className={`ios-btn ${editScheduleType === "24/7" ? "ios-btn-primary" : ""}`} style={{ flex: 1, padding: "10px" }}>مفتوح 24 ساعة</button>
-                  <button type="button" onClick={() => setEditScheduleType("custom")} className={`ios-btn ${editScheduleType === "custom" ? "ios-btn-primary" : ""}`} style={{ flex: 1, padding: "10px", background: editScheduleType === "custom" ? "#ff9f0a" : undefined }}>مواعيد متغيرة لكل يوم</button>
+                  <button type="button" onClick={() => setEditScheduleType("custom")} className={`ios-btn ${editScheduleType === "custom" ? "ios-btn-primary" : ""}`} style={{ flex: 1, padding: "10px", background: editScheduleType === "custom" ? "#ff9f0a" : undefined }}>مواعيد متغيرة </button>
                 </div>
 
                 {editScheduleType === "custom" && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {editScheduleData.map((dayData, index) => (
                       <div key={dayData.day} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", background: "rgba(255,255,255,0.03)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                         <div style={{ width: "80px", fontWeight: "bold", color: "var(--text-primary)" }}>{dayData.day}</div>
-
                         <select
                           className="ios-input help-select"
                           style={{ width: "100px", padding: "6px 10px" }}
@@ -1892,7 +1892,6 @@ export default function AdminDashboard() {
                           <option value="working">عمل</option>
                           <option value="off">إجازة</option>
                         </select>
-
                         {dayData.isWorking && (
                           <div style={{ display: "flex", gap: "8px", alignItems: "center", flex: 1, flexWrap: "wrap" }}>
                             <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>من</span>
@@ -1925,7 +1924,7 @@ export default function AdminDashboard() {
 
               <div style={{ gridColumn: "1 / -1", display: "flex", gap: "14px", marginTop: "10px" }}>
                 <button type="submit" disabled={isUpdatingPlace || !editPlaceFormData.name.trim()} className="ios-btn ios-btn-primary" style={{ flex: 2, padding: "14px", fontSize: "1rem", fontWeight: "700" }}>
-                  {isUpdatingPlace ? "جاري التحديث..." : "💾 حفظ التعديلات الشاملة"}
+                  {isUpdatingPlace ? "جاري التحديث..." : " حفظ التعديلات "}
                 </button>
                 <button type="button" onClick={() => setEditingPlace(null)} className="ios-btn" style={{ flex: 1, padding: "14px" }}>
                   إلغاء
