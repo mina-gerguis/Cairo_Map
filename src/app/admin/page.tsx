@@ -1111,7 +1111,7 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="app-container" style={{ paddingTop: "120px", paddingBottom: "60px", maxWidth: "100%", width: "100%", paddingLeft: "10px", paddingRight: "10px" }}>
+    <div className="app-container" style={{ padding: "120px 10px", maxWidth: "100%", width: "100%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
         <div>
           <h1 className="title-ios">🛠️ Admin dashboard </h1>
