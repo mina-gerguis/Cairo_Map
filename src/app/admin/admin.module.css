@@ -1,0 +1,403 @@
+/* =========================================================
+   Admin Panel Dedicated CSS Module
+   ========================================================= */
+.adminShell {
+  min-height: 100vh;
+  background-color: #0b0f19;
+  background-attachment: fixed;
+  color: #f8fafc;
+  direction: rtl;
+  font-family: var(--font-cairo), system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ── Topbar / Header ── */
+.adminHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.headerInner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandLogo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brandBadge {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brandBadgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6366f1;
+  box-shadow: 0 0 8px #6366f1;
+}
+
+.adminNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0;
+  scrollbar-width: none;
+}
+
+.adminNav::-webkit-scrollbar {
+  display: none;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.navLink:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.navLinkActive {
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.15);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backToSiteBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.backToSiteBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Content Container ── */
+.adminContent {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+/* ── Table Card & Table Design System ── */
+.tableCard {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  margin-bottom: 32px;
+  transition: border-color 0.3s ease;
+}
+
+.tableCard:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.tableHeaderBar {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+}
+
+.tableTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tableIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.tableTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.tableSubtitle {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.3) rgba(15, 23, 42, 0.5);
+}
+
+.tableResponsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tableResponsive::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.tableResponsive::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 3px;
+}
+
+.tableResponsive::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.6);
+}
+
+.adminTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: right;
+}
+
+.adminThead {
+  background: rgba(30, 41, 59, 0.6);
+}
+
+.adminTh {
+  padding: 16px 20px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.adminTr {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.adminTr:last-child .adminTd {
+  border-bottom: none;
+}
+
+.adminTr:hover {
+  background-color: rgba(99, 102, 241, 0.06);
+}
+
+.adminTd {
+  padding: 14px 20px;
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.badgePrimary {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.badgeSuccess {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badgeWarning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badgeDanger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badgeInfo {
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.badgeNeutral {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Action Buttons inside tables */
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.actionBtnEdit {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.actionBtnEdit:hover {
+  background: rgba(34, 197, 94, 0.25);
+  color: #ffffff;
+}
+
+.actionBtnBranch {
+  background: rgba(99, 102, 241, 0.12);
+  color: #818cf8;
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+.actionBtnBranch:hover {
+  background: rgba(99, 102, 241, 0.25);
+  color: #ffffff;
+}
+
+.actionBtnDelete {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.actionBtnDelete:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ffffff;
+}
+
+/* ── Responsive adjustments ── */
+@media (max-width: 768px) {
+  .headerInner {
+    padding: 10px 16px;
+  }
+
+  .adminNav {
+    width: 100%;
+    order: 3;
+    justify-content: flex-start;
+  }
+
+  .adminContent {
+    padding: 16px 12px;
+  }
+
+  .tableHeaderBar {
+    padding: 16px;
+  }
+
+  .adminTh, .adminTd {
+    padding: 12px 14px;
+    font-size: 0.82rem;
+  }
+
+  .brandBadge {
+    display: none;
+  }
+}

@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import styles from "../admin.module.css";
 
 export default function AdminNotificationsPage() {
   const router = useRouter();
@@ -103,80 +104,112 @@ export default function AdminNotificationsPage() {
   }
 
   return (
-    <div style={{ maxWidth: "600px", margin: "40px auto", padding: "20px" }}>
-      <h1 style={{ fontSize: "1.8rem", marginBottom: "8px" }}>إرسال إشعارات للجميع</h1>
-      <p style={{ color: "var(--text-secondary)", marginBottom: "24px" }}>
-        ستصل هذه الرسالة فوراً لجميع المستخدمين المسجلين في الموقع.
-      </p>
-
-      {status && (
-        <div style={{ 
-          padding: "16px", 
-          marginBottom: "24px", 
-          borderRadius: "12px", 
-          background: status.includes("خطأ") ? "rgba(255, 59, 48, 0.1)" : "rgba(52, 199, 89, 0.1)",
-          color: status.includes("خطأ") ? "#ff3b30" : "#34c759",
-          border: `1px solid ${status.includes("خطأ") ? "rgba(255, 59, 48, 0.3)" : "rgba(52, 199, 89, 0.3)"}`
-        }}>
-          {status}
-        </div>
-      )}
-
-      <form onSubmit={handleBroadcast} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <div>
-          <label className="help-label" style={{ display: "block", marginBottom: "8px" }}>عنوان الإشعار</label>
-          <input 
-            type="text" 
-            className="ios-input" 
-            required 
-            value={title} 
-            onChange={e => setTitle(e.target.value)} 
-            placeholder="مثال: تحديث جديد!" 
-          />
-        </div>
-
-        <div>
-          <label className="help-label" style={{ display: "block", marginBottom: "8px" }}>محتوى الإشعار</label>
-          <textarea 
-            className="ios-input" 
-            required 
-            value={message} 
-            onChange={e => setMessage(e.target.value)} 
-            placeholder="أدخل رسالتك هنا..." 
-            style={{ minHeight: "120px", resize: "vertical" }}
-          />
-        </div>
-
-        <div style={{ display: "flex", gap: "16px" }}>
-          <div style={{ flex: 1 }}>
-            <label className="help-label" style={{ display: "block", marginBottom: "8px" }}>نوع الإشعار</label>
-            <select className="ios-input" value={type} onChange={e => setType(e.target.value)}>
-              <option value="info">عادي (🔔)</option>
-              <option value="success">نجاح (✅)</option>
-              <option value="warning">تنبيه (⚠️)</option>
-            </select>
-          </div>
-          <div style={{ flex: 1 }}>
-            <label className="help-label" style={{ display: "block", marginBottom: "8px" }}>الرابط (اختياري)</label>
-            <input 
-              type="text" 
-              className="ios-input" 
-              value={link} 
-              onChange={e => setLink(e.target.value)} 
-              placeholder="/profile" 
-            />
+    <div style={{ maxWidth: "700px", padding: "0" }}>
+      <div className={styles.tableCard}>
+        <div className={styles.tableHeaderBar}>
+          <div className={styles.tableTitleGroup}>
+            <div className={styles.tableIcon}>
+              <i className="bx bx-bell" />
+            </div>
+            <div>
+              <h1 className={styles.tableTitle} style={{ fontSize: "1.3rem" }}>إرسال إشعارات جماعية</h1>
+              <p className={styles.tableSubtitle}>ستصل هذه الرسالة فوراً لجميع المستخدمين المسجلين في الموقع.</p>
+            </div>
           </div>
         </div>
 
-        <button 
-          type="submit" 
-          disabled={loading} 
-          className="ios-btn ios-btn-primary" 
-          style={{ marginTop: "16px", padding: "16px", fontSize: "1.1rem" }}
-        >
-          {loading ? "جاري الإرسال..." : "إرسال الإشعار للجميع 🚀"}
-        </button>
-      </form>
+        <div style={{ padding: "28px" }}>
+          {status && (
+            <div style={{
+              padding: "14px 18px",
+              marginBottom: "24px",
+              borderRadius: "12px",
+              background: status.includes("خطأ") ? "rgba(239, 68, 68, 0.1)" : "rgba(34, 197, 94, 0.1)",
+              color: status.includes("خطأ") ? "#f87171" : "#4ade80",
+              border: `1px solid ${status.includes("خطأ") ? "rgba(239, 68, 68, 0.3)" : "rgba(34, 197, 94, 0.3)"}`,
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              fontWeight: "700"
+            }}>
+              <i className={`bx ${status.includes("خطأ") ? "bx-error-circle" : "bx-check-circle"}`} style={{ fontSize: "1.3rem" }} />
+              {status}
+            </div>
+          )}
+
+          <form onSubmit={handleBroadcast} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontWeight: "700", fontSize: "0.88rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px" }}>عنوان الإشعار</label>
+              <input
+                type="text"
+                className="ios-input"
+                required
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                placeholder="مثال: تحديث جديد!"
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", marginBottom: "8px", fontWeight: "700", fontSize: "0.88rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px" }}>محتوى الإشعار</label>
+              <textarea
+                className="ios-input"
+                required
+                value={message}
+                onChange={e => setMessage(e.target.value)}
+                placeholder="أدخل رسالتك هنا..."
+                style={{ minHeight: "130px", resize: "vertical" }}
+              />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "700", fontSize: "0.88rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px" }}>نوع الإشعار</label>
+                <select className="ios-input" value={type} onChange={e => setType(e.target.value)}>
+                  <option value="info">🔔 عادي</option>
+                  <option value="success">✅ نجاح</option>
+                  <option value="warning">⚠️ تنبيه</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "700", fontSize: "0.88rem", color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.5px" }}>الرابط (اختياري)</label>
+                <input
+                  type="text"
+                  className="ios-input"
+                  value={link}
+                  onChange={e => setLink(e.target.value)}
+                  placeholder="/profile"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                marginTop: "8px",
+                padding: "16px",
+                fontSize: "1rem",
+                fontWeight: "800",
+                borderRadius: "14px",
+                border: "none",
+                cursor: loading ? "not-allowed" : "pointer",
+                background: loading ? "rgba(99,102,241,0.3)" : "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                color: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                transition: "all 0.2s ease",
+                boxShadow: loading ? "none" : "0 4px 20px rgba(99,102,241,0.35)",
+              }}
+            >
+              <i className="bx bx-send" style={{ fontSize: "1.3rem" }} />
+              {loading ? "جاري الإرسال..." : "إرسال الإشعار للجميع"}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

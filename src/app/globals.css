@@ -1151,7 +1151,6 @@ html.light .ios-sheet { background: var(--bg-secondary); }
   .title-ios { font-size: 1.9rem; }
   .ios-sheet { height: 94vh; }
   .grid-places { grid-template-columns: 1fr; }
-  body { padding-bottom: 100px; }
   .hero-3d-card { display: none; }
   .hero-stats { gap: 28px; }
   .hero-stat-number { font-size: 1.8rem; }

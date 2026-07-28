@@ -1,4 +1,3 @@
-
 "use client";
 
 const AVAILABLE_INTERESTS_MAP: Record<string, { label: string; icon: string }> = {
@@ -28,6 +27,7 @@ const getInterestObj = (intKey: string) => {
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import styles from "./admin.module.css";
 import { useAuth } from "@/context/AuthContext";
 import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES } from "@/data/places";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
@@ -82,23 +82,23 @@ const CATEGORY_MAP: Record<string, string> = {
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [places, setPlaces] = useState<DBPlace[]>([]);
   const [error, setError] = useState("");
-  
+
   // Add Place Form States
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({
-    name: "", category: "restaurant", category_label: "مطاعم", 
+    name: "", category: "restaurant", category_label: "مطاعم",
     sub_categories: [] as string[],
     governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
-    full_address: "", phones: "", google_maps_url: "", image_url: "", 
-    menu_images: "", description: "", 
+    full_address: "", phones: "", google_maps_url: "", image_url: "",
+    menu_images: "", description: "",
     latitude: "", longitude: ""
   });
-  
+
   const [scheduleType, setScheduleType] = useState<"24/7" | "custom">("24/7");
   const [scheduleData, setScheduleData] = useState<ScheduleDay[]>(
     DAYS_OF_WEEK.map(day => ({
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
       closePeriod: "م"
     }))
   );
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Custom Categories States
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
   const [isProcessingProposal, setIsProcessingProposal] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<any | null>(null);
   const [proposalsError, setProposalsError] = useState<string | null>(null);
-  
+
   const [showProposalsSection, setShowProposalsSection] = useState(true);
 
   const fetchProposals = async () => {
@@ -304,7 +304,7 @@ export default function AdminDashboard() {
 
     const checkAdminAndFetchPlaces = async () => {
       if (!supabase) return;
-      
+
       try {
         // Check if admin
         const { data: profileData, error: profileError } = await supabase
@@ -356,7 +356,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (!newCatLabel.trim()) return;
 
-    const key = newCatKey.trim() 
+    const key = newCatKey.trim()
       ? newCatKey.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
       : `cat_${Date.now()}`;
     const iconClass = newCatIcon.trim() || "bx bx-category";
@@ -405,7 +405,7 @@ export default function AdminDashboard() {
   const handleAddPlace = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) return;
-    
+
     setIsSubmitting(true);
     setError("");
 
@@ -413,7 +413,7 @@ export default function AdminDashboard() {
       const phonesArray = formData.phones.split(",").map(p => p.trim()).filter(Boolean);
       const imagesArray = formData.image_url ? [formData.image_url.trim()] : [];
       const menuImagesArray = formData.menu_images.split(",").map(m => m.trim()).filter(Boolean);
-      
+
       const newPlace = {
         name: formData.name,
         category: formData.category,
@@ -455,7 +455,7 @@ export default function AdminDashboard() {
       }
 
       if (insertError) throw insertError;
-      
+
       if (data) {
         // Create initial main branch
         const { error: branchError } = await supabase
@@ -473,24 +473,24 @@ export default function AdminDashboard() {
             longitude: data.longitude,
             is_main: true
           }]);
-        
+
         if (branchError) {
           console.error("Failed to create main branch:", branchError);
         }
 
         const newBranch = {
-            id: branchError ? undefined : "temp-id",
-            place_id: data.id,
-            name: "الفرع الرئيسي",
-            governorate: data.governorate,
-            city: data.city,
-            full_address: data.full_address,
-            phones: data.phones,
-            google_maps_url: data.google_maps_url,
-            working_hours: data.working_hours,
-            latitude: data.latitude,
-            longitude: data.longitude,
-            is_main: true
+          id: branchError ? undefined : "temp-id",
+          place_id: data.id,
+          name: "الفرع الرئيسي",
+          governorate: data.governorate,
+          city: data.city,
+          full_address: data.full_address,
+          phones: data.phones,
+          google_maps_url: data.google_maps_url,
+          working_hours: data.working_hours,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          is_main: true
         };
 
         const placeWithBranch = { ...data, branches: [newBranch] };
@@ -498,11 +498,11 @@ export default function AdminDashboard() {
         setShowAddForm(false);
         // Reset form
         setFormData({
-          name: "", category: "restaurant", category_label: "مطاعم", 
+          name: "", category: "restaurant", category_label: "مطاعم",
           sub_categories: [],
           governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
-          full_address: "", phones: "", google_maps_url: "", image_url: "", 
-          menu_images: "", description: "", 
+          full_address: "", phones: "", google_maps_url: "", image_url: "",
+          menu_images: "", description: "",
           latitude: "", longitude: ""
         });
       }
@@ -523,7 +523,7 @@ export default function AdminDashboard() {
     try {
       const phonesArray = branchFormData.phones.split(",").map(p => p.trim()).filter(Boolean);
       const mediaArray = branchFormData.media.split(",").map(m => m.trim()).filter(Boolean);
-      
+
       let savedData, insertOrUpdateError;
 
       if (editingBranchId) {
@@ -587,14 +587,14 @@ export default function AdminDashboard() {
           return p;
         });
         setPlaces(updatedPlaces);
-        
+
         // Reset form but keep modal open
         setEditingBranchId(null);
         setBranchFormData({
           name: "", governorate: selectedPlaceForBranch.governorate || "القاهرة", city: "",
           full_address: "", phones: "", google_maps_url: "", latitude: "", longitude: "", media: ""
         });
-        
+
         alert(editingBranchId ? "تم تعديل الفرع بنجاح!" : "تم إضافة الفرع بنجاح!");
       }
     } catch (err: any) {
@@ -630,7 +630,7 @@ export default function AdminDashboard() {
         } else {
           setBranchScheduleType("24/7");
         }
-      } catch(e) {
+      } catch (e) {
         setBranchScheduleType("24/7");
       }
     }
@@ -647,7 +647,7 @@ export default function AdminDashboard() {
     try {
       const { error: deleteError } = await supabase.from("branches").delete().eq("id", branchId);
       if (deleteError) throw deleteError;
-      
+
       const updatedPlaces = places.map(p => {
         if (p.id === placeId) {
           return { ...p, branches: (p.branches || []).filter(b => b.id !== branchId) };
@@ -691,7 +691,7 @@ export default function AdminDashboard() {
     }
   };
 
-  
+
   // Proposal Handlers
   const handleApproveProposal = async (proposal: any) => {
     if (!supabase) return;
@@ -847,12 +847,12 @@ export default function AdminDashboard() {
     if (e) e.preventDefault();
     if (!editingPlace || !supabase || !editPlaceFormData.name.trim()) return;
     setIsUpdatingPlace(true);
-    
+
     try {
       const phonesArray = editPlaceFormData.phones.split(",").map(p => p.trim()).filter(Boolean);
       const imagesArray = editPlaceFormData.image_url ? [editPlaceFormData.image_url.trim()] : [];
       const menuImagesArray = editPlaceFormData.menu_images.split(",").map(m => m.trim()).filter(Boolean);
-      
+
       const finalWorkingHours = JSON.stringify({
         type: editScheduleType,
         schedule: editScheduleType === "custom" ? editScheduleData : undefined
@@ -927,7 +927,7 @@ export default function AdminDashboard() {
   const handleSeedData = async () => {
     if (!confirm("هل تريد إضافة البيانات التجريبية الأولية؟")) return;
     if (!supabase) return;
-    
+
     setIsSubmitting(true);
     try {
       const formattedInitialPlaces = initialPlaces.map(p => {
@@ -935,7 +935,7 @@ export default function AdminDashboard() {
         const parts = (p.briefLocation || "").split("/").map(s => s.trim());
         const city = parts[0] || "غير محدد";
         const gov = parts[1] || parts[0] || "غير محدد";
-        
+
         return {
           name: p.name,
           category: p.category,
@@ -961,7 +961,7 @@ export default function AdminDashboard() {
         .from("places")
         .insert(formattedInitialPlaces)
         .select();
-        
+
       if (insertError) throw insertError;
       if (data) {
         setPlaces([...data, ...places]);
@@ -986,129 +986,128 @@ export default function AdminDashboard() {
           <h2 style={{ fontFamily: "var(--font-display)", color: "#ff3b30", marginBottom: "10px" }}>صلاحيات غير كافية</h2>
           <p style={{ color: "var(--text-secondary)" }}>عذراً، هذه الصفحة مخصصة للمشرفين فقط.</p>
         </div>
-      {/* ── نافذة إضافة تصنيف جديد وتحديد الأيقونة من Boxicons ── */}
-      {showAddCategoryModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 3000, background: "rgba(0, 0, 0, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.3s ease" }}>
-          <div style={{ background: "rgba(18, 24, 52, 0.95)", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "520px", border: "1px solid rgba(108, 99, 255, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)", maxHeight: "90vh", overflowY: "auto" }}>
-            
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-                <span>🏷️</span> إضافة تصنيف جديد
-              </h3>
-              <button onClick={() => setShowAddCategoryModal(false)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.5rem", cursor: "pointer" }}>✕</button>
+        {/* ── نافذة إضافة تصنيف جديد وتحديد الأيقونة من Boxicons ── */}
+        {showAddCategoryModal && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 3000, background: "rgba(0, 0, 0, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.3s ease" }}>
+            <div style={{ background: "rgba(18, 24, 52, 0.95)", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "520px", border: "1px solid rgba(108, 99, 255, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)", maxHeight: "90vh", overflowY: "auto" }}>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>🏷️</span> إضافة تصنيف جديد
+                </h3>
+                <button onClick={() => setShowAddCategoryModal(false)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.5rem", cursor: "pointer" }}>✕</button>
+              </div>
+
+              <form onSubmit={handleAddCategorySubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div>
+                  <label className="help-label" style={{ fontWeight: "700" }}>اسم التصنيف (بالعربية)</label>
+                  <input
+                    required
+                    className="ios-input"
+                    value={newCatLabel}
+                    onChange={e => {
+                      setNewCatLabel(e.target.value);
+                      if (!newCatKey) {
+                        setNewCatKey(e.target.value.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, ''));
+                      }
+                    }}
+                    placeholder="مثال: جيم ورئاضة، مغسلة سيارات، سينما..."
+                  />
+                </div>
+
+                <div>
+                  <label className="help-label">معرّف التصنيف الإنجليزي (اختياري)</label>
+                  <input
+                    className="ios-input"
+                    value={newCatKey}
+                    onChange={e => setNewCatKey(e.target.value)}
+                    placeholder="مثال: gym, car_wash, cinema..."
+                    style={{ direction: "ltr", textAlign: "right" }}
+                  />
+                </div>
+
+                <div>
+                  <label className="help-label" style={{ fontWeight: "700" }}>اختر أيقونة من Boxicons</label>
+
+                  {/* Live Icon Preview */}
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(108, 99, 255, 0.1)", padding: "12px 16px", borderRadius: "14px", border: "1px solid rgba(108, 99, 255, 0.2)", marginBottom: "14px" }}>
+                    <div style={{ width: "42px", height: "42px", borderRadius: "12px", background: "var(--accent-primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "1.4rem" }}>
+                      <i className={newCatIcon}></i>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>الأيقونة المحددة:</div>
+                      <code style={{ fontSize: "0.8rem", color: "var(--accent-primary)", direction: "ltr" }}>{newCatIcon}</code>
+                    </div>
+                  </div>
+
+                  {/* Popular Presets Picker */}
+                  <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "8px", fontWeight: "600" }}>أيقونات شائعة للاختيار السريع:</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: "8px", maxHeight: "180px", overflowY: "auto", padding: "6px", background: "rgba(108, 99, 255, 0.08)", borderRadius: "14px", border: "1px solid var(--border-glass)", marginBottom: "14px" }}>
+                    {PRESET_BOXICONS.map((item) => (
+                      <button
+                        key={item.icon}
+                        type="button"
+                        onClick={() => setNewCatIcon(item.icon)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          padding: "8px 10px",
+                          borderRadius: "10px",
+                          border: newCatIcon === item.icon ? "2px solid var(--accent-primary)" : "1px solid var(--border-glass)",
+                          background: newCatIcon === item.icon ? "rgba(108, 99, 255, 0.2)" : "rgba(255,255,255,0.03)",
+                          color: "var(--text-primary)",
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease"
+                        }}
+                      >
+                        <i className={item.icon} style={{ fontSize: "1.1rem", color: "var(--accent-primary)" }}></i>
+                        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Custom Boxicon Class Input */}
+                  <label className="help-label" style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>أو اكتب كلاس أي أيقونة من Boxicons مباشرة:</label>
+                  <input
+                    className="ios-input"
+                    value={newCatIcon}
+                    onChange={e => setNewCatIcon(e.target.value)}
+                    placeholder="bx bx-store"
+                    style={{ direction: "ltr", textAlign: "right" }}
+                  />
+                </div>
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
+                  <button type="submit" disabled={isAddingCategory || !newCatLabel.trim()} className="ios-btn ios-btn-primary" style={{ flex: 1, padding: "14px", fontSize: "1rem" }}>
+                    {isAddingCategory ? "جاري الحفظ..." : "حفظ التصنيف"}
+                  </button>
+                  <button type="button" onClick={() => setShowAddCategoryModal(false)} className="ios-btn" style={{ flex: 1, padding: "14px", fontSize: "1rem" }}>
+                    إلغاء
+                  </button>
+                </div>
+              </form>
             </div>
-
-            <form onSubmit={handleAddCategorySubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              <div>
-                <label className="help-label" style={{ fontWeight: "700" }}>اسم التصنيف (بالعربية)</label>
-                <input
-                  required
-                  className="ios-input"
-                  value={newCatLabel}
-                  onChange={e => {
-                    setNewCatLabel(e.target.value);
-                    if (!newCatKey) {
-                      setNewCatKey(e.target.value.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, ''));
-                    }
-                  }}
-                  placeholder="مثال: جيم ورئاضة، مغسلة سيارات، سينما..."
-                />
-              </div>
-
-              <div>
-                <label className="help-label">معرّف التصنيف الإنجليزي (اختياري)</label>
-                <input
-                  className="ios-input"
-                  value={newCatKey}
-                  onChange={e => setNewCatKey(e.target.value)}
-                  placeholder="مثال: gym, car_wash, cinema..."
-                  style={{ direction: "ltr", textAlign: "right" }}
-                />
-              </div>
-
-              <div>
-                <label className="help-label" style={{ fontWeight: "700" }}>اختر أيقونة من Boxicons</label>
-                
-                {/* Live Icon Preview */}
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(108, 99, 255, 0.1)", padding: "12px 16px", borderRadius: "14px", border: "1px solid rgba(108, 99, 255, 0.2)", marginBottom: "14px" }}>
-                  <div style={{ width: "42px", height: "42px", borderRadius: "12px", background: "var(--accent-primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "1.4rem" }}>
-                    <i className={newCatIcon}></i>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>الأيقونة المحددة:</div>
-                    <code style={{ fontSize: "0.8rem", color: "var(--accent-primary)", direction: "ltr" }}>{newCatIcon}</code>
-                  </div>
-                </div>
-
-                {/* Popular Presets Picker */}
-                <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "8px", fontWeight: "600" }}>أيقونات شائعة للاختيار السريع:</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: "8px", maxHeight: "180px", overflowY: "auto", padding: "6px", background: "rgba(108, 99, 255, 0.08)", borderRadius: "14px", border: "1px solid var(--border-glass)", marginBottom: "14px" }}>
-                  {PRESET_BOXICONS.map((item) => (
-                    <button
-                      key={item.icon}
-                      type="button"
-                      onClick={() => setNewCatIcon(item.icon)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        padding: "8px 10px",
-                        borderRadius: "10px",
-                        border: newCatIcon === item.icon ? "2px solid var(--accent-primary)" : "1px solid var(--border-glass)",
-                        background: newCatIcon === item.icon ? "rgba(108, 99, 255, 0.2)" : "rgba(255,255,255,0.03)",
-                        color: "var(--text-primary)",
-                        fontSize: "0.8rem",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease"
-                      }}
-                    >
-                      <i className={item.icon} style={{ fontSize: "1.1rem", color: "var(--accent-primary)" }}></i>
-                      <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</span>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Custom Boxicon Class Input */}
-                <label className="help-label" style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>أو اكتب كلاس أي أيقونة من Boxicons مباشرة:</label>
-                <input
-                  className="ios-input"
-                  value={newCatIcon}
-                  onChange={e => setNewCatIcon(e.target.value)}
-                  placeholder="bx bx-store"
-                  style={{ direction: "ltr", textAlign: "right" }}
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: "12px", marginTop: "10px" }}>
-                <button type="submit" disabled={isAddingCategory || !newCatLabel.trim()} className="ios-btn ios-btn-primary" style={{ flex: 1, padding: "14px", fontSize: "1rem" }}>
-                  {isAddingCategory ? "جاري الحفظ..." : "حفظ التصنيف"}
-                </button>
-                <button type="button" onClick={() => setShowAddCategoryModal(false)} className="ios-btn" style={{ flex: 1, padding: "14px", fontSize: "1rem" }}>
-                  إلغاء
-                </button>
-              </div>
-            </form>
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
+        )}
+      </div>
+    );
+  }
 
 
   return (
     <div className="app-container" style={{ paddingTop: "120px", paddingBottom: "60px", maxWidth: "100%", width: "100%", paddingLeft: "32px", paddingRight: "32px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
         <div>
-          <h1 className="title-ios">لوحة تحكم المشرفين 🛠️</h1>
+          <h1 className="title-ios">🛠️ Admin dashboard </h1>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
-            <p style={{ color: "var(--text-secondary)", margin: 0 }}>إدارة الأماكن والبيانات في تطبيق دفتري</p>
-            <a href="/admin/directory" className="ios-btn" style={{ padding: "4px 12px", fontSize: "0.8rem", background: "rgba(52,199,89,0.1)", color: "#34c759", border: "1px solid rgba(52,199,89,0.2)" }}>
-              ☎️ إدارة دليل الهاتف
+            <a href="/" className="ios-btn" style={{ padding: "4px 12px", fontSize: "0.8rem", background: "rgba(52,199,89,0.1)", color: "#34c759", border: "1px solid rgba(52,199,89,0.2)" }}>
+              🌍 Go to website
             </a>
           </div>
         </div>
-        
+
         <div style={{ display: "flex", gap: "10px" }}>
           {places.length === 0 && (
             <button className="ios-btn" onClick={handleSeedData} disabled={isSubmitting} style={{ background: "rgba(255, 159, 10, 0.15)", color: "#ff9f0a", border: "1px solid rgba(255, 159, 10, 0.3)" }}>
@@ -1121,17 +1120,17 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      
+
       {/* ─── PROPOSALS MODERATION SECTION ─── */}
       {showProposalsSection && (
         <div className="glass-panel" style={{ padding: "28px", borderRadius: "24px", marginBottom: "32px", border: "1px solid rgba(108, 99, 255, 0.3)", animation: "slide-down 0.3s ease" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
             <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-              <i className="bx bx-map-pin" style={{ color: "var(--accent-primary)" }}></i> 📍 مراجعة اقتراحات الأماكن المقترحة من المستخدمين
+              <i className="bx bx-map-pin" style={{ color: "var(--accent-primary)" }}></i> مراجعة اقتراحات الأماكن 
             </h2>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <button 
-                onClick={fetchProposals} 
+              <button
+                onClick={fetchProposals}
                 className="ios-btn"
                 style={{ padding: "6px 14px", fontSize: "0.82rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--accent-primary)" }}
               >
@@ -1189,7 +1188,7 @@ export default function AdminDashboard() {
                           {prop.status === 'approved' ? "معتمد ومقبول" : prop.status === 'rejected' ? "مرفوض" : "قيد المراجعة"}
                         </span>
                         <h3 style={{ margin: "8px 0 2px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>{prop.name}</h3>
-                        
+
                         {/* Proposer Info Badge */}
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(108, 99, 255, 0.08)", border: "1px solid rgba(108, 99, 255, 0.2)", borderRadius: "12px", padding: "8px 12px", margin: "8px 0" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1262,7 +1261,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      
+
       {/* Modal for Proposer Full Profile */}
       {selectedUserProfile && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.2s ease" }}>
@@ -1511,27 +1510,27 @@ export default function AdminDashboard() {
               </select>
             </div>
             <div style={{ gridColumn: "1 / -1" }}><label className="help-label">العنوان بالتفصيل</label><input required className="ios-input" value={formData.full_address} onChange={e => updateForm("full_address", e.target.value)} /></div>
-            
+
             <div><label className="help-label">أرقام الهاتف (مفصولة بفاصلة)</label><input className="ios-input" value={formData.phones} onChange={e => updateForm("phones", e.target.value)} placeholder="012.., 010.." style={{ direction: "ltr", textAlign: "right" }} /></div>
             <div>
               <label className="help-label">رابط خرائط جوجل (سيتم استخراج الإحداثيات تلقائياً)</label>
-              <input 
-                className="ios-input" 
-                value={formData.google_maps_url} 
-                onChange={e => updateForm("google_maps_url", e.target.value)} 
+              <input
+                className="ios-input"
+                value={formData.google_maps_url}
+                onChange={e => updateForm("google_maps_url", e.target.value)}
                 onBlur={e => extractCoordinates(e.target.value)}
-                style={{ direction: "ltr", textAlign: "right" }} 
+                style={{ direction: "ltr", textAlign: "right" }}
               />
             </div>
-            
+
             {/* Image URLs */}
             <div><label className="help-label">رابط الصورة الرئيسية (URL)</label><input className="ios-input" type="url" value={formData.image_url} onChange={e => updateForm("image_url", e.target.value)} placeholder="https://..." style={{ direction: "ltr", textAlign: "right" }} /></div>
             <div style={{ gridColumn: "1 / -1" }}><label className="help-label">روابط الميديا (صور، قائمة طعام) - مفصولة بفاصلة</label><textarea className="ios-input" rows={2} value={formData.menu_images} onChange={e => updateForm("menu_images", e.target.value)} placeholder="https://..., https://..." style={{ direction: "ltr", textAlign: "left" }}></textarea></div>
-            
+
             {/* Working Hours UI */}
             <div style={{ gridColumn: "1 / -1", background: "rgba(120, 120, 120, 0.05)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
               <label className="help-label" style={{ fontSize: "1.1rem", marginBottom: "12px", color: "var(--text-primary)" }}>ساعات العمل</label>
-              
+
               <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
                 <button type="button" onClick={() => setScheduleType("24/7")} className={`ios-btn ${scheduleType === "24/7" ? "ios-btn-primary" : ""}`} style={{ flex: 1 }}>مفتوح 24 ساعة</button>
                 <button type="button" onClick={() => setScheduleType("custom")} className={`ios-btn ${scheduleType === "custom" ? "ios-btn-primary" : ""}`} style={{ flex: 1, background: scheduleType === "custom" ? "#ff9f0a" : undefined }}>مواعيد متغيرة</button>
@@ -1542,9 +1541,9 @@ export default function AdminDashboard() {
                   {scheduleData.map((dayData, index) => (
                     <div key={dayData.day} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", background: "rgba(255,255,255,0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                       <div style={{ width: "80px", fontWeight: "bold" }}>{dayData.day}</div>
-                      
-                      <select 
-                        className="ios-input help-select" 
+
+                      <select
+                        className="ios-input help-select"
                         style={{ width: "100px", padding: "6px" }}
                         value={dayData.isWorking ? "working" : "off"}
                         onChange={e => {
@@ -1563,15 +1562,15 @@ export default function AdminDashboard() {
                           <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.openTime} onChange={e => { const newData = [...scheduleData]; newData[index].openTime = e.target.value; setScheduleData(newData); }}>
                             {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                           </select>
-                          <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.openPeriod} onChange={e => { const newData = [...scheduleData]; newData[index].openPeriod = e.target.value as "ص"|"م"; setScheduleData(newData); }}>
+                          <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.openPeriod} onChange={e => { const newData = [...scheduleData]; newData[index].openPeriod = e.target.value as "ص" | "م"; setScheduleData(newData); }}>
                             <option value="ص">ص</option><option value="م">م</option>
                           </select>
-                          
+
                           <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem", margin: "0 5px" }}>حتي</span>
                           <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.closeTime} onChange={e => { const newData = [...scheduleData]; newData[index].closeTime = e.target.value; setScheduleData(newData); }}>
                             {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                           </select>
-                          <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.closePeriod} onChange={e => { const newData = [...scheduleData]; newData[index].closePeriod = e.target.value as "ص"|"م"; setScheduleData(newData); }}>
+                          <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.closePeriod} onChange={e => { const newData = [...scheduleData]; newData[index].closePeriod = e.target.value as "ص" | "م"; setScheduleData(newData); }}>
                             <option value="ص">ص</option><option value="م">م</option>
                           </select>
                         </div>
@@ -1605,45 +1604,56 @@ export default function AdminDashboard() {
       )}
 
       {/* Places List */}
-      <div className="ios-sheet" style={{ position: "static", height: "auto" }}>
-        <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>الأماكن المضافة ({places.length})</h2>
-        
+      <div className={styles.tableCard}>
+        <div className={styles.tableHeaderBar}>
+          <div className={styles.tableTitleGroup}>
+            <div className={styles.tableIcon}>
+              <i className="bx bx-map-pin" />
+            </div>
+            <div>
+              <h2 className={styles.tableTitle}>الأماكن المضافة ({places.length})</h2>
+              <p className={styles.tableSubtitle}>قائمة شاملة بجميع الأماكن والخدمات المسجلة في المنصة</p>
+            </div>
+          </div>
+        </div>
+
         {places.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px", color: "var(--text-secondary)" }}>
+          <div style={{ textAlign: "center", padding: "50px 40px", color: "#94a3b8" }}>
+            <i className="bx bx-map-alt" style={{ fontSize: "3rem", marginBottom: "12px", display: "block", color: "#475569" }} />
             لا يوجد أماكن حالياً. قم بإضافة بيانات تجريبية أو أضف مكاناً جديداً.
           </div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "800px" }}>
-              <thead>
-                <tr style={{ borderBottom: "1px solid var(--border-glass)", textAlign: "right" }}>
-                  <th style={{ padding: "12px", color: "var(--text-muted)", fontWeight: "600" }}>الصورة</th>
-                  <th style={{ padding: "12px", color: "var(--text-muted)", fontWeight: "600" }}>الاسم</th>
-                  <th style={{ padding: "12px", color: "var(--text-muted)", fontWeight: "600" }}>التصنيف</th>
-                  <th style={{ padding: "12px", color: "var(--text-muted)", fontWeight: "600" }}>المنطقة</th>
-                  <th style={{ padding: "12px", color: "var(--text-muted)", fontWeight: "600" }}>إجراءات</th>
+          <div className={styles.tableResponsive}>
+            <table className={styles.adminTable}>
+              <thead className={styles.adminThead}>
+                <tr>
+                  <th className={styles.adminTh}>الصورة</th>
+                  <th className={styles.adminTh}>الاسم</th>
+                  <th className={styles.adminTh}>التصنيف</th>
+                  <th className={styles.adminTh}>المنطقة</th>
+                  <th className={styles.adminTh}>إجراءات</th>
                 </tr>
               </thead>
               <tbody>
                 {places.map(place => (
-                  <tr key={place.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                    <td style={{ padding: "12px" }}>
+                  <tr key={place.id} className={styles.adminTr}>
+                    <td className={styles.adminTd}>
                       {place.images && place.images.length > 0 ? (
-                        <img src={place.images[0]} alt={place.name} style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "cover" }} />
+                        <img src={place.images[0]} alt={place.name} style={{ width: "44px", height: "44px", borderRadius: "10px", objectFit: "cover" }} />
                       ) : (
-                        <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: "var(--border-glass)", display: "flex", alignItems: "center", justifyContent: "center" }}>🖼️</div>
+                        <div style={{ width: "44px", height: "44px", borderRadius: "10px", background: "rgba(99,102,241,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>🖼️</div>
                       )}
                     </td>
-                    <td style={{ padding: "12px", fontWeight: "600" }}>{place.name}</td>
-                    <td style={{ padding: "12px" }}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                        <span style={{ padding: "4px 10px", borderRadius: "12px", background: "rgba(108,99,255,0.15)", color: "#a78bfa", fontSize: "0.85rem", fontWeight: "700", display: "inline-block", width: "fit-content" }}>
+                    <td className={styles.adminTd} style={{ fontWeight: "700", color: "#f1f5f9" }}>{place.name}</td>
+                    <td className={styles.adminTd}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        <span className={`${styles.badge} ${styles.badgePrimary}`}>
                           {place.category_label || CATEGORY_MAP[place.category] || place.category}
                         </span>
                         {place.sub_categories && place.sub_categories.length > 0 && (
                           <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
                             {place.sub_categories.map(sc => (
-                              <span key={sc} style={{ padding: "2px 6px", borderRadius: "8px", background: "rgba(255,255,255,0.08)", color: "var(--text-secondary)", fontSize: "0.75rem" }}>
+                              <span key={sc} className={`${styles.badge} ${styles.badgeNeutral}`} style={{ fontSize: "0.72rem", padding: "2px 8px" }}>
                                 {CATEGORY_MAP[sc] || sc}
                               </span>
                             ))}
@@ -1651,30 +1661,24 @@ export default function AdminDashboard() {
                         )}
                       </div>
                     </td>
-                    <td style={{ padding: "12px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
-                      {place.city} / {place.governorate}
-                      <br/>
-                      <span style={{ fontSize: "0.8rem", color: "var(--accent-ios)", fontWeight: "bold" }}>{place.branches ? place.branches.length : 1} فروع</span>
+                    <td className={styles.adminTd}>
+                      <div style={{ color: "#cbd5e1", fontSize: "0.88rem" }}>{place.city} / {place.governorate}</div>
+                      <span className={`${styles.badge} ${styles.badgeInfo}`} style={{ marginTop: "4px", fontSize: "0.72rem" }}>
+                        <i className="bx bx-buildings" /> {place.branches ? place.branches.length : 1} فروع
+                      </span>
                     </td>
-                    <td style={{ padding: "12px", display: "flex", gap: "8px", justifyContent: "flex-end", flexWrap: "wrap" }}>
-                      <button
-                        onClick={() => handleStartEditPlace(place)}
-                        style={{ background: "rgba(52,199,89,0.1)", color: "#34c759", border: "1px solid rgba(52,199,89,0.2)", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", fontWeight: "bold", fontSize: "0.85rem" }}
-                      >
-                        تعديل ✏️
-                      </button>
-                      <button 
-                        onClick={() => setSelectedPlaceForBranch(place)}
-                        style={{ background: "rgba(47, 128, 237, 0.1)", color: "#2f80ed", border: "1px solid rgba(47, 128, 237, 0.2)", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", transition: "all 0.2s ease", fontWeight: "bold" }}
-                      >
-                        إدارة الفروع 🏢
-                      </button>
-                      <button 
-                        onClick={() => handleDeletePlace(place.id)}
-                        style={{ background: "rgba(255, 59, 48, 0.1)", color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.2)", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", transition: "all 0.2s ease" }}
-                      >
-                        حذف 🗑️
-                      </button>
+                    <td className={styles.adminTd}>
+                      <div className={styles.actionGroup}>
+                        <button onClick={() => handleStartEditPlace(place)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`}>
+                          <i className="bx bx-edit" /> تعديل
+                        </button>
+                        <button onClick={() => setSelectedPlaceForBranch(place)} className={`${styles.actionBtn} ${styles.actionBtnBranch}`}>
+                          <i className="bx bx-buildings" /> الفروع
+                        </button>
+                        <button onClick={() => handleDeletePlace(place.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
+                          <i className="bx bx-trash" /> حذف
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -1808,7 +1812,7 @@ export default function AdminDashboard() {
 
               <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.06)", padding: "20px", borderRadius: "18px", border: "1px solid var(--border-glass)" }}>
                 <label className="help-label" style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "12px", color: "var(--text-primary)", display: "block" }}>⏰ مواعيد وساعات العمل (يوم بيوم)</label>
-                
+
                 <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
                   <button type="button" onClick={() => setEditScheduleType("24/7")} className={`ios-btn ${editScheduleType === "24/7" ? "ios-btn-primary" : ""}`} style={{ flex: 1, padding: "10px" }}>مفتوح 24 ساعة</button>
                   <button type="button" onClick={() => setEditScheduleType("custom")} className={`ios-btn ${editScheduleType === "custom" ? "ios-btn-primary" : ""}`} style={{ flex: 1, padding: "10px", background: editScheduleType === "custom" ? "#ff9f0a" : undefined }}>مواعيد متغيرة لكل يوم</button>
@@ -1819,9 +1823,9 @@ export default function AdminDashboard() {
                     {editScheduleData.map((dayData, index) => (
                       <div key={dayData.day} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", background: "rgba(255,255,255,0.03)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                         <div style={{ width: "80px", fontWeight: "bold", color: "var(--text-primary)" }}>{dayData.day}</div>
-                        
-                        <select 
-                          className="ios-input help-select" 
+
+                        <select
+                          className="ios-input help-select"
                           style={{ width: "100px", padding: "6px 10px" }}
                           value={dayData.isWorking ? "working" : "off"}
                           onChange={e => {
@@ -1840,15 +1844,15 @@ export default function AdminDashboard() {
                             <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.openTime} onChange={e => { const newData = [...editScheduleData]; newData[index].openTime = e.target.value; setEditScheduleData(newData); }}>
                               {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
-                            <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.openPeriod} onChange={e => { const newData = [...editScheduleData]; newData[index].openPeriod = e.target.value as "ص"|"م"; setEditScheduleData(newData); }}>
+                            <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.openPeriod} onChange={e => { const newData = [...editScheduleData]; newData[index].openPeriod = e.target.value as "ص" | "م"; setEditScheduleData(newData); }}>
                               <option value="ص">ص</option><option value="م">م</option>
                             </select>
-                            
+
                             <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem", margin: "0 4px" }}>حتي</span>
                             <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.closeTime} onChange={e => { const newData = [...editScheduleData]; newData[index].closeTime = e.target.value; setEditScheduleData(newData); }}>
                               {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
-                            <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.closePeriod} onChange={e => { const newData = [...editScheduleData]; newData[index].closePeriod = e.target.value as "ص"|"م"; setEditScheduleData(newData); }}>
+                            <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.closePeriod} onChange={e => { const newData = [...editScheduleData]; newData[index].closePeriod = e.target.value as "ص" | "م"; setEditScheduleData(newData); }}>
                               <option value="ص">ص</option><option value="م">م</option>
                             </select>
                           </div>
@@ -1892,7 +1896,7 @@ export default function AdminDashboard() {
               ✕
             </button>
             <h2 style={{ fontSize: "1.5rem", marginBottom: "10px" }}>إدارة فروع: {selectedPlaceForBranch.name}</h2>
-            
+
             {/* Existing Branches List */}
             <div style={{ marginBottom: "30px" }}>
               <h3 style={{ fontSize: "1.1rem", marginBottom: "14px", color: "var(--text-secondary)" }}>الفروع الحالية ({selectedPlaceForBranch.branches?.length || 0})</h3>
@@ -1904,7 +1908,7 @@ export default function AdminDashboard() {
                       <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>{b.city} / {b.governorate}</div>
                     </div>
                     <div style={{ display: "flex", gap: "10px" }}>
-                      <button 
+                      <button
                         onClick={() => handleEditBranch(b)}
                         style={{ background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}><i className="bx bx-edit" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-edit" style={{ fontSize: "1.2rem" }}></i> تعديل</button>
                       {!b.is_main && (
@@ -1921,8 +1925,8 @@ export default function AdminDashboard() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                 <h3 style={{ fontSize: "1.1rem", color: "var(--text-primary)" }}>{editingBranchId ? "تعديل الفرع" : "إضافة فرع جديد"}</h3>
                 {editingBranchId && (
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => {
                       setEditingBranchId(null);
                       setBranchFormData({
@@ -1937,34 +1941,34 @@ export default function AdminDashboard() {
                 )}
               </div>
               <form onSubmit={handleAddBranch} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                <div><label className="help-label">اسم الفرع</label><input required className="ios-input" value={branchFormData.name} onChange={e => setBranchFormData(p => ({...p, name: e.target.value}))} placeholder="مثال: فرع مدينة نصر" /></div>
+                <div><label className="help-label">اسم الفرع</label><input required className="ios-input" value={branchFormData.name} onChange={e => setBranchFormData(p => ({ ...p, name: e.target.value }))} placeholder="مثال: فرع مدينة نصر" /></div>
                 <div><label className="help-label">المحافظة</label>
-                  <select required className="ios-input" value={branchFormData.governorate} onChange={e => setBranchFormData(p => ({...p, governorate: e.target.value, city: ""}))}>
+                  <select required className="ios-input" value={branchFormData.governorate} onChange={e => setBranchFormData(p => ({ ...p, governorate: e.target.value, city: "" }))}>
                     {governoratesList.map(g => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>
                 <div><label className="help-label">المدينة / المنطقة</label>
-                  <select required className="ios-input" value={branchFormData.city} onChange={e => setBranchFormData(p => ({...p, city: e.target.value}))}>
+                  <select required className="ios-input" value={branchFormData.city} onChange={e => setBranchFormData(p => ({ ...p, city: e.target.value }))}>
                     <option value="">اختر المدينة</option>
                     {(egyptLocations[branchFormData.governorate as keyof typeof egyptLocations] || []).map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
-                <div><label className="help-label">العنوان التفصيلي</label><input required className="ios-input" value={branchFormData.full_address} onChange={e => setBranchFormData(p => ({...p, full_address: e.target.value}))} /></div>
-                <div><label className="help-label">أرقام التليفون (مفصولين بفاصلة)</label><input className="ios-input" value={branchFormData.phones} onChange={e => setBranchFormData(p => ({...p, phones: e.target.value}))} style={{ direction: "ltr", textAlign: "right" }} /></div>
+                <div><label className="help-label">العنوان التفصيلي</label><input required className="ios-input" value={branchFormData.full_address} onChange={e => setBranchFormData(p => ({ ...p, full_address: e.target.value }))} /></div>
+                <div><label className="help-label">أرقام التليفون (مفصولين بفاصلة)</label><input className="ios-input" value={branchFormData.phones} onChange={e => setBranchFormData(p => ({ ...p, phones: e.target.value }))} style={{ direction: "ltr", textAlign: "right" }} /></div>
                 <div>
                   <label className="help-label">رابط خرائط جوجل</label>
-                  <input className="ios-input" value={branchFormData.google_maps_url} 
-                    onChange={e => setBranchFormData(p => ({...p, google_maps_url: e.target.value}))} 
+                  <input className="ios-input" value={branchFormData.google_maps_url}
+                    onChange={e => setBranchFormData(p => ({ ...p, google_maps_url: e.target.value }))}
                     onBlur={e => extractBranchCoordinates(e.target.value)}
-                    style={{ direction: "ltr", textAlign: "right" }} 
+                    style={{ direction: "ltr", textAlign: "right" }}
                   />
                 </div>
-                <div><label className="help-label">خط العرض</label><input className="ios-input" type="number" step="any" value={branchFormData.latitude} onChange={e => setBranchFormData(p => ({...p, latitude: e.target.value}))} /></div>
-                <div><label className="help-label">خط الطول</label><input className="ios-input" type="number" step="any" value={branchFormData.longitude} onChange={e => setBranchFormData(p => ({...p, longitude: e.target.value}))} /></div>
-                
+                <div><label className="help-label">خط العرض</label><input className="ios-input" type="number" step="any" value={branchFormData.latitude} onChange={e => setBranchFormData(p => ({ ...p, latitude: e.target.value }))} /></div>
+                <div><label className="help-label">خط الطول</label><input className="ios-input" type="number" step="any" value={branchFormData.longitude} onChange={e => setBranchFormData(p => ({ ...p, longitude: e.target.value }))} /></div>
+
                 <div style={{ gridColumn: "1 / -1" }}>
                   <label className="help-label">الميديا الخاصة بالفرع (روابط مفصولة بفاصلة)</label>
-                  <textarea className="ios-input" rows={2} value={branchFormData.media} onChange={e => setBranchFormData(p => ({...p, media: e.target.value}))} placeholder="https://..., https://..." style={{ direction: "ltr", textAlign: "left" }}></textarea>
+                  <textarea className="ios-input" rows={2} value={branchFormData.media} onChange={e => setBranchFormData(p => ({ ...p, media: e.target.value }))} placeholder="https://..., https://..." style={{ direction: "ltr", textAlign: "left" }}></textarea>
                 </div>
 
                 <div style={{ gridColumn: "1 / -1" }}>
@@ -1978,9 +1982,9 @@ export default function AdminDashboard() {
                       {branchScheduleData.map((dayData, index) => (
                         <div key={dayData.day} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 0", borderBottom: index < branchScheduleData.length - 1 ? "1px solid rgba(120,120,120,0.1)" : "none", flexWrap: "wrap" }}>
                           <div style={{ width: "80px", fontWeight: "bold" }}>{dayData.day}</div>
-                          
-                          <select 
-                            className="ios-input help-select" 
+
+                          <select
+                            className="ios-input help-select"
                             style={{ width: "100px", padding: "6px" }}
                             value={dayData.isWorking ? "working" : "off"}
                             onChange={e => {
@@ -1999,15 +2003,15 @@ export default function AdminDashboard() {
                               <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.openTime} onChange={e => { const newData = [...branchScheduleData]; newData[index].openTime = e.target.value; setBranchScheduleData(newData); }}>
                                 {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                               </select>
-                              <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.openPeriod} onChange={e => { const newData = [...branchScheduleData]; newData[index].openPeriod = e.target.value as "ص"|"م"; setBranchScheduleData(newData); }}>
+                              <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.openPeriod} onChange={e => { const newData = [...branchScheduleData]; newData[index].openPeriod = e.target.value as "ص" | "م"; setBranchScheduleData(newData); }}>
                                 <option value="ص">ص</option><option value="م">م</option>
                               </select>
-                              
+
                               <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem", margin: "0 5px" }}>حتي</span>
                               <select className="ios-input help-select" style={{ width: "90px", padding: "6px" }} value={dayData.closeTime} onChange={e => { const newData = [...branchScheduleData]; newData[index].closeTime = e.target.value; setBranchScheduleData(newData); }}>
                                 {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                               </select>
-                              <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.closePeriod} onChange={e => { const newData = [...branchScheduleData]; newData[index].closePeriod = e.target.value as "ص"|"م"; setBranchScheduleData(newData); }}>
+                              <select className="ios-input help-select" style={{ width: "60px", padding: "6px" }} value={dayData.closePeriod} onChange={e => { const newData = [...branchScheduleData]; newData[index].closePeriod = e.target.value as "ص" | "م"; setBranchScheduleData(newData); }}>
                                 <option value="ص">ص</option><option value="م">م</option>
                               </select>
                             </div>
@@ -2017,11 +2021,11 @@ export default function AdminDashboard() {
                     </div>
                   )}
                 </div>
-                
+
                 <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
                   <button type="submit" disabled={isSubmittingBranch} className="ios-btn ios-btn-primary" style={{ marginTop: "10px" }}>
-                  {isSubmittingBranch ? "جاري الحفظ..." : (editingBranchId ? "حفظ التعديلات" : "إضافة الفرع")}
-                </button>
+                    {isSubmittingBranch ? "جاري الحفظ..." : (editingBranchId ? "حفظ التعديلات" : "إضافة الفرع")}
+                  </button>
                 </div>
               </form>
             </div>

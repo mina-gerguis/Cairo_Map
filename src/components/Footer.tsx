@@ -1,7 +1,14 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname === "/profile" || pathname?.startsWith("/admin")) return null;
+
   const currentYear = new Date().getFullYear();
 
   return (

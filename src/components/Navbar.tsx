@@ -9,6 +9,8 @@ import { useNotifications } from "@/context/NotificationContext";
 /* ─── مكون الشريط العلوي للرأس والقوائم (Navbar Component) ─── */
 export default function Navbar() {
   const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin")) return null;
   // ── جلب حالات المصادقة والإشعارات والمسار ──
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();

@@ -7,6 +7,8 @@ import { useNotifications } from "@/context/NotificationContext";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin")) return null;
   const router = useRouter();
   const { user } = useAuth();
   const { unreadCount } = useNotifications();

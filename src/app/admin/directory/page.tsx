@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
+import styles from "../admin.module.css";
 
 interface PhoneEntry {
   id: string;
@@ -373,44 +374,55 @@ export default function AdminDirectoryPage() {
             </div>
           )}
 
-          <div className="glass-panel" style={{ borderRadius: "20px", padding: "0", overflow: "hidden" }}>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
-                <thead>
-                  <tr style={{ background: "rgba(108, 99, 255, 0.05)", color: "var(--accent-primary)", textAlign: "right" }}>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>اللوجو</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>الاسم</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>التخصص</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>الرقم</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem", textAlign: "left" }}>إجراءات</th>
+          <div className={styles.tableCard}>
+            <div className={styles.tableHeaderBar}>
+              <div className={styles.tableTitleGroup}>
+                <div className={styles.tableIcon}>
+                  <i className="bx bx-phone-call" />
+                </div>
+                <div>
+                  <h2 className={styles.tableTitle}>أرقام خدمات العملاء والطوارئ ({entries.length})</h2>
+                  <p className={styles.tableSubtitle}>إدارة واستعراض الأرقام المختصرة والخدمية المسجلة</p>
+                </div>
+              </div>
+            </div>
+            <div className={styles.tableResponsive}>
+              <table className={styles.adminTable}>
+                <thead className={styles.adminThead}>
+                  <tr>
+                    <th className={styles.adminTh}>اللوجو</th>
+                    <th className={styles.adminTh}>الاسم</th>
+                    <th className={styles.adminTh}>التخصص</th>
+                    <th className={styles.adminTh}>الرقم</th>
+                    <th className={styles.adminTh} style={{ textAlign: "left" }}>إجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
                   {entries.length === 0 ? (
                     <tr>
-                      <td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "var(--text-muted)" }}>
+                      <td colSpan={5} className={styles.adminTd} style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>
                         لا توجد أرقام مسجلة حالياً
                       </td>
                     </tr>
                   ) : (
                     entries.map((entry) => (
-                      <tr key={entry.id} style={{ borderBottom: "1px solid var(--border-glass)", transition: "background 0.2s" }}>
-                        <td style={{ padding: "12px 20px" }}>
+                      <tr key={entry.id} className={styles.adminTr}>
+                        <td className={styles.adminTd}>
                           {entry.logo_url ? (
-                            <img src={entry.logo_url} alt="Logo" style={{ width: "40px", height: "40px", borderRadius: "8px", objectFit: "cover" }} />
+                            <img src={entry.logo_url} alt="Logo" style={{ width: "38px", height: "38px", borderRadius: "10px", objectFit: "cover" }} />
                           ) : (
-                            <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: "rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "center" }}>🏢</div>
+                            <div style={{ width: "38px", height: "38px", borderRadius: "10px", background: "rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center" }}>🏢</div>
                           )}
                         </td>
-                        <td style={{ padding: "16px 20px", fontWeight: "700" }}>{entry.name}</td>
-                        <td style={{ padding: "16px 20px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
-                          {entry.icon && <i className={`bx ${entry.icon}`} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle" }}></i>}
+                        <td className={styles.adminTd} style={{ fontWeight: "700" }}>{entry.name}</td>
+                        <td className={styles.adminTd} style={{ color: "#cbd5e1" }}>
+                          {entry.icon && <i className={`bx ${entry.icon}`} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
                           {entry.specialty}
                         </td>
-                        <td style={{ padding: "16px 20px", fontWeight: "600", direction: "ltr", textAlign: "right" }}>{entry.phone_number}</td>
-                        <td style={{ padding: "16px 20px", textAlign: "left" }}>
-                          <button onClick={() => handleDeletePhone(entry.id)} className="ios-btn" style={{ background: "rgba(255,59,48,0.1)", color: "#ff3b30", padding: "6px 12px", fontSize: "0.85rem", border: "1px solid rgba(255,59,48,0.2)", width: "auto" }}>
-                            حذف 🗑️
+                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#38bdf8" }}>{entry.phone_number}</td>
+                        <td className={styles.adminTd} style={{ textAlign: "left" }}>
+                          <button onClick={() => handleDeletePhone(entry.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
+                            <i className="bx bx-trash" /> حذف
                           </button>
                         </td>
                       </tr>
@@ -492,38 +504,53 @@ export default function AdminDirectoryPage() {
             </div>
           )}
 
-          <div className="glass-panel" style={{ borderRadius: "20px", padding: "0", overflow: "hidden" }}>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
-                <thead>
-                  <tr style={{ background: "rgba(108, 99, 255, 0.05)", color: "var(--accent-primary)", textAlign: "right" }}>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>الشركة</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>اسم القسم</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>اسم الخدمة</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem" }}>الكود</th>
-                    <th style={{ padding: "16px 20px", fontWeight: "800", fontSize: "0.95rem", textAlign: "left" }}>إجراءات</th>
+          <div className={styles.tableCard}>
+            <div className={styles.tableHeaderBar}>
+              <div className={styles.tableTitleGroup}>
+                <div className={styles.tableIcon}>
+                  <i className="bx bx-code-alt" />
+                </div>
+                <div>
+                  <h2 className={styles.tableTitle}>أكواد الخدمات السريعة ({codes.length})</h2>
+                  <p className={styles.tableSubtitle}>إدارة واستعراض أكواد الاتصالات ومزودي الخدمات</p>
+                </div>
+              </div>
+            </div>
+            <div className={styles.tableResponsive}>
+              <table className={styles.adminTable}>
+                <thead className={styles.adminThead}>
+                  <tr>
+                    <th className={styles.adminTh}>الشركة</th>
+                    <th className={styles.adminTh}>اسم القسم</th>
+                    <th className={styles.adminTh}>اسم الخدمة</th>
+                    <th className={styles.adminTh}>الكود</th>
+                    <th className={styles.adminTh} style={{ textAlign: "left" }}>إجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
                   {codes.length === 0 ? (
                     <tr>
-                      <td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "var(--text-muted)" }}>
+                      <td colSpan={5} className={styles.adminTd} style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>
                         لا توجد أكواد مسجلة حالياً
                       </td>
                     </tr>
                   ) : (
                     codes.map((item) => (
-                      <tr key={item.id} style={{ borderBottom: "1px solid var(--border-glass)", transition: "background 0.2s" }}>
-                        <td style={{ padding: "16px 20px", fontWeight: "700" }}>{COMPANY_LABELS[item.company]}</td>
-                         <td style={{ padding: "16px 20px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
-                           {item.icon && <i className={`bx ${item.icon}`} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle" }}></i>}
-                           {item.section_name}
-                         </td>
-                        <td style={{ padding: "16px 20px", fontWeight: "700" }}>{item.title}</td>
-                        <td style={{ padding: "16px 20px", fontWeight: "600", direction: "ltr", textAlign: "right" }}>{item.code}</td>
-                        <td style={{ padding: "16px 20px", textAlign: "left" }}>
-                          <button onClick={() => handleDeleteCode(item.id)} className="ios-btn" style={{ background: "rgba(255,59,48,0.1)", color: "#ff3b30", padding: "6px 12px", fontSize: "0.85rem", border: "1px solid rgba(255,59,48,0.2)", width: "auto" }}>
-                            حذف 🗑️
+                      <tr key={item.id} className={styles.adminTr}>
+                        <td className={styles.adminTd} style={{ fontWeight: "700" }}>
+                          <span className={`${styles.badge} ${styles.badgePrimary}`}>
+                            {COMPANY_LABELS[item.company]}
+                          </span>
+                        </td>
+                        <td className={styles.adminTd} style={{ color: "#cbd5e1" }}>
+                          {item.icon && <i className={`bx ${item.icon}`} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
+                          {item.section_name}
+                        </td>
+                        <td className={styles.adminTd} style={{ fontWeight: "700" }}>{item.title}</td>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#4ade80", fontFamily: "monospace", fontSize: "1.05rem" }}>{item.code}</td>
+                        <td className={styles.adminTd} style={{ textAlign: "left" }}>
+                          <button onClick={() => handleDeleteCode(item.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
+                            <i className="bx bx-trash" /> حذف
                           </button>
                         </td>
                       </tr>

@@ -1,11 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Almarai } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import MobileBottomNav from "@/components/MobileBottomNav";
 import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
+import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 
 const almarai = Almarai({
   subsets: ["arabic"],
@@ -41,12 +39,9 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <NotificationProvider>
-            <Navbar />
-            <main style={{ paddingTop: "72px" }}>
+            <ClientLayoutWrapper>
               {children}
-            </main>
-            <Footer />
-            <MobileBottomNav />
+            </ClientLayoutWrapper>
           </NotificationProvider>
         </AuthProvider>
       </body>
