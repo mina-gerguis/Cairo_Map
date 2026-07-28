@@ -34,10 +34,10 @@ const COMPANY_LABELS: Record<string, string> = {
 export default function AdminDirectoryPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+
   // Tabs: 'phones' or 'codes'
   const [activeTab, setActiveTab] = useState<"phones" | "codes">("phones");
 
@@ -45,7 +45,7 @@ export default function AdminDirectoryPage() {
   const [entries, setEntries] = useState<PhoneEntry[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone_number: "", logo_url: "" });
-  
+
   // Custom specialty states for dropdown
   const [specialtySelect, setSpecialtySelect] = useState("");
   const [customSpecialty, setCustomSpecialty] = useState("");
@@ -55,7 +55,7 @@ export default function AdminDirectoryPage() {
   const existingSpecialties = React.useMemo(() => {
     return Array.from(new Set(entries.map(e => e.specialty?.trim()).filter(Boolean)));
   }, [entries]);
-  
+
   // State for Telecom Codes
   const [codes, setCodes] = useState<TelecomCodeEntry[]>([]);
   const [showAddCodeForm, setShowAddCodeForm] = useState(false);
@@ -140,7 +140,7 @@ export default function AdminDirectoryPage() {
 
     try {
       const finalSpecialty = specialtySelect === "__custom__" ? customSpecialty.trim() : specialtySelect.trim();
-      
+
       if (!finalSpecialty) {
         throw new Error("يرجى تحديد أو كتابة تخصص.");
       }
@@ -265,15 +265,13 @@ export default function AdminDirectoryPage() {
   if (!isAdmin) return <div style={{ paddingTop: "120px", textAlign: "center", color: "#ff3b30" }}>عفواً، لا تملك صلاحية الوصول لهذه الصفحة.</div>;
 
   return (
-    <div className="app-container" style={{ paddingTop: "120px", paddingBottom: "60px" }}>
+    <div className="app-container" style={{ paddingTop: "20px", paddingBottom: "60px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "30px" }}>
         <div>
-          <h1 className="title-ios">إدارة دليل الهاتف والخدمات ☎️</h1>
+          <h1
+            style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", fontSize: "26px", color: "var(--text-ios)" }}
+            className="title-ios">☎️ إدارة دليل الهاتف </h1>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
-            <p style={{ color: "var(--text-secondary)", margin: 0 }}>التحكم بأرقام الدليل وأكواد الشبكات</p>
-            <Link href="/admin" className="ios-btn" style={{ padding: "4px 12px", fontSize: "0.8rem", background: "rgba(59,130,246,0.1)", color: "var(--accent-primary)", border: "1px solid rgba(59,130,246,0.2)" }}>
-              ⬅️ العودة للأماكن
-            </Link>
           </div>
         </div>
 
@@ -293,14 +291,16 @@ export default function AdminDirectoryPage() {
         <button
           onClick={() => { setActiveTab("phones"); setError(""); }}
           className={`category-pill ${activeTab === "phones" ? "active" : ""}`}
+          style={{ fontFamily: "var(--font-cairo)", padding: "5px 16px", color: "var(--text-ios)" }}
         >
-          📞 أرقام خدمة العملاء
+          📞 أرقام الخدمات
         </button>
         <button
           onClick={() => { setActiveTab("codes"); setError(""); }}
           className={`category-pill ${activeTab === "codes" ? "active" : ""}`}
+          style={{ fontFamily: "var(--font-cairo)", padding: "5px 16px", color: "var(--text-ios)" }}
         >
-          📱 أكواد خدمات الشركات
+          📱 أكواد الشركات
         </button>
       </div>
 
@@ -314,8 +314,8 @@ export default function AdminDirectoryPage() {
       {activeTab === "phones" && (
         <>
           {showAddForm && (
-            <div className="ios-sheet" style={{ position: "static", height: "auto", marginBottom: "40px", animation: "slide-in-section 0.4s ease" }}>
-              <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>إضافة جهة جديدة</h2>
+            <div className="ios-sheet" style={{ position: "absolute", top: "auto", right: "10px", left: "10px", padding: "20px", height: "auto", marginBottom: "40px", animation: "slide-in-section 0.4s ease" }}>
+              <h2 style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", marginBottom: "20px" }}>إضافة جهة جديدة</h2>
               <form onSubmit={handleAddPhone} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
                 <div>
                   <label className="help-label">الاسم (مثال: المصرية للاتصالات وي)</label>
@@ -381,8 +381,9 @@ export default function AdminDirectoryPage() {
                   <i className="bx bx-phone-call" />
                 </div>
                 <div>
-                  <h2 className={styles.tableTitle}>أرقام خدمات العملاء والطوارئ ({entries.length})</h2>
-                  <p className={styles.tableSubtitle}>إدارة واستعراض الأرقام المختصرة والخدمية المسجلة</p>
+                  <h2 className={styles.tableTitle}>أرقام الخدمات والطوارئ ({entries.length})</h2>
+                  <p className={styles.tableSubtitle}>إدارة أرقام الطوارئ والخدمات</p>
+
                 </div>
               </div>
             </div>
@@ -415,14 +416,13 @@ export default function AdminDirectoryPage() {
                           )}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>{entry.name}</td>
-                        <td className={styles.adminTd} style={{ color: "#cbd5e1" }}>
-                          {entry.icon && <i className={`bx ${entry.icon}`} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
+                        <td className={styles.adminTd} style={{ color: "#cbd5e1", fontWeight: "700" }}>
                           {entry.specialty}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#38bdf8" }}>{entry.phone_number}</td>
                         <td className={styles.adminTd} style={{ textAlign: "left" }}>
                           <button onClick={() => handleDeletePhone(entry.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
-                            <i className="bx bx-trash" /> حذف
+                            <i className="bx bx-trash" />
                           </button>
                         </td>
                       </tr>
@@ -439,7 +439,7 @@ export default function AdminDirectoryPage() {
       {activeTab === "codes" && (
         <>
           {showAddCodeForm && (
-            <div className="ios-sheet" style={{ position: "static", height: "auto", marginBottom: "40px", animation: "slide-in-section 0.4s ease" }}>
+            <div className="ios-sheet" style={{ position: "absolute", top: "auto", right: "10px", left: "10px", padding: "20px", height: "auto", marginBottom: "40px", animation: "slide-in-section 0.4s ease" }}>
               <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>إضافة كود خدمة جديد</h2>
               <form onSubmit={handleAddCode} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
                 <div>
@@ -511,8 +511,8 @@ export default function AdminDirectoryPage() {
                   <i className="bx bx-code-alt" />
                 </div>
                 <div>
-                  <h2 className={styles.tableTitle}>أكواد الخدمات السريعة ({codes.length})</h2>
-                  <p className={styles.tableSubtitle}>إدارة واستعراض أكواد الاتصالات ومزودي الخدمات</p>
+                  <h2 className={styles.tableTitle}>أكواد خدمات الاتصالات ({codes.length})</h2>
+                  <p className={styles.tableSubtitle}>إدارة واستعراض أكواد الاتصالات </p>
                 </div>
               </div>
             </div>
@@ -550,7 +550,7 @@ export default function AdminDirectoryPage() {
                         <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#4ade80", fontFamily: "monospace", fontSize: "1.05rem" }}>{item.code}</td>
                         <td className={styles.adminTd} style={{ textAlign: "left" }}>
                           <button onClick={() => handleDeleteCode(item.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
-                            <i className="bx bx-trash" /> حذف
+                            <i className="bx bx-trash" /> 
                           </button>
                         </td>
                       </tr>

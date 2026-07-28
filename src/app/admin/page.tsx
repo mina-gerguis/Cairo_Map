@@ -1111,13 +1111,13 @@ export default function AdminDashboard() {
 
 
   return (
-    <div className="app-container" style={{ padding: "120px 10px", maxWidth: "100%", width: "100%" }}>
+    <div className="app-container" style={{ padding: "120px 10px", paddingTop: "60px", maxWidth: "100%", width: "100%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
         <div>
-          <h1 className="title-ios">🛠️ Admin dashboard </h1>
+          <h1 className="title-ios">🛠️ لوحة التحكم</h1>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
             <a href="/" className="ios-btn" style={{ padding: "4px 12px", fontSize: "0.8rem", background: "rgba(52,199,89,0.1)", color: "#34c759", border: "1px solid rgba(52,199,89,0.2)" }}>
-              🌍 Go to website
+              🌍 الذهاب للموقع
             </a>
           </div>
         </div>

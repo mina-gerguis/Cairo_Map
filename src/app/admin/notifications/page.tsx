@@ -188,10 +188,11 @@ export default function AdminNotificationsPage() {
               disabled={loading}
               style={{
                 marginTop: "8px",
-                padding: "16px",
+                padding: "10px",
                 fontSize: "1rem",
-                fontWeight: "800",
-                borderRadius: "14px",
+                fontWeight: "600",
+                fontFamily: "var(--font-cairo)",
+                borderRadius: "25px",
                 border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
                 background: loading ? "rgba(99,102,241,0.3)" : "linear-gradient(135deg, #6366f1, #8b5cf6)",
