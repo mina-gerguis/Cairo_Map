@@ -1,7 +1,8 @@
 "use client";
 import { LuReplaceAll } from "react-icons/lu";
 import { RiEditFill } from "react-icons/ri";
-
+import { MdFolderDelete } from "react-icons/md";
+import { TbCashEdit } from "react-icons/tb";
 
 const AVAILABLE_INTERESTS_MAP: Record<string, { label: string; icon: string }> = {
   restaurants: { label: "مطاعم", icon: "bx bx-restaurant" },
@@ -1939,21 +1940,21 @@ export default function AdminDashboard() {
       {selectedPlaceForBranch && (
         <div style={{
           position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000,
-          background: "rgba(0, 0, 0, 0.7)",
+          background: "var(--bg-glass-card, #000000ff)",
           display: "flex", alignItems: "center", justifyContent: "center", padding: "20px"
         }}>
-          <div className="glass-panel" style={{ width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto", position: "relative" }}>
+          <div className="glass-panel" style={{ width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto", position: "relative", padding: "20px" }}>
             <button
               onClick={() => setSelectedPlaceForBranch(null)}
               style={{ position: "absolute", top: "20px", left: "20px", background: "rgba(120,120,120,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
             >
               ✕
             </button>
-            <h2 style={{ fontSize: "1.5rem", marginBottom: "10px" }}>إدارة فروع: {selectedPlaceForBranch.name}</h2>
+            <h2 style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", fontSize: "1.2rem", marginBottom: "10px" }}>إدارة فروع: {selectedPlaceForBranch.name}</h2>
 
             {/* Existing Branches List */}
             <div style={{ marginBottom: "30px" }}>
-              <h3 style={{ fontSize: "1.1rem", marginBottom: "14px", color: "var(--text-secondary)" }}>الفروع الحالية ({selectedPlaceForBranch.branches?.length || 0})</h3>
+              <h3 style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", fontSize: "1rem", marginBottom: "14px", color: "var(--text-secondary)" }}>الفروع الحالية ({selectedPlaceForBranch.branches?.length || 0})</h3>
               <div style={{ display: "grid", gap: "10px" }}>
                 {(selectedPlaceForBranch.branches || []).map(b => (
                   <div key={b.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", background: "rgba(120,120,120,0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
@@ -1964,9 +1965,9 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", gap: "10px" }}>
                       <button
                         onClick={() => handleEditBranch(b)}
-                        style={{ background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}><i className="bx bx-edit" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-edit" style={{ fontSize: "1.2rem" }}></i> تعديل</button>
+                        style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem" }}>  <TbCashEdit size={23}/></button>
                       {!b.is_main && (
-                        <button onClick={() => handleDeleteBranch(b.id, selectedPlaceForBranch.id, b.is_main)} style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}><i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i> حذف</button>
+                        <button onClick={() => handleDeleteBranch(b.id, selectedPlaceForBranch.id, b.is_main)} style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}><MdFolderDelete size={24} /> </button>
                       )}
                     </div>
                   </div>
@@ -1989,7 +1990,7 @@ export default function AdminDashboard() {
                       });
                       setBranchScheduleType("24/7");
                     }}
-                    style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.9rem" }}>
+                    style={{fontFamily:"var(--font-cairo)", fontWeight:"600", background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.9rem" }}>
                     إلغاء التعديل
                   </button>
                 )}
@@ -1997,7 +1998,8 @@ export default function AdminDashboard() {
               <form onSubmit={handleAddBranch} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div><label className="help-label">اسم الفرع</label><input required className="ios-input" value={branchFormData.name} onChange={e => setBranchFormData(p => ({ ...p, name: e.target.value }))} placeholder="مثال: فرع مدينة نصر" /></div>
                 <div><label className="help-label">المحافظة</label>
-                  <select required className="ios-input" value={branchFormData.governorate} onChange={e => setBranchFormData(p => ({ ...p, governorate: e.target.value, city: "" }))}>
+                  <select
+                  required className="ios-input" value={branchFormData.governorate} onChange={e => setBranchFormData(p => ({ ...p, governorate: e.target.value, city: "" }))}>
                     {governoratesList.map(g => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>
@@ -2008,7 +2010,7 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div><label className="help-label">العنوان التفصيلي</label><input required className="ios-input" value={branchFormData.full_address} onChange={e => setBranchFormData(p => ({ ...p, full_address: e.target.value }))} /></div>
-                <div><label className="help-label">أرقام التليفون (مفصولين بفاصلة)</label><input className="ios-input" value={branchFormData.phones} onChange={e => setBranchFormData(p => ({ ...p, phones: e.target.value }))} style={{ direction: "ltr", textAlign: "right" }} /></div>
+                <div><label className="help-label">أرقام هاتف ( بفاصلة)</label><input className="ios-input" value={branchFormData.phones} onChange={e => setBranchFormData(p => ({ ...p, phones: e.target.value }))} style={{ direction: "ltr", textAlign: "right" }} /></div>
                 <div>
                   <label className="help-label">رابط خرائط جوجل</label>
                   <input className="ios-input" value={branchFormData.google_maps_url}
@@ -2022,7 +2024,7 @@ export default function AdminDashboard() {
 
                 <div style={{ gridColumn: "1 / -1" }}>
                   <label className="help-label">الميديا الخاصة بالفرع (روابط مفصولة بفاصلة)</label>
-                  <textarea className="ios-input" rows={2} value={branchFormData.media} onChange={e => setBranchFormData(p => ({ ...p, media: e.target.value }))} placeholder="https://..., https://..." style={{ direction: "ltr", textAlign: "left" }}></textarea>
+                  <input className="ios-input" value={branchFormData.media} onChange={e => setBranchFormData(p => ({ ...p, media: e.target.value }))} placeholder="https://..., https://..." style={{ direction: "ltr", textAlign: "left" }} />
                 </div>
 
                 <div style={{ gridColumn: "1 / -1" }}>
