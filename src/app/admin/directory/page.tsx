@@ -314,7 +314,7 @@ export default function AdminDirectoryPage() {
       {activeTab === "phones" && (
         <>
           {showAddForm && (
-            <div className="ios-sheet" style={{ position: "absolute", top: "auto", right: "10px", left: "10px", padding: "20px", height: "auto", marginBottom: "40px", animation: "slide-in-section 0.4s ease" }}>
+            <div className="ios-sheet" style={{ position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease" }}>
               <h2 style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", marginBottom: "20px" }}>إضافة جهة جديدة</h2>
               <form onSubmit={handleAddPhone} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
                 <div>
@@ -439,7 +439,7 @@ export default function AdminDirectoryPage() {
       {activeTab === "codes" && (
         <>
           {showAddCodeForm && (
-            <div className="ios-sheet" style={{ position: "absolute", top: "auto", right: "10px", left: "10px", padding: "20px", height: "auto", marginBottom: "40px", animation: "slide-in-section 0.4s ease" }}>
+            <div className="ios-sheet" style={{position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease"  }}>
               <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>إضافة كود خدمة جديد</h2>
               <form onSubmit={handleAddCode} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
                 <div>
