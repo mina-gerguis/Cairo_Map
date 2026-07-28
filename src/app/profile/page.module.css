@@ -1689,7 +1689,7 @@
 }
 
 .notifModalPanel {
-  background: var(--glass-bg);
+  background: var(--bg-glass);
   border: 1px solid var(--border-glass);
   border-radius: 24px;
   padding: 30px 24px;
@@ -1704,7 +1704,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(59, 31, 31, 0.1);
   border: none;
   width: 32px;
   height: 32px;
@@ -1712,7 +1712,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #000000;
   cursor: pointer;
 }
 
@@ -1728,14 +1728,15 @@
 
 .notifModalTitle {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+  font-family: var(--font-cairo);
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .notifModalDate {
   display: block;
-  margin-top: 4px;
+  margin-top: 10px;
   font-size: 0.85rem;
   color: var(--text-muted);
 }
@@ -1747,14 +1748,14 @@
   max-height: 300px;
   overflow-y: auto;
   margin-bottom: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(240, 240, 240, 0.233);
 }
 
 .notifModalMessage {
   margin: 0;
   font-size: 1rem;
   line-height: 1.7;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   white-space: pre-wrap;
 }
 

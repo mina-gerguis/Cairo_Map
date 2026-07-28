@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
+import { MdOutlineClose } from "react-icons/md";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
@@ -18,11 +19,26 @@ export default function MobileBottomNav() {
   const lastScrollY = useRef(0);
 
   const trendingSearches = [
-    "مطاعم مصر الجديدة",
-    "صيدلية العزبي",
-    "كافيهات على النيل",
-    "مستشفى كليوباترا",
-    "حديقة الأزهر",
+      "مطاعم مصر الجديدة",
+  "مطاعم التجمع الخامس",
+  "مطاعم مدينة نصر",
+  "مطاعم الزمالك",
+  "مطاعم المعادي",
+  "مطاعم الشيخ زايد",
+  "كافيهات على النيل",
+  "كافيهات الزمالك",
+  "كافيهات المعادي",
+  "صيدلية العزبي",
+  "صيدلية سيف",
+  "مستشفى كليوباترا",
+  "مستشفى السلام الدولي",
+  "مستشفى دار الفؤاد",
+  "مستشفى السعودي الألماني",
+  "مستشفى قصر العيني",
+  "مستشفى بهية",
+  "حديقة الأزهر",
+  "حديقة الحيوان",
+  "الأهرامات"
   ];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -183,8 +199,8 @@ export default function MobileBottomNav() {
                   </svg>
                 </div>
               </form>
-              <button className="ios-btn" onClick={() => setIsSearchOpen(false)} style={{ padding: "10px 14px", fontSize: "0.9rem" }}>
-                إلغاء
+              <button className="ios-btn" onClick={() => setIsSearchOpen(false)} style={{ width:"50px", padding: "15px 14px", fontSize: "0.9rem", border: "1px solid var(--border-glass)" }}>
+                <MdOutlineClose  />
               </button>
             </div>
 
