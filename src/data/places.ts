@@ -56,6 +56,8 @@ export interface Branch {
   workingHours: string;
   media?: string[];
   isMain: boolean;
+  website_url?: string;
+  features?: string[];
 }
 
 export interface Place {
@@ -81,7 +83,25 @@ export interface Place {
   latitude?: number;
   longitude?: number;
   branches?: Branch[];
+  website_url?: string;
+  features?: string[];
 }
+
+export interface FeatureItem {
+  key: string;
+  label: string;
+  icon: string;
+}
+
+export const FEATURES_LIST: FeatureItem[] = [
+  { key: "vegetarian_options", label: "خيارات نباتية متوفرة", icon: "🥗" },
+  { key: "suitable_for_groups", label: "مناسب للمجموعات والعائلات", icon: "👥" },
+  { key: "accepts_credit_cards", label: "يقبل الدفع بالبطاقات الائتمانية", icon: "💳" },
+  { key: "free_wifi", label: "شبكة واي فاي مجانية", icon: "📶" },
+  { key: "comfortable_facilities", label: "مرافق مريحة للزوار", icon: "✔️" },
+  { key: "wheelchair_accessible", label: "مداخل سهلة للكراسي المتحركة", icon: "♿" },
+  { key: "suitable_for_all_ages", label: "مناسب لجميع الأعمار", icon: "👨‍👩‍👧‍👦" },
+];
 
 export const initialPlaces: Place[] = [
   {

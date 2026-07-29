@@ -6,9 +6,12 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import ReviewSection from "@/components/ReviewSection";
-import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK } from "@/lib/workingHours";
-import { Place, PlaceCategory, initialPlaces } from "../data/places";
+import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyOpen } from "@/lib/workingHours";
+import { Place, PlaceCategory, initialPlaces, FEATURES_LIST } from "../data/places";
 import { Pagination } from "@/components/ui/Pagination";
+// Icon
+import { MdDomain } from "react-icons/md";
+
 
 /* ─── الدوال المساعدة (Helper Functions) ─── */
 // دالة حساب المسافة الجغرافية بين نقطتين (عرض وطول) بالكيلومترات
@@ -190,6 +193,8 @@ function HomeContent() {
             description: dbPlace.description || "",
             latitude: dbPlace.latitude || undefined,
             longitude: dbPlace.longitude || undefined,
+            website_url: dbPlace.website_url,
+            features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
             branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
               id: b.id,
               place_id: b.place_id,
@@ -204,6 +209,8 @@ function HomeContent() {
               workingHours: b.working_hours,
               isMain: b.is_main,
               createdAt: b.created_at,
+              website_url: b.website_url,
+              features: Array.isArray(b.features) ? b.features : [],
             })) : []
           }));
           setPlaces(mappedPlaces);
@@ -242,6 +249,54 @@ function HomeContent() {
       await supabase.from('favorite_places').insert({ user_id: user.id, place_id: placeId });
     }
     setFavoriteIds(newFavs);
+  };
+
+  const getDefiniteCategoryName = (category: string, label: string) => {
+    switch (category) {
+      case "restaurant": return "المطعم";
+      case "cafe": return "الكافيه";
+      case "garden": return "الحديقة";
+      case "medicalCenter": return "المركز الطبي";
+      case "health_beauty": return "مكان الصحة والجمال";
+      case "family": return "المكان العائلي";
+      case "quiet_places": return "المكان الهادئ";
+      case "kids": return "المكان المخصص للأطفال";
+      case "amusement_aqua": return "الملاهي";
+      case "work": return "مكتب العمل";
+      case "courses_study": return "مكان الكورسات";
+      case "hotel": return "الفندق";
+      case "cinema": return "السينما";
+      case "mall": return "المول";
+      case "outings": return "المكان";
+      default: return label || "المكان";
+    }
+  };
+
+  const handleShare = async (place: Place) => {
+    if (!place) return;
+    const categoryText = getDefiniteCategoryName(place.category, place.categoryLabel);
+    const shareText = `لقد وجدت هذا ${categoryText} وموجود في ${place.city} ${place.governorate} هيا نلقي نظرة عليه`;
+    const shareUrl = `${window.location.origin}/places/${place.id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: place.name,
+          text: shareText,
+          url: shareUrl
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
+        alert("تم نسخ رسالة المشاركة ورابط المكان إلى الحافظة!");
+      } catch (err) {
+        console.error("Failed to copy:", err);
+        alert("عذراً، لم نتمكن من نسخ الرابط.");
+      }
+    }
   };
 
   /* Geolocation */
@@ -591,7 +646,7 @@ function HomeContent() {
             className={`ios-btn ${isProximityEnabled ? "ios-btn-primary" : ""}`}
             onClick={handleToggleProximity}
             disabled={locationLoading}
-            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px" }}
+            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px", border: "1px solid var(--border-glass)" }}
           >
             {locationLoading ? (
               <span style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
@@ -693,6 +748,64 @@ function HomeContent() {
         <div className="ios-sheet-overlay" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}>
           <div className="ios-sheet" onClick={(e: any) => e.stopPropagation()}>
             <div className="ios-sheet-drag-handle" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }} />
+
+            {/* Apple Maps Top Bar (Fixed) */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 24px", borderBottom: "1px solid var(--border-glass)", flexShrink: 0 }}>
+              {/* Left: Share */}
+              <button
+                onClick={() => handleShare(selectedPlace)}
+                style={{
+                  background: "rgba(255, 255, 255, 0.08)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--text-primary)",
+                  borderRadius: "50%",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: "1.1rem",
+                  transition: "all 0.2s"
+                }}
+                title="مشاركة المكان"
+              >
+                <i className="bx bx-share-alt"></i>
+              </button>
+
+              {/* Center: Centered Place Name */}
+              <div style={{ textAlign: "center", flex: 1, minWidth: 0, padding: "0 10px" }}>
+                <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
+                  {selectedPlace.name}
+                </h3>
+                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                  {selectedPlace.categoryLabel || CATEGORY_LABELS[selectedPlace.category]}
+                </span>
+              </div>
+
+              {/* Right: Close X */}
+              <button
+                onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}
+                style={{
+                  background: "rgba(255, 255, 255, 0.08)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--text-primary)",
+                  borderRadius: "50%",
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontSize: "1.2rem",
+                  transition: "all 0.2s"
+                }}
+                title="إغلاق"
+              >
+                <i className="bx bx-x"></i>
+              </button>
+            </div>
+
             <div className="ios-sheet-content">
               {(() => {
                 const displayBranch = selectedPlace.branches?.find(b => b.id === selectedBranchId)
@@ -712,57 +825,155 @@ function HomeContent() {
                       </div>
                     )}
 
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800" }}>{selectedPlace.name}</h2>
-                        <button
-                          onClick={(e) => toggleFavorite(e, selectedPlace.id.toString())}
-                          style={{
-                            background: "rgba(120, 120, 120, 0.1)", border: "none",
-                            borderRadius: "50%", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "all 0.2s"
-                          }}
-                          title="حفظ إلى المفضلة"
-                        >
-                          {favoriteIds.has(selectedPlace.id.toString()) ? (
-                            <i className="bx bxs-heart" style={{ color: "#ff3b30", fontSize: "1.3rem" }}></i>
-                          ) : (
-                            <i className="bx bx-heart" style={{ color: "var(--text-secondary)", fontSize: "1.3rem" }}></i>
-                          )}
-                        </button>
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                        <span style={{ background: getCategoryColor(selectedPlace.category), color: "#fff", padding: "5px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "5px" }}>
-                          <i className={`bx ${CATEGORY_ICONS[selectedPlace.category] || "bx-category"}`} style={{ fontSize: "1rem" }}></i> {selectedPlace.categoryLabel || CATEGORY_LABELS[selectedPlace.category]}
-                        </span>
-                        {selectedPlace.subCategories && selectedPlace.subCategories.length > 0 && (
-                          selectedPlace.subCategories.map((subCatKey) => (
-                            <span key={subCatKey} style={{ background: "rgba(255,255,255,0.12)", color: "var(--text-primary)", border: "1px solid var(--border-glass)", padding: "4px 12px", borderRadius: "20px", fontSize: "0.8rem", fontWeight: "600", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                              <i className={`bx ${CATEGORY_ICONS[subCatKey] || "bx-tag"}`} style={{ fontSize: "0.9rem" }}></i> {CATEGORY_LABELS[subCatKey] || subCatKey}
-                            </span>
-                          ))
-                        )}
+                    {/* Title Area */}
+                    <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>
+                        {selectedPlace.name}
+                      </h2>
+                      {selectedPlace.shortDescription && (
+                        <p style={{ fontSize: "1.05rem", color: "var(--text-secondary)", fontWeight: "500", margin: "0 0 10px" }}>
+                          {selectedPlace.shortDescription}
+                        </p>
+                      )}
+                      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                        <span>📍 {displayBranch.city} / {displayBranch.governorate}</span>
                       </div>
                     </div>
 
-                    {selectedPlace.rating !== undefined && (
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
-                        <span style={{ color: "#ff9f0a", fontSize: "1.1rem" }}>⭐</span>
-                        <span style={{ fontWeight: "700" }}>{Number(selectedPlace.rating).toFixed(1)}</span>
-                        <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>({selectedPlace.reviewsCount || 0} تقييم)</span>
-                      </div>
-                    )}
+                    {/* Action Row - 3 Buttons (Directions, Call, Favorite) */}
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "20px" }}>
+                      {/* Directions */}
+                      <a
+                        href={displayBranch.googleMapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          background: "#007aff",
+                          color: "#fff",
+                          borderRadius: "14px",
+                          padding: "12px 8px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: "6px",
+                          cursor: "pointer",
+                          textDecoration: "none",
+                          textAlign: "center",
+                          transition: "opacity 0.2s"
+                        }}
+                      >
+                        <i className="bx bxs-navigation" style={{ fontSize: "1.4rem" }}></i>
+                        <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>الاتجاهات</span>
+                      </a>
 
-                    {selectedPlace.shortDescription && (
-                      <p style={{ color: "var(--text-primary)", fontSize: "1.05rem", fontWeight: "500", marginBottom: "12px" }}>
-                        {selectedPlace.shortDescription}
-                      </p>
-                    )}
+                      {/* Call */}
+                      {displayBranch.phones && displayBranch.phones.length > 0 ? (
+                        <a
+                          href={`tel:${displayBranch.phones[0]}`}
+                          style={{
+                            background: "rgba(0, 45, 248, 0.05)",
+                            border: "1px solid var(--border-glass)",
+                            color: "#007aff",
+                            borderRadius: "14px",
+                            padding: "12px 8px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "6px",
+                            cursor: "pointer",
+                            textDecoration: "none",
+                            textAlign: "center",
+                            transition: "opacity 0.2s"
+                          }}
+                        >
+                          <i className="bx bxs-phone" style={{ fontSize: "1.4rem" }}></i>
+                          <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>الهاتف</span>
+                        </a>
+                      ) : (
+                        <div
+                          style={{
+                            background: "rgba(255, 255, 255, 0.04)",
+                            border: "1px solid var(--border-glass)",
+                            color: "var(--text-muted)",
+                            borderRadius: "14px",
+                            padding: "12px 8px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "6px",
+                            opacity: 0.5,
+                            textAlign: "center"
+                          }}
+                        >
+                          <i className="bx bx-phone-off" style={{ fontSize: "1.4rem" }}></i>
+                          <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>لا يتوفر</span>
+                        </div>
+                      )}
+
+                      {/* Favorite */}
+                      <button
+                        onClick={(e) => toggleFavorite(e, selectedPlace.id.toString())}
+                        style={{
+                          background: "rgba(0, 45, 248, 0.05)",
+                          border: "1px solid var(--border-glass)",
+                          color: favoriteIds.has(selectedPlace.id.toString()) ? "#ff3b30" : "#007aff",
+                          borderRadius: "14px",
+                          padding: "12px 8px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: "6px",
+                          cursor: "pointer",
+                          transition: "opacity 0.2s"
+                        }}
+                      >
+                        <i className={favoriteIds.has(selectedPlace.id.toString()) ? "bx bxs-heart" : "bx bx-heart"} style={{ fontSize: "1.4rem" }}></i>
+                        <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.8rem", fontWeight: "bold" }}>المفضلة</span>
+                      </button>
+                    </div>
+
+                    {/* Quick Info Box */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "12px 16px", marginBottom: "24px" }}>
+                      {/* Hours */}
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>حالة المكان</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          {displayBranch.workingHours ? (
+                            isCurrentlyOpen(displayBranch.workingHours) ? (
+                              <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#34c759" }}>مفتوح</span>
+                            ) : (
+                              <span style={{ fontSize: "0.9rem", fontWeight: "bold", color: "#ff3b30" }}>مغلق</span>
+                            )
+                          ) : (
+                            <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>غير محدد</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Ratings */}
+                      {selectedPlace.rating !== undefined && (
+                        <div
+                          onClick={() => {
+                            const el = document.getElementById("reviews-section");
+                            if (el) el.scrollIntoView({ behavior: "smooth" });
+                          }}
+                          style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "2px", cursor: "pointer" }}
+                        >
+                          <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}> التقييمات والآراء
+                            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}> ({selectedPlace.reviewsCount || 0}) </span>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                            <span style={{ fontSize: "0.95rem", fontWeight: "bold", color: "#ff9f0a" }}>{Number(selectedPlace.rating).toFixed(1)} ★</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Branch Selector Chips */}
                     {selectedPlace.branches && selectedPlace.branches.length > 1 && (
-                      <div style={{ marginTop: "16px", marginBottom: "16px", paddingTop: "12px", borderTop: "1px solid var(--border-glass)" }}>
-                        <h4 style={{ fontSize: "0.95rem", marginBottom: "10px", color: "var(--text-secondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
-                        <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
+                      <div style={{ marginBottom: "24px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
+                        <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--text-secondary)", fontWeight: "bold" }}>الفروع</h4>
+                        <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
                           {selectedPlace.branches.map(b => {
                             const isSelected = b.id === displayBranch.id;
                             return (
@@ -773,16 +984,21 @@ function HomeContent() {
                                   background: isSelected ? "var(--accent-ios)" : "rgba(120,120,120,0.1)",
                                   color: isSelected ? "#fff" : "var(--text-primary)",
                                   border: isSelected ? "none" : "1px solid var(--border-glass)",
-                                  borderRadius: "16px",
-                                  padding: "6px 12px",
-                                  fontSize: "0.9rem",
+                                  borderRadius: "20px",
+                                  padding: "8px 16px",
+                                  fontSize: "0.8rem",
                                   fontWeight: isSelected ? "bold" : "normal",
                                   cursor: "pointer",
                                   whiteSpace: "nowrap",
-                                  transition: "all 0.2s ease"
+                                  transition: "all 0.2s ease",
+                                  boxShadow: isSelected ? "0 4px 12px rgba(0, 122, 255, 0.3)" : "none",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "end",
+                                  gap: "6px",
+                                  fontFamily: "var(--font-cairo)"
                                 }}
                               >
-                                {b.isMain && <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>⭐</span>}
                                 {b.name} {b.city ? `- ${b.city}` : ""}
                               </button>
                             );
@@ -791,96 +1007,9 @@ function HomeContent() {
                       </div>
                     )}
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.92rem", marginBottom: "6px" }}>
-                      <span>📍</span> {displayBranch.city} / {displayBranch.governorate}
-                    </div>
-                    <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: displayBranch.workingHours ? "6px" : "20px" }}>
-                      {displayBranch.fullAddress}
-                    </div>
-                    {displayBranch.workingHours && (
-                      <div style={{ borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "14px", marginTop: "14px", marginBottom: "20px" }}>
-                        <h4 style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-                          <span>🕐</span> مواعيد العمل
-                        </h4>
-                        {(() => {
-                          const parsed = parseWorkingHours(displayBranch.workingHours);
-                          if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
-
-                          if (parsed.type === "24/7") {
-                            return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
-                          }
-
-                          if (parsed.type === "custom" && parsed.schedule) {
-                            const todayName = DAYS_OF_WEEK[new Date().getDay()];
-                            return (
-                              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                {parsed.schedule.map((day) => {
-                                  const isToday = day.day === todayName;
-                                  return (
-                                    <div
-                                      key={day.day}
-                                      style={{
-                                        display: "flex", justifyContent: "space-between", alignItems: "center",
-                                        padding: "6px 10px", borderRadius: "8px",
-                                        background: isToday ? "rgba(47, 128, 237, 0.1)" : "rgba(120, 120, 120, 0.04)",
-                                        border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
-                                      }}
-                                    >
-                                      <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--text-secondary)", fontSize: "0.9rem" }}>
-                                        {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--accent-ios)", marginRight: "6px" }}>(اليوم)</span>}
-                                      </div>
-                                      <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.9rem" }}>
-                                        {day.isWorking ? `من ${day.openTime} ${day.openPeriod} حتي ${day.closeTime} ${day.closePeriod}` : "إجازة"}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
-                          }
-                          return null;
-                        })()}
-                      </div>
-                    )}
-
-                    {selectedPlace.description && (
-                      <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", marginBottom: "20px", padding: "14px", background: "rgba(120,120,120,0.05)", borderRadius: "var(--radius-sm)", borderRight: "3px solid var(--accent-ios)" }}>
-                        {selectedPlace.description}
-                      </p>
-                    )}
-
-                    {/* Phones */}
-                    {displayBranch.phones && displayBranch.phones.length > 0 && (
-                      <div style={{ marginBottom: "20px" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📞 أرقام التليفون</h3>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                          {displayBranch.phones.map((phone: string, i: number) => (
-                            <a key={i} href={`tel:${phone}`} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "12px 16px", background: "rgba(52,199,89,0.08)", border: "1px solid rgba(52,199,89,0.2)", borderRadius: "var(--radius-sm)", color: "var(--accent-success)", fontWeight: "600", fontSize: "1.1rem", direction: "ltr", textDecoration: "none" }}>
-                              📞 {phone}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
-                      <a href={displayBranch.googleMapsUrl || "#"} target="_blank" rel="noopener noreferrer"
-                        className="ios-btn ios-btn-primary" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
-                        🗺️ فتح الخريطة
-                      </a>
-                      {displayBranch.latitude && displayBranch.longitude && (
-                        <a href={`https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`}
-                          target="_blank" rel="noopener noreferrer" className="ios-btn" style={{ flex: 1, textDecoration: "none", minWidth: "140px" }}>
-                          🧭 الاتجاهات
-                        </a>
-                      )}
-                    </div>
-
                     {/* Media Images */}
                     {((displayBranch?.media && displayBranch.media.length > 0) || (selectedPlace.menuImages && selectedPlace.menuImages.length > 0)) && (
-                      <div style={{ marginBottom: "20px" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "10px" }}>📋 الميديا (صور، قائمة طعام)</h3>
+                      <div style={{ margin: "20px 0" }}>
                         <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
                           {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace.menuImages!).map((img, i) => (
                             <ImageWithSkeleton key={i} src={img} alt="ميديا" onClick={() => setActiveMenuIndex(i)}
@@ -889,6 +1018,264 @@ function HomeContent() {
                         </div>
                       </div>
                     )}
+                    {/* Description Section */}
+                    {selectedPlace.description && (
+                      <div style={{ background: "rgba(120, 120, 120, 0.03)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", marginBottom: "24px" }}>
+                        <h4 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>نبذة عن المكان</h4>
+                        <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.8", margin: 0 }}>
+                          {selectedPlace.description}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Good to Know Card */}
+                    <div style={{ marginBottom: "24px" }}>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>معلومات مفيدة</h3>
+                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                        {(() => {
+                          const activeFeatures = (displayBranch as any).features || (selectedPlace as any).features;
+                          if (activeFeatures && activeFeatures.length > 0) {
+                            return activeFeatures.map((fKey: string) => {
+                              const feat = FEATURES_LIST.find(f => f.key === fKey);
+                              if (!feat) return null;
+                              return (
+                                <div key={fKey} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                  <span style={{ fontSize: "1.1rem" }}>{feat.icon}</span>
+                                  <span>{feat.label}</span>
+                                </div>
+                              );
+                            });
+                          }
+                          return selectedPlace.category === "restaurant" || selectedPlace.category === "cafe" ? (
+                            <>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                <span style={{ fontSize: "1.1rem" }}>🥗</span>
+                                <span>خيارات نباتية متوفرة</span>
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                <span style={{ fontSize: "1.1rem" }}>👥</span>
+                                <span>مناسب للمجموعات والعائلات</span>
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                <span style={{ fontSize: "1.1rem" }}>💳</span>
+                                <span>يقبل الدفع بالبطاقات الائتمانية</span>
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                <span style={{ fontSize: "1.1rem" }}>📶</span>
+                                <span>شبكة واي فاي مجانية</span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                <span style={{ fontSize: "1.1rem" }}>✔️</span>
+                                <span>مرافق مريحة للزوار</span>
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                <span style={{ fontSize: "1.1rem" }}>♿</span>
+                                <span>مداخل سهلة للكراسي المتحركة</span>
+                              </div>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                                <span style={{ fontSize: "1.1rem" }}>👨‍👩‍👧‍👦</span>
+                                <span>مناسب لجميع الأعمار</span>
+                              </div>
+                            </>
+                          );
+                        })()}
+
+                        {/* Sub-categories Badges inside Good to Know */}
+                        {selectedPlace.subCategories && selectedPlace.subCategories.length > 0 && (
+                          <div style={{ borderTop: "1px solid rgba(120, 120, 120, 0.1)", paddingTop: "12px", marginTop: "4px" }}>
+                            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>التصنيفات الفرعية:</span>
+                            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                              {selectedPlace.subCategories.map((subCatKey) => (
+                                <span
+                                  key={subCatKey}
+                                  style={{
+                                    background: "rgba(255,255,255,0.06)",
+                                    color: "var(--text-primary)",
+                                    border: "1px solid var(--border-glass)",
+                                    padding: "4px 12px",
+                                    borderRadius: "16px",
+                                    fontSize: "0.82rem",
+                                    fontWeight: "600",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "6px"
+                                  }}
+                                >
+                                  <i className={`bx ${CATEGORY_ICONS[subCatKey] || "bx-tag"}`} style={{ fontSize: "0.95rem" }}></i>
+                                  {CATEGORY_LABELS[subCatKey] || subCatKey}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Details Card (Phone, Website, Address) */}
+                    <div style={{ marginBottom: "24px" }}>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>التفاصيل</h3>
+                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                        {/* Phone Row */}
+                        {displayBranch.phones && displayBranch.phones.length > 0 && (
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
+                            <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>الهاتف</span>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
+                              {displayBranch.phones.map((p: string, i: number) => (
+                                <a key={i} href={`tel:${p}`} style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold" }}>{p}</a>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Website Row */}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
+                          <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>الموقع الإلكتروني</span>
+                          {(displayBranch as any).website_url || (selectedPlace as any).website_url ? (
+                            <a href={(displayBranch as any).website_url || (selectedPlace as any).website_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold", maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {(displayBranch as any).website_url || (selectedPlace as any).website_url}
+                            </a>
+                          ) : (
+                            <span style={{ fontSize: "0.92rem", color: "var(--text-muted)", fontWeight: "bold" }}>لا يوجد موقع</span>
+                          )}
+                        </div>
+
+                        {/* Address Row */}
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "14px 16px" }}>
+                          <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>العنوان</span>
+                          <div style={{ textAlign: "left", fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: "600", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
+                            <span>{displayBranch.fullAddress}</span>
+                            <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{displayBranch.city}، {displayBranch.governorate}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Hours Card */}
+                    {displayBranch.workingHours && (
+                      <div style={{ marginBottom: "24px" }}>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>مواعيد العمل</h3>
+                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px" }}>
+                          {(() => {
+                            const parsed = parseWorkingHours(displayBranch.workingHours);
+                            if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
+
+                            if (parsed.type === "24/7") {
+                              return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
+                            }
+
+                            if (parsed.type === "custom" && parsed.schedule) {
+                              const todayName = DAYS_OF_WEEK[new Date().getDay()];
+                              return (
+                                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                  {parsed.schedule.map((day) => {
+                                    const isToday = day.day === todayName;
+                                    return (
+                                      <div
+                                        key={day.day}
+                                        style={{
+                                          display: "flex", justifyContent: "space-between", alignItems: "center",
+                                          padding: "8px 12px", borderRadius: "8px",
+                                          background: isToday ? "rgba(47, 128, 237, 0.1)" : "rgba(120, 120, 120, 0.04)",
+                                          border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
+                                        }}
+                                      >
+                                        <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--text-secondary)" }}>
+                                          {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--accent-ios)", marginRight: "6px" }}>(اليوم)</span>}
+                                        </div>
+                                        <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.95rem" }}>
+                                          {day.isWorking ? `من ${day.openTime} ${day.openPeriod} حتي ${day.closeTime} ${day.closePeriod}` : "إجازة"}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Bottom Dock / Report & Claim Actions */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "24px", marginBottom: "20px" }}>
+                      <button
+                        onClick={() => alert(`تم إرسال بلاغ عن مشكلة للمكان ذو الكود #${selectedPlace.id}`)}
+                        style={{
+                          width: "100%",
+                          background: "rgba(255, 59, 48, 0.1)",
+                          border: "1px solid rgba(255, 59, 48, 0.2)",
+                          borderRadius: "12px",
+                          padding: "14px",
+                          color: "#ff3b30",
+                          fontWeight: "bold",
+                          fontSize: "0.95rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                          cursor: "pointer",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        <i className="bx bx-error-circle" style={{ fontSize: "1.2rem" }}></i>
+                        <span>الإبلاغ عن مشكلة في البيانات</span>
+                      </button>
+
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          onClick={() => alert("سيتم إضافة هذا المكان كـ Pin في خريطتك")}
+                          style={{
+                            flex: 1,
+                            background: "rgba(255, 255, 255, 0.05)",
+                            border: "1px solid var(--border-glass)",
+                            borderRadius: "12px",
+                            padding: "12px",
+                            color: "var(--text-primary)",
+                            fontWeight: "600",
+                            fontSize: "0.9rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px",
+                            cursor: "pointer"
+                          }}
+                        >
+                          <i className="bx bx-pin" style={{ fontSize: "1.1rem" }}></i>
+                          <span>تثبيت الدبوس</span>
+                        </button>
+
+                        <button
+                          onClick={() => alert("طلب ملكية هذا المكان تحت المراجعة")}
+                          style={{
+                            flex: 1,
+                            background: "rgba(255, 255, 255, 0.05)",
+                            border: "1px solid var(--border-glass)",
+                            borderRadius: "12px",
+                            padding: "12px",
+                            color: "var(--text-primary)",
+                            fontWeight: "600",
+                            fontSize: "0.9rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px",
+                            cursor: "pointer"
+                          }}
+                        >
+                          <i className="bx bx-badge-check" style={{ fontSize: "1.1rem" }}></i>
+                          <span>امتلاك هذا المكان</span>
+                        </button>
+                      </div>
+
+                      {/* Unique ID */}
+                      <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", fontSize: "0.78rem", color: "var(--text-muted)", opacity: 0.7, marginTop: "12px" }}>
+                        <span>كود المكان: #{selectedBranchId || selectedPlace.id}</span>
+                      </div>
+                    </div>
 
                     {/* Reviews Section inside modal */}
                     <ReviewSection
@@ -1157,8 +1544,11 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
             {place.shortDescription}
           </p>
         )}
-        <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px" }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginBottom: "2px" }}>
           <span>📍</span> {place.city} / {place.governorate}
+        </p>
+        <p style={{ color: "var(--text-muted)", fontSize: "0.76rem", opacity: 0.7, margin: "0 0 4px", display: "flex", alignItems: "center", gap: "5px" }}>
+          <span>🔑</span> كود المكان: #{place.id}
         </p>
         {place.workingHours && (
           <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px" }}>

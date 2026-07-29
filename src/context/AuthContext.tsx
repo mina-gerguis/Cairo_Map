@@ -9,6 +9,8 @@ interface AuthContextProps {
   loading: boolean;
   mfaPending: boolean;
   logout: () => Promise<void>;
+  profile: any | null;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -17,6 +19,8 @@ const AuthContext = createContext<AuthContextProps>({
   loading: true,
   mfaPending: false,
   logout: async () => {},
+  profile: null,
+  refreshProfile: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -24,11 +28,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [mfaPending, setMfaPending] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any | null>(null);
+
+  const fetchProfile = async (userId: string) => {
+    if (!supabase) return;
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+      if (data) {
+        setProfile(data);
+      }
+    } catch (e) {
+      console.error("Error fetching profile:", e);
+    }
+  };
+
+  const refreshProfile = async () => {
+    if (user) {
+      await fetchProfile(user.id);
+    }
+  };
 
   const checkAuthAndMfa = async (currentSession: Session | null) => {
     if (!currentSession || !supabase) {
       setSession(null);
       setUser(null);
+      setProfile(null);
       setMfaPending(false);
       setLoading(false);
       return;
@@ -41,17 +69,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // DO NOT set user as authenticated until 2FA code is verified!
         setSession(currentSession);
         setUser(null);
+        setProfile(null);
         setMfaPending(true);
       } else {
         // MFA not required OR MFA already verified (aal2)
         setSession(currentSession);
         setUser(currentSession.user);
         setMfaPending(false);
+        await fetchProfile(currentSession.user.id);
       }
     } catch (e) {
       setSession(currentSession);
       setUser(currentSession.user);
       setMfaPending(false);
+      await fetchProfile(currentSession.user.id);
     } finally {
       setLoading(false);
     }
@@ -83,12 +114,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
+      setProfile(null);
       setMfaPending(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, mfaPending, logout }}>
+    <AuthContext.Provider value={{ user, session, loading, mfaPending, logout, profile, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

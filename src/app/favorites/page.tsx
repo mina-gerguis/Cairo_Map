@@ -218,8 +218,11 @@ export default function FavoritesPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <h4 style={{ fontSize: "1.05rem", margin: "0 0 4px", color: "var(--text-primary)", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{place.name}</h4>
-                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {place.briefLocation}
+                      </p>
+                      <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", opacity: 0.7, margin: 0 }}>
+                        كود المكان: #{place.id}
                       </p>
                       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "8px" }}>
                         <span className="category-pill" style={{ fontSize: "0.75rem", padding: "4px 8px" }}>{place.categoryLabel || place.category}</span>

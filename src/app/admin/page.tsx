@@ -33,7 +33,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import styles from "./admin.module.css";
 import { useAuth } from "@/context/AuthContext";
-import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES } from "@/data/places";
+import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES, FEATURES_LIST } from "@/data/places";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { ScheduleDay, WorkingHoursData, DAYS_OF_WEEK, generateTimeOptions } from "@/lib/workingHours";
 
@@ -63,6 +63,7 @@ interface DBPlace {
   longitude: number;
   created_at?: string;
   branches?: any[];
+  features?: string[];
 }
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -100,7 +101,9 @@ export default function AdminDashboard() {
     governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
     full_address: "", phones: "", google_maps_url: "", image_url: "",
     menu_images: "", description: "",
-    latitude: "", longitude: ""
+    latitude: "", longitude: "",
+    website_url: "",
+    features: [] as string[]
   });
 
   const [scheduleType, setScheduleType] = useState<"24/7" | "custom">("24/7");
@@ -206,6 +209,8 @@ export default function AdminDashboard() {
     description: "",
     latitude: "",
     longitude: "",
+    website_url: "",
+    features: [] as string[]
   });
 
   const handleStartEditPlace = (place: DBPlace) => {
@@ -249,6 +254,8 @@ export default function AdminDashboard() {
       description: place.description || "",
       latitude: place.latitude ? place.latitude.toString() : "",
       longitude: place.longitude ? place.longitude.toString() : "",
+      website_url: (place as any).website_url || "",
+      features: Array.isArray(place.features) ? place.features : [],
     });
   };
 
@@ -448,6 +455,8 @@ export default function AdminDashboard() {
         description: formData.description,
         latitude: parseFloat(formData.latitude) || null,
         longitude: parseFloat(formData.longitude) || null,
+        website_url: formData.website_url.trim() || null,
+        features: formData.features || []
       };
 
       let { data, error: insertError } = await supabase
@@ -456,14 +465,36 @@ export default function AdminDashboard() {
         .select()
         .single();
 
-      if (insertError && (insertError.message?.includes("sub_categories") || insertError.message?.includes("schema cache") || (insertError as any).code === "PGRST204")) {
-        console.warn("sub_categories column missing on Supabase places table, retrying without sub_categories...");
-        const { sub_categories, ...placeWithoutSubCats } = newPlace;
-        const retryResult = await supabase
+      if (insertError) {
+        console.warn("Place insert failed, trying fallbacks...");
+        const fallbackPlace = { ...newPlace };
+        // @ts-ignore
+        delete fallbackPlace.features;
+        let retryResult = await supabase
           .from("places")
-          .insert([placeWithoutSubCats])
+          .insert([fallbackPlace])
           .select()
           .single();
+          
+        if (retryResult.error) {
+          // @ts-ignore
+          delete fallbackPlace.website_url;
+          retryResult = await supabase
+            .from("places")
+            .insert([fallbackPlace])
+            .select()
+            .single();
+            
+          if (retryResult.error) {
+            // @ts-ignore
+            delete fallbackPlace.sub_categories;
+            retryResult = await supabase
+              .from("places")
+              .insert([fallbackPlace])
+              .select()
+              .single();
+          }
+        }
         data = retryResult.data;
         insertError = retryResult.error;
       }
@@ -472,21 +503,44 @@ export default function AdminDashboard() {
 
       if (data) {
         // Create initial main branch
-        const { error: branchError } = await supabase
+        const branchPayload = {
+          place_id: data.id,
+          name: "الفرع الرئيسي",
+          governorate: data.governorate,
+          city: data.city,
+          full_address: data.full_address,
+          phones: data.phones,
+          google_maps_url: data.google_maps_url,
+          working_hours: data.working_hours,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          is_main: true,
+          website_url: data.website_url || null,
+          features: data.features || []
+        };
+
+        let { error: branchError } = await supabase
           .from("branches")
-          .insert([{
-            place_id: data.id,
-            name: "الفرع الرئيسي",
-            governorate: data.governorate,
-            city: data.city,
-            full_address: data.full_address,
-            phones: data.phones,
-            google_maps_url: data.google_maps_url,
-            working_hours: data.working_hours,
-            latitude: data.latitude,
-            longitude: data.longitude,
-            is_main: true
-          }]);
+          .insert([branchPayload]);
+
+        if (branchError) {
+          console.warn("Branch insert failed with features/website_url, trying fallback...");
+          const fallbackBranch = { ...branchPayload };
+          // @ts-ignore
+          delete fallbackBranch.features;
+          let retryBranch = await supabase
+            .from("branches")
+            .insert([fallbackBranch]);
+            
+          if (retryBranch.error) {
+            // @ts-ignore
+            delete fallbackBranch.website_url;
+            retryBranch = await supabase
+              .from("branches")
+              .insert([fallbackBranch]);
+          }
+          branchError = retryBranch.error;
+        }
 
         if (branchError) {
           console.error("Failed to create main branch:", branchError);
@@ -504,7 +558,9 @@ export default function AdminDashboard() {
           working_hours: data.working_hours,
           latitude: data.latitude,
           longitude: data.longitude,
-          is_main: true
+          is_main: true,
+          website_url: data.website_url || null,
+          features: data.features || []
         };
 
         const placeWithBranch = { ...data, branches: [newBranch] };
@@ -517,7 +573,9 @@ export default function AdminDashboard() {
           governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
           full_address: "", phones: "", google_maps_url: "", image_url: "",
           menu_images: "", description: "",
-          latitude: "", longitude: ""
+          latitude: "", longitude: "",
+          website_url: "",
+          features: []
         });
       }
     } catch (err: any) {
@@ -889,6 +947,8 @@ export default function AdminDashboard() {
         description: editPlaceFormData.description,
         latitude: parseFloat(editPlaceFormData.latitude) || null,
         longitude: parseFloat(editPlaceFormData.longitude) || null,
+        website_url: editPlaceFormData.website_url.trim() || null,
+        features: editPlaceFormData.features || []
       };
 
       let { data, error } = await supabase
@@ -898,35 +958,85 @@ export default function AdminDashboard() {
         .select()
         .single();
 
-      if (error && (error.message?.includes("sub_categories") || error.message?.includes("schema cache") || (error as any).code === "PGRST204")) {
-        console.warn("sub_categories column missing on Supabase places table, retrying without sub_categories...");
-        const { sub_categories, ...fieldsWithoutSubCats } = updatedFields;
-        const retryResult = await supabase
+      if (error) {
+        console.warn("Place update failed, trying fallbacks...");
+        const fallbackFields = { ...updatedFields };
+        // @ts-ignore
+        delete fallbackFields.features;
+        let retryResult = await supabase
           .from("places")
-          .update(fieldsWithoutSubCats)
+          .update(fallbackFields)
           .eq("id", editingPlace.id)
           .select()
           .single();
+          
+        if (retryResult.error) {
+          // @ts-ignore
+          delete fallbackFields.website_url;
+          retryResult = await supabase
+            .from("places")
+            .update(fallbackFields)
+            .eq("id", editingPlace.id)
+            .select()
+            .single();
+            
+          if (retryResult.error) {
+            // @ts-ignore
+            delete fallbackFields.sub_categories;
+            retryResult = await supabase
+              .from("places")
+              .update(fallbackFields)
+              .eq("id", editingPlace.id)
+              .select()
+              .single();
+          }
+        }
         data = retryResult.data;
         error = retryResult.error;
       }
 
       if (error) throw error;
 
-      // Synchronize updated phones, address & working hours with the main branch in branches table
-      await supabase
+      // Synchronize updated phones, address, working hours, website_url & features with the main branch in branches table
+      const branchUpdatePayload = {
+        name: editPlaceFormData.name.trim(),
+        governorate: editPlaceFormData.governorate,
+        city: editPlaceFormData.city,
+        full_address: editPlaceFormData.full_address,
+        phones: phonesArray,
+        google_maps_url: editPlaceFormData.google_maps_url,
+        working_hours: finalWorkingHours,
+        website_url: editPlaceFormData.website_url.trim() || null,
+        features: editPlaceFormData.features || []
+      };
+
+      let { error: branchUpdateError } = await supabase
         .from("branches")
-        .update({
-          name: editPlaceFormData.name.trim(),
-          governorate: editPlaceFormData.governorate,
-          city: editPlaceFormData.city,
-          full_address: editPlaceFormData.full_address,
-          phones: phonesArray,
-          google_maps_url: editPlaceFormData.google_maps_url,
-          working_hours: finalWorkingHours,
-        })
+        .update(branchUpdatePayload)
         .eq("place_id", editingPlace.id)
         .eq("is_main", true);
+
+      if (branchUpdateError) {
+        console.warn("Branch update failed with website_url/features, trying fallback...");
+        const fallbackBranchUpdate = { ...branchUpdatePayload };
+        // @ts-ignore
+        delete fallbackBranchUpdate.features;
+        let retryBranch = await supabase
+          .from("branches")
+          .update(fallbackBranchUpdate)
+          .eq("place_id", editingPlace.id)
+          .eq("is_main", true);
+          
+        if (retryBranch.error) {
+          // @ts-ignore
+          delete fallbackBranchUpdate.website_url;
+          await supabase
+            .from("branches")
+            .update(fallbackBranchUpdate)
+            .eq("place_id", editingPlace.id)
+            .eq("is_main", true);
+        }
+      }
 
       setPlaces(prev => prev.map(p => p.id === editingPlace.id ? { ...p, ...(data || updatedFields) } : p));
       alert(`تم تحديث كافة بيانات المكان "${editPlaceFormData.name}" بنجاح!`);
@@ -1445,7 +1555,7 @@ export default function AdminDashboard() {
 
       {/* Add Place Form */}
       {showAddForm && (
-        <div className="ios-sheet" style={{ position: "static", height: "auto", marginBottom: "40px", animation: "slide-in-section 0.4s ease" }}>
+        <div className="ios-sheet" style={{ position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease" }}>
           <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>إضافة مكان جديد</h2>
           <form onSubmit={handleAddPlace} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
             <div><label className="help-label">اسم المكان</label><input required className="ios-input" value={formData.name} onChange={e => updateForm("name", e.target.value)} /></div>
@@ -1499,6 +1609,44 @@ export default function AdminDashboard() {
                 })}
               </div>
             </div>
+
+            <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+              <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-primary)", display: "block" }}>
+                معلومات مفيدة (المميزات والخدمات المتاحة بالمكان)
+              </label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {FEATURES_LIST.map(feat => {
+                  const isSelected = formData.features?.includes(feat.key);
+                  return (
+                    <button
+                      key={feat.key}
+                      type="button"
+                      onClick={() => {
+                        const current = formData.features || [];
+                        const next = isSelected ? current.filter(f => f !== feat.key) : [...current, feat.key];
+                        updateForm("features", next);
+                      }}
+                      style={{
+                        background: isSelected ? "#2ecc71" : "rgba(255, 255, 255, 0.06)",
+                        color: isSelected ? "#fff" : "var(--text-primary)",
+                        border: isSelected ? "none" : "1px solid var(--border-glass)",
+                        padding: "6px 14px",
+                        borderRadius: "20px",
+                        fontSize: "0.85rem",
+                        fontWeight: isSelected ? "700" : "500",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      <span style={{ fontSize: "1rem" }}>{feat.icon}</span> {feat.label} {isSelected && "✓"}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <div>
               <label className="help-label">المحافظة</label>
               <select className="ios-input help-select" value={formData.governorate} onChange={e => {
@@ -1530,6 +1678,18 @@ export default function AdminDashboard() {
                 onChange={e => updateForm("google_maps_url", e.target.value)}
                 onBlur={e => extractCoordinates(e.target.value)}
                 style={{ direction: "ltr", textAlign: "right" }}
+              />
+            </div>
+
+            <div>
+              <label className="help-label">رابط موقع المكان الإلكتروني (إن وجد)</label>
+              <input
+                className="ios-input"
+                type="url"
+                value={formData.website_url || ""}
+                onChange={e => updateForm("website_url", e.target.value)}
+                placeholder="https://example.com"
+                style={{ direction: "ltr", textAlign: "left" }}
               />
             </div>
 
@@ -1604,7 +1764,7 @@ export default function AdminDashboard() {
             </div>
 
             <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-              <button type="button" className="ios-btn" onClick={() => setShowAddForm(false)}><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء</button>
+              <button style={{background:"#3e3f3f8c"}} type="button" className="ios-btn" onClick={() => setShowAddForm(false)}> إلغاء</button>
               <button type="submit" className="ios-btn ios-btn-primary" disabled={isSubmitting}>
                 {isSubmitting ? "جاري الإضافة..." : "حفظ المكان"}
               </button>
@@ -1820,6 +1980,45 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-secondary)", display: "block" }}>
+                  معلومات مفيدة (المميزات والخدمات المتاحة بالمكان)
+                </label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                  {FEATURES_LIST.map(feat => {
+                    const isSelected = editPlaceFormData.features?.includes(feat.key);
+                    return (
+                      <button
+                        key={feat.key}
+                        type="button"
+                        onClick={() => {
+                          const current = editPlaceFormData.features || [];
+                          const next = isSelected ? current.filter(f => f !== feat.key) : [...current, feat.key];
+                          setEditPlaceFormData({ ...editPlaceFormData, features: next });
+                        }}
+                        style={{
+                          background: isSelected ? "#2ecc71" : "rgba(255, 255, 255, 0.06)",
+                          color: isSelected ? "#fff" : "var(--text-primary)",
+                          border: isSelected ? "none" : "1px solid var(--border-glass)",
+                          padding: "6px 14px",
+                          borderRadius: "10px",
+                          fontFamily: "var(--font-cairo)",
+                          fontSize: "0.85rem",
+                          fontWeight: isSelected ? "700" : "500",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        <span style={{ fontSize: "1rem" }}>{feat.icon}</span> {feat.label} {isSelected && "✓"}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div>
                 <label className="help-label" style={{ fontWeight: "700" }}>المحافظة</label>
                 <select className="ios-input help-select" value={editPlaceFormData.governorate} onChange={e => {
@@ -1855,6 +2054,11 @@ export default function AdminDashboard() {
               <div>
                 <label className="help-label">رابط خريطة جوجل</label>
                 <input className="ios-input" type="url" value={editPlaceFormData.google_maps_url} onChange={e => setEditPlaceFormData({ ...editPlaceFormData, google_maps_url: e.target.value })} placeholder="https://maps.app.goo.gl/..." style={{ direction: "ltr", textAlign: "right" }} />
+              </div>
+
+              <div>
+                <label className="help-label">رابط موقع المكان الإلكتروني (إن وجد)</label>
+                <input className="ios-input" type="url" value={editPlaceFormData.website_url || ""} onChange={e => setEditPlaceFormData({ ...editPlaceFormData, website_url: e.target.value })} placeholder="https://example.com" style={{ direction: "ltr", textAlign: "left" }} />
               </div>
 
               <div>

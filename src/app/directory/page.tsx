@@ -385,7 +385,7 @@ export default function PhoneDirectoryPage() {
                       gap: "8px",
                       background: activeCompany === key ? "" : "var(--bg-secondary)",
                       border: activeCompany === key ? `1px solid ${meta.border}` : "1px solid var(--border-glass)",
-                      padding: "10px 20px",
+                      padding: "8px 20px",
                       fontFamily: "Cairo",
                       fontSize: "14px",
                       fontWeight: "bold"
@@ -393,7 +393,7 @@ export default function PhoneDirectoryPage() {
                   >
                    
 
-                    <Image src={meta.logo} alt={meta.label} width={50} height={50} style={{ borderRadius: "50%"}} />
+                    <Image src={meta.logo} alt={meta.label} width={20} height={20} style={{ borderRadius: "50%"}} />
                     {meta.label}
                   </button>
                 ))}

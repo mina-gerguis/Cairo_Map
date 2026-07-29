@@ -104,7 +104,7 @@ html.light .profile-page-wrapper {
 }
 
 html, body {
-  font-family: var(--font-body);
+  font-family: var(--font-cairo);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;

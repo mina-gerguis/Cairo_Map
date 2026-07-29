@@ -43,7 +43,7 @@ const AVAILABLE_INTERESTS = [
 /* ─── صفحة الملف الشخصي والإعدادات (Profile Page Component) ─── */
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, session, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading, refreshProfile } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteAll } = useNotifications();
 
   const [profile, setProfile] = useState<any>(null);
@@ -467,6 +467,9 @@ export default function ProfilePage() {
     if (error) {
       setMessage({ type: 'error', text: "حدث خطأ أثناء حفظ البيانات." });
     } else {
+      if (refreshProfile) {
+        await refreshProfile();
+      }
       setMessage({
         type: 'success',
         text: emailChanged

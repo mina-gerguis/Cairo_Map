@@ -40,6 +40,7 @@ function ProposePlaceContent() {
     location_url: "",
     facebook: "",
     instagram: "",
+    website_url: "",
   });
 
   const [newImgInput, setNewImgInput] = useState("");
@@ -97,6 +98,7 @@ function ProposePlaceContent() {
             location_url: data.location_url || "",
             facebook: links.facebook || "",
             instagram: links.instagram || "",
+            website_url: data.website_url || "",
           });
         }
       } catch (err: any) {
@@ -231,6 +233,7 @@ function ProposePlaceContent() {
         facebook: formData.facebook.trim(),
         instagram: formData.instagram.trim(),
       },
+      website_url: formData.website_url.trim(),
       status: "pending",
       rejection_reason: null,
       updated_at: new Date().toISOString(),
@@ -244,21 +247,42 @@ function ProposePlaceContent() {
           .eq("id", editId)
           .eq("user_id", user.id);
         
-        if (error && (error.message?.includes("sub_categories") || error.message?.includes("schema cache") || (error as any).code === "PGRST204")) {
-          const { sub_categories, ...payloadWithoutSub } = payload;
-          const retry = await supabase
+        if (error) {
+          console.warn("Update failed with website_url, trying fallback...");
+          const fallbackPayload = { ...payload };
+          // @ts-ignore
+          delete fallbackPayload.website_url;
+          let retry = await supabase
             .from("place_proposals")
-            .update(payloadWithoutSub)
+            .update(fallbackPayload)
             .eq("id", editId)
             .eq("user_id", user.id);
+            
+          if (retry.error) {
+            // @ts-ignore
+            delete fallbackPayload.sub_categories;
+            retry = await supabase
+              .from("place_proposals")
+              .update(fallbackPayload)
+              .eq("id", editId)
+              .eq("user_id", user.id);
+          }
           error = retry.error;
         }
         if (error) throw error;
       } else {
         let { error } = await supabase.from("place_proposals").insert([payload]);
-        if (error && (error.message?.includes("sub_categories") || error.message?.includes("schema cache") || (error as any).code === "PGRST204")) {
-          const { sub_categories, ...payloadWithoutSub } = payload;
-          const retry = await supabase.from("place_proposals").insert([payloadWithoutSub]);
+        if (error) {
+          console.warn("Insert failed with website_url, trying fallback...");
+          const fallbackPayload = { ...payload };
+          // @ts-ignore
+          delete fallbackPayload.website_url;
+          let retry = await supabase.from("place_proposals").insert([fallbackPayload]);
+          if (retry.error) {
+            // @ts-ignore
+            delete fallbackPayload.sub_categories;
+            retry = await supabase.from("place_proposals").insert([fallbackPayload]);
+          }
           error = retry.error;
         }
         if (error) throw error;
@@ -343,7 +367,7 @@ function ProposePlaceContent() {
                 onClick={() => {
                   setSuccess(false);
                   setFormData({
-                    name: "", category: "", category_label: "", sub_categories: [], governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: ""
+                    name: "", category: "", category_label: "", sub_categories: [], governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: "", website_url: ""
                   });
                   if (editId) router.push("/propose-place");
                 }}
@@ -559,6 +583,18 @@ function ProposePlaceContent() {
                     className="ios-input"
                     value={formData.working_hours}
                     onChange={(e) => setFormData({ ...formData, working_hours: e.target.value })}
+                  />
+                </div>
+
+                <div style={{ gridColumn: "span 2" }}>
+                  <label className="help-label">رابط موقع المكان الإلكتروني (إن وجد)</label>
+                  <input
+                    type="url"
+                    placeholder="https://example.com"
+                    className="ios-input"
+                    value={formData.website_url}
+                    onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
+                    style={{ direction: "ltr", textAlign: "left" }}
                   />
                 </div>
               </div>

@@ -11,7 +11,7 @@ export default function MobileBottomNav() {
 
   if (pathname?.startsWith("/admin")) return null;
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { unreadCount } = useNotifications();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -125,9 +125,9 @@ export default function MobileBottomNav() {
 
           {/* 4. البروفايل */}
           <Link href="/profile" className={`mobile-nav-item ${pathname === "/profile" ? "active" : ""}`} style={{ position: "relative" }}>
-            {user && user.user_metadata?.avatar_url ? (
+            {user && (profile?.avatar_url || user.user_metadata?.avatar_url) ? (
               <img 
-                src={user.user_metadata.avatar_url} 
+                src={profile?.avatar_url || user.user_metadata.avatar_url} 
                 alt="Profile" 
                 style={{ 
                   width: "22px", 

@@ -12,7 +12,7 @@ export default function Navbar() {
 
   if (pathname?.startsWith("/admin")) return null;
   // ── جلب حالات المصادقة والإشعارات والمسار ──
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -71,12 +71,12 @@ export default function Navbar() {
 
           {/* Auth Controls */}
           <div style={{ position: "relative" }} className="navbar-auth-dropdown">
-            <button className="navbar-icon-btn" title={user ? (user.user_metadata?.full_name || user.email) : "الأعدادات"} style={{ gap: "8px", padding: "0 14px", position: "relative", border: "1px solid var(--border-glass)", background: "transparent", cursor: "pointer", outline: "none" }}>
+            <button className="navbar-icon-btn" title={user ? (profile?.full_name || user.user_metadata?.full_name || user.email) : "الأعدادات"} style={{ gap: "8px", padding: "0 14px", position: "relative", border: "1px solid var(--border-glass)", background: "transparent", cursor: "pointer", outline: "none" }}>
               {user ? (
                 <>
                   <div style={{ position: "relative" }}>
-                    {user.user_metadata?.avatar_url ? (
-                      <img src={user.user_metadata.avatar_url} alt="Avatar" style={{ width: "26px", height: "26px", borderRadius: "50%", objectFit: "cover" }} />
+                    {profile?.avatar_url || user.user_metadata?.avatar_url ? (
+                      <img src={profile?.avatar_url || user.user_metadata.avatar_url} alt="Avatar" style={{ width: "26px", height: "26px", borderRadius: "50%", objectFit: "cover" }} />
                     ) : (
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" /></svg>
                     )}
@@ -102,7 +102,7 @@ export default function Navbar() {
                       </span>
                     )}
                   </div>
-                  <span style={{ fontSize: "0.85rem", fontWeight: "700" }}>{user.user_metadata?.username || "حسابي"}</span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "700" }}>{profile?.username || user.user_metadata?.username || "حسابي"}</span>
                 </>
               ) : (
                 <>
@@ -119,7 +119,7 @@ export default function Navbar() {
                   <div className="heroui-dropdown-header">
                     <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>تم تسجيل الدخول كـ</p>
                     <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {user.user_metadata?.username || "حسابي"}
+                      {profile?.username || user.user_metadata?.username || "حسابي"}
                     </p>
                   </div>
                   <div className="heroui-dropdown-divider"></div>
@@ -209,7 +209,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Link href="/profile" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
-                الملف الشخصي (@{user.user_metadata?.username || "حسابي"})
+                الملف الشخصي (@{profile?.username || user.user_metadata?.username || "حسابي"})
               </Link>
               <button onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="navbar-mobile-link" style={{ color: "#ff3f8e", textAlign: "right", background: "none", border: "none", width: "100%", fontSize: "1rem", fontWeight: "700" }}><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تسجيل الخروج</button>
             </>

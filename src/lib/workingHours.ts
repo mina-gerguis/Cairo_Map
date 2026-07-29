@@ -70,3 +70,56 @@ export const getTodayWorkingHoursText = (workingHoursStr?: string): string => {
   // Fallback for legacy text
   return workingHoursStr;
 };
+
+// Helper to convert time format to minutes since midnight
+const convertToMinutes = (timeStr: string, period: string): number => {
+  const [hStr, mStr] = timeStr.split(":");
+  let hours = parseInt(hStr, 10);
+  const minutes = parseInt(mStr, 10);
+  
+  if (period === "م" && hours !== 12) {
+    hours += 12;
+  } else if (period === "ص" && hours === 12) {
+    hours = 0;
+  }
+  
+  return hours * 60 + minutes;
+};
+
+// Helper to check if a place is currently open based on its working hours
+export const isCurrentlyOpen = (workingHoursStr?: string): boolean => {
+  if (!workingHoursStr) return false;
+  
+  const parsed = parseWorkingHours(workingHoursStr);
+  if (!parsed) {
+    // If it's a legacy plain text string, return true to be safe or try to parse
+    return true;
+  }
+  
+  if (parsed.type === "24/7") {
+    return true;
+  }
+  
+  if (parsed.type === "custom" && parsed.schedule) {
+    const todayIndex = new Date().getDay();
+    const todayName = DAYS_OF_WEEK[todayIndex];
+    const todaySchedule = parsed.schedule.find(s => s.day === todayName);
+    
+    if (!todaySchedule || !todaySchedule.isWorking) return false;
+    
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    
+    const openMinutes = convertToMinutes(todaySchedule.openTime, todaySchedule.openPeriod);
+    const closeMinutes = convertToMinutes(todaySchedule.closeTime, todaySchedule.closePeriod);
+    
+    if (closeMinutes < openMinutes) {
+      // Crosses midnight (e.g. 10:00 AM to 02:00 AM)
+      return currentMinutes >= openMinutes || currentMinutes <= closeMinutes;
+    } else {
+      return currentMinutes >= openMinutes && currentMinutes <= closeMinutes;
+    }
+  }
+  
+  return true;
+};

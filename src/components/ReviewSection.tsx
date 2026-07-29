@@ -42,6 +42,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
   const [ratingInput, setRatingInput] = useState<number>(0);
   const [commentInput, setCommentInput] = useState<string>("");
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [deletingReview, setDeletingReview] = useState(false);
   const [reviewError, setReviewError] = useState("");
 
   const [branchFilter, setBranchFilter] = useState<string>("all");
@@ -111,6 +112,45 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
     fetchReviews();
   }, [place?.id, user]);
+
+  const deleteReview = async () => {
+    if (!user || !userReview) return;
+    if (!window.confirm("هل أنت متأكد من رغبتك في حذف تقييمك؟")) return;
+
+    setDeletingReview(true);
+    setReviewError("");
+    try {
+      if (!supabase) throw new Error("Supabase is not initialized");
+
+      const { error } = await supabase
+        .from('reviews')
+        .delete()
+        .eq('id', userReview.id);
+
+      if (error) throw error;
+
+      // Update reviews list
+      const updatedReviews = reviews.filter(r => r.id !== userReview.id);
+      setReviews(updatedReviews);
+
+      // Reset form and user review
+      setUserReview(null);
+      setRatingInput(0);
+      setCommentInput("");
+
+      // Update place average rating & reviewsCount in parent component
+      if (onRatingUpdate) {
+        const newTotalRating = (place.rating || 0) * (place.reviewsCount || 0) - userReview.rating;
+        const newCount = (place.reviewsCount || 0) - 1;
+        onRatingUpdate(newCount > 0 ? newTotalRating / newCount : 0, newCount);
+      }
+    } catch (err: any) {
+      console.error("Error deleting review:", err);
+      setReviewError(err.message || "حدث خطأ أثناء حذف التقييم");
+    } finally {
+      setDeletingReview(false);
+    }
+  };
 
   const submitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,6 +227,8 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
     }
   };
 
+  const displayedReviews = filteredAndSortedReviews.slice(0, 5);
+
   return (
     <div id="reviews-section" style={{ marginTop: "40px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "24px" }}>
       <h4 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "20px", color: "var(--text-primary)" }}>
@@ -195,9 +237,35 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
       {user ? (
         <div style={{ background: "rgba(120, 120, 120, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "30px" }}>
-          <h5 style={{ fontSize: "1.1rem", marginBottom: "16px", fontWeight: "700" }}>
-            {userReview ? "تعديل تقييمك" : "أضف تقييمك"}
-          </h5>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+            <h5 style={{ fontSize: "1.1rem", margin: 0, fontWeight: "700" }}>
+              {userReview ? "تعديل تقييمك" : "أضف تقييمك"}
+            </h5>
+            {userReview && (
+              <button 
+                type="button" 
+                onClick={deleteReview} 
+                disabled={deletingReview}
+                style={{
+                  background: "rgba(255, 59, 48, 0.1)",
+                  color: "#ff3b30",
+                  border: "1px solid rgba(255, 59, 48, 0.2)",
+                  borderRadius: "8px",
+                  padding: "6px 12px",
+                  fontSize: "0.85rem",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  transition: "all 0.2s",
+                  fontFamily: "var(--font-cairo)"
+                }}
+              >
+                <i className="bx bx-trash" style={{ fontSize: "1rem" }}></i>
+                {deletingReview ? "جاري الحذف..." : "حذف التقييم"}
+              </button>
+            )}
+          </div>
           <form onSubmit={submitReview}>
             <div style={{ display: "flex", gap: "8px", marginBottom: "16px", direction: "ltr", justifyContent: "flex-end" }}>
               {[1, 2, 3, 4, 5].map((star) => (
@@ -236,59 +304,10 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
         </div>
       )}
 
-      {/* ─── Reviews Filter & Sort Controls Bar ─── */}
-      {reviews.length > 0 && (
-        <div style={{ 
-          display: "flex", 
-          gap: "12px", 
-          marginBottom: "24px", 
-          flexWrap: "wrap", 
-          alignItems: "center",
-          background: "rgba(120, 120, 120, 0.04)",
-          padding: "14px 16px",
-          borderRadius: "16px",
-          border: "1px solid var(--border-glass)"
-        }}>
-          {/* Branch Filter Dropdown */}
-          {place.branches && place.branches.length > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 200px" }}>
-              <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600", whiteSpace: "nowrap" }}>📍 الفرع:</span>
-              <select 
-                className="ios-input help-select" 
-                value={branchFilter} 
-                onChange={(e) => setBranchFilter(e.target.value)}
-                style={{ margin: 0, padding: "6px 12px", fontSize: "0.85rem", height: "36px", flex: 1, background: "rgba(255, 255, 255, 0.05)" }}
-              >
-                <option value="all">كل الفروع</option>
-                {place.branches.map(b => (
-                  <option key={b.id} value={b.id}>{b.name} ({b.city})</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Sort Order Dropdown */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 200px" }}>
-            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600", whiteSpace: "nowrap" }}>⇅ الترتيب حسب:</span>
-            <select 
-              className="ios-input help-select" 
-              value={sortBy} 
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{ margin: 0, padding: "6px 12px", fontSize: "0.85rem", height: "36px", flex: 1, background: "rgba(255, 255, 255, 0.05)" }}
-            >
-              <option value="newest">الوقت: الأحدث أولاً</option>
-              <option value="oldest">الوقت: الأقدم أولاً</option>
-              <option value="highest">التقييم: الأعلى للادنى</option>
-              <option value="lowest">التقييم: الادنى للاعلى</option>
-            </select>
-          </div>
-        </div>
-      )}
-
       {/* Reviews List */}
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {filteredAndSortedReviews.length > 0 ? (
-          filteredAndSortedReviews.map(review => (
+        {displayedReviews.length > 0 ? (
+          displayedReviews.map(review => (
             <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "10px" }}>
                 <div>
@@ -325,6 +344,34 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
           </div>
         )}
       </div>
+
+      {reviews.length > 5 && (
+        <div style={{ textAlign: "center", marginTop: "24px" }}>
+          <button 
+            type="button"
+            className="ios-btn"
+            onClick={() => router.push(`/places/${place.id}/reviews`)}
+            style={{ 
+              width: "100%", 
+              padding: "14px", 
+              background: "rgba(120, 120, 120, 0.08)", 
+              border: "1px solid var(--border-glass)",
+              borderRadius: "14px",
+              fontWeight: "600",
+              color: "var(--accent-ios)",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px"
+            }}
+          >
+            <i className="bx bx-show" style={{ fontSize: "1.2rem" }}></i>
+            عرض كل التقييمات ({reviews.length})
+          </button>
+        </div>
+      )}
     </div>
   );
 }
