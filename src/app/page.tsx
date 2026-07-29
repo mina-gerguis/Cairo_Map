@@ -9,6 +9,7 @@ import ReviewSection from "@/components/ReviewSection";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyOpen } from "@/lib/workingHours";
 import { Place, PlaceCategory, initialPlaces, FEATURES_LIST } from "../data/places";
 import { Pagination } from "@/components/ui/Pagination";
+import ReportProblemModal from "@/components/ReportProblemModal";
 // Icon
 import { MdDomain } from "react-icons/md";
 
@@ -151,6 +152,7 @@ function HomeContent() {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isProximityEnabled, setIsProximityEnabled] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   // Add form states
   const [newName, setNewName] = useState("");
@@ -841,7 +843,7 @@ function HomeContent() {
                     </div>
 
                     {/* Action Row - 3 Buttons (Directions, Call, Favorite) */}
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "20px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "20px" }}>
                       {/* Directions */}
                       <a
                         href={displayBranch.googleMapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`}
@@ -850,20 +852,20 @@ function HomeContent() {
                         style={{
                           background: "#007aff",
                           color: "#fff",
-                          borderRadius: "14px",
-                          padding: "12px 8px",
+                          borderRadius: "12px",
+                          padding: "8px 6px",
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "center",
-                          gap: "6px",
+                          gap: "4px",
                           cursor: "pointer",
                           textDecoration: "none",
                           textAlign: "center",
                           transition: "opacity 0.2s"
                         }}
                       >
-                        <i className="bx bxs-navigation" style={{ fontSize: "1.4rem" }}></i>
-                        <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>الاتجاهات</span>
+                        <i className="bx bxs-navigation" style={{ fontSize: "1.2rem" }}></i>
+                        <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>الاتجاهات</span>
                       </a>
 
                       {/* Call */}
@@ -874,20 +876,20 @@ function HomeContent() {
                             background: "rgba(0, 45, 248, 0.05)",
                             border: "1px solid var(--border-glass)",
                             color: "#007aff",
-                            borderRadius: "14px",
-                            padding: "12px 8px",
+                            borderRadius: "12px",
+                            padding: "8px 6px",
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
-                            gap: "6px",
+                            gap: "4px",
                             cursor: "pointer",
                             textDecoration: "none",
                             textAlign: "center",
                             transition: "opacity 0.2s"
                           }}
                         >
-                          <i className="bx bxs-phone" style={{ fontSize: "1.4rem" }}></i>
-                          <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>الهاتف</span>
+                          <i className="bx bxs-phone" style={{ fontSize: "1.2rem" }}></i>
+                          <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>الهاتف</span>
                         </a>
                       ) : (
                         <div
@@ -895,18 +897,18 @@ function HomeContent() {
                             background: "rgba(255, 255, 255, 0.04)",
                             border: "1px solid var(--border-glass)",
                             color: "var(--text-muted)",
-                            borderRadius: "14px",
-                            padding: "12px 8px",
+                            borderRadius: "12px",
+                            padding: "8px 6px",
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
-                            gap: "6px",
+                            gap: "4px",
                             opacity: 0.5,
                             textAlign: "center"
                           }}
                         >
-                          <i className="bx bx-phone-off" style={{ fontSize: "1.4rem" }}></i>
-                          <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>لا يتوفر</span>
+                          <i className="bx bx-phone-off" style={{ fontSize: "1.2rem" }}></i>
+                          <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>لا يتوفر</span>
                         </div>
                       )}
 
@@ -917,18 +919,18 @@ function HomeContent() {
                           background: "rgba(0, 45, 248, 0.05)",
                           border: "1px solid var(--border-glass)",
                           color: favoriteIds.has(selectedPlace.id.toString()) ? "#ff3b30" : "#007aff",
-                          borderRadius: "14px",
-                          padding: "12px 8px",
+                          borderRadius: "12px",
+                          padding: "8px 6px",
                           display: "flex",
                           flexDirection: "column",
                           alignItems: "center",
-                          gap: "6px",
+                          gap: "4px",
                           cursor: "pointer",
                           transition: "opacity 0.2s"
                         }}
                       >
-                        <i className={favoriteIds.has(selectedPlace.id.toString()) ? "bx bxs-heart" : "bx bx-heart"} style={{ fontSize: "1.4rem" }}></i>
-                        <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.8rem", fontWeight: "bold" }}>المفضلة</span>
+                        <i className={favoriteIds.has(selectedPlace.id.toString()) ? "bx bxs-heart" : "bx bx-heart"} style={{ fontSize: "1.2rem" }}></i>
+                        <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.75rem", fontWeight: "bold" }}>المفضلة</span>
                       </button>
                     </div>
 
@@ -1203,7 +1205,7 @@ function HomeContent() {
                     {/* Bottom Dock / Report & Claim Actions */}
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "24px", marginBottom: "20px" }}>
                       <button
-                        onClick={() => alert(`تم إرسال بلاغ عن مشكلة للمكان ذو الكود #${selectedPlace.id}`)}
+                        onClick={() => setIsReportModalOpen(true)}
                         style={{
                           width: "100%",
                           background: "rgba(255, 59, 48, 0.1)",
@@ -1395,6 +1397,15 @@ function HomeContent() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ═══════════════════════════════════ REPORT PROBLEM MODAL ═══════════════════════════════════ */}
+      {isReportModalOpen && selectedPlace && (
+        <ReportProblemModal
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+          place={selectedPlace}
+        />
       )}
     </>
   );

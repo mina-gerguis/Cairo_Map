@@ -7,6 +7,14 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyOpen } from "@/lib/workingHours";
 import ReviewSection from "@/components/ReviewSection";
+import ReportProblemModal from "@/components/ReportProblemModal";
+
+// Icon
+import { FaMapMarkerAlt, FaPhoneAlt  } from "react-icons/fa";
+import { BiSolidMapPin } from "react-icons/bi";
+import { GrFavorite } from "react-icons/gr";
+import { MdOutlineFavorite } from "react-icons/md";
+
 
 const CATEGORY_ICONS: Record<string, string> = {
   restaurant: "bx-restaurant",
@@ -60,6 +68,7 @@ export default function PlaceDetailsPage() {
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [togglingFav, setTogglingFav] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   useEffect(() => {
     if (activeMenuIndex === null || !place?.menuImages) return;
@@ -492,19 +501,19 @@ export default function PlaceDetailsPage() {
         </div>
 
         {/* Info Padding */}
-        <div style={{ padding: "30px" }}>
+        <div style={{ padding: "20px" }}>
           {/* Title Area */}
           <div style={{ textAlign: "center", marginBottom: "20px" }}>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>
+            <h1 style={{ fontFamily: "var(--font-cairo)", fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>
               {place.name}
             </h1>
             {place.shortDescription && (
-              <p style={{ fontSize: "1.05rem", color: "var(--text-secondary)", fontWeight: "500", margin: "0 0 10px" }}>
+              <p style={{ fontSize: ".9rem", color: "var(--text-secondary)", fontWeight: "500", margin: "0 0 10px" }}>
                 {place.shortDescription}
               </p>
             )}
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
-              <span>📍 {displayBranch.city} / {displayBranch.governorate}</span>
+              <span><FaMapMarkerAlt /> {displayBranch.city} / {displayBranch.governorate}</span>
               {currentDistance !== null && (
                 <>
                   <span>•</span>
@@ -517,7 +526,7 @@ export default function PlaceDetailsPage() {
           </div>
 
           {/* Action Row - 3 Buttons (Directions, Call, Favorite) */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "20px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "20px" }}>
             {/* Directions */}
             <a
               href={displayBranch.googleMapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${displayBranch.latitude},${displayBranch.longitude}`}
@@ -526,20 +535,20 @@ export default function PlaceDetailsPage() {
               style={{
                 background: "#007aff",
                 color: "#fff",
-                borderRadius: "14px",
-                padding: "12px 8px",
+                borderRadius: "12px",
+                padding: "8px 6px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "6px",
+                gap: "4px",
                 cursor: "pointer",
                 textDecoration: "none",
                 textAlign: "center",
                 transition: "opacity 0.2s"
               }}
             >
-              <i className="bx bxs-navigation" style={{ fontSize: "1.4rem" }}></i>
-              <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>الاتجاهات</span>
+              <BiSolidMapPin style={{ fontSize: "1.2rem" }} />
+              <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>الاتجاهات</span>
             </a>
 
             {/* Call */}
@@ -550,20 +559,20 @@ export default function PlaceDetailsPage() {
                   background: "rgba(0, 45, 248, 0.05)",
                   border: "1px solid var(--border-glass)",
                   color: "#007aff",
-                  borderRadius: "14px",
-                  padding: "12px 8px",
+                  borderRadius: "12px",
+                  padding: "8px 6px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: "4px",
                   cursor: "pointer",
                   textDecoration: "none",
                   textAlign: "center",
                   transition: "opacity 0.2s"
                 }}
               >
-                <i className="bx bxs-phone" style={{ fontSize: "1.4rem" }}></i>
-                <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>الهاتف</span>
+                <FaPhoneAlt style={{ fontSize: "1.2rem" }} />
+                <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>الهاتف</span>
               </a>
             ) : (
               <div
@@ -571,18 +580,18 @@ export default function PlaceDetailsPage() {
                   background: "rgba(255, 255, 255, 0.04)",
                   border: "1px solid var(--border-glass)",
                   color: "var(--text-muted)",
-                  borderRadius: "14px",
-                  padding: "12px 8px",
+                  borderRadius: "12px",
+                  padding: "8px 6px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: "6px",
+                  gap: "4px",
                   opacity: 0.5,
                   textAlign: "center"
                 }}
               >
-                <i className="bx bx-phone-off" style={{ fontSize: "1.4rem" }}></i>
-                <span style={{ fontSize: "0.8rem", fontWeight: "bold" }}>لا يتوفر</span>
+                <i className="bx bx-phone-off" style={{ fontSize: "1.2rem" }}></i>
+                <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>لا يتوفر</span>
               </div>
             )}
 
@@ -594,18 +603,18 @@ export default function PlaceDetailsPage() {
                 background: "rgba(0, 45, 248, 0.05)",
                 border: "1px solid var(--border-glass)",
                 color: isFavorite ? "#ff3b30" : "#007aff",
-                borderRadius: "14px",
-                padding: "12px 8px",
+                borderRadius: "12px",
+                padding: "8px 6px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "6px",
+                gap: "4px",
                 cursor: "pointer",
                 transition: "opacity 0.2s"
               }}
             >
-              <i className={isFavorite ? "bx bxs-heart" : "bx bx-heart"} style={{ fontSize: "1.4rem" }}></i>
-              <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.8rem", fontWeight: "bold" }}>المفضلة</span>
+              {isFavorite ? <MdOutlineFavorite style={{ fontSize: "1.2rem" }}/> : <GrFavorite style={{ fontSize: "1.2rem" }}/>}
+              <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.75rem", fontWeight: "bold" }}>المفضلة</span>
             </button>
           </div>
 
@@ -691,7 +700,7 @@ export default function PlaceDetailsPage() {
                   <div
                     key={idx}
                     onClick={() => setActiveMenuIndex(idx)}
-                    style={{ width: "130px", height: "170px", borderRadius: "12px", overflow: "hidden", flexShrink: 0, border: "1px solid var(--border-glass)", cursor: "pointer", position: "relative" }}
+                    style={{ width: "150px", height: "160px", borderRadius: "18px", overflow: "hidden", flexShrink: 0, cursor: "pointer", position: "relative" }}
                   >
                     <img
                       src={mediaUrl}
@@ -701,9 +710,6 @@ export default function PlaceDetailsPage() {
                         (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80";
                       }}
                     />
-                    <div style={{ position: "absolute", bottom: "8px", left: "50%", transform: "translateX(-50%)", background: "rgba(0,0,0,0.6)", padding: "4px 8px", borderRadius: "8px", color: "#fff", fontSize: "0.75rem", whiteSpace: "nowrap", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      تكبير 🔍
-                    </div>
                   </div>
                 ))}
               </div>
@@ -894,7 +900,7 @@ export default function PlaceDetailsPage() {
           {/* Bottom Dock / Report & Claim Actions */}
           <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "24px", marginBottom: "20px" }}>
             <button
-              onClick={() => alert(`تم إرسال بلاغ عن مشكلة للمكان ذو الكود #${place.id}`)}
+              onClick={() => setIsReportModalOpen(true)}
               style={{
                 width: "100%",
                 background: "rgba(255, 59, 48, 0.1)",
@@ -1071,6 +1077,13 @@ export default function PlaceDetailsPage() {
             </div>
           )}
         </div>
+      )}
+      {isReportModalOpen && place && (
+        <ReportProblemModal
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+          place={place}
+        />
       )}
       <style dangerouslySetInnerHTML={{
         __html: `

@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any | null>(null);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, currentUser?: User | null) => {
     if (!supabase) return;
     try {
       const { data, error } = await supabase
@@ -40,6 +40,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .single();
       if (data) {
         setProfile(data);
+        // Sync email if it doesn't match
+        const activeUser = currentUser || user;
+        if (activeUser?.email && data.email !== activeUser.email) {
+          await supabase
+            .from("profiles")
+            .update({ email: activeUser.email })
+            .eq("id", userId);
+          setProfile({ ...data, email: activeUser.email });
+        }
       }
     } catch (e) {
       console.error("Error fetching profile:", e);
@@ -48,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refreshProfile = async () => {
     if (user) {
-      await fetchProfile(user.id);
+      await fetchProfile(user.id, user);
     }
   };
 
@@ -76,13 +85,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setSession(currentSession);
         setUser(currentSession.user);
         setMfaPending(false);
-        await fetchProfile(currentSession.user.id);
+        await fetchProfile(currentSession.user.id, currentSession.user);
       }
     } catch (e) {
       setSession(currentSession);
       setUser(currentSession.user);
       setMfaPending(false);
-      await fetchProfile(currentSession.user.id);
+      await fetchProfile(currentSession.user.id, currentSession.user);
     } finally {
       setLoading(false);
     }

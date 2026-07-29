@@ -1,0 +1,594 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import styles from "../admin.module.css";
+
+interface PlaceReport {
+  id: string;
+  place_id: string;
+  user_id: string;
+  problem_type: string;
+  details: any;
+  comment: string | null;
+  image_url: string | null;
+  status: string;
+  admin_reply: string | null;
+  created_at: string;
+  place_name?: string;
+  user_profile?: {
+    full_name?: string;
+    email?: string;
+    phone?: string;
+    username?: string;
+  } | null;
+}
+
+export default function AdminReportsPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  
+  const [reports, setReports] = useState<PlaceReport[]>([]);
+  const [loadingReports, setLoadingReports] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [activeReportId, setActiveReportId] = useState<string | null>(null);
+  
+  // Admin Reply Inputs
+  const [replyText, setReplyText] = useState("");
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [actionStatus, setActionStatus] = useState("");
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
+    const checkAdmin = async () => {
+      if (!supabase) return;
+      try {
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError || !profileData?.is_admin) {
+          setIsAdmin(false);
+        } else {
+          setIsAdmin(true);
+          fetchReports();
+        }
+      } catch (error) {
+        setIsAdmin(false);
+      } finally {
+        setAuthChecking(false);
+      }
+    };
+
+    checkAdmin();
+  }, [user, authLoading, router]);
+
+  const fetchReports = async () => {
+    if (!supabase) return;
+    setLoadingReports(true);
+    try {
+      const { data, error } = await supabase
+        .from("place_reports")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Resolve user profiles
+        const userIds = Array.from(new Set(data.map(r => r.user_id).filter(Boolean)));
+        let profilesMap = new Map();
+        if (userIds.length > 0) {
+          const { data: profilesData } = await supabase
+            .from("profiles")
+            .select("id, full_name, email, phone, username")
+            .in("id", userIds);
+          if (profilesData) {
+            profilesMap = new Map(profilesData.map(p => [p.id, p]));
+          }
+        }
+
+        // Resolve place names
+        const placeIds = Array.from(new Set(data.map(r => r.place_id).filter(Boolean)));
+        let placesMap = new Map();
+        if (placeIds.length > 0) {
+          const { data: placesData } = await supabase
+            .from("places")
+            .select("id, name")
+            .in("id", placeIds);
+          if (placesData) {
+            placesMap = new Map(placesData.map(p => [p.id, p.name]));
+          }
+        }
+
+        const mapped: PlaceReport[] = data.map(item => ({
+          ...item,
+          place_name: placesMap.get(item.place_id) || "مكان محذوف أو غير معروف",
+          user_profile: profilesMap.get(item.user_id) || null
+        }));
+
+        setReports(mapped);
+      } else {
+        setReports([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch reports:", err);
+    } finally {
+      setLoadingReports(false);
+    }
+  };
+
+  const handleUpdateStatus = async (report: PlaceReport, newStatus: string) => {
+    if (!supabase || !isAdmin) return;
+    setUpdatingId(report.id);
+    setActionStatus("");
+
+    try {
+      // 1. Update the report in the database
+      const { error: updateError } = await supabase
+        .from("place_reports")
+        .update({
+          status: newStatus,
+          admin_reply: replyText.trim() || null
+        })
+        .eq("id", report.id);
+
+      if (updateError) throw updateError;
+
+      // 2. Send notification to the user
+      let statusTextArabic = "";
+      if (newStatus === "reviewed") statusTextArabic = "تحت الدراسة والنظر";
+      if (newStatus === "accepted") statusTextArabic = "مقبول وتم التعديل";
+      if (newStatus === "rejected") statusTextArabic = "مرفوض";
+
+      const title = `تحديث بخصوص بلاغك حول: ${report.place_name}`;
+      const message = `تم تغيير حالة إبلاغك إلى (${statusTextArabic}). ${replyText.trim() ? `رد الإدارة: ${replyText.trim()}` : ""}`;
+
+      const { error: notifError } = await supabase.from("notifications").insert([{
+        user_id: report.user_id,
+        title,
+        message,
+        type: newStatus === "accepted" ? "success" : newStatus === "rejected" ? "warning" : "info",
+        link: `/places/${report.place_id}`
+      }]);
+
+      if (notifError) console.error("Failed to send notification:", notifError);
+
+      setActionStatus("تم تحديث حالة البلاغ وإشعار المستخدم بنجاح!");
+      setReplyText("");
+      fetchReports();
+    } catch (err: any) {
+      setActionStatus(`خطأ: ${err.message}`);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  if (authLoading || authChecking) {
+    return (
+      <div style={{ textAlign: "center", padding: "50px", marginTop: "100px" }}>
+        <div style={{ width: "40px", height: "40px", border: "3px solid var(--border-glass)", borderTop: "3px solid var(--accent-primary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
+        <p style={{ color: "var(--text-secondary)" }}>جاري التحقق من الصلاحيات...</p>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div style={{ textAlign: "center", padding: "50px", marginTop: "100px", maxWidth: "400px", margin: "100px auto" }}>
+        <div style={{ width: "80px", height: "80px", background: "rgba(255, 59, 48, 0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+          <i className="bx bxs-error-circle" style={{ fontSize: "3rem", color: "#ff3b30" }}></i>
+        </div>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--text-primary)" }}>صلاحيات غير كافية</h2>
+        <p style={{ color: "var(--text-secondary)", marginBottom: "32px", lineHeight: "1.6" }}>
+          عفواً، حسابك لا يمتلك صلاحيات المسؤول للوصول إلى هذه الصفحة.
+        </p>
+      </div>
+    );
+  }
+
+  const getProblemLabel = (type: string) => {
+    switch (type) {
+      case "name": return "الاسم غير صحيح ✏️";
+      case "address": return "العنوان أو موقع الخريطة غير صحيح 📍";
+      case "phone_website": return "الهاتف أو موقع الويب غير صحيح 📞";
+      case "working_hours": return "ساعات العمل غير صحيحة 🕐";
+      case "closed": return "المكان مغلق 🔴";
+      case "category": return "الفئة غير صحيحة 🗂️";
+      default: return "شيء آخر غير صحيح ⚠️";
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <span style={{ background: "rgba(255, 149, 0, 0.15)", color: "#ff9500", padding: "4px 10px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "bold" }}>معلق</span>;
+      case "reviewed":
+        return <span style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "bold" }}>تحت النظر</span>;
+      case "accepted":
+        return <span style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", padding: "4px 10px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "bold" }}>تم القبول والتعديل</span>;
+      case "rejected":
+        return <span style={{ background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", padding: "4px 10px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "bold" }}>مرفوض</span>;
+      default:
+        return <span style={{ background: "rgba(255, 255, 255, 0.1)", color: "#fff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.8rem" }}>{status}</span>;
+    }
+  };
+
+  const filteredReports = reports.filter(r => statusFilter === "all" || r.status === statusFilter);
+
+  return (
+    <div style={{ paddingBottom: "100px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
+        <div>
+          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>البلاغات والشكاوى</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>مراجعة وتعديل بلاغات مستخدمي دفتر والرد عليها لتحديث الأماكن.</p>
+        </div>
+        <button 
+          onClick={fetchReports} 
+          className="ios-btn"
+          style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px" }}
+        >
+          <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }}></i> تحديث البيانات
+        </button>
+      </div>
+
+      {/* Filter Tabs */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
+        {["all", "pending", "reviewed", "accepted", "rejected"].map((status) => {
+          const count = status === "all" ? reports.length : reports.filter(r => r.status === status).length;
+          let label = "الكل";
+          if (status === "pending") label = "معلق";
+          if (status === "reviewed") label = "تحت النظر";
+          if (status === "accepted") label = "مقبول";
+          if (status === "rejected") label = "مرفوض";
+          
+          const isActive = statusFilter === status;
+          return (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "20px",
+                border: "none",
+                background: isActive ? "var(--accent-primary)" : "rgba(255,255,255,0.05)",
+                color: isActive ? "#fff" : "var(--text-primary)",
+                fontWeight: "600",
+                fontSize: "0.9rem",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                flexShrink: 0
+              }}
+            >
+              {label}
+              <span style={{ 
+                background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)", 
+                padding: "2px 8px", 
+                borderRadius: "10px", 
+                fontSize: "0.78rem" 
+              }}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {loadingReports ? (
+        <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل البلاغات...</div>
+      ) : filteredReports.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--border-glass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+          <i className="bx bx-info-circle" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px" }}></i>
+          <span>لا يوجد بلاغات مطابقة للتصفية المحددة</span>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "20px" }}>
+          {filteredReports.map((report) => {
+            const isOpen = activeReportId === report.id;
+            return (
+              <div 
+                key={report.id} 
+                className="glass-card" 
+                style={{ 
+                  padding: "20px", 
+                  borderRadius: "16px", 
+                  border: isOpen ? "1px solid var(--accent-primary)" : "1px solid var(--border-glass)",
+                  transition: "all 0.2s"
+                }}
+              >
+                {/* Collapsed Header Summary */}
+                <div 
+                  onClick={() => {
+                    setActiveReportId(isOpen ? null : report.id);
+                    setReplyText("");
+                    setActionStatus("");
+                  }} 
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", cursor: "pointer", gap: "16px", flexWrap: "wrap" }}
+                >
+                  <div style={{ flex: 1, minWidth: "200px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
+                      <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>{report.place_name}</span>
+                      <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>#{report.place_id}</span>
+                      {getStatusBadge(report.status)}
+                    </div>
+                    
+                    <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
+                      <span>المشكلة: <strong>{getProblemLabel(report.problem_type)}</strong></span>
+                      <span>بواسطة: <strong>{report.user_profile?.full_name || "مستخدم غير مسجل الاسم"}</strong></span>
+                      <span>التاريخ: {new Date(report.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <button className="ios-btn" style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
+                      {isOpen ? "إخفاء التفاصيل" : "عرض والرد"}
+                    </button>
+                    <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--text-secondary)" }}></i>
+                  </div>
+                </div>
+
+                {/* Expanded Details Form */}
+                {isOpen && (
+                  <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", animation: "fade-in 0.3s ease" }}>
+                    
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px", flexWrap: "wrap" }}>
+                      
+                      {/* Left Column: Report Details */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                        <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>تفاصيل البلاغ</h4>
+                        
+                        {/* Render details based on type */}
+                        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
+                          
+                          {/* name incorrect */}
+                          {report.problem_type === "name" && (
+                            <div>
+                              <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>الاسم المقترح الجديد:</span>
+                              <strong style={{ fontSize: "1.1rem", color: "var(--accent-success)" }}>{report.details.newName}</strong>
+                            </div>
+                          )}
+
+                          {/* address incorrect */}
+                          {report.problem_type === "address" && (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              <div>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>العنوان المقترح:</span>
+                                <strong>{report.details.newAddress || "غير محدد"}</strong>
+                              </div>
+                              {report.details.newMapsUrl && (
+                                <div>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>رابط الخريطة المقترح:</span>
+                                  <a href={report.details.newMapsUrl} target="_blank" rel="noreferrer" style={{ color: "var(--accent-primary)", wordBreak: "break-all", fontSize: "0.85rem" }}>{report.details.newMapsUrl}</a>
+                                </div>
+                              )}
+                              {(report.details.newLatitude && report.details.newLongitude) && (
+                                <div>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>الإحداثيات الجغرافية:</span>
+                                  <code style={{ fontSize: "0.85rem" }}>{report.details.newLatitude}, {report.details.newLongitude}</code>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* phone/website incorrect */}
+                          {report.problem_type === "phone_website" && (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              {report.details.newPhones && report.details.newPhones.length > 0 && (
+                                <div>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>أرقام الهاتف المقترحة:</span>
+                                  <strong>{report.details.newPhones.join(" - ")}</strong>
+                                </div>
+                              )}
+                              {report.details.newWebsite && (
+                                <div>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>موقع الويب المقترح:</span>
+                                  <a href={report.details.newWebsite} target="_blank" rel="noreferrer" style={{ color: "var(--accent-primary)" }}>{report.details.newWebsite}</a>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* working hours incorrect */}
+                          {report.problem_type === "working_hours" && report.details.workingHours && (
+                            <div>
+                              <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>مواعيد العمل المقترحة:</span>
+                              {report.details.workingHours.type === "24/7" ? (
+                                <strong style={{ color: "#34c759" }}>🟢 مفتوح 24/7</strong>
+                              ) : (
+                                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                  {report.details.workingHours.schedule?.map((s: any, i: number) => (
+                                    <div key={i} style={{ fontSize: "0.85rem", display: "flex", justifyContent: "space-between" }}>
+                                      <span>{s.day}:</span>
+                                      <span>{s.isWorking ? `${s.openTime} ${s.openPeriod} - ${s.closeTime} ${s.closePeriod}` : <span style={{ color: "#ff3b30" }}>مغلق</span>}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* closed */}
+                          {report.problem_type === "closed" && (
+                            <div>
+                              <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>حالة الإغلاق المبلّغ عنها:</span>
+                              <strong style={{ color: "#ff3b30" }}>
+                                {report.details.closureStatus === "permanently_closed" && "مغلق نهائياً 🔴"}
+                                {report.details.closureStatus === "temporarily_closed" && "مغلق مؤقتاً ⚠️"}
+                                {report.details.closureStatus === "not_exist" && "غير موجود بالمرة 🚫"}
+                              </strong>
+                            </div>
+                          )}
+
+                          {/* category incorrect */}
+                          {report.problem_type === "category" && (
+                            <div>
+                              <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>التصنيف المقترح:</span>
+                              <strong>{report.details.newCategoryLabel} ({report.details.newCategory})</strong>
+                            </div>
+                          )}
+
+                          {/* comment */}
+                          {report.comment && (
+                            <div style={{ marginTop: "12px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "8px" }}>
+                              <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>تعليق وتوضيح المستخدم:</span>
+                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)", whiteSpace: "pre-line" }}>"{report.comment}"</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Image URL preview */}
+                        {report.image_url && (
+                          <div>
+                            <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الصورة المرفقة بالبلاغ:</span>
+                            <a href={report.image_url} target="_blank" rel="noreferrer">
+                              <img 
+                                src={report.image_url} 
+                                alt="المرفق" 
+                                style={{ maxWidth: "100%", maxHeight: "180px", borderRadius: "10px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }} 
+                              />
+                            </a>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Right Column: User Profile & Action Form */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                        
+                        {/* Profile Info */}
+                        <div>
+                          <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
+                          {report.user_profile ? (
+                            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
+                              <div>الاسم الكامل: <strong>{report.user_profile.full_name || "غير محدد"}</strong></div>
+                              <div>البريد الإلكتروني: <strong>{report.user_profile.email || "غير محدد"}</strong></div>
+                              <div>رقم الهاتف: <strong>{report.user_profile.phone || "غير محدد"}</strong></div>
+                              <div>اسم المستخدم: <strong>@{report.user_profile.username || "غير محدد"}</strong></div>
+                            </div>
+                          ) : (
+                            <div style={{ color: "var(--text-muted)", fontSize: "0.88rem" }}>بيانات المستخدم غير متوفرة (قد يكون الحساب قد حُذف).</div>
+                          )}
+                        </div>
+
+                        {/* Reply Form */}
+                        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px" }}>
+                          <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800" }}>اتخاذ إجراء والرد على البلاغ</h4>
+                          
+                          {actionStatus && (
+                            <div style={{ 
+                              background: actionStatus.startsWith("خطأ") ? "rgba(255,59,48,0.1)" : "rgba(52,199,89,0.1)",
+                              color: actionStatus.startsWith("خطأ") ? "#ff3b30" : "#34c759",
+                              padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "600", marginBottom: "12px"
+                            }}>
+                              {actionStatus}
+                            </div>
+                          )}
+
+                          {report.admin_reply && (
+                            <div style={{ marginBottom: "12px", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                              الرد الحالي: <strong>"{report.admin_reply}"</strong>
+                            </div>
+                          )}
+
+                          <textarea
+                            className="ios-input"
+                            style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-cairo)", marginBottom: "12px" }}
+                            placeholder="اكتب رسالة الرد أو سبب الرفض/القبول للمستخدم هنا..."
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                            disabled={updatingId !== null}
+                          />
+
+                          {/* Action Buttons */}
+                          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                            
+                            <button
+                              onClick={() => handleUpdateStatus(report, "reviewed")}
+                              disabled={updatingId !== null}
+                              className="ios-btn"
+                              style={{ 
+                                flex: 1, 
+                                background: "rgba(0, 122, 255, 0.1)", 
+                                border: "1px solid rgba(0, 122, 255, 0.2)",
+                                color: "#007aff",
+                                fontSize: "0.85rem",
+                                fontWeight: "bold"
+                              }}
+                            >
+                              {updatingId === report.id ? "جاري الحفظ..." : "تحت النظر 👀"}
+                            </button>
+
+                            <button
+                              onClick={() => handleUpdateStatus(report, "accepted")}
+                              disabled={updatingId !== null}
+                              className="ios-btn"
+                              style={{ 
+                                flex: 1, 
+                                background: "rgba(52, 199, 89, 0.1)", 
+                                border: "1px solid rgba(52, 199, 89, 0.2)",
+                                color: "#34c759",
+                                fontSize: "0.85rem",
+                                fontWeight: "bold"
+                              }}
+                            >
+                              {updatingId === report.id ? "جاري الحفظ..." : "مقبول ومعدل ✅"}
+                            </button>
+
+                            <button
+                              onClick={() => handleUpdateStatus(report, "rejected")}
+                              disabled={updatingId !== null}
+                              className="ios-btn"
+                              style={{ 
+                                flex: 1, 
+                                background: "rgba(255, 59, 48, 0.1)", 
+                                border: "1px solid rgba(255, 59, 48, 0.2)",
+                                color: "#ff3b30",
+                                fontSize: "0.85rem",
+                                fontWeight: "bold"
+                              }}
+                            >
+                              {updatingId === report.id ? "جاري الحفظ..." : "مرفوض ❌"}
+                            </button>
+
+                          </div>
+
+                          <div style={{ marginTop: "14px", display: "flex", gap: "8px" }}>
+                            <Link 
+                              href={`/places/${report.place_id}`} 
+                              target="_blank"
+                              className="ios-btn"
+                              style={{ width: "100%", textAlign: "center", textDecoration: "none", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+                            >
+                              <i className="bx bx-link-external"></i> الانتقال لصفحة المكان للمعاينة أو التعديل
+                            </Link>
+                          </div>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
