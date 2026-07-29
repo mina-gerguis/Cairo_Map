@@ -252,7 +252,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
                   border: "1px solid rgba(255, 59, 48, 0.2)",
                   borderRadius: "8px",
                   padding: "6px 12px",
-                  fontSize: "0.85rem",
+                  fontSize: "0.7rem",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -261,7 +261,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
                   fontFamily: "var(--font-cairo)"
                 }}
               >
-                <i className="bx bx-trash" style={{ fontSize: "1rem" }}></i>
+                <i className="bx bx-trash" style={{ fontSize: ".99rem" }}></i>
                 {deletingReview ? "جاري الحذف..." : "حذف التقييم"}
               </button>
             )}
