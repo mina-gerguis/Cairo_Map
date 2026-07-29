@@ -540,15 +540,15 @@ export default function PlaceDetailsPage() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "4px",
+                gap: "2px",
                 cursor: "pointer",
                 textDecoration: "none",
                 textAlign: "center",
                 transition: "opacity 0.2s"
               }}
             >
-              <BiSolidMapPin style={{ fontSize: "1.2rem" }} />
-              <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>الاتجاهات</span>
+              <BiSolidMapPin style={{ fontSize: "1rem" }} />
+              <span style={{ fontSize: "0.7rem", fontWeight: "bold" }}>الاتجاهات</span>
             </a>
 
             {/* Call */}
@@ -564,15 +564,15 @@ export default function PlaceDetailsPage() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: "4px",
+                  gap: "2px",
                   cursor: "pointer",
                   textDecoration: "none",
                   textAlign: "center",
                   transition: "opacity 0.2s"
                 }}
               >
-                <FaPhoneAlt style={{ fontSize: "1.2rem" }} />
-                <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>الهاتف</span>
+                <FaPhoneAlt style={{ fontSize: "1rem" }} />
+                <span style={{ fontSize: "0.7rem", fontWeight: "500" }}>الهاتف</span>
               </a>
             ) : (
               <div
@@ -585,13 +585,13 @@ export default function PlaceDetailsPage() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: "4px",
+                  gap: "2px",
                   opacity: 0.5,
                   textAlign: "center"
                 }}
               >
-                <i className="bx bx-phone-off" style={{ fontSize: "1.2rem" }}></i>
-                <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>لا يتوفر</span>
+                <i className="bx bx-phone-off" style={{ fontSize: "1rem" }}></i>
+                <span style={{ fontSize: "0.7rem", fontWeight: "500" }}>لا يتوفر</span>
               </div>
             )}
 
@@ -608,18 +608,18 @@ export default function PlaceDetailsPage() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "4px",
+                gap: "2px",
                 cursor: "pointer",
                 transition: "opacity 0.2s"
               }}
             >
-              {isFavorite ? <MdOutlineFavorite style={{ fontSize: "1.2rem" }}/> : <GrFavorite style={{ fontSize: "1.2rem" }}/>}
-              <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.75rem", fontWeight: "bold" }}>المفضلة</span>
+              {isFavorite ? <MdOutlineFavorite style={{ fontSize: "1rem" }}/> : <GrFavorite style={{ fontSize: "1rem" }}/>}
+              <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.7rem", fontWeight: "500" }}>المفضلة</span>
             </button>
           </div>
 
           {/* Quick Info Box */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "12px 16px", marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", background: "rgba(255, 255, 255, 0.04)", borderRadius: "14px", padding: "10px", marginBottom: "10px" }}>
             {/* Hours */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
               <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>حالة المكان</span>
@@ -657,7 +657,7 @@ export default function PlaceDetailsPage() {
 
           {/* Branch Selector Chips */}
           {place.branches && place.branches.length > 1 && (
-            <div style={{ marginBottom: "24px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
+            <div style={{ marginBottom: "24px", paddingTop: "20px" }}>
               <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--text-secondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
               <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
                 {place.branches.map(b => {
@@ -677,7 +677,6 @@ export default function PlaceDetailsPage() {
                         cursor: "pointer",
                         whiteSpace: "nowrap",
                         transition: "all 0.2s ease",
-                        boxShadow: isSelected ? "0 4px 12px rgba(0, 122, 255, 0.3)" : "none",
                         display: "flex",
                         alignItems: "center",
                         gap: "6px"
