@@ -1029,7 +1029,7 @@ export default function ProfilePage() {
           </div>
           <div className={styles.badgeRight}>
             {reminders.length > 0 && (
-              <span className={styles.favBadge} style={{ background: "#34c759" }}>
+              <span className={styles.favBadge} style={{ background: "none" }}>
                 {reminders.length}
               </span>
             )}
