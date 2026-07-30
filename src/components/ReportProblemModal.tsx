@@ -33,6 +33,24 @@ const PROBLEM_OPTIONS = [
   { id: "other", label: "شيء آخر أو العديد من الأشياء غير صحيحة" }
 ];
 
+const SITE_CATEGORIES = [
+  { id: "restaurant", label: "مطاعم" },
+  { id: "cafe", label: "كافيهات" },
+  { id: "garden", label: "حدائق" },
+  { id: "medicalCenter", label: "مراكز طبية" },
+  { id: "health_beauty", label: "الصحة والجمال" },
+  { id: "family", label: "اماكن عائلية" },
+  { id: "quiet_places", label: "اماكن هادئة" },
+  { id: "kids", label: "العاب اطفال" },
+  { id: "amusement_aqua", label: "مدن الملاهي والالعاب المائية" },
+  { id: "work", label: "مساحات عمل مشتركة" },
+  { id: "courses_study", label: "اماكن كورسات ومذاكرة" },
+  { id: "hotel", label: "فنادق" },
+  { id: "cinema", label: "سينما" },
+  { id: "mall", label: "مولات" },
+  { id: "outings", label: "فسح وخروجات" }
+];
+
 export default function ReportProblemModal({ isOpen, onClose, place }: ReportProblemModalProps) {
   const { user } = useAuth();
   const [selectedProblem, setSelectedProblem] = useState<string | null>(null);
@@ -56,7 +74,6 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   // Category State
   const [newCategory, setNewCategory] = useState(place.category || "");
   const [newCategoryLabel, setNewCategoryLabel] = useState(place.category_label || "");
-  const [categoriesList, setCategoriesList] = useState<{ id: string; name: string; name_ar: string }[]>([]);
   
   // General inputs
   const [comment, setComment] = useState("");
@@ -66,23 +83,9 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Load category list and parse working hours
+  // Load and parse working hours
   useEffect(() => {
     if (!isOpen) return;
-    
-    // Fetch categories
-    const fetchCats = async () => {
-      if (!supabase) return;
-      const { data } = await supabase.from("categories").select("*");
-      if (data) {
-        setCategoriesList(data.map(c => ({
-          id: c.id,
-          name: c.name,
-          name_ar: c.name_ar || c.label || c.name
-        })));
-      }
-    };
-    fetchCats();
 
     // Parse existing working hours
     const parsed = parseWorkingHours(place.working_hours);
@@ -653,8 +656,8 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                         value={newCategory}
                         onChange={(e) => {
                           setNewCategory(e.target.value);
-                          const selected = categoriesList.find(c => c.id === e.target.value);
-                          if (selected) setNewCategoryLabel(selected.name_ar);
+                          const selected = SITE_CATEGORIES.find(c => c.id === e.target.value);
+                          if (selected) setNewCategoryLabel(selected.label);
                         }}
                         style={{
                           width: "100%",
@@ -669,9 +672,9 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                         }}
                       >
                         <option value="" style={{ background: "#222" }}>اختر الفئة الجديدة...</option>
-                        {categoriesList.map(cat => (
-                          <option key={cat.id} value={cat.name} style={{ background: "#222" }}>
-                            {cat.name_ar}
+                        {SITE_CATEGORIES.map(cat => (
+                          <option key={cat.id} value={cat.id} style={{ background: "#222" }}>
+                            {cat.label}
                           </option>
                         ))}
                       </select>

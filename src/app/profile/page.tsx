@@ -48,6 +48,9 @@ export default function ProfilePage() {
 
   const [profile, setProfile] = useState<any>(null);
   const [favorites, setFavorites] = useState<any[]>([]);
+  const [reminders, setReminders] = useState<any[]>([]);
+  const [isRemindersModalOpen, setIsRemindersModalOpen] = useState(false);
+  const [loadingReminders, setLoadingReminders] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
@@ -297,6 +300,22 @@ export default function ProfilePage() {
     }, 1500);
   };
 
+  const handleDeleteReminder = async (e: React.MouseEvent, noteId: string) => {
+    e.stopPropagation();
+    if (!supabase) return;
+    try {
+      const { error } = await supabase
+        .from("place_notes")
+        .delete()
+        .eq("id", noteId);
+      if (!error) {
+        setReminders(prev => prev.filter(r => r.id !== noteId));
+      }
+    } catch (err) {
+      console.error("Error deleting reminder:", err);
+    }
+  };
+
   const fetchProfileData = async () => {
     if (!supabase || !user) return;
     setLoading(true);
@@ -358,6 +377,32 @@ export default function ProfilePage() {
       }
     } else {
       setFavorites([]);
+    }
+
+    // Fetch reminders/notes
+    try {
+      setLoadingReminders(true);
+      const { data: notes } = await supabase
+        .from("place_notes")
+        .select("*, places(name)")
+        .eq("user_id", user.id)
+        .order("updated_at", { ascending: false });
+
+      if (notes) {
+        setReminders(notes.map((n: any) => ({
+          id: n.id,
+          placeId: n.place_id,
+          note: n.note,
+          updatedAt: n.updated_at,
+          placeName: n.places?.name || "مكان غير معروف"
+        })));
+      } else {
+        setReminders([]);
+      }
+    } catch (e) {
+      console.error("Error fetching notes:", e);
+    } finally {
+      setLoadingReminders(false);
     }
 
     setLoading(false);
@@ -961,6 +1006,38 @@ export default function ProfilePage() {
           </div>
         </div>
         {/* End Favorites Card */}
+
+        <hr className={styles.dividerDashed} />
+
+        {/* Start Reminders Card */}
+        <div
+          className={styles.cardContainer}
+          onClick={() => {
+            fetchProfileData();
+            setIsRemindersModalOpen(true);
+          }}
+        >
+          <div className={styles.cardContent}>
+            {/* Icon */}
+            <div style={{ color: "#34c759" }}>
+              <i className={`bx bx-notepad ${styles.cardIcon}`}></i>
+            </div>
+            {/* Title */}
+            <div>
+              <h3 className={styles.cardTitle}>التذكيرات والملاحظات</h3>
+            </div>
+          </div>
+          <div className={styles.badgeRight}>
+            {reminders.length > 0 && (
+              <span className={styles.favBadge} style={{ background: "#34c759" }}>
+                {reminders.length}
+              </span>
+            )}
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+          </div>
+        </div>
+        {/* End Reminders Card */}
+
         <hr className={styles.dividerDashed} />
         {/* Start Notifications Card */}
         <div
@@ -1673,6 +1750,73 @@ export default function ProfilePage() {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reminders Modal */}
+      {isRemindersModalOpen && (
+        <div className={styles.notifModalOverlay} onClick={() => setIsRemindersModalOpen(false)}>
+          <div className={styles.notifModalPanel} onClick={e => e.stopPropagation()} style={{ maxWidth: "450px" }}>
+            <button onClick={() => setIsRemindersModalOpen(false)} className={styles.notifModalCloseBtn}>
+              <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>
+            </button>
+            <div className={styles.notifModalHeader}>
+              <div className={styles.notifModalEmoji}>📝</div>
+              <h3 className={styles.notifModalTitle}>تذكيراتي وملاحظاتي</h3>
+              <span className={styles.notifModalDate}>إجمالي الملاحظات المضافة: {reminders.length}</span>
+            </div>
+            
+            <div className={styles.notifModalBody} style={{ maxHeight: "350px", overflowY: "auto", marginTop: "16px" }}>
+              {loadingReminders ? (
+                <div style={{ textAlign: "center", padding: "20px", color: "var(--text-secondary)" }}>جاري تحميل التذكيرات...</div>
+              ) : reminders.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                  لا يوجد أي ملاحظات أو تذكيرات مضافة بعد.
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {reminders.map((rem) => (
+                    <div 
+                      key={rem.id} 
+                      onClick={() => { setIsRemindersModalOpen(false); router.push(`/places/${rem.placeId}`); }}
+                      style={{ 
+                        background: "rgba(255, 255, 255, 0.03)", 
+                        border: "1px solid var(--border-glass)", 
+                        borderRadius: "12px", 
+                        padding: "12px", 
+                        cursor: "pointer",
+                        position: "relative",
+                        textAlign: "right"
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                        <span style={{ fontWeight: "bold", fontSize: "0.95rem", color: "var(--text-primary)" }}>{rem.placeName}</span>
+                        <button 
+                          onClick={(e) => handleDeleteReminder(e, rem.id)}
+                          style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", padding: "4px", fontSize: "1.1rem" }}
+                          title="حذف الملاحظة"
+                        >
+                          <i className="bx bx-trash"></i>
+                        </button>
+                      </div>
+                      
+                      <p style={{ margin: "0 0 6px", fontSize: "0.88rem", color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}>
+                        {rem.note}
+                      </p>
+                      
+                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                        تحديث: {new Date(rem.updatedAt).toLocaleDateString("ar-EG")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <button onClick={() => setIsRemindersModalOpen(false)} className={`ios-btn ios-btn-primary ${styles.notifModalActionBtn}`} style={{ marginTop: "16px" }}>
+              إغلاق
+            </button>
           </div>
         </div>
       )}

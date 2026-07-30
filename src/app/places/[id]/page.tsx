@@ -8,13 +8,14 @@ import { useAuth } from "@/context/AuthContext";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyOpen } from "@/lib/workingHours";
 import ReviewSection from "@/components/ReviewSection";
 import ReportProblemModal from "@/components/ReportProblemModal";
+import PlaceNoteModal from "@/components/PlaceNoteModal";
 
 // Icon
 import { FaMapMarkerAlt, FaPhoneAlt  } from "react-icons/fa";
 import { BiSolidMapPin } from "react-icons/bi";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
-
+import { TbListDetailsFilled } from "react-icons/tb";
 
 const CATEGORY_ICONS: Record<string, string> = {
   restaurant: "bx-restaurant",
@@ -69,6 +70,7 @@ export default function PlaceDetailsPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [togglingFav, setTogglingFav] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
 
   useEffect(() => {
     if (activeMenuIndex === null || !place?.menuImages) return;
@@ -536,7 +538,7 @@ export default function PlaceDetailsPage() {
                 background: "#007aff",
                 color: "#fff",
                 borderRadius: "12px",
-                padding: "8px 6px",
+                padding: "5px 6px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -560,7 +562,7 @@ export default function PlaceDetailsPage() {
                   border: "1px solid var(--border-glass)",
                   color: "#007aff",
                   borderRadius: "12px",
-                  padding: "8px 6px",
+                  padding: "5px 6px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -581,7 +583,7 @@ export default function PlaceDetailsPage() {
                   border: "1px solid var(--border-glass)",
                   color: "var(--text-muted)",
                   borderRadius: "12px",
-                  padding: "8px 6px",
+                  padding: "5px 6px",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -604,7 +606,7 @@ export default function PlaceDetailsPage() {
                 border: "1px solid var(--border-glass)",
                 color: isFavorite ? "#ff3b30" : "#007aff",
                 borderRadius: "12px",
-                padding: "8px 6px",
+                padding: "5px 6px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -830,7 +832,7 @@ export default function PlaceDetailsPage() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
                 <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>الموقع الإلكتروني</span>
                 {(displayBranch as any).website_url || (place as any).website_url ? (
-                  <a href={(displayBranch as any).website_url || (place as any).website_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold", maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <a href={(displayBranch as any).website_url || (place as any).website_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9rem", color: "#007aff", textDecoration: "none", fontWeight: "bold", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", direction: "ltr" }}>
                     {(displayBranch as any).website_url || (place as any).website_url}
                   </a>
                 ) : (
@@ -852,8 +854,8 @@ export default function PlaceDetailsPage() {
           {/* Hours Card */}
           {displayBranch.workingHours && (
             <div style={{ marginBottom: "24px" }}>
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>مواعيد العمل</h3>
-              <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px" }}>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>ساعات العمل</h3>
+              <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 12px" }}>
                 {(() => {
                   const parsed = parseWorkingHours(displayBranch.workingHours);
                   if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
@@ -882,7 +884,7 @@ export default function PlaceDetailsPage() {
                                 {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--accent-ios)", marginRight: "6px" }}>(اليوم)</span>}
                               </div>
                               <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.95rem" }}>
-                                {day.isWorking ? `من ${day.openTime} ${day.openPeriod} حتي ${day.closeTime} ${day.closePeriod}` : "إجازة"}
+                                {day.isWorking ? ` ${day.openTime} ${day.openPeriod} : ${day.closeTime} ${day.closePeriod}` : "إجازة"}
                               </div>
                             </div>
                           );
@@ -907,8 +909,9 @@ export default function PlaceDetailsPage() {
                 borderRadius: "12px",
                 padding: "14px",
                 color: "#ff3b30",
-                fontWeight: "bold",
-                fontSize: "0.95rem",
+                fontWeight: "700",
+                fontSize: "0.9rem",
+                fontFamily: "var(--font-cairo)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -923,7 +926,13 @@ export default function PlaceDetailsPage() {
 
             <div style={{ display: "flex", gap: "10px" }}>
               <button
-                onClick={() => alert("سيتم إضافة هذا المكان كـ Pin في خريطتك")}
+                onClick={() => {
+                  if (!user) {
+                    alert("يرجى تسجيل الدخول أولاً لإضافة ملاحظة.");
+                    return;
+                  }
+                  setIsNoteModalOpen(true);
+                }}
                 style={{
                   flex: 1,
                   background: "rgba(255, 255, 255, 0.05)",
@@ -940,12 +949,12 @@ export default function PlaceDetailsPage() {
                   cursor: "pointer"
                 }}
               >
-                <i className="bx bx-pin" style={{ fontSize: "1.1rem" }}></i>
-                <span>تثبيت الدبوس</span>
+                <i className="bx bx-notepad" style={{ fontSize: "1.1rem", color: "#34c759" }}></i>
+                <span style={{ fontFamily:"var(--font-cairo)"}}>أضف تذكير</span>
               </button>
 
               <button
-                onClick={() => alert("طلب ملكية هذا المكان تحت المراجعة")}
+                onClick={handleShare}
                 style={{
                   flex: 1,
                   background: "rgba(255, 255, 255, 0.05)",
@@ -962,8 +971,8 @@ export default function PlaceDetailsPage() {
                   cursor: "pointer"
                 }}
               >
-                <i className="bx bx-badge-check" style={{ fontSize: "1.1rem" }}></i>
-                <span>امتلاك هذا المكان</span>
+                <i className="bx bx-share-alt" style={{ fontSize: "1.1rem" }}></i>
+                <span style={{ fontFamily:"var(--font-cairo)"}}>مشاركة هذا المكان</span>
               </button>
             </div>
 
@@ -1082,6 +1091,14 @@ export default function PlaceDetailsPage() {
           isOpen={isReportModalOpen}
           onClose={() => setIsReportModalOpen(false)}
           place={place}
+        />
+      )}
+      {isNoteModalOpen && place && (
+        <PlaceNoteModal
+          isOpen={isNoteModalOpen}
+          onClose={() => setIsNoteModalOpen(false)}
+          placeId={place.id}
+          placeName={place.name}
         />
       )}
       <style dangerouslySetInnerHTML={{
