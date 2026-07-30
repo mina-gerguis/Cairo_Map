@@ -66,7 +66,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   all: "bx-grid-alt",
   restaurant: "bx-restaurant",
   cafe: "bx-coffee",
-  garden: "bx-tree",
+  garden: "bx bx-leaf",
   medicalCenter: "bx-plus-medical",
   health_beauty: "bx-spa",
   family: "bx-group",
@@ -206,6 +206,7 @@ function HomeContent() {
             longitude: dbPlace.longitude || undefined,
             website_url: dbPlace.website_url,
             features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
+            services: Array.isArray(dbPlace.services) ? dbPlace.services : [],
             branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
               id: b.id,
               place_id: b.place_id,
@@ -222,6 +223,7 @@ function HomeContent() {
               createdAt: b.created_at,
               website_url: b.website_url,
               features: Array.isArray(b.features) ? b.features : [],
+              services: Array.isArray(b.services) ? b.services : [],
             })) : []
           }));
           setPlaces(mappedPlaces);
@@ -605,7 +607,7 @@ function HomeContent() {
                     <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#fff" }}>اعرف طريقك بالمترو</h3>
                     <span style={{ background: "#ff3f8e", color: "#fff", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "8px", fontWeight: "800" }}>جديد</span>
                   </div>
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>خريطة محطات المترو وأسعار التذاكر ومسارات الرحلات بدقة.</p>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>خريطة محطات المترو وأسعار التذاكر .</p>
                 </div>
               </div>
             </div>
@@ -630,7 +632,7 @@ function HomeContent() {
                     <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#fff" }}>دليل الهاتف والخدمات</h3>
                     <span style={{ background: "#ff3f8e", color: "#fff", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "8px", fontWeight: "800" }}>جديد</span>
                   </div>
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>أرقام الشركات، الطوارئ، وخدمات العملاء في مكان واحد.</p>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>أرقام الشركات، الطوارئ، وخدمات العملاء.</p>
                 </div>
               </div>
             </div>
@@ -645,7 +647,7 @@ function HomeContent() {
                 key={cat}
                 className={`category-pill ${selectedCategory === cat ? "active" : ""}`}
                 onClick={() => setSelectedCategory(cat)}
-                style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)", fontSize:"0.8rem"}}
               >
                 <i className={`bx ${CATEGORY_ICONS[cat] || "bx-category"}`} style={{ fontSize: "1.1rem" }}></i>
                 {CATEGORY_LABELS[cat] || cat}
@@ -1116,6 +1118,35 @@ function HomeContent() {
                                 >
                                   <i className={`bx ${CATEGORY_ICONS[subCatKey] || "bx-tag"}`} style={{ fontSize: "0.95rem" }}></i>
                                   {CATEGORY_LABELS[subCatKey] || subCatKey}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Services section inside Good to Know */}
+                        {((displayBranch as any)?.services || (selectedPlace as any)?.services) && ((displayBranch as any)?.services || (selectedPlace as any)?.services).length > 0 && (
+                          <div style={{ borderTop: "1px solid rgba(120, 120, 120, 0.1)", paddingTop: "12px", marginTop: "12px" }}>
+                            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>الخدمات المتاحة:</span>
+                            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                              {((displayBranch as any)?.services || (selectedPlace as any)?.services).map((serviceName: string) => (
+                                <span
+                                  key={serviceName}
+                                  style={{
+                                    background: "rgba(0, 111, 238, 0.08)",
+                                    color: "var(--accent-primary)",
+                                    border: "1px solid rgba(0, 111, 238, 0.2)",
+                                    padding: "4px 12px",
+                                    borderRadius: "16px",
+                                    fontSize: "0.82rem",
+                                    fontWeight: "600",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "6px"
+                                  }}
+                                >
+                                  <i className="bx bx-check-double" style={{ fontSize: "0.95rem" }}></i>
+                                  {serviceName}
                                 </span>
                               ))}
                             </div>

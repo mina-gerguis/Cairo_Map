@@ -36,6 +36,8 @@ import { useAuth } from "@/context/AuthContext";
 import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES, FEATURES_LIST } from "@/data/places";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { ScheduleDay, WorkingHoursData, DAYS_OF_WEEK, generateTimeOptions } from "@/lib/workingHours";
+import { MultiSelectSearch } from "@/components/ui/MultiSelectSearch";
+import { SERVICES_LIST } from "@/data/services";
 
 interface AdminProfile {
   is_admin: boolean;
@@ -64,6 +66,7 @@ interface DBPlace {
   created_at?: string;
   branches?: any[];
   features?: string[];
+  services?: string[];
 }
 
 const CATEGORY_MAP: Record<string, string> = {
@@ -103,7 +106,8 @@ export default function AdminDashboard() {
     menu_images: "", description: "",
     latitude: "", longitude: "",
     website_url: "",
-    features: [] as string[]
+    features: [] as string[],
+    services: [] as string[]
   });
 
   const [scheduleType, setScheduleType] = useState<"24/7" | "custom">("24/7");
@@ -210,7 +214,8 @@ export default function AdminDashboard() {
     latitude: "",
     longitude: "",
     website_url: "",
-    features: [] as string[]
+    features: [] as string[],
+    services: [] as string[]
   });
 
   const handleStartEditPlace = (place: DBPlace) => {
@@ -256,6 +261,7 @@ export default function AdminDashboard() {
       longitude: place.longitude ? place.longitude.toString() : "",
       website_url: (place as any).website_url || "",
       features: Array.isArray(place.features) ? place.features : [],
+      services: Array.isArray(place.services) ? place.services : [],
     });
   };
 
@@ -456,7 +462,8 @@ export default function AdminDashboard() {
         latitude: parseFloat(formData.latitude) || null,
         longitude: parseFloat(formData.longitude) || null,
         website_url: formData.website_url.trim() || null,
-        features: formData.features || []
+        features: formData.features || [],
+        services: formData.services || []
       };
 
       let { data, error: insertError } = await supabase
@@ -516,7 +523,8 @@ export default function AdminDashboard() {
           longitude: data.longitude,
           is_main: true,
           website_url: data.website_url || null,
-          features: data.features || []
+          features: data.features || [],
+          services: data.services || []
         };
 
         let { error: branchError } = await supabase
@@ -560,7 +568,8 @@ export default function AdminDashboard() {
           longitude: data.longitude,
           is_main: true,
           website_url: data.website_url || null,
-          features: data.features || []
+          features: data.features || [],
+          services: data.services || []
         };
 
         const placeWithBranch = { ...data, branches: [newBranch] };
@@ -575,7 +584,8 @@ export default function AdminDashboard() {
           menu_images: "", description: "",
           latitude: "", longitude: "",
           website_url: "",
-          features: []
+          features: [],
+          services: []
         });
       }
     } catch (err: any) {
@@ -788,7 +798,8 @@ export default function AdminDashboard() {
         images: imagesArr,
         menu_images: [],
         description: proposal.description || "",
-        working_hours: JSON.stringify({ type: "24/7" })
+        working_hours: JSON.stringify({ type: "24/7" }),
+        services: proposal.services || []
       };
 
       const { data: insertedPlace, error: insertError } = await supabase
@@ -808,7 +819,8 @@ export default function AdminDashboard() {
           full_address: insertedPlace.full_address || "",
           phones: insertedPlace.phones || [],
           google_maps_url: insertedPlace.google_maps_url || "",
-          working_hours: insertedPlace.working_hours || JSON.stringify({ type: "24/7" })
+          working_hours: insertedPlace.working_hours || JSON.stringify({ type: "24/7" }),
+          services: insertedPlace.services || []
         }]);
       }
 
@@ -948,7 +960,8 @@ export default function AdminDashboard() {
         latitude: parseFloat(editPlaceFormData.latitude) || null,
         longitude: parseFloat(editPlaceFormData.longitude) || null,
         website_url: editPlaceFormData.website_url.trim() || null,
-        features: editPlaceFormData.features || []
+        features: editPlaceFormData.features || [],
+        services: editPlaceFormData.services || []
       };
 
       let { data, error } = await supabase
@@ -1007,7 +1020,8 @@ export default function AdminDashboard() {
         google_maps_url: editPlaceFormData.google_maps_url,
         working_hours: finalWorkingHours,
         website_url: editPlaceFormData.website_url.trim() || null,
-        features: editPlaceFormData.features || []
+        features: editPlaceFormData.features || [],
+        services: editPlaceFormData.services || []
       };
 
       let { error: branchUpdateError } = await supabase
@@ -1355,6 +1369,7 @@ export default function AdminDashboard() {
                       {prop.phone && <div>📞 <strong>الهاتف:</strong> {prop.phone}</div>}
                       {prop.working_hours && <div>⏰ <strong>المواعيد:</strong> {prop.working_hours}</div>}
                       {prop.description && <div>📝 <strong>الوصف:</strong> {prop.description}</div>}
+                      {prop.services && prop.services.length > 0 && <div>🛠️ <strong>الخدمات:</strong> {prop.services.join("، ")}</div>}
                       {prop.rejection_reason && <div style={{ color: "#ff3b30" }}>⚠️ <strong>سبب الرفض:</strong> {prop.rejection_reason}</div>}
                     </div>
 
@@ -1646,6 +1661,16 @@ export default function AdminDashboard() {
                   );
                 })}
               </div>
+            </div>
+            {/* Services Selection */}
+            <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.03)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)", marginTop: "10px" }}>
+              <MultiSelectSearch
+                label="الخدمات المتاحة بالمكان"
+                options={SERVICES_LIST}
+                selected={formData.services || []}
+                onChange={(selected) => updateForm("services", selected)}
+                placeholder="اختر الخدمات مثل: قاعة أفراح، شركة شحن، كهربائي سيارات..."
+              />
             </div>
             <div>
               <label className="help-label">المحافظة</label>
@@ -2017,6 +2042,17 @@ export default function AdminDashboard() {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Services Selection */}
+              <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.03)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)", marginTop: "10px" }}>
+                <MultiSelectSearch
+                  label="الخدمات المتاحة بالمكان"
+                  options={SERVICES_LIST}
+                  selected={editPlaceFormData.services || []}
+                  onChange={(selected) => setEditPlaceFormData({ ...editPlaceFormData, services: selected })}
+                  placeholder="اختر الخدمات مثل: قاعة أفراح، شركة شحن، كهربائي سيارات..."
+                />
               </div>
 
               <div>

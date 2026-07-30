@@ -58,6 +58,7 @@ export interface Branch {
   isMain: boolean;
   website_url?: string;
   features?: string[];
+  services?: string[];
 }
 
 export interface Place {
@@ -85,6 +86,7 @@ export interface Place {
   branches?: Branch[];
   website_url?: string;
   features?: string[];
+  services?: string[];
 }
 
 export interface FeatureItem {

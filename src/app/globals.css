@@ -813,6 +813,7 @@ html.light .footer { background: var(--bg-primary); }
   color: var(--text-muted);
   font-size: 0.85rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .footer-bottom-sep { opacity: 0.4; }

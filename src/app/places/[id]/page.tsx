@@ -125,6 +125,7 @@ export default function PlaceDetailsPage() {
             longitude: dbPlace.longitude || undefined,
             website_url: dbPlace.website_url,
             features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
+            services: Array.isArray(dbPlace.services) ? dbPlace.services : [],
             branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
               id: b.id,
               place_id: b.place_id,
@@ -142,6 +143,7 @@ export default function PlaceDetailsPage() {
               createdAt: b.created_at,
               website_url: b.website_url,
               features: Array.isArray(b.features) ? b.features : [],
+              services: Array.isArray(b.services) ? b.services : [],
             })) : []
           };
           setPlace(mappedPlace);
@@ -804,6 +806,35 @@ export default function PlaceDetailsPage() {
                       >
                         <i className={`bx ${CATEGORY_ICONS[subCatKey] || "bx-tag"}`} style={{ fontSize: "0.95rem" }}></i>
                         {CATEGORY_LABELS[subCatKey] || subCatKey}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Services section inside Good to Know */}
+              {((displayBranch as any)?.services || (place as any)?.services) && ((displayBranch as any)?.services || (place as any)?.services).length > 0 && (
+                <div style={{ borderTop: "1px solid rgba(120, 120, 120, 0.1)", paddingTop: "12px", marginTop: "12px" }}>
+                  <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>الخدمات المتاحة:</span>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {((displayBranch as any)?.services || (place as any)?.services).map((serviceName: string) => (
+                      <span
+                        key={serviceName}
+                        style={{
+                          background: "rgba(0, 111, 238, 0.08)",
+                          color: "var(--accent-primary)",
+                          border: "1px solid rgba(0, 111, 238, 0.2)",
+                          padding: "4px 12px",
+                          borderRadius: "16px",
+                          fontSize: "0.82rem",
+                          fontWeight: "600",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <i className="bx bx-check-double" style={{ fontSize: "0.95rem" }}></i>
+                        {serviceName}
                       </span>
                     ))}
                   </div>

@@ -9,6 +9,8 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { DEFAULT_CATEGORIES, CategoryItem } from "@/data/places";
+import { MultiSelectSearch } from "@/components/ui/MultiSelectSearch";
+import { SERVICES_LIST } from "@/data/services";
 
 function ProposePlaceContent() {
   const router = useRouter();
@@ -41,6 +43,7 @@ function ProposePlaceContent() {
     facebook: "",
     instagram: "",
     website_url: "",
+    services: [] as string[],
   });
 
   const [newImgInput, setNewImgInput] = useState("");
@@ -99,6 +102,7 @@ function ProposePlaceContent() {
             facebook: links.facebook || "",
             instagram: links.instagram || "",
             website_url: data.website_url || "",
+            services: Array.isArray(data.services) ? data.services : [],
           });
         }
       } catch (err: any) {
@@ -234,6 +238,7 @@ function ProposePlaceContent() {
         instagram: formData.instagram.trim(),
       },
       website_url: formData.website_url.trim(),
+      services: formData.services || [],
       status: "pending",
       rejection_reason: null,
       updated_at: new Date().toISOString(),
@@ -367,7 +372,7 @@ function ProposePlaceContent() {
                 onClick={() => {
                   setSuccess(false);
                   setFormData({
-                    name: "", category: "", category_label: "", sub_categories: [], governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: "", website_url: ""
+                    name: "", category: "", category_label: "", sub_categories: [], governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: "", website_url: "", services: []
                   });
                   if (editId) router.push("/propose-place");
                 }}
@@ -465,6 +470,17 @@ function ProposePlaceContent() {
                       );
                     })}
                   </div>
+                </div>
+
+                {/* Services Selection */}
+                <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.03)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+                  <MultiSelectSearch
+                    label="الخدمات المتاحة بالمكان"
+                    options={SERVICES_LIST}
+                    selected={formData.services || []}
+                    onChange={(selected) => setFormData({ ...formData, services: selected })}
+                    placeholder="ابحث عن خدمات مثل: قاعة أفراح، شركة شحن، كهربائي سيارات..."
+                  />
                 </div>
 
                 {/* Price Range */}
