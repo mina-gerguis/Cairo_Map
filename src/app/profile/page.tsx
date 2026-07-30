@@ -43,7 +43,7 @@ const AVAILABLE_INTERESTS = [
 /* ─── صفحة الملف الشخصي والإعدادات (Profile Page Component) ─── */
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, session, loading: authLoading, refreshProfile } = useAuth();
+  const { user, session, loading: authLoading, refreshProfile, logout } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteAll } = useNotifications();
 
   const [profile, setProfile] = useState<any>(null);
@@ -53,10 +53,74 @@ export default function ProfilePage() {
   const [loadingReminders, setLoadingReminders] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  const [showDevicesModal, setShowDevicesModal] = useState(false);
+  const [devicesList, setDevicesList] = useState<any[]>([]);
+  const [loadingDevices, setLoadingDevices] = useState(false);
+
+  const fetchDevices = async () => {
+    if (!supabase || !user) return;
+    setLoadingDevices(true);
+    try {
+      const { data, error } = await supabase
+        .from("user_devices")
+        .select("*")
+        .order("logged_in_at", { ascending: false });
+      if (data) {
+        setDevicesList(data);
+      }
+    } catch (e) {
+      console.error("Error fetching devices:", e);
+    } finally {
+      setLoadingDevices(false);
+    }
+  };
+
+  const handleDeactivateDevice = async (deviceId: string, sessionId: string) => {
+    if (!supabase) return;
+    const isCurrentDevice = sessionId === localStorage.getItem("dftry_device_session_id");
+    
+    if (isCurrentDevice) {
+      if (!confirm("هل أنت متأكد من تسجيل الخروج من جهازك الحالي؟")) return;
+    } else {
+      if (!confirm("هل أنت متأكد من إنهاء جلسة هذا الجهاز؟ سيتم تسجيل الخروج منه فوراً.")) return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("user_devices")
+        .update({
+          is_active: false,
+          logged_out_at: new Date().toISOString()
+        })
+        .eq("id", deviceId);
+
+      if (!error) {
+        setDevicesList(prev => prev.map(d => d.id === deviceId ? { ...d, is_active: false, logged_out_at: new Date().toISOString() } : d));
+        
+        if (isCurrentDevice) {
+          setShowDevicesModal(false);
+          handleLogout();
+        }
+      } else {
+        alert("فشل تسجيل خروج الجهاز: " + error.message);
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
   const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
   const [selectedFavCategory, setSelectedFavCategory] = useState<string>("الكل");
 
   const [editMode, setEditMode] = useState(false);
+
+  // States for user proposals and reports
+  const [userProposals, setUserProposals] = useState<any[]>([]);
+  const [userReports, setUserReports] = useState<any[]>([]);
+  const [userAppFeedbacks, setUserAppFeedbacks] = useState<any[]>([]);
+  const [isRequestsExpanded, setIsRequestsExpanded] = useState(false);
+  const [activeRequestsTab, setActiveRequestsTab] = useState<"proposals" | "reports" | "app_feedback">("proposals");
+  const [loadingRequests, setLoadingRequests] = useState(false);
 
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
@@ -115,6 +179,20 @@ export default function ProfilePage() {
   const [verificationCode, setVerificationCode] = useState("");
   const [mfaLoading, setMfaLoading] = useState(false);
   const [mfaError, setMfaError] = useState("");
+
+  // Suggestions & Bug Reports State
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
+  const [suggestionType, setSuggestionType] = useState("اقتراح لتحسين الشكل");
+  const [suggestionMessage, setSuggestionMessage] = useState("");
+  const [suggestionLoading, setSuggestionLoading] = useState(false);
+
+  const [showBugReportModal, setShowBugReportModal] = useState(false);
+  const [bugType, setBugType] = useState("");
+  const [bugDetails, setBugDetails] = useState("");
+  const [bugImage, setBugImage] = useState("");
+  const [bugImageFile, setBugImageFile] = useState<File | null>(null);
+  const [bugLoading, setBugLoading] = useState(false);
+  const [bugUploading, setBugUploading] = useState(false);
 
   const [codeDigits, setCodeDigits] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -208,6 +286,15 @@ export default function ProfilePage() {
     document.documentElement.classList.toggle("light", next === "light");
     window.dispatchEvent(new CustomEvent("themechange", { detail: next }));
   };
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -405,7 +492,157 @@ export default function ProfilePage() {
       setLoadingReminders(false);
     }
 
+    await fetchUserRequestsAndReports();
+
     setLoading(false);
+  };
+
+  const fetchUserRequestsAndReports = async () => {
+    if (!supabase || !user) return;
+    setLoadingRequests(true);
+    try {
+      // 1. Fetch place proposals
+      const { data: propData, error: propErr } = await supabase
+        .from("place_proposals")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (propErr) console.error("Error fetching user proposals:", propErr);
+      else setUserProposals(propData || []);
+
+      // 2. Fetch place reports
+      const { data: repData, error: repErr } = await supabase
+        .from("place_reports")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (repErr) {
+        console.error("Error fetching user reports:", repErr);
+        setUserReports([]);
+      } else if (repData && repData.length > 0) {
+        // Resolve place names
+        const placeIds = Array.from(new Set(repData.map(r => r.place_id).filter(Boolean)));
+        let placesMap = new Map();
+        if (placeIds.length > 0) {
+          const { data: placesData, error: placesErr } = await supabase
+            .from("places")
+            .select("id, name")
+            .in("id", placeIds);
+          
+          if (placesErr) console.error("Error resolving place names for reports:", placesErr);
+          if (placesData) {
+            placesMap = new Map(placesData.map(p => [p.id, p.name]));
+          }
+        }
+
+        const resolvedReports = repData.map(report => ({
+          ...report,
+          place_name: placesMap.get(report.place_id) || "مكان محذوف أو غير معروف"
+        }));
+      } else {
+        setUserReports([]);
+      }
+
+      // 3. Fetch app suggestions and bug reports
+      const { data: feedbackData, error: feedbackErr } = await supabase
+        .from("app_feedback")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (feedbackErr) {
+        console.error("Error fetching user app feedback:", feedbackErr);
+        setUserAppFeedbacks([]);
+      } else {
+        setUserAppFeedbacks(feedbackData || []);
+      }
+    } catch (e) {
+      console.error("Error fetching user requests and reports:", e);
+    } finally {
+      setLoadingRequests(false);
+    }
+  };
+
+  const handleRetractProposal = async (proposalId: string) => {
+    if (!confirm("هل أنت متأكد من التراجع عن هذا الاقتراح؟")) return;
+    if (!supabase || !user) return;
+    try {
+      const { error } = await supabase
+        .from("place_proposals")
+        .update({ status: "retracted", updated_at: new Date().toISOString() })
+        .eq("id", proposalId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+      alert("تم التراجع عن اقتراح المكان بنجاح.");
+      fetchUserRequestsAndReports();
+    } catch (err: any) {
+      alert("فشل التراجع عن الاقتراح: " + err.message);
+    }
+  };
+
+  const handleRetractReport = async (reportId: string) => {
+    if (!confirm("هل أنت متأكد من التراجع عن هذا البلاغ؟")) return;
+    if (!supabase || !user) return;
+    try {
+      const { error } = await supabase
+        .from("place_reports")
+        .update({ status: "retracted" })
+        .eq("id", reportId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+      alert("تم التراجع عن البلاغ بنجاح.");
+      fetchUserRequestsAndReports();
+    } catch (err: any) {
+      alert("فشل التراجع عن البلاغ: " + err.message);
+    }
+  };
+
+  const getProblemLabelAr = (type: string) => {
+    switch (type) {
+      case "name": return "الاسم غير صحيح ✏️";
+      case "address": return "العنوان أو الموقع غير صحيح 📍";
+      case "phone_website": return "الهاتف أو موقع الويب غير صحيح 📞";
+      case "working_hours": return "ساعات العمل غير صحيحة 🕐";
+      case "closed": return "المكان مغلق 🔴";
+      case "category": return "الفئة غير صحيحة 🗂️";
+      default: return "تفاصيل أخرى ⚠️";
+    }
+  };
+
+  const getProposalStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <span style={{ background: "rgba(255, 149, 0, 0.15)", color: "#ff9500", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>قيد المراجعة</span>;
+      case "approved":
+        return <span style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>مقبول ومضاف</span>;
+      case "rejected":
+        return <span style={{ background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>مرفوض</span>;
+      case "retracted":
+        return <span style={{ background: "rgba(142, 142, 147, 0.15)", color: "#8e8e93", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>متراجع عنه</span>;
+      default:
+        return <span style={{ background: "rgba(255, 255, 255, 0.1)", color: "#fff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem" }}>{status}</span>;
+    }
+  };
+
+  const getReportStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <span style={{ background: "rgba(255, 149, 0, 0.15)", color: "#ff9500", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>قيد المراجعة</span>;
+      case "reviewed":
+        return <span style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>تحت النظر</span>;
+      case "accepted":
+        return <span style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>مقبول ومعدل</span>;
+      case "rejected":
+        return <span style={{ background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>مرفوض</span>;
+      case "retracted":
+        return <span style={{ background: "rgba(142, 142, 147, 0.15)", color: "#8e8e93", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>متراجع عنه</span>;
+      default:
+        return <span style={{ background: "rgba(255, 255, 255, 0.1)", color: "#fff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem" }}>{status}</span>;
+    }
   };
 
   const handleSave = async () => {
@@ -574,6 +811,121 @@ export default function ProfilePage() {
     setPasswordLoading(false);
   };
 
+  const handleSendSuggestion = async () => {
+    if (!supabase || !user) return;
+    if (!suggestionMessage.trim()) {
+      setMessage({ type: 'error', text: "يرجى كتابة رسالة الاقتراح" });
+      return;
+    }
+    setSuggestionLoading(true);
+    try {
+      const { error } = await supabase.from('app_feedback').insert([{
+        user_id: user.id,
+        type: 'suggestion',
+        category: suggestionType,
+        content: suggestionMessage.trim(),
+        status: 'pending'
+      }]);
+      if (error) throw error;
+
+      // Send notification to the user in their list
+      await supabase.from("notifications").insert([{
+        user_id: user.id,
+        title: "تم استلام اقتراحك بنجاح 💡",
+        message: `شكراً لمشاركتنا اقتراحك بخصوص: "${suggestionType}". تم تسجيله وجاري مراجعته من قبل الإدارة.`,
+        type: "success",
+        link: "/profile"
+      }]);
+
+      setMessage({ type: 'success', text: "تم إرسال اقتراحك بنجاح! شكراً لك." });
+      setShowSuggestionModal(false);
+      setSuggestionMessage("");
+      fetchUserRequestsAndReports();
+    } catch (err: any) {
+      console.error(err);
+      setMessage({ type: 'error', text: "حدث خطأ أثناء إرسال الاقتراح: " + (err.message || "") });
+    } finally {
+      setSuggestionLoading(false);
+    }
+  };
+
+  const handleSendBugReport = async () => {
+    if (!supabase || !user) return;
+    if (!bugType.trim()) {
+      setMessage({ type: 'error', text: "يرجى تحديد نوع المشكلة" });
+      return;
+    }
+    if (!bugDetails.trim()) {
+      setMessage({ type: 'error', text: "يرجى كتابة تفاصيل المشكلة" });
+      return;
+    }
+    setBugLoading(true);
+    let uploadedImageUrl = null;
+    try {
+      if (bugImageFile) {
+        setBugUploading(true);
+        const fileExt = bugImageFile.name.split('.').pop();
+        const filePath = `feedback_bugs/${user.id}_${Date.now()}.${fileExt}`;
+        const { error: uploadError, data } = await supabase.storage.from('avatars').upload(filePath, bugImageFile, { upsert: true });
+        if (uploadError) {
+          throw new Error("فشل رفع الصورة: " + uploadError.message);
+        }
+        if (data) {
+          const { data: pub } = supabase.storage.from('avatars').getPublicUrl(filePath);
+          uploadedImageUrl = pub.publicUrl;
+        }
+        setBugUploading(false);
+      }
+
+      const { error } = await supabase.from('app_feedback').insert([{
+        user_id: user.id,
+        type: 'bug',
+        title: bugType.trim(),
+        content: bugDetails.trim(),
+        image_url: uploadedImageUrl || bugImage || null,
+        status: 'pending'
+      }]);
+      if (error) throw error;
+
+      // Send notification to the user in their list
+      await supabase.from("notifications").insert([{
+        user_id: user.id,
+        title: "تم تسجيل بلاغ المشكلة ⚠️",
+        message: `تم استلام بلاغك بخصوص المشكلة: "${bugType}". سنقوم بمراجعتها وحلها في أقرب وقت.`,
+        type: "success",
+        link: "/profile"
+      }]);
+
+      setMessage({ type: 'success', text: "تم إرسال بلاغك بنجاح! سنقوم بمراجعته قريباً." });
+      setShowBugReportModal(false);
+      setBugType("");
+      setBugDetails("");
+      setBugImage("");
+      setBugImageFile(null);
+      fetchUserRequestsAndReports();
+    } catch (err: any) {
+      console.error(err);
+      setMessage({ type: 'error', text: "حدث خطأ أثناء إرسال البلاغ: " + (err.message || "") });
+    } finally {
+      setBugLoading(false);
+      setBugUploading(false);
+    }
+  };
+
+  const handleBugImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBugImageFile(file);
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setBugImage(event.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleEnrollTOTP = async () => {
     if (!supabase) return;
     setMfaLoading(true);
@@ -700,6 +1052,113 @@ export default function ProfilePage() {
 
   return (
     <div className={styles.container}>
+      {message && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "rgba(0, 0, 0, 0.6)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: "fade-in 0.25s ease-out",
+            direction: "rtl",
+            padding: "20px"
+          }}
+          onClick={() => setMessage(null)}
+        >
+          <div 
+            style={{
+              background: "rgba(30, 30, 45, 0.95)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6)",
+              borderRadius: "24px",
+              padding: "32px 24px",
+              width: "100%",
+              maxWidth: "380px",
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "16px",
+              animation: "scale-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Status Icon */}
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: message.type === 'error' 
+                ? "linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.05) 100%)"
+                : "linear-gradient(135deg, rgba(52, 199, 89, 0.2) 0%, rgba(52, 199, 89, 0.05) 100%)",
+              border: message.type === 'error'
+                ? "2px solid rgba(255, 59, 48, 0.4)"
+                : "2px solid rgba(52, 199, 89, 0.4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+              <i 
+                className={`bx ${message.type === 'error' ? 'bx-error-circle' : 'bx-check-circle'}`} 
+                style={{ 
+                  fontSize: "2.2rem", 
+                  color: message.type === 'error' ? "#ff3b30" : "#34c759" 
+                }}
+              ></i>
+            </div>
+
+            {/* Title / Status Text */}
+            <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "#fff", fontFamily: "var(--font-cairo)" }}>
+              {message.type === 'error' ? "تنبيه" : "عملية ناجحة"}
+            </h3>
+
+            {/* Message Text */}
+            <p style={{ margin: 0, fontSize: "0.95rem", color: "rgba(255, 255, 255, 0.8)", lineHeight: "1.6", fontFamily: "var(--font-cairo)" }}>
+              {message.text}
+            </p>
+
+            {/* Close/OK button */}
+            <button 
+              onClick={() => setMessage(null)}
+              className="ios-btn"
+              style={{
+                width: "100%",
+                background: message.type === 'error' ? "#ff3b30" : "var(--accent-primary)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "14px",
+                padding: "12px",
+                fontWeight: "bold",
+                fontSize: "0.95rem",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                fontFamily: "var(--font-cairo)",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.2)"
+              }}
+            >
+              موافق
+            </button>
+          </div>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes fade-in {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes scale-up {
+              from { transform: scale(0.9); opacity: 0; }
+              to { transform: scale(1); opacity: 1; }
+            }
+          `}} />
+        </div>
+      )}
       {/* ─── 1. PROFILE RECTANGLE CARD ─── */}
       <div
         className={`glass-panel ${styles.profileCard} ${isProfileExpanded ? styles.profileCardExpanded : ''}`}
@@ -742,11 +1201,7 @@ export default function ProfilePage() {
         {/* Expanded Profile Info / Form */}
         {user && isProfileExpanded && (
           <div onClick={(e) => e.stopPropagation()} className={styles.profileExpandedContent}>
-            {message && (
-              <div className={`${styles.messageBanner} ${message.type === 'error' ? styles.messageError : styles.messageSuccess}`}>
-                {message.text}
-              </div>
-            )}
+
 
             {editMode ? (
               <div className={styles.formGap}>
@@ -1135,6 +1590,283 @@ export default function ProfilePage() {
           </div>
         )}
         {/*End Propose Place Card */}
+
+        {/*Start My Requests Card */}
+        {user && (
+          <>
+            <hr className={styles.dividerDashed} />
+            <div
+              className={styles.cardContainer}
+              style={{ flexDirection: "column", alignItems: "stretch" }}
+              onClick={() => setIsRequestsExpanded(!isRequestsExpanded)}
+            >
+              <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
+                <div className={styles.notifHeaderLeft}>
+                  <div style={{ color: "var(--accent-primary)" }}>
+                    <i className={`bx bx-history ${styles.cardIcon}`}></i>
+                  </div>
+                  <div>
+                    <h3 className={styles.cardTitle}>طلباتي وبلاغاتي</h3>
+                  </div>
+                </div>
+                <div className={styles.badgeRight}>
+                  {(userProposals.filter(p => p.status === "pending").length + userReports.filter(r => r.status === "pending").length + userAppFeedbacks.filter(f => f.status === "pending").length) > 0 && (
+                    <span className={styles.notifBadgeRed} style={{ background: "var(--accent-primary)" }}>
+                      {userProposals.filter(p => p.status === "pending").length + userReports.filter(r => r.status === "pending").length + userAppFeedbacks.filter(f => f.status === "pending").length}
+                    </span>
+                  )}
+                  <i className={`bx bx-chevron-${isRequestsExpanded ? "down" : "left"} ${styles.chevronIcon}`}></i>
+                </div>
+              </div>
+
+              {/* Collapsible Content */}
+              {isRequestsExpanded && (
+                <div className={styles.notifExpandedContent} onClick={(e) => e.stopPropagation()}>
+                  {/* Segment control/tabs */}
+                  <div style={{ display: "flex", gap: "8px", marginBottom: "16px", background: "rgba(255,255,255,0.03)", padding: "4px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRequestsTab("proposals")}
+                      className="ios-btn"
+                      style={{
+                        flex: 1,
+                        padding: "8px 12px",
+                        fontSize: "0.82rem",
+                        fontWeight: "600",
+                        borderRadius: "8px",
+                        border: "none",
+                        background: activeRequestsTab === "proposals" ? "var(--accent-primary)" : "transparent",
+                        color: activeRequestsTab === "proposals" ? "#fff" : "var(--text-secondary)",
+                        cursor: "pointer",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      اقتراحات الأماكن ({userProposals.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRequestsTab("reports")}
+                      className="ios-btn"
+                      style={{
+                        flex: 1,
+                        padding: "8px 12px",
+                        fontSize: "0.82rem",
+                        fontWeight: "600",
+                        borderRadius: "8px",
+                        border: "none",
+                        background: activeRequestsTab === "reports" ? "var(--accent-primary)" : "transparent",
+                        color: activeRequestsTab === "reports" ? "#fff" : "var(--text-secondary)",
+                        cursor: "pointer",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      البلاغات والشكاوى ({userReports.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRequestsTab("app_feedback")}
+                      className="ios-btn"
+                      style={{
+                        flex: 1,
+                        padding: "8px 12px",
+                        fontSize: "0.82rem",
+                        fontWeight: "600",
+                        borderRadius: "8px",
+                        border: "none",
+                        background: activeRequestsTab === "app_feedback" ? "var(--accent-primary)" : "transparent",
+                        color: activeRequestsTab === "app_feedback" ? "#fff" : "var(--text-secondary)",
+                        cursor: "pointer",
+                        transition: "all 0.2s"
+                      }}
+                    >
+                      دعم التطبيق ({userAppFeedbacks.length})
+                    </button>
+                  </div>
+
+                  {loadingRequests ? (
+                    <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
+                      جاري تحميل البيانات...
+                    </div>
+                  ) : activeRequestsTab === "proposals" ? (
+                    userProposals.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                        لم تقم باقتراح أي أماكن بعد.
+                      </div>
+                    ) : (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingLeft: "4px" }}>
+                        {userProposals.map((prop) => (
+                          <div key={prop.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>{prop.name}</strong>
+                              {getProposalStatusBadge(prop.status)}
+                            </div>
+                            <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span>{prop.governorate} • {prop.city}</span>
+                              <span>{new Date(prop.created_at).toLocaleDateString("ar-EG", { dateStyle: "short" })}</span>
+                            </div>
+                            {prop.rejection_reason && (
+                              <div style={{ fontSize: "0.78rem", color: "#ff3b30", background: "rgba(255, 59, 48, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
+                                <strong>سبب الرفض:</strong> {prop.rejection_reason}
+                              </div>
+                            )}
+                            {prop.status === "pending" && (
+                              <button
+                                type="button"
+                                onClick={() => handleRetractProposal(prop.id)}
+                                className="ios-btn"
+                                style={{
+                                  alignSelf: "flex-end",
+                                  padding: "4px 10px",
+                                  fontSize: "0.78rem",
+                                  background: "rgba(255, 59, 48, 0.12)",
+                                  color: "#ff3b30",
+                                  border: "1px solid rgba(255, 59, 48, 0.2)",
+                                  borderRadius: "6px",
+                                  fontWeight: "bold",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "4px"
+                                }}
+                              >
+                                <i className="bx bx-trash" style={{ fontSize: "0.9rem" }}></i> حذف الطلب
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  ) : activeRequestsTab === "reports" ? (
+                    userReports.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                        لم تقم بتقديم أي بلاغات بعد.
+                      </div>
+                    ) : (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingLeft: "4px" }}>
+                        {userReports.map((report) => (
+                          <div key={report.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>{report.place_name}</strong>
+                              {getReportStatusBadge(report.status)}
+                            </div>
+                            <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                              المشكلة: {getProblemLabelAr(report.problem_type)}
+                            </div>
+                            {report.admin_reply && (
+                              <div style={{ fontSize: "0.78rem", color: "var(--accent-primary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
+                                <strong>رد الإدارة:</strong> {report.admin_reply}
+                              </div>
+                            )}
+                            <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span>{new Date(report.created_at).toLocaleDateString("ar-EG", { dateStyle: "short" })}</span>
+                              {report.status === "pending" && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleRetractReport(report.id)}
+                                  className="ios-btn"
+                                  style={{
+                                    padding: "4px 10px",
+                                    fontSize: "0.78rem",
+                                    background: "rgba(255, 59, 48, 0.12)",
+                                    color: "#ff3b30",
+                                    border: "1px solid rgba(255, 59, 48, 0.2)",
+                                    borderRadius: "6px",
+                                    fontWeight: "bold",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px"
+                                  }}
+                                >
+                                  <i className="bx bx-trash" style={{ fontSize: "0.9rem" }}></i> حذف البلاغ
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  ) : (
+                    userAppFeedbacks.length === 0 ? (
+                      <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+                        لم تقم بتقديم أي اقتراحات أو شكاوى للتطبيق بعد.
+                      </div>
+                    ) : (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingLeft: "4px" }}>
+                        {userAppFeedbacks.map((fb) => (
+                          <div key={fb.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>
+                                {fb.type === "suggestion" ? `💡 اقتراح: ${fb.category}` : `⚠️ مشكلة: ${fb.title}`}
+                              </strong>
+                              {fb.status === "pending" && <span style={{ background: "rgba(255, 149, 0, 0.15)", color: "#ff9500", padding: "2px 8px", borderRadius: "8px", fontSize: "0.75rem", fontWeight: "bold" }}>قيد النظر</span>}
+                              {fb.status === "reviewed" && <span style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", padding: "2px 8px", borderRadius: "8px", fontSize: "0.75rem", fontWeight: "bold" }}>تمت المراجعة</span>}
+                              {fb.status === "action_taken" && <span style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", padding: "2px 8px", borderRadius: "8px", fontSize: "0.75rem", fontWeight: "bold" }}>تم اتخاذ إجراء</span>}
+                            </div>
+                            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-secondary)", whiteSpace: "pre-line" }}>
+                              {fb.content}
+                            </p>
+                            {fb.image_url && (
+                              <a href={fb.image_url} target="_blank" rel="noreferrer" style={{ fontSize: "0.75rem", color: "var(--accent-primary)", textDecoration: "underline", alignSelf: "flex-start" }}>
+                                🖼️ عرض الصورة المرفقة
+                              </a>
+                            )}
+                            {fb.admin_reply && (
+                              <div style={{ fontSize: "0.78rem", color: "var(--accent-primary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
+                                <strong>رد الإدارة:</strong> {fb.admin_reply}
+                              </div>
+                            )}
+                            <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span>{new Date(fb.created_at).toLocaleDateString("ar-EG", { dateStyle: "short" })}</span>
+                              {fb.status === "pending" && (
+                                <button
+                                  type="button"
+                                  onClick={async () => {
+                                    if (!confirm("هل أنت متأكد من حذف هذا الاقتراح/البلاغ؟")) return;
+                                    if (!supabase || !user) return;
+                                    try {
+                                      const { error } = await supabase
+                                        .from("app_feedback")
+                                        .delete()
+                                        .eq("id", fb.id)
+                                        .eq("user_id", user.id);
+                                      if (error) throw error;
+                                      alert("تم حذف الطلب بنجاح.");
+                                      fetchUserRequestsAndReports();
+                                    } catch (err: any) {
+                                      alert("فشل حذف الطلب: " + err.message);
+                                    }
+                                  }}
+                                  className="ios-btn"
+                                  style={{
+                                    padding: "4px 10px",
+                                    fontSize: "0.78rem",
+                                    background: "rgba(255, 59, 48, 0.12)",
+                                    color: "#ff3b30",
+                                    border: "1px solid rgba(255, 59, 48, 0.2)",
+                                    borderRadius: "6px",
+                                    fontWeight: "bold",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "4px"
+                                  }}
+                                >
+                                  <i className="bx bx-trash" style={{ fontSize: "0.9rem" }}></i> حذف
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        {/*End My Requests Card */}
       </div>
 
       {/* ─── Section 3: Security & 2FA (For logged in users) ─── */}
@@ -1181,9 +1913,68 @@ export default function ProfilePage() {
             )}
 
           </div>
+          <hr className={styles.dividerDashed} />
+          {/*Start Device Management Card */}
+          <div
+            className={styles.cardContainer}
+            onClick={() => {
+              fetchDevices();
+              setShowDevicesModal(true);
+            }}
+          >
+            <div className={styles.cardContent}>
+              <div style={{ color: "#30b0c7" }}>
+                <i className={`bx bx-devices ${styles.cardIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>إدارة الأجهزة</h3>
+              </div>
+            </div>
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+          </div>
+          {/*End Device Management Card */}
         </div>
       )}
-      {/*End 2FA Card */}
+
+      {/* ─── Section 3.5: Suggestions & Bug Reports (For logged in users) ─── */}
+      {user && (
+        <div className={styles.sectionCard}>
+          {/* Start Suggestion Card */}
+          <div
+            className={styles.cardContainer}
+            onClick={() => setShowSuggestionModal(true)}
+          >
+            <div className={styles.cardContent}>
+              <div style={{ color: "var(--accent-primary)" }}>
+                <i className={`bx bx-message-square-detail ${styles.cardIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>تقديم اقتراح لتحسين التطبيق</h3>
+              </div>
+            </div>
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+          </div>
+          {/* End Suggestion Card */}
+          <hr className={styles.dividerDashed} />
+          {/* Start Bug Report Card */}
+          <div
+            className={styles.cardContainer}
+            onClick={() => setShowBugReportModal(true)}
+          >
+            <div className={styles.cardContent}>
+              <div style={{ color: "#ff3b30" }}>
+                <i className={`bx bx-bug ${styles.cardIcon}`}></i>
+              </div>
+              <div>
+                <h3 className={styles.cardTitle}>الإبلاغ عن مشكلة في التطبيق</h3>
+              </div>
+            </div>
+            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+          </div>
+          {/* End Bug Report Card */}
+        </div>
+      )}
+
       {/* ─── Section 4: Help & Support (For logged in users) ─── */}
       <div className={styles.sectionCard}>
         <div
@@ -1715,6 +2506,80 @@ export default function ProfilePage() {
         </div>
       )}
 
+      {/* ─── Device Management Modal ─── */}
+      {showDevicesModal && (
+        <div className={styles.modalBackdropSlow}>
+          <div className={`glass-panel ${styles.devicesModalPanel}`}>
+            <div className={styles.modalCloseHeader}>
+              <h3 className={styles.devicesModalTitle}>إدارة الأجهزة النشطة</h3>
+              <button onClick={() => setShowDevicesModal(false)} className={styles.modalCloseIconBtn}>
+                <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
+              </button>
+            </div>
+            <p className={styles.devicesModalSubtitle}>
+              الأجهزة المسجلة حالياً بحسابك. يمكنك تسجيل الخروج من أي جهاز عن بُعد.
+            </p>
+
+            <div className={styles.devicesListContainer}>
+              {loadingDevices ? (
+                <div className={styles.devicesSpinnerContainer}>
+                  <div className="spinner" />
+                  <p>جاري تحميل الأجهزة...</p>
+                </div>
+              ) : devicesList.length === 0 ? (
+                <p className={styles.noDevicesText}>لا توجد أجهزة مسجلة حالياً.</p>
+              ) : (
+                <div className={styles.devicesListGap}>
+                  {devicesList.map((device) => {
+                    const isCurrent = typeof window !== "undefined" && device.session_id === localStorage.getItem("dftry_device_session_id");
+                    return (
+                      <div key={device.id} className={`${styles.deviceItem} ${isCurrent ? styles.currentDeviceItem : ''}`}>
+                        <div className={styles.deviceItemLeft}>
+                          <div className={styles.deviceIconBox}>
+                            <i className={`bx ${device.device_name.includes("iOS") || device.device_name.includes("Android") ? "bx-mobile-alt" : "bx-laptop"} ${styles.deviceIcon}`}></i>
+                          </div>
+                          <div className={styles.deviceInfoTexts}>
+                            <div className={styles.deviceNameRow}>
+                              <span className={styles.deviceName}>{device.device_name}</span>
+                              {isCurrent && <span className={styles.currentDeviceBadge}>هذا الجهاز</span>}
+                              {device.is_active && !isCurrent && <span className={styles.activeDeviceBadge}>نشط</span>}
+                            </div>
+                            <div className={styles.deviceMetaRow}>
+                              <span>📍 {device.location || "موقع غير معروف"}</span>
+                              <span className={styles.metaDivider}>•</span>
+                              <span>📅 {new Date(device.logged_in_at).toLocaleDateString("ar-EG", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                            </div>
+                            {!device.is_active && device.logged_out_at && (
+                              <div className={styles.loggedOutTimeText}>
+                                تم تسجيل الخروج في: {new Date(device.logged_out_at).toLocaleDateString("ar-EG", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {device.is_active && (
+                          <button
+                            onClick={() => handleDeactivateDevice(device.id, device.session_id)}
+                            className={styles.deactivateDeviceBtn}
+                            title="تسجيل الخروج وإنهاء الجلسة"
+                          >
+                            <i className="bx bx-log-out"></i>
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <button className="ios-btn" onClick={() => setShowDevicesModal(false)} style={{ width: "100%", marginTop: "16px" }}>
+              إغلاق
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Change Password Modal */}
       {showPasswordModal && (
         <div className={styles.modalBackdropSlow}>
@@ -1802,65 +2667,66 @@ export default function ProfilePage() {
 
       {/* Reminders Modal */}
       {isRemindersModalOpen && (
-        <div className={styles.notifModalOverlay} onClick={() => setIsRemindersModalOpen(false)}>
-          <div className={styles.notifModalPanel} onClick={e => e.stopPropagation()} style={{ maxWidth: "450px" }}>
-            <button onClick={() => setIsRemindersModalOpen(false)} className={styles.notifModalCloseBtn}>
-              <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>
-            </button>
-            <div className={styles.notifModalHeader}>
-              <div className={styles.notifModalEmoji}>📝</div>
-              <h3 className={styles.notifModalTitle}>تذكيراتي وملاحظاتي</h3>
-              <span className={styles.notifModalDate}>إجمالي الملاحظات المضافة: {reminders.length}</span>
+        <div className={styles.modalBackdropSlow} onClick={() => setIsRemindersModalOpen(false)}>
+          <div className={`glass-panel ${styles.devicesModalPanel}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalCloseHeader}>
+              <h3 className={styles.devicesModalTitle}>تذكيراتي وملاحظاتي</h3>
+              <button onClick={() => setIsRemindersModalOpen(false)} className={styles.modalCloseIconBtn}>
+                <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
+              </button>
             </div>
-            
-            <div className={styles.notifModalBody} style={{ maxHeight: "350px", overflowY: "auto", marginTop: "16px" }}>
+            <p className={styles.devicesModalSubtitle}>
+              إجمالي الملاحظات والتذكيرات المضافة للأماكن: {reminders.length}
+            </p>
+
+            <div className={styles.devicesListContainer}>
               {loadingReminders ? (
-                <div style={{ textAlign: "center", padding: "20px", color: "var(--text-secondary)" }}>جاري تحميل التذكيرات...</div>
-              ) : reminders.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
-                  لا يوجد أي ملاحظات أو تذكيرات مضافة بعد.
+                <div className={styles.devicesSpinnerContainer}>
+                  <div className="spinner" />
+                  <p>جاري تحميل التذكيرات...</p>
                 </div>
+              ) : reminders.length === 0 ? (
+                <p className={styles.noDevicesText}>لا يوجد أي ملاحظات أو تذكيرات مضافة بعد.</p>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div className={styles.devicesListGap}>
                   {reminders.map((rem) => (
                     <div 
                       key={rem.id} 
                       onClick={() => { setIsRemindersModalOpen(false); router.push(`/places/${rem.placeId}`); }}
-                      style={{ 
-                        background: "rgba(255, 255, 255, 0.03)", 
-                        border: "1px solid var(--border-glass)", 
-                        borderRadius: "12px", 
-                        padding: "12px", 
-                        cursor: "pointer",
-                        position: "relative",
-                        textAlign: "right"
-                      }}
+                      className={styles.deviceItem}
+                      style={{ cursor: "pointer" }}
                     >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                        <span style={{ fontWeight: "bold", fontSize: "0.95rem", color: "var(--text-primary)" }}>{rem.placeName}</span>
-                        <button 
-                          onClick={(e) => handleDeleteReminder(e, rem.id)}
-                          style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", padding: "4px", fontSize: "1.1rem" }}
-                          title="حذف الملاحظة"
-                        >
-                          <i className="bx bx-trash"></i>
-                        </button>
+                      <div className={styles.deviceItemLeft}>
+                        <div className={styles.deviceIconBox} style={{ color: "#34c759", background: "rgba(52, 199, 89, 0.1)" }}>
+                          <i className={`bx bx-notepad ${styles.deviceIcon}`}></i>
+                        </div>
+                        <div className={styles.deviceInfoTexts}>
+                          <div className={styles.deviceNameRow}>
+                            <span className={styles.deviceName}>{rem.placeName}</span>
+                          </div>
+                          <p style={{ margin: "4px 0", fontSize: "0.88rem", color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}>
+                            {rem.note}
+                          </p>
+                          <div className={styles.deviceMetaRow}>
+                            <span>📅 {new Date(rem.updatedAt).toLocaleDateString("ar-EG", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                          </div>
+                        </div>
                       </div>
-                      
-                      <p style={{ margin: "0 0 6px", fontSize: "0.88rem", color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}>
-                        {rem.note}
-                      </p>
-                      
-                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                        تحديث: {new Date(rem.updatedAt).toLocaleDateString("ar-EG")}
-                      </span>
+
+                      <button 
+                        onClick={(e) => handleDeleteReminder(e, rem.id)}
+                        className={styles.deactivateDeviceBtn}
+                        title="حذف الملاحظة"
+                      >
+                        <i className="bx bx-trash"></i>
+                      </button>
                     </div>
                   ))}
                 </div>
               )}
             </div>
-            
-            <button onClick={() => setIsRemindersModalOpen(false)} className={`ios-btn ios-btn-primary ${styles.notifModalActionBtn}`} style={{ marginTop: "16px" }}>
+
+            <button className="ios-btn" onClick={() => setIsRemindersModalOpen(false)} style={{ width: "100%", marginTop: "16px" }}>
               إغلاق
             </button>
           </div>
@@ -1869,30 +2735,241 @@ export default function ProfilePage() {
 
       {/* Notification Modal */}
       {selectedNotification && (
-        <div className={styles.notifModalOverlay} onClick={() => setSelectedNotification(null)}>
-          <div className={styles.notifModalPanel} onClick={e => e.stopPropagation()}>
-            <button onClick={() => setSelectedNotification(null)} className={styles.notifModalCloseBtn}>
-              <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>
-            </button>
-            <div className={styles.notifModalHeader}>
-              <div className={styles.notifModalEmoji}>
-                {selectedNotification.type === "success" ? "✅" : selectedNotification.type === "warning" ? "⚠️" : "🔔"}
-              </div>
-              <h3 className={styles.notifModalTitle}>{selectedNotification.title}</h3>
-              <span className={styles.notifModalDate}>
-                {new Date(selectedNotification.created_at).toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-              </span>
-            </div>
-            <div className={styles.notifModalBody}>
-              <p className={styles.notifModalMessage}>
-                {selectedNotification.message}
-              </p>
-            </div>
-            {selectedNotification.link && (
-              <button onClick={() => { setSelectedNotification(null); router.push(selectedNotification.link); }} className={`ios-btn ios-btn-primary ${styles.notifModalActionBtn}`}>
-                الذهاب للرابط <i className="bx bx-link-external" style={{ marginRight: "6px" }}></i>
+        <div className={styles.modalBackdropSlow} onClick={() => setSelectedNotification(null)}>
+          <div className={`glass-panel ${styles.devicesModalPanel}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalCloseHeader}>
+              <h3 className={styles.devicesModalTitle}>{selectedNotification.title}</h3>
+              <button onClick={() => setSelectedNotification(null)} className={styles.modalCloseIconBtn}>
+                <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
               </button>
-            )}
+            </div>
+            
+            <p className={styles.devicesModalSubtitle}>
+              📅 {new Date(selectedNotification.created_at).toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+            </p>
+
+            <div className={styles.devicesListContainer}>
+              <div 
+                className={styles.deviceItem}
+                style={{ background: "rgba(255, 255, 255, 0.01)", border: "1px solid var(--border-glass)", padding: "16px" }}
+              >
+                <div className={styles.deviceItemLeft} style={{ alignItems: "flex-start" }}>
+                  <div 
+                    className={styles.deviceIconBox} 
+                    style={{ 
+                      color: selectedNotification.type === "success" ? "#34c759" : selectedNotification.type === "warning" ? "#ff9500" : "var(--accent-primary)",
+                      background: selectedNotification.type === "success" ? "rgba(52, 199, 89, 0.1)" : selectedNotification.type === "warning" ? "rgba(255, 149, 0, 0.1)" : "rgba(0, 111, 238, 0.1)"
+                    }}
+                  >
+                    <span style={{ fontSize: "1.3rem" }}>
+                      {selectedNotification.type === "success" ? "✅" : selectedNotification.type === "warning" ? "⚠️" : "🔔"}
+                    </span>
+                  </div>
+                  <div className={styles.deviceInfoTexts}>
+                    <p style={{ margin: "0", fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.6", whiteSpace: "pre-wrap" }}>
+                      {selectedNotification.message}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+              {selectedNotification.link && (
+                <button 
+                  onClick={() => { setSelectedNotification(null); router.push(selectedNotification.link); }} 
+                  className="ios-btn ios-btn-primary" 
+                  style={{ flex: 1 }}
+                >
+                  الذهاب للرابط <i className="bx bx-link-external" style={{ marginRight: "6px" }}></i>
+                </button>
+              )}
+              <button className="ios-btn" onClick={() => setSelectedNotification(null)} style={{ flex: 1 }}>
+                إغلاق
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Suggestions Modal */}
+      {showSuggestionModal && (
+        <div className={styles.modalBackdropSlow} onClick={() => setShowSuggestionModal(false)}>
+          <div className={`glass-panel ${styles.passwordModalPanel}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalCloseHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h3 className={styles.passwordModalTitle} style={{ margin: 0 }}>تقديم اقتراح أو تحسين</h3>
+              <button onClick={() => setShowSuggestionModal(false)} className={styles.modalCloseIconBtn} style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer" }}>
+                <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
+              </button>
+            </div>
+            <p className={styles.passwordModalSubtitle}>
+              ساعدنا في تحسين التطبيق من خلال تقديم اقتراحك.
+            </p>
+
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>نوع الاقتراح</label>
+              <select
+                value={suggestionType}
+                onChange={e => setSuggestionType(e.target.value)}
+                className="ios-input help-select"
+                style={{ fontFamily: "var(--font-cairo)" }}
+              >
+                <option value="اقتراح لتحسين الشكل">اقتراح لتحسين الشكل</option>
+                <option value="اقتراح إضافة ميزة جديدة">اقتراح إضافة ميزة جديدة</option>
+                <option value="اقتراح آخر">اقتراح آخر</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>رسالة الاقتراح</label>
+              <textarea
+                className="ios-input"
+                style={{ width: "100%", minHeight: "120px", padding: "12px", resize: "vertical", fontFamily: "var(--font-cairo)" }}
+                placeholder="اكتب تفاصيل اقتراحك هنا..."
+                value={suggestionMessage}
+                onChange={e => setSuggestionMessage(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.formButtonsRow}>
+              <button className={`ios-btn ${styles.flex1}`} onClick={() => { setShowSuggestionModal(false); setSuggestionMessage(""); }}>إلغاء</button>
+              <button 
+                className={`ios-btn ios-btn-primary ${styles.flex1} ${suggestionLoading ? styles.btnOpacity60 : ''}`} 
+                onClick={handleSendSuggestion} 
+                disabled={suggestionLoading}
+              >
+                {suggestionLoading ? "جاري الإرسال..." : "إرسال الاقتراح"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bug Report Modal */}
+      {showBugReportModal && (
+        <div className={styles.modalBackdropSlow} onClick={() => {
+          if (!bugLoading && !bugUploading) {
+            setShowBugReportModal(false);
+            setBugType("");
+            setBugDetails("");
+            setBugImage("");
+            setBugImageFile(null);
+          }
+        }}>
+          <div className={`glass-panel ${styles.passwordModalPanel}`} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalCloseHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h3 className={styles.passwordModalTitle} style={{ margin: 0 }}>الإبلاغ عن مشكلة في التطبيق</h3>
+              <button 
+                onClick={() => {
+                  setShowBugReportModal(false);
+                  setBugType("");
+                  setBugDetails("");
+                  setBugImage("");
+                  setBugImageFile(null);
+                }} 
+                className={styles.modalCloseIconBtn} 
+                style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer" }}
+                disabled={bugLoading || bugUploading}
+              >
+                <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
+              </button>
+            </div>
+            <p className={styles.passwordModalSubtitle}>
+              يرجى تزويدنا بتفاصيل المشكلة لنتمكن من حلها سريعاً.
+            </p>
+
+            <div style={{ marginBottom: "12px" }}>
+              <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>نوع المشكلة</label>
+              <input
+                type="text"
+                className="ios-input"
+                placeholder="مثال: مشكلة في تسجيل الدخول، بطء الصفحة، إلخ."
+                value={bugType}
+                onChange={e => setBugType(e.target.value)}
+                style={{ width: "100%" }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "12px" }}>
+              <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>تفاصيل المشكلة</label>
+              <textarea
+                className="ios-input"
+                style={{ width: "100%", minHeight: "100px", padding: "12px", resize: "vertical", fontFamily: "var(--font-cairo)" }}
+                placeholder="يرجى كتابة تفاصيل ما حدث..."
+                value={bugDetails}
+                onChange={e => setBugDetails(e.target.value)}
+              />
+            </div>
+
+            {/* Upload Image Section */}
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>إرفاق صورة للمشكلة (اختياري)</label>
+              <div style={{
+                background: "rgba(255, 255, 255, 0.03)",
+                border: "1px dashed var(--border-glass)",
+                borderRadius: "14px",
+                padding: "16px",
+                textAlign: "center",
+                position: "relative",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                height: "120px"
+              }}>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleBugImageChange} 
+                  style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, opacity: 0, cursor: "pointer", width: "100%" }}
+                  disabled={bugLoading || bugUploading}
+                />
+                {bugImage ? (
+                  <div style={{ position: "relative", width: "100%", height: "100px" }}>
+                    <img src={bugImage} alt="معاينة الصورة" style={{ width: "100%", height: "100px", objectFit: "contain", borderRadius: "8px" }} />
+                    <button 
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); setBugImage(""); setBugImageFile(null); }}
+                      style={{ position: "absolute", top: "0px", left: "0px", background: "rgba(0,0,0,0.7)", border: "none", color: "#fff", borderRadius: "50%", width: "24px", height: "24px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
+                      <i className="bx bx-x"></i>
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <i className="bx bx-camera" style={{ fontSize: "1.8rem", color: "var(--text-muted)" }}></i>
+                    <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                      اضغط لاختيار صورة، رفع ملف، أو التقاط صورة جديدة
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.formButtonsRow}>
+              <button 
+                className={`ios-btn ${styles.flex1}`} 
+                onClick={() => { 
+                  setShowBugReportModal(false); 
+                  setBugType("");
+                  setBugDetails("");
+                  setBugImage("");
+                  setBugImageFile(null);
+                }}
+                disabled={bugLoading || bugUploading}
+              >
+                إلغاء
+              </button>
+              <button 
+                className={`ios-btn ios-btn-primary ${styles.flex1} ${(bugLoading || bugUploading) ? styles.btnOpacity60 : ''}`} 
+                onClick={handleSendBugReport} 
+                disabled={bugLoading || bugUploading}
+              >
+                {bugLoading ? "جاري الإرسال..." : "إرسال البلاغ"}
+              </button>
+            </div>
           </div>
         </div>
       )}
