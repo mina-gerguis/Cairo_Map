@@ -944,7 +944,7 @@ function HomeContent() {
                     </div>
 
                     {/* Quick Info Box */}
-                    <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", background: "rgba(255, 255, 255, 0.04)", padding: "10px", marginBottom: "10px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", padding: "10px", marginBottom: "10px" }}>
                       {/* Hours */}
                       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
                         <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>حالة المكان</span>
@@ -1173,7 +1173,7 @@ function HomeContent() {
                             if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
 
                             if (parsed.type === "24/7") {
-                              return <div style={{ color: "var(--accent-success)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
+                              return <div style={{ color: "var(--accent-success)", fontWeight: "bold", padding: "0px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
                             }
 
                             if (parsed.type === "custom" && parsed.schedule) {
@@ -1285,8 +1285,8 @@ function HomeContent() {
                             cursor: "pointer"
                           }}
                         >
-                          <i className="bx bx-share-alt" style={{ fontSize: "1.1rem" }}></i>
-                          <span>مشاركة هذا المكان</span>
+                          <MdOutlineIosShare size={18}/>
+                          <span>مشاركة </span>
                         </button>
                       </div>
 
