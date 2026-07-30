@@ -20,6 +20,8 @@ import { BiSolidMapPin } from "react-icons/bi";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import { TbListDetailsFilled } from "react-icons/tb";
+import { IoMdClose } from "react-icons/io";
+import { MdOutlineIosShare } from "react-icons/md";
 /* ─── الدوال المساعدة (Helper Functions) ─── */
 // دالة حساب المسافة الجغرافية بين نقطتين (عرض وطول) بالكيلومترات
 function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -755,7 +757,7 @@ function HomeContent() {
       {/* ═══════════════════════════════════ DETAIL SHEET ═══════════════════════════════════ */}
       {selectedPlace && (
         <div className="ios-sheet-overlay" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}>
-          <div className="ios-sheet" onClick={(e: any) => e.stopPropagation()}>
+          <div className="ios-sheet" style={{maxWidth:"100%"}} onClick={(e: any) => e.stopPropagation()}>
             <div className="ios-sheet-drag-handle" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }} />
 
             {/* Apple Maps Top Bar (Fixed) */}
@@ -764,7 +766,7 @@ function HomeContent() {
               <button
                 onClick={() => handleShare(selectedPlace)}
                 style={{
-                  background: "rgba(255, 255, 255, 0.08)",
+                  background: "rgba(109, 107, 107, 0.12)",
                   border: "1px solid var(--border-glass)",
                   color: "var(--text-primary)",
                   borderRadius: "50%",
@@ -774,12 +776,12 @@ function HomeContent() {
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
-                  fontSize: "1.1rem",
+                  fontSize: "1.2rem",
                   transition: "all 0.2s"
                 }}
                 title="مشاركة المكان"
               >
-                <i className="bx bx-share-alt"></i>
+                <MdOutlineIosShare />
               </button>
 
               {/* Center: Centered Place Name */}
@@ -796,7 +798,7 @@ function HomeContent() {
               <button
                 onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}
                 style={{
-                  background: "rgba(255, 255, 255, 0.08)",
+                  background: "rgba(109, 107, 107, 0.12)",
                   border: "1px solid var(--border-glass)",
                   color: "var(--text-primary)",
                   borderRadius: "50%",
@@ -811,7 +813,7 @@ function HomeContent() {
                 }}
                 title="إغلاق"
               >
-                <i className="bx bx-x"></i>
+               <IoMdClose />
               </button>
             </div>
 
