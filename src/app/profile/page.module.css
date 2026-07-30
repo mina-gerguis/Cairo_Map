@@ -1764,3 +1764,105 @@
   padding: 14px;
   font-size: 1.05rem;
 }
+
+/* ─── Footer Card (Noon Style) ─── */
+.footerCard {
+  background-color: var(--bg-glass-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+  padding: 24px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.footerLinks {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 4px 16px;
+}
+
+.footerLink {
+  font-family: var(--font-cairo);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerLink:hover {
+  color: var(--text-primary);
+}
+
+.footerLinkArrow {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.footerDivider {
+  width: 100%;
+  border: none;
+  border-top: 1px dashed var(--border-glass-bright);
+  margin: 16px 0;
+}
+
+.socialRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 8px 0 16px;
+}
+
+.socialIconWrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background-color: var(--bg-glass-hover);
+  border: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: transform 0.2s, color 0.2s, background-color 0.2s;
+  text-decoration: none;
+}
+
+.socialIconWrapper:hover {
+  transform: translateY(-2px);
+  color: var(--text-primary);
+  background-color: var(--bg-glass-active);
+}
+
+.socialIconWrapper svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.versionText {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-align: center;
+  font-family: var(--font-cairo);
+  opacity: 0.8;
+}
+
+.copyrightText {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-family: var(--font-cairo);
+  opacity: 0.85;
+}

@@ -9,14 +9,14 @@ import { usePathname } from "next/navigation";
 
 
 const payicon = [
-  {name:"vodafone cash", title: "فودافون كاش", icon:"/image/telCompany/vodafone-logo.png"},
-  {name:"instapay", title: "انستاباي", icon:"/image/payment/instapay.png"},
-  {name:"meeza", title: "ميزة", icon:"/image/payment/meeza.png"},
-  {name:"fawry", title: "فوري", icon:"/image/payment/fawry.png"},
-  {name:"visa", title: "فيزا", icon:"/image/payment/visa.png"},
-  {name:"mastercard", title: "ماستركارد", icon:"/image/payment/mastercard.png"},
-  {name:"applepay", title: "ابل باي", icon:"/image/payment/applepay.png"},
-  {name:"telda", title: "تيلدا", icon:"/image/payment/telda.jpg"},
+  { name: "vodafone cash", title: "فودافون كاش", icon: "/image/telCompany/vodafone-logo.png" },
+  { name: "instapay", title: "انستاباي", icon: "/image/payment/instapay.png" },
+  { name: "meeza", title: "ميزة", icon: "/image/payment/meeza.png" },
+  { name: "fawry", title: "فوري", icon: "/image/payment/fawry.png" },
+  { name: "visa", title: "فيزا", icon: "/image/payment/visa.png" },
+  { name: "mastercard", title: "ماستركارد", icon: "/image/payment/mastercard.png" },
+  { name: "applepay", title: "ابل باي", icon: "/image/payment/applepay.png" },
+  { name: "telda", title: "تيلدا", icon: "/image/payment/telda.jpg" },
 ]
 
 export default function Footer() {
@@ -32,9 +32,9 @@ export default function Footer() {
 
         {/* Top Section */}
         <div className="footer-top">
-         <div>
+          <div>
 
-         </div>
+          </div>
         </div>
 
         {/* Payment Icons */}
@@ -43,42 +43,42 @@ export default function Footer() {
           <div className="footer-payments-icons">
             {/* Vodafone Cash */}
             <div className="payment-badge" title="InstaPay">
-             <Image src={payicon[0].icon} alt="Vodafone Cash" width={20} height={20} />
+              <Image src={payicon[0].icon} alt="Vodafone Cash" width={0} height={0} className="image-payment"/>
               <span>{payicon[0].title}</span>
             </div>
             {/* instaPay */}
             <div className="payment-badge" title="Vodafone Cash">
-              <Image src={payicon[1].icon} alt="Vodafone Cash" width={20} height={20} />
-              <span>{payicon[1].title}</span>
+             <Image src={payicon[1].icon} alt="Vodafone Cash" width={0} height={0} className="image-payment"/>
+             <span>{payicon[1].title}</span>
             </div>
             {/* Visa */}
             <div className="payment-badge" title="Visa">
-              <Image src={payicon[2].icon} alt="Visa" width={20} height={20} />
+              <Image src={payicon[2].icon} alt="Vodafone Cash" width={0} height={0} className="image-payment"/>
               <span>{payicon[2].title}</span>
             </div>
             {/* Fawry */}
             <div className="payment-badge" title="Fawry">
-              <Image src={payicon[3].icon} alt="Visa" width={20} height={20} />
+              <Image src={payicon[3].icon} alt="Visa" width={0} height={0} className="image-payment"/>
               <span>{payicon[3].title}</span>
             </div>
             {/* Miza */}
-            <div className="payment-badge" title="Miza">
-              <Image src={payicon[4].icon} alt="Visa" width={20} height={20} />
+            <div className="payment-badge" title="Meeza">
+              <Image src={payicon[4].icon} alt="Visa" width={0} height={0} className="image-payment"/>
               <span>{payicon[4].title}</span>
             </div>
             {/* Apple Pay */}
             <div className="payment-badge" title="Apple Pay">
-             <Image src={payicon[5].icon} alt="Visa" width={20} height={20} />
+              <Image src={payicon[5].icon} alt="Visa" width={0} height={0} className="image-payment"/>
               <span>{payicon[5].title}</span>
             </div>
             {/* Telda Pay */}
             <div className="payment-badge" title="Telda Pay">
-              <Image src={payicon[6].icon} alt="Telda Pay" width={20} height={20} />
+              <Image src={payicon[6].icon} alt="Telda Pay" width={0} height={0} className="image-payment"/>
               <span>{payicon[6].title}</span>
             </div>
             {/* Meeza */}
-             <div className="payment-badge" title="Meeza">
-              <Image src={payicon[7].icon} alt="Meeza" width={20} height={20} />
+            <div className="payment-badge" title="Meeza">
+              <Image src={payicon[7].icon} alt="Meeza" width={0} height={0} className="image-payment"/>
               <span>{payicon[7].title}</span>
             </div>
           </div>

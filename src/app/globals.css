@@ -806,6 +806,12 @@ html.light .footer { background: var(--bg-primary); }
   color: var(--text-primary);
 }
 
+.image-payment{
+  width: 25px;
+  height: auto;
+  object-fit: cover;
+}
+
 .footer-bottom {
   display: flex;
   align-items: center;
