@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
-import { DEFAULT_CATEGORIES, CategoryItem } from "@/data/places";
+import { DEFAULT_CATEGORIES, CategoryItem, CATEGORIES_STRUCTURE, FEATURES_LIST, formatBoxIcon } from "@/data/places";
 import { MultiSelectSearch } from "@/components/ui/MultiSelectSearch";
 import { SERVICES_LIST } from "@/data/services";
 
@@ -30,6 +30,8 @@ function ProposePlaceContent() {
     category: "",
     category_label: "",
     sub_categories: [] as string[],
+    place_type: "",
+    place_type_icon: "",
     governorate: "",
     city: "",
     address: "",
@@ -44,6 +46,7 @@ function ProposePlaceContent() {
     instagram: "",
     website_url: "",
     services: [] as string[],
+    features: [] as string[],
   });
 
   const [newImgInput, setNewImgInput] = useState("");
@@ -89,6 +92,8 @@ function ProposePlaceContent() {
             category: data.category || "",
             category_label: data.category_label || "",
             sub_categories: Array.isArray(data.sub_categories) ? data.sub_categories : [],
+            place_type: data.place_type || "",
+            place_type_icon: data.place_type_icon || "",
             governorate: data.governorate || "",
             city: data.city || "",
             address: data.address || "",
@@ -103,6 +108,7 @@ function ProposePlaceContent() {
             instagram: links.instagram || "",
             website_url: data.website_url || "",
             services: Array.isArray(data.services) ? data.services : [],
+            features: Array.isArray(data.features) ? data.features : [],
           });
         }
       } catch (err: any) {
@@ -122,11 +128,15 @@ function ProposePlaceContent() {
   }, [editId, user, authLoading, router]);
 
   const handleCategoryChange = (catName: string) => {
-    const selectedCat = categories.find((c) => c.name === catName);
+    const mainCat = CATEGORIES_STRUCTURE.find((c) => c.name === catName);
+    const subCats = mainCat?.subCategories || [];
     setFormData((prev) => ({
       ...prev,
       category: catName,
-      category_label: selectedCat ? selectedCat.label : catName,
+      category_label: mainCat ? mainCat.label : catName,
+      sub_categories: subCats.length > 0 ? [subCats[0].name] : [],
+      place_type: "",
+      place_type_icon: "",
     }));
   };
 
@@ -223,6 +233,8 @@ function ProposePlaceContent() {
       category: formData.category,
       category_label: formData.category_label || formData.category,
       sub_categories: formData.sub_categories || [],
+      place_type: formData.place_type.trim() || null,
+      place_type_icon: formData.place_type.trim() ? (formatBoxIcon(formData.place_type_icon).trim() || "bx bx-tag") : null,
       governorate: formData.governorate,
       city: formData.city,
       address: formData.address.trim(),
@@ -239,6 +251,7 @@ function ProposePlaceContent() {
       },
       website_url: formData.website_url.trim(),
       services: formData.services || [],
+      features: formData.features || [],
       status: "pending",
       rejection_reason: null,
       updated_at: new Date().toISOString(),
@@ -372,7 +385,7 @@ function ProposePlaceContent() {
                 onClick={() => {
                   setSuccess(false);
                   setFormData({
-                    name: "", category: "", category_label: "", sub_categories: [], governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: "", website_url: "", services: []
+                    name: "", category: "", category_label: "", sub_categories: [] as string[], place_type: "", place_type_icon: "", governorate: "", city: "", address: "", phone: "", description: "", image_url: "", images: [] as string[], working_hours: "", price_range: "متوسط", location_url: "", facebook: "", instagram: "", website_url: "", services: [] as string[], features: [] as string[]
                   });
                   if (editId) router.push("/propose-place");
                 }}
@@ -423,9 +436,9 @@ function ProposePlaceContent() {
                     value={formData.category}
                     onChange={(e) => handleCategoryChange(e.target.value)}
                   >
-                    <option value="" disabled>اختر التصنيف...</option>
-                    {categories.map((c) => (
-                      <option key={c.name} value={c.name}>{c.label}</option>
+                    <option value="" disabled>اختر التصنيف الرئيسي...</option>
+                    {CATEGORIES_STRUCTURE.map((c) => (
+                      <option key={c.name} value={c.name}>{c.emoji} {c.label}</option>
                     ))}
                   </select>
                   <p style={{ margin: "6px 0 0", fontSize: "0.8rem", color: "var(--text-muted)" }}>
@@ -434,21 +447,94 @@ function ProposePlaceContent() {
                 </div>
 
                 {/* Sub-categories */}
+                {formData.category && (
+                  <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+                    <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)", display: "block" }}>
+                      التصنيفات الفرعية التابعة للقسم الرئيسي
+                    </label>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      {(CATEGORIES_STRUCTURE.find(m => m.name === formData.category)?.subCategories || []).map(cat => {
+                        const isSelected = formData.sub_categories?.includes(cat.name);
+                        return (
+                          <button
+                            key={cat.name}
+                            type="button"
+                            onClick={() => {
+                              const current = formData.sub_categories || [];
+                              const next = isSelected ? current.filter(s => s !== cat.name) : [...current, cat.name];
+                              const shouldResetType = current[0] !== next[0];
+                              setFormData({
+                                ...formData,
+                                sub_categories: next,
+                                ...(shouldResetType ? { place_type: "", place_type_icon: "" } : {})
+                              });
+                            }}
+                            style={{
+                              background: isSelected ? "var(--accent-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                              color: isSelected ? "#fff" : "var(--text-primary)",
+                              border: isSelected ? "none" : "1px solid var(--border-glass)",
+                              padding: "6px 14px",
+                              borderRadius: "20px",
+                              fontSize: "0.85rem",
+                              fontWeight: isSelected ? "700" : "500",
+                              cursor: "pointer",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                              transition: "all 0.2s"
+                            }}
+                          >
+                            <i className={`bx ${cat.icon}`}></i> {cat.label} {isSelected && "✓"}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Sub-types selection (Propose Mode) */}
+                {formData.category && formData.sub_categories?.length > 0 && (
+                  <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "1fr", gap: "12px", background: "rgba(255, 255, 255, 0.02)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+                    <label className="help-label" style={{ fontWeight: "700" }}>النوع الفرعي المخصص للمكان (مثال: صيني، سوري للمطاعم - عربي، فرنسي للكافيهات)</label>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                      <div>
+                        <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اسم النوع:</label>
+                        <input
+                          className="ios-input"
+                          placeholder="مثال: سوري، صيني، إيطالي..."
+                          value={formData.place_type}
+                          onChange={e => setFormData({ ...formData, place_type: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>أيقونة Boxicon مناسبة:</label>
+                        <input
+                          className="ios-input"
+                          placeholder="مثال: bx bx-dish أو bx bx-coffee"
+                          value={formData.place_type_icon}
+                          onChange={e => setFormData({ ...formData, place_type_icon: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Features Selection */}
                 <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
                   <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)", display: "block" }}>
-                    تصنيفات فرعية اختيارية
+                    مميزات إضافية للمكان (اختر كل ما ينطبق)
                   </label>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                    {categories.filter(c => c.name !== formData.category).map(cat => {
-                      const isSelected = formData.sub_categories?.includes(cat.name);
+                    {FEATURES_LIST.map(feat => {
+                      const isSelected = formData.features?.includes(feat.key);
                       return (
                         <button
-                          key={cat.name}
+                          key={feat.key}
                           type="button"
                           onClick={() => {
-                            const current = formData.sub_categories || [];
-                            const next = isSelected ? current.filter(s => s !== cat.name) : [...current, cat.name];
-                            setFormData({ ...formData, sub_categories: next });
+                            const current = formData.features || [];
+                            const next = isSelected ? current.filter(s => s !== feat.key) : [...current, feat.key];
+                            setFormData({ ...formData, features: next });
                           }}
                           style={{
                             background: isSelected ? "var(--accent-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
@@ -465,7 +551,7 @@ function ProposePlaceContent() {
                             transition: "all 0.2s"
                           }}
                         >
-                          <i className={`bx ${cat.icon}`}></i> {cat.label} {isSelected && "✓"}
+                          <span>{feat.label}</span> {isSelected && "✓"}
                         </button>
                       );
                     })}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Place, DEFAULT_CATEGORIES, FEATURES_LIST } from "@/data/places";
+import { Place, DEFAULT_CATEGORIES, FEATURES_LIST, CATEGORIES_STRUCTURE, OLD_CATEGORY_TO_MAIN_MAP, formatBoxIcon } from "@/data/places";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyOpen } from "@/lib/workingHours";
@@ -18,40 +18,23 @@ import { MdOutlineFavorite } from "react-icons/md";
 import { TbListDetailsFilled } from "react-icons/tb";
 
 const CATEGORY_ICONS: Record<string, string> = {
-  restaurant: "bx-restaurant",
-  cafe: "bx-coffee",
-  garden: "bx-tree",
-  medicalCenter: "bx-plus-medical",
-  health_beauty: "bx-spa",
-  family: "bx-group",
-  quiet_places: "bx-moon",
-  kids: "bx-child",
-  amusement_aqua: "bx-party",
-  work: "bx-briefcase",
-  courses_study: "bx-book-open",
-  hotel: "bx-hotel",
-  cinema: "bx-film",
-  mall: "bx-shopping-bag",
-  outings: "bx-compass",
+  all: "bx-grid-alt",
 };
 
-const CATEGORY_LABELS: Record<string, string> = {
-  restaurant: "مطاعم",
-  cafe: "كافيهات",
-  garden: "حدائق",
-  medicalCenter: "مراكز طبية",
-  health_beauty: "الصحة والجمال",
-  family: "اماكن عائلية",
-  quiet_places: "اماكن هادئه",
-  kids: "اماكن للاطفال",
-  amusement_aqua: "ملاهي وأكوابارك",
-  work: "مكاتب عمل",
-  courses_study: "كورسات ودراسة",
-  hotel: "فنادق",
-  cinema: "سينما",
-  mall: "مولات",
-  outings: "أماكن للخروجات",
-};
+CATEGORIES_STRUCTURE.forEach(main => {
+  CATEGORY_ICONS[main.name] = main.icon;
+  main.subCategories.forEach(sub => {
+    CATEGORY_ICONS[sub.name] = sub.icon;
+  });
+});
+
+const CATEGORY_LABELS: Record<string, string> = {};
+CATEGORIES_STRUCTURE.forEach(main => {
+  CATEGORY_LABELS[main.name] = main.label;
+  main.subCategories.forEach(sub => {
+    CATEGORY_LABELS[sub.name] = sub.label;
+  });
+});
 
 export default function PlaceDetailsPage() {
   const params = useParams();
@@ -103,12 +86,29 @@ export default function PlaceDetailsPage() {
         if (error) throw error;
 
         if (dbPlace) {
+          const oldCat = dbPlace.category;
+          let finalCategory = oldCat;
+          let finalCategoryLabel = dbPlace.category_label || CATEGORY_LABELS[oldCat] || oldCat;
+          let finalSubCategories = Array.isArray(dbPlace.sub_categories) ? [...dbPlace.sub_categories] : [];
+
+          // Check if this is an old flat category and map it to hierarchical
+          const mainCatKey = Object.keys(OLD_CATEGORY_TO_MAIN_MAP).find(key => key === oldCat);
+          if (mainCatKey) {
+            finalCategory = OLD_CATEGORY_TO_MAIN_MAP[mainCatKey];
+            finalCategoryLabel = CATEGORY_LABELS[finalCategory] || finalCategory;
+            if (!finalSubCategories.includes(oldCat)) {
+              finalSubCategories.push(oldCat);
+            }
+          }
+
           const mappedPlace: Place = {
             id: dbPlace.id,
             name: dbPlace.name,
-            category: dbPlace.category,
-            categoryLabel: dbPlace.category_label || CATEGORY_LABELS[dbPlace.category] || dbPlace.category,
-            subCategories: Array.isArray(dbPlace.sub_categories) ? dbPlace.sub_categories : [],
+            category: finalCategory,
+            categoryLabel: finalCategoryLabel,
+            subCategories: finalSubCategories,
+            place_type: dbPlace.place_type || null,
+            place_type_icon: dbPlace.place_type_icon || null,
             governorate: dbPlace.governorate,
             city: dbPlace.city,
             shortDescription: dbPlace.short_description,
@@ -441,8 +441,23 @@ export default function PlaceDetailsPage() {
           <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
             {place.name}
           </h3>
-          <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-            {place.categoryLabel || CATEGORY_LABELS[place.category]}
+          <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
+            <span>{place.categoryLabel || CATEGORY_LABELS[place.category]}</span>
+            {place.subCategories && place.subCategories.length > 0 && (
+              <>
+                <span>•</span>
+                <span>{place.subCategories.map(sc => CATEGORY_LABELS[sc] || sc).join(", ")}</span>
+              </>
+            )}
+            {place.place_type && (
+              <>
+                <span>•</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                  <i className={formatBoxIcon(place.place_type_icon || 'bx-tag')} style={{ fontSize: "0.85rem" }}></i>
+                  {place.place_type}
+                </span>
+              </>
+            )}
           </span>
         </div>
 
@@ -501,6 +516,7 @@ export default function PlaceDetailsPage() {
           >
             <i className={`bx ${CATEGORY_ICONS[place.category] || "bx-category"}`} style={{ fontSize: "1rem" }}></i>
             {place.categoryLabel || CATEGORY_LABELS[place.category]}
+            {place.place_type && ` - ${place.place_type}`}
           </span>
         </div>
 

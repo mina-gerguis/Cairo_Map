@@ -39,7 +39,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import styles from "./admin.module.css";
 import { useAuth } from "@/context/AuthContext";
-import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES, FEATURES_LIST } from "@/data/places";
+import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES, FEATURES_LIST, CATEGORIES_STRUCTURE, formatBoxIcon } from "@/data/places";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { ScheduleDay, WorkingHoursData, DAYS_OF_WEEK, generateTimeOptions } from "@/lib/workingHours";
 import { MultiSelectSearch } from "@/components/ui/MultiSelectSearch";
@@ -47,43 +47,28 @@ import { SERVICES_LIST } from "@/data/services";
 
 const CATEGORY_ICONS: Record<string, string> = {
   all: "bx-grid-alt",
-  restaurant: "bx-restaurant",
-  cafe: "bx-coffee",
-  garden: "bx bx-leaf",
-  medicalCenter: "bx-plus-medical",
-  health_beauty: "bx-spa",
-  family: "bx-group",
-  quiet_places: "bx-moon",
-  kids: "bx-child",
-  amusement_aqua: "bx-party",
-  work: "bx-briefcase",
-  courses_study: "bx-book-open",
-  hotel: "bx-hotel",
-  cinema: "bx-film",
-  mall: "bx-shopping-bag",
-  outings: "bx-compass",
 };
 
+CATEGORIES_STRUCTURE.forEach(main => {
+  CATEGORY_ICONS[main.name] = main.icon;
+  main.subCategories.forEach(sub => {
+    CATEGORY_ICONS[sub.name] = sub.icon;
+  });
+});
+
 function getCategoryColor(cat: string) {
-  const colors: Record<string, string> = {
-    restaurant: "#ff3b30",
-    cafe: "#ff9500",
-    garden: "#30b0c7",
-    medicalCenter: "#007aff",
-    health_beauty: "#ff2d55",
-    family: "#af52de",
-    quiet_places: "#5856d6",
-    kids: "#ff9f0a",
-    amusement_aqua: "#00c7be",
-    work: "#a2845e",
-    courses_study: "#34c759",
-    hotel: "#5856d6",
-    cinema: "#ff3f8e",
-    mall: "#ff9500",
-    outings: "#30b0c7",
-  };
-  return colors[cat] || "var(--accent-primary, #6c63ff)";
+  const mainCat = CATEGORIES_STRUCTURE.find(m => m.name === cat || m.subCategories.some(s => s.name === cat));
+  return mainCat?.color ?? "var(--accent-primary, #6c63ff)";
 }
+
+const CATEGORY_MAP: Record<string, string> = {};
+CATEGORIES_STRUCTURE.forEach(main => {
+  CATEGORY_MAP[main.name] = main.label;
+  main.subCategories.forEach(sub => {
+    CATEGORY_MAP[sub.name] = sub.label;
+  });
+});
+
 
 function ImageWithSkeleton({ src, alt, style, className, onClick, onError }: any) {
   const [loaded, setLoaded] = useState(false);
@@ -134,25 +119,10 @@ interface DBPlace {
   branches?: any[];
   features?: string[];
   services?: string[];
+  place_type?: string;
+  place_type_icon?: string;
 }
 
-const CATEGORY_MAP: Record<string, string> = {
-  restaurant: "مطاعم",
-  cafe: "كافيهات",
-  garden: "حدائق",
-  medicalCenter: "مراكز طبية",
-  health_beauty: "الصحة والجمال",
-  family: "اماكن عائلية",
-  quiet_places: "اماكن هادئه",
-  kids: "اماكن للاطفال",
-  amusement_aqua: "ملاهي وأكوابارك",
-  work: "مكاتب عمل",
-  courses_study: "كورسات ودراسة",
-  hotel: "فنادق",
-  cinema: "سينما",
-  mall: "مولات",
-  outings: "أماكن للخروجات"
-};
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -166,8 +136,10 @@ export default function AdminDashboard() {
   // Add Place Form States
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({
-    name: "", category: "restaurant", category_label: "مطاعم",
+    name: "", category: "food_drinks", category_label: "أكل ومشروبات",
     sub_categories: [] as string[],
+    place_type: "",
+    place_type_icon: "",
     governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
     full_address: "", phones: "", google_maps_url: "", image_url: "",
     menu_images: "", description: "",
@@ -265,9 +237,11 @@ export default function AdminDashboard() {
   const [editPlaceFormData, setEditPlaceFormData] = useState({
     id: "",
     name: "",
-    category: "restaurant",
-    category_label: "مطاعم",
+    category: "food_drinks",
+    category_label: "أكل ومشروبات",
     sub_categories: [] as string[],
+    place_type: "",
+    place_type_icon: "",
     governorate: "القاهرة",
     city: "مدينة نصر",
     short_description: "",
@@ -311,9 +285,11 @@ export default function AdminDashboard() {
     setEditPlaceFormData({
       id: place.id,
       name: place.name || "",
-      category: place.category || "restaurant",
-      category_label: place.category_label || CATEGORY_MAP[place.category] || "مطاعم",
+      category: place.category || "food_drinks",
+      category_label: place.category_label || CATEGORY_MAP[place.category] || "أكل ومشروبات",
       sub_categories: Array.isArray(place.sub_categories) ? place.sub_categories : [],
+      place_type: place.place_type || "",
+      place_type_icon: place.place_type_icon || "",
       governorate: place.governorate || "القاهرة",
       city: place.city || "مدينة نصر",
       short_description: place.short_description || "",
@@ -531,7 +507,9 @@ export default function AdminDashboard() {
         longitude: parseFloat(formData.longitude) || null,
         website_url: formData.website_url.trim() || null,
         features: formData.features || [],
-        services: formData.services || []
+        services: formData.services || [],
+        place_type: formData.place_type.trim() || null,
+        place_type_icon: formData.place_type.trim() ? (formatBoxIcon(formData.place_type_icon).trim() || "bx bx-tag") : null
       };
 
       let { data, error: insertError } = await supabase
@@ -645,15 +623,17 @@ export default function AdminDashboard() {
         setShowAddForm(false);
         // Reset form
         setFormData({
-          name: "", category: "restaurant", category_label: "مطاعم",
-          sub_categories: [],
+          name: "", category: "food_drinks", category_label: "أكل ومشروبات",
+          sub_categories: [] as string[],
+          place_type: "",
+          place_type_icon: "",
           governorate: governoratesList[0] || "القاهرة", city: "", short_description: "",
           full_address: "", phones: "", google_maps_url: "", image_url: "",
           menu_images: "", description: "",
           latitude: "", longitude: "",
           website_url: "",
-          features: [],
-          services: []
+          features: [] as string[],
+          services: [] as string[]
         });
       }
     } catch (err: any) {
@@ -857,6 +837,9 @@ export default function AdminDashboard() {
         name: proposal.name,
         category: proposal.category,
         category_label: proposal.category_label || proposal.category,
+        sub_categories: proposal.sub_categories || [],
+        place_type: proposal.place_type || null,
+        place_type_icon: proposal.place_type_icon || null,
         governorate: proposal.governorate,
         city: proposal.city,
         short_description: proposal.description ? proposal.description.substring(0, 80) : "",
@@ -867,7 +850,8 @@ export default function AdminDashboard() {
         menu_images: [],
         description: proposal.description || "",
         working_hours: JSON.stringify({ type: "24/7" }),
-        services: proposal.services || []
+        services: proposal.services || [],
+        features: proposal.features || []
       };
 
       const { data: insertedPlace, error: insertError } = await supabase
@@ -1029,7 +1013,9 @@ export default function AdminDashboard() {
         longitude: parseFloat(editPlaceFormData.longitude) || null,
         website_url: editPlaceFormData.website_url.trim() || null,
         features: editPlaceFormData.features || [],
-        services: editPlaceFormData.services || []
+        services: editPlaceFormData.services || [],
+        place_type: editPlaceFormData.place_type.trim() || null,
+        place_type_icon: editPlaceFormData.place_type.trim() ? (formatBoxIcon(editPlaceFormData.place_type_icon).trim() || "bx bx-tag") : null
       };
 
       let { data, error } = await supabase
@@ -2028,24 +2014,33 @@ export default function AdminDashboard() {
           <form onSubmit={handleAddPlace} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
             <div><label className="help-label">اسم المكان</label><input required className="ios-input" value={formData.name} onChange={e => updateForm("name", e.target.value)} /></div>
             <div>
-              <label className="help-label">التصنيف الرئيسي (يظهر للمستخدم على كارت المكان)</label>
+              <label className="help-label">التصنيف الرئيسي (الأساسي)</label>
               <select required className="ios-input help-select" value={formData.category} onChange={e => {
                 const val = e.target.value;
                 updateForm("category", val);
                 updateForm("category_label", CATEGORY_MAP[val] || val);
+                // Reset subcategories to first subcategory of new main category
+                const subs = CATEGORIES_STRUCTURE.find(m => m.name === val)?.subCategories || [];
+                if (subs.length > 0) {
+                  updateForm("sub_categories", [subs[0].name]);
+                } else {
+                  updateForm("sub_categories", []);
+                }
+                updateForm("place_type", "");
+                updateForm("place_type_icon", "");
               }}>
-                {DEFAULT_CATEGORIES.map(cat => (
-                  <option key={cat.name} value={cat.name}>{cat.label}</option>
+                {CATEGORIES_STRUCTURE.map(main => (
+                  <option key={main.name} value={main.name}>{main.emoji} {main.label}</option>
                 ))}
               </select>
             </div>
 
             <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
               <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-primary)", display: "block" }}>
-                التصنيفات الفرعية (تتيح ظهور المكان عند تصفية التبويبات وتظهر بتفاصيل المكان)
+                التصنيفات الفرعية التابعة للقسم الرئيسي (تحدد نوع ومكان ظهور المحتوى بالتفصيل)
               </label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {DEFAULT_CATEGORIES.filter(c => c.name !== formData.category).map(cat => {
+                {(CATEGORIES_STRUCTURE.find(m => m.name === formData.category)?.subCategories || []).map(cat => {
                   const isSelected = formData.sub_categories?.includes(cat.name);
                   return (
                     <button
@@ -2055,6 +2050,11 @@ export default function AdminDashboard() {
                         const current = formData.sub_categories || [];
                         const next = isSelected ? current.filter(s => s !== cat.name) : [...current, cat.name];
                         updateForm("sub_categories", next);
+                        // Reset place type if we change first subcategory
+                        if (current[0] !== next[0]) {
+                          updateForm("place_type", "");
+                          updateForm("place_type_icon", "");
+                        }
                       }}
                       style={{
                         background: isSelected ? "var(--accent-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
@@ -2075,6 +2075,76 @@ export default function AdminDashboard() {
                     </button>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Dynamic Place Type Section */}
+            <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px", background: "rgba(255, 255, 255, 0.02)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label className="help-label" style={{ fontWeight: "700" }}>النوع الفرعي المخصص للمكان (مثال: صيني، سوري، مصري للمطاعم - عربي، فرنسي للكافيهات)</label>
+                {(() => {
+                  const subCat = formData.sub_categories?.[0] || "";
+                  const existingTypes = Array.from(new Set(
+                    places
+                      .filter(p => p.sub_categories?.includes(subCat) && p.place_type?.trim())
+                      .map(p => p.place_type!.trim())
+                  )).filter(Boolean);
+
+                  return (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
+                      {existingTypes.length > 0 && (
+                        <div>
+                          <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اختر من الأنواع المضافة مسبقاً لهذا التصنيف:</label>
+                          <select
+                            className="ios-input help-select"
+                            value={formData.place_type}
+                            onChange={e => {
+                              const val = e.target.value;
+                              if (val === "__new__") {
+                                updateForm("place_type", "");
+                                updateForm("place_type_icon", "bx bx-tag");
+                              } else {
+                                updateForm("place_type", val);
+                                const found = places.find(p => p.place_type === val);
+                                updateForm("place_type_icon", found?.place_type_icon || "bx bx-tag");
+                              }
+                            }}
+                          >
+                            <option value="">لا يوجد (بدون تحديد نوع مخصص)</option>
+                            {existingTypes.map(t => (
+                              <option key={t} value={t}>{t}</option>
+                            ))}
+                            <option value="__new__">+ إضافة نوع جديد للنشاط...</option>
+                          </select>
+                        </div>
+                      )}
+                      
+                      {/* If no existing types or admin chose to write a new one */}
+                      {(existingTypes.length === 0 || !existingTypes.includes(formData.place_type)) && (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                          <div>
+                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اسم النوع الجديد:</label>
+                            <input
+                              className="ios-input"
+                              placeholder="مثال: سوري، صيني، إيطالي..."
+                              value={formData.place_type}
+                              onChange={e => updateForm("place_type", e.target.value)}
+                            />
+                          </div>
+                          <div>
+                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>أيقونة Boxicon مناسبة:</label>
+                            <input
+                              className="ios-input"
+                              placeholder="مثال: bx bx-dish أو bx bx-coffee"
+                              value={formData.place_type_icon}
+                              onChange={e => updateForm("place_type_icon", e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
 
@@ -2408,23 +2478,32 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="help-label" style={{ fontWeight: "700" }}>التصنيف الرئيسي (يظهر للمستخدم على كارت المكان)</label>
+                <label className="help-label" style={{ fontWeight: "700" }}>التصنيف الرئيسي (الأساسي)</label>
                 <select required className="ios-input help-select" value={editPlaceFormData.category} onChange={e => {
                   const val = e.target.value;
-                  setEditPlaceFormData({ ...editPlaceFormData, category: val, category_label: CATEGORY_MAP[val] || val });
+                  const subs = CATEGORIES_STRUCTURE.find(m => m.name === val)?.subCategories || [];
+                  const newSubCats = subs.length > 0 ? [subs[0].name] : [];
+                  setEditPlaceFormData({
+                    ...editPlaceFormData,
+                    category: val,
+                    category_label: CATEGORY_MAP[val] || val,
+                    sub_categories: newSubCats,
+                    place_type: "",
+                    place_type_icon: ""
+                  });
                 }}>
-                  {DEFAULT_CATEGORIES.map(cat => (
-                    <option key={cat.name} value={cat.name}>{cat.label}</option>
+                  {CATEGORIES_STRUCTURE.map(main => (
+                    <option key={main.name} value={main.name}>{main.emoji} {main.label}</option>
                   ))}
                 </select>
               </div>
 
               <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
                 <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-secondary)", display: "block" }}>
-                  التصنيفات الفرعية (تتيح ظهور المكان عند تصفية التبويبات وتظهر بتفاصيل المكان)
+                  التصنيفات الفرعية التابعة للقسم الرئيسي (تحدد نوع ومكان ظهور المحتوى بالتفصيل)
                 </label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                  {DEFAULT_CATEGORIES.filter(c => c.name !== editPlaceFormData.category).map(cat => {
+                  {(CATEGORIES_STRUCTURE.find(m => m.name === editPlaceFormData.category)?.subCategories || []).map(cat => {
                     const isSelected = editPlaceFormData.sub_categories?.includes(cat.name);
                     return (
                       <button
@@ -2433,7 +2512,12 @@ export default function AdminDashboard() {
                         onClick={() => {
                           const current = editPlaceFormData.sub_categories || [];
                           const next = isSelected ? current.filter(s => s !== cat.name) : [...current, cat.name];
-                          setEditPlaceFormData({ ...editPlaceFormData, sub_categories: next });
+                          const shouldResetType = current[0] !== next[0];
+                          setEditPlaceFormData({
+                            ...editPlaceFormData,
+                            sub_categories: next,
+                            ...(shouldResetType ? { place_type: "", place_type_icon: "" } : {})
+                          });
                         }}
                         style={{
                           background: isSelected ? "var(--accent-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
@@ -2455,6 +2539,74 @@ export default function AdminDashboard() {
                       </button>
                     );
                   })}
+                </div>
+              </div>
+
+              {/* Dynamic Place Type Section (Edit Mode) */}
+              <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px", background: "rgba(255, 255, 255, 0.02)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label className="help-label" style={{ fontWeight: "700" }}>النوع الفرعي المخصص للمكان (مثال: صيني، سوري، مصري للمطاعم - عربي، فرنسي للكافيهات)</label>
+                  {(() => {
+                    const subCat = editPlaceFormData.sub_categories?.[0] || "";
+                    const existingTypes = Array.from(new Set(
+                      places
+                        .filter(p => p.sub_categories?.includes(subCat) && p.place_type?.trim() && p.id !== editPlaceFormData.id)
+                        .map(p => p.place_type!.trim())
+                    )).filter(Boolean);
+
+                    return (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
+                        {existingTypes.length > 0 && (
+                          <div>
+                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اختر من الأنواع المضافة مسبقاً لهذا التصنيف:</label>
+                            <select
+                              className="ios-input help-select"
+                              value={editPlaceFormData.place_type}
+                              onChange={e => {
+                                const val = e.target.value;
+                                if (val === "__new__") {
+                                  setEditPlaceFormData({ ...editPlaceFormData, place_type: "", place_type_icon: "bx bx-tag" });
+                                } else {
+                                  const found = places.find(p => p.place_type === val);
+                                  setEditPlaceFormData({ ...editPlaceFormData, place_type: val, place_type_icon: found?.place_type_icon || "bx bx-tag" });
+                                }
+                              }}
+                            >
+                              <option value="">لا يوجد (بدون تحديد نوع مخصص)</option>
+                              {existingTypes.map(t => (
+                                <option key={t} value={t}>{t}</option>
+                              ))}
+                              <option value="__new__">+ إضافة نوع جديد للنشاط...</option>
+                            </select>
+                          </div>
+                        )}
+                        
+                        {/* If no existing types or admin chose to write a new one */}
+                        {(existingTypes.length === 0 || !existingTypes.includes(editPlaceFormData.place_type)) && (
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                            <div>
+                              <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اسم النوع الجديد:</label>
+                              <input
+                                className="ios-input"
+                                placeholder="مثال: سوري، صيني، إيطالي..."
+                                value={editPlaceFormData.place_type}
+                                onChange={e => setEditPlaceFormData({ ...editPlaceFormData, place_type: e.target.value })}
+                              />
+                            </div>
+                            <div>
+                              <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>أيقونة Boxicon مناسبة:</label>
+                              <input
+                                className="ios-input"
+                                placeholder="مثال: bx bx-dish أو bx bx-coffee"
+                                value={editPlaceFormData.place_type_icon}
+                                onChange={e => setEditPlaceFormData({ ...editPlaceFormData, place_type_icon: e.target.value })}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 

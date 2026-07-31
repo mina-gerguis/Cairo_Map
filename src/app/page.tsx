@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import ReviewSection from "@/components/ReviewSection";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyOpen } from "@/lib/workingHours";
-import { Place, PlaceCategory, initialPlaces, FEATURES_LIST } from "../data/places";
+import { Place, PlaceCategory, initialPlaces, FEATURES_LIST, CATEGORIES_STRUCTURE, formatBoxIcon } from "../data/places";
 import { Pagination } from "@/components/ui/Pagination";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
@@ -42,84 +42,34 @@ function normalizeArabic(text: string) {
     .replace(/ـ/g, ""); // remove tatweel
 }
 
-// خرائط التصنيفات والأيقونات والألوان للأماكن
+// خرائط التصنيفات والأيقونات والألوان للأماكن (يتم توليدها ديناميكياً من هيكل التصنيفات)
 const CATEGORY_EMOJIS: Record<string, string> = {
   all: "🗂️",
-  restaurant: "🍽️",
-  cafe: "☕",
-  garden: "🌳",
-  medicalCenter: "🏥",
-  health_beauty: "💅",
-  family: "👨‍👩‍👧‍👦",
-  quiet_places: "🌙",
-  kids: "👶",
-  amusement_aqua: "🎡",
-  work: "💼",
-  courses_study: "📚",
-  hotel: "🏨",
-  cinema: "🎬",
-  mall: "🛍️",
-  outings: "🧭",
 };
-
 const CATEGORY_ICONS: Record<string, string> = {
   all: "bx-grid-alt",
-  restaurant: "bx-restaurant",
-  cafe: "bx-coffee",
-  garden: "bx bx-leaf",
-  medicalCenter: "bx-plus-medical",
-  health_beauty: "bx-spa",
-  family: "bx-group",
-  quiet_places: "bx-moon",
-  kids: "bx-child",
-  amusement_aqua: "bx-party",
-  work: "bx-briefcase",
-  courses_study: "bx-book-open",
-  hotel: "bx-hotel",
-  cinema: "bx-film",
-  mall: "bx-shopping-bag",
-  outings: "bx-compass",
 };
-
 const CATEGORY_LABELS: Record<string, string> = {
   all: "الكل",
-  restaurant: "مطاعم",
-  cafe: "كافيهات",
-  garden: "حدائق",
-  medicalCenter: "مراكز طبية",
-  health_beauty: "الصحة والجمال",
-  family: "اماكن عائلية",
-  quiet_places: "اماكن هادئه",
-  kids: "اماكن للاطفال",
-  amusement_aqua: "ملاهي وأكوابارك",
-  work: "مكاتب عمل",
-  courses_study: "كورسات ودراسة",
-  hotel: "فنادق",
-  cinema: "سينما",
-  mall: "مولات",
-  outings: "أماكن للخروجات",
 };
 
+CATEGORIES_STRUCTURE.forEach(main => {
+  CATEGORY_EMOJIS[main.name] = main.emoji;
+  CATEGORY_ICONS[main.name] = main.icon;
+  CATEGORY_LABELS[main.name] = main.label;
+
+  main.subCategories.forEach(sub => {
+    CATEGORY_EMOJIS[sub.name] = main.emoji;
+    CATEGORY_ICONS[sub.name] = sub.icon;
+    CATEGORY_LABELS[sub.name] = sub.label;
+  });
+});
+
 function getCategoryColor(cat: string) {
-  const colors: Record<string, string> = {
-    restaurant: "#ff3b30",
-    cafe: "#ff9500",
-    garden: "#30b0c7",
-    medicalCenter: "#007aff",
-    health_beauty: "#ff2d55",
-    family: "#af52de",
-    quiet_places: "#5856d6",
-    kids: "#ff9f0a",
-    amusement_aqua: "#00c7be",
-    work: "#a2845e",
-    courses_study: "#34c759",
-    hotel: "#5856d6",
-    cinema: "#ff3f8e",
-    mall: "#ff9500",
-    outings: "#30b0c7",
-  };
-  return colors[cat] ?? "#2f80ed";
+  const mainCat = CATEGORIES_STRUCTURE.find(m => m.name === cat || m.subCategories.some(s => s.name === cat));
+  return mainCat?.color ?? "#2f80ed";
 }
+
 
 type PlaceWithDist = Place & { distanceKm?: number; closestBranchName?: string };
 
@@ -137,6 +87,10 @@ function HomeContent() {
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set()); // الأماكن المفضلة
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [minRating, setMinRating] = useState<number>(0);
+  const [activeFeatures, setActiveFeatures] = useState<string[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null); // المكان المفتوح في تفاصيل المكان
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -184,30 +138,81 @@ function HomeContent() {
         const { data, error } = await supabase.from('places').select('*, branches(*)').order('created_at', { ascending: false });
         if (error) throw error;
         if (data) {
-          const mappedPlaces: Place[] = data.map(dbPlace => ({
-            id: dbPlace.id,
-            name: dbPlace.name,
-            category: dbPlace.category,
-            categoryLabel: dbPlace.category_label || CATEGORY_LABELS[dbPlace.category] || dbPlace.category,
-            subCategories: Array.isArray(dbPlace.sub_categories) ? dbPlace.sub_categories : [],
-            governorate: dbPlace.governorate,
-            city: dbPlace.city,
-            shortDescription: dbPlace.short_description,
-            fullAddress: dbPlace.full_address,
-            phones: dbPlace.phones || [],
-            googleMapsUrl: dbPlace.google_maps_url || "",
-            images: dbPlace.images || [],
-            menuImages: dbPlace.menu_images || [],
-            workingHours: dbPlace.working_hours || "",
-            rating: dbPlace.rating || 0,
-            reviewsCount: dbPlace.reviews_count || 0,
-            description: dbPlace.description || "",
-            latitude: dbPlace.latitude || undefined,
-            longitude: dbPlace.longitude || undefined,
-            website_url: dbPlace.website_url,
-            features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
-            services: Array.isArray(dbPlace.services) ? dbPlace.services : [],
-            branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
+          const mappedPlaces: Place[] = data.map(dbPlace => {
+            const rawCategory = dbPlace.category;
+            let finalCategory = rawCategory;
+            let finalSubCategories = Array.isArray(dbPlace.sub_categories) ? dbPlace.sub_categories : [];
+
+            // Backward compatibility: map old flat categories to new main categories & add to subCategories
+            if (rawCategory === 'restaurant' || rawCategory === 'cafe') {
+              finalCategory = 'food_drinks';
+              if (!finalSubCategories.includes(rawCategory)) finalSubCategories.push(rawCategory);
+            } else if (rawCategory === 'garden' || rawCategory === 'outings') {
+              finalCategory = 'public_places';
+              const mappedSub = rawCategory === 'garden' ? 'park' : 'park';
+              if (!finalSubCategories.includes(mappedSub)) finalSubCategories.push(mappedSub);
+            } else if (rawCategory === 'medicalCenter' || rawCategory === 'hospital' || rawCategory === 'pharmacy') {
+              finalCategory = 'health';
+              const mappedSub = rawCategory === 'medicalCenter' ? 'clinic' : rawCategory;
+              if (!finalSubCategories.includes(mappedSub)) finalSubCategories.push(mappedSub);
+            } else if (rawCategory === 'health_beauty') {
+              finalCategory = 'services';
+              if (!finalSubCategories.includes('beauty_salon')) finalSubCategories.push('beauty_salon');
+            } else if (rawCategory === 'family') {
+              finalCategory = 'entertainment';
+              if (!finalSubCategories.includes('event_venue')) finalSubCategories.push('event_venue');
+            } else if (rawCategory === 'quiet_places') {
+              finalCategory = 'public_places';
+              if (!finalSubCategories.includes('park')) finalSubCategories.push('park');
+            } else if (rawCategory === 'kids') {
+              finalCategory = 'entertainment';
+              if (!finalSubCategories.includes('amusement_park')) finalSubCategories.push('amusement_park');
+            } else if (rawCategory === 'amusement_aqua') {
+              finalCategory = 'entertainment';
+              if (!finalSubCategories.includes('water_park')) finalSubCategories.push('water_park');
+            } else if (rawCategory === 'work') {
+              finalCategory = 'business';
+              if (!finalSubCategories.includes('office')) finalSubCategories.push('office');
+            } else if (rawCategory === 'courses_study') {
+              finalCategory = 'education';
+              if (!finalSubCategories.includes('training_center')) finalSubCategories.push('training_center');
+            } else if (rawCategory === 'hotel') {
+              finalCategory = 'tourism';
+              if (!finalSubCategories.includes('hotel')) finalSubCategories.push('hotel');
+            } else if (rawCategory === 'cinema') {
+              finalCategory = 'entertainment';
+              if (!finalSubCategories.includes('cinema')) finalSubCategories.push('cinema');
+            } else if (rawCategory === 'mall') {
+              finalCategory = 'shopping';
+              if (!finalSubCategories.includes('mall')) finalSubCategories.push('mall');
+            }
+
+            return {
+              id: dbPlace.id,
+              name: dbPlace.name,
+              category: finalCategory,
+              categoryLabel: dbPlace.category_label || CATEGORY_LABELS[finalCategory] || finalCategory,
+              subCategories: finalSubCategories,
+              place_type: dbPlace.place_type || "",
+              place_type_icon: dbPlace.place_type_icon || "",
+              governorate: dbPlace.governorate,
+              city: dbPlace.city,
+              shortDescription: dbPlace.short_description,
+              fullAddress: dbPlace.full_address,
+              phones: dbPlace.phones || [],
+              googleMapsUrl: dbPlace.google_maps_url || "",
+              images: dbPlace.images || [],
+              menuImages: dbPlace.menu_images || [],
+              workingHours: dbPlace.working_hours || "",
+              rating: dbPlace.rating || 0,
+              reviewsCount: dbPlace.reviews_count || 0,
+              description: dbPlace.description || "",
+              latitude: dbPlace.latitude || undefined,
+              longitude: dbPlace.longitude || undefined,
+              website_url: dbPlace.website_url,
+              features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
+              services: Array.isArray(dbPlace.services) ? dbPlace.services : [],
+              branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
               id: b.id,
               place_id: b.place_id,
               name: b.name,
@@ -225,7 +230,8 @@ function HomeContent() {
               features: Array.isArray(b.features) ? b.features : [],
               services: Array.isArray(b.services) ? b.services : [],
             })) : []
-          }));
+            };
+          });
           setPlaces(mappedPlaces);
         }
       } catch (err) {
@@ -400,36 +406,62 @@ function HomeContent() {
     const queryWords = q.split(/\s+/).filter(w => !stopWords.includes(w) && w.length > 0);
 
     return enrichedPlaces.filter((p) => {
+      // 1. Main Category filter
       const matchCat =
         selectedCategory === "all" ||
-        p.category === selectedCategory ||
-        (p.subCategories && p.subCategories.includes(selectedCategory));
+        p.category === selectedCategory;
 
-      if (queryWords.length === 0) return matchCat;
+      // 2. Subcategory filter
+      const matchSub =
+        selectedSubCategory === null ||
+        (p.subCategories && p.subCategories.includes(selectedSubCategory));
+
+      // 3. Type filter
+      const matchType =
+        selectedType === null ||
+        p.place_type === selectedType;
+
+      // 4. Rating filter
+      const matchRating =
+        minRating === 0 ||
+        (p.rating && p.rating >= minRating);
+
+      // 5. Features filter
+      const matchFeatures =
+        activeFeatures.length === 0 ||
+        activeFeatures.every(fKey => p.features && p.features.includes(fKey));
+
+      const matchAllFilters = matchCat && matchSub && matchType && matchRating && matchFeatures;
+      if (!matchAllFilters) return false;
+
+      if (queryWords.length === 0) return true;
 
       // Build a comprehensive searchable string for the place
       const searchableText = normalizeArabic([
         p.name,
         p.categoryLabel,
         ...(p.subCategories || []).map(sc => CATEGORY_LABELS[sc] || sc),
-        p.city,
-        p.category === "restaurant" ? "مطعم مطاعم" : "",
-        p.category === "cafe" ? "كافيه كافيهات مقهى قهاوي" : "",
-        p.category === "pharmacy" ? "صيدلية صيدليات" : "",
-        p.category === "hospital" ? "مستشفى مستشفيات عيادة مركز طبي" : "",
-        p.category === "garden" ? "حديقة حدائق منتزه ملاهي" : "",
+        p.place_type || "",
+        ...(p.features || []).map(fKey => FEATURES_LIST.find(f => f.key === fKey)?.label || ""),
+        ...(p.services || []),
         p.city,
         p.governorate,
         p.fullAddress,
-        p.description || ""
+        p.description || "",
+        p.shortDescription || "",
+        // Custom keywords based on categories
+        p.category === "food_drinks" ? "اكل مشروبات مطعم مطاعم كافيه كافيهات مقهى قهاوي" : "",
+        p.subCategories?.includes("restaurant") ? "مطعم مطاعم اكل" : "",
+        p.subCategories?.includes("cafe") ? "كافيه كافيهات مقهى قهاوي مشروبات" : "",
+        p.subCategories?.includes("pharmacy") ? "صيدلية صيدليات علاج دواء" : "",
+        p.subCategories?.includes("hospital") ? "مستشفى مستشفيات عيادة مركز طبي صحة" : "",
+        p.subCategories?.includes("park") ? "حديقة حدائق منتزه ملاهي اماكن عامة" : "",
       ].filter(Boolean).join(" ").toLowerCase());
 
       // Check if ALL searched words exist somewhere in the searchable text
-      const matchSearch = queryWords.every(word => searchableText.includes(word));
-
-      return matchCat && matchSearch;
+      return queryWords.every(word => searchableText.includes(word));
     });
-  }, [enrichedPlaces, searchQuery, selectedCategory]);
+  }, [enrichedPlaces, searchQuery, selectedCategory, selectedSubCategory, selectedType, minRating, activeFeatures]);
 
   /* Section: Nearby (<5 km) */
   const nearbyPlaces = React.useMemo(() => {
@@ -446,7 +478,7 @@ function HomeContent() {
   }, [enrichedPlaces]);
 
   /* Section: Family */
-  const familyPlaces = React.useMemo(() => enrichedPlaces.filter((p) => p.category === "family"), [enrichedPlaces]);
+  const familyPlaces = React.useMemo(() => enrichedPlaces.filter((p) => p.features && p.features.includes("family_friendly")), [enrichedPlaces]);
 
   /* Section: Entertainment */
   const entertainmentPlaces = React.useMemo(() => enrichedPlaces.filter((p) => p.category === "entertainment"), [enrichedPlaces]);
@@ -459,7 +491,8 @@ function HomeContent() {
       id: Date.now().toString(),
       name: newName.trim(),
       category: newCategory,
-      categoryLabel: CATEGORY_LABELS[newCategory],
+      categoryLabel: CATEGORY_LABELS[newCategory] || newCategory,
+      subCategories: [newCategory],
       briefLocation: newBriefLocation.trim(),
       fullAddress: newFullAddress.trim(),
       phones: newPhones.split(",").map((p) => p.trim()).filter(Boolean),
@@ -479,7 +512,13 @@ function HomeContent() {
     setNewLat(""); setNewLng("");
   };
 
-  const showSections = !searchQuery.trim() && selectedCategory === "all";
+  const showSections =
+    !searchQuery.trim() &&
+    selectedCategory === "all" &&
+    selectedSubCategory === null &&
+    selectedType === null &&
+    minRating === 0 &&
+    activeFeatures.length === 0;
 
   return (
     <>
@@ -640,13 +679,17 @@ function HomeContent() {
         </div>
 
         {/* ── Categories + Proximity ── */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "32px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", flexGrow: 1 }}>
-            {["all", "restaurant", "cafe", "garden", "medicalCenter", "health_beauty", "family", "quiet_places", "kids", "amusement_aqua", "work", "courses_study", "hotel", "cinema", "mall", "outings"].map((cat) => (
+            {["all", ...CATEGORIES_STRUCTURE.map(c => c.name)].map((cat) => (
               <button
                 key={cat}
                 className={`category-pill ${selectedCategory === cat ? "active" : ""}`}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  setSelectedSubCategory(null);
+                  setSelectedType(null);
+                }}
                 style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)", fontSize:"0.8rem"}}
               >
                 <i className={`bx ${CATEGORY_ICONS[cat] || "bx-category"}`} style={{ fontSize: "1.1rem" }}></i>
@@ -668,6 +711,163 @@ function HomeContent() {
             )}
             {isProximityEnabled ? "قريب مني ✓" : "قريب مني"}
           </button>
+        </div>
+
+        {/* Secondary Subcategories Row */}
+        {selectedCategory !== "all" && (
+          <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px", marginBottom: "16px", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}>
+            <button
+              className={`category-pill ${selectedSubCategory === null ? "active" : ""}`}
+              onClick={() => { setSelectedSubCategory(null); setSelectedType(null); }}
+              style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)", fontSize: "0.78rem" }}
+            >
+              <i className="bx bx-grid-alt" style={{ fontSize: "1rem" }}></i>
+              الكل في {CATEGORY_LABELS[selectedCategory]}
+            </button>
+            {CATEGORIES_STRUCTURE.find(m => m.name === selectedCategory)?.subCategories.map((sub) => (
+              <button
+                key={sub.name}
+                className={`category-pill ${selectedSubCategory === sub.name ? "active" : ""}`}
+                onClick={() => { setSelectedSubCategory(sub.name); setSelectedType(null); }}
+                style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)", fontSize: "0.78rem" }}
+              >
+                <i className={`bx ${sub.icon}`} style={{ fontSize: "1rem" }}></i>
+                {sub.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Place Types Tabs */}
+        {selectedCategory !== "all" && selectedSubCategory && (() => {
+          // Find unique types of places in this subcategory
+          const availableTypes = Array.from(new Set(
+            places
+              .filter(p => {
+                const matchesMain = p.category === selectedCategory;
+                const matchesSub = p.subCategories?.includes(selectedSubCategory);
+                return matchesMain && matchesSub && p.place_type?.trim();
+              })
+              .map(p => p.place_type!.trim())
+          )).filter(Boolean);
+
+          if (availableTypes.length === 0) return null;
+
+          return (
+            <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "10px", marginBottom: "20px", overflowX: "auto", scrollbarWidth: "none" }}>
+              <button
+                onClick={() => setSelectedType(null)}
+                style={{
+                  background: selectedType === null ? "rgba(108, 99, 255, 0.15)" : "none",
+                  border: "none",
+                  color: selectedType === null ? "var(--accent-primary, #6c63ff)" : "var(--text-secondary)",
+                  padding: "6px 12px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontSize: "0.85rem",
+                  fontWeight: "700",
+                  fontFamily: "var(--font-cairo)"
+                }}
+              >
+                الكل
+              </button>
+              {availableTypes.map(tName => {
+                // Find icon for this type
+                const typePlace = places.find(p => p.place_type === tName);
+                const typeIcon = formatBoxIcon(typePlace?.place_type_icon || "bx-tag");
+                return (
+                  <button
+                    key={tName}
+                    onClick={() => setSelectedType(tName)}
+                    style={{
+                      background: selectedType === tName ? "rgba(108, 99, 255, 0.15)" : "none",
+                      border: "none",
+                      color: selectedType === tName ? "var(--accent-primary, #6c63ff)" : "var(--text-secondary)",
+                      padding: "6px 12px",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      fontSize: "0.85rem",
+                      fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      fontFamily: "var(--font-cairo)"
+                    }}
+                  >
+                    <i className={typeIcon}></i>
+                    {tName}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })()}
+
+        {/* ── Filters Bar ── */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "32px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "12px 16px" }}>
+          <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>تصفية حسب:</span>
+          
+          {/* Rating Filter Dropdown */}
+          <div style={{ position: "relative" }}>
+            <select
+              value={minRating}
+              onChange={(e) => setMinRating(parseFloat(e.target.value))}
+              style={{
+                background: "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "10px",
+                color: "var(--text-primary)",
+                padding: "6px 12px",
+                fontSize: "0.8rem",
+                cursor: "pointer",
+                fontFamily: "var(--font-cairo)",
+                outline: "none"
+              }}
+            >
+              <option value="0" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>كل التقييمات ⭐</option>
+              <option value="4" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>4.0+ ⭐</option>
+              <option value="4.5" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>4.5+ ⭐</option>
+            </select>
+          </div>
+
+          {/* Quick Toggle Filters */}
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            {[
+              { key: "quiet_place", label: "أماكن هادئة", icon: "🤫" },
+              { key: "kids_friendly", label: "مخصصة للأطفال", icon: "🧸" },
+              { key: "family_friendly", label: "عائلية وكابلز", icon: "💑" }
+            ].map(filterItem => {
+              const isFeatureActive = activeFeatures.includes(filterItem.key);
+              return (
+                <button
+                  key={filterItem.key}
+                  onClick={() => {
+                    setActiveFeatures(prev =>
+                      isFeatureActive ? prev.filter(f => f !== filterItem.key) : [...prev, filterItem.key]
+                    );
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: isFeatureActive ? "var(--accent-primary, #6c63ff)" : "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
+                    border: isFeatureActive ? "none" : "1px solid var(--border-glass)",
+                    color: isFeatureActive ? "#fff" : "var(--text-primary)",
+                    padding: "6px 12px",
+                    borderRadius: "10px",
+                    fontSize: "0.8rem",
+                    cursor: "pointer",
+                    fontWeight: isFeatureActive ? "700" : "500",
+                    fontFamily: "var(--font-cairo)",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  <span>{filterItem.icon}</span>
+                  <span>{filterItem.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* ═══════════════════════════════════ SECTIONS MODE ═══════════════════════════════════ */}
@@ -735,8 +935,14 @@ function HomeContent() {
         ) : (
           /* ═══════════════════════════════════ SEARCH / FILTER MODE ═══════════════════════════════════ */
           <>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "16px" }}>
-              {filteredPlaces.length} نتيجة {searchQuery ? `لـ "${searchQuery}"` : ""} {selectedCategory !== "all" ? `في ${CATEGORY_LABELS[selectedCategory]}` : ""}
+            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "16px", fontFamily: "var(--font-cairo)" }}>
+              {filteredPlaces.length} نتيجة
+              {searchQuery ? ` لـ "${searchQuery}"` : ""}
+              {selectedCategory !== "all" ? ` في قسم ${CATEGORY_LABELS[selectedCategory]}` : ""}
+              {selectedSubCategory ? ` -> ${CATEGORY_LABELS[selectedSubCategory]}` : ""}
+              {selectedType ? ` (${selectedType})` : ""}
+              {minRating > 0 ? ` بتقييم ${minRating}+` : ""}
+              {activeFeatures.length > 0 ? ` مع مميزات محددة` : ""}
             </p>
             {filteredPlaces.length > 0 ? (
               <div className="grid-places">
@@ -791,8 +997,23 @@ function HomeContent() {
                 <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
                   {selectedPlace.name}
                 </h3>
-                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                  {selectedPlace.categoryLabel || CATEGORY_LABELS[selectedPlace.category]}
+                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
+                  <span>{selectedPlace.categoryLabel || CATEGORY_LABELS[selectedPlace.category]}</span>
+                  {selectedPlace.subCategories && selectedPlace.subCategories.length > 0 && (
+                    <>
+                      <span>•</span>
+                      <span>{selectedPlace.subCategories.map(sc => CATEGORY_LABELS[sc] || sc).join(", ")}</span>
+                    </>
+                  )}
+                  {selectedPlace.place_type && (
+                    <>
+                      <span>•</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                        <i className={formatBoxIcon(selectedPlace.place_type_icon || 'bx-tag')} style={{ fontSize: "0.85rem" }}></i>
+                        {selectedPlace.place_type}
+                      </span>
+                    </>
+                  )}
                 </span>
               </div>
 
