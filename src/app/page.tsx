@@ -830,43 +830,31 @@ function HomeContent() {
             </select>
           </div>
 
-          {/* Quick Toggle Filters */}
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            {[
-              { key: "quiet_place", label: "أماكن هادئة", icon: "🤫" },
-              { key: "kids_friendly", label: "مخصصة للأطفال", icon: "🧸" },
-              { key: "family_friendly", label: "عائلية وكابلز", icon: "💑" }
-            ].map(filterItem => {
-              const isFeatureActive = activeFeatures.includes(filterItem.key);
-              return (
-                <button
-                  key={filterItem.key}
-                  onClick={() => {
-                    setActiveFeatures(prev =>
-                      isFeatureActive ? prev.filter(f => f !== filterItem.key) : [...prev, filterItem.key]
-                    );
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    background: isFeatureActive ? "var(--accent-primary, #6c63ff)" : "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
-                    border: isFeatureActive ? "none" : "1px solid var(--border-glass)",
-                    color: isFeatureActive ? "#fff" : "var(--text-primary)",
-                    padding: "6px 12px",
-                    borderRadius: "10px",
-                    fontSize: "0.8rem",
-                    cursor: "pointer",
-                    fontWeight: isFeatureActive ? "700" : "500",
-                    fontFamily: "var(--font-cairo)",
-                    transition: "all 0.2s ease"
-                  }}
-                >
-                  <span>{filterItem.icon}</span>
-                  <span>{filterItem.label}</span>
-                </button>
-              );
-            })}
+          {/* Classification Filter Dropdown */}
+          <div style={{ position: "relative" }}>
+            <select
+              value={activeFeatures[0] || ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                setActiveFeatures(val ? [val] : []);
+              }}
+              style={{
+                background: "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "10px",
+                color: "var(--text-primary)",
+                padding: "6px 12px",
+                fontSize: "0.8rem",
+                cursor: "pointer",
+                fontFamily: "var(--font-cairo)",
+                outline: "none"
+              }}
+            >
+              <option value="" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>كل الأجواء ✨</option>
+              <option value="quiet_place" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>🤫 أماكن هادئة</option>
+              <option value="kids_friendly" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>🧸 مخصصة للأطفال</option>
+              <option value="family_friendly" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>💑 عائلية وكابلز</option>
+            </select>
           </div>
         </div>
 
@@ -965,7 +953,7 @@ function HomeContent() {
       {/* ═══════════════════════════════════ DETAIL SHEET ═══════════════════════════════════ */}
       {selectedPlace && (
         <div className="ios-sheet-overlay" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}>
-          <div className="ios-sheet" style={{ maxWidth: "100%" }} onClick={(e: any) => e.stopPropagation()}>
+          <div className="ios-sheet" style={{ maxWidth: "100%", borderTopRightRadius: "15px", borderTopLeftRadius: "15px" }} onClick={(e: any) => e.stopPropagation()}>
             <div className="ios-sheet-drag-handle" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }} />
 
             {/* Apple Maps Top Bar (Fixed) */}
