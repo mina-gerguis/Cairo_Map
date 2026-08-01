@@ -24,24 +24,22 @@ export interface MainCategoryItem {
 }
 
 export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
-  {
+  // Food and Drinks
+  { 
     name: 'food_drinks',
     label: 'أكل ومشروبات',
     icon: 'bx-dish',
     emoji: '🍴',
     color: '#ff3b30',
     subCategories: [
-      { name: 'restaurant', label: 'مطاعم', icon: 'bx-restaurant' },
-      { name: 'cafe', label: 'كافيهات', icon: 'bx-coffee' },
-      { name: 'fast_food', label: 'فاست فود', icon: 'bx-cheese' },
-      { name: 'pizza', label: 'بيتزا', icon: 'bx-pizza' },
-      { name: 'bakery', label: 'مخابز وحلويات', icon: 'bx-cookie' },
-      { name: 'ice_cream', label: 'آيس كريم', icon: 'bx-popsicle' },
-      { name: 'grill', label: 'مشويات', icon: 'bx-flame' },
-      { name: 'international_restaurant', label: 'مطاعم عالمية', icon: 'bx-globe' },
-      { name: 'juice_bar', label: 'عصائر', icon: 'bx-drink' },
+      { name: 'restaurant', label: 'مطاعم', icon: 'bx bx-restaurant' },
+      { name: 'fast_food', label: 'فاست فود', icon: 'bx bx-cheese' },
+      { name: 'bakery', label: 'مخابز وحلويات', icon: 'bx bx-cookie' },
+      { name: 'cafe', label: 'كافيهات', icon: 'bx bx-coffee' },
+      { name: 'juice_bar', label: 'عصائر', icon: 'bx bx-drink' },
     ]
   },
+  // Health
   {
     name: 'health',
     label: 'صحة',
@@ -49,16 +47,17 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🏥',
     color: '#007aff',
     subCategories: [
-      { name: 'hospital', label: 'مستشفيات', icon: 'bx-plus-medical' },
-      { name: 'clinic', label: 'عيادات', icon: 'bx-first-aid' },
-      { name: 'pharmacy', label: 'صيدليات', icon: 'bx-capsule' },
-      { name: 'dental_clinic', label: 'عيادات أسنان', icon: 'bx-smile' },
-      { name: 'eye_center', label: 'مراكز عيون', icon: 'bx-show' },
-      { name: 'lab', label: 'معامل تحاليل', icon: 'bx-test-tube' },
-      { name: 'radiology', label: 'مراكز أشعة', icon: 'bx-scan' },
-      { name: 'ambulance', label: 'إسعاف', icon: 'bx-run' },
+      { name: 'hospital', label: 'مستشفيات', icon: 'bx bx-plus-medical' },
+      { name: 'clinic', label: 'عيادات', icon: 'bx bx-first-aid' },
+      { name: 'pharmacy', label: 'صيدليات', icon: 'bx bx-capsule' },
+      { name: 'dental_clinic', label: 'عيادات أسنان', icon: 'bx bx-smile' },
+      { name: 'eye_center', label: 'مراكز عيون', icon: 'bx bx-show' },
+      { name: 'lab', label: 'معامل تحاليل', icon: 'bx bx-test-tube' },
+      { name: 'radiology', label: 'مراكز أشعة', icon: 'bx bx-scan' },
+      { name: 'ambulance', label: 'إسعاف', icon: 'bx bx-run' },
     ]
   },
+  // Shopping
   {
     name: 'shopping',
     label: 'تسوق',
@@ -66,23 +65,23 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🛍️',
     color: '#ff9500',
     subCategories: [
-      { name: 'mall', label: 'مولات', icon: 'bx-store-alt' },
-      { name: 'supermarket', label: 'سوبر ماركت', icon: 'bx-cart' },
-      { name: 'store', label: 'متاجر', icon: 'bx-store' },
-      { name: 'mobile_store', label: 'محلات موبايلات', icon: 'bx-mobile' },
-      { name: 'computer_store', label: 'محلات كمبيوتر', icon: 'bx-laptop' },
-      { name: 'clothing_store', label: 'ملابس', icon: 'bx-closet' },
-      { name: 'shoe_store', label: 'أحذية', icon: 'bx-football' },
-      { name: 'jewelry', label: 'مجوهرات', icon: 'bx-diamond' },
-      { name: 'cosmetics', label: 'مستحضرات تجميل', icon: 'bx-heart' },
-      { name: 'furniture', label: 'أثاث', icon: 'bx-home' },
-      { name: 'bookstore', label: 'مكتبات', icon: 'bx-book' },
-      { name: 'toy_store', label: 'ألعاب', icon: 'bx-joystick' },
-      { name: 'pet_store', label: 'مستلزمات حيوانات', icon: 'bx-bone' },
-      { name: 'flower_shop', label: 'ورد وهدايا', icon: 'bx-gift' },
-      { name: 'hardware_store', label: 'أدوات منزلية', icon: 'bx-wrench' },
+      { name: 'mall', label: 'مولات', icon: 'bx bx-store-alt' },
+      { name: 'supermarket', label: 'سوبر ماركت', icon: 'bx bx-cart' },
+      { name: 'mobile_store', label: 'محلات موبايلات', icon: 'bx bx-mobile' },
+      { name: 'computer_store', label: 'محلات كمبيوتر', icon: 'bx bx-laptop' },
+      { name: 'clothing_store', label: 'ملابس', icon: 'bx bx-closet' },
+      { name: 'shoe_store', label: 'أحذية', icon: 'bx bx-football' },
+      { name: 'jewelry', label: 'مجوهرات', icon: 'bx bx-diamond' },
+      { name: 'cosmetics', label: 'مستحضرات تجميل', icon: 'bx bx-heart' },
+      { name: 'furniture', label: 'أثاث', icon: 'bx bx-home' },
+      { name: 'bookstore', label: 'مكتبات', icon: 'bx bx-book' },
+      { name: 'toy_store', label: 'ألعاب', icon: 'bx bx-joystick' },
+      { name: 'pet_store', label: 'مستلزمات حيوانات', icon: 'bx bx-bone' },
+      { name: 'flower_shop', label: 'ورد وهدايا', icon: 'bx bx-gift' },
+      { name: 'hardware_store', label: 'أدوات منزلية', icon: 'bx bx-wrench' },
     ]
   },
+  // Automotive
   {
     name: 'automotive',
     label: 'سيارات',
@@ -90,14 +89,15 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🚗',
     color: '#5856d6',
     subCategories: [
-      { name: 'gas_station', label: 'محطات بنزين', icon: 'bx-gas-pump' },
-      { name: 'car_service', label: 'مراكز صيانة', icon: 'bx-cog' },
-      { name: 'car_dealer', label: 'معارض سيارات', icon: 'bx-car' },
-      { name: 'tire_shop', label: 'كاوتش', icon: 'bx-analyse' },
-      { name: 'car_wash', label: 'مغاسل سيارات', icon: 'bx-water' },
-      { name: 'parking', label: 'مواقف سيارات', icon: 'bx-parking' },
+      { name: 'gas_station', label: 'محطات بنزين', icon: 'bx bx-gas-pump' },
+      { name: 'car_service', label: 'مراكز صيانة', icon: 'bx bx-cog' },
+      { name: 'car_dealer', label: 'معارض سيارات', icon: 'bx bx-car' },
+      { name: 'tire_shop', label: 'كاوتش', icon: 'bx bx-analyse' },
+      { name: 'car_wash', label: 'مغاسل سيارات', icon: 'bx bx-water' },
+      { name: 'parking', label: 'مواقف سيارات', icon: 'fa-solid fa-car-tunnel' },
     ]
   },
+  // Tourism
   {
     name: 'tourism',
     label: 'إقامة وسياحة',
@@ -105,13 +105,14 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🏨',
     color: '#af52de',
     subCategories: [
-      { name: 'hotel', label: 'فنادق', icon: 'bx-hotel' },
-      { name: 'apartment_hotel', label: 'شقق فندقية', icon: 'bx-building' },
-      { name: 'guest_house', label: 'بيوت ضيافة', icon: 'bx-home-heart' },
-      { name: 'camp', label: 'مخيمات', icon: 'bx-tent' },
-      { name: 'travel_agency', label: 'شركات سياحة', icon: 'bx-paper-plane' },
+      { name: 'hotel', label: 'فنادق', icon: 'bx bx-hotel' },
+      { name: 'apartment_hotel', label: 'شقق فندقية', icon: 'bx bx-building' },
+      { name: 'guest_house', label: 'بيوت ضيافة', icon: 'bx bx-home-heart' },
+      { name: 'camp', label: 'مخيمات', icon: 'fa-solid fa-tent' },
+      { name: 'travel_agency', label: 'شركات سياحة', icon: 'bx bx-paper-plane' },
     ]
   },
+  // Entertainment
   {
     name: 'entertainment',
     label: 'ترفيه',
@@ -119,18 +120,18 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🎭',
     color: '#ff2d55',
     subCategories: [
-      { name: 'cinema', label: 'سينما', icon: 'bx-film' },
-      { name: 'amusement_park', label: 'ملاهي', icon: 'bx-laugh' },
-      { name: 'water_park', label: 'أكوا بارك', icon: 'bx-swim' },
-      { name: 'bowling', label: 'بولينج', icon: 'bx-bowling-ball' },
-      { name: 'gaming_center', label: 'جيمات', icon: 'bx-game' },
-      { name: 'swimming_pool', label: 'حمامات سباحة', icon: 'bx-swim' },
-      { name: 'theater', label: 'مسارح', icon: 'bx-mask' },
-      { name: 'museum', label: 'متاحف', icon: 'bx-landmark' },
-      { name: 'gallery', label: 'معارض', icon: 'bx-image' },
-      { name: 'event_venue', label: 'فعاليات', icon: 'bx-calendar-event' },
+      { name: 'cinema', label: 'سينما', icon: 'bx bx-film' },
+      { name: 'amusement_park', label: 'ملاهي', icon: 'bx bx-laugh' },
+      { name: 'water_park', label: 'أكوا بارك', icon: 'bx bx-swim' },
+      { name: 'bowling', label: 'بولينج', icon: 'bx bx-bowling-ball' },
+      { name: 'swimming_pool', label: 'حمامات سباحة', icon: 'bx bx-swim' },
+      { name: 'theater', label: 'مسارح', icon: 'bx bx-mask' },
+      { name: 'museum', label: 'متاحف', icon: 'fa-solid fa-building-columns' },
+      { name: 'gallery', label: 'معارض', icon: 'bx bx-image' },
+      { name: 'event_venue', label: 'فعاليات', icon: 'bx bx-calendar-event' },
     ]
   },
+  // Sports
   {
     name: 'sports',
     label: 'رياضة',
@@ -138,13 +139,14 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🏋️',
     color: '#34c759',
     subCategories: [
-      { name: 'gym', label: 'جيم', icon: 'bx-dumbbell' },
-      { name: 'sports_field', label: 'ملاعب', icon: 'bx-football' },
-      { name: 'tennis_court', label: 'ملاعب تنس', icon: 'bx-tennis-ball' },
-      { name: 'sports_academy', label: 'أكاديميات رياضية', icon: 'bx-award' },
-      { name: 'bike_rental', label: 'تأجير دراجات', icon: 'bx-cycling' },
+      { name: 'gym', label: 'جيم', icon: 'bx bx-dumbbell' },
+      { name: 'sports_field', label: 'ملاعب', icon: 'bx bx-football' },
+      { name: 'tennis_court', label: 'ملاعب تنس', icon: 'bx bx-tennis-ball' },
+      { name: 'sports_academy', label: 'أكاديميات رياضية', icon: 'bx bx-award' },
+      { name: 'bike_rental', label: 'تأجير دراجات', icon: 'bx bx-cycling' },
     ]
   },
+  // Government
   {
     name: 'government',
     label: 'خدمات حكومية',
@@ -152,14 +154,15 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🏛️',
     color: '#8e8e93',
     subCategories: [
-      { name: 'government_office', label: 'مصالح حكومية', icon: 'bx-buildings' },
-      { name: 'police_station', label: 'قسم شرطة', icon: 'bx-shield' },
-      { name: 'fire_station', label: 'مطافي', icon: 'bx-fridge' },
-      { name: 'court', label: 'محاكم', icon: 'bx-briefcase' },
-      { name: 'post_office', label: 'بريد', icon: 'bx-envelope' },
-      { name: 'registry_office', label: 'شهر عقاري', icon: 'bx-file' },
+      { name: 'government_office', label: 'مصالح حكومية', icon: 'bx bx-buildings' },
+      { name: 'police_station', label: 'قسم شرطة', icon: 'bx bx-shield' },
+      { name: 'fire_station', label: 'مطافي', icon: 'bx bx-fridge' },
+      { name: 'court', label: 'محاكم', icon: 'bx bx-briefcase' },
+      { name: 'post_office', label: 'بريد', icon: 'bx bx-envelope' },
+      { name: 'registry_office', label: 'شهر عقاري', icon: 'bx bx-file' },
     ]
   },
+  // Finance
   {
     name: 'finance',
     label: 'خدمات مالية',
@@ -167,12 +170,12 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '💰',
     color: '#30b0c7',
     subCategories: [
-      { name: 'bank', label: 'بنوك', icon: 'bx-bank' },
-      { name: 'atm', label: 'ماكينات ATM', icon: 'bx-credit-card-front' },
-      { name: 'exchange', label: 'صرافة', icon: 'bx-transfer' },
-      { name: 'payment_center', label: 'خدمات دفع', icon: 'bx-credit-card' },
+      { name: 'bank', label: 'بنوك', icon: 'fa-solid fa-building-columns' },
+      { name: 'atm', label: 'ماكينات ATM', icon: 'bx bx-credit-card-front' },
+      { name: 'exchange', label: 'صرافة', icon: 'bx bx-transfer' },
     ]
   },
+    // Religion
   {
     name: 'religion',
     label: 'أماكن دينية',
@@ -180,10 +183,11 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🕌',
     color: '#a2845e',
     subCategories: [
-      { name: 'mosque', label: 'مساجد', icon: 'bx-sun' },
-      { name: 'church', label: 'كنائس', icon: 'bx-cross' },
+      { name: 'mosque', label: 'مساجد', icon: 'fa-solid fa-kaaba' },
+      { name: 'church', label: 'كنائس', icon: 'fa-solid fa-cross' },
     ]
   },
+    // Education
   {
     name: 'education',
     label: 'تعليم',
@@ -191,13 +195,14 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🎓',
     color: '#34c759',
     subCategories: [
-      { name: 'school', label: 'مدارس', icon: 'bx-book' },
-      { name: 'university', label: 'جامعات', icon: 'bx-graduation-cap' },
-      { name: 'training_center', label: 'مراكز تعليم', icon: 'bx-chalkboard' },
-      { name: 'language_center', label: 'مراكز لغات', icon: 'bx-conversation' },
-      { name: 'nursery', label: 'حضانات', icon: 'bx-face' },
+      { name: 'school', label: 'مدارس', icon: 'bx bx-book' },
+      { name: 'university', label: 'جامعات', icon: 'fa-solid fa-school' },
+      { name: 'training_center', label: 'مراكز تعليم', icon: 'bx bx-chalkboard' },
+      { name: 'language_center', label: 'مراكز لغات', icon: 'bx bx-conversation' },
+      { name: 'nursery', label: 'حضانات', icon: 'bx bx-face' },
     ]
   },
+  // Business
   {
     name: 'business',
     label: 'أعمال',
@@ -205,13 +210,14 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '💼',
     color: '#1c1c1e',
     subCategories: [
-      { name: 'company', label: 'شركات', icon: 'bx-briefcase' },
-      { name: 'office', label: 'مكاتب', icon: 'bx-desktop' },
-      { name: 'law_firm', label: 'مكاتب محاماة', icon: 'bx-notepad' },
-      { name: 'accounting_office', label: 'مكاتب محاسبة', icon: 'bx-calculator' },
-      { name: 'real_estate', label: 'شركات عقارات', icon: 'bx-home-circle' },
+      { name: 'company', label: 'شركات', icon: 'bx bx-briefcase' },
+      { name: 'office', label: 'مكاتب', icon: 'bx bx-desktop' },
+      { name: 'law_firm', label: 'مكاتب محاماة', icon: 'bx bx-notepad' },
+      { name: 'accounting_office', label: 'مكاتب محاسبة', icon: 'bx bx-calculator' },
+      { name: 'real_estate', label: 'شركات عقارات', icon: 'bx bx-home-circle' },
     ]
   },
+  // Services
   {
     name: 'services',
     label: 'خدمات',
@@ -219,32 +225,33 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     emoji: '🧹',
     color: '#ff9f0a',
     subCategories: [
-      { name: 'laundry', label: 'مغاسل', icon: 'bx-sun' },
-      { name: 'barbershop', label: 'صالونات حلاقة', icon: 'bx-cut' },
-      { name: 'beauty_salon', label: 'بيوتي سنتر', icon: 'bx-spa' },
-      { name: 'locksmith', label: 'مفاتيح', icon: 'bx-key' },
-      { name: 'plumber', label: 'سباك', icon: 'bx-wrench' },
-      { name: 'electrician', label: 'كهربائي', icon: 'bx-plug' },
-      { name: 'ac_service', label: 'تكييف', icon: 'bx-wind' },
-      { name: 'shipping', label: 'شركات شحن', icon: 'bx-package' },
-      { name: 'moving_service', label: 'نقل أثاث', icon: 'bx-truck' },
+      { name: 'laundry', label: 'مغاسل', icon: 'bx bx-sun' },
+      { name: 'barbershop', label: 'صالونات حلاقة', icon: 'bx bx-cut' },
+      { name: 'beauty_salon', label: 'بيوتي سنتر', icon: 'bx bx-spa' },
+      { name: 'locksmith', label: 'مفاتيح', icon: 'bx bx-key' },
+      { name: 'plumber', label: 'سباك', icon: 'bx bx-wrench' },
+      { name: 'electrician', label: 'كهربائي', icon: 'bx bx-plug' },
+      { name: 'ac_service', label: 'تكييف', icon: 'bx bx-wind' },
+      { name: 'shipping', label: 'شركات شحن', icon: 'bx bx-package' },
+      { name: 'moving_service', label: 'نقل أثاث', icon: 'bx bx-home-circle' },
     ]
   },
+  // Public Places
   {
     name: 'public_places',
     label: 'أماكن عامة',
-    icon: 'bx-tree',
+    icon: 'bx-buildings',
     emoji: '🌳',
     color: '#30b0c7',
     subCategories: [
-      { name: 'park', label: 'حدائق', icon: 'bx-tree' },
-      { name: 'beach', label: 'شواطئ', icon: 'bx-sun' },
-      { name: 'nature_reserve', label: 'محميات', icon: 'bx-landscape' },
-      { name: 'square', label: 'ميادين', icon: 'bx-map' },
-      { name: 'bus_station', label: 'مواقف مواصلات', icon: 'bx-bus' },
-      { name: 'metro_station', label: 'محطات مترو', icon: 'bx-train' },
-      { name: 'train_station', label: 'محطات قطار', icon: 'bx-train' },
-      { name: 'airport', label: 'مطارات', icon: 'bx-plane' },
+      { name: 'park', label: 'حدائق', icon: 'fa-solid fa-tree' },
+      { name: 'beach', label: 'شواطئ', icon: 'bx bx-sun' },
+      { name: 'nature_reserve', label: 'محميات', icon: 'bx bx-landscape' },
+      { name: 'square', label: 'ميادين', icon: 'bx bx-map' },
+      { name: 'bus_station', label: 'مواقف مواصلات', icon: 'bx bx-bus' },
+      { name: 'metro_station', label: 'محطات مترو', icon: 'bx bx-train' },
+      { name: 'train_station', label: 'محطات قطار', icon: 'bx bx-train' },
+      { name: 'airport', label: 'مطارات', icon: 'fa-solid fa-plane-departure' },
     ]
   }
 ];
@@ -446,6 +453,37 @@ export function formatBoxIcon(iconStr: string): string {
   
   // Remove multiple spaces
   trimmed = trimmed.replace(/\s+/g, ' ');
+
+  // Auto-heal corrupted Font Awesome icons saved as Boxicons (e.g. "bx bx-fa-...")
+  if (
+    trimmed.startsWith("bx bx-fa-") || 
+    trimmed.startsWith("bx bx-fa ") || 
+    trimmed.startsWith("bx bx-fas ") || 
+    trimmed.startsWith("bx bx-far ") || 
+    trimmed.startsWith("bx bx-fab ")
+  ) {
+    trimmed = trimmed.substring(6);
+  }
+  if (
+    trimmed.startsWith("bx-fa-") || 
+    trimmed.startsWith("bx-fa ") || 
+    trimmed.startsWith("bx-fas ") || 
+    trimmed.startsWith("bx-far ") || 
+    trimmed.startsWith("bx-fab ")
+  ) {
+    trimmed = trimmed.substring(3);
+  }
+  
+  // If it's a Font Awesome icon (starts with fa-, fa, fas, far, fab)
+  if (
+    trimmed.startsWith("fa-") || 
+    trimmed.startsWith("fa ") || 
+    trimmed.startsWith("fas ") || 
+    trimmed.startsWith("far ") || 
+    trimmed.startsWith("fab ")
+  ) {
+    return trimmed;
+  }
   
   // If it already has "bx bx-something", return it
   if (trimmed.startsWith("bx bx-")) {

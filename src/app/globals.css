@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 @import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
 /* ============================================================
    Design Tokens
@@ -806,7 +807,7 @@ html.light .navbar-auth-menu {
    ============================================================ */.footer {
   background: var(--bg-primary);
   border-top: 1px solid var(--border-glass);
-  padding: 18px 0;
+  margin: 20px 0;
 }
 
 html.light .footer {
@@ -816,7 +817,7 @@ html.light .footer {
 .footer-inner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
