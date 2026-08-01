@@ -24,6 +24,8 @@ function ProposePlaceContent() {
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
+  const [limitChecking, setLimitChecking] = useState(true);
+  const [limitReached, setLimitReached] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -68,6 +70,29 @@ function ProposePlaceContent() {
     }
     loadCategories();
   }, []);
+
+  // Check pending feedback limit (max 5)
+  useEffect(() => {
+    async function checkLimit() {
+      if (!user) {
+        setLimitChecking(false);
+        return;
+      }
+      setLimitChecking(true);
+      try {
+        const { isFeedbackLimitReached } = await import("@/lib/feedbackLimit");
+        const reached = await isFeedbackLimitReached(user.id);
+        setLimitReached(reached);
+      } catch (err) {
+        console.error("Failed to check pending limit:", err);
+      } finally {
+        setLimitChecking(false);
+      }
+    }
+    if (!authLoading) {
+      checkLimit();
+    }
+  }, [user, authLoading]);
 
   // Fetch existing proposal if in edit mode
   useEffect(() => {
@@ -313,13 +338,40 @@ function ProposePlaceContent() {
     }
   };
 
-  if (authLoading || initialFetching) {
+  if (authLoading || initialFetching || limitChecking) {
     return (
       <div style={{ minHeight: "100vh", background: "var(--bg-main)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
           <div className="spinner" style={{ width: "40px", height: "40px", margin: "0 auto 16px" }} />
           <p style={{ color: "var(--text-secondary)" }}>جاري تحميل الصفحة...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (limitReached) {
+    return (
+      <div style={{ minHeight: "100vh", background: "var(--bg-main)", color: "var(--text-primary)", display: "flex", flexDirection: "column" }}>
+        <Navbar />
+        <main style={{ flex: 1, padding: "120px 20px 60px", maxWidth: "600px", margin: "0 auto", width: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div className="glass-panel" style={{ padding: "40px", borderRadius: "28px", textAlign: "center", animation: "fade-in 0.4s ease", border: "1px solid rgba(255, 149, 0, 0.25)" }}>
+            <div style={{ width: "72px", height: "72px", borderRadius: "50%", background: "rgba(255, 149, 0, 0.12)", color: "#ff9500", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2.4rem", margin: "0 auto 20px" }}>
+              <i className="bx bx-error" style={{ fontSize: "2.5rem" }}></i>
+            </div>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "12px" }}>
+              لقد وصلت للحد الأقصى (5 طلبات معلقة)
+            </h2>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "28px" }}>
+              لا يمكنك تقديم اقتراحات أو بلاغات جديدة حالياً. يرجى الانتظار حتى تقوم الإدارة بمراجعة واعتماد أو رفض طلباتك السابقة قبل تقديم طلب جديد.
+            </p>
+            <div style={{ display: "flex", gap: "14px", justifyContent: "center" }}>
+              <Link href="/profile" className="ios-btn ios-btn-primary" style={{ padding: "12px 24px", textDecoration: "none" }}>
+                الذهاب للبروفايل لمتابعة طلباتك
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }

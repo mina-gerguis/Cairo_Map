@@ -122,6 +122,11 @@ export default function ProfilePage() {
   const [userProposals, setUserProposals] = useState<any[]>([]);
   const [userReports, setUserReports] = useState<any[]>([]);
   const [userAppFeedbacks, setUserAppFeedbacks] = useState<any[]>([]);
+  const pendingCount = 
+    userProposals.filter(p => p.status === "pending").length +
+    userReports.filter(r => r.status === "pending" || r.status === "reviewed").length +
+    userAppFeedbacks.filter(f => f.status === "pending" || f.status === "reviewed").length;
+  const isLimitReached = pendingCount >= 5;
   const [isRequestsExpanded, setIsRequestsExpanded] = useState(false);
   const [activeRequestsTab, setActiveRequestsTab] = useState<"proposals" | "reports" | "app_feedback">("proposals");
   const [loadingRequests, setLoadingRequests] = useState(false);
@@ -1581,7 +1586,14 @@ export default function ProfilePage() {
         {user && (
           <div
             className={styles.cardContainer}
-            onClick={() => router.push('/propose-place')}
+            onClick={() => {
+              if (isLimitReached) {
+                setMessage({ type: 'error', text: "لقد وصلت للحد الأقصى (5 طلبات معلقة). يرجى الانتظار حتى تقوم الإدارة بمراجعة طلباتك السابقة قبل تقديم اقتراحات جديدة." });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                router.push('/propose-place');
+              }
+            }}
           >
             <div className={styles.cardContent}>
               <div style={{ color: "var(--accent-secondary)" }}>
@@ -1948,7 +1960,14 @@ export default function ProfilePage() {
           {/* Start Suggestion Card */}
           <div
             className={styles.cardContainer}
-            onClick={() => setShowSuggestionModal(true)}
+            onClick={() => {
+              if (isLimitReached) {
+                setMessage({ type: 'error', text: "لقد وصلت للحد الأقصى (5 طلبات معلقة). يرجى الانتظار حتى تقوم الإدارة بمراجعة طلباتك السابقة قبل تقديم اقتراحات جديدة." });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                setShowSuggestionModal(true);
+              }
+            }}
           >
             <div className={styles.cardContent}>
               <div style={{ color: "var(--accent-primary)" }}>
@@ -1965,7 +1984,14 @@ export default function ProfilePage() {
           {/* Start Bug Report Card */}
           <div
             className={styles.cardContainer}
-            onClick={() => setShowBugReportModal(true)}
+            onClick={() => {
+              if (isLimitReached) {
+                setMessage({ type: 'error', text: "لقد وصلت للحد الأقصى (5 طلبات معلقة). يرجى الانتظار حتى تقوم الإدارة بمراجعة طلباتك السابقة قبل الإبلاغ عن مشكلات جديدة." });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                setShowBugReportModal(true);
+              }
+            }}
           >
             <div className={styles.cardContent}>
               <div style={{ color: "#ff3b30" }}>

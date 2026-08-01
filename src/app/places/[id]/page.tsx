@@ -11,7 +11,7 @@ import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
 
 // Icon
-import { FaMapMarkerAlt, FaPhoneAlt  } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { BiSolidMapPin } from "react-icons/bi";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
@@ -418,9 +418,9 @@ export default function PlaceDetailsPage() {
         <button
           onClick={handleShare}
           style={{
-            background: "rgba(255, 255, 255, 0.08)",
+            background: "var(--accent-ios)",
             border: "1px solid var(--border-glass)",
-            color: "var(--text-primary)",
+            color: "#ffffff",
             borderRadius: "50%",
             width: "36px",
             height: "36px",
@@ -442,18 +442,17 @@ export default function PlaceDetailsPage() {
             {place.name}
           </h3>
           <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
-            <span>{place.categoryLabel || CATEGORY_LABELS[place.category]}</span>
+            <span>{place.categoryLabel}</span>
             {place.subCategories && place.subCategories.length > 0 && (
               <>
-                <span>•</span>
-                <span>{place.subCategories.map(sc => CATEGORY_LABELS[sc] || sc).join(", ")}</span>
+                <span>{place.subCategories.map(sc => CATEGORY_LABELS[sc] || sc).join(" | ")}</span>
               </>
             )}
             {place.place_type && (
               <>
-                <span>•</span>
+                <br />
                 <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
-                  <i className={formatBoxIcon(place.place_type_icon || 'bx-tag')} style={{ fontSize: "0.85rem" }}></i>
+                  <i className={'bx bx-folder-open'} style={{ fontSize: "0.85rem" }}></i>
                   {place.place_type}
                 </span>
               </>
@@ -465,7 +464,7 @@ export default function PlaceDetailsPage() {
         <button
           onClick={() => router.push("/")}
           style={{
-            background: "rgba(255, 255, 255, 0.08)",
+            background: "rgba(131, 131, 131, 0.14)",
             border: "1px solid var(--border-glass)",
             color: "var(--text-primary)",
             borderRadius: "50%",
@@ -633,7 +632,7 @@ export default function PlaceDetailsPage() {
                 transition: "opacity 0.2s"
               }}
             >
-              {isFavorite ? <MdOutlineFavorite style={{ fontSize: "1rem" }}/> : <GrFavorite style={{ fontSize: "1rem" }}/>}
+              {isFavorite ? <MdOutlineFavorite style={{ fontSize: "1rem" }} /> : <GrFavorite style={{ fontSize: "1rem" }} />}
               <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.7rem", fontWeight: "500" }}>المفضلة</span>
             </button>
           </div>
@@ -997,7 +996,7 @@ export default function PlaceDetailsPage() {
                 }}
               >
                 <i className="bx bx-notepad" style={{ fontSize: "1.1rem", color: "#34c759" }}></i>
-                <span style={{ fontFamily:"var(--font-cairo)"}}>أضف تذكير</span>
+                <span style={{ fontFamily: "var(--font-cairo)" }}>أضف تذكير</span>
               </button>
 
               <button
@@ -1019,7 +1018,7 @@ export default function PlaceDetailsPage() {
                 }}
               >
                 <i className="bx bx-share-alt" style={{ fontSize: "1.1rem" }}></i>
-                <span style={{ fontFamily:"var(--font-cairo)"}}>مشاركة هذا المكان</span>
+                <span style={{ fontFamily: "var(--font-cairo)" }}>مشاركة</span>
               </button>
             </div>
 

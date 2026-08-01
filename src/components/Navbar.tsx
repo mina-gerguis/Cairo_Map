@@ -54,7 +54,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="navbar-logo">
           <img src="/logo/darkMode_logo.png" alt="Map Cairo" className="logo-img-dark" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
-          <img src="/logo/lightMode_logo%5D.png" alt="Map Cairo" className="logo-img-light" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
+          <img src="/logo/lightMode_logo.png" alt="Map Cairo" className="logo-img-light" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
         </Link>
 
         {/* Desktop Links */}

@@ -19,7 +19,7 @@ import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { BiSolidMapPin } from "react-icons/bi";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
-import { TbListDetailsFilled } from "react-icons/tb";
+import { TbListDetailsFilled, TbMapShare } from "react-icons/tb";
 import { IoMdClose } from "react-icons/io";
 import { MdOutlineIosShare } from "react-icons/md";
 /* ─── الدوال المساعدة (Helper Functions) ─── */
@@ -213,23 +213,23 @@ function HomeContent() {
               features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
               services: Array.isArray(dbPlace.services) ? dbPlace.services : [],
               branches: dbPlace.branches ? dbPlace.branches.map((b: any) => ({
-              id: b.id,
-              place_id: b.place_id,
-              name: b.name,
-              governorate: b.governorate,
-              city: b.city,
-              fullAddress: b.full_address,
-              latitude: b.latitude,
-              longitude: b.longitude,
-              phones: b.phones || [],
-              googleMapsUrl: b.google_maps_url,
-              workingHours: b.working_hours,
-              isMain: b.is_main,
-              createdAt: b.created_at,
-              website_url: b.website_url,
-              features: Array.isArray(b.features) ? b.features : [],
-              services: Array.isArray(b.services) ? b.services : [],
-            })) : []
+                id: b.id,
+                place_id: b.place_id,
+                name: b.name,
+                governorate: b.governorate,
+                city: b.city,
+                fullAddress: b.full_address,
+                latitude: b.latitude,
+                longitude: b.longitude,
+                phones: b.phones || [],
+                googleMapsUrl: b.google_maps_url,
+                workingHours: b.working_hours,
+                isMain: b.is_main,
+                createdAt: b.created_at,
+                website_url: b.website_url,
+                features: Array.isArray(b.features) ? b.features : [],
+                services: Array.isArray(b.services) ? b.services : [],
+              })) : []
             };
           });
           setPlaces(mappedPlaces);
@@ -690,7 +690,7 @@ function HomeContent() {
                   setSelectedSubCategory(null);
                   setSelectedType(null);
                 }}
-                style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)", fontSize:"0.8rem"}}
+                style={{ display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)", fontSize: "0.8rem" }}
               >
                 <i className={`bx ${CATEGORY_ICONS[cat] || "bx-category"}`} style={{ fontSize: "1.1rem" }}></i>
                 {CATEGORY_LABELS[cat] || cat}
@@ -806,7 +806,7 @@ function HomeContent() {
         {/* ── Filters Bar ── */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "32px", background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "12px 16px" }}>
           <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>تصفية حسب:</span>
-          
+
           {/* Rating Filter Dropdown */}
           <div style={{ position: "relative" }}>
             <select
@@ -965,7 +965,7 @@ function HomeContent() {
       {/* ═══════════════════════════════════ DETAIL SHEET ═══════════════════════════════════ */}
       {selectedPlace && (
         <div className="ios-sheet-overlay" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}>
-          <div className="ios-sheet" style={{maxWidth:"100%"}} onClick={(e: any) => e.stopPropagation()}>
+          <div className="ios-sheet" style={{ maxWidth: "100%" }} onClick={(e: any) => e.stopPropagation()}>
             <div className="ios-sheet-drag-handle" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }} />
 
             {/* Apple Maps Top Bar (Fixed) */}
@@ -974,9 +974,9 @@ function HomeContent() {
               <button
                 onClick={() => handleShare(selectedPlace)}
                 style={{
-                  background: "rgba(109, 107, 107, 0.12)",
+                  background: "var(--accent-ios)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--text-primary)",
+                  color: "#ffffff",
                   borderRadius: "50%",
                   width: "36px",
                   height: "36px",
@@ -989,7 +989,7 @@ function HomeContent() {
                 }}
                 title="مشاركة المكان"
               >
-                <MdOutlineIosShare />
+                <TbMapShare />
               </button>
 
               {/* Center: Centered Place Name */}
@@ -1001,15 +1001,13 @@ function HomeContent() {
                   <span>{selectedPlace.categoryLabel || CATEGORY_LABELS[selectedPlace.category]}</span>
                   {selectedPlace.subCategories && selectedPlace.subCategories.length > 0 && (
                     <>
-                      <span>•</span>
-                      <span>{selectedPlace.subCategories.map(sc => CATEGORY_LABELS[sc] || sc).join(", ")}</span>
+                      <span>{selectedPlace.subCategories.map(sc => CATEGORY_LABELS[sc] || sc).join(" | ")}</span>
                     </>
                   )}
                   {selectedPlace.place_type && (
                     <>
-                      <span>•</span>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
-                        <i className={formatBoxIcon(selectedPlace.place_type_icon || 'bx-tag')} style={{ fontSize: "0.85rem" }}></i>
+                        <i className={'bx bx-folder-open'} style={{ fontSize: "0.85rem" }}></i>
                         {selectedPlace.place_type}
                       </span>
                     </>
@@ -1021,7 +1019,7 @@ function HomeContent() {
               <button
                 onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}
                 style={{
-                  background: "rgba(109, 107, 107, 0.12)",
+                  background: "rgba(131, 131, 131, 0.14)",
                   border: "1px solid var(--border-glass)",
                   color: "var(--text-primary)",
                   borderRadius: "50%",
@@ -1036,7 +1034,7 @@ function HomeContent() {
                 }}
                 title="إغلاق"
               >
-               <IoMdClose />
+                <IoMdClose />
               </button>
             </div>
 
@@ -1050,7 +1048,7 @@ function HomeContent() {
                   <>
                     {/* Images */}
                     {selectedPlace.images && selectedPlace.images.length > 0 && (
-                      <div style={{ display: "flex", gap: "10px", overflowX: "auto", marginBottom: "20px", scrollbarWidth: "none" }}>
+                      <div style={{ display: "flex", gap: "10px", overflowX: "auto", margin: "20px 0", scrollbarWidth: "none" }}>
                         {selectedPlace.images.map((img, i) => (
                           <ImageWithSkeleton key={i} src={img} alt={`${selectedPlace.name} ${i + 1}`}
                             style={{ width: "100%", minWidth: "100%", height: "230px", objectFit: "cover", borderRadius: "var(--radius-md)", flexShrink: 0 }}
@@ -1065,7 +1063,7 @@ function HomeContent() {
                         {selectedPlace.name}
                       </h2>
                       {selectedPlace.shortDescription && (
-                        <p style={{ fontSize: ".9rem", color: "var(--text-secondary)", fontWeight: "500", margin: "0 0 10px" }}>
+                        <p style={{ fontSize: ".7rem", color: "var(--text-secondary)", fontWeight: "500", margin: "0 0 10px" }}>
                           {selectedPlace.shortDescription}
                         </p>
                       )}
@@ -1105,7 +1103,7 @@ function HomeContent() {
                         <a
                           href={`tel:${displayBranch.phones[0]}`}
                           style={{
-                            background: "rgba(0, 45, 248, 0.05)",
+                            background: "rgba(124, 124, 124, 0.11)",
                             border: "1px solid var(--border-glass)",
                             color: "#007aff",
                             borderRadius: "12px",
@@ -1148,7 +1146,7 @@ function HomeContent() {
                       <button
                         onClick={(e) => toggleFavorite(e, selectedPlace.id.toString())}
                         style={{
-                          background: "rgba(0, 45, 248, 0.05)",
+                          background: "rgba(124, 124, 124, 0.11)",
                           border: "1px solid var(--border-glass)",
                           color: favoriteIds.has(selectedPlace.id.toString()) ? "#ff3b30" : "#007aff",
                           borderRadius: "12px",
@@ -1537,7 +1535,7 @@ function HomeContent() {
                             cursor: "pointer"
                           }}
                         >
-                          <MdOutlineIosShare size={18}/>
+                          <MdOutlineIosShare size={18} />
                           <span>مشاركة </span>
                         </button>
                       </div>

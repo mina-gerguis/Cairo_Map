@@ -82,6 +82,8 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [limitChecking, setLimitChecking] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
 
   // Load and parse working hours
   useEffect(() => {
@@ -107,6 +109,27 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
       setCustomSchedule(defaultSchedule);
     }
   }, [isOpen, place]);
+
+  // Check pending feedback limit (max 5)
+  useEffect(() => {
+    if (!isOpen || !user) return;
+    const userId = user.id;
+
+    async function checkLimit() {
+      setLimitChecking(true);
+      try {
+        const { isFeedbackLimitReached } = await import("@/lib/feedbackLimit");
+        const reached = await isFeedbackLimitReached(userId);
+        setLimitReached(reached);
+      } catch (err) {
+        console.error("Failed to check limit:", err);
+      } finally {
+        setLimitChecking(false);
+      }
+    }
+
+    checkLimit();
+  }, [isOpen, user]);
 
   if (!isOpen) return null;
 
@@ -264,7 +287,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   };
 
   // Check if form is valid to determine button styling
-  const isFormValid = !!selectedProblem && 
+  const isFormValid = !limitReached && !!selectedProblem && 
     (selectedProblem !== "name" || !!newName.trim()) &&
     (selectedProblem !== "other" || !!comment.trim());
 
@@ -287,13 +310,13 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
           {/* Submit Button (Left) */}
           <button 
             onClick={handleSubmit} 
-            disabled={loading || isUploading}
+            disabled={loading || isUploading || limitReached || limitChecking}
             style={{ 
               background: "none", 
               border: "none", 
-              color: loading || isUploading || !isFormValid ? "var(--text-muted)" : "var(--accent-ios)", 
+              color: loading || isUploading || !isFormValid || limitReached || limitChecking ? "var(--text-muted)" : "var(--accent-ios)", 
               fontSize: "1.6rem", 
-              cursor: loading || isUploading ? "not-allowed" : "pointer",
+              cursor: loading || isUploading || limitReached || limitChecking ? "not-allowed" : "pointer",
               padding: "4px",
               display: "flex",
               alignItems: "center",
@@ -343,6 +366,21 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
               </div>
               <h3 style={{ fontSize: "1.3rem", fontWeight: "700", marginBottom: "8px" }}>تم إرسال بلاغك بنجاح</h3>
               <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>شكراً لك على مساعدتنا في تحسين جودة البيانات.</p>
+            </div>
+          ) : limitChecking ? (
+            <div style={{ textAlign: "center", padding: "60px 20px" }}>
+              <div className="bx bx-loader-alt bx-spin" style={{ fontSize: "2.2rem", color: "var(--accent-ios)", marginBottom: "12px" }}></div>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>جاري التحقق من حدود الإرسال...</p>
+            </div>
+          ) : limitReached ? (
+            <div style={{ textAlign: "center", padding: "40px 20px" }}>
+              <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "rgba(255, 149, 0, 0.12)", color: "#ff9500", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "2.2rem" }}>
+                <i className="bx bx-error"></i>
+              </div>
+              <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>لقد وصلت للحد الأقصى (5 طلبات معلقة)</h3>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
+                لا يمكنك تقديم بلاغات جديدة حالياً. يرجى الانتظار حتى تقوم الإدارة بمراجعة واعتماد أو رفض طلباتك السابقة.
+              </p>
             </div>
           ) : (
             <>
