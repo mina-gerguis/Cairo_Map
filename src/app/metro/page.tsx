@@ -378,6 +378,10 @@ export default function MetroPage() {
   const [showToList, setShowToList] = useState(false);
   const [result, setResult] = useState<RouteResult | null>(null);
 
+  // Active Trip States
+  const [isTripActive, setIsTripActive] = useState(false);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
   // Metro Explorer State
   const [explorerLine, setExplorerLine] = useState<LineId>("line1");
   const [line3ActiveBranch, setLine3ActiveBranch] = useState<"trunk" | "branchA" | "branchB">("trunk");
@@ -396,6 +400,8 @@ export default function MetroPage() {
     if (!selectedFrom || !selectedTo) return;
     const route = findRoute(selectedFrom, selectedTo);
     setResult(route);
+    setIsTripActive(false);
+    setCurrentStepIndex(0);
   };
 
   const swapStations = () => {
@@ -406,6 +412,8 @@ export default function MetroPage() {
     setFromQuery(tempT || "");
     setToQuery(tempF || "");
     setResult(null);
+    setIsTripActive(false);
+    setCurrentStepIndex(0);
   };
 
   return (
@@ -676,19 +684,178 @@ export default function MetroPage() {
                   </div>
                 </div>
 
-                {/* Informative Guidance Bubble - Soft colors */}
-                <div style={{
-                  background: "rgba(59, 130, 246, 0.04)",
-                  border: "1px solid rgba(59, 130, 246, 0.15)",
-                  borderRight: "4px solid var(--accent-ios)",
-                  borderRadius: "12px",
-                  padding: "16px 18px",
-                  marginBottom: "20px"
-                }}>
-                  <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: "500" }}>
-                    {result.description}
-                  </p>
-                </div>
+                {/* Informative Guidance Bubble - Soft colors (Only shown if trip is not active) */}
+                {!isTripActive && (
+                  <div style={{
+                    background: "rgba(59, 130, 246, 0.04)",
+                    border: "1px solid rgba(59, 130, 246, 0.15)",
+                    borderRight: "4px solid var(--accent-ios)",
+                    borderRadius: "12px",
+                    padding: "16px 18px",
+                    marginBottom: "20px"
+                  }}>
+                    <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: "500" }}>
+                      {result.description}
+                    </p>
+                  </div>
+                )}
+
+                {/* Start Trip Button */}
+                {!isTripActive && (
+                  <button
+                    onClick={() => {
+                      setIsTripActive(true);
+                      setCurrentStepIndex(0);
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "14px",
+                      borderRadius: "12px",
+                      background: "var(--accent-ios)",
+                      color: "#ffffff",
+                      fontSize: "0.95rem",
+                      fontWeight: "700",
+                      border: "none",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "8px",
+                      marginBottom: "20px",
+                      transition: "all 0.2s ease",
+                      fontFamily: "var(--font-cairo)"
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.opacity = "0.9"; }}
+                    onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
+                  >
+                    🎬 بدء الرحلة وتتبع المحطات
+                  </button>
+                )}
+
+                {/* Active Trip Tracker Card */}
+                {isTripActive && (
+                  <div style={{
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "12px",
+                    padding: "20px",
+                    marginBottom: "20px",
+                    boxShadow: "var(--shadow-card)",
+                    animation: "slide-in-section 0.3s ease"
+                  }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                      <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--accent-ios)", background: "rgba(59, 130, 246, 0.12)", padding: "4px 10px", borderRadius: "8px" }}>
+                        🎯 رحلة نشطة حالياً
+                      </span>
+                      <button
+                        onClick={() => {
+                          setIsTripActive(false);
+                          setCurrentStepIndex(0);
+                        }}
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          color: "var(--accent-red)",
+                          fontSize: "0.85rem",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          fontFamily: "var(--font-cairo)"
+                        }}
+                      >
+                        ❌ إلغاء التتبع
+                      </button>
+                    </div>
+
+                    {/* Progress Indicator */}
+                    <div style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "16px", color: "var(--text-secondary)" }}>
+                      المحطة الحالية: <span style={{ color: "var(--text-primary)", fontSize: "1.1rem", fontWeight: "800" }}>{result.detailedPath[currentStepIndex].station}</span>
+                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginRight: "8px" }}>
+                        ({currentStepIndex + 1} من {result.detailedPath.length})
+                      </span>
+                    </div>
+
+                    {/* Transfer station instructions banner if current station is transfer */}
+                    {result.detailedPath[currentStepIndex].isTransferPoint && (
+                      <div style={{
+                        background: "rgba(245, 158, 11, 0.06)",
+                        border: "1px solid rgba(245, 158, 11, 0.2)",
+                        borderRight: "4px solid var(--accent-warning)",
+                        borderRadius: "10px",
+                        padding: "14px",
+                        marginBottom: "16px",
+                        color: "var(--text-primary)",
+                        fontSize: "0.85rem",
+                        lineHeight: "1.7"
+                      }}>
+                        <div style={{ fontWeight: "800", color: "var(--accent-warning)", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span>⚠️ تنبيه هام: محطة تحويل وتبديل خط!</span>
+                        </div>
+                        انزل هنا من القطار وابحث عن <strong>اليافطة الإرشادية</strong> المكتوب عليها{" "}
+                        <span style={{ color: LINE_COLORS[result.detailedPath[currentStepIndex].targetLine!] }}>
+                          {LINE_NAMES[result.detailedPath[currentStepIndex].targetLine!]}
+                        </span>{" "}
+                        واتبع الأسهم والتعليمات للتوجه نحو الرصيف الصحيح وركوب قطار الخط الجديد.
+                      </div>
+                    )}
+
+                    {/* Controls */}
+                    {currentStepIndex < result.detailedPath.length - 1 ? (
+                      <button
+                        onClick={() => setCurrentStepIndex(prev => prev + 1)}
+                        style={{
+                          width: "100%",
+                          padding: "12px",
+                          borderRadius: "10px",
+                          background: "var(--accent-success)",
+                          color: "#ffffff",
+                          fontSize: "0.95rem",
+                          fontWeight: "700",
+                          border: "none",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                          transition: "all 0.2s ease"
+                        }}
+                      >
+                        ✅ تم الوصول إلى: {result.detailedPath[currentStepIndex + 1].station}
+                      </button>
+                    ) : (
+                      <div style={{
+                        textAlign: "center",
+                        background: "rgba(16, 185, 129, 0.06)",
+                        border: "1px solid rgba(16, 185, 129, 0.2)",
+                        borderRadius: "10px",
+                        padding: "16px",
+                        animation: "pop-in 0.3s ease"
+                      }}>
+                        <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🎉</div>
+                        <h4 style={{ color: "var(--accent-success)", fontWeight: "800", margin: "0 0 6px" }}>حمد لله على السلامة!</h4>
+                        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 12px" }}>لقد وصلت إلى محطة الوصول المقصودة بنجاح.</p>
+                        <button
+                          onClick={() => {
+                            setIsTripActive(false);
+                            setCurrentStepIndex(0);
+                          }}
+                          style={{
+                            background: "var(--accent-success)",
+                            color: "#ffffff",
+                            padding: "8px 24px",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontWeight: "700",
+                            cursor: "pointer",
+                            fontSize: "0.88rem",
+                            fontFamily: "var(--font-cairo)"
+                          }}
+                        >
+                          🏁 إنهاء الرحلة
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Dynamic Path Timeline */}
                 <div style={{ marginBottom: "20px" }}>
@@ -707,6 +874,9 @@ export default function MetroPage() {
                       const isTransfer = node.isTransferPoint;
                       const activeColor = LINE_COLORS[node.line];
 
+                      const isPassed = isTripActive && idx < currentStepIndex;
+                      const isCurrent = isTripActive && idx === currentStepIndex;
+
                       return (
                         <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
                           
@@ -715,22 +885,55 @@ export default function MetroPage() {
                             
                             {/* Dot / Indicator */}
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
-                              <div style={{
-                                width: isFirst || isLast || isTransfer ? "14px" : "8px",
-                                height: isFirst || isLast || isTransfer ? "14px" : "8px",
-                                borderRadius: "50%",
-                                backgroundColor: isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-muted)",
-                                border: `2px solid ${isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "transparent"}`,
-                                zIndex: 1,
-                              }} />
+                              {isPassed ? (
+                                <div style={{
+                                  width: "14px",
+                                  height: "14px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "var(--accent-success)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  color: "#ffffff",
+                                  fontSize: "0.65rem",
+                                  fontWeight: "bold",
+                                  zIndex: 1
+                                }}>
+                                  ✓
+                                </div>
+                              ) : (
+                                <div style={{
+                                  width: isFirst || isLast || isTransfer ? "14px" : "8px",
+                                  height: isFirst || isLast || isTransfer ? "14px" : "8px",
+                                  borderRadius: "50%",
+                                  backgroundColor: isCurrent 
+                                    ? (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--accent-ios)")
+                                    : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-muted)"),
+                                  border: `2px solid ${isCurrent 
+                                    ? "#ffffff" 
+                                    : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "transparent")}`,
+                                  boxShadow: isCurrent ? `0 0 10px ${activeColor}` : "none",
+                                  zIndex: 1,
+                                }} />
+                              )}
                             </div>
 
                             {/* Station Name and Badge */}
-                            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexGrow: 1 }}>
+                            <div style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "10px",
+                              flexGrow: 1,
+                              opacity: isPassed ? 0.5 : 1,
+                              transition: "opacity 0.3s ease"
+                            }}>
                               <span style={{
                                 fontSize: isFirst || isLast ? "0.95rem" : "0.88rem",
-                                fontWeight: isFirst || isLast || isTransfer ? "700" : "500",
-                                color: isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-primary)",
+                                fontWeight: isFirst || isLast || isTransfer || isCurrent ? "700" : "500",
+                                color: isCurrent 
+                                  ? "var(--text-primary)" 
+                                  : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-primary)"),
+                                textDecoration: isPassed ? "line-through" : "none",
                               }}>
                                 {node.station}
                               </span>
@@ -770,17 +973,23 @@ export default function MetroPage() {
                                     background: "rgba(245, 158, 11, 0.05)",
                                     border: "1px solid rgba(245, 158, 11, 0.2)",
                                     borderRadius: "10px",
-                                    padding: "6px 12px",
-                                    margin: "4px 0",
+                                    padding: "10px 14px",
+                                    margin: "6px 0",
                                     fontSize: "0.8rem",
                                     color: "var(--accent-warning)",
                                     fontWeight: "600",
                                     display: "flex",
-                                    alignItems: "center",
-                                    gap: "6px",
-                                    width: "100%"
+                                    flexDirection: "column",
+                                    gap: "4px",
+                                    width: "100%",
+                                    opacity: isPassed ? 0.6 : 1
                                   }}>
-                                    <span>🔄 تحويل الخط: قم بالانتقال إلى {LINE_NAMES[node.targetLine!]}</span>
+                                    <div style={{ fontWeight: "700" }}>
+                                      🔄 محطة تبادلية: الانتقال إلى {LINE_NAMES[node.targetLine!]}
+                                    </div>
+                                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                                      انزل هنا وابحث عن <strong>اليافطة الإرشادية</strong> للخط الجديد واتبع السهام للتوجه للرصيف الصحيح وركوب قطار الخط الجديد.
+                                    </div>
                                   </div>
                                 )}
                               </div>
