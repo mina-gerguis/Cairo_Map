@@ -30,7 +30,7 @@ export default function AdminLayout({
             <Link href="/admin">
               <img
                 src="/logo/darkMode_logo.png"
-                alt="دفتر Admin"
+                alt="القاهرة ماب"
                 className={styles.brandLogo}
               />
             </Link>
