@@ -10,6 +10,10 @@ import { useNotifications } from "@/context/NotificationContext";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import styles from "./page.module.css";
 
+// Icons
+import { TbMessageCircleStar, TbMessageReportFilled } from "react-icons/tb";
+import { BsStars } from "react-icons/bs";
+
 const PROFILE_AVATARS = [
   "https://api.dicebear.com/7.x/notionists/svg?seed=Ahmed&backgroundColor=b6e3f4",
   "https://api.dicebear.com/7.x/notionists/svg?seed=Omar&backgroundColor=d1d4f9",
@@ -79,7 +83,7 @@ export default function ProfilePage() {
   const handleDeactivateDevice = async (deviceId: string, sessionId: string) => {
     if (!supabase) return;
     const isCurrentDevice = sessionId === localStorage.getItem("dftry_device_session_id");
-    
+
     if (isCurrentDevice) {
       if (!confirm("هل أنت متأكد من تسجيل الخروج من جهازك الحالي؟")) return;
     } else {
@@ -97,7 +101,7 @@ export default function ProfilePage() {
 
       if (!error) {
         setDevicesList(prev => prev.map(d => d.id === deviceId ? { ...d, is_active: false, logged_out_at: new Date().toISOString() } : d));
-        
+
         if (isCurrentDevice) {
           setShowDevicesModal(false);
           handleLogout();
@@ -185,6 +189,7 @@ export default function ProfilePage() {
   const [suggestionType, setSuggestionType] = useState("اقتراح لتحسين الشكل");
   const [suggestionMessage, setSuggestionMessage] = useState("");
   const [suggestionLoading, setSuggestionLoading] = useState(false);
+  const isSuggestionFormValid = suggestionMessage.trim().length > 0;
 
   const [showBugReportModal, setShowBugReportModal] = useState(false);
   const [bugType, setBugType] = useState("");
@@ -193,6 +198,10 @@ export default function ProfilePage() {
   const [bugImageFile, setBugImageFile] = useState<File | null>(null);
   const [bugLoading, setBugLoading] = useState(false);
   const [bugUploading, setBugUploading] = useState(false);
+  const isBugFormValid = bugType.trim().length > 0 && bugDetails.trim().length > 0;
+  const [feedbackToDelete, setFeedbackToDelete] = useState<any | null>(null);
+  const [proposalToRetract, setProposalToRetract] = useState<string | null>(null);
+  const [reportToRetract, setReportToRetract] = useState<string | null>(null);
 
   const [codeDigits, setCodeDigits] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -530,7 +539,7 @@ export default function ProfilePage() {
             .from("places")
             .select("id, name")
             .in("id", placeIds);
-          
+
           if (placesErr) console.error("Error resolving place names for reports:", placesErr);
           if (placesData) {
             placesMap = new Map(placesData.map(p => [p.id, p.name]));
@@ -541,6 +550,7 @@ export default function ProfilePage() {
           ...report,
           place_name: placesMap.get(report.place_id) || "مكان محذوف أو غير معروف"
         }));
+        setUserReports(resolvedReports);
       } else {
         setUserReports([]);
       }
@@ -566,7 +576,6 @@ export default function ProfilePage() {
   };
 
   const handleRetractProposal = async (proposalId: string) => {
-    if (!confirm("هل أنت متأكد من التراجع عن هذا الاقتراح؟")) return;
     if (!supabase || !user) return;
     try {
       const { error } = await supabase
@@ -584,7 +593,6 @@ export default function ProfilePage() {
   };
 
   const handleRetractReport = async (reportId: string) => {
-    if (!confirm("هل أنت متأكد من التراجع عن هذا البلاغ؟")) return;
     if (!supabase || !user) return;
     try {
       const { error } = await supabase
@@ -852,11 +860,9 @@ export default function ProfilePage() {
   const handleSendBugReport = async () => {
     if (!supabase || !user) return;
     if (!bugType.trim()) {
-      setMessage({ type: 'error', text: "يرجى تحديد نوع المشكلة" });
       return;
     }
     if (!bugDetails.trim()) {
-      setMessage({ type: 'error', text: "يرجى كتابة تفاصيل المشكلة" });
       return;
     }
     setBugLoading(true);
@@ -1053,7 +1059,7 @@ export default function ProfilePage() {
   return (
     <div className={styles.container}>
       {message && (
-        <div 
+        <div
           style={{
             position: "fixed",
             top: 0,
@@ -1073,7 +1079,7 @@ export default function ProfilePage() {
           }}
           onClick={() => setMessage(null)}
         >
-          <div 
+          <div
             style={{
               background: "rgba(30, 30, 45, 0.95)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -1096,7 +1102,7 @@ export default function ProfilePage() {
               width: "64px",
               height: "64px",
               borderRadius: "50%",
-              background: message.type === 'error' 
+              background: message.type === 'error'
                 ? "linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.05) 100%)"
                 : "linear-gradient(135deg, rgba(52, 199, 89, 0.2) 0%, rgba(52, 199, 89, 0.05) 100%)",
               border: message.type === 'error'
@@ -1106,11 +1112,11 @@ export default function ProfilePage() {
               alignItems: "center",
               justifyContent: "center"
             }}>
-              <i 
-                className={`bx ${message.type === 'error' ? 'bx-error-circle' : 'bx-check-circle'}`} 
-                style={{ 
-                  fontSize: "2.2rem", 
-                  color: message.type === 'error' ? "#ff3b30" : "#34c759" 
+              <i
+                className={`bx ${message.type === 'error' ? 'bx-error-circle' : 'bx-check-circle'}`}
+                style={{
+                  fontSize: "2.2rem",
+                  color: message.type === 'error' ? "#ff3b30" : "#34c759"
                 }}
               ></i>
             </div>
@@ -1126,7 +1132,7 @@ export default function ProfilePage() {
             </p>
 
             {/* Close/OK button */}
-            <button 
+            <button
               onClick={() => setMessage(null)}
               className="ios-btn"
               style={{
@@ -1147,7 +1153,8 @@ export default function ProfilePage() {
               موافق
             </button>
           </div>
-          <style dangerouslySetInnerHTML={{__html: `
+          <style dangerouslySetInnerHTML={{
+            __html: `
             @keyframes fade-in {
               from { opacity: 0; }
               to { opacity: 1; }
@@ -1606,7 +1613,7 @@ export default function ProfilePage() {
                     <i className={`bx bx-history ${styles.cardIcon}`}></i>
                   </div>
                   <div>
-                    <h3 className={styles.cardTitle}>طلباتي وبلاغاتي</h3>
+                    <h3 className={styles.cardTitle}>سجل الإجراءات</h3>
                   </div>
                 </div>
                 <div className={styles.badgeRight}>
@@ -1630,7 +1637,7 @@ export default function ProfilePage() {
                       className="ios-btn"
                       style={{
                         flex: 1,
-                        padding: "8px 12px",
+                        padding: "8px 10px",
                         fontSize: "0.82rem",
                         fontWeight: "600",
                         borderRadius: "8px",
@@ -1641,7 +1648,7 @@ export default function ProfilePage() {
                         transition: "all 0.2s"
                       }}
                     >
-                      اقتراحات الأماكن ({userProposals.length})
+                      الأماكن ({userProposals.length})
                     </button>
                     <button
                       type="button"
@@ -1649,7 +1656,7 @@ export default function ProfilePage() {
                       className="ios-btn"
                       style={{
                         flex: 1,
-                        padding: "8px 12px",
+                        padding: "8px 10px",
                         fontSize: "0.82rem",
                         fontWeight: "600",
                         borderRadius: "8px",
@@ -1660,7 +1667,7 @@ export default function ProfilePage() {
                         transition: "all 0.2s"
                       }}
                     >
-                      البلاغات والشكاوى ({userReports.length})
+                      البلاغات ({userReports.length})
                     </button>
                     <button
                       type="button"
@@ -1668,7 +1675,7 @@ export default function ProfilePage() {
                       className="ios-btn"
                       style={{
                         flex: 1,
-                        padding: "8px 12px",
+                        padding: "8px 10px",
                         fontSize: "0.82rem",
                         fontWeight: "600",
                         borderRadius: "8px",
@@ -1679,7 +1686,7 @@ export default function ProfilePage() {
                         transition: "all 0.2s"
                       }}
                     >
-                      دعم التطبيق ({userAppFeedbacks.length})
+                      اقتراحات ({userAppFeedbacks.length})
                     </button>
                   </div>
 
@@ -1712,7 +1719,7 @@ export default function ProfilePage() {
                             {prop.status === "pending" && (
                               <button
                                 type="button"
-                                onClick={() => handleRetractProposal(prop.id)}
+                                onClick={() => setProposalToRetract(prop.id)}
                                 className="ios-btn"
                                 style={{
                                   alignSelf: "flex-end",
@@ -1754,7 +1761,7 @@ export default function ProfilePage() {
                             </div>
                             {report.admin_reply && (
                               <div style={{ fontSize: "0.78rem", color: "var(--accent-primary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
-                                <strong>رد الإدارة:</strong> {report.admin_reply}
+                                <TbMessageCircleStar /> {report.admin_reply}
                               </div>
                             )}
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -1762,7 +1769,7 @@ export default function ProfilePage() {
                               {report.status === "pending" && (
                                 <button
                                   type="button"
-                                  onClick={() => handleRetractReport(report.id)}
+                                  onClick={() => setReportToRetract(report.id)}
                                   className="ios-btn"
                                   style={{
                                     padding: "4px 10px",
@@ -1775,10 +1782,11 @@ export default function ProfilePage() {
                                     cursor: "pointer",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "4px"
+                                    gap: "4px",
+                                    maxWidth: "140px"
                                   }}
                                 >
-                                  <i className="bx bx-trash" style={{ fontSize: "0.9rem" }}></i> حذف البلاغ
+                                  <i className="bx bx-trash" style={{ fontSize: "0.9rem" }}></i> حذف
                                 </button>
                               )}
                             </div>
@@ -1796,11 +1804,23 @@ export default function ProfilePage() {
                         {userAppFeedbacks.map((fb) => (
                           <div key={fb.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>
-                                {fb.type === "suggestion" ? `💡 اقتراح: ${fb.category}` : `⚠️ مشكلة: ${fb.title}`}
+                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                                {fb.type === "suggestion" ? (
+                                  <>
+                                    <BsStars size={20} style={{ color: "var(--accent-primary)" }} />
+                                    <span>{fb.category}</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <TbMessageReportFilled size={20} style={{ color: "var(--accent-warning)" }} />
+                                    <span>{fb.title}</span>
+                                  </>
+                                )}
                               </strong>
-                              {fb.status === "pending" && <span style={{ background: "rgba(255, 149, 0, 0.15)", color: "#ff9500", padding: "2px 8px", borderRadius: "8px", fontSize: "0.75rem", fontWeight: "bold" }}>قيد النظر</span>}
-                              {fb.status === "reviewed" && <span style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", padding: "2px 8px", borderRadius: "8px", fontSize: "0.75rem", fontWeight: "bold" }}>تمت المراجعة</span>}
+
+
+                              {fb.status === "pending" && <span style={{ background: "rgba(255, 149, 0, 0.15)", color: "#ff9500", padding: "2px 8px", borderRadius: "8px", fontSize: "0.7rem", fontWeight: "bold" }}>قيد النظر</span>}
+                              {fb.status === "reviewed" && <span style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", padding: "2px 8px", borderRadius: "8px", fontSize: "0.7rem", fontWeight: "bold" }}>تمت المراجعة</span>}
                               {fb.status === "action_taken" && <span style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", padding: "2px 8px", borderRadius: "8px", fontSize: "0.75rem", fontWeight: "bold" }}>تم اتخاذ إجراء</span>}
                             </div>
                             <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-secondary)", whiteSpace: "pre-line" }}>
@@ -1813,7 +1833,7 @@ export default function ProfilePage() {
                             )}
                             {fb.admin_reply && (
                               <div style={{ fontSize: "0.78rem", color: "var(--accent-primary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
-                                <strong>رد الإدارة:</strong> {fb.admin_reply}
+                                <TbMessageCircleStar /> {fb.admin_reply}
                               </div>
                             )}
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -1821,22 +1841,7 @@ export default function ProfilePage() {
                               {fb.status === "pending" && (
                                 <button
                                   type="button"
-                                  onClick={async () => {
-                                    if (!confirm("هل أنت متأكد من حذف هذا الاقتراح/البلاغ؟")) return;
-                                    if (!supabase || !user) return;
-                                    try {
-                                      const { error } = await supabase
-                                        .from("app_feedback")
-                                        .delete()
-                                        .eq("id", fb.id)
-                                        .eq("user_id", user.id);
-                                      if (error) throw error;
-                                      alert("تم حذف الطلب بنجاح.");
-                                      fetchUserRequestsAndReports();
-                                    } catch (err: any) {
-                                      alert("فشل حذف الطلب: " + err.message);
-                                    }
-                                  }}
+                                  onClick={() => setFeedbackToDelete(fb)}
                                   className="ios-btn"
                                   style={{
                                     padding: "4px 10px",
@@ -1849,7 +1854,8 @@ export default function ProfilePage() {
                                     cursor: "pointer",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "4px"
+                                    gap: "4px",
+                                    maxWidth: "120px"
                                   }}
                                 >
                                   <i className="bx bx-trash" style={{ fontSize: "0.9rem" }}></i> حذف
@@ -2245,22 +2251,22 @@ export default function ProfilePage() {
         <div className={styles.socialRow}>
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className={styles.socialIconWrapper} title="Instagram">
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
             </svg>
           </a>
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className={styles.socialIconWrapper} title="LinkedIn">
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
             </svg>
           </a>
           <a href="https://x.com" target="_blank" rel="noopener noreferrer" className={styles.socialIconWrapper} title="X (Twitter)">
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
           </a>
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className={styles.socialIconWrapper} title="Facebook">
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+              <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
             </svg>
           </a>
         </div>
@@ -2665,6 +2671,173 @@ export default function ProfilePage() {
         </div>
       )}
 
+      {/* Delete Feedback Confirmation Modal */}
+      {feedbackToDelete && (
+        <div
+          className={`modal-backdrop ${styles.modalBackdrop}`}
+          onClick={() => setFeedbackToDelete(null)}
+        >
+          <div
+            className={`glass-panel alert-dialog ${styles.deleteModalDialog}`}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className={styles.deleteModalHeader}>
+              <div className={styles.deleteModalIconWrapper}>
+                <i className={`bx bx-trash ${styles.deleteModalHeaderIcon}`}></i>
+              </div>
+              <h3 className={styles.deleteModalHeaderTitle}>تأكيد الحذف</h3>
+              <p className={styles.deleteModalHeaderSub}>
+                هل أنت متأكد من حذف هذا الاقتراح/البلاغ؟
+              </p>
+            </div>
+
+            {/* Body */}
+            <div className={styles.deleteModalBody}>
+              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "20px", textAlign: "center", lineHeight: "1.6" }}>
+                سيتم حذف هذا الطلب نهائياً من سجلاتك ولا يمكن التراجع عن هذه الخطوة.
+              </p>
+
+              {/* Actions */}
+              <div className={styles.deleteModalActions}>
+                <button
+                  className={`ios-btn ${styles.deleteBtnCancel}`}
+                  onClick={() => setFeedbackToDelete(null)}
+                >
+                  <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
+                </button>
+                <button
+                  className={`ios-btn ${styles.deleteBtnConfirm}`}
+                  onClick={async () => {
+                    if (!supabase || !user || !feedbackToDelete) return;
+                    try {
+                      const { error } = await supabase
+                        .from("app_feedback")
+                        .delete()
+                        .eq("id", feedbackToDelete.id)
+                        .eq("user_id", user.id);
+                      if (error) throw error;
+                      alert("تم حذف الطلب بنجاح.");
+                      setFeedbackToDelete(null);
+                      fetchUserRequestsAndReports();
+                    } catch (err: any) {
+                      alert("فشل حذف الطلب: " + err.message);
+                    }
+                  }}
+                >
+                  <i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i> تأكيد
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Retract Proposal Confirmation Modal */}
+      {proposalToRetract && (
+        <div
+          className={`modal-backdrop ${styles.modalBackdrop}`}
+          onClick={() => setProposalToRetract(null)}
+        >
+          <div
+            className={`glass-panel alert-dialog ${styles.deleteModalDialog}`}
+            style={{ border: "1px solid rgba(255, 149, 0, 0.25)" }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className={styles.deleteModalHeader} style={{ background: "rgba(255, 149, 0, 0.08)", borderBottom: "1px solid rgba(255, 149, 0, 0.15)" }}>
+              <div className={styles.deleteModalIconWrapper} style={{ background: "rgba(255, 149, 0, 0.15)" }}>
+                <i className={`bx bx-undo ${styles.deleteModalHeaderIcon}`} style={{ color: "#ff9500" }}></i>
+              </div>
+              <h3 className={styles.deleteModalHeaderTitle} style={{ color: "#ff9500" }}>تأكيد التراجع</h3>
+              <p className={styles.deleteModalHeaderSub}>
+                هل أنت متأكد من التراجع عن هذا الاقتراح؟
+              </p>
+            </div>
+
+            {/* Body */}
+            <div className={styles.deleteModalBody}>
+              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "20px", textAlign: "center", lineHeight: "1.6" }}>
+                سيتم سحب اقتراح هذا المكان ولن يعود معروضاً للمراجعة من قِبل المشرفين.
+              </p>
+
+              {/* Actions */}
+              <div className={styles.deleteModalActions}>
+                <button
+                  className={`ios-btn ${styles.deleteBtnCancel}`}
+                  onClick={() => setProposalToRetract(null)}
+                >
+                  <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
+                </button>
+                <button
+                  className={`ios-btn`}
+                  style={{ flex: 1, background: "#ff9500", color: "#fff" }}
+                  onClick={async () => {
+                    const pid = proposalToRetract;
+                    setProposalToRetract(null);
+                    await handleRetractProposal(pid);
+                  }}
+                >
+                  <i className="bx bx-check" style={{ fontSize: "1.2rem" }}></i> تأكيد
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Retract Report Confirmation Modal */}
+      {reportToRetract && (
+        <div
+          className={`modal-backdrop ${styles.modalBackdrop}`}
+          onClick={() => setReportToRetract(null)}
+        >
+          <div
+            className={`glass-panel alert-dialog ${styles.deleteModalDialog}`}
+            style={{ border: "1px solid rgba(255, 149, 0, 0.25)" }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className={styles.deleteModalHeader}>
+              <div className={styles.deleteModalIconWrapper}>
+                <i className={`bx bx-undo ${styles.deleteModalHeaderIcon}`}></i>
+              </div>
+              <h3 className={styles.deleteModalHeaderTitle}>تأكيد التراجع</h3>
+              <p className={styles.deleteModalHeaderSub}>
+                هل أنت متأكد من حذف هذا البلاغ؟
+              </p>
+            </div>
+
+            {/* Body */}
+            <div className={styles.deleteModalBody}>
+              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "20px", textAlign: "center", lineHeight: "1.6" }}>
+                سيتم إغلاق وسحب هذا البلاغ ولن تتخذه الإدارة بعين الاعتبار.
+              </p>
+
+              {/* Actions */}
+              <div className={styles.deleteModalActions}>
+                <button
+                  className={`ios-btn ${styles.deleteBtnCancel}`}
+                  onClick={() => setReportToRetract(null)}
+                >
+                  <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء
+                </button>
+                <button
+                  className={`ios-btn ${styles.deleteBtnConfirm}`}
+                  onClick={async () => {
+                    const rid = reportToRetract;
+                    setReportToRetract(null);
+                    await handleRetractReport(rid);
+                  }}
+                >
+                  <i className="bx bx-trash" style={{ fontSize: "1.2rem" }}></i> تأكيد
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Reminders Modal */}
       {isRemindersModalOpen && (
         <div className={styles.modalBackdropSlow} onClick={() => setIsRemindersModalOpen(false)}>
@@ -2690,8 +2863,8 @@ export default function ProfilePage() {
               ) : (
                 <div className={styles.devicesListGap}>
                   {reminders.map((rem) => (
-                    <div 
-                      key={rem.id} 
+                    <div
+                      key={rem.id}
                       onClick={() => { setIsRemindersModalOpen(false); router.push(`/places/${rem.placeId}`); }}
                       className={styles.deviceItem}
                       style={{ cursor: "pointer" }}
@@ -2713,7 +2886,7 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
-                      <button 
+                      <button
                         onClick={(e) => handleDeleteReminder(e, rem.id)}
                         className={styles.deactivateDeviceBtn}
                         title="حذف الملاحظة"
@@ -2743,20 +2916,20 @@ export default function ProfilePage() {
                 <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
               </button>
             </div>
-            
+
             <p className={styles.devicesModalSubtitle}>
               📅 {new Date(selectedNotification.created_at).toLocaleString("ar-EG", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
             </p>
 
             <div className={styles.devicesListContainer}>
-              <div 
+              <div
                 className={styles.deviceItem}
                 style={{ background: "rgba(255, 255, 255, 0.01)", border: "1px solid var(--border-glass)", padding: "16px" }}
               >
                 <div className={styles.deviceItemLeft} style={{ alignItems: "flex-start" }}>
-                  <div 
-                    className={styles.deviceIconBox} 
-                    style={{ 
+                  <div
+                    className={styles.deviceIconBox}
+                    style={{
                       color: selectedNotification.type === "success" ? "#34c759" : selectedNotification.type === "warning" ? "#ff9500" : "var(--accent-primary)",
                       background: selectedNotification.type === "success" ? "rgba(52, 199, 89, 0.1)" : selectedNotification.type === "warning" ? "rgba(255, 149, 0, 0.1)" : "rgba(0, 111, 238, 0.1)"
                     }}
@@ -2776,12 +2949,12 @@ export default function ProfilePage() {
 
             <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
               {selectedNotification.link && (
-                <button 
-                  onClick={() => { setSelectedNotification(null); router.push(selectedNotification.link); }} 
-                  className="ios-btn ios-btn-primary" 
+                <button
+                  onClick={() => { setSelectedNotification(null); router.push(selectedNotification.link); }}
+                  className="ios-btn ios-btn-primary"
                   style={{ flex: 1 }}
                 >
-                  الذهاب للرابط <i className="bx bx-link-external" style={{ marginRight: "6px" }}></i>
+                  الرابط  <i className="bx bx-link-external" style={{ marginRight: "6px" }}></i>
                 </button>
               )}
               <button className="ios-btn" onClick={() => setSelectedNotification(null)} style={{ flex: 1 }}>
@@ -2796,14 +2969,32 @@ export default function ProfilePage() {
       {showSuggestionModal && (
         <div className={styles.modalBackdropSlow} onClick={() => setShowSuggestionModal(false)}>
           <div className={`glass-panel ${styles.passwordModalPanel}`} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalCloseHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <h3 className={styles.passwordModalTitle} style={{ margin: 0 }}>تقديم اقتراح أو تحسين</h3>
-              <button onClick={() => setShowSuggestionModal(false)} className={styles.modalCloseIconBtn} style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer" }}>
+            <div className={styles.modalCloseHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <button
+                onClick={handleSendSuggestion}
+                disabled={suggestionLoading || !isSuggestionFormValid}
+                className={styles.modalCloseIconBtn}
+                style={{
+                  background: isSuggestionFormValid ? "var(--accent-ios)" : "rgba(120, 120, 128, 0.12)",
+                  border: "1px solid var(--border-glass)",
+                  color: isSuggestionFormValid ? "#fff" : "var(--text-muted)",
+                  cursor: (suggestionLoading || !isSuggestionFormValid) ? "not-allowed" : "pointer",
+                  padding: "8px",
+                  borderRadius: "50%",
+                  fontWeight: "bold",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <i className="bx bx-paper-plane" style={{ fontSize: "1.5rem" }}></i>
+
+              </button>
+              <h3 className={styles.passwordModalTitle} style={{ margin: 0, fontSize: "1rem", fontWeight: "700" }}>تقديم اقتراح</h3>
+              <button onClick={() => setShowSuggestionModal(false)} className={styles.modalCloseIconBtn} style={{ background: "rgba(109, 107, 107, 0.12)", border: "1px solid var(--border-glass)", color: "var(--text-primary)", cursor: "pointer", padding: "8px", borderRadius: "50%", fontWeight: "bold", height: "fit-content", width: "fit-content" }}>
                 <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
               </button>
             </div>
             <p className={styles.passwordModalSubtitle}>
-              ساعدنا في تحسين التطبيق من خلال تقديم اقتراحك.
+              ساعدنا في تحسين الخدمة.
             </p>
 
             <div style={{ marginBottom: "16px" }}>
@@ -2831,16 +3022,7 @@ export default function ProfilePage() {
               />
             </div>
 
-            <div className={styles.formButtonsRow}>
-              <button className={`ios-btn ${styles.flex1}`} onClick={() => { setShowSuggestionModal(false); setSuggestionMessage(""); }}>إلغاء</button>
-              <button 
-                className={`ios-btn ios-btn-primary ${styles.flex1} ${suggestionLoading ? styles.btnOpacity60 : ''}`} 
-                onClick={handleSendSuggestion} 
-                disabled={suggestionLoading}
-              >
-                {suggestionLoading ? "جاري الإرسال..." : "إرسال الاقتراح"}
-              </button>
-            </div>
+            
           </div>
         </div>
       )}
@@ -2857,25 +3039,43 @@ export default function ProfilePage() {
           }
         }}>
           <div className={`glass-panel ${styles.passwordModalPanel}`} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalCloseHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <h3 className={styles.passwordModalTitle} style={{ margin: 0 }}>الإبلاغ عن مشكلة في التطبيق</h3>
-              <button 
+            <div className={styles.modalCloseHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+              <button
+                onClick={handleSendBugReport}
+                disabled={bugLoading || bugUploading}
+                className={styles.modalCloseIconBtn}
+                style={{
+                  background: isBugFormValid ? "var(--accent-ios)" : "rgba(120, 120, 128, 0.12)",
+                  border: "1px solid var(--border-glass)",
+                  color: isBugFormValid ? "#fff" : "var(--text-muted)",
+                  cursor: bugLoading || bugUploading ? "not-allowed" : "pointer",
+                  padding: "8px",
+                  borderRadius: "50%",
+                  fontWeight: "bold",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                <i className="bx bx-paper-plane" style={{ fontSize: "1.5rem" }}></i>
+
+              </button>
+              <h3 className={styles.passwordModalTitle} style={{ margin: 0, fontSize: "1rem", fontWeight: "700" }}>الإبلاغ عن مشكلة</h3>
+              <button
                 onClick={() => {
                   setShowBugReportModal(false);
                   setBugType("");
                   setBugDetails("");
                   setBugImage("");
                   setBugImageFile(null);
-                }} 
-                className={styles.modalCloseIconBtn} 
-                style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer" }}
+                }}
+                className={styles.modalCloseIconBtn}
+                style={{ background: "rgba(109, 107, 107, 0.12)", border: "1px solid var(--border-glass)", color: "var(--text-primary)", cursor: "pointer", padding: "8px", borderRadius: "50%", fontWeight: "bold", height: "fit-content", width: "fit-content" }}
                 disabled={bugLoading || bugUploading}
               >
                 <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
               </button>
             </div>
             <p className={styles.passwordModalSubtitle}>
-              يرجى تزويدنا بتفاصيل المشكلة لنتمكن من حلها سريعاً.
+              يرجى تزويدنا بتفاصيل المشكلة لحلها.
             </p>
 
             <div style={{ marginBottom: "12px" }}>
@@ -2919,17 +3119,17 @@ export default function ProfilePage() {
                 gap: "6px",
                 height: "120px"
               }}>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleBugImageChange} 
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBugImageChange}
                   style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, opacity: 0, cursor: "pointer", width: "100%" }}
                   disabled={bugLoading || bugUploading}
                 />
                 {bugImage ? (
                   <div style={{ position: "relative", width: "100%", height: "100px" }}>
                     <img src={bugImage} alt="معاينة الصورة" style={{ width: "100%", height: "100px", objectFit: "contain", borderRadius: "8px" }} />
-                    <button 
+                    <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); setBugImage(""); setBugImageFile(null); }}
                       style={{ position: "absolute", top: "0px", left: "0px", background: "rgba(0,0,0,0.7)", border: "none", color: "#fff", borderRadius: "50%", width: "24px", height: "24px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
@@ -2946,29 +3146,6 @@ export default function ProfilePage() {
                   </>
                 )}
               </div>
-            </div>
-
-            <div className={styles.formButtonsRow}>
-              <button 
-                className={`ios-btn ${styles.flex1}`} 
-                onClick={() => { 
-                  setShowBugReportModal(false); 
-                  setBugType("");
-                  setBugDetails("");
-                  setBugImage("");
-                  setBugImageFile(null);
-                }}
-                disabled={bugLoading || bugUploading}
-              >
-                إلغاء
-              </button>
-              <button 
-                className={`ios-btn ios-btn-primary ${styles.flex1} ${(bugLoading || bugUploading) ? styles.btnOpacity60 : ''}`} 
-                onClick={handleSendBugReport} 
-                disabled={bugLoading || bugUploading}
-              >
-                {bugLoading ? "جاري الإرسال..." : "إرسال البلاغ"}
-              </button>
             </div>
           </div>
         </div>

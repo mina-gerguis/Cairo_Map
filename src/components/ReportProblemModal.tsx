@@ -263,6 +263,11 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
     }
   };
 
+  // Check if form is valid to determine button styling
+  const isFormValid = !!selectedProblem && 
+    (selectedProblem !== "name" || !!newName.trim()) &&
+    (selectedProblem !== "other" || !!comment.trim());
+
   return (
     <div className="ios-sheet-overlay" style={{ zIndex: 1050 }}>
       <div className="ios-sheet" style={{ height: "94vh", maxHeight: "94vh", maxWidth: "600px", margin: "0 auto" }}>
@@ -286,12 +291,13 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
             style={{ 
               background: "none", 
               border: "none", 
-              color: loading || isUploading ? "var(--text-muted)" : "var(--accent-ios)", 
+              color: loading || isUploading || !isFormValid ? "var(--text-muted)" : "var(--accent-ios)", 
               fontSize: "1.6rem", 
               cursor: loading || isUploading ? "not-allowed" : "pointer",
               padding: "4px",
               display: "flex",
-              alignItems: "center"
+              alignItems: "center",
+              transition: "color 0.2s ease"
             }}
             title="إرسال البلاغ"
           >

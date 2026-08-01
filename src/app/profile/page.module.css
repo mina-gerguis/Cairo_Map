@@ -491,7 +491,7 @@
 }
 
 .cardIcon {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
 }
 
 .cardTitle {
@@ -545,7 +545,6 @@
   padding: 2px 8px;
   border-radius: 50px;
   font-weight: bold;
-  box-shadow: 0 2px 8px rgba(255, 59, 48, 0.4);
 }
 
 .notifChevron {
