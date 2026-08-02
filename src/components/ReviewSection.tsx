@@ -305,7 +305,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
       )}
 
       {/* Reviews List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "50px" }}>
         {displayedReviews.length > 0 ? (
           displayedReviews.map(review => (
             <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>
