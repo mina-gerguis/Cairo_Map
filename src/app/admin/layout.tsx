@@ -59,7 +59,6 @@ export default function AdminLayout({
           <div className={styles.headerActions}>
             <Link href="/" className={styles.backToSiteBtn}>
               <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }} />
-              <span>العودة للموقع</span>
             </Link>
           </div>
         </div>

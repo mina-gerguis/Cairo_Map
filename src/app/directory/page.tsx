@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { formatBoxIcon } from "@/data/places";
 
 interface PhoneEntry {
   id: string;
@@ -10,6 +11,7 @@ interface PhoneEntry {
   phone_number: string;
   logo_url?: string;
   icon?: string;
+  description?: string;
 }
 
 interface TelecomCodeEntry {
@@ -149,7 +151,7 @@ export default function PhoneDirectoryPage() {
     // 2. Search Query Filter
     if (q) {
       result = result.filter((entry) => {
-        const searchable = normalizeArabic(`${entry.name} ${entry.specialty || ""} ${entry.phone_number}`);
+        const searchable = normalizeArabic(`${entry.name} ${entry.specialty || ""} ${entry.phone_number} ${entry.description || ""}`);
         return searchable.includes(q);
       });
     }
@@ -298,14 +300,15 @@ export default function PhoneDirectoryPage() {
           <>
             {/* ==================== PHONES SECTION ==================== */}
             <div style={{ marginBottom: "50px" }}>
-              <h2 className="section-title" style={{ marginBottom: "16px" }}>📞 أرقام خدمة العملاء والطوارئ</h2>
+              <h2 className="section-title" style={{ marginBottom: "16px" }}><i style={{ color: "var(--accent-ios)" }} className="fa-solid fa-building"></i>
+                أرقام خدمة العملاء والطوارئ</h2>
 
               {/* Dynamic Categories Tabs */}
               <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", marginBottom: "24px" }}>
                 <button
                   onClick={() => setSelectedSpecialty("all")}
                   className={`category-pill ${selectedSpecialty === "all" ? "active" : ""}`}
-                  style={{ background: selectedSpecialty === "all" ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)" }}
+                  style={{ background: selectedSpecialty === "all" ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)", fontFamily: "var(--font-cairo)" }}
                 >
                   🌐 الكل
                 </button>
@@ -314,9 +317,9 @@ export default function PhoneDirectoryPage() {
                     key={spec}
                     onClick={() => setSelectedSpecialty(spec)}
                     className={`category-pill ${selectedSpecialty === spec ? "active" : ""}`}
-                    style={{ background: selectedSpecialty === spec ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)", display: "flex", alignItems: "center", gap: "6px" }}
+                    style={{ background: selectedSpecialty === spec ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)" }}
                   >
-                    <i className={`bx ${specialtyIcons[spec] || 'bx-building'}`} style={{ fontSize: "1.05rem" }}></i>
+                    <i className={formatBoxIcon(specialtyIcons[spec] || 'bx-building')} style={{ fontSize: "1.05rem" }}></i>
                     {spec}
                   </button>
                 ))}
@@ -324,7 +327,7 @@ export default function PhoneDirectoryPage() {
                   <button
                     onClick={() => setSelectedSpecialty("other")}
                     className={`category-pill ${selectedSpecialty === "other" ? "active" : ""}`}
-                    style={{ background: selectedSpecialty === "other" ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)" }}
+                    style={{ background: selectedSpecialty === "other" ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)", fontFamily: "var(--font-cairo)" }}
                   >
                     📦 أخرى
                   </button>
@@ -334,7 +337,7 @@ export default function PhoneDirectoryPage() {
               {/* Grid of phones */}
               {slicedEntries.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "30px", color: "var(--text-secondary)" }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "10px" }}>😕</div>
+                  <div style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
                   <p>لا توجد أرقام مطابقة لبحثك في هذا التبويب</p>
                 </div>
               ) : (
@@ -349,19 +352,22 @@ export default function PhoneDirectoryPage() {
                             🏢
                           </div>
                         )}
-                        <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
                           <h3 style={{ margin: "0 0 4px", fontSize: "1.1rem", color: "var(--text-primary)" }}>{entry.name}</h3>
-                          <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "8px", display: "flex", alignItems: "center", gap: "4px" }}>
-                            {entry.icon && <i className={`bx ${entry.icon}`} style={{ fontSize: "0.95rem" }}></i>}
-                            {entry.specialty || "غير مصنف"}
-                          </div>
+
+                          {entry.description && (
+                            <p style={{ margin: "0 0 10px", fontSize: "0.8rem", color: "var(--text-muted)", lineHeight: "1.4" }}>
+                              {entry.description}
+                            </p>
+                          )}
                           <a href={getDialUrl(entry.phone_number)} style={{
                             display: "inline-flex", alignItems: "center", gap: "6px",
                             background: "rgba(52,199,89,0.1)", color: "#10b981",
                             padding: "6px 12px", borderRadius: "20px", textDecoration: "none",
                             fontWeight: "800", fontSize: "0.95rem"
                           }}>
-                            📞 {entry.phone_number}
+                             {entry.phone_number} 
+                              <i className="bx bx-phone" style={{ fontSize: "1.1rem" }} />
                           </a>
                         </div>
                       </div>
@@ -389,8 +395,8 @@ export default function PhoneDirectoryPage() {
             {/* ==================== TELECOM CODES SECTION ==================== */}
             <div>
               <h2 className="section-title" style={{ marginBottom: "10px" }}>
-                <i className="fa-solid fa-phone-volume" style={{color:"var(--accent-ios)"}}></i>
-                 دليل أكواد شركات الاتصالات</h2>
+                <i className="fa-solid fa-phone-volume" style={{ color: "var(--accent-ios)" }}></i>
+                دليل أكواد شركات الاتصالات</h2>
               <p style={{ color: "var(--text-secondary)", marginBottom: "24px", fontSize: "0.95rem" }}>
                 دليلك الشامل لجميع أكواد شركات الاتصالات
               </p>
@@ -414,9 +420,9 @@ export default function PhoneDirectoryPage() {
                       fontWeight: "bold"
                     }}
                   >
-                   
 
-                    <Image src={meta.logo} alt={meta.label} width={20} height={20} style={{ borderRadius: "50%"}} />
+
+                    <Image src={meta.logo} alt={meta.label} width={20} height={20} style={{ borderRadius: "50%" }} />
                     {meta.label}
                   </button>
                 ))}
@@ -449,7 +455,7 @@ export default function PhoneDirectoryPage() {
                           }}
                         >
                           <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-                            <i className={`bx ${sectionIcons[sectionName] || 'bx-folder'}`} style={{ fontSize: "1.2rem" }}></i>
+                            <i className={formatBoxIcon(sectionIcons[sectionName] || 'bx-folder')} style={{ fontSize: "1.2rem" }}></i>
                             {sectionName}
                           </h3>
                           <span style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}>

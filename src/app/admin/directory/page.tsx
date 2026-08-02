@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import styles from "../admin.module.css";
+import { formatBoxIcon } from "@/data/places";
 
 interface PhoneEntry {
   id: string;
@@ -13,6 +14,7 @@ interface PhoneEntry {
   phone_number: string;
   logo_url: string;
   icon?: string;
+  description?: string;
 }
 
 interface TelecomCodeEntry {
@@ -44,7 +46,7 @@ export default function AdminDirectoryPage() {
   // State for Customer Service Phones
   const [entries, setEntries] = useState<PhoneEntry[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState({ name: "", phone_number: "", logo_url: "" });
+  const [formData, setFormData] = useState({ name: "", phone_number: "", logo_url: "", description: "" });
 
   // Custom specialty states for dropdown
   const [specialtySelect, setSpecialtySelect] = useState("");
@@ -132,6 +134,32 @@ export default function AdminDirectoryPage() {
   }, [user, authLoading, router]);
 
   // CRUD for Phones
+  const [editingPhoneId, setEditingPhoneId] = useState<string | null>(null);
+
+  const startEditPhone = (entry: PhoneEntry) => {
+    setEditingPhoneId(entry.id);
+    setFormData({
+      name: entry.name,
+      phone_number: entry.phone_number,
+      logo_url: entry.logo_url || "",
+      description: entry.description || "",
+    });
+    setSpecialtySelect(entry.specialty || "");
+    setCustomSpecialty("");
+    setCustomIcon(entry.icon || "");
+    setShowAddForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelPhone = () => {
+    setShowAddForm(false);
+    setEditingPhoneId(null);
+    setFormData({ name: "", phone_number: "", logo_url: "", description: "" });
+    setSpecialtySelect("");
+    setCustomSpecialty("");
+    setCustomIcon("");
+  };
+
   const handleAddPhone = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) return;
@@ -145,10 +173,9 @@ export default function AdminDirectoryPage() {
         throw new Error("يرجى تحديد أو كتابة تخصص.");
       }
 
-      // Determine the icon: if new specialty, save customIcon (fallback to bx-building), if existing, copy its first non-empty icon
       let finalIcon = "bx-building";
       if (specialtySelect === "__custom__") {
-        finalIcon = customIcon.trim() || "bx-building";
+        finalIcon = formatBoxIcon(customIcon.trim()) || "bx-building";
       } else {
         const existingEntry = entries.find(e => e.specialty === specialtySelect && e.icon);
         if (existingEntry && existingEntry.icon) {
@@ -156,28 +183,48 @@ export default function AdminDirectoryPage() {
         }
       }
 
-      const { data, error } = await supabase
-        .from("phone_directory")
-        .insert([{
-          name: formData.name.trim(),
-          specialty: finalSpecialty,
-          phone_number: formData.phone_number.trim(),
-          logo_url: formData.logo_url.trim(),
-          icon: finalIcon
-        }])
-        .select();
+      if (editingPhoneId) {
+        // Edit Mode
+        const { data, error } = await supabase
+          .from("phone_directory")
+          .update({
+            name: formData.name.trim(),
+            specialty: finalSpecialty,
+            phone_number: formData.phone_number.trim(),
+            logo_url: formData.logo_url.trim(),
+            icon: finalIcon,
+            description: formData.description.trim()
+          })
+          .eq("id", editingPhoneId)
+          .select();
 
-      if (error) throw error;
-      if (data) {
-        setEntries([data[0], ...entries]);
-        setShowAddForm(false);
-        setFormData({ name: "", phone_number: "", logo_url: "" });
-        setSpecialtySelect("");
-        setCustomSpecialty("");
-        setCustomIcon("");
+        if (error) throw error;
+        if (data) {
+          setEntries(entries.map(e => e.id === editingPhoneId ? data[0] : e));
+          handleCancelPhone();
+        }
+      } else {
+        // Add Mode
+        const { data, error } = await supabase
+          .from("phone_directory")
+          .insert([{
+            name: formData.name.trim(),
+            specialty: finalSpecialty,
+            phone_number: formData.phone_number.trim(),
+            logo_url: formData.logo_url.trim(),
+            icon: finalIcon,
+            description: formData.description.trim()
+          }])
+          .select();
+
+        if (error) throw error;
+        if (data) {
+          setEntries([data[0], ...entries]);
+          handleCancelPhone();
+        }
       }
     } catch (err: any) {
-      setError("فشل الإضافة: " + err.message);
+      setError("فشل الحفظ: " + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -197,6 +244,31 @@ export default function AdminDirectoryPage() {
   };
 
   // CRUD for Telecom Codes
+  const [editingCodeId, setEditingCodeId] = useState<string | null>(null);
+
+  const startEditCode = (item: TelecomCodeEntry) => {
+    setEditingCodeId(item.id);
+    setCodeFormData({
+      company: item.company,
+      title: item.title,
+      code: item.code,
+    });
+    setSectionSelect(item.section_name || "");
+    setCustomSection("");
+    setCustomSectionIcon(item.icon || "");
+    setShowAddCodeForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelCode = () => {
+    setShowAddCodeForm(false);
+    setEditingCodeId(null);
+    setCodeFormData({ company: "vodafone", title: "", code: "" });
+    setSectionSelect("");
+    setCustomSection("");
+    setCustomSectionIcon("");
+  };
+
   const handleAddCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) return;
@@ -213,7 +285,7 @@ export default function AdminDirectoryPage() {
       // Determine the icon: if new section, save customSectionIcon (fallback to bx-folder), if existing, copy its first non-empty icon
       let finalIcon = "bx-folder";
       if (sectionSelect === "__custom__") {
-        finalIcon = customSectionIcon.trim() || "bx-folder";
+        finalIcon = formatBoxIcon(customSectionIcon.trim()) || "bx-folder";
       } else {
         const existingEntry = codes.find(c => c.company === codeFormData.company && c.section_name === sectionSelect && c.icon);
         if (existingEntry && existingEntry.icon) {
@@ -221,28 +293,46 @@ export default function AdminDirectoryPage() {
         }
       }
 
-      const { data, error } = await supabase
-        .from("telecom_codes")
-        .insert([{
-          company: codeFormData.company,
-          section_name: finalSection,
-          title: codeFormData.title.trim(),
-          code: codeFormData.code.trim(),
-          icon: finalIcon
-        }])
-        .select();
+      if (editingCodeId) {
+        // Edit Mode
+        const { data, error } = await supabase
+          .from("telecom_codes")
+          .update({
+            company: codeFormData.company,
+            section_name: finalSection,
+            title: codeFormData.title.trim(),
+            code: codeFormData.code.trim(),
+            icon: finalIcon
+          })
+          .eq("id", editingCodeId)
+          .select();
 
-      if (error) throw error;
-      if (data) {
-        setCodes([data[0], ...codes]);
-        setShowAddCodeForm(false);
-        setCodeFormData({ company: "vodafone", title: "", code: "" });
-        setSectionSelect("");
-        setCustomSection("");
-        setCustomSectionIcon("");
+        if (error) throw error;
+        if (data) {
+          setCodes(codes.map(c => c.id === editingCodeId ? data[0] : c));
+          handleCancelCode();
+        }
+      } else {
+        // Add Mode
+        const { data, error } = await supabase
+          .from("telecom_codes")
+          .insert([{
+            company: codeFormData.company,
+            section_name: finalSection,
+            title: codeFormData.title.trim(),
+            code: codeFormData.code.trim(),
+            icon: finalIcon
+          }])
+          .select();
+
+        if (error) throw error;
+        if (data) {
+          setCodes([data[0], ...codes]);
+          handleCancelCode();
+        }
       }
     } catch (err: any) {
-      setError("فشل إضافة الكود: " + err.message);
+      setError("فشل حفظ الكود: " + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -276,12 +366,24 @@ export default function AdminDirectoryPage() {
         </div>
 
         {activeTab === "phones" ? (
-          <button className="ios-btn ios-btn-primary" style={{ width: "auto" }} onClick={() => setShowAddForm(!showAddForm)}>
-            {showAddForm ? "إلغاء الإضافة" : "+ إضافة رقم جديد"}
+          <button className="ios-btn ios-btn-primary" style={{ width: "auto" }} onClick={() => {
+            if (showAddForm) {
+              handleCancelPhone();
+            } else {
+              setShowAddForm(true);
+            }
+          }}>
+            {showAddForm ? "إلغاء" : "+ إضافة رقم جديد"}
           </button>
         ) : (
-          <button className="ios-btn ios-btn-primary" style={{ width: "auto" }} onClick={() => setShowAddCodeForm(!showAddCodeForm)}>
-            {showAddCodeForm ? "إلغاء الإضافة" : "+ إضافة كود جديد"}
+          <button className="ios-btn ios-btn-primary" style={{ width: "auto" }} onClick={() => {
+            if (showAddCodeForm) {
+              handleCancelCode();
+            } else {
+              setShowAddCodeForm(true);
+            }
+          }}>
+            {showAddCodeForm ? "إلغاء" : "+ إضافة كود جديد"}
           </button>
         )}
       </div>
@@ -315,7 +417,9 @@ export default function AdminDirectoryPage() {
         <>
           {showAddForm && (
             <div className="ios-sheet" style={{ position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease" }}>
-              <h2 style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", marginBottom: "20px" }}>إضافة جهة جديدة</h2>
+              <h2 style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", marginBottom: "20px" }}>
+                {editingPhoneId ? `تعديل جهة: ${formData.name}` : "إضافة جهة جديدة"}
+              </h2>
               <form onSubmit={handleAddPhone} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
                 <div>
                   <label className="help-label">الاسم (مثال: المصرية للاتصالات وي)</label>
@@ -350,7 +454,7 @@ export default function AdminDirectoryPage() {
                       <input
                         className="ios-input"
                         style={{ marginTop: "12px", direction: "ltr", textAlign: "right" }}
-                        placeholder="كود أيقونة Boxicon (مثال: bx-folder-minus)"
+                        placeholder="كود الأيقونة من Boxicon أو FontAwesome (مثال: bx-folder-minus أو fa-solid fa-address-book)"
                         value={customIcon}
                         onChange={(e) => setCustomIcon(e.target.value)}
                       />
@@ -365,9 +469,13 @@ export default function AdminDirectoryPage() {
                   <label className="help-label">رابط اللوجو (اختياري)</label>
                   <input className="ios-input" style={{ direction: "ltr", textAlign: "right" }} value={formData.logo_url} onChange={e => setFormData({ ...formData, logo_url: e.target.value })} />
                 </div>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label className="help-label">الوصف (اختياري)</label>
+                  <textarea className="ios-input" rows={2} style={{ resize: "vertical", padding: "10px 12px", height: "auto" }} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="اكتب وصفاً أو ملاحظات إضافية هنا..." />
+                </div>
                 <div style={{ gridColumn: "1 / -1", marginTop: "10px" }}>
                   <button type="submit" disabled={isSubmitting} className="ios-btn ios-btn-primary" style={{ width: "100%", height: "50px", fontSize: "1.05rem" }}>
-                    {isSubmitting ? "جاري الإضافة..." : "حفظ الجهة"}
+                    {isSubmitting ? "جاري الحفظ..." : editingPhoneId ? "تعديل الجهة" : "حفظ الجهة"}
                   </button>
                 </div>
               </form>
@@ -415,15 +523,27 @@ export default function AdminDirectoryPage() {
                             <div style={{ width: "38px", height: "38px", borderRadius: "10px", background: "rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center" }}>🏢</div>
                           )}
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700" }}>{entry.name}</td>
+                        <td className={styles.adminTd} style={{ fontWeight: "700" }}>
+                          <div>{entry.name}</div>
+                          {entry.description && (
+                            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal", marginTop: "4px" }}>
+                              {entry.description}
+                            </div>
+                          )}
+                        </td>
                         <td className={styles.adminTd} style={{ color: "#cbd5e1", fontWeight: "700" }}>
                           {entry.specialty}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#38bdf8" }}>{entry.phone_number}</td>
                         <td className={styles.adminTd} style={{ textAlign: "left" }}>
-                          <button onClick={() => handleDeletePhone(entry.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
-                            <i className="bx bx-trash" />
-                          </button>
+                          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                            <button onClick={() => startEditPhone(entry)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`}>
+                              <i className="bx bx-edit-alt" />
+                            </button>
+                            <button onClick={() => handleDeletePhone(entry.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
+                              <i className="bx bx-trash" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -440,7 +560,9 @@ export default function AdminDirectoryPage() {
         <>
           {showAddCodeForm && (
             <div className="ios-sheet" style={{position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease"  }}>
-              <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>إضافة كود خدمة جديد</h2>
+              <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>
+                {editingCodeId ? `تعديل كود خدمة: ${codeFormData.title}` : "إضافة كود خدمة جديد"}
+              </h2>
               <form onSubmit={handleAddCode} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
                 <div>
                   <label className="help-label">الشركة</label>
@@ -480,7 +602,7 @@ export default function AdminDirectoryPage() {
                       <input
                         className="ios-input"
                         style={{ marginTop: "12px", direction: "ltr", textAlign: "right" }}
-                        placeholder="كود أيقونة Boxicon للقسم (مثال: bx-wallet)"
+                        placeholder="كود الأيقونة من Boxicon أو FontAwesome (مثال: bx-wallet أو fa-solid fa-wallet)"
                         value={customSectionIcon}
                         onChange={(e) => setCustomSectionIcon(e.target.value)}
                       />
@@ -497,7 +619,7 @@ export default function AdminDirectoryPage() {
                 </div>
                 <div style={{ gridColumn: "1 / -1", marginTop: "10px" }}>
                   <button type="submit" disabled={isSubmitting} className="ios-btn ios-btn-primary" style={{ width: "100%", height: "50px", fontSize: "1.05rem" }}>
-                    {isSubmitting ? "جاري الإضافة..." : "حفظ الكود"}
+                    {isSubmitting ? "جاري الحفظ..." : editingCodeId ? "تعديل الكود" : "حفظ الكود"}
                   </button>
                 </div>
               </form>
@@ -543,15 +665,20 @@ export default function AdminDirectoryPage() {
                           </span>
                         </td>
                         <td className={styles.adminTd} style={{ color: "#cbd5e1" }}>
-                          {item.icon && <i className={`bx ${item.icon}`} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
+                          {item.icon && <i className={formatBoxIcon(item.icon)} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
                           {item.section_name}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>{item.title}</td>
                         <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#4ade80", fontFamily: "monospace", fontSize: "1.05rem" }}>{item.code}</td>
                         <td className={styles.adminTd} style={{ textAlign: "left" }}>
-                          <button onClick={() => handleDeleteCode(item.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
-                            <i className="bx bx-trash" /> 
-                          </button>
+                          <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                            <button onClick={() => startEditCode(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`}>
+                              <i className="bx bx-edit-alt" />
+                            </button>
+                            <button onClick={() => handleDeleteCode(item.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
+                              <i className="bx bx-trash" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))
