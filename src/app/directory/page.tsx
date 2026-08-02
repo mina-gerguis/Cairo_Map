@@ -42,6 +42,7 @@ export default function PhoneDirectoryPage() {
   // Public Telecom Codes UI State
   const [activeCompany, setActiveCompany] = useState<string>("vodafone");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     // Load recent searches
@@ -182,6 +183,26 @@ export default function PhoneDirectoryPage() {
 
   const getDialUrl = (code: string) => {
     return `tel:${code.replace(/#/g, "%23")}`;
+  };
+
+  const handleCopyCode = (code: string, id: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(code).then(() => {
+        setCopiedId(id);
+        // Open the dialer app and pre-fill the code
+        window.location.href = getDialUrl(code);
+        setTimeout(() => {
+          setCopiedId(null);
+        }, 2000);
+      }).catch((err) => {
+        console.error("Failed to copy code: ", err);
+        // Fallback: still open the dialer even if copy fails
+        window.location.href = getDialUrl(code);
+      });
+    } else {
+      // Fallback for environments where clipboard API is not available
+      window.location.href = getDialUrl(code);
+    }
   };
 
   return (
@@ -367,9 +388,11 @@ export default function PhoneDirectoryPage() {
 
             {/* ==================== TELECOM CODES SECTION ==================== */}
             <div>
-              <h2 className="section-title" style={{ marginBottom: "10px" }}>📱 دليل أكواد شركات الاتصالات</h2>
+              <h2 className="section-title" style={{ marginBottom: "10px" }}>
+                <i className="fa-solid fa-phone-volume" style={{color:"var(--accent-ios)"}}></i>
+                 دليل أكواد شركات الاتصالات</h2>
               <p style={{ color: "var(--text-secondary)", marginBottom: "24px", fontSize: "0.95rem" }}>
-                ابحث عن الكود واطلبه مباشرة بضغطة زر
+                دليلك الشامل لجميع أكواد شركات الاتصالات
               </p>
 
               {/* Company Tabs */}
@@ -402,8 +425,9 @@ export default function PhoneDirectoryPage() {
               {/* Accordions */}
               {Object.keys(groupedCodes).length === 0 ? (
                 <div style={{ textAlign: "center", padding: "40px", color: "var(--text-secondary)", background: "var(--bg-secondary)", borderRadius: "16px" }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "10px" }}>📱</div>
+                  <div style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
                   <p>لا توجد أكواد مضافة لهذه الشركة بعد</p>
+                  <p>تعمل الأدارة علي تحسين الموقع بشكل كبير وسوف يتم أضافة الاكواد قريبا.</p>
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -421,7 +445,7 @@ export default function PhoneDirectoryPage() {
                             display: "flex",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            userSelect: "none"
+                            userSelect: "none",
                           }}
                         >
                           <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
@@ -429,7 +453,7 @@ export default function PhoneDirectoryPage() {
                             {sectionName}
                           </h3>
                           <span style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}>
-                            {isExpanded ? "🔼" : "🔽"}
+                            {isExpanded ? <i className="fa-solid fa-chevron-up"></i> : <i className="fa-solid fa-chevron-down"></i>}
                           </span>
                         </div>
 
@@ -454,28 +478,51 @@ export default function PhoneDirectoryPage() {
                                     <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.95rem" }}>
                                       {item.title}
                                     </div>
-                                    <div style={{ fontSize: "1.1rem", fontFamily: "monospace", color: "var(--accent-primary)", marginTop: "4px", direction: "ltr", textAlign: "right" }}>
+                                    <div style={{ fontSize: "1.1rem", color: "var(--accent-primary)", marginTop: "4px", direction: "ltr", textAlign: "right" }}>
                                       {item.code}
                                     </div>
                                   </div>
 
-                                  <a
-                                    href={getDialUrl(item.code)}
-                                    style={{
-                                      background: "var(--accent-primary)",
-                                      color: "#fff",
-                                      padding: "8px 18px",
-                                      borderRadius: "20px",
-                                      fontSize: "0.9rem",
-                                      fontWeight: "800",
-                                      textDecoration: "none",
-                                      display: "inline-flex",
-                                      alignItems: "center",
-                                      gap: "6px"
-                                    }}
-                                  >
-                                    📞 اطلب الآن
-                                  </a>
+                                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                    <button
+                                      onClick={() => handleCopyCode(item.code, item.id)}
+                                      style={{
+                                        background: copiedId === item.id ? "rgba(16, 185, 129, 0.15)" : "#00000027",
+                                        border: copiedId === item.id ? "1px solid var(--accent-success)" : "1px solid var(--border-glass)",
+                                        color: copiedId === item.id ? "var(--accent-success)" : "var(--text-primary)",
+                                        padding: "8px 18px",
+                                        borderRadius: "20px",
+                                        fontSize: "0.9rem",
+                                        fontWeight: "800",
+                                        cursor: "pointer",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "6px",
+                                        transition: "all 0.2s ease"
+                                      }}
+                                      title="نسخ الكود"
+                                    >
+                                      <i className={copiedId === item.id ? "fa-solid fa-check" : "fa-solid fa-copy"}></i>
+                                    </button>
+
+                                    <a
+                                      href={getDialUrl(item.code)}
+                                      style={{
+                                        background: "var(--accent-primary)",
+                                        color: "#fff",
+                                        padding: "8px 18px",
+                                        borderRadius: "20px",
+                                        fontSize: "0.9rem",
+                                        fontWeight: "800",
+                                        textDecoration: "none",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "6px"
+                                      }}
+                                    >
+                                      <i className="fa-solid fa-phone"></i>
+                                    </a>
+                                  </div>
                                 </div>
                               ))}
                             </div>
