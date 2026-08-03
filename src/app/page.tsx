@@ -1005,20 +1005,7 @@ function HomeContent() {
               {/* Right: Close X */}
               <button
                 onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}
-                style={{
-                  background: "rgba(131, 131, 131, 0.14)",
-                  border: "1px solid var(--border-glass)",
-                  color: "var(--text-primary)",
-                  borderRadius: "50%",
-                  width: "36px",
-                  height: "36px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  fontSize: "1.2rem",
-                  transition: "all 0.2s"
-                }}
+                className="closeBut"
                 title="إغلاق"
               >
                 <IoMdClose />

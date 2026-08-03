@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
@@ -13,6 +14,11 @@ import styles from "./page.module.css";
 // Icons
 import { TbMessageCircleStar, TbMessageReportFilled } from "react-icons/tb";
 import { BsStars } from "react-icons/bs";
+import { IoWalletOutline } from "react-icons/io5";
+import { CiShop } from "react-icons/ci";
+import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
+import { SiConvertio } from "react-icons/si";
+
 
 const PROFILE_AVATARS = [
   "https://api.dicebear.com/7.x/notionists/svg?seed=Ahmed&backgroundColor=b6e3f4",
@@ -43,6 +49,13 @@ const AVAILABLE_INTERESTS = [
   { id: "courses_study", label: "كورسات ودراسة", icon: "bx bx-book-reader" },
   { id: "quiet_places", label: "اماكن هادئه", icon: "bx bx-moon" }
 ];
+
+const formatNumber = (num: number, decimals = 0) => {
+  if (num < 1000) return num.toFixed(decimals).replace(/\.0+$/, "");
+  if (num >= 1000 && num < 1000000) return (num / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  if (num >= 1000000 && num < 1000000000) return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "m";
+  return (num / 1000000000).toFixed(1).replace(/\.0$/, "") + "b";
+};
 
 /* ─── صفحة الملف الشخصي والإعدادات (Profile Page Component) ─── */
 export default function ProfilePage() {
@@ -195,6 +208,13 @@ export default function ProfilePage() {
   const [convertPointsAmount, setConvertPointsAmount] = useState<string>("");
   const [convertingPoints, setConvertingPoints] = useState(false);
   const [convertStatus, setConvertStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Wallet Modal States
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showConvertBalanceSection, setShowConvertBalanceSection] = useState(false);
+  const [convertBalanceAmount, setConvertBalanceAmount] = useState<string>("");
+  const [convertingBalance, setConvertingBalance] = useState(false);
+  const [convertBalanceStatus, setConvertBalanceStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Suggestions & Bug Reports State
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
@@ -693,14 +713,14 @@ export default function ProfilePage() {
       if (data && data.success) {
         setConvertStatus({ type: "success", text: data.message });
         setConvertPointsAmount("");
-        
+
         // Sync state locally
         setProfile((prev: any) => ({
           ...prev,
           points: data.new_points,
           balance: data.new_balance,
         }));
-        
+
         if (refreshProfile) {
           await refreshProfile();
         }
@@ -712,6 +732,56 @@ export default function ProfilePage() {
       setConvertStatus({ type: "error", text: "حدث خطأ غير متوقع: " + (err.message || "فشلت العملية") });
     } finally {
       setConvertingPoints(false);
+    }
+  };
+
+  const handleConvertBalanceToPoints = async () => {
+    if (!supabase || !user || !profile) return;
+    setConvertingBalance(true);
+    setConvertBalanceStatus(null);
+
+    const balanceToConvert = parseFloat(convertBalanceAmount);
+    if (isNaN(balanceToConvert) || balanceToConvert < 10) {
+      setConvertBalanceStatus({ type: "error", text: "عفواً، الحد الأدنى لتحويل الرصيد هو 10 جنيهات مصري." });
+      setConvertingBalance(false);
+      return;
+    }
+
+    if (balanceToConvert > (profile.balance || 0)) {
+      setConvertBalanceStatus({ type: "error", text: "عفواً، رصيد المحفظة لديك غير كافٍ لإجراء هذه العملية." });
+      setConvertingBalance(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.rpc("convert_user_balance", {
+        balance_to_convert: balanceToConvert,
+      });
+
+      if (error) throw error;
+
+      if (data && data.success) {
+        setConvertBalanceStatus({ type: "success", text: data.message });
+        setConvertBalanceAmount("");
+
+        // Sync state locally
+        setProfile((prev: any) => ({
+          ...prev,
+          points: data.new_points,
+          balance: data.new_balance,
+        }));
+
+        if (refreshProfile) {
+          await refreshProfile();
+        }
+      } else {
+        setConvertBalanceStatus({ type: "error", text: data?.message || "فشلت عملية التحويل." });
+      }
+    } catch (err: any) {
+      console.error(err);
+      setConvertBalanceStatus({ type: "error", text: "حدث خطأ غير متوقع: " + (err.message || "فشلت العملية") });
+    } finally {
+      setConvertingBalance(false);
     }
   };
 
@@ -1494,17 +1564,27 @@ export default function ProfilePage() {
           style={{ cursor: "pointer" }}
         >
           <i className="bx bxs-coin"></i>
-          <span>{profile?.points ?? 0} نقطة</span>
+          <span>{formatNumber(profile?.points ?? 0)} نقطة</span>
         </div>
         {/* Primary Wallet Balance Badge */}
-        <div className={`${styles.badgePill} ${styles.badgeWallet}`} title="الرصيد الأساسي">
+        <div
+          className={`${styles.badgePill} ${styles.badgeWallet}`}
+          title="الرصيد الأساسي"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowWalletModal(true);
+            setShowConvertBalanceSection(false);
+            setConvertBalanceStatus(null);
+          }}
+          style={{ cursor: "pointer" }}
+        >
           <i className="bx bxs-wallet"></i>
-          <span>{(profile?.balance ?? 0).toFixed(2)} ج.م</span>
+          <span>{formatNumber(profile?.balance ?? 0, 2)} ج.م</span>
         </div>
         {/* Promo Balance Badge */}
         <div className={`${styles.badgePill} ${styles.badgePromo}`} title="الرصيد الترويجي">
           <i className="bx bxs-gift"></i>
-          <span>{(profile?.promo_balance ?? 0).toFixed(2)} ترويجي</span>
+          <span>{formatNumber(profile?.promo_balance ?? 0, 2)} ترويجي</span>
         </div>
       </div>
 
@@ -3273,12 +3353,11 @@ export default function ProfilePage() {
               maxWidth: "480px",
               width: "100%",
               padding: "24px 28px",
-              borderRadius: "24px",
-              background: "var(--bg-glass-card, #ffffff)",
+              borderRadius: "16px",
+              background: "var(--bg-primary)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
-              border: "1px solid var(--accent-primary)",
+              border: "1px solid var(--border-glass)",
               animation: "slide-up 0.3s ease",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -3290,23 +3369,12 @@ export default function ProfilePage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <button
                 onClick={() => setShowPointsModal(false)}
-                className={styles.modalCloseIconBtn}
-                style={{
-                  background: "rgba(109, 107, 107, 0.12)",
-                  border: "1px solid var(--border-glass)",
-                  color: "var(--text-primary)",
-                  cursor: "pointer",
-                  padding: "8px",
-                  borderRadius: "50%",
-                  fontWeight: "bold",
-                  height: "fit-content",
-                  width: "fit-content"
-                }}
+                className="closeBut"
               >
-                <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
+                <i className="bx bx-x"></i>
               </button>
-              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
-                محفظة النقاط والمكافآت
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
+                عملة ماب القاهرة
               </h3>
               <div style={{ width: "38px" }}></div>
             </div>
@@ -3315,30 +3383,29 @@ export default function ProfilePage() {
             <div style={{ textAlign: "center", padding: "12px 0 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div
                 style={{
-                  width: "80px",
-                  height: "80px",
-                  borderRadius: "50%",
-                  background: "rgba(251, 191, 36, 0.08)",
-                  border: "2px solid rgba(251, 191, 36, 0.3)",
+                  width: "100px",
+                  height: "100px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "3rem",
-                  color: "#fbbf24",
                   marginBottom: "14px",
-                  boxShadow: "0 0 20px rgba(251, 191, 36, 0.15)",
                 }}
               >
-                <i className="bx bxs-coin-stack"></i>
+                <Image src="/image/profile/coin3dMapCairo.png"
+                  alt="عملة ماب القاهرة"
+                  draggable={false}
+                  width={100}
+                  height={100}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none" }} />
               </div>
-              <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
-                رصيد النقاط الحالي
+              <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+                الرصيد الحالي
               </span>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: "900", color: "#fbbf24", margin: "4px 0" }}>
-                {profile?.points ?? 0}
+              <h2 style={{ fontSize: "2.4rem", fontWeight: "700", color: "#cc9303c4", margin: "4px 0", fontFamily: "var(--font-tenor-sans)" }}>
+                {formatNumber(profile?.points ?? 0)}
               </h2>
               <span style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", background: "rgba(16, 185, 129, 0.08)", padding: "2px 10px", borderRadius: "10px" }}>
-                تساوي {((profile?.points ?? 0) / 100).toFixed(2)} ج.م
+                تساوي {formatNumber((profile?.points ?? 0) / 100, 2)} ج.م
               </span>
             </div>
 
@@ -3351,8 +3418,9 @@ export default function ProfilePage() {
                   setConvertStatus(null);
                 }}
                 className="ios-btn ios-btn-primary"
-                style={{ flex: 1, padding: "12px", justifyContent: "center", fontSize: "0.9rem" }}
+                style={{ flex: 1, padding: "8px 4px", justifyContent: "center", fontSize: "0.9rem" }}
               >
+                <IoWalletOutline style={{ fontSize: "1rem" }} />
                 التحويل لرصيد
               </button>
               <button
@@ -3366,10 +3434,12 @@ export default function ProfilePage() {
                   fontSize: "0.9rem",
                   opacity: 0.5,
                   cursor: "not-allowed",
-                  background: "rgba(255,255,255,0.02)"
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(77, 77, 77, 0.38)"
                 }}
               >
-                استخدام النقاط (قريباً)
+                <CiShop style={{ fontSize: "1rem" }} />
+                استخدام العملة
               </button>
             </div>
 
@@ -3385,10 +3455,10 @@ export default function ProfilePage() {
                   animation: "slide-up 0.2s ease"
                 }}
               >
-                <h4 style={{ margin: "0 0 10px", fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: "0 0 10px", fontSize: "0.9rem", fontFamily: "var(--font-cairo)", fontWeight: "700", color: "var(--text-primary)" }}>
                   تحويل النقاط إلى رصيد محفظة كاش
                 </h4>
-                <p style={{ margin: "0 0 14px", fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
+                <p style={{ margin: "0 0 14px", fontSize: "0.78rem", fontFamily: "var(--font-cairo)", color: "var(--text-muted)", lineHeight: "1.5" }}>
                   الحد الأدنى للتحويل هو 1000 نقطة. كل 100 نقطة تساوي 1.00 جنيه مصري. سيتم إضافة الرصيد مباشرة إلى رصيدك الأساسي.
                 </p>
 
@@ -3401,13 +3471,21 @@ export default function ProfilePage() {
                     placeholder="أدخل عدد النقاط (1000 كحد أدنى)"
                     value={convertPointsAmount}
                     onChange={(e) => setConvertPointsAmount(e.target.value)}
-                    style={{ flex: 1, fontSize: "1rem", textAlign: "center", fontWeight: "bold" }}
+                    style={{ flex: 1, fontSize: "0.8rem", textAlign: "center", fontWeight: "700", padding: "8px 6px" }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setConvertPointsAmount((profile?.points ?? 0).toString())}
+                    className="ios-btn"
+                    style={{ padding: "8px 6px", fontSize: "0.82rem", whiteSpace: "nowrap", fontWeight: "bold", width: "25%", border: "1px solid var(--border-glass)" }}
+                  >
+                    الأقصي
+                  </button>
                 </div>
 
                 {convertPointsAmount && !isNaN(parseInt(convertPointsAmount)) && parseInt(convertPointsAmount) >= 1000 && (
                   <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", textAlign: "center", marginBottom: "14px" }}>
-                    ستحصل على: {(parseInt(convertPointsAmount) / 100).toFixed(2)} ج.م
+                    ستحصل على: {formatNumber(parseInt(convertPointsAmount) / 100, 2)} ج.م
                   </div>
                 )}
 
@@ -3434,8 +3512,9 @@ export default function ProfilePage() {
                   onClick={handleConvertPoints}
                   disabled={convertingPoints}
                   className="ios-btn ios-btn-primary"
-                  style={{ width: "100%", padding: "10px", justifyContent: "center", fontSize: "0.85rem", background: "#10b981", borderColor: "#10b981" }}
+                  style={{ width: "100%", padding: "10px", justifyContent: "center", fontSize: "0.85rem", background: "var(--accent-primary)", borderColor: "var(--accent-primary)" }}
                 >
+                  <IoWalletOutline style={{ fontSize: "1rem" }} />
                   {convertingPoints ? "جاري التحويل..." : "تأكيد عملية التحويل"}
                 </button>
               </div>
@@ -3443,26 +3522,37 @@ export default function ProfilePage() {
 
             {/* Explanation Sections */}
             <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
+              {/* What is Cairo Map Coin */}
+              <div>
+                <h4 style={{ margin: "0 0 8px", fontSize: "0.92rem", fontWeight: "800", color: "#9e7100ff", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
+                  ما هي عملة ماب القاهرة؟
+                </h4>
+                <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                  هي عملة رقمية تكافئية خاصة بمجتمع ماب القاهرة، صُممت لتشجيع المستخدمين على إثراء محتوى الدليل وتحسين جودة البيانات ومساعدة الآخرين، ويمكن الاستفادة منها عبر تحويلها مباشرة إلى كاش أو استخدامها في خدمات الموقع المختلفة.
+                </p>
+              </div>
+
               {/* How to Earn */}
               <div>
-                <h4 style={{ margin: "0 0 10px", fontSize: "0.92rem", fontWeight: "800", color: "#fbbf24", display: "flex", alignItems: "center", gap: "6px" }}>
+                <h4 style={{ margin: "0 0 10px", fontSize: "0.92rem", fontWeight: "800", color: "#002a9eff", display: "flex", alignItems: "center", gap: "6px" }}>
                   <i className="bx bx-plus-circle" style={{ fontSize: "1.1rem" }}></i>
                   كيف تكسب النقاط؟
                 </h4>
                 <ul style={{ margin: 0, paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px" }}>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-                    <i className="bx bx-plus-circle" style={{ color: "#fbbf24", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <i className="bx bx-plus-circle" style={{ color: "#0025f7ff", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <Link href="/propose-place" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold", textDecoration: "underline" }}>
+                      <Link href="/propose-place" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold" }}>
                         إضافة الأماكن:
                       </Link>{" "}
-                      عند اقتراح إضافة مكان جديد للدليل ويتم قبوله من الإدارة.
+                      عند اقتراح إضافة مكان جديد للدليل.
                     </div>
                   </li>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-error-alt" style={{ color: "#ff3b30", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold", textDecoration: "underline" }}>
+                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold" }}>
                         الإبلاغ عن المشاكل:
                       </Link>{" "}
                       عند الإبلاغ عن بيانات خاطئة أو مكان مغلق ويتم اتخاذ إجراء لتعديله.
@@ -3471,10 +3561,10 @@ export default function ProfilePage() {
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-edit-alt" style={{ color: "#10b981", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold", textDecoration: "underline" }}>
+                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold" }}>
                         تحسين وتدقيق البيانات:
                       </Link>{" "}
-                      المساعدة في جعل القاهرة ماب أكثر دقة وتحديثاً.
+                      المساعدة في جعل ماب القاهرة أكثر دقة وتحديثاً.
                     </div>
                   </li>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
@@ -3492,7 +3582,7 @@ export default function ProfilePage() {
                   <i className="bx bx-help-circle" style={{ fontSize: "1.1rem" }}></i>
                   كيف تستخدم النقاط؟
                 </h4>
-                <ul style={{ margin: 0, paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px" }}>
+                <ul style={{ margin: "0 0 30px 0", paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px" }}>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-transfer-alt" style={{ color: "#10b981", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
@@ -3502,28 +3592,290 @@ export default function ProfilePage() {
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-purchase-tag-alt" style={{ color: "#3b82f6", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <strong>اشتراكات الموقع والمشتريات:</strong> دفع قيمة الاشتراكات المميزة أو شراء السلع من متجر الموقع (قريباً).
+                      <strong>اشتراكات الموقع والمشتريات:</strong> دفع قيمة الاشتراكات المميزة أو شراء السلع من متجر الموقع.
                     </div>
                   </li>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-calendar-event" style={{ color: "#8b5cf6", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <strong>حجوزات وفواتير:</strong> دفع قيمة كشوفات الأطباء، حجوزات الأماكن، وفواتير الأكل والخدمات (قريباً).
+                      <strong>حجوزات وفواتير:</strong> دفع قيمة كشوفات الأطباء، حجوزات الأماكن، وفواتير الأكل والخدمات.
                     </div>
                   </li>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-cycling" style={{ color: "#fbbf24", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <strong>إكرامية وتوصيل:</strong> دفع قيمة فواتير الديلفري أو تقديم إكرامية (Tips) لسائقي التوصيل (قريباً).
+                      <strong>إكرامية وتوصيل:</strong> دفع قيمة فواتير الديلفري أو تقديم إكرامية (Tips) لسائقي التوصيل.
                     </div>
                   </li>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-heart" style={{ color: "#ef4444", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <strong>التبرع والمساعدة:</strong> إمكانية التبرع بالنقاط للمؤسسات الخيرية مباشرة (قريباً).
+                      <strong>التبرع والمساعدة:</strong> إمكانية التبرع بالنقاط للمؤسسات الخيرية مباشرة.
                     </div>
                   </li>
                 </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wallet / Balance Modal */}
+      {showWalletModal && (
+        <div className={styles.modalBackdropSlow} onClick={() => setShowWalletModal(false)}>
+          <div
+            className="glass-panel"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: "480px",
+              width: "100%",
+              padding: "24px 28px",
+              borderRadius: "24px",
+              background: "var(--bg-primary)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
+              border: "1px solid var(--border-glass)",
+              animation: "slide-up 0.3s ease",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              direction: "rtl",
+              textAlign: "right"
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <button
+                onClick={() => setShowWalletModal(false)}
+                className="closeBut"
+              >
+                <i className="bx bx-x"></i>
+              </button>
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
+                المحفظة
+              </h3>
+              <div style={{ width: "38px" }}></div>
+            </div>
+
+            {/* Wallet Dashboard Section */}
+            <div style={{ textAlign: "center", padding: "12px 0 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div
+                style={{
+                  width: "160px",
+                  height: "100px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "14px"
+                }}
+              >
+                <Image src="/image/profile/egyptianPounds3d.png"
+                  alt="رصيد المحفظة"
+                  draggable={false}
+                  width={100}
+                  height={100}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none" }} />
+              </div>
+              <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+                رصيد المحفظة الحالي
+              </span>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: "900", color: "#10b981", margin: "4px 0" }}>
+                {formatNumber(profile?.balance ?? 0, 2)} ج.م
+              </h2>
+              <span style={{ fontSize: "0.85rem", color: "#3224fbff", fontWeight: "bold", background: "rgba(88, 88, 88, 0.08)", padding: "2px 10px", borderRadius: "10px" }}>
+                تساوي {formatNumber((profile?.balance ?? 0) * 100)} نقطة
+              </span>
+            </div>
+
+            {/* Actions Buttons */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginBottom: "24px" }}>
+              <div style={{ display: "flex", gap: "12px", width: "100%" }}>
+                <button
+                  type="button"
+                  disabled
+                  className="ios-btn"
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                    opacity: 0.5,
+                    cursor: "not-allowed",
+                    background: "var(--bg-muted)",
+                    border: "1px solid var(--border-glass)",
+                  }}
+                >
+                  <PiHandDepositBold />
+                  إيداع
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  className="ios-btn"
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                    opacity: 0.5,
+                    cursor: "not-allowed",
+                    background: "var(--bg-muted)",
+                    border: "1px solid var(--border-glass)",
+                  }}
+                >
+                  <PiHandWithdrawBold />
+                  سحب
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowConvertBalanceSection(!showConvertBalanceSection);
+                  setConvertBalanceStatus(null);
+                }}
+                className="ios-btn ios-btn-primary"
+                style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem" }}
+              >
+                <SiConvertio />
+                التحويل إلى عملة ماب القاهرة
+              </button>
+            </div>
+
+            {/* Convert Section */}
+            {showConvertBalanceSection && (
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  padding: "16px",
+                  marginBottom: "24px",
+                  animation: "slide-up 0.2s ease"
+                }}
+              >
+                <h4 style={{ margin: "0 0 10px", fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                  تحويل الرصيد المالي إلى نقاط (عملات ماب القاهرة)
+                </h4>
+                <p style={{ margin: "0 0 14px", fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
+                  الحد الأدنى للتحويل هو 10 جنيهات مصري. كل 1 جنيه مصري يعطيك 100 نقطة. سيتم إضافة النقاط مباشرة إلى رصيد نقاطك.
+                </p>
+
+                <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "14px" }}>
+                  <input
+                    type="number"
+                    min="10"
+                    step="0.01"
+                    className="ios-input"
+                    placeholder="أدخل المبلغ بالجنيه (10 كحد أدنى)"
+                    value={convertBalanceAmount}
+                    onChange={(e) => setConvertBalanceAmount(e.target.value)}
+                    style={{ flex: 1, fontSize: "0.8rem", textAlign: "center", fontWeight: "700", padding: "8px 6px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setConvertBalanceAmount((profile?.balance ?? 0).toString())}
+                    className="ios-btn"
+                    style={{ padding: "8px 6px", fontSize: "0.82rem", whiteSpace: "nowrap", fontWeight: "bold", width: "25%", border: "1px solid var(--border-glass)" }}
+                  >
+                    الأقصي
+                  </button>
+                </div>
+
+                {convertBalanceAmount && !isNaN(parseFloat(convertBalanceAmount)) && parseFloat(convertBalanceAmount) >= 10 && (
+                  <div style={{ fontSize: "0.85rem", color: "#fbbf24", fontWeight: "bold", textAlign: "center", marginBottom: "14px" }}>
+                    ستحصل على: {formatNumber(parseFloat(convertBalanceAmount) * 100)} نقطة
+                  </div>
+                )}
+
+                {convertBalanceStatus && (
+                  <div
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "10px",
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      marginBottom: "14px",
+                      background: convertBalanceStatus.type === "success" ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.12)",
+                      color: convertBalanceStatus.type === "success" ? "#10b981" : "#f87171",
+                      border: convertBalanceStatus.type === "success" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(239, 68, 68, 0.2)"
+                    }}
+                  >
+                    {convertBalanceStatus.text}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleConvertBalanceToPoints}
+                  disabled={convertingBalance}
+                  className="ios-btn ios-btn-primary"
+                  style={{ width: "100%", padding: "10px", justifyContent: "center", fontSize: "0.85rem", background: "var(--accent-primary)", borderColor: "var(--accent-primary)" }}
+                >
+                  <IoWalletOutline style={{ fontSize: "1rem" }} />
+                  {convertingBalance ? "جاري التحويل..." : "تأكيد عملية التحويل"}
+                </button>
+              </div>
+            )}
+
+            {/* Explanation Sections */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
+              {/* What is Cash Wallet */}
+              <div>
+                <h4 style={{ margin: "0 0 8px", fontSize: "0.92rem", fontWeight: "800", color: "#10b981", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
+                  ما هو رصيد المحفظة؟
+                </h4>
+                <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                  هو رصيد مالي حقيقي بالجنيه المصري (EGP) يتم شحنه في حسابك، أو تحويل النقاط المكتسبة إليه. يمكنك استخدامه في شراء المنتجات المميزة، دفع اشتراكات الدليل، أو سحبه نقداً.
+                </p>
+              </div>
+
+              {/* Supported Payment & Withdrawal Methods */}
+              <div>
+                <h4 style={{ margin: "0 0 12px", fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="bx bx-credit-card-front" style={{ fontSize: "1.1rem" }}></i>
+                  طرق الشحن والسحب المدعومة
+                </h4>
+                <p style={{ margin: "0 0 12px", fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
+                  يمكنك استخدام الطرق التالية للشحن أو سحب مستحقاتك وأرصدتك المالية:
+                </p>
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "16px", border: "1px solid var(--border-glass)" }}>
+                  {[
+                    { name: "vodafone cash", title: "فودافون كاش", icon: "/image/telCompany/vodafone-logo.png" },
+                    { name: "instapay", title: "انستاباي", icon: "/image/payment/instapay.png" },
+                    { name: "meeza", title: "ميزة", icon: "/image/payment/meeza.png" },
+                    { name: "fawry", title: "فوري", icon: "/image/payment/fawry.png" },
+                    { name: "visa", title: "فيزا", icon: "/image/payment/visa.png" },
+                    { name: "mastercard", title: "ماستركارد", icon: "/image/payment/mastercard.png" },
+                    { name: "applepay", title: "ابل باي", icon: "/image/payment/applepay.png" },
+                    { name: "telda", title: "تيلدا", icon: "/image/payment/telda.jpg" }
+                  ].map((pay) => (
+                    <div
+                      key={pay.name}
+                      title={pay.title}
+                      style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid var(--border-glass)",
+                        borderRadius: "8px",
+                        padding: "6px 10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <Image
+                        src={pay.icon}
+                        alt={pay.title}
+                        width={20}
+                        height={20}
+                        style={{ objectFit: "contain", borderRadius: "4px" }}
+                      />
+                      <span style={{ fontSize: "0.75rem", color: "var(--text-primary)", fontWeight: "bold" }}>{pay.title}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

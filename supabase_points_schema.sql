@@ -85,3 +85,58 @@ EXCEPTION WHEN OTHERS THEN
   RETURN jsonb_build_object('success', false, 'message', 'حدث خطأ أثناء معالجة العملية: ' || SQLERRM);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 5. دالة آمنة لتحويل الرصيد إلى نقاط من قبل المستخدم العادي (SECURITY DEFINER ليتخطى القيد)
+CREATE OR REPLACE FUNCTION public.convert_user_balance(balance_to_convert NUMERIC)
+RETURNS JSONB AS $$
+DECLARE
+  v_user_id UUID;
+  v_current_points INT;
+  v_current_balance NUMERIC(10,2);
+  v_points_value INT;
+BEGIN
+  -- جلب معرف المستخدم الحالي
+  v_user_id := auth.uid();
+  IF v_user_id IS NULL THEN
+    RETURN jsonb_build_object('success', false, 'message', 'يجب تسجيل الدخول أولاً.');
+  END IF;
+
+  -- جلب النقاط والرصيد الحالي
+  SELECT points, balance INTO v_current_points, v_current_balance
+  FROM public.profiles
+  WHERE id = v_user_id;
+
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('success', false, 'message', 'لم يتم العثور على ملف المستخدم الشخصي.');
+  END IF;
+
+  -- التحقق من المدخلات (الحد الأدنى 10 جنيهات = 1000 نقطة)
+  IF balance_to_convert < 10.00 THEN
+    RETURN jsonb_build_object('success', false, 'message', 'عفواً، الحد الأدنى لتحويل الرصيد هو 10 جنيهات مصري.');
+  END IF;
+
+  IF v_current_balance < balance_to_convert THEN
+    RETURN jsonb_build_object('success', false, 'message', 'رصيد المحفظة لديك غير كافٍ لإجراء هذه العملية.');
+  END IF;
+
+  -- حساب عدد النقاط: كل 1 جنيه = 100 نقطة
+  v_points_value := FLOOR(balance_to_convert * 100);
+
+  -- تحديث الحقول بأمان
+  UPDATE public.profiles
+  SET 
+    points = points + v_points_value,
+    balance = balance - balance_to_convert
+  WHERE id = v_user_id;
+
+  RETURN jsonb_build_object(
+    'success', true, 
+    'message', 'تم تحويل الرصيد إلى نقاط بنجاح!', 
+    'new_points', v_current_points + v_points_value,
+    'new_balance', v_current_balance - balance_to_convert
+  );
+EXCEPTION WHEN OTHERS THEN
+  RETURN jsonb_build_object('success', false, 'message', 'حدث خطأ أثناء معالجة العملية: ' || SQLERRM);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
