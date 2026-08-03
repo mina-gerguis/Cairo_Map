@@ -19,6 +19,7 @@ export default function AdminLayout({
     { href: "/admin/directory", label: "الدليل الهاتفي والأكواد", icon: "bx bx-book-bookmark" },
     { href: "/admin/notifications", label: "الإشعارات الجماعية", icon: "bx bx-bell" },
     { href: "/admin/reports", label: "البلاغات والشكاوى", icon: "bx bx-error-circle" },
+    { href: "/admin/points", label: "النقاط والرصيد", icon: "bx bx-coin-stack" },
   ];
 
   return (

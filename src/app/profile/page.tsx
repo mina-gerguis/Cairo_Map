@@ -1204,6 +1204,10 @@ export default function ProfilePage() {
               <div className={styles.profileInfoText}>
                 <h3 className={styles.profileName}>{profile?.full_name}</h3>
                 <p className={styles.profileEmail}>{profile?.email}</p>
+                <div className={styles.pointsBadge}>
+                  <i className="bx bxs-coin"></i>
+                  <span>{profile?.points ?? 0} نقطة</span>
+                </div>
               </div>
             </div>
             <i className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${styles.profileChevron}`}></i>

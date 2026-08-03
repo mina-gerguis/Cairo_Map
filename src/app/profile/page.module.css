@@ -2073,3 +2073,36 @@
 .deactivateDeviceBtn:active {
   transform: scale(0.95);
 }
+
+/* ─── Points Badge & Coin Pulse ─── */
+.pointsBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  padding: 4px 12px;
+  border-radius: 50px;
+  color: #fbbf24;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 8px;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: fit-content;
+}
+
+.pointsBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+.pointsBadge i {
+  font-size: 0.95rem;
+  animation: coinPulse 2s infinite ease-in-out;
+}
+
+@keyframes coinPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6)); }
+}

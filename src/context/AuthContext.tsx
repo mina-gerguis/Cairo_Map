@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaPending, setMfaPending] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any | null>(null);
+  const [isSessionRegistered, setIsSessionRegistered] = useState(false);
 
   const fetchProfile = async (userId: string, currentUser?: User | null) => {
     if (!supabase) return;
@@ -152,6 +153,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setProfile(null);
       setMfaPending(false);
+      setIsSessionRegistered(false);
       setLoading(false);
       return;
     }
@@ -165,6 +167,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
         setProfile(null);
         setMfaPending(true);
+        setIsSessionRegistered(false);
       } else {
         // MFA not required OR MFA already verified (aal2)
         setSession(currentSession);
@@ -173,13 +176,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await fetchProfile(currentSession.user.id, currentSession.user);
         
         // Register active device session in database
-        registerSession(currentSession.user.id);
+        await registerSession(currentSession.user.id);
+        setIsSessionRegistered(true);
       }
     } catch (e) {
       setSession(currentSession);
       setUser(currentSession.user);
       setMfaPending(false);
       await fetchProfile(currentSession.user.id, currentSession.user);
+      
+      // Register active device session in database even on error
+      await registerSession(currentSession.user.id);
+      setIsSessionRegistered(true);
     } finally {
       setLoading(false);
     }
@@ -208,7 +216,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Monitor device session active status
   useEffect(() => {
-    if (!user || !supabase) return;
+    if (!user || !supabase || !isSessionRegistered) return;
 
      const checkActiveSession = async () => {
       if (typeof window === "undefined" || !supabase) return;
@@ -244,7 +252,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const interval = setInterval(checkActiveSession, 12000); // every 12 seconds
 
     return () => clearInterval(interval);
-  }, [user]);
+  }, [user, isSessionRegistered]);
 
   const logout = async () => {
     if (supabase) {
@@ -265,6 +273,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(null);
       setProfile(null);
       setMfaPending(false);
+      setIsSessionRegistered(false);
     }
   };
 
