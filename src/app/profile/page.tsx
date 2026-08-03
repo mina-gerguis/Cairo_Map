@@ -1261,33 +1261,6 @@ export default function ProfilePage() {
               <div className={styles.profileInfoText}>
                 <h3 className={styles.profileName}>{profile?.full_name}</h3>
                 <p className={styles.profileEmail}>{profile?.email}</p>
-                <div className={styles.userBadgesContainer}>
-                  {/* Points Badge */}
-                  <div
-                    className={`${styles.badgePill} ${styles.badgePoints}`}
-                    title="النقاط"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowPointsModal(true);
-                      setShowConvertSection(false);
-                      setConvertStatus(null);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <i className="bx bxs-coin"></i>
-                    <span>{profile?.points ?? 0} نقطة</span>
-                  </div>
-                  {/* Primary Wallet Balance Badge */}
-                  <div className={`${styles.badgePill} ${styles.badgeWallet}`} title="الرصيد الأساسي">
-                    <i className="bx bxs-wallet"></i>
-                    <span>{(profile?.balance ?? 0).toFixed(2)} ج.م</span>
-                  </div>
-                  {/* Promo Balance Badge */}
-                  <div className={`${styles.badgePill} ${styles.badgePromo}`} title="الرصيد الترويجي">
-                    <i className="bx bxs-gift"></i>
-                    <span>{(profile?.promo_balance ?? 0).toFixed(2)} ترويجي</span>
-                  </div>
-                </div>
               </div>
             </div>
             <i className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${styles.profileChevron}`}></i>
@@ -1504,6 +1477,35 @@ export default function ProfilePage() {
             )}
           </div>
         )}
+      </div>
+
+      {/* User Points and Balances Badges Container */}
+      <div className={styles.userBadgesContainer} style={{ justifyContent: "center", marginBottom: "24px", marginTop: "8px" }}>
+        {/* Points Badge */}
+        <div
+          className={`${styles.badgePill} ${styles.badgePoints}`}
+          title="النقاط"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowPointsModal(true);
+            setShowConvertSection(false);
+            setConvertStatus(null);
+          }}
+          style={{ cursor: "pointer" }}
+        >
+          <i className="bx bxs-coin"></i>
+          <span>{profile?.points ?? 0} نقطة</span>
+        </div>
+        {/* Primary Wallet Balance Badge */}
+        <div className={`${styles.badgePill} ${styles.badgeWallet}`} title="الرصيد الأساسي">
+          <i className="bx bxs-wallet"></i>
+          <span>{(profile?.balance ?? 0).toFixed(2)} ج.م</span>
+        </div>
+        {/* Promo Balance Badge */}
+        <div className={`${styles.badgePill} ${styles.badgePromo}`} title="الرصيد الترويجي">
+          <i className="bx bxs-gift"></i>
+          <span>{(profile?.promo_balance ?? 0).toFixed(2)} ترويجي</span>
+        </div>
       </div>
 
       {/* ─── Section 2 (Theme, Favorites, Notifications, Add Places) ─── */}
