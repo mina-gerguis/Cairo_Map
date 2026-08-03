@@ -2074,35 +2074,88 @@
   transform: scale(0.95);
 }
 
-/* ─── Points Badge & Coin Pulse ─── */
-.pointsBadge {
+/* ─── Profile Badges Container & Pill Styles ─── */
+.userBadgesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+.badgePill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(251, 191, 36, 0.1);
-  border: 1px solid rgba(251, 191, 36, 0.35);
   padding: 4px 12px;
   border-radius: 50px;
-  color: #fbbf24;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  margin-top: 8px;
-  box-shadow: 0 0 10px rgba(251, 191, 36, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: fit-content;
 }
 
-.pointsBadge:hover {
+.badgePill:hover {
   transform: translateY(-1px);
+}
+
+.badgePoints {
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+}
+
+.badgePoints:hover {
   box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
 }
 
-.pointsBadge i {
+.badgePoints i {
   font-size: 0.95rem;
   animation: coinPulse 2s infinite ease-in-out;
 }
 
+.badgeWallet {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.badgeWallet:hover {
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+.badgeWallet i {
+  font-size: 0.95rem;
+  animation: walletPulse 2.5s infinite ease-in-out;
+}
+
+.badgePromo {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
+}
+
+.badgePromo:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.badgePromo i {
+  font-size: 0.95rem;
+  animation: promoPulse 3s infinite ease-in-out;
+}
+
 @keyframes coinPulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6)); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5)); }
+}
+
+@keyframes walletPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5)); }
+}
+
+@keyframes promoPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5)); }
 }

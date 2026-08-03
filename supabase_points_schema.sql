@@ -31,3 +31,57 @@ CREATE TRIGGER ensure_profile_security
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW
   EXECUTE FUNCTION public.check_profile_updates();
+
+-- 4. دالة آمنة لتحويل النقاط إلى رصيد من قبل المستخدم العادي (SECURITY DEFINER ليتخطى القيد)
+CREATE OR REPLACE FUNCTION public.convert_user_points(points_to_convert INT)
+RETURNS JSONB AS $$
+DECLARE
+  v_user_id UUID;
+  v_current_points INT;
+  v_current_balance NUMERIC(10,2);
+  v_cash_value NUMERIC(10,2);
+BEGIN
+  -- جلب معرف المستخدم الحالي
+  v_user_id := auth.uid();
+  IF v_user_id IS NULL THEN
+    RETURN jsonb_build_object('success', false, 'message', 'يجب تسجيل الدخول أولاً.');
+  END IF;
+
+  -- جلب النقاط والرصيد الحالي
+  SELECT points, balance INTO v_current_points, v_current_balance
+  FROM public.profiles
+  WHERE id = v_user_id;
+
+  IF NOT FOUND THEN
+    RETURN jsonb_build_object('success', false, 'message', 'لم يتم العثور على ملف المستخدم الشخصي.');
+  END IF;
+
+  -- التحقق من المدخلات (الحد الأدنى 1000 نقطة)
+  IF points_to_convert < 1000 THEN
+    RETURN jsonb_build_object('success', false, 'message', 'عفواً، الحد الأدنى لتحويل النقاط هو 1000 نقطة.');
+  END IF;
+
+  IF v_current_points < points_to_convert THEN
+    RETURN jsonb_build_object('success', false, 'message', 'رصيد النقاط لديك غير كافٍ لإجراء هذه العملية.');
+  END IF;
+
+  -- حساب القيمة المادية: كل 100 نقطة = 1 جنيه مصري
+  v_cash_value := ROUND((points_to_convert::numeric / 100.0), 2);
+
+  -- تحديث الحقول بأمان
+  UPDATE public.profiles
+  SET 
+    points = points - points_to_convert,
+    balance = balance + v_cash_value
+  WHERE id = v_user_id;
+
+  RETURN jsonb_build_object(
+    'success', true, 
+    'message', 'تم تحويل النقاط إلى رصيد بنجاح!', 
+    'new_points', v_current_points - points_to_convert,
+    'new_balance', v_current_balance + v_cash_value
+  );
+EXCEPTION WHEN OTHERS THEN
+  RETURN jsonb_build_object('success', false, 'message', 'حدث خطأ أثناء معالجة العملية: ' || SQLERRM);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

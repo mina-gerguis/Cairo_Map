@@ -34,9 +34,9 @@ export default function AdminPointsPage() {
 
   // Modal State
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
-  const [editPoints, setEditPoints] = useState<number>(0);
-  const [editBalance, setEditBalance] = useState<number>(0);
-  const [editPromoBalance, setEditPromoBalance] = useState<number>(0);
+  const [actionType, setActionType] = useState<"deposit" | "withdraw">("deposit");
+  const [assetType, setAssetType] = useState<"points" | "balance" | "promo_balance">("points");
+  const [transactionAmount, setTransactionAmount] = useState<string>("");
 
   const [updating, setUpdating] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -95,9 +95,9 @@ export default function AdminPointsPage() {
 
   const handleOpenEditModal = (targetUser: UserProfile) => {
     setSelectedUser(targetUser);
-    setEditPoints(targetUser.points || 0);
-    setEditBalance(targetUser.balance || 0);
-    setEditPromoBalance(targetUser.promo_balance || 0);
+    setActionType("deposit");
+    setAssetType("points");
+    setTransactionAmount("");
     setStatusMessage(null);
   };
 
@@ -106,20 +106,68 @@ export default function AdminPointsPage() {
     setUpdating(true);
     setStatusMessage(null);
 
-    // Safety checks
-    if (editPoints < 0 || editBalance < 0 || editPromoBalance < 0) {
-      setStatusMessage({ type: "error", text: "لا يمكن أن تكون النقاط أو الأرصدة بقيمة سالبة." });
+    const amount = parseFloat(transactionAmount);
+    if (isNaN(amount) || amount <= 0) {
+      setStatusMessage({ type: "error", text: "يرجى إدخال مبلغ أو عدد نقاط صحيح أكبر من الصفر." });
       setUpdating(false);
       return;
+    }
+
+    let finalPoints = selectedUser.points || 0;
+    let finalBalance = selectedUser.balance || 0;
+    let finalPromoBalance = selectedUser.promo_balance || 0;
+
+    if (assetType === "points") {
+      const amountInt = Math.floor(amount);
+      if (amountInt !== amount) {
+        setStatusMessage({ type: "error", text: "النقاط يجب أن تكون عدداً صحيحاً." });
+        setUpdating(false);
+        return;
+      }
+
+      if (actionType === "deposit") {
+        finalPoints += amountInt;
+      } else {
+        if (finalPoints < amountInt) {
+          setStatusMessage({ type: "error", text: `رصيد نقاط المستخدم غير كافٍ للخصم (الرصيد الحالي: ${finalPoints} نقطة).` });
+          setUpdating(false);
+          return;
+        }
+        finalPoints -= amountInt;
+      }
+    } else if (assetType === "balance") {
+      const amountFixed = parseFloat(amount.toFixed(2));
+      if (actionType === "deposit") {
+        finalBalance += amountFixed;
+      } else {
+        if (finalBalance < amountFixed) {
+          setStatusMessage({ type: "error", text: `الرصيد الأساسي للمستخدم غير كافٍ للخصم (الرصيد الحالي: ${finalBalance} ج.م).` });
+          setUpdating(false);
+          return;
+        }
+        finalBalance -= amountFixed;
+      }
+    } else if (assetType === "promo_balance") {
+      const amountFixed = parseFloat(amount.toFixed(2));
+      if (actionType === "deposit") {
+        finalPromoBalance += amountFixed;
+      } else {
+        if (finalPromoBalance < amountFixed) {
+          setStatusMessage({ type: "error", text: `الرصيد الإضافي للمستخدم غير كافٍ للخصم (الرصيد الحالي: ${finalPromoBalance} ج.م).` });
+          setUpdating(false);
+          return;
+        }
+        finalPromoBalance -= amountFixed;
+      }
     }
 
     try {
       const { error } = await supabase
         .from("profiles")
         .update({
-          points: editPoints,
-          balance: parseFloat(editBalance.toFixed(2)),
-          promo_balance: parseFloat(editPromoBalance.toFixed(2)),
+          points: finalPoints,
+          balance: parseFloat(finalBalance.toFixed(2)),
+          promo_balance: parseFloat(finalPromoBalance.toFixed(2)),
         })
         .eq("id", selectedUser.id);
 
@@ -129,34 +177,30 @@ export default function AdminPointsPage() {
       setUsersList((prev) =>
         prev.map((u) =>
           u.id === selectedUser.id
-            ? { ...u, points: editPoints, balance: editBalance, promo_balance: editPromoBalance }
+            ? { ...u, points: finalPoints, balance: finalBalance, promo_balance: finalPromoBalance }
             : u
         )
       );
 
-      setStatusMessage({ type: "success", text: "تم تحديث النقاط والرصيد بنجاح!" });
+      setStatusMessage({ type: "success", text: "تم تنفيذ العملية وتحديث البيانات بنجاح!" });
+      setTransactionAmount("");
+
+      setSelectedUser({
+        ...selectedUser,
+        points: finalPoints,
+        balance: finalBalance,
+        promo_balance: finalPromoBalance
+      });
+
       setTimeout(() => {
         setSelectedUser(null);
-      }, 1200);
+      }, 1500);
     } catch (err: any) {
       console.error(err);
-      setStatusMessage({ type: "error", text: "فشل الحفظ: " + (err.message || "خطأ غير معروف") });
+      setStatusMessage({ type: "error", text: "فشل تنفيذ العملية: " + (err.message || "خطأ غير معروف") });
     } finally {
       setUpdating(false);
     }
-  };
-
-  // Quick Action Handlers
-  const adjustPoints = (amount: number) => {
-    setEditPoints((prev) => Math.max(0, prev + amount));
-  };
-
-  const adjustBalance = (amount: number) => {
-    setEditBalance((prev) => Math.max(0, prev + amount));
-  };
-
-  const adjustPromoBalance = (amount: number) => {
-    setEditPromoBalance((prev) => Math.max(0, prev + amount));
   };
 
   // Filter users by search query
@@ -477,85 +521,146 @@ export default function AdminPointsPage() {
               </div>
             </div>
 
-            {/* Editor Forms */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              {/* 1. Points (النقاط) */}
-              <div style={{ background: "rgba(251, 191, 36, 0.04)", border: "1px solid rgba(251, 191, 36, 0.15)", padding: "16px", borderRadius: "16px" }}>
-                <label className="help-label" style={{ color: "#fbbf24", fontWeight: "800", marginBottom: "8px", display: "block" }}>
-                  🪙 نقاط المستخدم:
+            {/* Current Values Indicators (3 columns) */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "24px" }}>
+              <div style={{ background: "rgba(251, 191, 36, 0.05)", border: "1px solid rgba(251, 191, 36, 0.15)", borderRadius: "14px", padding: "10px", textAlign: "center" }}>
+                <span style={{ fontSize: "0.72rem", color: "#fbbf24", display: "block", marginBottom: "4px", fontWeight: "bold" }}>🪙 النقاط</span>
+                <strong style={{ fontSize: "1.1rem", color: "#fbbf24", fontWeight: "800" }}>{selectedUser.points || 0}</strong>
+              </div>
+              <div style={{ background: "rgba(16, 185, 129, 0.05)", border: "1px solid rgba(16, 185, 129, 0.15)", borderRadius: "14px", padding: "10px", textAlign: "center" }}>
+                <span style={{ fontSize: "0.72rem", color: "#10b981", display: "block", marginBottom: "4px", fontWeight: "bold" }}>💵 الأساسي</span>
+                <strong style={{ fontSize: "1.1rem", color: "#10b981", fontWeight: "800" }}>{(selectedUser.balance || 0).toFixed(2)}</strong>
+              </div>
+              <div style={{ background: "rgba(59, 130, 246, 0.05)", border: "1px solid rgba(59, 130, 246, 0.15)", borderRadius: "14px", padding: "10px", textAlign: "center" }}>
+                <span style={{ fontSize: "0.72rem", color: "#3b82f6", display: "block", marginBottom: "4px", fontWeight: "bold" }}>🎁 الترويجي</span>
+                <strong style={{ fontSize: "1.1rem", color: "#3b82f6", fontWeight: "800" }}>{(selectedUser.promo_balance || 0).toFixed(2)}</strong>
+              </div>
+            </div>
+
+            {/* Transaction Editor Form */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {/* Row 1: Action Type */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                  نوع العملية:
                 </label>
-                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                  <input
-                    type="number"
-                    min="0"
-                    step="1"
-                    className="ios-input"
-                    value={editPoints}
-                    onChange={(e) => setEditPoints(Math.max(0, parseInt(e.target.value) || 0))}
-                    style={{ flex: 1, fontSize: "1.1rem", fontWeight: "bold", textAlign: "center", color: "#fbbf24" }}
-                  />
-                </div>
-                {/* Quick actions for points */}
-                <div style={{ display: "flex", gap: "6px", marginTop: "10px", flexWrap: "wrap" }}>
-                  <button type="button" onClick={() => adjustPoints(10)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+10</button>
-                  <button type="button" onClick={() => adjustPoints(50)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+50</button>
-                  <button type="button" onClick={() => adjustPoints(100)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+100</button>
-                  <button type="button" onClick={() => adjustPoints(-10)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px", borderColor: "rgba(239,68,68,0.2)", color: "#f87171" }}>-10</button>
-                  <button type="button" onClick={() => adjustPoints(-50)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px", borderColor: "rgba(239,68,68,0.2)", color: "#f87171" }}>-50</button>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setActionType("deposit")}
+                    className="ios-btn"
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      background: actionType === "deposit" ? "#10b981" : "transparent",
+                      borderColor: actionType === "deposit" ? "#10b981" : "var(--border-glass)",
+                      color: actionType === "deposit" ? "#fff" : "var(--text-secondary)",
+                      fontWeight: "bold",
+                      padding: "10px"
+                    }}
+                  >
+                    📥 إيداع / إضافة
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActionType("withdraw")}
+                    className="ios-btn"
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      background: actionType === "withdraw" ? "#ef4444" : "transparent",
+                      borderColor: actionType === "withdraw" ? "#ef4444" : "var(--border-glass)",
+                      color: actionType === "withdraw" ? "#fff" : "var(--text-secondary)",
+                      fontWeight: "bold",
+                      padding: "10px"
+                    }}
+                  >
+                    📤 سحب / خصم
+                  </button>
                 </div>
               </div>
 
-              {/* 2. Primary Balance (الرصيد الأساسي) */}
-              <div style={{ background: "rgba(16, 185, 129, 0.04)", border: "1px solid rgba(16, 185, 129, 0.15)", padding: "16px", borderRadius: "16px" }}>
-                <label className="help-label" style={{ color: "#10b981", fontWeight: "800", marginBottom: "8px", display: "block" }}>
-                  💵 الرصيد الأساسي (المحفظة):
+              {/* Row 2: Target Asset */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                  الرصيد المستهدف:
                 </label>
-                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    className="ios-input"
-                    value={editBalance}
-                    onChange={(e) => setEditBalance(Math.max(0, parseFloat(e.target.value) || 0))}
-                    style={{ flex: 1, fontSize: "1.1rem", fontWeight: "bold", textAlign: "center", color: "#10b981" }}
-                  />
-                  <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)", fontWeight: "bold" }}>ج.م</span>
-                </div>
-                {/* Quick actions for primary balance */}
-                <div style={{ display: "flex", gap: "6px", marginTop: "10px", flexWrap: "wrap" }}>
-                  <button type="button" onClick={() => adjustBalance(10)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+10</button>
-                  <button type="button" onClick={() => adjustBalance(50)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+50</button>
-                  <button type="button" onClick={() => adjustBalance(100)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+100</button>
-                  <button type="button" onClick={() => adjustBalance(-10)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px", borderColor: "rgba(239,68,68,0.2)", color: "#f87171" }}>-10</button>
-                  <button type="button" onClick={() => adjustBalance(-50)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px", borderColor: "rgba(239,68,68,0.2)", color: "#f87171" }}>-50</button>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setAssetType("points")}
+                    className="ios-btn"
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      background: assetType === "points" ? "rgba(251, 191, 36, 0.15)" : "transparent",
+                      borderColor: assetType === "points" ? "#fbbf24" : "var(--border-glass)",
+                      color: assetType === "points" ? "#fbbf24" : "var(--text-secondary)",
+                      fontWeight: "bold",
+                      padding: "10px",
+                      fontSize: "0.82rem"
+                    }}
+                  >
+                    🪙 النقاط
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAssetType("balance")}
+                    className="ios-btn"
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      background: assetType === "balance" ? "rgba(16, 185, 129, 0.15)" : "transparent",
+                      borderColor: assetType === "balance" ? "#10b981" : "var(--border-glass)",
+                      color: assetType === "balance" ? "#10b981" : "var(--text-secondary)",
+                      fontWeight: "bold",
+                      padding: "10px",
+                      fontSize: "0.82rem"
+                    }}
+                  >
+                    💵 أساسي
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAssetType("promo_balance")}
+                    className="ios-btn"
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      background: assetType === "promo_balance" ? "rgba(59, 130, 246, 0.15)" : "transparent",
+                      borderColor: assetType === "promo_balance" ? "#3b82f6" : "var(--border-glass)",
+                      color: assetType === "promo_balance" ? "#3b82f6" : "var(--text-secondary)",
+                      fontWeight: "bold",
+                      padding: "10px",
+                      fontSize: "0.82rem"
+                    }}
+                  >
+                    🎁 ترويجي
+                  </button>
                 </div>
               </div>
 
-              {/* 3. Secondary/Promo Balance (الرصيد الإضافي) */}
-              <div style={{ background: "rgba(59, 130, 246, 0.04)", border: "1px solid rgba(59, 130, 246, 0.15)", padding: "16px", borderRadius: "16px" }}>
-                <label className="help-label" style={{ color: "#3b82f6", fontWeight: "800", marginBottom: "8px", display: "block" }}>
-                  🎁 الرصيد الإضافي (الترويجي):
+              {/* Row 3: Transaction Amount */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                  القيمة / الكمية المراد {actionType === "deposit" ? "إضافتها" : "خصمها"}:
                 </label>
-                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <div style={{ position: "relative" }}>
                   <input
                     type="number"
-                    min="0"
-                    step="0.01"
+                    min="0.01"
+                    step={assetType === "points" ? "1" : "0.01"}
                     className="ios-input"
-                    value={editPromoBalance}
-                    onChange={(e) => setEditPromoBalance(Math.max(0, parseFloat(e.target.value) || 0))}
-                    style={{ flex: 1, fontSize: "1.1rem", fontWeight: "bold", textAlign: "center", color: "#3b82f6" }}
+                    placeholder={assetType === "points" ? "مثال: 500 نقطة" : "مثال: 150.50 ج.م"}
+                    value={transactionAmount}
+                    onChange={(e) => setTransactionAmount(e.target.value)}
+                    style={{ width: "100%", fontSize: "1.1rem", fontWeight: "bold", textAlign: "center" }}
                   />
-                  <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)", fontWeight: "bold" }}>ج.م</span>
-                </div>
-                {/* Quick actions for promo balance */}
-                <div style={{ display: "flex", gap: "6px", marginTop: "10px", flexWrap: "wrap" }}>
-                  <button type="button" onClick={() => adjustPromoBalance(10)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+10</button>
-                  <button type="button" onClick={() => adjustPromoBalance(50)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+50</button>
-                  <button type="button" onClick={() => adjustPromoBalance(100)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px" }}>+100</button>
-                  <button type="button" onClick={() => adjustPromoBalance(-10)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px", borderColor: "rgba(239,68,68,0.2)", color: "#f87171" }}>-10</button>
-                  <button type="button" onClick={() => adjustPromoBalance(-50)} className="ios-btn" style={{ padding: "4px 8px", fontSize: "0.75rem", flex: 1, minWidth: "40px", borderColor: "rgba(239,68,68,0.2)", color: "#f87171" }}>-50</button>
+                  {assetType !== "points" && (
+                    <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontWeight: "bold" }}>
+                      ج.م
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

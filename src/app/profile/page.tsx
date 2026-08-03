@@ -189,6 +189,13 @@ export default function ProfilePage() {
   const [mfaLoading, setMfaLoading] = useState(false);
   const [mfaError, setMfaError] = useState("");
 
+  // Points & Rewards Modal States
+  const [showPointsModal, setShowPointsModal] = useState(false);
+  const [showConvertSection, setShowConvertSection] = useState(false);
+  const [convertPointsAmount, setConvertPointsAmount] = useState<string>("");
+  const [convertingPoints, setConvertingPoints] = useState(false);
+  const [convertStatus, setConvertStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   // Suggestions & Bug Reports State
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
   const [suggestionType, setSuggestionType] = useState("اقتراح لتحسين الشكل");
@@ -655,6 +662,56 @@ export default function ProfilePage() {
         return <span style={{ background: "rgba(142, 142, 147, 0.15)", color: "#8e8e93", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem", fontWeight: "bold" }}>متراجع عنه</span>;
       default:
         return <span style={{ background: "rgba(255, 255, 255, 0.1)", color: "#fff", padding: "4px 10px", borderRadius: "12px", fontSize: "0.78rem" }}>{status}</span>;
+    }
+  };
+
+  const handleConvertPoints = async () => {
+    if (!supabase || !user || !profile) return;
+    setConvertingPoints(true);
+    setConvertStatus(null);
+
+    const pointsToConvert = parseInt(convertPointsAmount);
+    if (isNaN(pointsToConvert) || pointsToConvert < 1000) {
+      setConvertStatus({ type: "error", text: "عفواً، الحد الأدنى لتحويل النقاط هو 1000 نقطة." });
+      setConvertingPoints(false);
+      return;
+    }
+
+    if (pointsToConvert > (profile.points || 0)) {
+      setConvertStatus({ type: "error", text: "عفواً، رصيد النقاط لديك غير كافٍ لإجراء هذه العملية." });
+      setConvertingPoints(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.rpc("convert_user_points", {
+        points_to_convert: pointsToConvert,
+      });
+
+      if (error) throw error;
+
+      if (data && data.success) {
+        setConvertStatus({ type: "success", text: data.message });
+        setConvertPointsAmount("");
+        
+        // Sync state locally
+        setProfile((prev: any) => ({
+          ...prev,
+          points: data.new_points,
+          balance: data.new_balance,
+        }));
+        
+        if (refreshProfile) {
+          await refreshProfile();
+        }
+      } else {
+        setConvertStatus({ type: "error", text: data?.message || "فشلت عملية التحويل." });
+      }
+    } catch (err: any) {
+      console.error(err);
+      setConvertStatus({ type: "error", text: "حدث خطأ غير متوقع: " + (err.message || "فشلت العملية") });
+    } finally {
+      setConvertingPoints(false);
     }
   };
 
@@ -1204,9 +1261,32 @@ export default function ProfilePage() {
               <div className={styles.profileInfoText}>
                 <h3 className={styles.profileName}>{profile?.full_name}</h3>
                 <p className={styles.profileEmail}>{profile?.email}</p>
-                <div className={styles.pointsBadge}>
-                  <i className="bx bxs-coin"></i>
-                  <span>{profile?.points ?? 0} نقطة</span>
+                <div className={styles.userBadgesContainer}>
+                  {/* Points Badge */}
+                  <div
+                    className={`${styles.badgePill} ${styles.badgePoints}`}
+                    title="النقاط"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowPointsModal(true);
+                      setShowConvertSection(false);
+                      setConvertStatus(null);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <i className="bx bxs-coin"></i>
+                    <span>{profile?.points ?? 0} نقطة</span>
+                  </div>
+                  {/* Primary Wallet Balance Badge */}
+                  <div className={`${styles.badgePill} ${styles.badgeWallet}`} title="الرصيد الأساسي">
+                    <i className="bx bxs-wallet"></i>
+                    <span>{(profile?.balance ?? 0).toFixed(2)} ج.م</span>
+                  </div>
+                  {/* Promo Balance Badge */}
+                  <div className={`${styles.badgePill} ${styles.badgePromo}`} title="الرصيد الترويجي">
+                    <i className="bx bxs-gift"></i>
+                    <span>{(profile?.promo_balance ?? 0).toFixed(2)} ترويجي</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3175,6 +3255,273 @@ export default function ProfilePage() {
                     </span>
                   </>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Points & Rewards Wallet Modal */}
+      {showPointsModal && (
+        <div className={styles.modalBackdropSlow} onClick={() => setShowPointsModal(false)}>
+          <div
+            className="glass-panel"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: "480px",
+              width: "100%",
+              padding: "24px 28px",
+              borderRadius: "24px",
+              background: "var(--bg-glass-card, #ffffff)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
+              border: "1px solid var(--accent-primary)",
+              animation: "slide-up 0.3s ease",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              direction: "rtl",
+              textAlign: "right"
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <button
+                onClick={() => setShowPointsModal(false)}
+                className={styles.modalCloseIconBtn}
+                style={{
+                  background: "rgba(109, 107, 107, 0.12)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--text-primary)",
+                  cursor: "pointer",
+                  padding: "8px",
+                  borderRadius: "50%",
+                  fontWeight: "bold",
+                  height: "fit-content",
+                  width: "fit-content"
+                }}
+              >
+                <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
+              </button>
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                محفظة النقاط والمكافآت
+              </h3>
+              <div style={{ width: "38px" }}></div>
+            </div>
+
+            {/* Wallet Dashboard Section */}
+            <div style={{ textAlign: "center", padding: "12px 0 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  borderRadius: "50%",
+                  background: "rgba(251, 191, 36, 0.08)",
+                  border: "2px solid rgba(251, 191, 36, 0.3)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "3rem",
+                  color: "#fbbf24",
+                  marginBottom: "14px",
+                  boxShadow: "0 0 20px rgba(251, 191, 36, 0.15)",
+                }}
+              >
+                <i className="bx bxs-coin-stack"></i>
+              </div>
+              <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
+                رصيد النقاط الحالي
+              </span>
+              <h2 style={{ fontSize: "2.4rem", fontWeight: "900", color: "#fbbf24", margin: "4px 0" }}>
+                {profile?.points ?? 0}
+              </h2>
+              <span style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", background: "rgba(16, 185, 129, 0.08)", padding: "2px 10px", borderRadius: "10px" }}>
+                تساوي {((profile?.points ?? 0) / 100).toFixed(2)} ج.م
+              </span>
+            </div>
+
+            {/* Actions Buttons */}
+            <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowConvertSection(!showConvertSection);
+                  setConvertStatus(null);
+                }}
+                className="ios-btn ios-btn-primary"
+                style={{ flex: 1, padding: "12px", justifyContent: "center", fontSize: "0.9rem" }}
+              >
+                التحويل لرصيد
+              </button>
+              <button
+                type="button"
+                disabled
+                className="ios-btn"
+                style={{
+                  flex: 1,
+                  padding: "12px",
+                  justifyContent: "center",
+                  fontSize: "0.9rem",
+                  opacity: 0.5,
+                  cursor: "not-allowed",
+                  background: "rgba(255,255,255,0.02)"
+                }}
+              >
+                استخدام النقاط (قريباً)
+              </button>
+            </div>
+
+            {/* Convert Section */}
+            {showConvertSection && (
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  padding: "16px",
+                  marginBottom: "24px",
+                  animation: "slide-up 0.2s ease"
+                }}
+              >
+                <h4 style={{ margin: "0 0 10px", fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                  تحويل النقاط إلى رصيد محفظة كاش
+                </h4>
+                <p style={{ margin: "0 0 14px", fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
+                  الحد الأدنى للتحويل هو 1000 نقطة. كل 100 نقطة تساوي 1.00 جنيه مصري. سيتم إضافة الرصيد مباشرة إلى رصيدك الأساسي.
+                </p>
+
+                <div style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "14px" }}>
+                  <input
+                    type="number"
+                    min="1000"
+                    step="1"
+                    className="ios-input"
+                    placeholder="أدخل عدد النقاط (1000 كحد أدنى)"
+                    value={convertPointsAmount}
+                    onChange={(e) => setConvertPointsAmount(e.target.value)}
+                    style={{ flex: 1, fontSize: "1rem", textAlign: "center", fontWeight: "bold" }}
+                  />
+                </div>
+
+                {convertPointsAmount && !isNaN(parseInt(convertPointsAmount)) && parseInt(convertPointsAmount) >= 1000 && (
+                  <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", textAlign: "center", marginBottom: "14px" }}>
+                    ستحصل على: {(parseInt(convertPointsAmount) / 100).toFixed(2)} ج.م
+                  </div>
+                )}
+
+                {convertStatus && (
+                  <div
+                    style={{
+                      padding: "8px 12px",
+                      borderRadius: "10px",
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      marginBottom: "14px",
+                      background: convertStatus.type === "success" ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.12)",
+                      color: convertStatus.type === "success" ? "#10b981" : "#f87171",
+                      border: convertStatus.type === "success" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(239, 68, 68, 0.2)"
+                    }}
+                  >
+                    {convertStatus.text}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleConvertPoints}
+                  disabled={convertingPoints}
+                  className="ios-btn ios-btn-primary"
+                  style={{ width: "100%", padding: "10px", justifyContent: "center", fontSize: "0.85rem", background: "#10b981", borderColor: "#10b981" }}
+                >
+                  {convertingPoints ? "جاري التحويل..." : "تأكيد عملية التحويل"}
+                </button>
+              </div>
+            )}
+
+            {/* Explanation Sections */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
+              {/* How to Earn */}
+              <div>
+                <h4 style={{ margin: "0 0 10px", fontSize: "0.92rem", fontWeight: "800", color: "#fbbf24", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="bx bx-plus-circle" style={{ fontSize: "1.1rem" }}></i>
+                  كيف تكسب النقاط؟
+                </h4>
+                <ul style={{ margin: 0, paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-plus-circle" style={{ color: "#fbbf24", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <Link href="/propose-place" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold", textDecoration: "underline" }}>
+                        إضافة الأماكن:
+                      </Link>{" "}
+                      عند اقتراح إضافة مكان جديد للدليل ويتم قبوله من الإدارة.
+                    </div>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-error-alt" style={{ color: "#ff3b30", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold", textDecoration: "underline" }}>
+                        الإبلاغ عن المشاكل:
+                      </Link>{" "}
+                      عند الإبلاغ عن بيانات خاطئة أو مكان مغلق ويتم اتخاذ إجراء لتعديله.
+                    </div>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-edit-alt" style={{ color: "#10b981", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--accent-primary)", fontWeight: "bold", textDecoration: "underline" }}>
+                        تحسين وتدقيق البيانات:
+                      </Link>{" "}
+                      المساعدة في جعل القاهرة ماب أكثر دقة وتحديثاً.
+                    </div>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-gift" style={{ color: "#3b82f6", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <span style={{ fontWeight: "bold", color: "var(--text-primary)" }}>الهدايا والمكافآت:</span> الجوائز اليومية والمسابقات والفعاليات المنظمة.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              {/* How to Use */}
+              <div>
+                <h4 style={{ margin: "0 0 10px", fontSize: "0.92rem", fontWeight: "800", color: "#10b981", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <i className="bx bx-help-circle" style={{ fontSize: "1.1rem" }}></i>
+                  كيف تستخدم النقاط؟
+                </h4>
+                <ul style={{ margin: 0, paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-transfer-alt" style={{ color: "#10b981", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <strong>التحويل لرصيد كاش:</strong> تحويلها مباشرة إلى رصيد مالي في محفظتك الشخصية (كل 100 نقطة = 1 جنيه مصري).
+                    </div>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-purchase-tag-alt" style={{ color: "#3b82f6", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <strong>اشتراكات الموقع والمشتريات:</strong> دفع قيمة الاشتراكات المميزة أو شراء السلع من متجر الموقع (قريباً).
+                    </div>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-calendar-event" style={{ color: "#8b5cf6", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <strong>حجوزات وفواتير:</strong> دفع قيمة كشوفات الأطباء، حجوزات الأماكن، وفواتير الأكل والخدمات (قريباً).
+                    </div>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-cycling" style={{ color: "#fbbf24", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <strong>إكرامية وتوصيل:</strong> دفع قيمة فواتير الديلفري أو تقديم إكرامية (Tips) لسائقي التوصيل (قريباً).
+                    </div>
+                  </li>
+                  <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <i className="bx bx-heart" style={{ color: "#ef4444", fontSize: "1.05rem", marginTop: "3px" }}></i>
+                    <div>
+                      <strong>التبرع والمساعدة:</strong> إمكانية التبرع بالنقاط للمؤسسات الخيرية مباشرة (قريباً).
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
