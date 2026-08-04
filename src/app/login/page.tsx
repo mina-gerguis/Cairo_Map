@@ -4,7 +4,6 @@ import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { Field, Label, Description, FieldError } from "@/components/ui/Field";
 
 import { useAuth } from "@/context/AuthContext";
 
@@ -16,6 +15,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const [loginStep, setLoginStep] = useState<"credentials" | "mfa">("credentials");
   const [mfaCode, setMfaCode] = useState("");
@@ -187,13 +187,13 @@ export default function LoginPage() {
 
         {/* Card */}
         <div style={{
-          background: "rgba(12, 16, 40, 0.7)",
-          backdropFilter: "blur(40px) saturate(200%)",
-          WebkitBackdropFilter: "blur(40px) saturate(200%)",
-          border: "1px solid rgba(108, 99, 255, 0.2)",
-          borderRadius: "28px",
-          padding: "40px 36px",
-          boxShadow: "0 24px 80px rgba(0,0,0,0.4), 0 0 60px rgba(108,99,255,0.1)",
+          background: "var(--bg-glass-card)",
+          backdropFilter: "blur(30px) saturate(180%)",
+          WebkitBackdropFilter: "blur(30px) saturate(180%)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "24px",
+          padding: "36px 32px",
+          boxShadow: "var(--shadow-card)",
           animation: "slide-in-section 0.7s ease 0.1s both",
         }}>
           {error && (
@@ -218,97 +218,196 @@ export default function LoginPage() {
 
           {loginStep === "credentials" ? (
             <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              <Field>
-                <Label htmlFor="email" required>البريد الإلكتروني</Label>
-                <div style={{ position: "relative" }}>
-                  <div style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", pointerEvents: "none" }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              {/* Email Field */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "12px 16px",
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: focusedField === "email" ? "1.5px solid var(--accent-primary)" : "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  gap: "12px",
+                  transition: "all 0.25s ease",
+                  boxShadow: focusedField === "email" ? "0 0 0 3px rgba(108, 99, 255, 0.15)" : "none",
+                }}>
+                  {/* Icon Box */}
+                  <div style={{
+                    width: "42px",
+                    height: "42px",
+                    borderRadius: "12px",
+                    background: "rgba(108, 99, 255, 0.1)",
+                    color: "var(--accent-primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}>
+                    <i className="bx bx-envelope" style={{ fontSize: "1.35rem" }}></i>
                   </div>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    className="ios-input"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="example@email.com"
-                    style={{ textAlign: "left", direction: "ltr", paddingRight: "48px" }}
-                  />
+                  {/* Label + Input Wrapper */}
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label htmlFor="email" style={{
+                      fontSize: "0.75rem",
+                      color: focusedField === "email" ? "var(--accent-primary)" : "var(--text-secondary)",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      transition: "color 0.25s ease",
+                    }}>
+                      البريد الإلكتروني
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onFocus={() => setFocusedField("email")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="example@email.com"
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        outline: "none",
+                        color: "var(--text-primary)",
+                        fontSize: "0.95rem",
+                        width: "100%",
+                        padding: 0,
+                        textAlign: "left",
+                        direction: "ltr",
+                      }}
+                    />
+                  </div>
                 </div>
-              </Field>
+              </div>
 
-              <Field>
-                <Label htmlFor="password" required>كلمة المرور</Label>
-                <div style={{ position: "relative" }}>
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    className="ios-input"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    style={{ textAlign: "left", direction: "ltr", paddingLeft: "48px" }}
-                  />
+              {/* Password Field */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "12px 16px",
+                  background: "rgba(255, 255, 255, 0.02)",
+                  border: focusedField === "password" ? "1.5px solid var(--accent-success)" : "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  gap: "12px",
+                  transition: "all 0.25s ease",
+                  boxShadow: focusedField === "password" ? "0 0 0 3px rgba(52, 199, 89, 0.15)" : "none",
+                }}>
+                  {/* Icon Box */}
+                  <div style={{
+                    width: "42px",
+                    height: "42px",
+                    borderRadius: "12px",
+                    background: "rgba(52, 199, 89, 0.1)",
+                    color: "#34c759",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}>
+                    <i className="bx bx-lock-alt" style={{ fontSize: "1.35rem" }}></i>
+                  </div>
+                  {/* Label + Input Wrapper */}
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label htmlFor="password" style={{
+                      fontSize: "0.75rem",
+                      color: focusedField === "password" ? "#34c759" : "var(--text-secondary)",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      transition: "color 0.25s ease",
+                    }}>
+                      كلمة المرور
+                    </label>
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      onFocus={() => setFocusedField("password")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="••••••••"
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        outline: "none",
+                        color: "var(--text-primary)",
+                        fontSize: "0.95rem",
+                        width: "100%",
+                        padding: 0,
+                        textAlign: "left",
+                        direction: "ltr",
+                      }}
+                    />
+                  </div>
+                  {/* Toggle Password visibility */}
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontSize: "1.1rem", display: "flex", alignItems: "center" }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "var(--text-muted)",
+                      fontSize: "1.2rem",
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "4px",
+                    }}
                   >
-                    {showPassword ? "🙈" : "👁️"}
+                    {showPassword ? <i className="bx bx-hide"></i> : <i className="bx bx-show"></i>}
                   </button>
                 </div>
-              </Field>
+              </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <input 
-                type="checkbox" 
-                id="keepSignedIn" 
-                checked={keepSignedIn} 
-                onChange={(e) => setKeepSignedIn(e.target.checked)} 
-                style={{ accentColor: "var(--accent-primary)", width: "16px", height: "16px", cursor: "pointer" }}
-              />
-              <label htmlFor="keepSignedIn" style={{ color: "var(--text-secondary)", fontSize: "0.85rem", cursor: "pointer", userSelect: "none" }}>
-                البقاء مسجل الدخول
-              </label>
-            </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <input 
+                  type="checkbox" 
+                  id="keepSignedIn" 
+                  checked={keepSignedIn} 
+                  onChange={(e) => setKeepSignedIn(e.target.checked)} 
+                  style={{ accentColor: "var(--accent-primary)", width: "16px", height: "16px", cursor: "pointer" }}
+                />
+                <label htmlFor="keepSignedIn" style={{ color: "var(--text-secondary)", fontSize: "0.85rem", cursor: "pointer", userSelect: "none" }}>
+                  البقاء مسجل الدخول
+                </label>
+              </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                marginTop: "8px",
-                padding: "15px",
-                fontSize: "1rem",
-                fontWeight: "800",
-                borderRadius: "16px",
-                border: "none",
-                background: "linear-gradient(135deg, #6c63ff, #3b82f6, #00d4aa)",
-                backgroundSize: "200%",
-                animation: "gradient-move 4s ease infinite",
-                color: "#fff",
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.7 : 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "10px",
-                transition: "all 0.3s ease",
-                boxShadow: "0 8px 32px rgba(108,99,255,0.4)",
-                width: "100%",
-                fontFamily: "var(--font-body)",
-              }}
-            >
-              {loading ? (
-                <>
-                  <div className="spinner" style={{ width: "20px", height: "20px" }} />
-                  جاري الدخول...
-                </>
-              ) : (
-                <>
-                  <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i>
-                  تسجيل الدخول
-                </>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  marginTop: "8px",
+                  padding: "15px",
+                  fontSize: "1rem",
+                  fontWeight: "800",
+                  borderRadius: "16px",
+                  border: "none",
+                  background: "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))",
+                  color: "#fff",
+                  cursor: loading ? "not-allowed" : "pointer",
+                  opacity: loading ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 8px 32px rgba(108,99,255,0.25)",
+                  width: "100%",
+                  fontFamily: "var(--font-body)",
+                }}
+              >
+                {loading ? (
+                  <>
+                    <div className="spinner" style={{ width: "20px", height: "20px" }} />
+                    جاري الدخول...
+                  </>
+                ) : (
+                  <>
+                    <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i>
+                    تسجيل الدخول
+                  </>
                 )}
               </button>
             </form>
@@ -361,9 +460,7 @@ export default function LoginPage() {
                   fontWeight: "800",
                   borderRadius: "16px",
                   border: "none",
-                  background: "linear-gradient(135deg, #6c63ff, #3b82f6, #00d4aa)",
-                  backgroundSize: "200%",
-                  animation: "gradient-move 4s ease infinite",
+                  background: "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))",
                   color: "#fff",
                   cursor: (loading || mfaCode.length !== 6) ? "not-allowed" : "pointer",
                   opacity: (loading || mfaCode.length !== 6) ? 0.7 : 1,
@@ -372,7 +469,7 @@ export default function LoginPage() {
                   justifyContent: "center",
                   gap: "10px",
                   transition: "all 0.3s ease",
-                  boxShadow: "0 8px 32px rgba(108,99,255,0.4)",
+                  boxShadow: "0 8px 32px rgba(108,99,255,0.25)",
                   width: "100%",
                   fontFamily: "var(--font-body)",
                 }}
@@ -412,9 +509,9 @@ export default function LoginPage() {
 
           <div style={{ marginTop: "28px", textAlign: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-              <div style={{ flex: 1, height: "1px", background: "rgba(108,99,255,0.15)" }} />
+              <div style={{ flex: 1, height: "1px", background: "var(--border-glass)" }} />
               <span style={{ color: "var(--text-muted)", fontSize: "0.82rem", whiteSpace: "nowrap" }}>ليس لديك حساب؟</span>
-              <div style={{ flex: 1, height: "1px", background: "rgba(108,99,255,0.15)" }} />
+              <div style={{ flex: 1, height: "1px", background: "var(--border-glass)" }} />
             </div>
             <Link href="/signup" style={{
               display: "flex",
@@ -423,15 +520,15 @@ export default function LoginPage() {
               gap: "8px",
               padding: "13px",
               borderRadius: "16px",
-              border: "1px solid rgba(108,99,255,0.3)",
-              background: "rgba(108,99,255,0.08)",
+              border: "1px solid var(--border-glass)",
+              background: "rgba(108,99,255,0.06)",
               color: "var(--text-primary)",
               fontWeight: "700",
               fontSize: "0.95rem",
               textDecoration: "none",
               transition: "all 0.3s ease",
             }}>
-              <i className="bx bx-user-plus" style={{ fontSize: "1.2rem", color: "#6c63ff" }}></i>
+              <i className="bx bx-user-plus" style={{ fontSize: "1.2rem", color: "var(--accent-primary)" }}></i>
               إنشاء حساب جديد
             </Link>
           </div>

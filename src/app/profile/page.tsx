@@ -218,7 +218,7 @@ export default function ProfilePage() {
 
   // Wallet Deposit & Withdrawal States
   const [walletTab, setWalletTab] = useState<"main" | "deposit" | "withdraw" | "history">("main");
-  
+
   // Deposit state
   const [depositMethod, setDepositMethod] = useState<string>("instapay");
   const [depositAmount, setDepositAmount] = useState<string>("");
@@ -929,10 +929,10 @@ export default function ProfilePage() {
       setDepositTxId("");
       setDepositImageFile(null);
       setDepositImageUrl("");
-      
+
       // Refresh transactions
       fetchUserTransactions();
-      
+
       setTimeout(() => {
         setWalletTab("main");
       }, 2000);
@@ -1000,10 +1000,10 @@ export default function ProfilePage() {
       if (refreshProfile) {
         await refreshProfile();
       }
-      
+
       // Refresh transactions
       fetchUserTransactions();
-      
+
       setTimeout(() => {
         setWalletTab("main");
       }, 2000);
@@ -1782,41 +1782,43 @@ export default function ProfilePage() {
       </div>
 
       {/* User Points and Balances Badges Container */}
-      <div className={styles.userBadgesContainer} style={{ justifyContent: "center", marginBottom: "24px", marginTop: "8px" }}>
-        {/* Points Badge */}
-        <div
-          className={`${styles.badgePill} ${styles.badgePoints}`}
-          title="النقاط"
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowPointsModal(true);
-            setShowConvertSection(false);
-            setConvertStatus(null);
-          }}
-          style={{ cursor: "pointer" }}
-        >
-          <i className="bx bxs-coin"></i>
-          <span>{formatNumber(profile?.points ?? 0)} نقطة</span>
+      {user && (
+        <div className={styles.userBadgesContainer} style={{ justifyContent: "center", marginBottom: "24px", marginTop: "8px" }}>
+          {/* Points Badge */}
+          <div
+            className={`${styles.badgePill} ${styles.badgePoints}`}
+            title="النقاط"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowPointsModal(true);
+              setShowConvertSection(false);
+              setConvertStatus(null);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <i className="bx bxs-coin"></i>
+            <span>{formatNumber(profile?.points ?? 0)} نقطة</span>
+          </div>
+          {/* Primary Wallet Balance Badge */}
+          <div
+            className={`${styles.badgePill} ${styles.badgeWallet}`}
+            title="الرصيد الأساسي"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenWalletModal();
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <i className="bx bxs-wallet"></i>
+            <span>{formatNumber(profile?.balance ?? 0, 2)} ج.م</span>
+          </div>
+          {/* Promo Balance Badge */}
+          <div className={`${styles.badgePill} ${styles.badgePromo}`} title="الرصيد الترويجي">
+            <i className="bx bxs-gift"></i>
+            <span>{formatNumber(profile?.promo_balance ?? 0, 2)} ترويجي</span>
+          </div>
         </div>
-        {/* Primary Wallet Balance Badge */}
-        <div
-          className={`${styles.badgePill} ${styles.badgeWallet}`}
-          title="الرصيد الأساسي"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleOpenWalletModal();
-          }}
-          style={{ cursor: "pointer" }}
-        >
-          <i className="bx bxs-wallet"></i>
-          <span>{formatNumber(profile?.balance ?? 0, 2)} ج.م</span>
-        </div>
-        {/* Promo Balance Badge */}
-        <div className={`${styles.badgePill} ${styles.badgePromo}`} title="الرصيد الترويجي">
-          <i className="bx bxs-gift"></i>
-          <span>{formatNumber(profile?.promo_balance ?? 0, 2)} ترويجي</span>
-        </div>
-      </div>
+      )}
 
       {/* ─── Section 2 (Theme, Favorites, Notifications, Add Places) ─── */}
       <div className={styles.sectionCard}>
@@ -3998,7 +4000,7 @@ export default function ProfilePage() {
 
             {/* TAB 2: DEPOSIT FORM */}
             {walletTab === "deposit" && (
-              <form onSubmit={handleDepositSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
+              <form onSubmit={handleDepositSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "30px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>طريقة الإيداع</label>
                   <select
@@ -4016,34 +4018,37 @@ export default function ProfilePage() {
 
                 {/* Instructions */}
                 <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem" }}>
-                  <h5 style={{ margin: "0 0 8px", color: "#fbbf24", fontWeight: "bold" }}>تعليمات التحويل للأدمن:</h5>
+                  <h5 style={{ margin: "0 0 8px", color: "var(--accent-ios)", fontWeight: "bold" }}>تعليمات التحويل:</h5>
                   {depositMethod === "instapay" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
-                      قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي:<br />
-                      العنوان: <strong style={{ color: "var(--text-primary)" }}>cairomap@instapay</strong><br />
-                      الاسم: <strong style={{ color: "var(--text-primary)" }}>إدارة ماب القاهرة</strong>
+                      قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي: <br />
+                      العنوان: <strong style={{ color: "var(--text-primary)" }}>cairomap@instapay</strong>
+                      <br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina G***** A</strong>
+                      <br />
+                      الرابط السريع : <a href="https://instapay.app/cairomap" target="_blank" rel="noopener noreferrer"><strong style={{ color: "var(--accent-ios)" }}>https://instapay.app/cairomap</strong></a>
                     </p>
                   )}
                   {depositMethod === "telda" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                       قم بالتحويل عبر تطبيق تيلدا إلى التاج (Tag) التالي:<br />
-                      التاج: <strong style={{ color: "var(--text-primary)" }}>@cairomap</strong><br />
-                      الاسم: <strong style={{ color: "var(--text-primary)" }}>محيي الدين عادل</strong>
+                      التاج: <strong style={{ color: "var(--text-primary)" }}>@minagerguis</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina Gerguis</strong>
                     </p>
                   )}
                   {depositMethod === "vodafone_cash" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                       قم بتحويل رصيد كاش إلى رقم المحفظة التالي:<br />
-                      الرقم: <strong style={{ color: "var(--text-primary)" }}>01026526194</strong><br />
-                      الاسم: <strong style={{ color: "var(--text-primary)" }}>محيي الدين عادل</strong>
+                      الرقم: <strong style={{ color: "var(--text-primary)" }}>01020372317</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>مينا جرجس</strong>
                     </p>
                   )}
                   {depositMethod === "bank_transfer" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                       قم بالتحويل البنكي المباشر للحساب التالي:<br />
-                      البنك: <strong style={{ color: "var(--text-primary)" }}>بنك مصر (Banque Misr)</strong><br />
-                      رقم الحساب: <strong style={{ color: "var(--text-primary)" }}>1010034000123456</strong><br />
-                      الاسم: <strong style={{ color: "var(--text-primary)" }}>شركة القاهرة ماب لخدمات الدليل</strong>
+                      البنك: <strong style={{ color: "var(--text-primary)" }}>بنك قطر الوطني الأهلي (QNB)</strong><br />
+                      رقم الحساب: <strong style={{ color: "var(--text-primary)" }}>1020670700235</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>مينا جرجس</strong>
                     </p>
                   )}
                 </div>
@@ -4076,33 +4081,40 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>رقم العملية (Transaction ID / Reference)</label>
                   <input
                     type="text"
-                    required
                     placeholder="أدخل رقم التحويل المميز للعملية"
                     className="ios-input"
                     value={depositTxId}
                     onChange={(e) => setDepositTxId(e.target.value)}
                     style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
                   />
-                </div>
+                </div> */}
 
                 {/* Screenshot upload */}
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>إرفاق صورة إيصال التحويل (اختياري)</label>
-                  <label className={`ios-btn`} style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "1px dashed var(--border-glass)", padding: "12px", background: "rgba(255,255,255,0.01)" }}>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>إرفاق صورة إيصال التحويل</label>
+                  <label className={`ios-btn`} style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "2px dashed var(--bg-muted)", padding: "12px", background: "rgba(255,255,255,0.01)" }}>
                     <i className="bx bx-image-add" style={{ fontSize: "1.2rem", marginLeft: "6px" }}></i>
                     {depositImageFile ? "تغيير الإيصال المرفق" : "اختر صورة الإيصال"}
                     <input type="file" accept="image/*" onChange={handleDepositImageChange} className={styles.hiddenInput} />
                   </label>
-                  
+
                   {depositImageUrl && (
                     <div style={{ marginTop: "10px", textAlign: "center" }}>
                       <img src={depositImageUrl} alt="إيصال التحويل" style={{ maxWidth: "100%", maxHeight: "150px", borderRadius: "8px", border: "1px solid var(--border-glass)" }} />
                     </div>
                   )}
+                </div>
+
+                <div style={{ marginTop: "16px" }}>
+
+                  <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)", fontSize: "0.85rem" }}>
+                    لتسريع عملية الشحن، يرجى إرفاق صورة إيصال التحويل. <br />
+                    سيتم مراجعة طلب الشحن الخاص بك من قبل الإدارة وسيتم شحن رصيدك في أقرب وقت ممكن.
+                  </p>
                 </div>
 
                 {depositStatus && (
@@ -4134,7 +4146,10 @@ export default function ProfilePage() {
                       جاري إرسال طلب الشحن...
                     </>
                   ) : (
-                    "تأكيد وإرسال طلب الشحن"
+                    <>
+                      <i className="fa-solid fa-cloud-arrow-up" style={{ marginLeft: "6px" }}></i>
+                      تأكيد
+                    </>
                   )}
                 </button>
               </form>
@@ -4191,9 +4206,9 @@ export default function ProfilePage() {
                     required
                     placeholder={
                       withdrawMethod === "instapay" ? "مثال: name@instapay" :
-                      withdrawMethod === "telda" ? "مثال: @username" :
-                      withdrawMethod === "vodafone_cash" ? "مثال: 010xxxxxxxx" :
-                      "أدخل رقم الحساب أو الآيبان كامل"
+                        withdrawMethod === "telda" ? "مثال: @username" :
+                          withdrawMethod === "vodafone_cash" ? "مثال: 010xxxxxxxx" :
+                            "أدخل رقم الحساب أو الآيبان كامل"
                     }
                     className="ios-input"
                     value={withdrawRecipient}
@@ -4320,12 +4335,12 @@ export default function ProfilePage() {
                               marginTop: "4px",
                               background:
                                 tx.status === "approved" ? "rgba(16, 185, 129, 0.1)" :
-                                tx.status === "rejected" ? "rgba(239, 68, 68, 0.1)" :
-                                "rgba(251, 191, 36, 0.1)",
+                                  tx.status === "rejected" ? "rgba(239, 68, 68, 0.1)" :
+                                    "rgba(251, 191, 36, 0.1)",
                               color:
                                 tx.status === "approved" ? "#10b981" :
-                                tx.status === "rejected" ? "#f87171" :
-                                "#fbbf24"
+                                  tx.status === "rejected" ? "#f87171" :
+                                    "#fbbf24"
                             }}
                           >
                             {tx.status === "pending" && "معلقة"}

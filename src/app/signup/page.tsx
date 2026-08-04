@@ -34,12 +34,12 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
    ═══════════════════════════════════════════ */
 const GlassCard = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div style={{
-    background: "rgba(10, 12, 35, 0.72)",
-    backdropFilter: "blur(40px) saturate(200%)",
-    WebkitBackdropFilter: "blur(40px) saturate(200%)",
-    border: "1px solid rgba(108, 99, 255, 0.2)",
-    borderRadius: "28px",
-    boxShadow: "0 24px 80px rgba(0,0,0,0.45), 0 0 60px rgba(108,99,255,0.1)",
+    background: "var(--bg-glass-card)",
+    backdropFilter: "blur(30px) saturate(180%)",
+    WebkitBackdropFilter: "blur(30px) saturate(180%)",
+    border: "1px solid var(--border-glass)",
+    borderRadius: "24px",
+    boxShadow: "var(--shadow-card)",
     ...style,
   }}>
     {children}
@@ -47,7 +47,7 @@ const GlassCard = ({ children, style }: { children: React.ReactNode; style?: Rea
 );
 
 /* ═══════════════════════════════════════════
-   Onboarding Slider
+   Onboarding Slider (Full-screen version)
    ═══════════════════════════════════════════ */
 const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -55,21 +55,21 @@ const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
   const slides = [
     {
       icon: "🌟",
-      gradient: "linear-gradient(135deg, #6c63ff 0%, #3b82f6 100%)",
-      title: "إنشاء حسابك الآن مجاناً",
-      desc: "أنشئ حسابك وتمتع بتجربة مخصصة واكتشف أقرب الأماكن إليك.",
+      imageUrl: "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?q=80&w=1080",
+      title: "أنشئ حسابك الآن مجاناً",
+      desc: "استمتع بتجربة فريدة ومخصصة لحفظ أماكنك المفضلة وملاحظاتك الشخصية.",
     },
     {
       icon: "🗺️",
-      gradient: "linear-gradient(135deg, #00d4aa 0%, #3b82f6 100%)",
+      imageUrl: "https://images.unsplash.com/photo-1572252009286-268acec5a0af?q=80&w=1080",
       title: "اكتشف أفضل الأماكن حولك",
-      desc: "ابحث عن المطاعم، الكافيهات، والصيدليات القريبة منك بكل سهولة.",
+      desc: "ابحث عن المطاعم، الكافيهات، والوجهات التاريخية القريبة منك بكل سهولة.",
     },
     {
       icon: "❤️",
-      gradient: "linear-gradient(135deg, #ff3f8e 0%, #6c63ff 100%)",
-      title: "أضف الأماكن لمفضلتك",
-      desc: "احفظ الأماكن المميزة وشارك تجربتك مع الآخرين بكل بساطة.",
+      imageUrl: "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?q=80&w=1080",
+      title: "تذكيرات وملاحظات ذكية للأماكن",
+      desc: "أضف ملاحظات وتذكيرات هامة لأي مكان لتعود إليها في أي وقت.",
     },
   ];
 
@@ -77,83 +77,79 @@ const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
     if (currentSlide === slides.length - 1) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, [currentSlide, slides.length]);
 
   const slide = slides[currentSlide];
 
   return (
-    <AuthLayout>
-      {/* Brand header */}
-      <div style={{ textAlign: "center", marginBottom: "36px", animation: "slide-in-section 0.6s ease both" }}>
-        <div style={{ width: "70px", height: "70px", borderRadius: "20px", background: "linear-gradient(135deg, #6c63ff, #00d4aa)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.9rem", margin: "0 auto 16px", boxShadow: "0 12px 40px rgba(108,99,255,0.4)", animation: "float-y 4s ease-in-out infinite" }}>
-          📋
+    <div style={{
+      width: "100%", height: "100vh", position: "relative", overflow: "hidden",
+      display: "flex", flexDirection: "column", justifyContent: "flex-end", background: "#0a0c23",
+    }}>
+      {/* Background Images with Crossfade */}
+      {slides.map((s, idx) => (
+        <div key={idx} style={{
+          position: "absolute", inset: 0,
+          backgroundImage: `url(${s.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center",
+          opacity: currentSlide === idx ? 1 : 0,
+          transform: currentSlide === idx ? "scale(1)" : "scale(1.05)",
+          transition: "opacity 1s ease-in-out, transform 1.2s ease-in-out", zIndex: 0,
+        }} />
+      ))}
+
+      {/* Dark overlay */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(10, 12, 35, 1) 0%, rgba(10, 12, 35, 0.85) 45%, rgba(10, 12, 35, 0.4) 70%, transparent 100%)", zIndex: 1 }} />
+
+      {/* Top bar */}
+      <div style={{ position: "absolute", top: "40px", left: "20px", right: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 10, animation: "slide-in-section 0.5s ease both" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <img src="/logo/darkMode_logo.png" alt="القاهرة ماب" style={{ height: "32px", width: "auto", objectFit: "contain" }} />
         </div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: "900", background: "linear-gradient(135deg, #6c63ff, #00d4aa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-          مرحباً بك في دفتري
-        </h1>
+        {currentSlide < slides.length - 1 && (
+          <button onClick={() => setCurrentSlide(slides.length - 1)} style={{ background: "rgba(255, 255, 255, 0.08)", backdropFilter: "blur(12px)", border: "1px solid rgba(255, 255, 255, 0.15)", color: "#fff", padding: "8px 16px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "600", cursor: "pointer", transition: "all 0.3s ease" }}>
+            تخطي
+          </button>
+        )}
       </div>
 
-      <GlassCard style={{ overflow: "hidden", animation: "slide-in-section 0.7s ease 0.1s both" }}>
-        {/* Slide visual area */}
-        <div style={{ position: "relative", height: "220px", display: "flex", alignItems: "center", justifyContent: "center", background: slide.gradient, transition: "background 0.8s ease" }}>
-          {/* Decorative circles */}
-          <div style={{ position: "absolute", top: "-30px", right: "-30px", width: "160px", height: "160px", borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
-          <div style={{ position: "absolute", bottom: "-40px", left: "-20px", width: "200px", height: "200px", borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
-          <span style={{ fontSize: "5.5rem", filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.3))", animation: "float-y 3s ease-in-out infinite", position: "relative", zIndex: 1 }}>
+      {/* Bottom Content */}
+      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: "480px", margin: "0 auto", padding: "0 24px 60px", boxSizing: "border-box" }}>
+        <div style={{ background: "rgba(10, 12, 35, 0.55)", backdropFilter: "blur(24px) saturate(180%)", WebkitBackdropFilter: "blur(24px) saturate(180%)", border: "1px solid var(--border-glass)", borderRadius: "24px", padding: "28px 24px", boxShadow: "0 20px 45px rgba(0,0,0,0.5)", textAlign: "center", animation: "slide-in-section 0.6s ease both" }}>
+          <div style={{ width: "56px", height: "56px", borderRadius: "16px", background: "rgba(108, 99, 255, 0.15)", color: "var(--accent-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.8rem", margin: "0 auto 16px", boxShadow: "0 8px 24px rgba(108,99,255,0.2)", animation: "float-y 4s ease-in-out infinite" }}>
             {slide.icon}
-          </span>
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "80px", background: "linear-gradient(to top, rgba(10,12,35,0.85), transparent)" }} />
-        </div>
-
-        {/* Content */}
-        <div style={{ padding: "32px 28px", textAlign: "center" }}>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.55rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "12px", animation: "slide-in-section 0.4s ease" }}>
-            {slide.title}
-          </h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", marginBottom: "28px" }}>
-            {slide.desc}
-          </p>
-
+          </div>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.45rem", fontWeight: "900", color: "#fff", marginBottom: "10px" }}>{slide.title}</h2>
+          <p style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "0.92rem", lineHeight: "1.7", marginBottom: "24px", minHeight: "48px" }}>{slide.desc}</p>
+          
           {/* Dot indicators */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "28px" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "24px" }}>
             {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentSlide(i)}
-                style={{
-                  width: currentSlide === i ? "28px" : "8px",
-                  height: "8px",
-                  borderRadius: "4px",
-                  background: currentSlide === i ? "linear-gradient(135deg, #6c63ff, #00d4aa)" : "rgba(255,255,255,0.2)",
-                  border: "none",
-                  transition: "all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-                  cursor: "pointer",
-                  padding: 0,
-                  boxShadow: currentSlide === i ? "0 0 12px rgba(108,99,255,0.5)" : "none",
-                }}
-              />
+              <button key={i} onClick={() => setCurrentSlide(i)} style={{ width: currentSlide === i ? "24px" : "8px", height: "8px", borderRadius: "4px", background: currentSlide === i ? "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))" : "rgba(255,255,255,0.25)", border: "none", transition: "all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275)", cursor: "pointer", padding: 0, boxShadow: currentSlide === i ? "0 0 8px var(--accent-primary)" : "none" }} />
             ))}
           </div>
 
-          {/* Action buttons — visible on last slide */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", opacity: currentSlide === slides.length - 1 ? 1 : 0, transform: currentSlide === slides.length - 1 ? "translateY(0)" : "translateY(16px)", transition: "all 0.5s ease", visibility: currentSlide === slides.length - 1 ? "visible" : "hidden" }}>
-            <button
-              onClick={onStartSignup}
-              style={{ padding: "15px", fontSize: "1rem", fontWeight: "800", borderRadius: "16px", border: "none", background: "linear-gradient(135deg, #6c63ff, #3b82f6, #00d4aa)", backgroundSize: "200%", animation: "gradient-move 4s ease infinite", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", boxShadow: "0 8px 32px rgba(108,99,255,0.4)", width: "100%", fontFamily: "var(--font-body)" }}
-            >
-              <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }}></i>
-              مستخدم جديد، أريد إنشاء حساب ✨
-            </button>
-            <Link href="/login" style={{ padding: "14px", fontSize: "0.95rem", fontWeight: "700", borderRadius: "16px", border: "1px solid rgba(108,99,255,0.3)", background: "rgba(108,99,255,0.08)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", textDecoration: "none", transition: "all 0.3s ease" }}>
-              <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i>
-              لدي حساب بالفعل
-            </Link>
+          {/* Navigation */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
+            {currentSlide < slides.length - 1 ? (
+              <button onClick={() => setCurrentSlide((prev) => prev + 1)} style={{ padding: "14px", fontSize: "1rem", fontWeight: "800", borderRadius: "16px", border: "none", background: "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "transform 0.2s ease, opacity 0.2s ease", boxShadow: "0 6px 20px rgba(108,99,255,0.25)" }}>
+                التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i>
+              </button>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
+                <button onClick={onStartSignup} style={{ padding: "14px", fontSize: "1rem", fontWeight: "800", borderRadius: "16px", border: "none", background: "linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "all 0.3s ease", boxShadow: "0 6px 20px rgba(108,99,255,0.25)", fontFamily: "var(--font-body)" }}>
+                  <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }}></i> إنشاء حساب جديد
+                </button>
+                <Link href="/login" style={{ padding: "13px", fontSize: "0.95rem", fontWeight: "700", borderRadius: "16px", border: "1px solid var(--border-glass)", background: "rgba(255, 255, 255, 0.05)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", textDecoration: "none", transition: "all 0.3s ease" }}>
+                  <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> لدي حساب بالفعل
+                </Link>
+              </div>
+            )}
           </div>
         </div>
-      </GlassCard>
-    </AuthLayout>
+      </div>
+    </div>
   );
 };
 
@@ -179,6 +175,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showDobConfirmModal, setShowDobConfirmModal] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const transliterate = (text: string) => {
     const map: Record<string, string> = {
@@ -341,6 +338,30 @@ export default function SignupPage() {
   ];
   const current = stepInfo[step]!;
 
+  /* ── Reusable deviceItem field wrapper ── */
+  const fieldBox = (name: string, accentColor: string, accentRgb: string, hasError?: boolean) => ({
+    display: "flex" as const, alignItems: "center" as const, padding: "12px 16px",
+    background: "rgba(255,255,255,0.02)",
+    border: focusedField === name ? `1.5px solid ${accentColor}` : hasError ? "1.5px solid rgba(255,63,142,0.6)" : "1px solid var(--border-glass)",
+    borderRadius: "16px", gap: "12px", transition: "all 0.25s ease",
+    boxShadow: focusedField === name ? `0 0 0 3px rgba(${accentRgb},0.15)` : "none",
+  });
+
+  const iconBox = (bg: string, color: string) => ({
+    width: "42px", height: "42px", borderRadius: "12px", background: bg, color,
+    display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const, flexShrink: 0 as const,
+  });
+
+  const labelStyle = (name: string, accentColor: string) => ({
+    fontSize: "0.75rem", color: focusedField === name ? accentColor : "var(--text-secondary)",
+    fontWeight: "700" as const, transition: "color 0.25s ease",
+  });
+
+  const inputBase: React.CSSProperties = {
+    border: "none", background: "transparent", outline: "none",
+    color: "var(--text-primary)", fontSize: "0.95rem", width: "100%", padding: 0,
+  };
+
   return (
     <AuthLayout>
       {/* Step Header */}
@@ -359,9 +380,7 @@ export default function SignupPage() {
           {[1, 2, 3].map((s) => (
             <React.Fragment key={s}>
               <div style={{
-                height: "6px",
-                flex: 1,
-                borderRadius: "3px",
+                height: "6px", flex: 1, borderRadius: "3px",
                 background: step >= s ? current.gradient : "rgba(255,255,255,0.1)",
                 transition: "all 0.5s ease",
                 boxShadow: step >= s ? "0 0 10px rgba(108,99,255,0.4)" : "none",
@@ -389,105 +408,109 @@ export default function SignupPage() {
 
             {/* ── STEP 1: Personal Info ── */}
             {step === 1 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "18px", animation: "slide-in-section 0.4s ease" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "slide-in-section 0.4s ease" }}>
                 {/* Full Name */}
-                <div>
-                  <label className="help-label">الاسم بالكامل</label>
-                  <input type="text" required className="ios-input" value={formData.fullName} onChange={(e) => updateData("fullName", e.target.value)} placeholder="أحمد محمد" style={{ borderColor: fieldErrors.fullName ? "rgba(255,63,142,0.6)" : "" }} />
-                  {fieldErrors.fullName && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "6px", display: "flex", alignItems: "center", gap: "4px" }}><span>⚠</span> {fieldErrors.fullName}</div>}
+                <div style={fieldBox("fullName", "var(--accent-primary)", "108,99,255", !!fieldErrors.fullName)}>
+                  <div style={iconBox("rgba(108,99,255,0.1)", "var(--accent-primary)")}><i className="bx bx-user" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={labelStyle("fullName", "var(--accent-primary)")}>الاسم بالكامل</label>
+                    <input type="text" required value={formData.fullName} onChange={(e) => updateData("fullName", e.target.value)} onFocus={() => setFocusedField("fullName")} onBlur={() => setFocusedField(null)} placeholder="أحمد محمد" style={inputBase} />
+                  </div>
                 </div>
+                {fieldErrors.fullName && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px", display: "flex", alignItems: "center", gap: "4px" }}><span>⚠</span> {fieldErrors.fullName}</div>}
 
                 {/* Username */}
-                <div>
-                  <label className="help-label">اسم المستخدم (إنجليزي فقط)</label>
-                  <input type="text" required minLength={3} className="ios-input" value={formData.username} onChange={(e) => updateData("username", e.target.value)} placeholder="ahmed_mohamed" style={{ textAlign: "left", direction: "ltr", borderColor: fieldErrors.username ? "rgba(255,63,142,0.6)" : "" }} />
-                  {fieldErrors.username && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "6px" }}>⚠ {fieldErrors.username}</div>}
-                  {suggestions.length > 0 && !fieldErrors.username && (
-                    <div style={{ display: "flex", gap: "8px", marginTop: "10px", flexWrap: "wrap" }}>
-                      <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", alignSelf: "center" }}>اقتراحات:</span>
-                      {suggestions.map((s, i) => (
-                        <button key={i} type="button" onClick={() => updateData("username", s)} style={{ fontSize: "0.8rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", borderRadius: "20px", padding: "4px 12px", color: "#a78bfa", cursor: "pointer", transition: "all 0.2s ease", fontFamily: "monospace" }}>
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="help-label">رقم الهاتف (بدون صفر البداية)</label>
-                  <div style={{ position: "relative" }}>
-                    <div style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", zIndex: 1, direction: "ltr" }}>
-                      <span>🇪🇬</span>
-                      <span style={{ fontSize: "0.88rem", fontWeight: "700" }}>+20</span>
-                      <span style={{ height: "18px", width: "1px", background: "rgba(108,99,255,0.3)", margin: "0 2px" }} />
-                    </div>
-                    <input type="tel" required className="ios-input" value={formData.phone} onChange={(e) => updateData("phone", e.target.value)} placeholder="1xxxxxxxxx" style={{ textAlign: "left", direction: "ltr", paddingLeft: "90px", borderColor: fieldErrors.phone ? "rgba(255,63,142,0.6)" : "" }} />
+                <div style={fieldBox("username", "#00d4aa", "0,212,170", !!fieldErrors.username)}>
+                  <div style={iconBox("rgba(0,212,170,0.1)", "#00d4aa")}><i className="bx bx-at" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={labelStyle("username", "#00d4aa")}>اسم المستخدم (إنجليزي فقط)</label>
+                    <input type="text" required minLength={3} value={formData.username} onChange={(e) => updateData("username", e.target.value)} onFocus={() => setFocusedField("username")} onBlur={() => setFocusedField(null)} placeholder="ahmed_mohamed" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
                   </div>
-                  {fieldErrors.phone && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "6px" }}>⚠ {fieldErrors.phone}</div>}
                 </div>
-
-                {/* Email */}
-                <div>
-                  <label className="help-label">البريد الإلكتروني</label>
-                  <div style={{ position: "relative" }}>
-                    <div style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", color: "var(--accent-primary)", pointerEvents: "none" }}>
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    </div>
-                    <input type="email" required className="ios-input" value={formData.email} onChange={(e) => updateData("email", e.target.value)} placeholder="example@email.com" style={{ textAlign: "left", direction: "ltr", paddingRight: "44px", borderColor: fieldErrors.email ? "rgba(255,63,142,0.6)" : "" }} />
-                  </div>
-                  {fieldErrors.email && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "6px" }}>⚠ {fieldErrors.email}</div>}
-                </div>
-
-                {/* Date of Birth */}
-                <div className="ios-input" style={{ display: "flex", flexDirection: "column", padding: "8px 16px", background: "var(--bg-glass-card)" }}>
-                  <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "4px" }}>تاريخ الميلاد</label>
-                  <input 
-                    type="date" 
-                    required 
-                    max={maxDobDateStr}
-                    lang="en-US" 
-                    value={formData.dob} 
-                    onChange={(e) => updateData("dob", e.target.value)} 
-                    style={{ 
-                      background: "transparent", border: "none", outline: "none", 
-                      color: "var(--text-primary)", fontSize: "0.95rem", width: "100%", padding: 0,
-                      direction: "ltr", fontFamily: "system-ui, -apple-system, sans-serif"
-                    }} 
-                    className="date-field-input"
-                  />
-                </div>
-
-                {/* Gender */}
-                <div>
-                  <label className="help-label">الجنس</label>
-                  <select required className="ios-input help-select" value={formData.gender} onChange={(e) => updateData("gender", e.target.value)}>
-                    <option value="ذكر">ذكر</option>
-                    <option value="أنثى">أنثى</option>
-                  </select>
-                </div>
-
-                {/* Governorate */}
-                <div>
-                  <label className="help-label">المحافظة</label>
-                  <select required className="ios-input help-select" value={formData.governorate} onChange={(e) => { updateData("governorate", e.target.value); updateData("city", ""); }}>
-                    <option value="" disabled>اختر المحافظة...</option>
-                    {governoratesList.map((g) => <option key={g} value={g}>{g}</option>)}
-                  </select>
-                </div>
-
-                {formData.governorate && (
-                  <div>
-                    <label className="help-label">المدينة</label>
-                    <select required className="ios-input help-select" value={formData.city} onChange={(e) => updateData("city", e.target.value)}>
-                      <option value="" disabled>اختر المدينة...</option>
-                      {egyptLocations[formData.governorate].map((c) => <option key={c} value={c}>{c}</option>)}
-                    </select>
+                {fieldErrors.username && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px" }}>⚠ {fieldErrors.username}</div>}
+                {suggestions.length > 0 && !fieldErrors.username && (
+                  <div style={{ display: "flex", gap: "8px", marginTop: "-6px", flexWrap: "wrap" }}>
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", alignSelf: "center" }}>اقتراحات:</span>
+                    {suggestions.map((s, i) => (
+                      <button key={i} type="button" onClick={() => updateData("username", s)} style={{ fontSize: "0.8rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", borderRadius: "20px", padding: "4px 12px", color: "#a78bfa", cursor: "pointer", transition: "all 0.2s ease", fontFamily: "monospace" }}>
+                        {s}
+                      </button>
+                    ))}
                   </div>
                 )}
 
-                <button type="submit" disabled={loading} style={{ marginTop: "8px", padding: "15px", fontSize: "1rem", fontWeight: "800", borderRadius: "16px", border: "none", background: "linear-gradient(135deg, #6c63ff, #3b82f6)", color: "#fff", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", boxShadow: "0 8px 28px rgba(108,99,255,0.4)", width: "100%", fontFamily: "var(--font-body)" }}>
+                {/* Phone */}
+                <div style={fieldBox("phone", "#3b82f6", "59,130,246", !!fieldErrors.phone)}>
+                  <div style={iconBox("rgba(59,130,246,0.1)", "#3b82f6")}><i className="bx bx-phone" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={labelStyle("phone", "#3b82f6")}>رقم الهاتف</label>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", direction: "ltr" }}>
+                      <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "700" }}>🇪🇬 +20</span>
+                      <span style={{ height: "16px", width: "1px", background: "var(--border-glass)" }} />
+                      <input type="tel" required value={formData.phone} onChange={(e) => updateData("phone", e.target.value)} onFocus={() => setFocusedField("phone")} onBlur={() => setFocusedField(null)} placeholder="1xxxxxxxxx" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
+                    </div>
+                  </div>
+                </div>
+                {fieldErrors.phone && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px" }}>⚠ {fieldErrors.phone}</div>}
+
+                {/* Email */}
+                <div style={fieldBox("email", "var(--accent-primary)", "108,99,255", !!fieldErrors.email)}>
+                  <div style={iconBox("rgba(108,99,255,0.1)", "var(--accent-primary)")}><i className="bx bx-envelope" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={labelStyle("email", "var(--accent-primary)")}>البريد الإلكتروني</label>
+                    <input type="email" required value={formData.email} onChange={(e) => updateData("email", e.target.value)} onFocus={() => setFocusedField("email")} onBlur={() => setFocusedField(null)} placeholder="example@email.com" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
+                  </div>
+                </div>
+                {fieldErrors.email && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px" }}>⚠ {fieldErrors.email}</div>}
+
+                {/* Date of Birth */}
+                <div style={fieldBox("dob", "#ff9500", "255,149,0")}>
+                  <div style={iconBox("rgba(255,149,0,0.1)", "#ff9500")}><i className="bx bx-calendar" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={labelStyle("dob", "#ff9500")}>تاريخ الميلاد</label>
+                    <input type="date" required max={maxDobDateStr} lang="en-US" value={formData.dob} onChange={(e) => updateData("dob", e.target.value)} onFocus={() => setFocusedField("dob")} onBlur={() => setFocusedField(null)} className="date-field-input" style={{ ...inputBase, direction: "ltr", fontFamily: "system-ui, -apple-system, sans-serif" }} />
+                  </div>
+                </div>
+
+                {/* Gender */}
+                <div style={{ ...fieldBox("gender", "#ff3f8e", "255,63,142"), border: "1px solid var(--border-glass)", boxShadow: "none" }}>
+                  <div style={iconBox("rgba(255,63,142,0.1)", "#ff3f8e")}><i className="bx bx-male-female" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "700" }}>الجنس</label>
+                    <select required value={formData.gender} onChange={(e) => updateData("gender", e.target.value)} style={{ ...inputBase, appearance: "auto" as const }}>
+                      <option value="ذكر">ذكر</option>
+                      <option value="أنثى">أنثى</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Governorate */}
+                <div style={{ ...fieldBox("gov", "#34c759", "52,199,89"), border: "1px solid var(--border-glass)", boxShadow: "none" }}>
+                  <div style={iconBox("rgba(52,199,89,0.1)", "#34c759")}><i className="bx bx-map" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "700" }}>المحافظة</label>
+                    <select required value={formData.governorate} onChange={(e) => { updateData("governorate", e.target.value); updateData("city", ""); }} style={{ ...inputBase, appearance: "auto" as const }}>
+                      <option value="" disabled>اختر المحافظة...</option>
+                      {governoratesList.map((g) => <option key={g} value={g}>{g}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {/* City */}
+                {formData.governorate && (
+                  <div style={{ ...fieldBox("city", "#34c759", "52,199,89"), border: "1px solid var(--border-glass)", boxShadow: "none" }}>
+                    <div style={iconBox("rgba(52,199,89,0.1)", "#34c759")}><i className="bx bx-buildings" style={{ fontSize: "1.35rem" }}></i></div>
+                    <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                      <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "700" }}>المدينة</label>
+                      <select required value={formData.city} onChange={(e) => updateData("city", e.target.value)} style={{ ...inputBase, appearance: "auto" as const }}>
+                        <option value="" disabled>اختر المدينة...</option>
+                        {egyptLocations[formData.governorate].map((c) => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                <button type="submit" disabled={loading} style={{ marginTop: "8px", padding: "15px", fontSize: "1rem", fontWeight: "800", borderRadius: "16px", border: "none", background: "linear-gradient(135deg, var(--accent-primary), #3b82f6)", color: "#fff", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", boxShadow: "0 8px 28px rgba(108,99,255,0.25)", width: "100%", fontFamily: "var(--font-body)" }}>
                   {loading ? <><div className="spinner" /> جاري التحقق...</> : <>التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i></>}
                 </button>
               </div>
@@ -536,27 +559,29 @@ export default function SignupPage() {
 
             {/* ── STEP 3: Password ── */}
             {step === 3 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "18px", animation: "slide-in-section 0.4s ease" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "slide-in-section 0.4s ease" }}>
                 {/* Password */}
-                <div>
-                  <label className="help-label">كلمة المرور</label>
-                  <div style={{ position: "relative" }}>
-                    <input type={showPassword ? "text" : "password"} required className="ios-input" value={formData.password} onChange={(e) => updateData("password", e.target.value)} placeholder="••••••••" style={{ textAlign: "left", direction: "ltr", paddingLeft: "48px" }} />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem" }}>
-                      {showPassword ? "🙈" : "👁️"}
-                    </button>
+                <div style={fieldBox("password", "#ff3f8e", "255,63,142")}>
+                  <div style={iconBox("rgba(255,63,142,0.1)", "#ff3f8e")}><i className="bx bx-lock-alt" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={labelStyle("password", "#ff3f8e")}>كلمة المرور</label>
+                    <input type={showPassword ? "text" : "password"} required value={formData.password} onChange={(e) => updateData("password", e.target.value)} onFocus={() => setFocusedField("password")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
                   </div>
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ background: "rgba(255,63,142,0.1)", border: "none", borderRadius: "10px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, fontSize: "1rem" }}>
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
                 </div>
 
-                {/* Confirm */}
-                <div>
-                  <label className="help-label">تأكيد كلمة المرور</label>
-                  <div style={{ position: "relative" }}>
-                    <input type={showConfirmPassword ? "text" : "password"} required className="ios-input" value={formData.confirmPassword} onChange={(e) => updateData("confirmPassword", e.target.value)} placeholder="••••••••" style={{ textAlign: "left", direction: "ltr", paddingLeft: "48px" }} />
-                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem" }}>
-                      {showConfirmPassword ? "🙈" : "👁️"}
-                    </button>
+                {/* Confirm Password */}
+                <div style={fieldBox("confirmPassword", "var(--accent-primary)", "108,99,255")}>
+                  <div style={iconBox("rgba(108,99,255,0.1)", "var(--accent-primary)")}><i className="bx bx-check-shield" style={{ fontSize: "1.35rem" }}></i></div>
+                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
+                    <label style={labelStyle("confirmPassword", "var(--accent-primary)")}>تأكيد كلمة المرور</label>
+                    <input type={showConfirmPassword ? "text" : "password"} required value={formData.confirmPassword} onChange={(e) => updateData("confirmPassword", e.target.value)} onFocus={() => setFocusedField("confirmPassword")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
                   </div>
+                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ background: "rgba(108,99,255,0.1)", border: "none", borderRadius: "10px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, fontSize: "1rem" }}>
+                    {showConfirmPassword ? "🙈" : "👁️"}
+                  </button>
                 </div>
 
                 {/* Rules */}
@@ -597,39 +622,16 @@ export default function SignupPage() {
       {/* Modal confirmation for Date of Birth */}
       {showDobConfirmModal && (
         <div style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(0, 0, 0, 0.85)",
-          zIndex: 9999,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "20px",
-          animation: "fade-in 0.2s ease"
+          position: "fixed", inset: 0, background: "rgba(0, 0, 0, 0.85)",
+          zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "20px", animation: "fade-in 0.2s ease"
         }}>
           <div className="glass-panel" style={{
-            maxWidth: "420px",
-            width: "100%",
-            padding: "28px",
-            borderRadius: "24px",
-            border: "1px solid rgba(255, 149, 0, 0.3)",
-            background: "rgba(12, 16, 40, 0.95)",
-            boxShadow: "0 24px 60px rgba(0,0,0,0.6)",
-            textAlign: "center",
-            animation: "slide-up 0.3s ease"
+            maxWidth: "420px", width: "100%", padding: "28px", borderRadius: "24px",
+            border: "1px solid rgba(255, 149, 0, 0.3)", background: "rgba(12, 16, 40, 0.95)",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.6)", textAlign: "center", animation: "slide-up 0.3s ease"
           }}>
-            <div style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "50%",
-              background: "rgba(255, 149, 0, 0.15)",
-              color: "#ff9500",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "1.8rem",
-              margin: "0 auto 16px"
-            }}>
+            <div style={{ width: "56px", height: "56px", borderRadius: "50%", background: "rgba(255, 149, 0, 0.15)", color: "#ff9500", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.8rem", margin: "0 auto 16px" }}>
               ⚠️
             </div>
             
@@ -652,44 +654,15 @@ export default function SignupPage() {
               </span>
             </p>
 
-            <div style={{
-              background: "rgba(255, 63, 142, 0.1)",
-              border: "1px solid rgba(255, 63, 142, 0.25)",
-              borderRadius: "14px",
-              padding: "12px 14px",
-              color: "#ff6eb4",
-              fontSize: "0.83rem",
-              lineHeight: 1.5,
-              marginBottom: "24px",
-              textAlign: "right"
-            }}>
+            <div style={{ background: "rgba(255, 63, 142, 0.1)", border: "1px solid rgba(255, 63, 142, 0.25)", borderRadius: "14px", padding: "12px 14px", color: "#ff6eb4", fontSize: "0.83rem", lineHeight: 1.5, marginBottom: "24px", textAlign: "right" }}>
               🛑 <strong>تنبيه هام:</strong> لن تتمكن من تغيير تاريخ الميلاد لاحقاً بعد إتمام التسجيل.
             </div>
 
             <div style={{ display: "flex", gap: "12px" }}>
-              <button 
-                type="button"
-                className="ios-btn"
-                onClick={() => setShowDobConfirmModal(false)}
-                style={{ flex: 1, padding: "12px" }}
-              >
+              <button type="button" className="ios-btn" onClick={() => setShowDobConfirmModal(false)} style={{ flex: 1, padding: "12px" }}>
                 تعديل التاريخ
               </button>
-              <button 
-                type="button"
-                className="ios-btn"
-                onClick={() => {
-                  setShowDobConfirmModal(false);
-                  setStep(2);
-                }}
-                style={{ 
-                  flex: 1, 
-                  padding: "12px", 
-                  background: "linear-gradient(135deg, #6c63ff, #00d4aa)", 
-                  color: "#fff", 
-                  fontWeight: "700" 
-                }}
-              >
+              <button type="button" className="ios-btn" onClick={() => { setShowDobConfirmModal(false); setStep(2); }} style={{ flex: 1, padding: "12px", background: "linear-gradient(135deg, #6c63ff, #00d4aa)", color: "#fff", fontWeight: "700" }}>
                 متابعة واستكمال
               </button>
             </div>
