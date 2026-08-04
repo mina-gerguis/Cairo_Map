@@ -11,6 +11,7 @@ import { Place, PlaceCategory, initialPlaces, FEATURES_LIST, CATEGORIES_STRUCTUR
 import { Pagination } from "@/components/ui/Pagination";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
+import AdBanner from "@/components/AdBanner";
 // Icon
 import { MdDomain } from "react-icons/md";
 import { AiOutlineBranches } from "react-icons/ai";
@@ -624,6 +625,9 @@ function HomeContent() {
 
       {/* ══════════════ MAIN CONTENT ══════════════ */}
       <div className="app-container" id="places-section">
+
+        {/* ── Ad Space Banner ── */}
+        <AdBanner />
 
         {/* ── New Features Banners ── */}
         <div style={{ display: "flex", gap: "16px", marginBottom: "32px", flexWrap: "wrap" }}>

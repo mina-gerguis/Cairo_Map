@@ -216,6 +216,32 @@ export default function ProfilePage() {
   const [convertingBalance, setConvertingBalance] = useState(false);
   const [convertBalanceStatus, setConvertBalanceStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
+  // Wallet Deposit & Withdrawal States
+  const [walletTab, setWalletTab] = useState<"main" | "deposit" | "withdraw" | "history">("main");
+  
+  // Deposit state
+  const [depositMethod, setDepositMethod] = useState<string>("instapay");
+  const [depositAmount, setDepositAmount] = useState<string>("");
+  const [depositSender, setDepositSender] = useState<string>("");
+  const [depositTxId, setDepositTxId] = useState<string>("");
+  const [depositImageFile, setDepositImageFile] = useState<File | null>(null);
+  const [depositImageUrl, setDepositImageUrl] = useState<string>("");
+  const [isSubmittingDeposit, setIsSubmittingDeposit] = useState(false);
+  const [depositStatus, setDepositStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Withdraw state
+  const [withdrawMethod, setWithdrawMethod] = useState<string>("instapay");
+  const [withdrawAmount, setWithdrawAmount] = useState<string>("");
+  const [withdrawRecipient, setWithdrawRecipient] = useState<string>("");
+  const [withdrawName, setWithdrawName] = useState<string>("");
+  const [isSubmittingWithdraw, setIsSubmittingWithdraw] = useState(false);
+  const [withdrawStatus, setWithdrawStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Transactions History State
+  const [userTransactions, setUserTransactions] = useState<any[]>([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(false);
+
+
   // Suggestions & Bug Reports State
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
   const [suggestionType, setSuggestionType] = useState("اقتراح لتحسين الشكل");
@@ -784,6 +810,212 @@ export default function ProfilePage() {
       setConvertingBalance(false);
     }
   };
+
+  const fetchUserTransactions = async () => {
+    if (!supabase || !user) return;
+    setLoadingTransactions(true);
+    try {
+      const { data, error } = await supabase
+        .from("balance_transactions")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setUserTransactions(data || []);
+    } catch (err: any) {
+      console.error("Error fetching transactions:", err);
+    } finally {
+      setLoadingTransactions(false);
+    }
+  };
+
+  const handleOpenWalletModal = () => {
+    setShowWalletModal(true);
+    setWalletTab("main");
+    setShowConvertBalanceSection(false);
+    setConvertBalanceStatus(null);
+    setDepositAmount("");
+    setDepositSender("");
+    setDepositTxId("");
+    setDepositImageFile(null);
+    setDepositImageUrl("");
+    setDepositStatus(null);
+    setWithdrawAmount("");
+    setWithdrawRecipient("");
+    setWithdrawName("");
+    setWithdrawStatus(null);
+    fetchUserTransactions();
+  };
+
+  const handleTransactionReceiptUpload = async (file: File): Promise<string> => {
+    if (!supabase) return "";
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user?.id}_${Date.now()}.${fileExt}`;
+    const filePath = `receipts/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      throw new Error("فشل رفع صورة الإيصال: " + uploadError.message);
+    }
+
+    const { data: pub } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    return pub.publicUrl;
+  };
+
+  const handleDepositImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setDepositImageFile(file);
+      setDepositImageUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleDepositSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase || !user) return;
+    setIsSubmittingDeposit(true);
+    setDepositStatus(null);
+
+    const amount = parseFloat(depositAmount);
+    if (isNaN(amount) || amount <= 0) {
+      setDepositStatus({ type: "error", text: "يرجى إدخال مبلغ صحيح أكبر من الصفر." });
+      setIsSubmittingDeposit(false);
+      return;
+    }
+
+    if (!depositSender.trim()) {
+      setDepositStatus({ type: "error", text: "يرجى إدخال الرقم أو الحساب المحول منه." });
+      setIsSubmittingDeposit(false);
+      return;
+    }
+
+    if (!depositTxId.trim()) {
+      setDepositStatus({ type: "error", text: "يرجى إدخال رقم العملية (Transaction ID)." });
+      setIsSubmittingDeposit(false);
+      return;
+    }
+
+    try {
+      let uploadedUrl = "";
+      if (depositImageFile) {
+        uploadedUrl = await handleTransactionReceiptUpload(depositImageFile);
+      }
+
+      const { error } = await supabase
+        .from("balance_transactions")
+        .insert({
+          user_id: user.id,
+          type: "deposit",
+          amount: amount,
+          method: depositMethod,
+          provider_number: depositSender,
+          transaction_id: depositTxId,
+          image_url: uploadedUrl || null,
+          status: "pending"
+        });
+
+      if (error) throw error;
+
+      setDepositStatus({ type: "success", text: "تم إرسال طلب الإيداع بنجاح، وهو قيد المراجعة الآن." });
+      setDepositAmount("");
+      setDepositSender("");
+      setDepositTxId("");
+      setDepositImageFile(null);
+      setDepositImageUrl("");
+      
+      // Refresh transactions
+      fetchUserTransactions();
+      
+      setTimeout(() => {
+        setWalletTab("main");
+      }, 2000);
+
+    } catch (err: any) {
+      console.error(err);
+      setDepositStatus({ type: "error", text: err.message || "حدث خطأ أثناء إرسال الطلب." });
+    } finally {
+      setIsSubmittingDeposit(false);
+    }
+  };
+
+  const handleWithdrawSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase || !user) return;
+    setIsSubmittingWithdraw(true);
+    setWithdrawStatus(null);
+
+    const amount = parseFloat(withdrawAmount);
+    if (isNaN(amount) || amount < 100) {
+      setWithdrawStatus({ type: "error", text: "عفواً، الحد الأدنى للسحب هو 100 ج.م." });
+      setIsSubmittingWithdraw(false);
+      return;
+    }
+
+    if (amount > (profile?.balance ?? 0)) {
+      setWithdrawStatus({ type: "error", text: "رصيد المحفظة لديك غير كافٍ لإجراء هذه العملية." });
+      setIsSubmittingWithdraw(false);
+      return;
+    }
+
+    if (!withdrawRecipient.trim()) {
+      setWithdrawStatus({ type: "error", text: "يرجى إدخال الحساب أو الرقم المراد التحويل إليه." });
+      setIsSubmittingWithdraw(false);
+      return;
+    }
+
+    if (withdrawMethod !== "vodafone_cash" && !withdrawName.trim()) {
+      setWithdrawStatus({ type: "error", text: "يرجى إدخال اسم المستلم بالكامل." });
+      setIsSubmittingWithdraw(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("balance_transactions")
+        .insert({
+          user_id: user.id,
+          type: "withdrawal",
+          amount: amount,
+          method: withdrawMethod,
+          provider_number: withdrawRecipient,
+          recipient_name: withdrawName || null,
+          status: "pending"
+        });
+
+      if (error) throw error;
+
+      setWithdrawStatus({ type: "success", text: "تم تقديم طلب السحب بنجاح وخصم المبلغ مؤقتاً." });
+      setWithdrawAmount("");
+      setWithdrawRecipient("");
+      setWithdrawName("");
+
+      // Refresh profile
+      if (refreshProfile) {
+        await refreshProfile();
+      }
+      
+      // Refresh transactions
+      fetchUserTransactions();
+      
+      setTimeout(() => {
+        setWalletTab("main");
+      }, 2000);
+
+    } catch (err: any) {
+      console.error(err);
+      setWithdrawStatus({ type: "error", text: err.message || "حدث خطأ أثناء إرسال الطلب." });
+    } finally {
+      setIsSubmittingWithdraw(false);
+    }
+  };
+
 
   const handleSave = async () => {
     if (!supabase || !user || !profile) return;
@@ -1572,9 +1804,7 @@ export default function ProfilePage() {
           title="الرصيد الأساسي"
           onClick={(e) => {
             e.stopPropagation();
-            setShowWalletModal(true);
-            setShowConvertBalanceSection(false);
-            setConvertBalanceStatus(null);
+            handleOpenWalletModal();
           }}
           style={{ cursor: "pointer" }}
         >
@@ -3620,7 +3850,6 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Wallet / Balance Modal */}
       {showWalletModal && (
         <div className={styles.modalBackdropSlow} onClick={() => setShowWalletModal(false)}>
           <div
@@ -3630,7 +3859,7 @@ export default function ProfilePage() {
               maxWidth: "480px",
               width: "100%",
               padding: "24px 28px",
-              borderRadius: "24px",
+              borderRadius: "16px",
               background: "var(--bg-primary)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
@@ -3645,104 +3874,490 @@ export default function ProfilePage() {
           >
             {/* Modal Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <button
-                onClick={() => setShowWalletModal(false)}
-                className="closeBut"
-              >
-                <i className="bx bx-x"></i>
-              </button>
+              {walletTab !== "main" ? (
+                <button
+                  onClick={() => setWalletTab("main")}
+                  className="closeBut"
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                >
+                  <i className="bx bx-arrow-back" style={{ fontSize: "1.2rem", transform: "scaleX(-1)" }}></i>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowWalletModal(false)}
+                  className="closeBut"
+                >
+                  <i className="bx bx-x"></i>
+                </button>
+              )}
               <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
-                المحفظة
+                {walletTab === "main" && "المحفظة المالية"}
+                {walletTab === "deposit" && "طلب إيداع رصيد"}
+                {walletTab === "withdraw" && "طلب سحب رصيد"}
+                {walletTab === "history" && "سجل المعاملات"}
               </h3>
               <div style={{ width: "38px" }}></div>
             </div>
 
-            {/* Wallet Dashboard Section */}
-            <div style={{ textAlign: "center", padding: "12px 0 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "160px",
-                  height: "100px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "14px"
-                }}
-              >
-                <Image src="/image/profile/egyptianPounds3d.png"
-                  alt="رصيد المحفظة"
-                  draggable={false}
-                  width={100}
-                  height={100}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none" }} />
-              </div>
-              <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
-                رصيد المحفظة الحالي
-              </span>
-              <h2 style={{ fontSize: "2.4rem", fontWeight: "900", color: "#10b981", margin: "4px 0" }}>
-                {formatNumber(profile?.balance ?? 0, 2)} ج.م
-              </h2>
-              <span style={{ fontSize: "0.85rem", color: "#3224fbff", fontWeight: "bold", background: "rgba(88, 88, 88, 0.08)", padding: "2px 10px", borderRadius: "10px" }}>
-                تساوي {formatNumber((profile?.balance ?? 0) * 100)} نقطة
-              </span>
-            </div>
+            {/* TAB 1: MAIN WALLET DASHBOARD */}
+            {walletTab === "main" && (
+              <>
+                <div style={{ textAlign: "center", padding: "12px 0 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <div
+                    style={{
+                      width: "160px",
+                      height: "100px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "14px"
+                    }}
+                  >
+                    <Image src="/image/profile/egyptianPounds3d.png"
+                      alt="رصيد المحفظة"
+                      draggable={false}
+                      width={100}
+                      height={100}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none" }} />
+                  </div>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+                    رصيد المحفظة الحالي
+                  </span>
+                  <h2 style={{ fontSize: "2.4rem", fontWeight: "900", color: "#10b981", margin: "4px 0" }}>
+                    {formatNumber(profile?.balance ?? 0, 2)} ج.م
+                  </h2>
+                  <span style={{ fontSize: "0.85rem", color: "#3224fbff", fontWeight: "bold", background: "rgba(88, 88, 88, 0.08)", padding: "2px 10px", borderRadius: "10px" }}>
+                    تساوي {formatNumber((profile?.balance ?? 0) * 100)} نقطة
+                  </span>
+                </div>
 
-            {/* Actions Buttons */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginBottom: "24px" }}>
-              <div style={{ display: "flex", gap: "12px", width: "100%" }}>
+                {/* Actions Buttons */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
+                  <div style={{ display: "flex", gap: "12px", width: "100%" }}>
+                    <button
+                      type="button"
+                      onClick={() => setWalletTab("deposit")}
+                      className="ios-btn"
+                      style={{
+                        flex: 1,
+                        padding: "12px",
+                        justifyContent: "center",
+                        fontSize: "0.9rem",
+                        background: "rgba(16, 185, 129, 0.1)",
+                        color: "#10b981",
+                        border: "1px solid rgba(16, 185, 129, 0.2)",
+                        fontWeight: "bold"
+                      }}
+                    >
+                      <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
+                      إيداع
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setWalletTab("withdraw")}
+                      className="ios-btn"
+                      style={{
+                        flex: 1,
+                        padding: "12px",
+                        justifyContent: "center",
+                        fontSize: "0.9rem",
+                        background: "rgba(239, 68, 68, 0.1)",
+                        color: "#f87171",
+                        border: "1px solid rgba(239, 68, 68, 0.2)",
+                        fontWeight: "bold"
+                      }}
+                    >
+                      <PiHandWithdrawBold style={{ fontSize: "1.1rem" }} />
+                      سحب
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setWalletTab("history")}
+                    className="ios-btn"
+                    style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem", border: "1px solid var(--border-glass)" }}
+                  >
+                    <i className="bx bx-history" style={{ fontSize: "1.1rem" }}></i>
+                    سجل المعاملات المالية
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowConvertBalanceSection(!showConvertBalanceSection);
+                      setConvertBalanceStatus(null);
+                    }}
+                    className="ios-btn ios-btn-primary"
+                    style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem" }}
+                  >
+                    <SiConvertio />
+                    التحويل إلى عملة ماب القاهرة
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* TAB 2: DEPOSIT FORM */}
+            {walletTab === "deposit" && (
+              <form onSubmit={handleDepositSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>طريقة الإيداع</label>
+                  <select
+                    className="ios-input"
+                    value={depositMethod}
+                    onChange={(e) => setDepositMethod(e.target.value)}
+                    style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                  >
+                    <option value="instapay">انستا باي (InstaPay)</option>
+                    <option value="telda">بطاقة تيلدا (Telda)</option>
+                    <option value="vodafone_cash">محفظة إلكترونية (فودافون كاش أو غيرها)</option>
+                    <option value="bank_transfer">تحويل بنكي مباشر</option>
+                  </select>
+                </div>
+
+                {/* Instructions */}
+                <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem" }}>
+                  <h5 style={{ margin: "0 0 8px", color: "#fbbf24", fontWeight: "bold" }}>تعليمات التحويل للأدمن:</h5>
+                  {depositMethod === "instapay" && (
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
+                      قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي:<br />
+                      العنوان: <strong style={{ color: "var(--text-primary)" }}>cairomap@instapay</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>إدارة ماب القاهرة</strong>
+                    </p>
+                  )}
+                  {depositMethod === "telda" && (
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
+                      قم بالتحويل عبر تطبيق تيلدا إلى التاج (Tag) التالي:<br />
+                      التاج: <strong style={{ color: "var(--text-primary)" }}>@cairomap</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>محيي الدين عادل</strong>
+                    </p>
+                  )}
+                  {depositMethod === "vodafone_cash" && (
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
+                      قم بتحويل رصيد كاش إلى رقم المحفظة التالي:<br />
+                      الرقم: <strong style={{ color: "var(--text-primary)" }}>01026526194</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>محيي الدين عادل</strong>
+                    </p>
+                  )}
+                  {depositMethod === "bank_transfer" && (
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
+                      قم بالتحويل البنكي المباشر للحساب التالي:<br />
+                      البنك: <strong style={{ color: "var(--text-primary)" }}>بنك مصر (Banque Misr)</strong><br />
+                      رقم الحساب: <strong style={{ color: "var(--text-primary)" }}>1010034000123456</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>شركة القاهرة ماب لخدمات الدليل</strong>
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>المبلغ المراد شحنه (بالجنيه المصري)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    step="0.01"
+                    required
+                    placeholder="مثال: 100"
+                    className="ios-input"
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(e.target.value)}
+                    style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>الرقم/الحساب الذي قمت بالتحويل منه</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: رقم محفظتك أو اسم حسابك البنكي"
+                    className="ios-input"
+                    value={depositSender}
+                    onChange={(e) => setDepositSender(e.target.value)}
+                    style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>رقم العملية (Transaction ID / Reference)</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="أدخل رقم التحويل المميز للعملية"
+                    className="ios-input"
+                    value={depositTxId}
+                    onChange={(e) => setDepositTxId(e.target.value)}
+                    style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                  />
+                </div>
+
+                {/* Screenshot upload */}
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>إرفاق صورة إيصال التحويل (اختياري)</label>
+                  <label className={`ios-btn`} style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "1px dashed var(--border-glass)", padding: "12px", background: "rgba(255,255,255,0.01)" }}>
+                    <i className="bx bx-image-add" style={{ fontSize: "1.2rem", marginLeft: "6px" }}></i>
+                    {depositImageFile ? "تغيير الإيصال المرفق" : "اختر صورة الإيصال"}
+                    <input type="file" accept="image/*" onChange={handleDepositImageChange} className={styles.hiddenInput} />
+                  </label>
+                  
+                  {depositImageUrl && (
+                    <div style={{ marginTop: "10px", textAlign: "center" }}>
+                      <img src={depositImageUrl} alt="إيصال التحويل" style={{ maxWidth: "100%", maxHeight: "150px", borderRadius: "8px", border: "1px solid var(--border-glass)" }} />
+                    </div>
+                  )}
+                </div>
+
+                {depositStatus && (
+                  <div
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: "10px",
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      background: depositStatus.type === "success" ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.12)",
+                      color: depositStatus.type === "success" ? "#10b981" : "#f87171",
+                      border: depositStatus.type === "success" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(239, 68, 68, 0.2)"
+                    }}
+                  >
+                    {depositStatus.text}
+                  </div>
+                )}
+
                 <button
-                  type="button"
-                  disabled
-                  className="ios-btn"
-                  style={{
-                    flex: 1,
-                    padding: "12px",
-                    justifyContent: "center",
-                    fontSize: "0.9rem",
-                    opacity: 0.5,
-                    cursor: "not-allowed",
-                    background: "var(--bg-muted)",
-                    border: "1px solid var(--border-glass)",
-                  }}
+                  type="submit"
+                  disabled={isSubmittingDeposit}
+                  className="ios-btn ios-btn-primary"
+                  style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem" }}
                 >
-                  <PiHandDepositBold />
-                  إيداع
+                  {isSubmittingDeposit ? (
+                    <>
+                      <i className="bx bx-loader-alt bx-spin" style={{ marginLeft: "8px" }}></i>
+                      جاري إرسال طلب الشحن...
+                    </>
+                  ) : (
+                    "تأكيد وإرسال طلب الشحن"
+                  )}
                 </button>
+              </form>
+            )}
+
+            {/* TAB 3: WITHDRAW FORM */}
+            {walletTab === "withdraw" && (
+              <form onSubmit={handleWithdrawSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
+                <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem", textAlign: "center" }}>
+                  <span style={{ color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>الرصيد المتاح للسحب</span>
+                  <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "#10b981" }}>{formatNumber(profile?.balance ?? 0, 2)} ج.م</h4>
+                  <p style={{ margin: "6px 0 0 0", color: "var(--text-muted)", fontSize: "0.72rem" }}>* الحد الأدنى لأي عملية سحب هو 100 ج.م</p>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>طريقة استلام الرصيد</label>
+                  <select
+                    className="ios-input"
+                    value={withdrawMethod}
+                    onChange={(e) => setWithdrawMethod(e.target.value)}
+                    style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                  >
+                    <option value="instapay">انستا باي (InstaPay)</option>
+                    <option value="telda">بطاقة تيلدا (Telda)</option>
+                    <option value="vodafone_cash">محفظة إلكترونية (فودافون كاش أو غيرها)</option>
+                    <option value="bank_transfer">تحويل بنكي مباشر</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>المبلغ المراد سحبه (بالجنيه المصري)</label>
+                  <input
+                    type="number"
+                    min="100"
+                    step="0.01"
+                    required
+                    placeholder="مثال: 100 كحد أدنى"
+                    className="ios-input"
+                    value={withdrawAmount}
+                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                    style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>
+                    {withdrawMethod === "instapay" && "عنوان انستا باي المستلم (IPA)"}
+                    {withdrawMethod === "telda" && "التاج الخاص بك على تيلدا (Telda Tag)"}
+                    {withdrawMethod === "vodafone_cash" && "رقم محفظة المحمول المراد التحويل إليها"}
+                    {withdrawMethod === "bank_transfer" && "رقم الحساب البنكي (IBAN)"}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={
+                      withdrawMethod === "instapay" ? "مثال: name@instapay" :
+                      withdrawMethod === "telda" ? "مثال: @username" :
+                      withdrawMethod === "vodafone_cash" ? "مثال: 010xxxxxxxx" :
+                      "أدخل رقم الحساب أو الآيبان كامل"
+                    }
+                    className="ios-input"
+                    value={withdrawRecipient}
+                    onChange={(e) => setWithdrawRecipient(e.target.value)}
+                    style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                  />
+                </div>
+
+                {withdrawMethod !== "vodafone_cash" && (
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>اسم المستلم بالكامل (ثلاثي على الأقل)</label>
+                    <input
+                      type="text"
+                      required={withdrawMethod !== "vodafone_cash"}
+                      placeholder="أدخل اسم صاحب الحساب"
+                      className="ios-input"
+                      value={withdrawName}
+                      onChange={(e) => setWithdrawName(e.target.value)}
+                      style={{ width: "100%", padding: "10px", fontSize: "0.85rem" }}
+                    />
+                  </div>
+                )}
+
+                {withdrawStatus && (
+                  <div
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: "10px",
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      background: withdrawStatus.type === "success" ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.12)",
+                      color: withdrawStatus.type === "success" ? "#10b981" : "#f87171",
+                      border: withdrawStatus.type === "success" ? "1px solid rgba(16, 185, 129, 0.2)" : "1px solid rgba(239, 68, 68, 0.2)"
+                    }}
+                  >
+                    {withdrawStatus.text}
+                  </div>
+                )}
+
                 <button
-                  type="button"
-                  disabled
-                  className="ios-btn"
-                  style={{
-                    flex: 1,
-                    padding: "12px",
-                    justifyContent: "center",
-                    fontSize: "0.9rem",
-                    opacity: 0.5,
-                    cursor: "not-allowed",
-                    background: "var(--bg-muted)",
-                    border: "1px solid var(--border-glass)",
-                  }}
+                  type="submit"
+                  disabled={isSubmittingWithdraw}
+                  className="ios-btn ios-btn-primary"
+                  style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem", background: "var(--accent-primary)", borderColor: "var(--accent-primary)" }}
                 >
-                  <PiHandWithdrawBold />
-                  سحب
+                  {isSubmittingWithdraw ? (
+                    <>
+                      <i className="bx bx-loader-alt bx-spin" style={{ marginLeft: "8px" }}></i>
+                      جاري إرسال طلب السحب...
+                    </>
+                  ) : (
+                    "تأكيد وإرسال طلب السحب"
+                  )}
                 </button>
+              </form>
+            )}
+
+            {/* TAB 4: TRANSACTION HISTORY */}
+            {walletTab === "history" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px", maxHeight: "50vh", overflowY: "auto", paddingLeft: "4px" }}>
+                {loadingTransactions ? (
+                  <div style={{ textAlign: "center", padding: "30px 0" }}>
+                    <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "1.8rem", color: "var(--accent-primary)" }}></i>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.8rem", marginTop: "8px" }}>جاري تحميل كشف الحساب...</p>
+                  </div>
+                ) : userTransactions.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "40px 0", border: "1px dashed var(--border-glass)", borderRadius: "12px" }}>
+                    <i className="bx bx-receipt" style={{ fontSize: "2.4rem", color: "var(--text-muted)", marginBottom: "8px" }}></i>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.82rem", margin: 0 }}>لا توجد معاملات سابقة حالياً.</p>
+                  </div>
+                ) : (
+                  userTransactions.map((tx) => (
+                    <div
+                      key={tx.id}
+                      style={{
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px solid var(--border-glass)",
+                        borderRadius: "12px",
+                        padding: "12px 14px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px"
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              background: tx.type === "deposit" ? "rgba(16, 185, 129, 0.12)" : "rgba(239, 68, 68, 0.12)",
+                              color: tx.type === "deposit" ? "#10b981" : "#f87171"
+                            }}
+                          >
+                            <i className={tx.type === "deposit" ? "bx bx-plus-circle" : "bx bx-minus-circle"} style={{ fontSize: "1.1rem" }}></i>
+                          </span>
+                          <div>
+                            <span style={{ fontSize: "0.82rem", fontWeight: "bold", color: "var(--text-primary)" }}>
+                              {tx.type === "deposit" ? "إيداع رصيد" : "سحب رصيد"}
+                            </span>
+                            <span style={{ display: "block", fontSize: "0.68rem", color: "var(--text-muted)" }}>
+                              {new Date(tx.created_at).toLocaleDateString("ar-EG", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div style={{ textAlign: "left" }}>
+                          <span style={{ fontSize: "0.95rem", fontWeight: "900", color: tx.type === "deposit" ? "#10b981" : "#f87171" }}>
+                            {tx.type === "deposit" ? "+" : "-"} {formatNumber(tx.amount, 2)} ج.م
+                          </span>
+                          <span
+                            style={{
+                              display: "block",
+                              fontSize: "0.68rem",
+                              fontWeight: "bold",
+                              padding: "2px 6px",
+                              borderRadius: "6px",
+                              textAlign: "center",
+                              marginTop: "4px",
+                              background:
+                                tx.status === "approved" ? "rgba(16, 185, 129, 0.1)" :
+                                tx.status === "rejected" ? "rgba(239, 68, 68, 0.1)" :
+                                "rgba(251, 191, 36, 0.1)",
+                              color:
+                                tx.status === "approved" ? "#10b981" :
+                                tx.status === "rejected" ? "#f87171" :
+                                "#fbbf24"
+                            }}
+                          >
+                            {tx.status === "pending" && "معلقة"}
+                            {tx.status === "approved" && "مقبولة"}
+                            {tx.status === "rejected" && "مرفوضة"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.03)", paddingTop: "8px", display: "flex", flexWrap: "wrap", gap: "10px", fontSize: "0.72rem", color: "var(--text-secondary)" }}>
+                        <span>وسيلة الدفع: <strong>
+                          {tx.method === "instapay" && "انستا باي"}
+                          {tx.method === "vodafone_cash" && "محفظة كاش"}
+                          {tx.method === "bank_transfer" && "تحويل بنكي"}
+                        </strong></span>
+                        {tx.provider_number && <span>الحساب/الرقم: <strong>{tx.provider_number}</strong></span>}
+                        {tx.transaction_id && <span>رقم العملية: <strong>{tx.transaction_id}</strong></span>}
+                      </div>
+
+                      {tx.admin_notes && (
+                        <div style={{ background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.1)", borderRadius: "8px", padding: "8px 10px", fontSize: "0.72rem", color: "#f87171" }}>
+                          <strong>ملاحظة الإدارة:</strong> {tx.admin_notes}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowConvertBalanceSection(!showConvertBalanceSection);
-                  setConvertBalanceStatus(null);
-                }}
-                className="ios-btn ios-btn-primary"
-                style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem" }}
-              >
-                <SiConvertio />
-                التحويل إلى عملة ماب القاهرة
-              </button>
-            </div>
+            )}
 
             {/* Convert Section */}
-            {showConvertBalanceSection && (
+            {walletTab === "main" && showConvertBalanceSection && (
               <div
                 style={{
                   background: "rgba(255,255,255,0.02)",
@@ -3819,65 +4434,67 @@ export default function ProfilePage() {
             )}
 
             {/* Explanation Sections */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
-              {/* What is Cash Wallet */}
-              <div>
-                <h4 style={{ margin: "0 0 8px", fontSize: "0.92rem", fontWeight: "800", color: "#10b981", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
-                  ما هو رصيد المحفظة؟
-                </h4>
-                <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                  هو رصيد مالي حقيقي بالجنيه المصري (EGP) يتم شحنه في حسابك، أو تحويل النقاط المكتسبة إليه. يمكنك استخدامه في شراء المنتجات المميزة، دفع اشتراكات الدليل، أو سحبه نقداً.
-                </p>
-              </div>
+            {walletTab === "main" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
+                {/* What is Cash Wallet */}
+                <div>
+                  <h4 style={{ margin: "0 0 8px", fontSize: "0.92rem", fontWeight: "800", color: "#10b981", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
+                    ما هو رصيد المحفظة؟
+                  </h4>
+                  <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                    هو رصيد مالي حقيقي بالجنيه المصري (EGP) يتم شحنه في حسابك، أو تحويل النقاط المكتسبة إليه. يمكنك استخدامه في شراء المنتجات المميزة، دفع اشتراكات الدليل، أو سحبه نقداً.
+                  </p>
+                </div>
 
-              {/* Supported Payment & Withdrawal Methods */}
-              <div>
-                <h4 style={{ margin: "0 0 12px", fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <i className="bx bx-credit-card-front" style={{ fontSize: "1.1rem" }}></i>
-                  طرق الشحن والسحب المدعومة
-                </h4>
-                <p style={{ margin: "0 0 12px", fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
-                  يمكنك استخدام الطرق التالية للشحن أو سحب مستحقاتك وأرصدتك المالية:
-                </p>
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "16px", border: "1px solid var(--border-glass)" }}>
-                  {[
-                    { name: "vodafone cash", title: "فودافون كاش", icon: "/image/telCompany/vodafone-logo.png" },
-                    { name: "instapay", title: "انستاباي", icon: "/image/payment/instapay.png" },
-                    { name: "meeza", title: "ميزة", icon: "/image/payment/meeza.png" },
-                    { name: "fawry", title: "فوري", icon: "/image/payment/fawry.png" },
-                    { name: "visa", title: "فيزا", icon: "/image/payment/visa.png" },
-                    { name: "mastercard", title: "ماستركارد", icon: "/image/payment/mastercard.png" },
-                    { name: "applepay", title: "ابل باي", icon: "/image/payment/applepay.png" },
-                    { name: "telda", title: "تيلدا", icon: "/image/payment/telda.jpg" }
-                  ].map((pay) => (
-                    <div
-                      key={pay.name}
-                      title={pay.title}
-                      style={{
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid var(--border-glass)",
-                        borderRadius: "8px",
-                        padding: "6px 10px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "6px"
-                      }}
-                    >
-                      <Image
-                        src={pay.icon}
-                        alt={pay.title}
-                        width={20}
-                        height={20}
-                        style={{ objectFit: "contain", borderRadius: "4px" }}
-                      />
-                      <span style={{ fontSize: "0.75rem", color: "var(--text-primary)", fontWeight: "bold" }}>{pay.title}</span>
-                    </div>
-                  ))}
+                {/* Supported Payment & Withdrawal Methods */}
+                <div>
+                  <h4 style={{ margin: "0 0 12px", fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <i className="bx bx-credit-card-front" style={{ fontSize: "1.1rem" }}></i>
+                    طرق الشحن والسحب المدعومة
+                  </h4>
+                  <p style={{ margin: "0 0 12px", fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
+                    يمكنك استخدام الطرق التالية للشحن أو سحب مستحقاتك وأرصدتك المالية:
+                  </p>
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "16px", border: "1px solid var(--border-glass)" }}>
+                    {[
+                      { name: "vodafone cash", title: "فودافون كاش", icon: "/image/telCompany/vodafone-logo.png" },
+                      { name: "instapay", title: "انستاباي", icon: "/image/payment/instapay.png" },
+                      { name: "meeza", title: "ميزة", icon: "/image/payment/meeza.png" },
+                      { name: "fawry", title: "فوري", icon: "/image/payment/fawry.png" },
+                      { name: "visa", title: "فيزا", icon: "/image/payment/visa.png" },
+                      { name: "mastercard", title: "ماستركارد", icon: "/image/payment/mastercard.png" },
+                      { name: "applepay", title: "ابل باي", icon: "/image/payment/applepay.png" },
+                      { name: "telda", title: "تيلدا", icon: "/image/payment/telda.jpg" }
+                    ].map((pay) => (
+                      <div
+                        key={pay.name}
+                        title={pay.title}
+                        style={{
+                          background: "rgba(255,255,255,0.04)",
+                          border: "1px solid var(--border-glass)",
+                          borderRadius: "8px",
+                          padding: "6px 10px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <Image
+                          src={pay.icon}
+                          alt={pay.title}
+                          width={20}
+                          height={20}
+                          style={{ objectFit: "contain", borderRadius: "4px" }}
+                        />
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-primary)", fontWeight: "bold" }}>{pay.title}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}
