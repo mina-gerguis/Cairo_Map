@@ -40,12 +40,17 @@ export default function AdminReportsPage() {
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
 
   // App Suggestions & Bugs State
-  const [activeReportTab, setActiveReportTab] = useState<"places" | "app">("places");
+  const [activeReportTab, setActiveReportTab] = useState<"places" | "app" | "contacts">("places");
   const [appFeedbacks, setAppFeedbacks] = useState<any[]>([]);
   const [loadingAppFeedbacks, setLoadingAppFeedbacks] = useState(true);
   const [appStatusFilter, setAppStatusFilter] = useState<string>("all");
   const [appTypeFilter, setAppTypeFilter] = useState<"all" | "suggestion" | "bug">("all");
   const [solvedCount, setSolvedCount] = useState<number>(0);
+
+  // Contact Messages State
+  const [contactMessages, setContactMessages] = useState<any[]>([]);
+  const [loadingContacts, setLoadingContacts] = useState(true);
+  const [contactStatusFilter, setContactStatusFilter] = useState<string>("all");
   
   // Admin Reply Inputs
   const [replyText, setReplyText] = useState("");
@@ -83,6 +88,7 @@ export default function AdminReportsPage() {
           setIsAdmin(true);
           fetchReports();
           fetchAppFeedbacks();
+          fetchContactMessages();
         }
       } catch (error) {
         setIsAdmin(false);
@@ -186,6 +192,103 @@ export default function AdminReportsPage() {
       console.error("Failed to fetch app feedbacks:", err);
     } finally {
       setLoadingAppFeedbacks(false);
+    }
+  };
+
+  const fetchContactMessages = async () => {
+    if (!supabase) return;
+    setLoadingContacts(true);
+    try {
+      const { data, error } = await supabase
+        .from("contact_messages")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setContactMessages(data || []);
+    } catch (err) {
+      console.error("Failed to fetch contact messages:", err);
+    } finally {
+      setLoadingContacts(false);
+    }
+  };
+
+  const handleSendContactReply = async (contactMsg: any) => {
+    if (!supabase || !isAdmin) return;
+    if (!replyText.trim()) {
+      alert("الرجاء كتابة الرد أولاً.");
+      return;
+    }
+
+    setUpdatingId(contactMsg.id);
+    setActionStatus("");
+
+    try {
+      // 1. Update status in database
+      const { error: updateError } = await supabase
+        .from("contact_messages")
+        .update({
+          status: "replied",
+          admin_reply: replyText.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", contactMsg.id);
+
+      if (updateError) throw updateError;
+
+      // 2. Call SMTP Route Handler to send the email
+      const emailResponse = await fetch("/api/contact/reply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          toEmail: contactMsg.email,
+          toName: `${contactMsg.first_name} ${contactMsg.last_name}`,
+          originalMessage: contactMsg.message,
+          replyText: replyText.trim(),
+        }),
+      });
+
+      const emailResult = await emailResponse.json();
+
+      if (!emailResponse.ok) {
+        throw new Error(emailResult.error || "فشل إرسال الإيميل للمستخدم، ولكن تم حفظ الرد في قاعدة البيانات.");
+      }
+
+      setActionStatus("تم حفظ الرد وإرسال الإيميل للمستخدم بنجاح! 🎉");
+      setReplyText("");
+      fetchContactMessages();
+    } catch (err: any) {
+      console.error(err);
+      setActionStatus(`خطأ: ${err.message}`);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleDeleteContactMessage = async (id: string) => {
+    if (!confirm("هل أنت متأكد من حذف هذه الرسالة نهائياً؟")) return;
+    if (!supabase || !isAdmin) return;
+
+    setUpdatingId(id);
+    setActionStatus("");
+    try {
+      const { error } = await supabase
+        .from("contact_messages")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+      setActionStatus("تم حذف الرسالة بنجاح.");
+      fetchContactMessages();
+      if (activeReportId === id) {
+        setActiveReportId(null);
+      }
+    } catch (err: any) {
+      setActionStatus(`خطأ: ${err.message}`);
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -383,6 +486,9 @@ export default function AdminReportsPage() {
     const typeMatch = appTypeFilter === "all" || f.type === appTypeFilter;
     return statusMatch && typeMatch;
   });
+  const filteredContactMessages = contactMessages.filter(msg => {
+    return contactStatusFilter === "all" || msg.status === contactStatusFilter;
+  });
 
   return (
     <div style={{ paddingBottom: "100px" }}>
@@ -394,7 +500,8 @@ export default function AdminReportsPage() {
         <button 
           onClick={() => {
             if (activeReportTab === "places") fetchReports();
-            else fetchAppFeedbacks();
+            else if (activeReportTab === "app") fetchAppFeedbacks();
+            else fetchContactMessages();
           }} 
           className="ios-btn"
           style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px" }}
@@ -404,7 +511,7 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Segmented Control for Tabs */}
-      <div style={{ display: "flex", background: "rgba(255,255,255,0.03)", padding: "4px", borderRadius: "14px", border: "1px solid var(--border-glass)", marginBottom: "24px", maxWidth: "450px" }}>
+      <div style={{ display: "flex", background: "rgba(255,255,255,0.03)", padding: "4px", borderRadius: "14px", border: "1px solid var(--border-glass)", marginBottom: "24px", maxWidth: "600px" }}>
         <button
           onClick={() => {
             setActiveReportTab("places");
@@ -451,9 +558,32 @@ export default function AdminReportsPage() {
         >
           اقتراحات ومشاكل التطبيق ({appFeedbacks.length})
         </button>
+        <button
+          onClick={() => {
+            setActiveReportTab("contacts");
+            setActiveReportId(null);
+            setReplyText("");
+            setActionStatus("");
+          }}
+          style={{
+            flex: 1,
+            padding: "10px 16px",
+            borderRadius: "10px",
+            border: "none",
+            background: activeReportTab === "contacts" ? "var(--accent-primary)" : "transparent",
+            color: activeReportTab === "contacts" ? "#fff" : "var(--text-secondary)",
+            fontWeight: "bold",
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            transition: "all 0.2s",
+            fontFamily: "var(--font-cairo)"
+          }}
+        >
+          رسائل التواصل ({contactMessages.length})
+        </button>
       </div>
 
-      {activeReportTab === "places" ? (
+      {activeReportTab === "places" && (
         <>
           {/* Filter Tabs */}
           <div style={{ display: "flex", gap: "10px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
@@ -817,7 +947,9 @@ export default function AdminReportsPage() {
             </div>
           )}
         </>
-      ) : (
+      )}
+
+      {activeReportTab === "app" && (
         <>
           {/* Solved Count Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
@@ -1115,6 +1247,210 @@ export default function AdminReportsPage() {
                             </div>
 
                           </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
+      {activeReportTab === "contacts" && (
+        <>
+          {/* Filter Tabs for Contact Message Status */}
+          <div style={{ display: "flex", gap: "10px", marginBottom: "16px", overflowX: "auto", paddingBottom: "8px" }}>
+            {["all", "pending", "replied"].map((status) => {
+              const count = status === "all" ? contactMessages.length : contactMessages.filter(r => r.status === status).length;
+              let label = "الكل";
+              if (status === "pending") label = "قيد الانتظار";
+              if (status === "replied") label = "تم الرد";
+              
+              const isActive = contactStatusFilter === status;
+              return (
+                <button
+                  key={status}
+                  onClick={() => setContactStatusFilter(status)}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "20px",
+                    border: "none",
+                    background: isActive ? "var(--accent-primary)" : "rgba(255,255,255,0.05)",
+                    color: isActive ? "#fff" : "var(--text-secondary)",
+                    fontWeight: "bold",
+                    fontSize: "0.85rem",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    fontFamily: "var(--font-cairo)",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  {label} ({count})
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Contact Messages Content */}
+          {loadingContacts ? (
+            <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل رسائل التواصل...</div>
+          ) : filteredContactMessages.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--border-glass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+              <i className="bx bx-info-circle" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px" }}></i>
+              <span>لا توجد رسائل تواصل مطابقة للتصفية المحددة</span>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "20px" }}>
+              {filteredContactMessages.map((contact) => {
+                const isOpen = activeReportId === contact.id;
+                return (
+                  <div 
+                    key={contact.id} 
+                    className="glass-card" 
+                    style={{ 
+                      padding: "20px", 
+                      borderRadius: "16px", 
+                      border: isOpen ? "1px solid var(--accent-primary)" : "1px solid var(--border-glass)",
+                      transition: "all 0.2s",
+                      background: "rgba(255, 255, 255, 0.02)"
+                    }}
+                  >
+                    {/* Collapsed Header Summary */}
+                    <div 
+                      onClick={() => {
+                        setActiveReportId(isOpen ? null : contact.id);
+                        setReplyText("");
+                        setActionStatus("");
+                      }} 
+                      style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", cursor: "pointer", gap: "16px", flexWrap: "wrap" }}
+                    >
+                      <div style={{ flex: 1, minWidth: "200px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
+                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                            📩 {contact.contact_type}: {contact.first_name} {contact.last_name}
+                          </span>
+                          <span style={{ 
+                            padding: "4px 8px", 
+                            borderRadius: "8px", 
+                            fontSize: "0.75rem", 
+                            fontWeight: "bold",
+                            background: contact.status === "replied" ? "rgba(52, 199, 89, 0.12)" : "rgba(255, 149, 0, 0.12)",
+                            color: contact.status === "replied" ? "#34c759" : "#ff9500"
+                          }}>
+                            {contact.status === "replied" ? "تم الرد" : "قيد الانتظار"}
+                          </span>
+                        </div>
+                        
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
+                          <span>البريد: <strong>{contact.email}</strong></span>
+                          <span>الهاتف: <strong>{contact.phone}</strong></span>
+                          <span>التاريخ: {new Date(contact.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <button className="ios-btn" style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
+                          {isOpen ? "إخفاء التفاصيل" : "عرض والرد"}
+                        </button>
+                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--text-secondary)" }}></i>
+                      </div>
+                    </div>
+
+                    {/* Expanded details */}
+                    {isOpen && (
+                      <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", animation: "fade-in 0.3s ease" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px", flexWrap: "wrap" }}>
+                          
+                          {/* Left: Message Details */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>محتوى رسالة التواصل</h4>
+                            
+                            <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
+                              <div>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>نص الرسالة:</span>
+                                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
+                                  {contact.message}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right: Actions & Reply */}
+                          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                            <div>
+                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>بيانات التواصل</h4>
+                              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
+                                <div>الاسم الكامل: <strong>{contact.first_name} {contact.last_name}</strong></div>
+                                <div>البريد الإلكتروني: <strong>{contact.email}</strong></div>
+                                <div>رقم الهاتف: <strong>{contact.phone}</strong></div>
+                                {contact.user_id && <div>معرف المستخدم المسجل: <strong style={{ fontSize: '0.75rem' }}>{contact.user_id}</strong></div>}
+                              </div>
+                            </div>
+
+                            {/* Actions form */}
+                            <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px" }}>
+                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800" }}>الرد على الرسالة كـ إيميل</h4>
+                              
+                              {actionStatus && (
+                                <div style={{ 
+                                  background: actionStatus.startsWith("خطأ") ? "rgba(255,59,48,0.1)" : "rgba(52,199,89,0.1)",
+                                  color: actionStatus.startsWith("خطأ") ? "#ff3b30" : "#34c759",
+                                  padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "600", marginBottom: "12px"
+                                }}>
+                                  {actionStatus}
+                                </div>
+                              )}
+
+                              {contact.admin_reply && (
+                                <div style={{ marginBottom: "12px", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                                  الرد المرسل سابقاً: <strong>"{contact.admin_reply}"</strong>
+                                </div>
+                              )}
+
+                              <textarea
+                                className="ios-input"
+                                style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-cairo)", marginBottom: "12px" }}
+                                placeholder="اكتب رد الدعم الفني للمستخدم هنا ليرسل كإيميل..."
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
+                                disabled={updatingId !== null}
+                              />
+
+                              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                                <button
+                                  onClick={() => handleSendContactReply(contact)}
+                                  disabled={updatingId !== null}
+                                  className="ios-btn ios-btn-primary"
+                                  style={{ 
+                                    flex: 2, 
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold"
+                                  }}
+                                >
+                                  {updatingId === contact.id ? "جاري الإرسال..." : "إرسال الرد كـ إيميل 📧"}
+                                </button>
+
+                                <button
+                                  onClick={() => handleDeleteContactMessage(contact.id)}
+                                  disabled={updatingId !== null}
+                                  className="ios-btn"
+                                  style={{ 
+                                    flex: 1, 
+                                    background: "rgba(255, 59, 48, 0.1)", 
+                                    border: "1px solid rgba(255, 59, 48, 0.2)",
+                                    color: "#ff3b30",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold"
+                                  }}
+                                >
+                                  حذف 🗑️
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
                         </div>
                       </div>
                     )}

@@ -6,11 +6,23 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 
+interface NavSubItem {
+  href: string;
+  label: string;
+  icon: string;
+}
+
+interface NavLink {
+  href?: string;
+  label: string;
+  isDropdown?: boolean;
+  subItems?: NavSubItem[];
+}
+
 /* ─── مكون الشريط العلوي للرأس والقوائم (Navbar Component) ─── */
 export default function Navbar() {
   const pathname = usePathname();
 
-  if (pathname?.startsWith("/admin")) return null;
   // ── جلب حالات المصادقة والإشعارات والمسار ──
   const { user, profile, logout } = useAuth();
   const { unreadCount } = useNotifications();
@@ -19,6 +31,16 @@ export default function Navbar() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const isAuthPage = pathname === "/login" || pathname === "/signup";
+
+  const isLinkActive = (link: NavLink) => {
+    if (link.href) {
+      return pathname === link.href;
+    }
+    if (link.isDropdown && link.subItems) {
+      return link.subItems.some((sub: NavSubItem) => pathname === sub.href);
+    }
+    return false;
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("dftry_theme") as "dark" | "light" | null;
@@ -40,12 +62,23 @@ export default function Navbar() {
   };
 
   // ── قائمة الروابط الرئيسية للموقع ──
-  const links = [
+  const mainLinks: NavLink[] = [
     { href: "/", label: "الصفحة الرئيسية" },
-    { href: "/metro", label: "اعرف طريقك" },
-    { href: "/directory", label: "دليل الهاتف" },
+    {
+      label: "الخدمات",
+      isDropdown: true,
+      subItems: [
+        { href: "/#places-section", label: "دليل الأماكن", icon: "bx bx-map" },
+        { href: "/directory", label: "دليل الهاتف", icon: "bx bx-phone" },
+        { href: "/metro", label: "خريطة المترو", icon: "bx bx-train" },
+        { href: "/monorail", label: "خريطة المنورايل", icon: "bx bx-navigation" },
+        { href: "/directions", label: "ازاي اروح ؟", icon: "bx bx-compass" },
+      ]
+    },
     { href: "/help", label: "المساعدة" },
   ];
+
+  if (pathname?.startsWith("/admin")) return null;
 
   /* ── Navbar ── */
   return (
@@ -59,11 +92,32 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="navbar-links">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className={`navbar-link ${pathname === link.href ? "active" : ""}`}>
-              {link.label}
-            </Link>
-          ))}
+          {mainLinks.map((link, idx) => {
+            if (link.isDropdown) {
+              const active = isLinkActive(link);
+              return (
+                <div key={idx} className="navbar-item-dropdown">
+                  <button className={`navbar-link navbar-dropdown-toggle ${active ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "4px", fontFamily: "var(--font-cairo)" }}>
+                    {link.label}
+                    <i className="bx bx-chevron-down" style={{ fontSize: "0.95rem" }} />
+                  </button>
+                  <div className="navbar-dropdown-menu">
+                    {link.subItems.map((sub, sIdx) => (
+                      <Link key={sIdx} href={sub.href} className={`heroui-dropdown-item ${pathname === sub.href ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <i className={sub.icon} style={{ fontSize: "1.1rem" }} />
+                        <span>{sub.label}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <Link key={link.href} href={link.href} className={`navbar-link ${pathname === link.href ? "active" : ""}`}>
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Right Actions */}
@@ -200,12 +254,41 @@ export default function Navbar() {
 
       {/* ── قائمة الجوال الهامبرغر (Mobile Navigation Drawer) ── */}
       {menuOpen && (
-        <div className="navbar-mobile-menu" onClick={() => setMenuOpen(false)}>
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className={`navbar-mobile-link ${pathname === link.href ? "active" : ""}`}>
-              {link.label}
-            </Link>
-          ))}
+        <div className="navbar-mobile-menu">
+          {mainLinks.map((link, idx) => {
+            if (link.isDropdown) {
+              return (
+                <div key={idx} className="navbar-mobile-dropdown-group">
+                  <div className="navbar-mobile-dropdown-title">
+                    {link.label}
+                  </div>
+                  <div className="navbar-mobile-dropdown-items">
+                    {link.subItems.map((sub, sIdx) => (
+                      <Link 
+                        key={sIdx} 
+                        href={sub.href} 
+                        className={`navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        <i className={sub.icon} style={{ fontSize: "1.1rem", marginLeft: "8px" }} />
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <Link 
+                key={link.href} 
+                href={link.href} 
+                className={`navbar-mobile-link ${pathname === link.href ? "active" : ""}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           {user ? (
             <>
               <Link href="/profile" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>

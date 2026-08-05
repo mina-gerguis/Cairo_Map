@@ -2158,3 +2158,51 @@
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5)); }
 }
+
+.usernameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copyButton {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: color 0.2s ease, transform 0.1s ease;
+  border-radius: 4px;
+}
+
+.copyButton:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.copyButton:active {
+  transform: scale(0.9);
+}
+
+.copyButton i {
+  font-size: 1.1rem;
+}
+
+.copiedIcon {
+  color: var(--accent-success) !important;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

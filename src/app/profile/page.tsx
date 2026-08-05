@@ -260,6 +260,7 @@ export default function ProfilePage() {
   const [feedbackToDelete, setFeedbackToDelete] = useState<any | null>(null);
   const [proposalToRetract, setProposalToRetract] = useState<string | null>(null);
   const [reportToRetract, setReportToRetract] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const [codeDigits, setCodeDigits] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -325,6 +326,25 @@ export default function ProfilePage() {
   });
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
+
+  useEffect(() => {
+    if (profile) {
+      const nameParts = (profile.full_name || "").trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      setContactForm(prev => ({
+        ...prev,
+        firstName: prev.firstName || firstName,
+        lastName: prev.lastName || lastName,
+        email: prev.email || profile.email || "",
+        phone: prev.phone || profile.phone || "",
+        governorate: prev.governorate || profile.governorate || "",
+        city: prev.city || profile.city || ""
+      }));
+    }
+  }, [profile]);
+
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
@@ -444,14 +464,45 @@ export default function ProfilePage() {
     }
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) {
+      alert("تعذر الاتصال بقاعدة البيانات.");
+      return;
+    }
     setContactLoading(true);
-    // Simulate sending email
-    setTimeout(() => {
-      setContactLoading(false);
+    try {
+      const { error } = await supabase.from("contact_messages").insert([
+        {
+          first_name: contactForm.firstName,
+          last_name: contactForm.lastName,
+          phone: contactForm.phone,
+          email: contactForm.email,
+          contact_type: contactForm.contactType,
+          message: contactForm.message,
+          user_id: user ? user.id : null,
+        },
+      ]);
+
+      if (error) throw error;
+
       setContactSubmitted(true);
-    }, 1500);
+      setContactForm({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        email: "",
+        governorate: "",
+        city: "",
+        contactType: "",
+        message: "",
+      });
+    } catch (err: any) {
+      console.error("Error submitting contact message:", err);
+      alert("فشل إرسال الرسالة: " + err.message);
+    } finally {
+      setContactLoading(false);
+    }
   };
 
   const handleDeleteReminder = async (e: React.MouseEvent, noteId: string) => {
@@ -896,11 +947,11 @@ export default function ProfilePage() {
       return;
     }
 
-    if (!depositTxId.trim()) {
-      setDepositStatus({ type: "error", text: "يرجى إدخال رقم العملية (Transaction ID)." });
-      setIsSubmittingDeposit(false);
-      return;
-    }
+    // if (!depositTxId.trim()) {
+    //   setDepositStatus({ type: "error", text: "يرجى إدخال رقم العملية (Transaction ID)." });
+    //   setIsSubmittingDeposit(false);
+    //   return;
+    // }
 
     try {
       let uploadedUrl = "";
@@ -1722,7 +1773,22 @@ export default function ProfilePage() {
               <div className={styles.formGap}>
                 <div className={styles.infoRow}>
                   <span className={styles.infoLabel}>اسم المستخدم</span>
-                  <span className={styles.infoValue}>@{profile?.username}</span>
+                  <div className={styles.usernameWrapper}>
+                    <span className={styles.infoValue}>@{profile?.username}</span>
+                    <button 
+                      className={styles.copyButton}
+                      onClick={() => {
+                        if (profile?.username) {
+                          navigator.clipboard.writeText(profile.username);
+                          setCopied(true);
+                          setTimeout(() => setCopied(false), 2000);
+                        }
+                      }}
+                      title="نسخ اسم المستخدم"
+                    >
+                      <i className={`bx ${copied ? 'bx-check' : 'bx-copy'} ${copied ? styles.copiedIcon : ''}`} />
+                    </button>
+                  </div>
                 </div>
                 <div className={styles.infoRow}>
                   <span className={styles.infoLabel}>رقم الهاتف</span>

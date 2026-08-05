@@ -484,6 +484,74 @@ html.light .navbar-auth-menu {
   background: var(--bg-glass);
 }
 
+/* Services Dropdown Styles */
+.navbar-item-dropdown {
+  position: relative;
+}
+
+.navbar-item-dropdown:hover .navbar-dropdown-menu,
+.navbar-item-dropdown:focus-within .navbar-dropdown-menu {
+  display: block;
+}
+
+.navbar-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 8px;
+  animation: pop-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+}
+
+html.light .navbar-dropdown-menu {
+  background: var(--bg-glass);
+}
+
+.navbar-dropdown-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Mobile dropdown styles */
+.navbar-mobile-dropdown-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.navbar-mobile-dropdown-title {
+  padding: 12px 24px 6px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: right;
+}
+
+.navbar-mobile-dropdown-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.navbar-mobile-link.sub-link {
+  padding: 10px 36px !important;
+  font-size: 0.95rem;
+}
+
 /* HeroUI Dropdown Inner Elements */
 .heroui-dropdown-header {
   padding: 8px 12px;

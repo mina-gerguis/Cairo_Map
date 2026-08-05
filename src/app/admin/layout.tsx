@@ -17,6 +17,7 @@ export default function AdminLayout({
   const navItems = [
     { href: "/admin", label: "الرئيسية والأماكن", icon: "bx bx-grid-alt" },
     { href: "/admin/directory", label: "الدليل الهاتفي والأكواد", icon: "bx bx-book-bookmark" },
+    { href: "/admin/directions", label: "إدارة خطوط المواصلات", icon: "bx bx-compass" },
     { href: "/admin/notifications", label: "الإشعارات الجماعية", icon: "bx bx-bell" },
     { href: "/admin/reports", label: "البلاغات والشكاوى", icon: "bx bx-error-circle" },
     { href: "/admin/points", label: "النقاط والرصيد", icon: "bx bx-coin-stack" },
