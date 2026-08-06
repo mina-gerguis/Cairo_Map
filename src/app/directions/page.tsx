@@ -377,7 +377,7 @@ const routesDataset: RouteData[] = [
 ];
 
 export default function DirectionsPage() {
-  const { user } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [routes, setRoutes] = useState<RouteData[]>(routesDataset);
   const [fromInput, setFromInput] = useState("");
   const [toInput, setToInput] = useState("");
@@ -649,6 +649,158 @@ export default function DirectionsPage() {
       setSuggestLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="app-container" style={{ maxWidth: "800px", paddingTop: "100px", textAlign: "center" }}>
+        <div style={{
+          width: "40px",
+          height: "40px",
+          border: "4px solid rgba(255,255,255,0.1)",
+          borderTop: "4px solid var(--accent-ios, #3b82f6)",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          margin: "0 auto 20px"
+        }} />
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
+      </div>
+    );
+  }
+
+  // Paywall / Lock screen if user doesn't have Gold access
+  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const hasAccess = profile?.is_admin || (profile?.subscription_tier === "gold" && !isExpired);
+
+  if (!user || !hasAccess) {
+    return (
+      <div className="app-container" style={{ maxWidth: "600px", paddingTop: "60px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
+        {/* Back Button */}
+        <div style={{ marginBottom: "24px" }}>
+          <Link 
+            href="/" 
+            style={{ 
+              display: "inline-flex", 
+              alignItems: "center", 
+              gap: "8px", 
+              color: "var(--accent-ios, #3b82f6)", 
+              textDecoration: "none", 
+              fontWeight: "600",
+              fontSize: "0.95rem" 
+            }}
+          >
+            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
+            <span>العودة للرئيسية</span>
+          </Link>
+        </div>
+
+        {/* Premium Lock Panel */}
+        <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(234, 179, 8, 0.2)", position: "relative", overflow: "hidden" }}>
+          <div style={{
+            position: "absolute",
+            top: "-20px",
+            left: "-20px",
+            width: "140px",
+            height: "140px",
+            background: "radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%)",
+            borderRadius: "50%"
+          }} />
+
+          {/* Lock Icon */}
+          <div style={{ 
+            fontSize: "4.5rem", 
+            marginBottom: "24px",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100px",
+            height: "100px",
+            background: "rgba(234, 179, 8, 0.08)",
+            borderRadius: "50%",
+            border: "1px solid rgba(234, 179, 8, 0.3)",
+            color: "#eab308",
+            animation: "pulse 2s infinite"
+          }}>
+            <i className="bx bxs-lock-alt"></i>
+          </div>
+
+          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#fff", marginBottom: "14px" }}>
+            دليل &quot;ازاي اروح&quot; ميزة ذهبية 🥇
+          </h2>
+          
+          <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
+            محرك البحث المتقدم عن خطوط المواصلات والطرق المختصرة (ميكروباص، أتوبيسات، مترو، ومونوريل) متاح حصرياً لعملاء الباقة الذهبية المميزة.
+          </p>
+
+          {/* Features list */}
+          <div style={{ background: "rgba(255,255,255,0.02)", padding: "18px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
+            <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية (60 ج.م/شهرياً):</div>
+            <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <li>✨ البحث عن مسارات مواصلات بين أي منطقتين بالتفصيل</li>
+              <li>✨ حساب تكلفة الرحلة والمدة المتوقعة بدقة</li>
+              <li>✨ خيارات متعددة للتنقل (مباشر، مترو + ميكروباص، إلخ)</li>
+              <li>✨ تشمل أيضاً خريطة المونوريل التفاعلية بالكامل</li>
+            </ul>
+          </div>
+
+          {/* Call to Actions */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
+            {user ? (
+              <Link
+                href="/profile"
+                style={{
+                  padding: "14px",
+                  borderRadius: "10px",
+                  background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+                  color: "#000",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  boxShadow: "0 4px 15px rgba(250, 204, 21, 0.3)",
+                  display: "block"
+                }}
+              >
+                🚀 اشترك الآن ورقّ حسابك للذهبية
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                style={{
+                  padding: "14px",
+                  borderRadius: "10px",
+                  background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                  color: "#fff",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
+                  display: "block"
+                }}
+              >
+                🔑 سجل دخولك أولاً لتفعيل الاشتراك
+              </Link>
+            )}
+            
+            <Link
+              href="/"
+              style={{
+                padding: "12px",
+                borderRadius: "10px",
+                background: "rgba(255, 255, 255, 0.04)",
+                color: "#94a3b8",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "0.9rem",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                display: "block"
+              }}
+            >
+              العودة لتصفح مترو القاهرة المجاني
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container" style={{ maxWidth: "800px", paddingTop: "30px", paddingBottom: "60px" }}>

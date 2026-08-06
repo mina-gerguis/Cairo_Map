@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Sans+Arabic:wght@100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
 
 @import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
@@ -9,11 +10,9 @@
    Design Tokens
    ============================================================ */
 :root {
-  --font-display: var(--font-almarai), "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-body: var(--font-almarai), "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-cairo: "Cairo", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-tajawal: "Tajawal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
+  /* FONTS */
+  --font-display: "Alexandria", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   /* HeroUI Dark Palette */
   --bg-primary: #000000;
   /* Pure black */
@@ -124,7 +123,7 @@ html.light .profile-page-wrapper {
 
 html,
 body {
-  font-family: var(--font-cairo);
+  font-family: var(--font-body);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -1054,7 +1053,6 @@ html.light .footer {
 .ios-btn-primary {
   background: var(--accent-primary);
   color: #ffffff !important;
-  box-shadow: 0 4px 14px 0 rgba(0, 111, 238, 0.39);
 }
 
 .ios-btn-primary:hover {
@@ -1417,6 +1415,20 @@ html.light .ios-sheet {
 
   .mobile-bottom-nav.shrunk {
     transform: scale(0.88) translateY(6px);
+  }
+
+  .mobile-bottom-nav.hidden-by-modal {
+    transform: translateY(120px) scale(0.9) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body:has(.ios-sheet-overlay) .mobile-bottom-nav,
+  body:has(.modal-backdrop) .mobile-bottom-nav,
+  body:has([class*="modalBackdrop"]) .mobile-bottom-nav {
+    transform: translateY(120px) scale(0.9) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 
   .mobile-nav-pill {

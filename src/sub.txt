@@ -1,0 +1,20 @@
+const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+const hasPremium = profile?.is_admin || (profile?.subscription_tier === "gold" && !isExpired);
+
+return (
+  <div>
+    <h3>قسم الأدوات</h3>
+    
+    {hasPremium ? (
+      // هذا الجزء يظهر للمشتركين فقط
+      <button onClick={handleExportData} className="btn-success">
+        📥 تصدير البيانات إلى Excel
+      </button>
+    ) : (
+      // هذا الجزء يظهر للمستخدم المجاني وينبهه بضرورة الترقية
+      <button onClick={() => alert("هذه الميزة تتطلب الاشتراك في الباقة الذهبية! 🥇")} className="btn-locked" style={{ opacity: 0.6 }}>
+        🔒 تصدير البيانات (ميزة ذهبية)
+      </button>
+    )}
+  </div>
+);

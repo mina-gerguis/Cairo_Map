@@ -78,6 +78,26 @@ export default function Navbar() {
     { href: "/help", label: "المساعدة" },
   ];
 
+  // Mobile dropdown state
+  const [expandedMobileDropdowns, setExpandedMobileDropdowns] = useState<Record<number, boolean>>({});
+
+  const toggleMobileDropdown = (idx: number) => {
+    setExpandedMobileDropdowns(prev => ({
+      ...prev,
+      [idx]: !prev[idx]
+    }));
+  };
+
+  useEffect(() => {
+    const initialExpanded: Record<number, boolean> = {};
+    mainLinks.forEach((link, idx) => {
+      if (link.isDropdown && isLinkActive(link)) {
+        initialExpanded[idx] = true;
+      }
+    });
+    setExpandedMobileDropdowns(initialExpanded);
+  }, [pathname]);
+
   if (pathname?.startsWith("/admin")) return null;
 
   /* ── Navbar ── */
@@ -257,24 +277,50 @@ export default function Navbar() {
         <div className="navbar-mobile-menu">
           {mainLinks.map((link, idx) => {
             if (link.isDropdown) {
+              const isExpanded = expandedMobileDropdowns[idx] || false;
               return (
                 <div key={idx} className="navbar-mobile-dropdown-group">
-                  <div className="navbar-mobile-dropdown-title">
-                    {link.label}
-                  </div>
-                  <div className="navbar-mobile-dropdown-items">
-                    {link.subItems?.map((sub, sIdx) => (
-                      <Link 
-                        key={sIdx} 
-                        href={sub.href} 
-                        className={`navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        <i className={sub.icon} style={{ fontSize: "1.1rem", marginLeft: "8px" }} />
-                        {sub.label}
-                      </Link>
-                    ))}
-                  </div>
+                  <button 
+                    className="navbar-mobile-link"
+                    onClick={() => toggleMobileDropdown(idx)}
+                    style={{
+                      width: "100%",
+                      background: "none",
+                      border: "none",
+                      textAlign: "right",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-cairo)"
+                    }}
+                  >
+                    <span>{link.label}</span>
+                    <i 
+                      className={`bx bx-chevron-down`} 
+                      style={{
+                        transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.2s ease",
+                        fontSize: "1.2rem",
+                        color: "var(--text-secondary)"
+                      }}
+                    />
+                  </button>
+                  {isExpanded && (
+                    <div className="navbar-mobile-dropdown-items" style={{ paddingRight: "16px" }}>
+                      {link.subItems?.map((sub, sIdx) => (
+                        <Link 
+                          key={sIdx} 
+                          href={sub.href} 
+                          className={`navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          <i className={sub.icon} style={{ fontSize: "1.1rem", marginLeft: "8px" }} />
+                          {sub.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             }

@@ -126,6 +126,7 @@ interface RouteResult {
   transfers: Array<{ station: string; fromLine: LineId; toLine: LineId }>;
   description: string;
   detailedPath: Array<{ station: string; line: LineId; isTransferPoint: boolean; targetLine?: LineId }>;
+  estimatedTime: number;
 }
 
 const buildGraph = () => {
@@ -197,6 +198,7 @@ function findRoute(from: string, to: string): RouteResult {
       transfers: [],
       description: "أنت في محطة الوصول بالفعل!",
       detailedPath: [{ station: from, line: Array.from(STATION_LINES_MAP.get(from) || [])[0] || "line1", isTransferPoint: false }],
+      estimatedTime: 0,
     };
   }
 
@@ -214,6 +216,7 @@ function findRoute(from: string, to: string): RouteResult {
       transfers: [],
       description: "المحطة المحددة غير موجودة في قاعدة البيانات.",
       detailedPath: [],
+      estimatedTime: 0,
     };
   }
 
@@ -281,6 +284,7 @@ function findRoute(from: string, to: string): RouteResult {
       transfers: [],
       description: "لا يمكن إيجاد مسار بين هاتين المحطتين بالمترو حالياً.",
       detailedPath: [],
+      estimatedTime: 0,
     };
   }
 
@@ -330,18 +334,19 @@ function findRoute(from: string, to: string): RouteResult {
   const stationCount = cleanPath.length;
   const price = getTicketPrice(stationCount);
   const needsTransfer = transfers.length > 0;
+  const estimatedTime = (stationCount - 1) * 2;
 
   // Build Arabic Description
   let description = "";
   if (!needsTransfer) {
-    description = `اسلك ${LINE_NAMES[rawPath[0].line]} من محطة "${from}" حتى محطة "${to}" مباشرة بدون أي تبديل.`;
+    description = `اسلك ${LINE_NAMES[rawPath[0].line]} من محطة "${from}" حتى محطة "${to}" مباشرة بدون أي تبديل. تستغرق الرحلة حوالي ${estimatedTime} دقيقة.`;
   } else {
     description = `اركـب ${LINE_NAMES[rawPath[0].line]} من محطة "${from}"، `;
     transfers.forEach((t, idx) => {
       description += `ثم قم بالانتقال والتحويل في محطة "${t.station}" إلى ${LINE_NAMES[t.toLine]}`;
       if (idx < transfers.length - 1) description += "، ";
     });
-    description += `، وواصل رحلتك حتى محطة "${to}".`;
+    description += `، وواصل رحلتك حتى محطة "${to}". تستغرق الرحلة حوالي ${estimatedTime} دقيقة (قد تزيد مع وقت التبديل بين الخطوط).`;
   }
 
   return {
@@ -354,6 +359,7 @@ function findRoute(from: string, to: string): RouteResult {
     transfers,
     description,
     detailedPath,
+    estimatedTime,
   };
 }
 
@@ -418,25 +424,57 @@ export default function MetroPage() {
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: "140px", backgroundColor: "var(--bg-primary)" }}>
-      {/* Header Banner - Redesigned to be flat and calm matching the Profile page */}
+      {/* Header Banner - Redesigned with a beautiful cover image instead of emoji */}
       <div style={{
         backgroundColor: "var(--bg-primary)",
-        padding: "48px 20px 24px",
+        padding: "24px 20px 24px",
         textAlign: "center",
         position: "relative",
         borderBottom: "1px solid var(--border-glass)",
       }}>
-        <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🚇</div>
+        {/* Cover Image Banner */}
+        <div style={{
+          position: "relative",
+          width: "100%",
+          maxWidth: "800px",
+          height: "clamp(140px, 22vh, 200px)",
+          margin: "0 auto 20px",
+          borderRadius: "var(--radius-md)",
+          overflow: "hidden",
+          border: "1px solid var(--border-glass)",
+          boxShadow: "var(--shadow-card)",
+          background: "var(--bg-glass-card)",
+        }}>
+          <img
+            src="/image/metro/metro_cover.jpeg"
+            alt="Cairo Metro Cover"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+          {/* Subtle gradient overlay to shade the image and fade nicely */}
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%)",
+            pointerEvents: "none",
+          }} />
+        </div>
         <h1 style={{
-          fontFamily: "var(--font-cairo)",
+          fontFamily: "var(--font-display)",
           fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
-          fontWeight: "800",
+          fontWeight: "600",
           color: "var(--text-primary)",
           margin: "0 0 10px",
           letterSpacing: "-0.5px",
-        }}>مستكشف مترو القاهرة</h1>
+        }}> مترو القاهرة</h1>
         <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
-          احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة التذكرة والتحويلات الأنسب بفضل خوارزمية ذكية متكاملة.
+          احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة التذكرة والتحويلات.
         </p>
 
         {/* Lines Indicator Badges */}
@@ -457,7 +495,7 @@ export default function MetroPage() {
 
       {/* Main Container */}
       <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
-        
+
         {/* Search Panel Card - Styled matching profile sectionCard */}
         <div style={{
           backgroundColor: "var(--bg-primary)",
@@ -471,11 +509,11 @@ export default function MetroPage() {
           gap: "16px",
         }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
-            
+
             {/* FROM STATION INPUT */}
             <div style={{ position: "relative" }}>
               <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
-                🟢 من محطة (نقطة الانطلاق)
+                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> من محطة (نقطة الانطلاق)
               </label>
               <div style={{ position: "relative" }}>
                 <input
@@ -489,10 +527,11 @@ export default function MetroPage() {
                     width: "100%",
                     direction: "rtl",
                     fontFamily: "var(--font-cairo)",
+                    height: "50px",
                   }}
                 />
                 {selectedFrom && (
-                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--accent-ios)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>جاهز</span>
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--accent-ios)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الاختيار ✔</span>
                 )}
               </div>
               {showFromList && filteredFrom.length > 0 && (
@@ -539,6 +578,7 @@ export default function MetroPage() {
                 color: "var(--text-secondary)",
                 fontSize: "1.2rem",
                 transition: "all 0.2s ease",
+                marginTop: "10px",
               }}
                 onMouseEnter={e => {
                   e.currentTarget.style.transform = "rotate(180deg)";
@@ -558,7 +598,7 @@ export default function MetroPage() {
             {/* TO STATION INPUT */}
             <div style={{ position: "relative" }}>
               <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
-                🔴 إلى محطة (الجهة المقصودة)
+                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> إلى محطة (الجهة المقصودة)
               </label>
               <div style={{ position: "relative" }}>
                 <input
@@ -572,10 +612,11 @@ export default function MetroPage() {
                     width: "100%",
                     direction: "rtl",
                     fontFamily: "var(--font-cairo)",
+                    height: "50px"
                   }}
                 />
                 {selectedTo && (
-                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--accent-ios)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>جاهز</span>
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--accent-ios)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الاختيار ✔</span>
                 )}
               </div>
               {showToList && filteredTo.length > 0 && (
@@ -616,13 +657,13 @@ export default function MetroPage() {
             style={{
               width: "100%",
               marginTop: "8px",
-              padding: "14px",
+              padding: "8px 14px",
               borderRadius: "12px",
               background: (!selectedFrom || !selectedTo) ? "rgba(255,255,255,0.05)" : "var(--accent-ios)",
               color: (!selectedFrom || !selectedTo) ? "var(--text-muted)" : "#ffffff",
               fontSize: "0.95rem",
               fontWeight: "700",
-              border: "none",
+              border: "1px solid var(--border-glass)",
               cursor: (!selectedFrom || !selectedTo) ? "not-allowed" : "pointer",
               transition: "all 0.2s ease",
               fontFamily: "var(--font-cairo)",
@@ -638,7 +679,7 @@ export default function MetroPage() {
               }
             }}
           >
-            🔍 ابحث عن أفضل مسار
+            اعرض الطريق
           </button>
         </div>
 
@@ -663,24 +704,28 @@ export default function MetroPage() {
               <>
                 {/* Result Title */}
                 <h3 style={{ fontFamily: "var(--font-cairo)", fontSize: "1.1rem", fontWeight: "800", marginBottom: "16px", color: "var(--text-primary)" }}>
-                  📊 تفاصيل الرحلة المقترحة
+                  📊 تفاصيل الرحلة
                 </h3>
 
                 {/* Grid Summary Cards - Calm design like Device Info List */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "20px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "10px", marginBottom: "20px" }}>
                   <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
                     <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--accent-ios)" }}>{result.stationCount}</div>
                     <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>محطات المرور</div>
                   </div>
                   <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
                     <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--accent-success)" }}>{result.price} ج.م</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>قيمة التذكرة</div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>سعر التذكرة</div>
+                  </div>
+                  <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
+                    <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--accent-ios)" }}>{result.estimatedTime} د</div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>وقت الوصول</div>
                   </div>
                   <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
                     <div style={{ fontSize: "1.4rem", fontWeight: "800", color: result.needsTransfer ? "var(--accent-warning)" : "var(--accent-success)" }}>
                       {result.needsTransfer ? result.transfers.length : "مباشر"}
                     </div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>مرات التحويل</div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>التبديل</div>
                   </div>
                 </div>
 
@@ -689,7 +734,6 @@ export default function MetroPage() {
                   <div style={{
                     background: "rgba(59, 130, 246, 0.04)",
                     border: "1px solid rgba(59, 130, 246, 0.15)",
-                    borderRight: "4px solid var(--accent-ios)",
                     borderRadius: "12px",
                     padding: "16px 18px",
                     marginBottom: "20px"
@@ -709,7 +753,7 @@ export default function MetroPage() {
                     }}
                     style={{
                       width: "100%",
-                      padding: "14px",
+                      padding: "10px 14px",
                       borderRadius: "12px",
                       background: "var(--accent-ios)",
                       color: "#ffffff",
@@ -728,7 +772,8 @@ export default function MetroPage() {
                     onMouseEnter={e => { e.currentTarget.style.opacity = "0.9"; }}
                     onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
                   >
-                    🎬 بدء الرحلة وتتبع المحطات
+                    <i className="fa-solid fa-play"></i>
+                    ابد الرحلة
                   </button>
                 )}
 
@@ -745,7 +790,7 @@ export default function MetroPage() {
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
                       <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--accent-ios)", background: "rgba(59, 130, 246, 0.12)", padding: "4px 10px", borderRadius: "8px" }}>
-                        🎯 رحلة نشطة حالياً
+                        رحلة نشطة حالياً
                       </span>
                       <button
                         onClick={() => {
@@ -753,26 +798,39 @@ export default function MetroPage() {
                           setCurrentStepIndex(0);
                         }}
                         style={{
-                          background: "transparent",
                           border: "none",
                           color: "var(--accent-red)",
-                          fontSize: "0.85rem",
+                          fontSize: "0.78rem",
                           fontWeight: "700",
                           cursor: "pointer",
-                          fontFamily: "var(--font-cairo)"
+                          fontFamily: "var(--font-cairo)",
+                          background: "rgba(246, 59, 59, 0.12)", padding: "4px 10px", borderRadius: "8px"
                         }}
                       >
-                        ❌ إلغاء التتبع
+                        <i className="fa-solid fa-trash" style={{ marginLeft: "8px" }}></i>
+                        حذف التتبع
                       </button>
                     </div>
 
                     {/* Progress Indicator */}
-                    <div style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "16px", color: "var(--text-secondary)" }}>
+                    <div style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "8px", color: "var(--text-secondary)" }}>
                       المحطة الحالية: <span style={{ color: "var(--text-primary)", fontSize: "1.1rem", fontWeight: "800" }}>{result.detailedPath[currentStepIndex].station}</span>
                       <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginRight: "8px" }}>
                         ({currentStepIndex + 1} من {result.detailedPath.length})
                       </span>
                     </div>
+                    {/* Live Remaining Time */}
+                    {(() => {
+                      const uniqueRemainingStations = Array.from(
+                        new Set(result.detailedPath.slice(currentStepIndex).map(s => s.station))
+                      );
+                      const remainingTime = Math.max(0, (uniqueRemainingStations.length - 1) * 2);
+                      return (
+                        <div style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "16px", color: "var(--text-secondary)" }}>
+                          ⏱️ الوقت المتبقي للوصول: <span style={{ color: "var(--accent-ios)", fontSize: "1rem", fontWeight: "800" }}>{remainingTime} دقيقة</span>
+                        </div>
+                      );
+                    })()}
 
                     {/* Transfer station instructions banner if current station is transfer */}
                     {result.detailedPath[currentStepIndex].isTransferPoint && (
@@ -809,6 +867,7 @@ export default function MetroPage() {
                           background: "var(--accent-success)",
                           color: "#ffffff",
                           fontSize: "0.95rem",
+                          fontFamily: "var(--font-body)",
                           fontWeight: "700",
                           border: "none",
                           cursor: "pointer",
@@ -819,7 +878,7 @@ export default function MetroPage() {
                           transition: "all 0.2s ease"
                         }}
                       >
-                        ✅ تم الوصول إلى: {result.detailedPath[currentStepIndex + 1].station}
+                        وصلت محطة {result.detailedPath[currentStepIndex + 1].station}
                       </button>
                     ) : (
                       <div style={{
@@ -862,7 +921,7 @@ export default function MetroPage() {
                   <h4 style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-secondary)", marginBottom: "12px" }}>
                     📍 محطات المسار بالتفصيل:
                   </h4>
-                  
+
                   <div style={{
                     maxHeight: "350px", overflowY: "auto", padding: "16px",
                     background: "var(--bg-secondary)", border: "1px solid var(--border-glass)",
@@ -879,10 +938,10 @@ export default function MetroPage() {
 
                       return (
                         <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
-                          
+
                           {/* Station Row */}
                           <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "32px" }}>
-                            
+
                             {/* Dot / Indicator */}
                             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
                               {isPassed ? (
@@ -906,11 +965,11 @@ export default function MetroPage() {
                                   width: isFirst || isLast || isTransfer ? "14px" : "8px",
                                   height: isFirst || isLast || isTransfer ? "14px" : "8px",
                                   borderRadius: "50%",
-                                  backgroundColor: isCurrent 
+                                  backgroundColor: isCurrent
                                     ? (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--accent-ios)")
                                     : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-muted)"),
-                                  border: `2px solid ${isCurrent 
-                                    ? "#ffffff" 
+                                  border: `2px solid ${isCurrent
+                                    ? "#ffffff"
                                     : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "transparent")}`,
                                   boxShadow: isCurrent ? `0 0 10px ${activeColor}` : "none",
                                   zIndex: 1,
@@ -930,17 +989,17 @@ export default function MetroPage() {
                               <span style={{
                                 fontSize: isFirst || isLast ? "0.95rem" : "0.88rem",
                                 fontWeight: isFirst || isLast || isTransfer || isCurrent ? "700" : "500",
-                                color: isCurrent 
-                                  ? "var(--text-primary)" 
+                                color: isCurrent
+                                  ? "var(--text-primary)"
                                   : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-primary)"),
                                 textDecoration: isPassed ? "line-through" : "none",
                               }}>
                                 {node.station}
                               </span>
-                              
+
                               {isFirst && <span style={{ fontSize: "0.68rem", background: "rgba(16,185,129,0.12)", color: "var(--accent-success)", padding: "1px 6px", borderRadius: "4px" }}>ركوب</span>}
                               {isLast && <span style={{ fontSize: "0.68rem", background: "rgba(239,68,68,0.12)", color: "var(--accent-red)", padding: "1px 6px", borderRadius: "4px" }}>وصول</span>}
-                              
+
                               <span style={{
                                 fontSize: "0.68rem",
                                 color: "#ffffff",
@@ -1081,7 +1140,7 @@ export default function MetroPage() {
             padding: "20px",
             boxShadow: "var(--shadow-card)",
           }}>
-            
+
             {/* Line Summary in Explorer */}
             <div style={{ borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px", marginBottom: "16px" }}>
               <h3 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "4px" }}>
@@ -1144,7 +1203,7 @@ export default function MetroPage() {
                   const isFirst = idx === 0;
                   const isLast = idx === stationsList.length - 1;
                   const color = LINE_COLORS[explorerLine];
-                  
+
                   // Check if station is transfer
                   const allLinesForStation = Array.from(STATION_LINES_MAP.get(station) || []);
                   const isTransfer = allLinesForStation.length > 1;
@@ -1152,7 +1211,7 @@ export default function MetroPage() {
                   return (
                     <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "32px" }}>
-                        
+
                         {/* Dot */}
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
                           <div style={{

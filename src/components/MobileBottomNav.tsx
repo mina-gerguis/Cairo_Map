@@ -32,6 +32,31 @@ export default function MobileBottomNav() {
   // Bubble position (JS-driven for pixel-perfect centering)
   const [bubbleLeft, setBubbleLeft] = useState<number | null>(null);
 
+  // Check if any modal is active (e.g. Wallet, Points, Place sheets, custom popups)
+  const [isModalActive, setIsModalActive] = useState(false);
+
+  useEffect(() => {
+    const checkModals = () => {
+      const modalExists = document.querySelector(".ios-sheet-overlay, .modal-backdrop, [class*=\"modalBackdrop\"]") !== null;
+      setIsModalActive(modalExists);
+    };
+
+    checkModals();
+
+    const observer = new MutationObserver(() => {
+      checkModals();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Drag state
   const [isDragging, setIsDragging] = useState(false);
   const [dragLeft, setDragLeft] = useState(0);
@@ -218,7 +243,7 @@ export default function MobileBottomNav() {
 
   return (
     <>
-      <div className={`mobile-bottom-nav ${isShrunk && !isDragging ? "shrunk" : ""}`}>
+      <div className={`mobile-bottom-nav ${isShrunk && !isDragging ? "shrunk" : ""} ${isModalActive ? "hidden-by-modal" : ""}`}>
         <div
           className="mobile-nav-pill"
           ref={pillRef}
