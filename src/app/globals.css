@@ -12,6 +12,7 @@
 :root {
   /* FONTS */
   --font-display: "Alexandria", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Cairo", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: "IBM Plex Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   /* HeroUI Dark Palette */
   --bg-primary: #000000;

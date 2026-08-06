@@ -423,7 +423,7 @@ export default function MetroPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: "140px", backgroundColor: "var(--bg-primary)" }}>
+    <div style={{ minHeight: "100vh", paddingBottom: "40px", backgroundColor: "var(--bg-primary)" }}>
       {/* Header Banner - Redesigned with a beautiful cover image instead of emoji */}
       <div style={{
         backgroundColor: "var(--bg-primary)",
@@ -474,7 +474,7 @@ export default function MetroPage() {
           letterSpacing: "-0.5px",
         }}> مترو القاهرة</h1>
         <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
-          احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة التذكرة والتحويلات.
+          احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة تذكرتك.
         </p>
 
         {/* Lines Indicator Badges */}
@@ -484,7 +484,7 @@ export default function MetroPage() {
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: LINE_COLORS[l],
-              borderRadius: "20px",
+              borderRadius: "10px",
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
@@ -703,8 +703,8 @@ export default function MetroPage() {
             ) : (
               <>
                 {/* Result Title */}
-                <h3 style={{ fontFamily: "var(--font-cairo)", fontSize: "1.1rem", fontWeight: "800", marginBottom: "16px", color: "var(--text-primary)" }}>
-                  📊 تفاصيل الرحلة
+                <h3 style={{ fontFamily: "var(--font-heading)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "16px", color: "var(--text-primary)" }}>
+                  <i className="fa-solid fa-signs-post" style={{ marginLeft: "6px", color: "var(--accent-ios)" }}></i> تفاصيل الرحلة
                 </h3>
 
                 {/* Grid Summary Cards - Calm design like Device Info List */}
@@ -738,8 +738,8 @@ export default function MetroPage() {
                     padding: "16px 18px",
                     marginBottom: "20px"
                   }}>
-                    <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: "500" }}>
-                      {result.description}
+                    <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: "600", fontFamily: "var(--font-heading)" }}>
+                      <i className="fa-solid fa-info-circle" style={{ marginLeft: "6px", color: "var(--accent-ios)" }}></i>{result.description}
                     </p>
                   </div>
                 )}
@@ -814,7 +814,7 @@ export default function MetroPage() {
 
                     {/* Progress Indicator */}
                     <div style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "8px", color: "var(--text-secondary)" }}>
-                      المحطة الحالية: <span style={{ color: "var(--text-primary)", fontSize: "1.1rem", fontWeight: "800" }}>{result.detailedPath[currentStepIndex].station}</span>
+                      أنت دلوقتي في <span style={{ color: "var(--text-primary)", fontSize: "1.1rem", fontWeight: "800" }}>{result.detailedPath[currentStepIndex].station}</span>
                       <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginRight: "8px" }}>
                         ({currentStepIndex + 1} من {result.detailedPath.length})
                       </span>
@@ -884,21 +884,21 @@ export default function MetroPage() {
                       <div style={{
                         textAlign: "center",
                         background: "rgba(16, 185, 129, 0.06)",
-                        border: "1px solid rgba(16, 185, 129, 0.2)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "10px",
                         padding: "16px",
                         animation: "pop-in 0.3s ease"
                       }}>
                         <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🎉</div>
-                        <h4 style={{ color: "var(--accent-success)", fontWeight: "800", margin: "0 0 6px" }}>حمد لله على السلامة!</h4>
-                        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 12px" }}>لقد وصلت إلى محطة الوصول المقصودة بنجاح.</p>
+                        <h4 style={{ color: "var(--accent-success)", fontWeight: "800", margin: "0 0 6px" }}>حمدلله على السلامة!</h4>
+                        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 12px" }}>لقد وصلت إلى محطة<span style={{ color: "var(--accent-ios)", fontSize: "1rem", fontWeight: "800" }}> {result.detailedPath[currentStepIndex].station}</span>.</p>
                         <button
                           onClick={() => {
                             setIsTripActive(false);
                             setCurrentStepIndex(0);
                           }}
                           style={{
-                            background: "var(--accent-success)",
+                            background: "var(--accent-ios)",
                             color: "#ffffff",
                             padding: "8px 24px",
                             border: "none",
@@ -909,7 +909,7 @@ export default function MetroPage() {
                             fontFamily: "var(--font-cairo)"
                           }}
                         >
-                          🏁 إنهاء الرحلة
+                          إنهاء الرحلة
                         </button>
                       </div>
                     )}
@@ -919,7 +919,8 @@ export default function MetroPage() {
                 {/* Dynamic Path Timeline */}
                 <div style={{ marginBottom: "20px" }}>
                   <h4 style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-secondary)", marginBottom: "12px" }}>
-                    📍 محطات المسار بالتفصيل:
+                    <i className="fa-solid fa-diamond-turn-right" style={{ margin: "0 6px" }}></i>
+                    محطات المسار
                   </h4>
 
                   <div style={{
@@ -1003,8 +1004,8 @@ export default function MetroPage() {
                               <span style={{
                                 fontSize: "0.68rem",
                                 color: "#ffffff",
-                                background: activeColor + "33",
-                                border: `1px solid ${activeColor}44`,
+                                background: activeColor + "66",
+                                border: `1px solid ${activeColor}88`,
                                 padding: "1px 6px",
                                 borderRadius: "6px",
                                 marginRight: "auto"
@@ -1072,8 +1073,21 @@ export default function MetroPage() {
                   lineHeight: "1.5",
                   marginTop: "16px"
                 }}>
-                  💡 <strong>تسعير التذاكر المعتمد (مارس 2026):</strong><br />
-                  حتى 9 محطات = 10 ج.م | 10 إلى 16 محطة = 12 ج.م | 17 إلى 23 محطة = 15 ج.م | أكثر من 23 محطة = 20 ج.م
+                  <i className="fa-regular fa-lightbulb" style={{ color: "var(--accent-warning)", marginLeft: "5px" }}></i>
+                  <strong>تسعير التذاكر المعتمد (مارس 2026):</strong> <br />
+                  البيانات مبنية علي الاسعار الرسمية لأخر تحديث
+                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", marginTop: "8px", textAlign: "right", direction: "rtl" }}>
+                    • <strong style={{ color: "var(--accent-success)" }}>المسافة من 1-9 محطات:</strong> 10 جنيهات.
+                  </div>
+                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+                    • <strong style={{ color: "var(--accent-success)" }}>المسافة من 10-19 محطة:</strong> 12 جنيهات.
+                  </div>
+                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+                    • <strong style={{ color: "var(--accent-warning)" }}>المسافة من 20-29 محطة:</strong> 15 جنيهًا.
+                  </div>
+                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+                    • <strong style={{ color: "var(--accent-danger)" }}>المسافة 30 محطة فأكثر:</strong> 20 جنيهًا.
+                  </div>
                 </div>
               </>
             )}
@@ -1083,7 +1097,7 @@ export default function MetroPage() {
         {/* METRO LINES EXPLORER */}
         <div style={{ marginTop: "32px" }}>
           <h2 style={{
-            fontFamily: "var(--font-cairo)",
+            fontFamily: "var(--font-heading)",
             fontSize: "1.3rem",
             fontWeight: "800",
             color: "var(--text-primary)",
@@ -1091,7 +1105,7 @@ export default function MetroPage() {
             textAlign: "center"
           }}>🗺️ مستعرض خطوط المترو الكاملة</h2>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", textAlign: "center", marginBottom: "20px" }}>
-            اضغط على الخط لاستعراض كافة محطاته المسجلة وترتيبها في الشبكة
+            اضغط على الخط لاستعراض كافة محطاته المسجلة.
           </p>
 
           {/* Explorer Tab Pills - Redesigned to match Verified security cards in profile */}
@@ -1104,6 +1118,7 @@ export default function MetroPage() {
                   key={lineId}
                   onClick={() => setExplorerLine(lineId)}
                   style={{
+                    fontFamily: "var(--font-body)",
                     background: "var(--bg-primary)",
                     border: active ? `2px solid ${color}` : "1px solid var(--border-glass)",
                     borderRadius: "12px",
@@ -1167,12 +1182,12 @@ export default function MetroPage() {
                         background: line3ActiveBranch === tab.id ? "rgba(59, 130, 246, 0.15)" : "var(--bg-secondary)",
                         border: `1px solid ${line3ActiveBranch === tab.id ? "var(--accent-ios)" : "var(--border-glass)"}`,
                         color: line3ActiveBranch === tab.id ? "var(--text-primary)" : "var(--text-secondary)",
-                        padding: "6px 12px",
+                        padding: "6px",
                         borderRadius: "8px",
                         fontSize: "0.78rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        fontFamily: "var(--font-cairo)",
+                        fontFamily: "var(--font-body)",
                         transition: "all 0.2s ease"
                       }}
                     >
@@ -1285,6 +1300,109 @@ export default function MetroPage() {
             </div>
 
           </div>
+        </div>
+
+        {/* OFFICIAL METRO MAP DOWNLOAD SECTION */}
+        <div style={{
+          backgroundColor: "var(--bg-primary)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "15px",
+          padding: "20px",
+          marginTop: "24px",
+          boxShadow: "var(--shadow-card)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}>
+          <div style={{ textAlign: "center" }}>
+            <h2 style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: "1.3rem",
+              fontWeight: "800",
+              color: "var(--text-primary)",
+              margin: "0 0 6px 0",
+            }}>🗺️ خريطة مترو القاهرة الرسمية</h2>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", margin: 0, lineHeight: "1.5" }}>
+              يمكنك استعراض الخريطة التوضيحية لشبكة المترو الرسمية أو تحميلها كصورة عالية الدقة للوصول إليها في أي وقت دون الحاجة لإنترنت.
+            </p>
+          </div>
+
+          {/* Map Preview Image */}
+          <div style={{
+            position: "relative",
+            borderRadius: "12px",
+            overflow: "hidden",
+            border: "1px solid var(--border-glass)",
+            height: "220px",
+            width: "100%",
+            backgroundColor: "rgba(0,0,0,0.05)",
+          }}>
+            <a href="/image/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
+              <img
+                src="/image/cairo-metro-map.png"
+                alt="Cairo Metro Official Map"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                  transition: "transform 0.3s ease",
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = "scale(1.02)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+              />
+              {/* Fullscreen Overlay Guide */}
+              <div style={{
+                position: "absolute",
+                bottom: "10px",
+                right: "10px",
+                background: "rgba(0,0,0,0.6)",
+                color: "#ffffff",
+                padding: "4px 10px",
+                borderRadius: "8px",
+                fontSize: "0.75rem",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                backdropFilter: "blur(4px)",
+              }}>
+                <i className="bx bx-expand-alt" style={{ fontSize: "0.9rem" }}></i>
+                اضغط للتكبير
+              </div>
+            </a>
+          </div>
+
+          {/* Download Button */}
+          <a
+            href="/image/cairo-metro-map.png"
+            download="cairo-metro-map.png"
+            style={{
+              width: "100%",
+              padding: "12px 14px",
+              borderRadius: "12px",
+              background: "var(--accent-ios)",
+              color: "#ffffff",
+              fontSize: "0.95rem",
+              fontWeight: "700",
+              border: "1px solid var(--border-glass)",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              fontFamily: "var(--font-cairo)",
+              textAlign: "center",
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
+            onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+          >
+            <i className="bx bx-download" style={{ fontSize: "1.2rem" }}></i>
+            تحميل الخريطة بجودة عالية
+          </a>
         </div>
 
       </div>
