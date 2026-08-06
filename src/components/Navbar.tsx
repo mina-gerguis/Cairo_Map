@@ -102,7 +102,7 @@ export default function Navbar() {
                     <i className="bx bx-chevron-down" style={{ fontSize: "0.95rem" }} />
                   </button>
                   <div className="navbar-dropdown-menu">
-                    {link.subItems.map((sub, sIdx) => (
+                    {link.subItems?.map((sub, sIdx) => (
                       <Link key={sIdx} href={sub.href} className={`heroui-dropdown-item ${pathname === sub.href ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <i className={sub.icon} style={{ fontSize: "1.1rem" }} />
                         <span>{sub.label}</span>
@@ -113,7 +113,7 @@ export default function Navbar() {
               );
             }
             return (
-              <Link key={link.href} href={link.href} className={`navbar-link ${pathname === link.href ? "active" : ""}`}>
+              <Link key={link.href || idx} href={link.href || ""} className={`navbar-link ${pathname === link.href ? "active" : ""}`}>
                 {link.label}
               </Link>
             );
@@ -263,7 +263,7 @@ export default function Navbar() {
                     {link.label}
                   </div>
                   <div className="navbar-mobile-dropdown-items">
-                    {link.subItems.map((sub, sIdx) => (
+                    {link.subItems?.map((sub, sIdx) => (
                       <Link 
                         key={sIdx} 
                         href={sub.href} 
@@ -280,8 +280,8 @@ export default function Navbar() {
             }
             return (
               <Link 
-                key={link.href} 
-                href={link.href} 
+                key={link.href || idx} 
+                href={link.href || ""} 
                 className={`navbar-mobile-link ${pathname === link.href ? "active" : ""}`}
                 onClick={() => setMenuOpen(false)}
               >

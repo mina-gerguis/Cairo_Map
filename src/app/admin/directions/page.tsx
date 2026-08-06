@@ -220,7 +220,7 @@ export default function AdminDirectionsPage() {
   };
 
   const checkAdminAndFetch = async () => {
-    if (!supabase) {
+    if (!supabase || !user) {
       setLoading(false);
       return;
     }
@@ -441,10 +441,10 @@ export default function AdminDirectionsPage() {
       cost: parseInt(opt.cost) || 0,
       duration: opt.duration.trim(),
       steps: opt.steps.map(s => s.trim()).filter(Boolean),
-      tips: opt.tips.trim() || null,
-      from_aliases: fromAliases.trim() || null,
-      to_aliases: toAliases.trim() || null,
-      map_link: opt.map_link.trim() || null
+      tips: opt.tips.trim() || undefined,
+      from_aliases: fromAliases.trim() || undefined,
+      to_aliases: toAliases.trim() || undefined,
+      map_link: opt.map_link.trim() || undefined
     }));
 
     try {
@@ -472,6 +472,9 @@ export default function AdminDirectionsPage() {
         setShowAddForm(false);
       } else {
         // Supabase Mode
+        if (!supabase) {
+          throw new Error("قاعدة البيانات غير متوفرة");
+        }
         // If editing, delete old rows first
         if (editingConnection) {
           const { error: deleteError } = await supabase
@@ -512,7 +515,7 @@ export default function AdminDirectionsPage() {
     setToAliases(conn.to_aliases || "");
     
     // Map options to form structure
-    const mapped = conn.options.map(opt => {
+    const mapped: FormOption[] = conn.options.map(opt => {
       const parsedMins = parseMinutesFromArabic(opt.duration);
       return {
         type: opt.type,
@@ -549,6 +552,9 @@ export default function AdminDirectionsPage() {
         saveToLocalStorage(updated);
         setSuccess("تم حذف الطريق محلياً.");
       } else {
+        if (!supabase) {
+          throw new Error("قاعدة البيانات غير متوفرة");
+        }
         const { error: deleteError } = await supabase
           .from("transit_routes")
           .delete()
