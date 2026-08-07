@@ -286,6 +286,8 @@ export default function AdminSubscriptionsPage() {
     switch (tier) {
       case "free":
         return "المجانية";
+      case "mishwar":
+        return "المشوار ⚡";
       case "silver":
         return "الفضية 🥈";
       case "gold":
@@ -299,6 +301,8 @@ export default function AdminSubscriptionsPage() {
     switch (tier) {
       case "free":
         return { background: "rgba(148, 163, 184, 0.15)", color: "#94a3b8" };
+      case "mishwar":
+        return { background: "rgba(16, 185, 129, 0.15)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.4)" };
       case "silver":
         return { background: "rgba(226, 232, 240, 0.2)", color: "#e2e8f0", border: "1px solid rgba(226, 232, 240, 0.4)" };
       case "gold":
@@ -812,8 +816,8 @@ export default function AdminSubscriptionsPage() {
                     setUserForm({
                       ...userForm,
                       subscription_tier: tier,
-                      // clear period if free
-                      subscription_period: tier === "free" ? "" : userForm.subscription_period || "monthly",
+                      // clear period if free, set to daily if mishwar
+                      subscription_period: tier === "free" ? "" : (tier === "mishwar" ? "daily" : (userForm.subscription_period === "daily" ? "monthly" : userForm.subscription_period || "monthly")),
                     });
                   }}
                   style={{
@@ -827,6 +831,7 @@ export default function AdminSubscriptionsPage() {
                   }}
                 >
                   <option value="free">المجانية</option>
+                  <option value="mishwar">باقة المشوار (9 ج.م)</option>
                   <option value="silver">الباقة الفضية (40 ج.م)</option>
                   <option value="gold">الباقة الذهبية (60 ج.م)</option>
                 </select>
@@ -836,7 +841,7 @@ export default function AdminSubscriptionsPage() {
                 <div>
                   <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px", fontWeight: "bold" }}>فترة الاشتراك</label>
                   <select
-                    value={userForm.subscription_period}
+                    value={userForm.subscription_period || ""}
                     onChange={(e) => setUserForm({ ...userForm, subscription_period: e.target.value })}
                     style={{
                       width: "100%",
@@ -848,6 +853,7 @@ export default function AdminSubscriptionsPage() {
                       outline: "none",
                     }}
                   >
+                    <option value="daily">يومياً (24 ساعة)</option>
                     <option value="monthly">شهرياً</option>
                     <option value="yearly">سنوياً</option>
                   </select>

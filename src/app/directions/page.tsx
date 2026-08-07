@@ -669,7 +669,8 @@ export default function DirectionsPage() {
 
   // Paywall / Lock screen if user doesn't have Gold access
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin || (profile?.subscription_tier === "gold" && !isExpired);
+  const hasAccess = profile?.is_admin || 
+    ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   if (!user || !hasAccess) {
     return (

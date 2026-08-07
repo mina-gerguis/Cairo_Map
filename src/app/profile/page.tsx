@@ -18,6 +18,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { CiShop } from "react-icons/ci";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import { SiConvertio } from "react-icons/si";
+import clsx from "clsx";
 
 
 const PROFILE_AVATARS = [
@@ -310,6 +311,54 @@ export default function ProfilePage() {
   const [subscriptionPeriod, setSubscriptionPeriod] = useState<"monthly" | "yearly">("monthly");
   const [subscribing, setSubscribing] = useState(false);
   const [subMessage, setSubMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [showSubConfirmModal, setShowSubConfirmModal] = useState(false);
+  const [subConfirmData, setSubConfirmData] = useState<{
+    planId: string;
+    period: "daily" | "monthly" | "yearly" | null;
+    message: string;
+  } | null>(null);
+
+  // Subscription Carousel State & Ref
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const carouselRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollToCard = (index: number) => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const cards = Array.from(container.children).filter(el => el.tagName === 'DIV');
+    if (cards && cards[index]) {
+      cards[index].scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center"
+      });
+      setActiveCardIndex(index);
+    }
+  };
+
+  const handleCarouselScroll = () => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const cards = Array.from(container.children).filter(el => el.tagName === 'DIV');
+    if (cards.length === 0) return;
+
+    const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
+    let closestIndex = 0;
+    let minDistance = Infinity;
+
+    cards.forEach((card, idx) => {
+      const cardCenter = card.getBoundingClientRect().left + card.clientWidth / 2;
+      const distance = Math.abs(cardCenter - containerCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = idx;
+      }
+    });
+
+    if (activeCardIndex !== closestIndex) {
+      setActiveCardIndex(closestIndex);
+    }
+  };
 
   // Help Section: Tabs
   const [helpTab, setHelpTab] = useState<"faq" | "social" | "contact">("faq");
@@ -635,16 +684,65 @@ export default function ProfilePage() {
     setLoading(false);
   };
 
-  const handleConfirmSubscribe = async (planId: string, period: "monthly" | "yearly" | null) => {
+  const getPlanPrice = (planId: string, period: "daily" | "monthly" | "yearly" | null) => {
+    if (planId === "free") return 0;
+    if (planId === "mishwar") return 9;
+
+    let basePrice = 0;
+    if (planId === "silver") {
+      basePrice = period === "monthly" ? 40 : 450;
+    } else if (planId === "gold") {
+      basePrice = period === "monthly" ? 60 : 700;
+    }
+
+    const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+    const hasActiveSilver = profile?.subscription_tier === "silver" && !isExpired;
+    const hasActiveMishwar = profile?.subscription_tier === "mishwar" && !isExpired;
+
+    // ترقية من الفضية للذهبية: خصم سعر الباقة الفضية الحالية
+    if (hasActiveSilver && planId === "gold") {
+      const silverPrice = profile.subscription_period === "yearly" ? 450 : 40;
+      const diff = basePrice - silverPrice;
+      return diff > 0 ? diff : 0;
+    }
+
+    // ترقية من باقة المشوار للفضية أو الذهبية: خصم قيمة باقة المشوار الحالية
+    if (hasActiveMishwar && (planId === "silver" || planId === "gold")) {
+      const diff = basePrice - 9;
+      return diff > 0 ? diff : 0;
+    }
+
+    return basePrice;
+  };
+
+  const handleConfirmSubscribe = async (planId: string, period: "daily" | "monthly" | "yearly" | null) => {
     if (!supabase || !user || !profile) return;
 
-    // Check pricing
-    let price = 0;
-    if (planId === "silver") {
-      price = period === "monthly" ? 40 : 450;
-    } else if (planId === "gold") {
-      price = period === "monthly" ? 60 : 700;
+    const isExpired = profile.subscription_end && new Date(profile.subscription_end) < new Date();
+
+    // رتب الباقات: free (1) < mishwar (2) < silver (3) < gold (4)
+    const getRank = (tier: string | undefined) => {
+      if (tier === "mishwar") return 2;
+      if (tier === "silver") return 3;
+      if (tier === "gold") return 4;
+      return 1;
+    };
+
+    const currentRank = getRank(profile.subscription_tier);
+    const newRank = getRank(planId);
+
+    // رفض تخفيض الاشتراك للباقات الأقل للمشتركين النشطين
+    if (planId !== "free" && !isExpired && currentRank > newRank) {
+      const planLabel = planId === "mishwar" ? "باقة المشوار" : planId === "silver" ? "الباقة الفضية" : "الباقة الذهبية";
+      setSubMessage({
+        type: "error",
+        text: `أنت على باقة أعلى حالياً ولا يمكن تخفيض اشتراكك. لا تقلق، عند انتهاء المدة لن يتجدد الاشتراك تلقائياً. يمكنك بعد انتهاء مدة باقتك الحالية التي ستنتهي في ${new Date(profile.subscription_end!).toLocaleDateString('ar-EG')} الاشتراك في ${planLabel}.`
+      });
+      return;
     }
+
+    // Check pricing using helper
+    const price = getPlanPrice(planId, period);
 
     if (planId !== "free" && (profile.balance ?? 0) < price) {
       setSubMessage({
@@ -654,20 +752,35 @@ export default function ProfilePage() {
       return;
     }
 
-    const planLabel = planId === "silver" ? "الباقة الفضية" : planId === "gold" ? "الباقة الذهبية" : "الباقة المجانية";
-    const periodLabel = period === "monthly" ? "شهرياً" : period === "yearly" ? "سنوياً" : "";
+    const planLabel = planId === "mishwar" ? "باقة المشوار" : planId === "silver" ? "الباقة الفضية" : planId === "gold" ? "الباقة الذهبية" : "الباقة المجانية";
+    const periodLabel = period === "monthly" ? "شهرياً" : period === "yearly" ? "سنوياً" : period === "daily" ? "يومياً" : "";
 
-    const confirmMessage = planId === "free"
-      ? "هل أنت متأكد من التحويل للباقة المجانية؟"
-      : `هل أنت متأكد من الاشتراك في ${planLabel} ${periodLabel} بقيمة ${price} ج.م؟ سيتم الخصم من رصيد محفظتك مباشرة.`;
+    let confirmMessage = "";
+    if (planId === "free") {
+      confirmMessage = "هل أنت متأكد من إلغاء تجديد الاشتراك والرجوع للباقة المجانية؟ ستظل مميزات باقتك الحالية مفعلة بالكامل حتى تاريخ انتهاء صلاحيتها.";
+    } else {
+      const isUpgrade = (profile.subscription_tier === "silver" || profile.subscription_tier === "mishwar") && !isExpired && currentRank < newRank;
 
-    if (!confirm(confirmMessage)) {
-      return;
+      confirmMessage = isUpgrade
+        ? `هل أنت متأكد من ترقية اشتراكك إلى ${planLabel} ${periodLabel} بقيمة فرق الترقية فقط البالغ ${price} ج.م؟ سيتم الخصم من رصيد محفظتك مباشرة.`
+        : `هل أنت متأكد من الاشتراك في ${planLabel} ${periodLabel} بقيمة ${price} ج.م؟ سيتم الخصم من رصيد محفظتك مباشرة.`;
     }
+
+    setSubConfirmData({
+      planId,
+      period,
+      message: confirmMessage
+    });
+    setShowSubConfirmModal(true);
+  };
+
+  const executeSubscribe = async (planId: string, period: "daily" | "monthly" | "yearly" | null) => {
+    if (!supabase || !user || !profile) return;
 
     setSubscribing(true);
     setSubMessage(null);
     setSelectedPlanId(planId);
+    setShowSubConfirmModal(false);
 
     try {
       const { data, error } = await supabase.rpc("subscribe_to_plan", {
@@ -1928,7 +2041,7 @@ export default function ProfilePage() {
 
       {/* User Points and Balances Badges Container */}
       {user && (
-        <div className={styles.userBadgesContainer} style={{ justifyContent: "center", marginBottom: "24px", marginTop: "8px" }}>
+        <div className={styles.userBadgesContainer} style={{ justifyContent: "center", marginBottom: "24px", marginTop: "8px", fontFamily: "var(--font-heading)" }}>
           {/* Points Badge */}
           <div
             className={`${styles.badgePill} ${styles.badgePoints}`}
@@ -1984,16 +2097,22 @@ export default function ProfilePage() {
             </div>
             {/* Title */}
             <div>
-              <h3 className={styles.cardTitle}>باقة الاشتراك</h3>
+              <h3 className={styles.cardTitle}>ترقية الاشتراك</h3>
               <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
-                {profile?.subscription_tier === 'silver' ? '🥈 الباقة الفضية - نشط' : profile?.subscription_tier === 'gold' ? '🥇 الباقة الذهبية - نشط' : 'الباقة المجانية'}
-                {profile?.subscription_tier !== 'free' && profile?.subscription_end && ` (ينتهي في ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')})`}
+                {profile?.subscription_tier === 'mishwar'
+                  ? (profile?.subscription_status === 'cancelled' ? 'باقة المشوار' : 'باقة المشوار ')
+                  : profile?.subscription_tier === 'silver'
+                    ? (profile?.subscription_status === 'cancelled' ? 'الباقة الفضية ' : 'الباقة الفضية')
+                    : profile?.subscription_tier === 'gold'
+                      ? (profile?.subscription_status === 'cancelled' ? 'الباقة الذهبية' : 'الباقة الذهبية')
+                      : 'الباقة المجانية'}
+                {profile?.subscription_tier !== 'free' && profile?.subscription_end && ` (${profile?.subscription_status === 'cancelled' ? 'ستنتهي في' : 'ينتهي في'} ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')})`}
               </p>
             </div>
           </div>
           <div className={styles.badgeRight}>
-            <span className={styles.favBadge} style={{ background: "none", color: "var(--accent-gold, #eab308)", fontWeight: "bold", fontSize: "0.85rem" }}>
-              {profile?.subscription_tier === 'silver' ? 'الفضية' : profile?.subscription_tier === 'gold' ? 'الذهبية' : 'ترقية'}
+            <span className={styles.favBadge} style={{ background: "none", color: "var(--accent-ios)", fontWeight: "bold", fontSize: "0.8rem" }}>
+              {profile?.subscription_tier === 'mishwar' ? 'المشوار' : profile?.subscription_tier === 'silver' ? 'الفضية' : profile?.subscription_tier === 'gold' ? 'الذهبية' : 'ترقية'}
             </span>
             <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
@@ -4032,303 +4151,574 @@ export default function ProfilePage() {
       )}
 
       {/* ─── Subscription Modal ─── */}
-      {showSubModal && (
-        <div className={`modal-backdrop ${styles.modalBackdropSlow}`} onClick={() => setShowSubModal(false)}>
+      {showSubModal && (() => {
+        const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+        return (
+          <div className={`modal-backdrop ${styles.modalBackdropSlow}`} onClick={() => setShowSubModal(false)}>
+            <div
+              className="glass-panel"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                maxWidth: "960px",
+                width: "100%",
+                padding: "24px 28px",
+                borderRadius: "16px",
+                background: "var(--bg-primary)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
+                border: "1px solid var(--border-glass)",
+                animation: "slide-up 0.3s ease",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                direction: "rtl",
+                textAlign: "right"
+              }}
+            >
+              {/* Modal Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", fontFamily: "var(--font-heading)" }}>
+                <h3 style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--text-primary)", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                  <i className="bx bxs-crown" style={{ color: "#fbbf24" }}></i>
+                  باقات ماب القاهرة
+                </h3>
+                <button
+                  onClick={() => setShowSubModal(false)}
+                  className="closeBut"
+                >
+                  <i className="bx bx-x"></i>
+                </button>
+              </div>
+
+              {/* Current Tier Info & Wallet Info Summary */}
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                background: "var(--bg-secondary)",
+                padding: "14px 20px",
+                borderRadius: "12px",
+                marginBottom: "24px",
+                border: "1px solid rgba(255,255,255,0.05)",
+                flexWrap: "wrap",
+                gap: "12px"
+              }}>
+                <div>
+                  <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>باقيتك الحالية:</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: "bold", color: "var(--text-primary)", marginTop: "2px" }}>
+                    {profile?.subscription_tier === 'mishwar'
+                      ? (profile?.subscription_status === 'cancelled' ? ' باقة المشوار (بانتظار الإلغاء)' : ' باقة المشوار (نشط)')
+                      : profile?.subscription_tier === 'silver'
+                        ? (profile?.subscription_status === 'cancelled' ? ' الباقة الفضية (بانتظار الإلغاء)' : ' الباقة الفضية (نشط)')
+                        : profile?.subscription_tier === 'gold'
+                          ? (profile?.subscription_status === 'cancelled' ? ' الباقة الذهبية (بانتظار الإلغاء)' : ' الباقة الذهبية (نشط)')
+                          : 'الباقة المجانية'}
+                  </div>
+                  {profile?.subscription_tier !== 'free' && profile?.subscription_end && (
+                    <div style={{ fontSize: "0.78rem", color: profile?.subscription_status === 'cancelled' ? '#ef4444' : 'var(--accent-gold, #eab308)', marginTop: "2px" }}>
+                      {profile?.subscription_status === 'cancelled'
+                        ? `تم إلغاء التجديد التلقائي. ستنتهي في: ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')}`
+                        : `تاريخ انتهاء الصلاحية: ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')}`}
+                    </div>
+                  )}
+                </div>
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>رصيد محفظتك الحالي:</div>
+                  <strong style={{ color: "#22c55e", fontSize: "1.15rem", marginTop: "2px", display: "block" }}>
+                    {(profile?.balance ?? 0).toFixed(2)} ج.م
+                  </strong>
+                </div>
+              </div>
+
+              {/* Status Messages */}
+              {subMessage && (
+                <div style={{
+                  padding: "12px",
+                  borderRadius: "10px",
+                  marginBottom: "20px",
+                  background: subMessage.type === "success" ? "rgba(52, 199, 89, 0.15)" : "rgba(255, 59, 48, 0.15)",
+                  color: subMessage.type === "success" ? "#34c759" : "#ff3b30",
+                  fontSize: "0.88rem",
+                  border: subMessage.type === "success" ? "1px solid rgba(52, 199, 89, 0.3)" : "1px solid rgba(255, 59, 48, 0.3)"
+                }}>
+                  {subMessage.text}
+                </div>
+              )}
+
+              {/* Toggle Billing Period */}
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "28px" }}>
+                <div style={{ display: "inline-flex", background: "var(--bg-muted)", padding: "4px", borderRadius: "30px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubscriptionPeriod("monthly");
+                      setSubMessage(null);
+                    }}
+                    style={{
+                      padding: "6px 24px",
+                      borderRadius: "20px",
+                      background: subscriptionPeriod === "monthly" ? "linear-gradient(135deg, #cac7ffff 0%, #84b3ffff 100%)" : "none",
+                      border: "none",
+                      color: "var(--text-prmiry)",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-heading)",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    شهري
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubscriptionPeriod("yearly");
+                      setSubMessage(null);
+                    }}
+                    style={{
+                      padding: "6px 24px",
+                      borderRadius: "20px",
+                      background: subscriptionPeriod === "yearly" ? "linear-gradient(135deg, #cac7ffff 0%, #84b3ffff 100%)" : "none",
+                      border: "none",
+                      color: "var(--text-prmiry)",
+                      fontFamily: "var(--font-heading)",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    سنوي (توفير 15%+)
+                  </button>
+                </div>
+              </div>
+
+              {/* Carousel Container */}
+              <div
+                ref={carouselRef}
+                onScroll={handleCarouselScroll}
+                className="sub-carousel"
+                style={{
+                  display: "flex",
+                  overflowX: "auto",
+                  scrollSnapType: "x mandatory",
+                  gap: "20px",
+                  padding: "10px 4px 20px",
+                  marginBottom: "10px",
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  scrollBehavior: "smooth"
+                }}
+              >
+                <style dangerouslySetInnerHTML={{
+                  __html: `
+                .sub-carousel::-webkit-scrollbar {
+                  display: none;
+                }
+              `}} />
+
+                {/* Card 1: Free */}
+                <div style={{
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
+                  border: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "2px solid var(--border-glass)" : "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  position: "relative",
+                  transition: "all 0.3s",
+                  width: "280px",
+                  flexShrink: 0,
+                  scrollSnapAlign: "center"
+                }}>
+                  <div>
+                    <h4 style={{ fontFamily: "var(--font-heading)", fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>الباقة المجانية</h4>
+                    <div style={{fontFamily: "var(--font-heading)", fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>0 ج.م</div>
+
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
+
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                      <li>تصفح خطوط المترو الأساسية والبحث</li>
+                      <li>عرض جداول المواعيد والمحطات التبادلية</li>
+                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>خريطة المونوريل التفاعلية الكاملة</li>
+                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
+                    </ul>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={subscribing || !profile?.subscription_tier || profile?.subscription_tier === "free"}
+                    onClick={() => handleConfirmSubscribe("free", null)}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "8px",
+                      background: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.1)",
+                      color: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "#64748b" : "#fff",
+                      border: "none",
+                      fontWeight: "bold",
+                      marginTop: "24px",
+                      cursor: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "default" : "pointer",
+                      fontSize: "0.88rem"
+                    }}
+                  >
+                    {(!profile?.subscription_tier || profile?.subscription_tier === "free") ? "باقتك الحالية" : "الرجوع للمجانية"}
+                  </button>
+                </div>
+
+                {/* Card 1.5: Mishwar */}
+                <div style={{
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
+                  border: profile?.subscription_tier === "mishwar" ? "2px solid #10b981" : "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  position: "relative",
+                  boxShadow: profile?.subscription_tier === "mishwar" ? "0 8px 24px rgba(16, 185, 129, 0.15)" : "none",
+                  transition: "all 0.3s",
+                  width: "280px",
+                  flexShrink: 0,
+                  scrollSnapAlign: "center"
+                }}>
+                  <div>
+                    <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>⚡</div>
+                    <h4 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>باقة المشوار</h4>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>
+                      9 ج.م
+                      <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
+                        {" "} / 24 ساعة
+                      </span>
+                    </div>
+
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
+
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                      <li style={{ color: "#10b981", fontWeight: "bold" }}>صلاحية كاملة لمدة 24 ساعة ⏱️</li>
+                      <li>تصفح خطوط المترو الأساسية والبحث</li>
+                      <li>خريطة المونوريل التفاعلية الكاملة 🚄</li>
+                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>محرك البحث المتقدم &quot;ازاي اروح&quot; للمواصلات 🗺️</li>
+                    </ul>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={subscribing || (profile?.subscription_tier === "mishwar" && !isExpired)}
+                    onClick={() => handleConfirmSubscribe("mishwar", "daily")}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "8px",
+                      background: (profile?.subscription_tier === "mishwar" && !isExpired) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                      color: (profile?.subscription_tier === "mishwar" && !isExpired) ? "#64748b" : "#fff",
+                      border: "none",
+                      fontWeight: "bold",
+                      marginTop: "24px",
+                      cursor: (profile?.subscription_tier === "mishwar" && !isExpired) ? "default" : "pointer",
+                      fontSize: "0.88rem"
+                    }}
+                  >
+                    {subscribing && selectedPlanId === "mishwar" ? "جاري التفعيل..." :
+                      (profile?.subscription_tier === "mishwar" && !isExpired) ? "باقتك الحالية" : "اشترك الآن"}
+                  </button>
+                </div>
+
+                {/* Card 2: Silver */}
+                <div style={{
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
+                  border: profile?.subscription_tier === "silver" ? "2px solid #6366f1" : "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  position: "relative",
+                  boxShadow: profile?.subscription_tier === "silver" ? "0 8px 24px rgba(99, 102, 241, 0.15)" : "none",
+                  transition: "all 0.3s",
+                  width: "280px",
+                  flexShrink: 0,
+                  scrollSnapAlign: "center"
+                }}>
+                  <div>
+                    <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🥈</div>
+                    <h4 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>الباقة الفضية</h4>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>
+                      {subscriptionPeriod === "monthly" ? "40 ج.م" : "450 ج.م"}
+                      <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
+                        {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
+                      </span>
+                    </div>
+
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
+
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                      <li>تصفح خطوط المترو الأساسية والبحث</li>
+                      <li>عرض جداول المواعيد والمحطات التبادلية</li>
+                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>خريطة المونوريل التفاعلية الكاملة 🚄</li>
+                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
+                    </ul>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={subscribing || (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod)}
+                    onClick={() => handleConfirmSubscribe("silver", subscriptionPeriod)}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "8px",
+                      background: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                      color: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#fff",
+                      border: "none",
+                      fontWeight: "bold",
+                      marginTop: "24px",
+                      cursor: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
+                      fontSize: "0.88rem"
+                    }}
+                  >
+                    {subscribing && selectedPlanId === "silver" ? "جاري التفعيل..." :
+                      (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
+                  </button>
+                </div>
+
+                {/* Card 3: Gold */}
+                <div style={{
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
+                  border: profile?.subscription_tier === "gold" ? "2px solid #eab308" : "1px solid var(--border-glass)",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  position: "relative",
+                  boxShadow: profile?.subscription_tier === "gold" ? "0 8px 24px rgba(234, 179, 8, 0.15)" : "none",
+                  transition: "all 0.3s",
+                  width: "280px",
+                  flexShrink: 0,
+                  scrollSnapAlign: "center"
+                }}>
+                  <div style={{ position: "absolute", top: "-12px", right: "20px", background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)", color: "#000", fontSize: "0.68rem", fontWeight: "900", padding: "3px 12px", borderRadius: "20px", border: "1px solid #fbbf24" }}>
+                    الأكثر تميزاً ⭐
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🥇</div>
+                    <h4 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>الباقة الذهبية</h4>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>
+                      {subscriptionPeriod === "monthly" ? "60 ج.م" : "700 ج.م"}
+                      <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
+                        {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
+                      </span>
+                    </div>
+
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
+
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                      <li>تصفح خطوط المترو الأساسية والبحث</li>
+                      <li>عرض جداول المواعيد والمحطات التبادلية</li>
+                      <li>خريطة المونوريل التفاعلية الكاملة 🚄</li>
+                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>محرك البحث المتقدم &quot;ازاي اروح&quot; للمواصلات 🗺️</li>
+                    </ul>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={subscribing || (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod)}
+                    onClick={() => handleConfirmSubscribe("gold", subscriptionPeriod)}
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      borderRadius: "8px",
+                      background: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+                      color: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#000",
+                      border: "none",
+                      fontWeight: "bold",
+                      marginTop: "24px",
+                      cursor: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
+                      fontSize: "0.88rem"
+                    }}
+                  >
+                    {subscribing && selectedPlanId === "gold" ? "جاري التفعيل..." :
+                      (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
+                  </button>
+                </div>
+
+              </div>
+
+              {/* Pagination Controls */}
+              <div style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "16px",
+                marginTop: "16px",
+                marginBottom: "10px"
+              }}>
+                {/* Right/Prev Arrow (RTL back) */}
+                <button
+                  type="button"
+                  onClick={() => scrollToCard(Math.max(0, activeCardIndex - 1))}
+                  disabled={activeCardIndex === 0}
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "36px",
+                    height: "36px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: activeCardIndex === 0 ? "#475569" : "#fff",
+                    cursor: activeCardIndex === 0 ? "default" : "pointer",
+                    fontSize: "1.2rem",
+                    transition: "all 0.2s"
+                  }}
+                >
+                  <i className="bx bx-chevron-right"></i>
+                </button>
+
+                {/* Dots */}
+                <div style={{ display: "flex", gap: "8px" }}>
+                  {[0, 1, 2, 3].map((idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => scrollToCard(idx)}
+                      style={{
+                        width: activeCardIndex === idx ? "24px" : "8px",
+                        height: "8px",
+                        borderRadius: "4px",
+                        background: activeCardIndex === idx ? "var(--accent-ios, #3b82f6)" : "rgba(255,255,255,0.2)",
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                        transition: "all 0.25s ease"
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Left/Next Arrow (RTL forward) */}
+                <button
+                  type="button"
+                  onClick={() => scrollToCard(Math.min(3, activeCardIndex + 1))}
+                  disabled={activeCardIndex === 3}
+                  style={{
+                    background: "rgba(255,255,255,0.06)",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "36px",
+                    height: "36px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: activeCardIndex === 3 ? "#475569" : "#fff",
+                    cursor: activeCardIndex === 3 ? "default" : "pointer",
+                    fontSize: "1.2rem",
+                    transition: "all 0.2s"
+                  }}
+                >
+                  <i className="bx bx-chevron-left"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {showSubConfirmModal && subConfirmData && (
+        <div
+          className={`modal-backdrop ${styles.modalBackdropSlow}`}
+          onClick={() => setShowSubConfirmModal(false)}
+          style={{ zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
           <div
             className="glass-panel"
             onClick={(e) => e.stopPropagation()}
             style={{
-              maxWidth: "960px",
-              width: "100%",
-              padding: "24px 28px",
-              borderRadius: "16px",
+              maxWidth: "420px",
+              width: "90%",
+              padding: "28px 24px",
+              borderRadius: "20px",
               background: "var(--bg-primary)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
               border: "1px solid var(--border-glass)",
-              animation: "slide-up 0.3s ease",
-              maxHeight: "90vh",
-              overflowY: "auto",
+              animation: "slide-up 0.25s ease",
               direction: "rtl",
-              textAlign: "right"
+              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
             }}
           >
-            {/* Modal Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ fontSize: "1.3rem", fontWeight: "900", color: "#fff", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-                <i className="bx bxs-crown" style={{ color: "#fbbf24" }}></i>
-                باقات الاشتراك القاهرة ماب
-              </h3>
-              <button
-                onClick={() => setShowSubModal(false)}
-                className="closeBut"
-                style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: "1.4rem" }}
-              >
-                <i className="bx bx-x"></i>
-              </button>
-            </div>
-
-            {/* Current Tier Info & Wallet Info Summary */}
+            {/* Confirmation Icon */}
             <div style={{
+              fontSize: "3.2rem",
+              marginBottom: "16px",
+              color: "var(--accent-gold, #eab308)",
+              background: "rgba(234, 179, 8, 0.1)",
+              width: "80px",
+              height: "80px",
+              borderRadius: "50%",
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              background: "rgba(255,255,255,0.03)",
-              padding: "14px 20px",
-              borderRadius: "12px",
-              marginBottom: "24px",
-              border: "1px solid rgba(255,255,255,0.05)",
-              flexWrap: "wrap",
-              gap: "12px"
+              justifyContent: "center"
             }}>
-              <div>
-                <div style={{ fontSize: "0.82rem", color: "#94a3b8" }}>باقيتك الحالية:</div>
-                <div style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#fff", marginTop: "2px" }}>
-                  {profile?.subscription_tier === 'silver' ? '🥈 الباقة الفضية (نشط)' : profile?.subscription_tier === 'gold' ? '🥇 الباقة الذهبية (نشط)' : 'الباقة المجانية'}
-                </div>
-                {profile?.subscription_tier !== 'free' && profile?.subscription_end && (
-                  <div style={{ fontSize: "0.78rem", color: "var(--accent-gold, #eab308)", marginTop: "2px" }}>
-                    تاريخ انتهاء الصلاحية: {new Date(profile.subscription_end).toLocaleDateString('ar-EG')}
-                  </div>
-                )}
-              </div>
-              <div style={{ textAlign: "left" }}>
-                <div style={{ fontSize: "0.82rem", color: "#94a3b8" }}>رصيد محفظتك الحالي:</div>
-                <strong style={{ color: "#22c55e", fontSize: "1.15rem", marginTop: "2px", display: "block" }}>
-                  {(profile?.balance ?? 0).toFixed(2)} ج.م
-                </strong>
-              </div>
+              <i className="bx bx-help-circle"></i>
             </div>
 
-            {/* Status Messages */}
-            {subMessage && (
-              <div style={{
-                padding: "12px",
-                borderRadius: "10px",
-                marginBottom: "20px",
-                background: subMessage.type === "success" ? "rgba(52, 199, 89, 0.15)" : "rgba(255, 59, 48, 0.15)",
-                color: subMessage.type === "success" ? "#34c759" : "#ff3b30",
-                fontSize: "0.88rem",
-                border: subMessage.type === "success" ? "1px solid rgba(52, 199, 89, 0.3)" : "1px solid rgba(255, 59, 48, 0.3)"
-              }}>
-                {subMessage.text}
-              </div>
-            )}
+            {/* Title */}
+            <h3 style={{ margin: "0 0 12px", fontSize: "1.25rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
+              تأكيد عملية الاشتراك
+            </h3>
 
-            {/* Toggle Billing Period */}
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "28px" }}>
-              <div style={{ display: "inline-flex", background: "rgba(255, 255, 255, 0.04)", padding: "4px", borderRadius: "30px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubscriptionPeriod("monthly");
-                    setSubMessage(null);
-                  }}
-                  style={{
-                    padding: "8px 24px",
-                    borderRadius: "20px",
-                    background: subscriptionPeriod === "monthly" ? "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)" : "none",
-                    border: "none",
-                    color: "#fff",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    transition: "all 0.2s"
-                  }}
-                >
-                  دفع شهري
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubscriptionPeriod("yearly");
-                    setSubMessage(null);
-                  }}
-                  style={{
-                    padding: "8px 24px",
-                    borderRadius: "20px",
-                    background: subscriptionPeriod === "yearly" ? "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)" : "none",
-                    border: "none",
-                    color: "#fff",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    transition: "all 0.2s"
-                  }}
-                >
-                  دفع سنوي (توفير 15%+)
-                </button>
-              </div>
-            </div>
+            {/* Message */}
+            <p style={{ fontSize: "0.92rem", color: "var(--text-secondary)", lineHeight: "1.6", margin: "0 0 28px", fontFamily: "var(--font-cairo)" }}>
+              {subConfirmData.message}
+            </p>
 
-            {/* Grid of Cards */}
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: "20px",
-              marginBottom: "20px"
-            }}>
-
-              {/* Card 1: Free */}
-              <div style={{
-                background: "rgba(255, 255, 255, 0.01)",
-                border: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "2px solid #94a3b8" : "1px solid rgba(255, 255, 255, 0.06)",
-                borderRadius: "16px",
-                padding: "24px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                position: "relative",
-                transition: "all 0.3s"
-              }}>
-                <div>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🆓</div>
-                  <h4 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#fff", margin: "0 0 8px" }}>الباقة المجانية</h4>
-                  <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "#fff", marginBottom: "16px" }}>0 ج.م</div>
-
-                  <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.06)", margin: "16px 0" }} />
-
-                  <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
-                    <li>تصفح خطوط المترو الأساسية والبحث</li>
-                    <li>عرض جداول المواعيد والمحطات التبادلية</li>
-                    <li style={{ textDecoration: "line-through", opacity: 0.5 }}>خريطة المونوريل التفاعلية الكاملة</li>
-                    <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
-                  </ul>
-                </div>
-
-                <button
-                  type="button"
-                  disabled={subscribing || !profile?.subscription_tier || profile?.subscription_tier === "free"}
-                  onClick={() => handleConfirmSubscribe("free", null)}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    borderRadius: "8px",
-                    background: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.1)",
-                    color: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "#64748b" : "#fff",
-                    border: "none",
-                    fontWeight: "bold",
-                    marginTop: "24px",
-                    cursor: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "default" : "pointer",
-                    fontSize: "0.88rem"
-                  }}
-                >
-                  {(!profile?.subscription_tier || profile?.subscription_tier === "free") ? "باقتك الحالية" : "الرجوع للمجانية"}
-                </button>
-              </div>
-
-              {/* Card 2: Silver */}
-              <div style={{
-                background: "rgba(255, 255, 255, 0.01)",
-                border: profile?.subscription_tier === "silver" ? "2px solid #6366f1" : "1px solid rgba(255, 255, 255, 0.06)",
-                borderRadius: "16px",
-                padding: "24px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                position: "relative",
-                boxShadow: profile?.subscription_tier === "silver" ? "0 8px 24px rgba(99, 102, 241, 0.15)" : "none",
-                transition: "all 0.3s"
-              }}>
-                <div>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🥈</div>
-                  <h4 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#fff", margin: "0 0 8px" }}>الباقة الفضية</h4>
-                  <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "#fff", marginBottom: "16px" }}>
-                    {subscriptionPeriod === "monthly" ? "40 ج.م" : "450 ج.م"}
-                    <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
-                      {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
-                    </span>
-                  </div>
-
-                  <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.06)", margin: "16px 0" }} />
-
-                  <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
-                    <li>تصفح خطوط المترو الأساسية والبحث</li>
-                    <li>عرض جداول المواعيد والمحطات التبادلية</li>
-                    <li style={{ color: "#fff", fontWeight: "bold" }}>خريطة المونوريل التفاعلية الكاملة 🚄</li>
-                    <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
-                  </ul>
-                </div>
-
-                <button
-                  type="button"
-                  disabled={subscribing || (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod)}
-                  onClick={() => handleConfirmSubscribe("silver", subscriptionPeriod)}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    borderRadius: "8px",
-                    background: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
-                    color: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#fff",
-                    border: "none",
-                    fontWeight: "bold",
-                    marginTop: "24px",
-                    cursor: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
-                    fontSize: "0.88rem"
-                  }}
-                >
-                  {subscribing && selectedPlanId === "silver" ? "جاري التفعيل..." :
-                    (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
-                </button>
-              </div>
-
-              {/* Card 3: Gold */}
-              <div style={{
-                background: "rgba(255, 255, 255, 0.01)",
-                border: profile?.subscription_tier === "gold" ? "2px solid #eab308" : "1px solid rgba(255, 255, 255, 0.06)",
-                borderRadius: "16px",
-                padding: "24px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                position: "relative",
-                boxShadow: profile?.subscription_tier === "gold" ? "0 8px 24px rgba(234, 179, 8, 0.15)" : "none",
-                transition: "all 0.3s"
-              }}>
-                <div style={{ position: "absolute", top: "-12px", right: "20px", background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)", color: "#000", fontSize: "0.68rem", fontWeight: "900", padding: "3px 12px", borderRadius: "20px", border: "1px solid #fbbf24" }}>
-                  الأكثر تميزاً ⭐
-                </div>
-                <div>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🥇</div>
-                  <h4 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#fff", margin: "0 0 8px" }}>الباقة الذهبية</h4>
-                  <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "#fff", marginBottom: "16px" }}>
-                    {subscriptionPeriod === "monthly" ? "60 ج.م" : "700 ج.م"}
-                    <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
-                      {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
-                    </span>
-                  </div>
-
-                  <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.06)", margin: "16px 0" }} />
-
-                  <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
-                    <li>تصفح خطوط المترو الأساسية والبحث</li>
-                    <li>عرض جداول المواعيد والمحطات التبادلية</li>
-                    <li>خريطة المونوريل التفاعلية الكاملة 🚄</li>
-                    <li style={{ color: "#fbbf24", fontWeight: "bold" }}>محرك البحث المتقدم &quot;ازاي اروح&quot; للمواصلات 🗺️</li>
-                  </ul>
-                </div>
-
-                <button
-                  type="button"
-                  disabled={subscribing || (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod)}
-                  onClick={() => handleConfirmSubscribe("gold", subscriptionPeriod)}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    borderRadius: "8px",
-                    background: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-                    color: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#000",
-                    border: "none",
-                    fontWeight: "bold",
-                    marginTop: "24px",
-                    cursor: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
-                    fontSize: "0.88rem"
-                  }}
-                >
-                  {subscribing && selectedPlanId === "gold" ? "جاري التفعيل..." :
-                    (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
-                </button>
-              </div>
-
+            {/* Action Buttons */}
+            <div style={{ display: "flex", gap: "12px", width: "100%" }}>
+              <button
+                type="button"
+                onClick={() => executeSubscribe(subConfirmData.planId, subConfirmData.period)}
+                className="ios-btn ios-btn-primary"
+                style={{
+                  flex: 1,
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
+                  justifyContent: "center",
+                  background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-cairo)"
+                }}
+              >
+                تأكيد ومتابعة
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowSubConfirmModal(false)}
+                className="ios-btn"
+                style={{
+                  flex: 1,
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
+                  justifyContent: "center",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  color: "var(--text-secondary)",
+                  border: "1px solid var(--border-glass)",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-cairo)"
+                }}
+              >
+                إلغاء
+              </button>
             </div>
           </div>
         </div>
@@ -4421,17 +4811,11 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setWalletTab("deposit")}
-                      className="ios-btn"
+                      className={clsx("ios-btn", styles.actionsButton)}
                       style={{
-                        flex: 1,
-                        padding: "8px 10px",
-                        justifyContent: "center",
-                        fontFamily:"var(--font-body)",
-                        fontSize: "0.9rem",
                         background: "rgba(16, 185, 129, 0.1)",
                         color: "#10b981",
-                        border: "1px solid rgba(16, 185, 129, 0.2)",
-                        fontWeight: "bold"
+                        border: "1px solid rgba(16, 185, 129, 0.2)"
                       }}
                     >
                       <PiHandWithdrawBold style={{ fontSize: "1.1rem" }} />
@@ -4440,16 +4824,11 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setWalletTab("withdraw")}
-                      className="ios-btn"
+                      className={clsx("ios-btn", styles.actionsButton)}
                       style={{
-                        flex: 1,
-                         padding: "8px 10px",
-                        justifyContent: "center",
-                        fontSize: "0.9rem",
                         background: "rgba(239, 68, 68, 0.1)",
                         color: "#f87171",
                         border: "1px solid rgba(239, 68, 68, 0.2)",
-                        fontWeight: "bold"
                       }}
                     >
                       <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
@@ -4995,7 +5374,8 @@ export default function ProfilePage() {
             )}
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }

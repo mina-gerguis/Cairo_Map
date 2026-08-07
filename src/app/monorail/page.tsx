@@ -9,7 +9,7 @@ export default function MonorailPage() {
 
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin || 
-    ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
+    ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
 
   if (loading) {
     return (

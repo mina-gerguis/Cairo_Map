@@ -7,6 +7,11 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS promo_balance NUMERIC(10,2)
 CREATE OR REPLACE FUNCTION public.check_profile_updates()
 RETURNS TRIGGER AS $$
 BEGIN
+  -- السماح بالتحديثات التي تتم عبر دوال النظام الآمنة (مثل عمليات الشراء والتحويل)
+  IF current_user IN ('postgres', 'supabase_admin') THEN
+    RETURN NEW;
+  END IF;
+
   -- التحقق من حدوث تغيير في الحقول الحساسة
   IF (
     OLD.points IS DISTINCT FROM NEW.points OR
@@ -139,4 +144,37 @@ EXCEPTION WHEN OTHERS THEN
   RETURN jsonb_build_object('success', false, 'message', 'حدث خطأ أثناء معالجة العملية: ' || SQLERRM);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- 6. دالة آمنة تتيح للمسؤولين فقط تعديل نقاط وأرصدة أي مستخدم مباشرة (تتخطى قيود RLS)
+CREATE OR REPLACE FUNCTION public.admin_update_user_assets(
+    p_user_id UUID,
+    p_points INT,
+    p_balance NUMERIC(10,2),
+    p_promo_balance NUMERIC(10,2)
+)
+RETURNS JSONB AS $$
+BEGIN
+  -- التحقق من أن منفذ العملية مسؤول (Admin)
+  IF NOT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND is_admin = true
+  ) THEN
+    RETURN jsonb_build_object('success', false, 'message', 'غير مصرح لك بإجراء هذه العملية. يجب أن تكون مسؤولاً.');
+  END IF;
+
+  -- تحديث بيانات النقاط والأرصدة
+  UPDATE public.profiles
+  SET 
+    points = p_points,
+    balance = p_balance,
+    promo_balance = p_promo_balance
+  WHERE id = p_user_id;
+
+  RETURN jsonb_build_object('success', true, 'message', 'تم تحديث النقاط والأرصدة بنجاح.');
+EXCEPTION WHEN OTHERS THEN
+  RETURN jsonb_build_object('success', false, 'message', 'حدث خطأ أثناء تحديث البيانات: ' || SQLERRM);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 

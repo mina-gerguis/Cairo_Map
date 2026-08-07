@@ -467,6 +467,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  font-family: var(--font-heading);
 }
 
 /* Card Main Style */
@@ -2145,18 +2146,42 @@
 }
 
 @keyframes coinPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5)); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
+  }
 }
 
 @keyframes walletPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5)); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5));
+  }
 }
 
 @keyframes promoPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5)); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5));
+  }
 }
 
 .usernameWrapper {
@@ -2201,8 +2226,24 @@
     transform: scale(0.6);
     opacity: 0;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+
+
+
+
+/* Wallet Section */
+.actionsButton {
+  flex: 1;
+  padding: var(--pa-btn);
+  border-radius: var(--radius-xs);
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: bold;
 }

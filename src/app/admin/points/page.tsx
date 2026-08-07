@@ -310,16 +310,17 @@ export default function AdminPointsPage() {
     }
 
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          points: finalPoints,
-          balance: parseFloat(finalBalance.toFixed(2)),
-          promo_balance: parseFloat(finalPromoBalance.toFixed(2)),
-        })
-        .eq("id", selectedUser.id);
+      const { data, error } = await supabase.rpc("admin_update_user_assets", {
+        p_user_id: selectedUser.id,
+        p_points: finalPoints,
+        p_balance: parseFloat(finalBalance.toFixed(2)),
+        p_promo_balance: parseFloat(finalPromoBalance.toFixed(2)),
+      });
 
       if (error) throw error;
+      if (data && !data.success) {
+        throw new Error(data.message || "حدث خطأ أثناء تحديث البيانات");
+      }
 
       // Update state locally
       setUsersList((prev) =>
