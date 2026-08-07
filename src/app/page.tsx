@@ -685,6 +685,73 @@ function HomeContent() {
           </Link>
         </div>
 
+        {/* ── Quick Transport Services Grid ── */}
+        <div style={{ marginBottom: "36px", direction: "rtl" }}>
+          <h3 style={{ 
+            fontFamily: "var(--font-display)", 
+            fontSize: "1.15rem", 
+            fontWeight: "800", 
+            marginBottom: "16px", 
+            color: "var(--text-primary)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px"
+          }}>
+            <i className="bx bx-compass" style={{ color: "var(--accent-ios, #3b82f6)", fontSize: "1.3rem" }}></i>
+            <span>دليل النقل والمواصلات في مصر</span>
+          </h3>
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", 
+            gap: "14px" 
+          }}>
+            {[
+              { href: "/lrt", label: "القطار الكهربائي LRT", icon: "🚄", desc: "محطات وتعرفة LRT", color: "rgba(6, 182, 212, 0.15)", border: "rgba(6, 182, 212, 0.3)" },
+              { href: "/railways", label: "سكك حديد مصر", icon: "🚂", desc: "مواعيد وأسعار القطارات", color: "rgba(239, 68, 68, 0.15)", border: "rgba(239, 68, 68, 0.3)" },
+              { href: "/airports", label: "المطارات المصرية", icon: "✈️", desc: "دليل الصالات والخدمات", color: "rgba(99, 102, 241, 0.15)", border: "rgba(99, 102, 241, 0.3)" },
+              { href: "/ports", label: "الموانئ البحرية", icon: "⚓", desc: "الموانئ التجارية والسياحية", color: "rgba(20, 184, 166, 0.15)", border: "rgba(20, 184, 166, 0.3)" },
+              { href: "/bus-stations", label: "مواقف الأتوبيسات", icon: "🚌", desc: "أتوبيسات السفر والشركات", color: "rgba(245, 158, 11, 0.15)", border: "rgba(245, 158, 11, 0.3)" },
+              { href: "/microbus-stations", label: "مواقف الميكروباص", icon: "🚐", desc: "دليل السرفيس والتعرفة", color: "rgba(139, 92, 246, 0.15)", border: "rgba(139, 92, 246, 0.3)" },
+            ].map((item, idx) => (
+              <Link 
+                key={idx} 
+                href={item.href} 
+                style={{ textDecoration: "none", display: "block" }}
+              >
+                <div 
+                  className="glass-panel" 
+                  style={{
+                    padding: "16px",
+                    textAlign: "center",
+                    border: `1px solid ${item.border}`,
+                    background: `linear-gradient(135deg, rgba(20, 25, 45, 0.7), ${item.color})`,
+                    borderRadius: "14px",
+                    height: "100%",
+                    transition: "all 0.25s ease-in-out",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "8px"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "none";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                >
+                  <div style={{ fontSize: "2rem", marginBottom: "4px" }}>{item.icon}</div>
+                  <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "#fff" }}>{item.label}</h4>
+                  <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)", lineHeight: "1.3" }}>{item.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* ── Categories + Proximity ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", flexGrow: 1 }}>
