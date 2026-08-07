@@ -46,7 +46,10 @@ export default function PlaceDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
 
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const hasAccess = profile?.is_admin || 
+    ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -997,6 +1000,7 @@ export default function PlaceDetailsPage() {
               >
                 <i className="bx bx-notepad" style={{ fontSize: "1.1rem", color: "#34c759" }}></i>
                 <span style={{ fontFamily: "var(--font-cairo)" }}>أضف تذكير</span>
+                {!hasAccess && <i className="bx bxs-crown" style={{ fontSize: "0.95rem", color: "#fbbf24" }}></i>}
               </button>
 
               <button

@@ -72,6 +72,10 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  const profileExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const hasRemindersAccess = profile?.is_admin || 
+    ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !profileExpired);
+
   const [showDevicesModal, setShowDevicesModal] = useState(false);
   const [devicesList, setDevicesList] = useState<any[]>([]);
   const [loadingDevices, setLoadingDevices] = useState(false);
@@ -2186,8 +2190,9 @@ export default function ProfilePage() {
               <i className={`bx bx-notepad ${styles.cardIcon}`}></i>
             </div>
             {/* Title */}
-            <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <h3 className={styles.cardTitle}>التذكيرات والملاحظات</h3>
+              {!hasRemindersAccess && <i className="bx bxs-crown" style={{ fontSize: "1rem", color: "#fbbf24" }}></i>}
             </div>
           </div>
           <div className={styles.badgeRight}>
@@ -3570,56 +3575,117 @@ export default function ProfilePage() {
                 <i className="bx bx-x" style={{ fontSize: "1.5rem" }}></i>
               </button>
             </div>
-            <p className={styles.devicesModalSubtitle}>
-              إجمالي الملاحظات والتذكيرات المضافة للأماكن: {reminders.length}
-            </p>
+            
+            {!hasRemindersAccess ? (
+              <div style={{ textAlign: "center", padding: "30px 15px", direction: "rtl" }}>
+                <style dangerouslySetInnerHTML={{
+                  __html: `
+                    @keyframes pulseLock {
+                      0% { transform: scale(1); opacity: 0.9; }
+                      50% { transform: scale(1.1); opacity: 1; }
+                      100% { transform: scale(1); opacity: 0.9; }
+                    }
+                  `
+                }} />
+                <div style={{ 
+                  fontSize: "3.5rem", 
+                  marginBottom: "16px", 
+                  animation: "pulseLock 2s infinite ease-in-out",
+                  display: "inline-block"
+                }}>🔒</div>
+                <h4 style={{ 
+                  fontSize: "1.15rem", 
+                  fontWeight: "800", 
+                  color: "var(--text-primary)", 
+                  marginBottom: "10px",
+                  fontFamily: "var(--font-cairo)"
+                }}>
+                  تنبيه: باقة غير صالحة
+                </h4>
+                <p style={{ 
+                  fontSize: "0.85rem", 
+                  color: "var(--text-secondary)", 
+                  lineHeight: "1.6", 
+                  marginBottom: "24px",
+                  fontFamily: "var(--font-cairo)"
+                }}>
+                  ميزة التذكيرات والملاحظات الخاصة بالأماكن متوفرة فقط لمشتركي باقة المشوار، الفضية، والذهبية. يرجى الاشتراك أو الترقية لتفعيلها!
+                </p>
+                <button 
+                  className="ios-btn ios-btn-primary" 
+                  style={{ 
+                    width: "100%", 
+                    padding: "12px", 
+                    fontSize: "0.95rem", 
+                    fontWeight: "bold",
+                    background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer"
+                  }}
+                  onClick={() => {
+                    setIsRemindersModalOpen(false);
+                    setShowSubModal(true);
+                  }}
+                >
+                  🚀 اشترك أو رقّي حسابك الآن
+                </button>
+              </div>
+            ) : (
+              <>
+                <p className={styles.devicesModalSubtitle}>
+                  إجمالي الملاحظات والتذكيرات المضافة للأماكن: {reminders.length}
+                </p>
 
-            <div className={styles.devicesListContainer}>
-              {loadingReminders ? (
-                <div className={styles.devicesSpinnerContainer}>
-                  <div className="spinner" />
-                  <p>جاري تحميل التذكيرات...</p>
-                </div>
-              ) : reminders.length === 0 ? (
-                <p className={styles.noDevicesText}>لا يوجد أي ملاحظات أو تذكيرات مضافة بعد.</p>
-              ) : (
-                <div className={styles.devicesListGap}>
-                  {reminders.map((rem) => (
-                    <div
-                      key={rem.id}
-                      onClick={() => { setIsRemindersModalOpen(false); router.push(`/places/${rem.placeId}`); }}
-                      className={styles.deviceItem}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <div className={styles.deviceItemLeft}>
-                        <div className={styles.deviceIconBox} style={{ color: "#34c759", background: "rgba(52, 199, 89, 0.1)" }}>
-                          <i className={`bx bx-notepad ${styles.deviceIcon}`}></i>
-                        </div>
-                        <div className={styles.deviceInfoTexts}>
-                          <div className={styles.deviceNameRow}>
-                            <span className={styles.deviceName}>{rem.placeName}</span>
-                          </div>
-                          <p style={{ margin: "4px 0", fontSize: "0.88rem", color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}>
-                            {rem.note}
-                          </p>
-                          <div className={styles.deviceMetaRow}>
-                            <span>📅 {new Date(rem.updatedAt).toLocaleDateString("ar-EG", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={(e) => handleDeleteReminder(e, rem.id)}
-                        className={styles.deactivateDeviceBtn}
-                        title="حذف الملاحظة"
-                      >
-                        <i className="bx bx-trash"></i>
-                      </button>
+                <div className={styles.devicesListContainer}>
+                  {loadingReminders ? (
+                    <div className={styles.devicesSpinnerContainer}>
+                      <div className="spinner" />
+                      <p>جاري تحميل التذكيرات...</p>
                     </div>
-                  ))}
+                  ) : reminders.length === 0 ? (
+                    <p className={styles.noDevicesText}>لا يوجد أي ملاحظات أو تذكيرات مضافة بعد.</p>
+                  ) : (
+                    <div className={styles.devicesListGap}>
+                      {reminders.map((rem) => (
+                        <div
+                          key={rem.id}
+                          onClick={() => { setIsRemindersModalOpen(false); router.push(`/places/${rem.placeId}`); }}
+                          className={styles.deviceItem}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <div className={styles.deviceItemLeft}>
+                            <div className={styles.deviceIconBox} style={{ color: "#34c759", background: "rgba(52, 199, 89, 0.1)" }}>
+                              <i className={`bx bx-notepad ${styles.deviceIcon}`}></i>
+                            </div>
+                            <div className={styles.deviceInfoTexts}>
+                              <div className={styles.deviceNameRow}>
+                                <span className={styles.deviceName}>{rem.placeName}</span>
+                              </div>
+                              <p style={{ margin: "4px 0", fontSize: "0.88rem", color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}>
+                                {rem.note}
+                              </p>
+                              <div className={styles.deviceMetaRow}>
+                                <span>📅 {new Date(rem.updatedAt).toLocaleDateString("ar-EG", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={(e) => handleDeleteReminder(e, rem.id)}
+                            className={styles.deactivateDeviceBtn}
+                            title="حذف الملاحظة"
+                          >
+                            <i className="bx bx-trash"></i>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
 
             <button className="ios-btn" onClick={() => setIsRemindersModalOpen(false)} style={{ width: "100%", marginTop: "16px" }}>
               إغلاق
@@ -4339,6 +4405,7 @@ export default function ProfilePage() {
                       <li>تصفح خطوط المترو الأساسية والبحث</li>
                       <li>عرض جداول المواعيد والمحطات التبادلية</li>
                       <li style={{ textDecoration: "line-through", opacity: 0.5 }}>خريطة المونوريل التفاعلية الكاملة</li>
+                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>إضافة تذكيرات وملاحظات للأماكن</li>
                       <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
                     </ul>
                   </div>
@@ -4397,6 +4464,7 @@ export default function ProfilePage() {
                       <li>تصفح خطوط المترو الأساسية والبحث</li>
                       <li>خريطة المونوريل التفاعلية الكاملة 🚄</li>
                       <li style={{ color: "#fbbf24", fontWeight: "bold" }}>محرك البحث المتقدم &quot;ازاي اروح&quot; للمواصلات 🗺️</li>
+                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>إضافة تذكيرات وملاحظات للأماكن 📝</li>
                     </ul>
                   </div>
 
@@ -4454,6 +4522,7 @@ export default function ProfilePage() {
                       <li>تصفح خطوط المترو الأساسية والبحث</li>
                       <li>عرض جداول المواعيد والمحطات التبادلية</li>
                       <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>خريطة المونوريل التفاعلية الكاملة 🚄</li>
+                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>إضافة تذكيرات وملاحظات للأماكن 📝</li>
                       <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
                     </ul>
                   </div>
@@ -4516,6 +4585,7 @@ export default function ProfilePage() {
                       <li>عرض جداول المواعيد والمحطات التبادلية</li>
                       <li>خريطة المونوريل التفاعلية الكاملة 🚄</li>
                       <li style={{ color: "#fbbf24", fontWeight: "bold" }}>محرك البحث المتقدم &quot;ازاي اروح&quot; للمواصلات 🗺️</li>
+                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>إضافة تذكيرات وملاحظات للأماكن 📝</li>
                     </ul>
                   </div>
 

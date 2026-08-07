@@ -425,7 +425,7 @@ export default function MetroPage() {
   return (
     <div style={{ minHeight: "100vh", paddingBottom: "40px", backgroundColor: "var(--bg-primary)" }}>
       {/* Header Banner - Redesigned with a beautiful cover image instead of emoji */}
-      <div style={{
+      <div className="metro-animate-fade" style={{
         backgroundColor: "var(--bg-primary)",
         padding: "24px 20px 24px",
         textAlign: "center",
@@ -433,7 +433,7 @@ export default function MetroPage() {
         borderBottom: "1px solid var(--border-glass)",
       }}>
         {/* Cover Image Banner */}
-        <div style={{
+        <div className="metro-animate-slide-down" style={{
           position: "relative",
           width: "100%",
           maxWidth: "800px",
@@ -465,31 +465,34 @@ export default function MetroPage() {
             pointerEvents: "none",
           }} />
         </div>
-        <h1 style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
-          fontWeight: "600",
-          color: "var(--text-primary)",
-          margin: "0 0 10px",
-          letterSpacing: "-0.5px",
-        }}> مترو القاهرة</h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
-          احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة تذكرتك.
-        </p>
 
-        {/* Lines Indicator Badges */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
-          {(["line1", "line2", "line3"] as LineId[]).map(l => (
-            <span key={l} style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              color: LINE_COLORS[l],
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>{LINE_NAMES[l]}</span>
-          ))}
+        <div className="metro-animate-slide-up metro-delay-100">
+          <h1 style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
+            fontWeight: "600",
+            color: "var(--text-primary)",
+            margin: "0 0 10px",
+            letterSpacing: "-0.5px",
+          }}> مترو القاهرة</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+            احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة تذكرتك.
+          </p>
+
+          {/* Lines Indicator Badges */}
+          <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
+            {(["line1", "line2", "line3"] as LineId[]).map(l => (
+              <span key={l} style={{
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--border-glass)",
+                color: LINE_COLORS[l],
+                borderRadius: "10px",
+                padding: "4px 14px",
+                fontSize: "0.78rem",
+                fontWeight: "700",
+              }}>{LINE_NAMES[l]}</span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -497,7 +500,7 @@ export default function MetroPage() {
       <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
 
         {/* Search Panel Card - Styled matching profile sectionCard */}
-        <div style={{
+        <div className="metro-animate-slide-up metro-delay-200" style={{
           backgroundColor: "var(--bg-primary)",
           border: "1px solid var(--border-glass)",
           borderRadius: "15px",
@@ -1095,7 +1098,7 @@ export default function MetroPage() {
         )}
 
         {/* METRO LINES EXPLORER */}
-        <div style={{ marginTop: "32px" }}>
+        <div className="metro-animate-slide-up metro-delay-300" style={{ marginTop: "32px" }}>
           <h2 style={{
             fontFamily: "var(--font-heading)",
             fontSize: "1.3rem",
@@ -1303,7 +1306,7 @@ export default function MetroPage() {
         </div>
 
         {/* OFFICIAL METRO MAP DOWNLOAD SECTION */}
-        <div style={{
+        <div className="metro-animate-slide-up metro-delay-400" style={{
           backgroundColor: "var(--bg-primary)",
           border: "1px solid var(--border-glass)",
           borderRadius: "15px",

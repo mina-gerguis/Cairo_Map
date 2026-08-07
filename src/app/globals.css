@@ -1899,3 +1899,64 @@ html.light .auth-card {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ============================================================
+   Metro Page Entrance Animations
+   ============================================================ */
+.metro-animate-fade {
+  opacity: 0;
+  animation: metro-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.metro-animate-slide-down {
+  opacity: 0;
+  animation: metro-slide-down 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.metro-animate-slide-up {
+  opacity: 0;
+  animation: metro-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.metro-delay-100 {
+  animation-delay: 100ms;
+}
+
+.metro-delay-200 {
+  animation-delay: 200ms;
+}
+
+.metro-delay-300 {
+  animation-delay: 300ms;
+}
+
+.metro-delay-400 {
+  animation-delay: 400ms;
+}
+
+@keyframes metro-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes metro-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes metro-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

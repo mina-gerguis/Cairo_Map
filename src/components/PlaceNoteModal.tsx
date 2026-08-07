@@ -15,12 +15,16 @@ interface PlaceNoteModalProps {
 }
 
 export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, onSaved }: PlaceNoteModalProps) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [noteText, setNoteText] = useState("");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [exists, setExists] = useState(false);
   const [status, setStatus] = useState("");
+
+  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const hasAccess = profile?.is_admin || 
+    ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
 
   useEffect(() => {
     if (!isOpen || !placeId || !user || !supabase) return;
@@ -58,6 +62,10 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
 
   const handleSave = async () => {
     if (!user || !supabase) return;
+    if (!hasAccess) {
+      setStatus("خطأ: يرجى الترقية للباقة الفضية أو الذهبية لاستخدام هذه الميزة.");
+      return;
+    }
     if (!noteText.trim()) {
       handleDelete();
       return;
@@ -91,6 +99,10 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
 
   const handleDelete = async () => {
     if (!user || !supabase) return;
+    if (!hasAccess) {
+      setStatus("خطأ: يرجى الترقية للباقة الفضية أو الذهبية.");
+      return;
+    }
     setSaving(true);
     setStatus("");
     try {
@@ -130,7 +142,7 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
         
         {/* Title */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", margin: 0, fontFamily: "var(--font-cairo)" }}>
             📝 إضافة تذكير / ملاحظة
           </h3>
           <button onClick={onClose} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer", display: "flex", alignItems: "center", padding: "8px" , borderRadius: "50%" }}>
@@ -138,14 +150,73 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
           </button>
         </div>
 
-        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 16px", lineHeight: "1.4" }}>
-          اكتب ملاحظة خاصة بك حول <strong>{placeName}</strong> (مثل: جرب طبق السوشي الجديد، أو اسأل عن العرض الخاص). لن يراها أحد غيرك.
-        </p>
-
         {loading ? (
           <div style={{ textAlign: "center", padding: "20px" }}>جاري تحميل ملاحظتك...</div>
+        ) : !hasAccess ? (
+          <div style={{ textAlign: "center", padding: "10px 0 10px", direction: "rtl" }}>
+            <style dangerouslySetInnerHTML={{
+              __html: `
+                @keyframes pulseLock {
+                  0% { transform: scale(1); opacity: 0.9; }
+                  50% { transform: scale(1.1); opacity: 1; }
+                  100% { transform: scale(1); opacity: 0.9; }
+                }
+              `
+            }} />
+            <div style={{ 
+              fontSize: "3.2rem", 
+              marginBottom: "16px", 
+              animation: "pulseLock 2s infinite ease-in-out",
+              display: "inline-block"
+            }}>🔒</div>
+            <h4 style={{ 
+              fontSize: "1.15rem", 
+              fontWeight: "800", 
+              color: "var(--text-primary)", 
+              marginBottom: "10px", 
+              fontFamily: "var(--font-cairo)" 
+            }}>
+              ميزة التذكيرات والملاحظات الخاصة
+            </h4>
+            <p style={{ 
+              fontSize: "0.85rem", 
+              color: "var(--text-secondary)", 
+              lineHeight: "1.6", 
+              marginBottom: "24px", 
+              fontFamily: "var(--font-cairo)",
+              padding: "0 10px"
+            }}>
+              إضافة تذكيرات وملاحظات خاصة للأماكن هي ميزة متوفرة حصرياً لمشتركي باقة المشوار، الفضية، والذهبية. اشترك الآن للاستفادة منها!
+            </p>
+            <a 
+              href="/profile" 
+              className="ios-btn ios-btn-primary" 
+              style={{ 
+                display: "inline-flex", 
+                alignItems: "center", 
+                justifyContent: "center", 
+                gap: "8px", 
+                width: "100%", 
+                padding: "12px", 
+                fontSize: "0.95rem", 
+                textDecoration: "none",
+                fontWeight: "bold",
+                background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "12px",
+                cursor: "pointer"
+              }}
+            >
+              🚀 اشترك أو رقّي حسابك الآن
+            </a>
+          </div>
         ) : (
           <div>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 16px", lineHeight: "1.4" }}>
+              اكتب ملاحظة خاصة بك حول <strong>{placeName}</strong> (مثل: جرب طبق السوشي الجديد، أو اسأل عن العرض الخاص). لن يراها أحد غيرك.
+            </p>
+
             {status && (
               <div style={{
                 background: status.startsWith("خطأ") ? "rgba(255,59,48,0.1)" : "rgba(52,199,89,0.1)",
