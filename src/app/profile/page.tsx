@@ -637,7 +637,7 @@ export default function ProfilePage() {
 
   const handleConfirmSubscribe = async (planId: string, period: "monthly" | "yearly" | null) => {
     if (!supabase || !user || !profile) return;
-    
+
     // Check pricing
     let price = 0;
     if (planId === "silver") {
@@ -645,20 +645,20 @@ export default function ProfilePage() {
     } else if (planId === "gold") {
       price = period === "monthly" ? 60 : 700;
     }
-    
+
     if (planId !== "free" && (profile.balance ?? 0) < price) {
-      setSubMessage({ 
-        type: "error", 
-        text: `رصيد محفظتك غير كافٍ للاشتراك (مطلوب ${price} ج.م، رصيدك الحالي ${(profile.balance ?? 0).toFixed(2)} ج.م). يرجى شحن الرصيد أولاً.` 
+      setSubMessage({
+        type: "error",
+        text: `رصيد محفظتك غير كافٍ للاشتراك (مطلوب ${price} ج.م، رصيدك الحالي ${(profile.balance ?? 0).toFixed(2)} ج.م). يرجى شحن الرصيد أولاً.`
       });
       return;
     }
 
     const planLabel = planId === "silver" ? "الباقة الفضية" : planId === "gold" ? "الباقة الذهبية" : "الباقة المجانية";
     const periodLabel = period === "monthly" ? "شهرياً" : period === "yearly" ? "سنوياً" : "";
-    
-    const confirmMessage = planId === "free" 
-      ? "هل أنت متأكد من التحويل للباقة المجانية؟" 
+
+    const confirmMessage = planId === "free"
+      ? "هل أنت متأكد من التحويل للباقة المجانية؟"
       : `هل أنت متأكد من الاشتراك في ${planLabel} ${periodLabel} بقيمة ${price} ج.م؟ سيتم الخصم من رصيد محفظتك مباشرة.`;
 
     if (!confirm(confirmMessage)) {
@@ -668,7 +668,7 @@ export default function ProfilePage() {
     setSubscribing(true);
     setSubMessage(null);
     setSelectedPlanId(planId);
-    
+
     try {
       const { data, error } = await supabase.rpc("subscribe_to_plan", {
         p_plan_id: planId,
@@ -1844,7 +1844,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div className={styles.formButtonsRow}>
-                  <button className={`ios-btn ${styles.flex1}`} onClick={() => setEditMode(false)} style={{border: "1px solid var(--border-glass)", borderRadius: "16px", width: "50%", alignItems: "center", justifyContent: "center"}}>إلغاء</button>
+                  <button className={`ios-btn ${styles.flex1}`} onClick={() => setEditMode(false)} style={{ border: "1px solid var(--border-glass)", borderRadius: "16px", width: "50%", alignItems: "center", justifyContent: "center" }}>إلغاء</button>
                   <button className={`ios-btn ios-btn-primary ${styles.flex1}`} onClick={handleSave} disabled={saving}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
                 </div>
               </div>
@@ -1854,7 +1854,7 @@ export default function ProfilePage() {
                   <span className={styles.infoLabel}>اسم المستخدم</span>
                   <div className={styles.usernameWrapper}>
                     <span className={styles.infoValue}>@{profile?.username}</span>
-                    <button 
+                    <button
                       className={styles.copyButton}
                       onClick={() => {
                         if (profile?.username) {
@@ -4070,14 +4070,14 @@ export default function ProfilePage() {
             </div>
 
             {/* Current Tier Info & Wallet Info Summary */}
-            <div style={{ 
-              display: "flex", 
-              justifyContent: "space-between", 
-              alignItems: "center", 
-              background: "rgba(255,255,255,0.03)", 
-              padding: "14px 20px", 
-              borderRadius: "12px", 
-              marginBottom: "24px", 
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              background: "rgba(255,255,255,0.03)",
+              padding: "14px 20px",
+              borderRadius: "12px",
+              marginBottom: "24px",
               border: "1px solid rgba(255,255,255,0.05)",
               flexWrap: "wrap",
               gap: "12px"
@@ -4167,7 +4167,7 @@ export default function ProfilePage() {
               gap: "20px",
               marginBottom: "20px"
             }}>
-              
+
               {/* Card 1: Free */}
               <div style={{
                 background: "rgba(255, 255, 255, 0.01)",
@@ -4184,9 +4184,9 @@ export default function ProfilePage() {
                   <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🆓</div>
                   <h4 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#fff", margin: "0 0 8px" }}>الباقة المجانية</h4>
                   <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "#fff", marginBottom: "16px" }}>0 ج.م</div>
-                  
+
                   <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.06)", margin: "16px 0" }} />
-                  
+
                   <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
                     <li>تصفح خطوط المترو الأساسية والبحث</li>
                     <li>عرض جداول المواعيد والمحطات التبادلية</li>
@@ -4194,7 +4194,7 @@ export default function ProfilePage() {
                     <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
                   </ul>
                 </div>
-                
+
                 <button
                   type="button"
                   disabled={subscribing || !profile?.subscription_tier || profile?.subscription_tier === "free"}
@@ -4238,9 +4238,9 @@ export default function ProfilePage() {
                       {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
                     </span>
                   </div>
-                  
+
                   <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.06)", margin: "16px 0" }} />
-                  
+
                   <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
                     <li>تصفح خطوط المترو الأساسية والبحث</li>
                     <li>عرض جداول المواعيد والمحطات التبادلية</li>
@@ -4248,7 +4248,7 @@ export default function ProfilePage() {
                     <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
                   </ul>
                 </div>
-                
+
                 <button
                   type="button"
                   disabled={subscribing || (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod)}
@@ -4266,8 +4266,8 @@ export default function ProfilePage() {
                     fontSize: "0.88rem"
                   }}
                 >
-                  {subscribing && selectedPlanId === "silver" ? "جاري التفعيل..." : 
-                   (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
+                  {subscribing && selectedPlanId === "silver" ? "جاري التفعيل..." :
+                    (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
                 </button>
               </div>
 
@@ -4296,9 +4296,9 @@ export default function ProfilePage() {
                       {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
                     </span>
                   </div>
-                  
+
                   <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.06)", margin: "16px 0" }} />
-                  
+
                   <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
                     <li>تصفح خطوط المترو الأساسية والبحث</li>
                     <li>عرض جداول المواعيد والمحطات التبادلية</li>
@@ -4306,7 +4306,7 @@ export default function ProfilePage() {
                     <li style={{ color: "#fbbf24", fontWeight: "bold" }}>محرك البحث المتقدم &quot;ازاي اروح&quot; للمواصلات 🗺️</li>
                   </ul>
                 </div>
-                
+
                 <button
                   type="button"
                   disabled={subscribing || (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod)}
@@ -4324,8 +4324,8 @@ export default function ProfilePage() {
                     fontSize: "0.88rem"
                   }}
                 >
-                  {subscribing && selectedPlanId === "gold" ? "جاري التفعيل..." : 
-                   (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
+                  {subscribing && selectedPlanId === "gold" ? "جاري التفعيل..." :
+                    (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
                 </button>
               </div>
 
@@ -4424,8 +4424,9 @@ export default function ProfilePage() {
                       className="ios-btn"
                       style={{
                         flex: 1,
-                        padding: "12px",
+                        padding: "8px 10px",
                         justifyContent: "center",
+                        fontFamily:"var(--font-body)",
                         fontSize: "0.9rem",
                         background: "rgba(16, 185, 129, 0.1)",
                         color: "#10b981",
@@ -4433,7 +4434,7 @@ export default function ProfilePage() {
                         fontWeight: "bold"
                       }}
                     >
-                      <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
+                      <PiHandWithdrawBold style={{ fontSize: "1.1rem" }} />
                       إيداع
                     </button>
                     <button
@@ -4442,7 +4443,7 @@ export default function ProfilePage() {
                       className="ios-btn"
                       style={{
                         flex: 1,
-                        padding: "12px",
+                         padding: "8px 10px",
                         justifyContent: "center",
                         fontSize: "0.9rem",
                         background: "rgba(239, 68, 68, 0.1)",
@@ -4451,7 +4452,7 @@ export default function ProfilePage() {
                         fontWeight: "bold"
                       }}
                     >
-                      <PiHandWithdrawBold style={{ fontSize: "1.1rem" }} />
+                      <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
                       سحب
                     </button>
                   </div>
