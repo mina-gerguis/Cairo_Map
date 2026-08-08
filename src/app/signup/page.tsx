@@ -341,29 +341,29 @@ export default function SignupPage() {
   ];
   const current = stepInfo[step]!;
 
-  /* ── Reusable deviceItem field wrapper ── */
-  const fieldBox = (name: string, accentColor: string, accentRgb: string, hasError?: boolean) => ({
-    display: "flex" as const, alignItems: "center" as const, padding: "12px 16px",
-    background: "rgba(255,255,255,0.02)",
-    border: focusedField === name ? `1.5px solid ${accentColor}` : hasError ? "1.5px solid rgba(255,63,142,0.6)" : "1px solid var(--border-glass)",
-    borderRadius: "16px", gap: "12px", transition: "all 0.25s ease",
-    boxShadow: focusedField === name ? `0 0 0 3px rgba(${accentRgb},0.15)` : "none",
+  /* ── Reusable shadcn field-group style helpers ── */
+  const fieldLabel = (iconClass: string, text: string) => (
+    <span style={{
+      fontSize: "0.85rem", fontWeight: "600", color: "var(--text-primary)",
+      display: "flex", alignItems: "center", gap: "6px",
+    }}>
+      <i className={iconClass} style={{ fontSize: "1rem", color: "var(--accent-primary)", opacity: 0.8 }}></i>
+      {text}
+    </span>
+  );
+
+  const fieldInputStyle = (name: string, hasError?: boolean): React.CSSProperties => ({
+    height: "44px", width: "100%", minWidth: 0, borderRadius: "10px",
+    border: hasError ? "1.5px solid rgba(255,63,142,0.6)" : focusedField === name ? "1.5px solid var(--accent-primary)" : "1px solid var(--border-glass)",
+    background: "transparent", padding: "0 14px", fontSize: "0.9rem",
+    color: "var(--text-primary)", outline: "none", transition: "all 0.2s ease",
+    boxShadow: focusedField === name ? "0 0 0 3px rgba(108, 99, 255, 0.12)" : "none",
   });
 
-  const iconBox = (bg: string, color: string) => ({
-    width: "42px", height: "42px", borderRadius: "12px", background: bg, color,
-    display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const, flexShrink: 0 as const,
+  const selectStyle = (name: string): React.CSSProperties => ({
+    ...fieldInputStyle(name),
+    appearance: "auto" as const, cursor: "pointer",
   });
-
-  const labelStyle = (name: string, accentColor: string) => ({
-    fontSize: "0.75rem", color: focusedField === name ? accentColor : "var(--text-secondary)",
-    fontWeight: "700" as const, transition: "color 0.25s ease",
-  });
-
-  const inputBase: React.CSSProperties = {
-    border: "none", background: "transparent", outline: "none",
-    color: "var(--text-primary)", fontSize: "0.95rem", width: "100%", padding: 0,
-  };
 
   return (
     <AuthLayout>
@@ -413,103 +413,78 @@ export default function SignupPage() {
             {step === 1 && (
               <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "slide-in-section 0.4s ease" }}>
                 {/* Full Name */}
-                <div style={fieldBox("fullName", "var(--accent-primary)", "108,99,255", !!fieldErrors.fullName)}>
-                  <div style={iconBox("rgba(108,99,255,0.1)", "var(--accent-primary)")}><i className="bx bx-user" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={labelStyle("fullName", "var(--accent-primary)")}>الاسم بالكامل</label>
-                    <input type="text" required value={formData.fullName} onChange={(e) => updateData("fullName", e.target.value)} onFocus={() => setFocusedField("fullName")} onBlur={() => setFocusedField(null)} placeholder="أحمد محمد" style={inputBase} />
-                  </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="fullName">{fieldLabel("bx bx-user", "الاسم بالكامل")}</label>
+                  <input id="fullName" type="text" required value={formData.fullName} onChange={(e) => updateData("fullName", e.target.value)} onFocus={() => setFocusedField("fullName")} onBlur={() => setFocusedField(null)} placeholder="أحمد محمد" style={fieldInputStyle("fullName", !!fieldErrors.fullName)} />
+                  {fieldErrors.fullName && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-4px", display: "flex", alignItems: "center", gap: "4px" }}><span>⚠</span> {fieldErrors.fullName}</div>}
                 </div>
-                {fieldErrors.fullName && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px", display: "flex", alignItems: "center", gap: "4px" }}><span>⚠</span> {fieldErrors.fullName}</div>}
 
                 {/* Username */}
-                <div style={fieldBox("username", "#00d4aa", "0,212,170", !!fieldErrors.username)}>
-                  <div style={iconBox("rgba(0,212,170,0.1)", "#00d4aa")}><i className="bx bx-at" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={labelStyle("username", "#00d4aa")}>اسم المستخدم (إنجليزي فقط)</label>
-                    <input type="text" required minLength={3} value={formData.username} onChange={(e) => updateData("username", e.target.value)} onFocus={() => setFocusedField("username")} onBlur={() => setFocusedField(null)} placeholder="ahmed_mohamed" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
-                  </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="username">{fieldLabel("bx bx-at", "اسم المستخدم (إنجليزي فقط)")}</label>
+                  <input id="username" type="text" required minLength={3} value={formData.username} onChange={(e) => updateData("username", e.target.value)} onFocus={() => setFocusedField("username")} onBlur={() => setFocusedField(null)} placeholder="ahmed_mohamed" style={{ ...fieldInputStyle("username", !!fieldErrors.username), textAlign: "left", direction: "ltr" }} />
+                  {fieldErrors.username && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-4px" }}>⚠ {fieldErrors.username}</div>}
+                  {suggestions.length > 0 && !fieldErrors.username && (
+                    <div style={{ display: "flex", gap: "8px", marginTop: "-2px", flexWrap: "wrap" }}>
+                      <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", alignSelf: "center" }}>اقتراحات:</span>
+                      {suggestions.map((s, i) => (
+                        <button key={i} type="button" onClick={() => updateData("username", s)} style={{ fontSize: "0.8rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", borderRadius: "20px", padding: "4px 12px", color: "#a78bfa", cursor: "pointer", transition: "all 0.2s ease", fontFamily: "monospace" }}>
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                {fieldErrors.username && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px" }}>⚠ {fieldErrors.username}</div>}
-                {suggestions.length > 0 && !fieldErrors.username && (
-                  <div style={{ display: "flex", gap: "8px", marginTop: "-6px", flexWrap: "wrap" }}>
-                    <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", alignSelf: "center" }}>اقتراحات:</span>
-                    {suggestions.map((s, i) => (
-                      <button key={i} type="button" onClick={() => updateData("username", s)} style={{ fontSize: "0.8rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", borderRadius: "20px", padding: "4px 12px", color: "#a78bfa", cursor: "pointer", transition: "all 0.2s ease", fontFamily: "monospace" }}>
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                )}
 
                 {/* Phone */}
-                <div style={fieldBox("phone", "#3b82f6", "59,130,246", !!fieldErrors.phone)}>
-                  <div style={iconBox("rgba(59,130,246,0.1)", "#3b82f6")}><i className="bx bx-phone" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={labelStyle("phone", "#3b82f6")}>رقم الهاتف</label>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", direction: "ltr" }}>
-                      <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "700" }}>🇪🇬 +20</span>
-                      <span style={{ height: "16px", width: "1px", background: "var(--border-glass)" }} />
-                      <input type="tel" required value={formData.phone} onChange={(e) => updateData("phone", e.target.value)} onFocus={() => setFocusedField("phone")} onBlur={() => setFocusedField(null)} placeholder="1xxxxxxxxx" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
-                    </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="phone">{fieldLabel("bx bx-phone", "رقم الهاتف")}</label>
+                  <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                    <span style={{ position: "absolute", left: "14px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "700", pointerEvents: "none", display: "flex", alignItems: "center", gap: "6px" }}>🇪🇬 +20 <span style={{ height: "16px", width: "1px", background: "var(--border-glass)", display: "inline-block" }} /></span>
+                    <input id="phone" type="tel" required value={formData.phone} onChange={(e) => updateData("phone", e.target.value)} onFocus={() => setFocusedField("phone")} onBlur={() => setFocusedField(null)} placeholder="1xxxxxxxxx" style={{ ...fieldInputStyle("phone", !!fieldErrors.phone), textAlign: "left", direction: "ltr", paddingLeft: "90px" }} />
                   </div>
+                  {fieldErrors.phone && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-4px" }}>⚠ {fieldErrors.phone}</div>}
                 </div>
-                {fieldErrors.phone && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px" }}>⚠ {fieldErrors.phone}</div>}
 
                 {/* Email */}
-                <div style={fieldBox("email", "var(--accent-primary)", "108,99,255", !!fieldErrors.email)}>
-                  <div style={iconBox("rgba(108,99,255,0.1)", "var(--accent-primary)")}><i className="bx bx-envelope" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={labelStyle("email", "var(--accent-primary)")}>البريد الإلكتروني</label>
-                    <input type="email" required value={formData.email} onChange={(e) => updateData("email", e.target.value)} onFocus={() => setFocusedField("email")} onBlur={() => setFocusedField(null)} placeholder="example@email.com" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
-                  </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="signupEmail">{fieldLabel("bx bx-envelope", "البريد الإلكتروني")}</label>
+                  <input id="signupEmail" type="email" required value={formData.email} onChange={(e) => updateData("email", e.target.value)} onFocus={() => setFocusedField("email")} onBlur={() => setFocusedField(null)} placeholder="example@email.com" style={{ ...fieldInputStyle("email", !!fieldErrors.email), textAlign: "left", direction: "ltr" }} />
+                  {fieldErrors.email && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-4px" }}>⚠ {fieldErrors.email}</div>}
                 </div>
-                {fieldErrors.email && <div style={{ color: "#ff6eb4", fontSize: "0.8rem", marginTop: "-8px" }}>⚠ {fieldErrors.email}</div>}
 
                 {/* Date of Birth */}
-                <div style={fieldBox("dob", "#ff9500", "255,149,0")}>
-                  <div style={iconBox("rgba(255,149,0,0.1)", "#ff9500")}><i className="bx bx-calendar" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={labelStyle("dob", "#ff9500")}>تاريخ الميلاد</label>
-                    <input type="date" required max={maxDobDateStr} lang="en-US" value={formData.dob} onChange={(e) => updateData("dob", e.target.value)} onFocus={() => setFocusedField("dob")} onBlur={() => setFocusedField(null)} className="date-field-input" style={{ ...inputBase, direction: "ltr", fontFamily: "system-ui, -apple-system, sans-serif" }} />
-                  </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="dob">{fieldLabel("bx bx-calendar", "تاريخ الميلاد")}</label>
+                  <input id="dob" type="date" required max={maxDobDateStr} lang="en-US" value={formData.dob} onChange={(e) => updateData("dob", e.target.value)} onFocus={() => setFocusedField("dob")} onBlur={() => setFocusedField(null)} className="date-field-input" style={{ ...fieldInputStyle("dob"), direction: "ltr", fontFamily: "system-ui, -apple-system, sans-serif" }} />
                 </div>
 
                 {/* Gender */}
-                <div style={{ ...fieldBox("gender", "#ff3f8e", "255,63,142"), border: "1px solid var(--border-glass)", boxShadow: "none" }}>
-                  <div style={iconBox("rgba(255,63,142,0.1)", "#ff3f8e")}><i className="bx bx-male-female" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "700" }}>الجنس</label>
-                    <select required value={formData.gender} onChange={(e) => updateData("gender", e.target.value)} style={{ ...inputBase, appearance: "auto" as const }}>
-                      <option value="ذكر">ذكر</option>
-                      <option value="أنثى">أنثى</option>
-                    </select>
-                  </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="gender">{fieldLabel("bx bx-male-female", "الجنس")}</label>
+                  <select id="gender" required value={formData.gender} onChange={(e) => updateData("gender", e.target.value)} style={selectStyle("gender")}>
+                    <option value="ذكر">ذكر</option>
+                    <option value="أنثى">أنثى</option>
+                  </select>
                 </div>
 
                 {/* Governorate */}
-                <div style={{ ...fieldBox("gov", "#34c759", "52,199,89"), border: "1px solid var(--border-glass)", boxShadow: "none" }}>
-                  <div style={iconBox("rgba(52,199,89,0.1)", "#34c759")}><i className="bx bx-map" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "700" }}>المحافظة</label>
-                    <select required value={formData.governorate} onChange={(e) => { updateData("governorate", e.target.value); updateData("city", ""); }} style={{ ...inputBase, appearance: "auto" as const }}>
-                      <option value="" disabled>اختر المحافظة...</option>
-                      {governoratesList.map((g) => <option key={g} value={g}>{g}</option>)}
-                    </select>
-                  </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="governorate">{fieldLabel("bx bx-map", "المحافظة")}</label>
+                  <select id="governorate" required value={formData.governorate} onChange={(e) => { updateData("governorate", e.target.value); updateData("city", ""); }} style={selectStyle("gov")}>
+                    <option value="" disabled>اختر المحافظة...</option>
+                    {governoratesList.map((g) => <option key={g} value={g}>{g}</option>)}
+                  </select>
                 </div>
 
                 {/* City */}
                 {formData.governorate && (
-                  <div style={{ ...fieldBox("city", "#34c759", "52,199,89"), border: "1px solid var(--border-glass)", boxShadow: "none" }}>
-                    <div style={iconBox("rgba(52,199,89,0.1)", "#34c759")}><i className="bx bx-buildings" style={{ fontSize: "1.35rem" }}></i></div>
-                    <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                      <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "700" }}>المدينة</label>
-                      <select required value={formData.city} onChange={(e) => updateData("city", e.target.value)} style={{ ...inputBase, appearance: "auto" as const }}>
-                        <option value="" disabled>اختر المدينة...</option>
-                        {egyptLocations[formData.governorate].map((c) => <option key={c} value={c}>{c}</option>)}
-                      </select>
-                    </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <label htmlFor="city">{fieldLabel("bx bx-buildings", "المدينة")}</label>
+                    <select id="city" required value={formData.city} onChange={(e) => updateData("city", e.target.value)} style={selectStyle("city")}>
+                      <option value="" disabled>اختر المدينة...</option>
+                      {egyptLocations[formData.governorate].map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
                   </div>
                 )}
 
@@ -564,27 +539,25 @@ export default function SignupPage() {
             {step === 3 && (
               <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "slide-in-section 0.4s ease" }}>
                 {/* Password */}
-                <div style={fieldBox("password", "#ff3f8e", "255,63,142")}>
-                  <div style={iconBox("rgba(255,63,142,0.1)", "#ff3f8e")}><i className="bx bx-lock-alt" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={labelStyle("password", "#ff3f8e")}>كلمة المرور</label>
-                    <input type={showPassword ? "text" : "password"} required value={formData.password} onChange={(e) => updateData("password", e.target.value)} onFocus={() => setFocusedField("password")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="signupPassword">{fieldLabel("bx bx-lock-alt", "كلمة المرور")}</label>
+                  <div style={{ position: "relative" }}>
+                    <input id="signupPassword" type={showPassword ? "text" : "password"} required value={formData.password} onChange={(e) => updateData("password", e.target.value)} onFocus={() => setFocusedField("password")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...fieldInputStyle("password"), textAlign: "left", direction: "ltr", paddingRight: "44px" }} />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", top: "50%", right: "12px", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontSize: "1.15rem", display: "flex", alignItems: "center", padding: "2px" }}>
+                      {showPassword ? <i className="bx bx-hide"></i> : <i className="bx bx-show"></i>}
+                    </button>
                   </div>
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ background: "rgba(255,63,142,0.1)", border: "none", borderRadius: "10px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, fontSize: "1rem" }}>
-                    {showPassword ? "🙈" : "👁️"}
-                  </button>
                 </div>
 
                 {/* Confirm Password */}
-                <div style={fieldBox("confirmPassword", "var(--accent-primary)", "108,99,255")}>
-                  <div style={iconBox("rgba(108,99,255,0.1)", "var(--accent-primary)")}><i className="bx bx-check-shield" style={{ fontSize: "1.35rem" }}></i></div>
-                  <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "2px", textAlign: "right" }}>
-                    <label style={labelStyle("confirmPassword", "var(--accent-primary)")}>تأكيد كلمة المرور</label>
-                    <input type={showConfirmPassword ? "text" : "password"} required value={formData.confirmPassword} onChange={(e) => updateData("confirmPassword", e.target.value)} onFocus={() => setFocusedField("confirmPassword")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...inputBase, textAlign: "left", direction: "ltr" }} />
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label htmlFor="confirmPassword">{fieldLabel("bx bx-check-shield", "تأكيد كلمة المرور")}</label>
+                  <div style={{ position: "relative" }}>
+                    <input id="confirmPassword" type={showConfirmPassword ? "text" : "password"} required value={formData.confirmPassword} onChange={(e) => updateData("confirmPassword", e.target.value)} onFocus={() => setFocusedField("confirmPassword")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...fieldInputStyle("confirmPassword"), textAlign: "left", direction: "ltr", paddingRight: "44px" }} />
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: "absolute", top: "50%", right: "12px", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontSize: "1.15rem", display: "flex", alignItems: "center", padding: "2px" }}>
+                      {showConfirmPassword ? <i className="bx bx-hide"></i> : <i className="bx bx-show"></i>}
+                    </button>
                   </div>
-                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={{ background: "rgba(108,99,255,0.1)", border: "none", borderRadius: "10px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, fontSize: "1rem" }}>
-                    {showConfirmPassword ? "🙈" : "👁️"}
-                  </button>
                 </div>
 
                 {/* Rules */}

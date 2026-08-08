@@ -1794,7 +1794,7 @@ export default function AdminDashboard() {
                           />
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-primary)" }}>
-                              {prop.user_profile?.full_name || prop.user_profile?.username || "مستخدم دفتري"}
+                              {prop.user_profile?.full_name || prop.user_profile?.username || "مستخدم ماب القاهرة"}
                             </span>
                           </div>
                         </div>
@@ -2065,7 +2065,7 @@ export default function AdminDashboard() {
                           />
                           <div>
                             <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}>
-                              {selectedProposalDetails.user_profile?.full_name || selectedProposalDetails.user_profile?.username || "مستخدم دفتري"}
+                              {selectedProposalDetails.user_profile?.full_name || selectedProposalDetails.user_profile?.username || "مستخدم ماب القاهرة"}
                             </div>
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
                               تاريخ تقديم الاقتراح: {selectedProposalDetails.created_at ? new Date(selectedProposalDetails.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : ""}

@@ -10,7 +10,7 @@ export default function AboutPage() {
       <div className="glass-panel" style={{ padding: "60px 40px", textAlign: "center", marginBottom: "32px", position: "relative", overflow: "hidden" }}>
         <div style={{ fontSize: "5rem", marginBottom: "16px" }}>📋</div>
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: "3rem", fontWeight: "800", marginBottom: "12px", background: "linear-gradient(135deg, var(--text-primary) 50%, var(--accent-ios))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-          دفتر
+          ماب القاهرة
         </h1>
         <p style={{ fontSize: "1.15rem", color: "var(--text-secondary)", maxWidth: "500px", margin: "0 auto", lineHeight: "1.8" }}>
           دليلك الذكي الشامل لأرقام وعناوين ومواقع الأماكن والخدمات في جميع أنحاء مصر.
@@ -29,7 +29,7 @@ export default function AboutPage() {
           <div style={{ fontSize: "2.2rem", marginBottom: "12px" }}>🚀</div>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>تاريخ الإنشاء</h3>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7" }}>
-            تأسّس تطبيق دفتر في <strong style={{ color: "var(--text-primary)" }}>يوليو 2025</strong> برؤية واضحة لتوفير دليل رقمي ذكي يخدم المواطن المصري.
+            تأسّس تطبيق ماب القاهرة في <strong style={{ color: "var(--text-primary)" }}>يوليو 2025</strong> برؤية واضحة لتوفير دليل رقمي ذكي يخدم المواطن المصري.
           </p>
         </div>
 
@@ -47,14 +47,14 @@ export default function AboutPage() {
           <div style={{ fontSize: "2.2rem", marginBottom: "12px" }}>💡</div>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>الرؤية</h3>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7" }}>
-            أن يكون دفتر المرجع الرقمي الأول لكل مصري يبحث عن خدمة أو مكان، مع واجهة عصرية تشبه تطبيقات آبل الأصلية.
+            أن يكون ماب القاهرة المرجع الرقمي الأول لكل مصري يبحث عن خدمة أو مكان، مع واجهة عصرية تشبه تطبيقات آبل الأصلية.
           </p>
         </div>
       </div>
 
       {/* Features */}
       <div className="glass-panel" style={{ padding: "36px", marginBottom: "32px" }}>
-        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: "800", marginBottom: "24px", color: "var(--text-primary)" }}>ما يميز دفتر؟</h2>
+        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", fontWeight: "800", marginBottom: "24px", color: "var(--text-primary)" }}>ما يميز ماب القاهرة؟</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
           {[
             { emoji: "🔍", title: "بحث لحظي", desc: "نتائج فورية مع كل حرف تكتبه" },

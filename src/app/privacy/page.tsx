@@ -41,7 +41,7 @@ export default function PrivacyPage() {
         <div>
           <h2 style={{ fontSize: "1.3rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>1. مقدمة</h2>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
-            نحن في تطبيق <strong style={{ color: "var(--text-primary)" }}>دفتر (Dftry)</strong> نولي أهمية قصوى لخصوصية وأمان بيانات مستخدمينا. توضح هذه السياسة كيف نقوم بجمع معلوماتك الشخصية، استخدامها، وحمايتها عند استخدامك لخدمات الدليل المتاحة على منصتنا.
+            نحن في تطبيق <strong style={{ color: "var(--text-primary)" }}>ماب القاهرة</strong> نولي أهمية قصوى لخصوصية وأمان بيانات مستخدمينا. توضح هذه السياسة كيف نقوم بجمع معلوماتك الشخصية، استخدامها، وحمايتها عند استخدامك لخدمات الدليل المتاحة على منصتنا.
           </p>
         </div>
 

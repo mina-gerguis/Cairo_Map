@@ -26,7 +26,7 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
   // Demo direct sponsorship details
   const sponsorDetails = {
     title: "شاورما وصاج الشام 🌯",
-    description: "خصم خاص 15% لجميع مستخدمي تطبيق 'دفتر' بمناسبة الافتتاح! اضغط لمعرفة موقع الفرع القريب منك.",
+    description: "خصم خاص 15% لجميع مستخدمي تطبيق 'ماب القاهرة' بمناسبة الافتتاح! اضغط لمعرفة موقع الفرع القريب منك.",
     ctaText: "اطلب الآن 🚀",
     tag: "إعلان مميز ✨",
     gradient: "linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)",
