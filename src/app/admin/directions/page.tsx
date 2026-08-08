@@ -174,12 +174,12 @@ function parseMinutesFromArabic(text: string): number | null {
   return found ? totalMins : null;
 }
 
-export default function AdminDirectionsPage() {
+export default function AdminDirectionsPage({ isSubComponent = false }: { isSubComponent?: boolean }) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(isSubComponent ? true : false);
+  const [loading, setLoading] = useState(isSubComponent ? false : true);
   const [routes, setRoutes] = useState<RouteEntry[]>([]);
   const [dbMissing, setDbMissing] = useState(false);
 
@@ -572,7 +572,7 @@ export default function AdminDirectionsPage() {
     }
   };
 
-  if (loading || authLoading) {
+  if (!isSubComponent && (loading || authLoading)) {
     return (
       <div className={styles.loadingContainer}>
         <span className={styles.loadingSpinner} />
@@ -581,10 +581,9 @@ export default function AdminDirectionsPage() {
     );
   }
 
-  if (!isAdmin) {
+  if (!isSubComponent && !isAdmin) {
     return (
-      <div className={styles.errorCard} style={{ margin: "40px auto", maxWidth: "500px", textAlign: "center" }}>
-        <i className="bx bx-lock-alt" style={{ fontSize: "3rem", color: "var(--accent-danger)" }} />
+      <div style={{ textAlign: "center", padding: "100px 20px" }}>
         <h2 style={{ marginTop: "16px" }}>غير مصرح بالدخول</h2>
         <p style={{ color: "var(--text-secondary)" }}>عذراً، هذه الصفحة مخصصة لمديري النظام فقط.</p>
         <Link href="/" className="ios-btn ios-btn-primary" style={{ display: "inline-block", marginTop: "20px", textDecoration: "none" }}>العودة للرئيسية</Link>
@@ -593,20 +592,23 @@ export default function AdminDirectionsPage() {
   }
 
   return (
-    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "10px" }}>
+    <div style={isSubComponent ? { padding: 0 } : { maxWidth: "1000px", margin: "0 auto", padding: "10px" }}>
       
       {/* Title Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
-        <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: "900", margin: 0, color: "var(--text-primary)" }}>
-            إدارة خطوط ومسارات المواصلات
-          </h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 0" }}>
-            إضافة وتعديل خطوط مواصلات السفر والانتقال بين المدن لخدمة {"\"ازاي اروح ؟\""}.
-          </p>
-        </div>
+        {!isSubComponent ? (
+          <div>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: "900", margin: 0, color: "var(--text-primary)" }}>
+              إدارة خطوط ومسارات المواصلات
+            </h1>
+            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 0" }}>
+              إضافة وتعديل خطوط مواصلات السفر والانتقال بين المدن لخدمة {"\"ازاي اروح ؟\""}.
+            </p>
+          </div>
+        ) : <div />}
         <button 
           className="ios-btn ios-btn-primary" 
+          style={{ width: "auto" }}
           onClick={() => {
             if (showAddForm) {
               resetForm();

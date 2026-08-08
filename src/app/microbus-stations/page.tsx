@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 
 interface MicrobusRoute {
   destination: string;
@@ -11,19 +13,20 @@ interface MicrobusRoute {
 }
 
 interface MicrobusStation {
+  id?: string;
   name: string;
   location: string;
   governorate: string;
   routes: MicrobusRoute[];
-  mapUrl: string;
+  map_url: string;
 }
 
-const MICROBUS_STATIONS_DATA: MicrobusStation[] = [
+const DEFAULT_MICROBUS: MicrobusStation[] = [
   {
     name: "موقف رمسيس (موقف أحمد حلمي / رمسيس الكبرى)",
     location: "وسط البلد - بجوار محطة قطارات رمسيس ومترو الشهداء",
     governorate: "القاهرة",
-    mapUrl: "https://maps.google.com/?q=Ramses+Microbus+Station",
+    map_url: "https://maps.google.com/?q=Ramses+Microbus+Station",
     routes: [
       { destination: "6 أكتوبر", fare: "11-13 ج.م", vehicleType: "ميكروباص سقف عالي" },
       { destination: "الشيخ زايد", fare: "12-14 ج.م", vehicleType: "ميكروباص سقف عالي" },
@@ -41,7 +44,7 @@ const MICROBUS_STATIONS_DATA: MicrobusStation[] = [
     name: "موقف المرج الجديدة",
     location: "شمال شرق القاهرة - أسفل محطة مترو المرج الجديدة ومحور الفريق عرابي",
     governorate: "القاهرة",
-    mapUrl: "https://maps.google.com/?q=El+Marg+Microbus+Station",
+    map_url: "https://maps.google.com/?q=El+Marg+Microbus+Station",
     routes: [
       { destination: "العبور", fare: "7-9 ج.م", vehicleType: "ميكروباص" },
       { destination: "الشروق", fare: "9-11 ج.م", vehicleType: "ميكروباص" },
@@ -58,7 +61,7 @@ const MICROBUS_STATIONS_DATA: MicrobusStation[] = [
     name: "موقف ميدان الجيزة",
     location: "الجيزة - ميدان الجيزة بجوار مسجد الاستقامة ومترو الجيزة",
     governorate: "الجيزة",
-    mapUrl: "https://maps.google.com/?q=Giza+Square+Microbus+Station",
+    map_url: "https://maps.google.com/?q=Giza+Square+Microbus+Station",
     routes: [
       { destination: "6 أكتوبر", fare: "9-11 ج.م", vehicleType: "ميكروباص سقف عالي" },
       { destination: "الشيخ زايد", fare: "10-12 ج.م", vehicleType: "ميكروباص" },
@@ -74,7 +77,7 @@ const MICROBUS_STATIONS_DATA: MicrobusStation[] = [
     name: "موقف السيدة عائشة",
     location: "وسط القاهرة - ميدان السيدة عائشة أسفل القلعة",
     governorate: "القاهرة",
-    mapUrl: "https://maps.google.com/?q=Sayeda+Aisha+Microbus+Station",
+    map_url: "https://maps.google.com/?q=Sayeda+Aisha+Microbus+Station",
     routes: [
       { destination: "حلوان", fare: "8-10 ج.م", vehicleType: "ميكروباص" },
       { destination: "المعادي (صقر قريش)", fare: "6-7 ج.م", vehicleType: "ميكروباص" },
@@ -89,7 +92,7 @@ const MICROBUS_STATIONS_DATA: MicrobusStation[] = [
     name: "موقف المنيب الكبرى",
     location: "الجيزة - بجوار محطة مترو المنيب ومخرج الدائري للجنوب",
     governorate: "الجيزة",
-    mapUrl: "https://maps.google.com/?q=Moneeb+Microbus+Station",
+    map_url: "https://maps.google.com/?q=Moneeb+Microbus+Station",
     routes: [
       { destination: "الفيوم", fare: "25-30 ج.م", vehicleType: "ميكروباص إقليمي" },
       { destination: "بني سويف", fare: "30-35 ج.م", vehicleType: "ميكروباص إقليمي" },
@@ -102,23 +105,226 @@ const MICROBUS_STATIONS_DATA: MicrobusStation[] = [
 ];
 
 export default function MicrobusStationsPage() {
+  const { user, profile, loading: authLoading } = useAuth();
+  const [stations, setStations] = useState<MicrobusStation[]>([]);
+  const [loading, setLoading] = useState(true);
   const [destinationQuery, setDestinationQuery] = useState("");
   const [selectedStation, setSelectedStation] = useState<string>("all");
+
+  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const hasAccess = profile?.is_admin || 
+    ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
+
+  useEffect(() => {
+    if (user && hasAccess) {
+      loadStations();
+    }
+  }, [user, hasAccess]);
+
+  if (authLoading) {
+    return (
+      <div className="app-container" style={{ maxWidth: "800px", paddingTop: "100px", textAlign: "center" }}>
+        <div style={{
+          width: "40px",
+          height: "40px",
+          border: "4px solid rgba(255,255,255,0.1)",
+          borderTop: "4px solid var(--accent-ios, #3b82f6)",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          margin: "0 auto 20px"
+        }} />
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
+      </div>
+    );
+  }
+
+  if (!user || !hasAccess) {
+    return (
+      <div className="app-container" style={{ maxWidth: "600px", paddingTop: "60px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
+        {/* Back Button */}
+        <div style={{ marginBottom: "24px" }}>
+          <Link 
+            href="/" 
+            style={{ 
+              display: "inline-flex", 
+              alignItems: "center", 
+              gap: "8px", 
+              color: "var(--accent-ios, #3b82f6)", 
+              textDecoration: "none", 
+              fontWeight: "600",
+              fontSize: "0.95rem" 
+            }}
+          >
+            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
+            <span>العودة للرئيسية</span>
+          </Link>
+        </div>
+
+        {/* Premium Lock Panel */}
+        <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(234, 179, 8, 0.2)", position: "relative", overflow: "hidden" }}>
+          <div style={{
+            position: "absolute",
+            top: "-20px",
+            left: "-20px",
+            width: "140px",
+            height: "140px",
+            background: "radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%)",
+            borderRadius: "50%"
+          }} />
+
+          {/* Lock Icon */}
+          <div style={{ 
+            fontSize: "4.5rem", 
+            marginBottom: "24px",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100px",
+            height: "100px",
+            background: "rgba(234, 179, 8, 0.08)",
+            borderRadius: "50%",
+            border: "1px solid rgba(234, 179, 8, 0.3)",
+            color: "#eab308",
+            animation: "pulse 2s infinite"
+          }}>
+            <i className="bx bxs-lock-alt"></i>
+          </div>
+
+          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#fff", marginBottom: "14px" }}>
+            دليل مواقف الميكروباص ميزة ذهبية 🥇
+          </h2>
+          
+          <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
+            تصفح دليل مواقف الميكروباص والسرفيس في القاهرة والجيزة والتعرفة الرسمية للخطوط متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
+          </p>
+
+          {/* Features list */}
+          <div style={{ background: "rgba(255,255,255,0.02)", padding: "18px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
+            <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية (60 ج.م/شهرياً):</div>
+            <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <li>✨ مواقف السرفيس والميكروباص الرئيسية (رمسيس، المنيب، المرج، عبود، إلخ)</li>
+              <li>✨ التعرفة الرسمية التقريبية لخطوط الانتقال الداخلية والإقليمية</li>
+              <li>✨ نوع المركبات (سقف عالي، ميني باص، إلخ) والمسارات</li>
+              <li>✨ تشمل أيضاً مخطط الرحلات الذكي والمطارات والموانئ بالكامل</li>
+            </ul>
+          </div>
+
+          {/* Call to Actions */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
+            {user ? (
+              <Link
+                href="/profile"
+                style={{
+                  padding: "14px",
+                  borderRadius: "10px",
+                  background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+                  color: "#000",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  boxShadow: "0 4px 15px rgba(250, 204, 21, 0.3)",
+                  display: "block"
+                }}
+              >
+                🚀 اشترك الآن ورقّ حسابك للذهبية (60 ج.م)
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                style={{
+                  padding: "14px",
+                  borderRadius: "10px",
+                  background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                  color: "#fff",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
+                  display: "block"
+                }}
+              >
+                🔑 سجل دخولك أولاً لتفعيل الاشتراك
+              </Link>
+            )}
+            
+            <Link
+              href="/"
+              style={{
+                padding: "12px",
+                borderRadius: "10px",
+                background: "rgba(255, 255, 255, 0.04)",
+                color: "#94a3b8",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "0.9rem",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                display: "block"
+              }}
+            >
+              الرجوع للرئيسية
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const loadStations = async () => {
+    setLoading(true);
+    if (!supabase) {
+      setStations(getLocalStations());
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("microbus_stations")
+        .select("*")
+        .order("name", { ascending: true });
+
+      if (error) {
+        setStations(getLocalStations());
+      } else {
+        setStations(data || []);
+      }
+    } catch (err) {
+      setStations(getLocalStations());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getLocalStations = () => {
+    if (typeof window === "undefined") return DEFAULT_MICROBUS;
+    const local = localStorage.getItem("local_microbus_stations");
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch {
+        return DEFAULT_MICROBUS;
+      }
+    }
+    localStorage.setItem("local_microbus_stations", JSON.stringify(DEFAULT_MICROBUS));
+    return DEFAULT_MICROBUS;
+  };
 
   // 1. Get unique destinations for auto-suggest
   const allDestinations = useMemo(() => {
     const set = new Set<string>();
-    MICROBUS_STATIONS_DATA.forEach(station => {
-      station.routes.forEach(route => {
-        set.add(route.destination);
-      });
+    stations.forEach(station => {
+      if (Array.isArray(station.routes)) {
+        station.routes.forEach(route => {
+          set.add(route.destination);
+        });
+      }
     });
     return Array.from(set);
-  }, []);
+  }, [stations]);
 
   // 2. Filter logic: Search by destination or view by station
   const filteredResults = useMemo(() => {
-    let results = MICROBUS_STATIONS_DATA;
+    let results = stations;
 
     if (selectedStation !== "all") {
       results = results.filter(s => s.name.includes(selectedStation));
@@ -127,7 +333,8 @@ export default function MicrobusStationsPage() {
     if (destinationQuery.trim() !== "") {
       // Find matching routes inside stations
       return results.map(station => {
-        const matchingRoutes = station.routes.filter(r =>
+        const routesArr = Array.isArray(station.routes) ? station.routes : [];
+        const matchingRoutes = routesArr.filter(r =>
           r.destination.toLowerCase().includes(destinationQuery.toLowerCase())
         );
         return {
@@ -138,7 +345,7 @@ export default function MicrobusStationsPage() {
     }
 
     return results;
-  }, [destinationQuery, selectedStation]);
+  }, [destinationQuery, selectedStation, stations]);
 
   return (
     <div className="app-container" style={{ maxWidth: "950px", paddingTop: "40px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
@@ -230,11 +437,9 @@ export default function MicrobusStationsPage() {
               }}
             >
               <option value="all" style={{ backgroundColor: "#1e293b" }}>تصفية حسب موقف محدد (الكل)</option>
-              <option value="رمسيس" style={{ backgroundColor: "#1e293b" }}>موقف رمسيس</option>
-              <option value="المرج" style={{ backgroundColor: "#1e293b" }}>موقف المرج</option>
-              <option value="الجيزة" style={{ backgroundColor: "#1e293b" }}>موقف ميدان الجيزة</option>
-              <option value="السيدة عائشة" style={{ backgroundColor: "#1e293b" }}>موقف السيدة عائشة</option>
-              <option value="المنيب" style={{ backgroundColor: "#1e293b" }}>موقف المنيب</option>
+              {stations.map(s => (
+                <option key={s.id || s.name} value={s.name} style={{ backgroundColor: "#1e293b" }}>{s.name}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -266,9 +471,14 @@ export default function MicrobusStationsPage() {
 
       {/* Results Section */}
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-        {filteredResults.length > 0 ? (
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "40px" }}>
+            <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--accent-ios)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+            <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري تحميل البيانات...</span>
+          </div>
+        ) : filteredResults.length > 0 ? (
           filteredResults.map((station, sIdx) => (
-            <div key={sIdx} className="glass-panel" style={{ padding: "28px 24px" }}>
+            <div key={station.id || sIdx} className="glass-panel" style={{ padding: "28px 24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", alignItems: "flex-start", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "16px", marginBottom: "18px" }}>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: "1.25rem", fontWeight: "800", color: "#fff" }}>{station.name}</h3>
@@ -278,7 +488,7 @@ export default function MicrobusStationsPage() {
                 </div>
                 <div>
                   <a
-                    href={station.mapUrl}
+                    href={station.map_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
@@ -305,7 +515,7 @@ export default function MicrobusStationsPage() {
               <div>
                 <h4 style={{ fontSize: "0.95rem", fontWeight: "800", color: "#fff", marginBottom: "12px" }}>🚐 خطوط السير والتعرفة المتاحة بالموقف:</h4>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px" }}>
-                  {station.routes.map((route, rIdx) => (
+                  {Array.isArray(station.routes) && station.routes.map((route, rIdx) => (
                     <div 
                       key={rIdx} 
                       style={{ 

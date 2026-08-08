@@ -218,8 +218,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!user || !supabase || !isSessionRegistered) return;
 
+    let interval: ReturnType<typeof setInterval>;
+    let cancelled = false;
+
      const checkActiveSession = async () => {
-      if (typeof window === "undefined" || !supabase) return;
+      if (typeof window === "undefined" || !supabase || cancelled) return;
       const session_id = localStorage.getItem("dftry_device_session_id");
       if (!session_id) return;
 
@@ -230,28 +233,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           .eq("session_id", session_id)
           .maybeSingle();
 
-        if (error) {
-          console.error("Error verifying active session:", error);
+        if (error || cancelled) {
+          if (error) console.error("Error verifying active session:", error);
           return;
         }
 
-        if (!data || data.is_active === false || data.logged_out_at !== null) {
-          // Remotely logged out or session deleted!
+        // If no record found, the session hasn't been registered yet — skip this check
+        if (!data) return;
+
+        if (data.is_active === false || data.logged_out_at !== null) {
+          // Remotely logged out!
           clearInterval(interval);
-          await logout();
+          if (!cancelled) await logout();
         }
       } catch (err) {
         console.error("Failed to check active session status:", err);
       }
     };
 
-    // Check on mount
-    checkActiveSession();
+    // Delay the first check to give registerSession time to complete the upsert
+    const initialDelay = setTimeout(() => {
+      if (cancelled) return;
+      checkActiveSession();
+      // Then check periodically
+      interval = setInterval(checkActiveSession, 12000); // every 12 seconds
+    }, 3000); // wait 3 seconds before first check
 
-    // Check periodically
-    const interval = setInterval(checkActiveSession, 12000); // every 12 seconds
-
-    return () => clearInterval(interval);
+    return () => {
+      cancelled = true;
+      clearTimeout(initialDelay);
+      clearInterval(interval);
+    };
   }, [user, isSessionRegistered]);
 
   const logout = async () => {

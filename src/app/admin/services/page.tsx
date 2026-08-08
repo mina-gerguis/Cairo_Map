@@ -1,0 +1,1483 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
+import styles from "../admin.module.css";
+import Link from "next/link";
+import AdminDirectoryPage from "../directory/page";
+import AdminDirectionsPage from "../directions/page";
+
+// ── Default Mock / Seed Data ──
+const DEFAULT_MONORAIL: any[] = [
+  { name: "الاستاد", line_type: "east", station_order: 1 },
+  { name: "هشام بركات", line_type: "east", station_order: 2 },
+  { name: "نوري خطاب", line_type: "east", station_order: 3 },
+  { name: "الحي السابع", line_type: "east", station_order: 4 },
+  { name: "ذاكر حسين", line_type: "east", station_order: 5 },
+  { name: "المنطقة الحرة", line_type: "east", station_order: 6 },
+  { name: "المشير طنطاوي", line_type: "east", station_order: 7 },
+  { name: "وان قطامية", line_type: "east", station_order: 8 },
+  { name: "المستثمرين", line_type: "east", station_order: 9 },
+  { name: "النسيم", line_type: "east", station_order: 10 },
+  { name: "الجامعة الأمريكية", line_type: "east", station_order: 11 },
+  { name: "إعمار", line_type: "east", station_order: 12 },
+  { name: "ميدان النافورة", line_type: "east", station_order: 13 },
+  { name: "البروة", line_type: "east", station_order: 14 },
+  { name: "بيت الوطن", line_type: "east", station_order: 15 },
+  { name: "مسجد الفتاح العليم", line_type: "east", station_order: 16 },
+  { name: "الحي السكني R2", line_type: "east", station_order: 17 },
+  { name: "الدائري الإقليمي", line_type: "east", station_order: 18 },
+  { name: "فندق الماسة", line_type: "east", station_order: 19 },
+  { name: "الحي الحكومي", line_type: "east", station_order: 20 },
+  { name: "حي السفارات", line_type: "east", station_order: 21 },
+  { name: "مدينة الفنون والثقافة", line_type: "east", station_order: 22 },
+  { name: "أكتوبر الجديدة", line_type: "west", station_order: 1 },
+  { name: "المنطقة الصناعية", line_type: "west", station_order: 2 },
+  { name: "السادات", line_type: "west", station_order: 3 },
+  { name: "جهاز مدينة 6 أكتوبر", line_type: "west", station_order: 4 },
+  { name: "جمعية المهندسين", line_type: "west", station_order: 5 },
+  { name: "جامعة النيل", line_type: "west", station_order: 6 },
+  { name: "هايبر وان", line_type: "west", station_order: 7 },
+  { name: "الصحراوي", line_type: "west", station_order: 8 },
+  { name: "المنصورية", line_type: "west", station_order: 9 },
+  { name: "المريوطية", line_type: "west", station_order: 10 },
+  { name: "الطريق الدائري", line_type: "west", station_order: 11 },
+  { name: "العريش", line_type: "west", station_order: 12 },
+  { name: "المطبغة", line_type: "west", station_order: 13 },
+  { name: "بولاق الدكرور", line_type: "west", station_order: 14 },
+  { name: "جامعة الدول العربية", line_type: "west", station_order: 15 },
+  { name: "وادي النيل", line_type: "west", station_order: 16 }
+];
+
+const DEFAULT_LRT: any[] = [
+  { name: "عدلي منصور", line_type: "trunk", station_order: 1 },
+  { name: "العبور", line_type: "trunk", station_order: 2 },
+  { name: "المستقبل", line_type: "trunk", station_order: 3 },
+  { name: "الشروق", line_type: "trunk", station_order: 4 },
+  { name: "هليوبوليس الجديدة", line_type: "trunk", station_order: 5 },
+  { name: "بدر", line_type: "trunk", station_order: 6 },
+  { name: "الروبيكي", line_type: "capital", station_order: 1 },
+  { name: "حدائق العاصمة", line_type: "capital", station_order: 2 },
+  { name: "مطار العاصمة", line_type: "capital", station_order: 3 },
+  { name: "مدينة الفنون والثقافة", line_type: "capital", station_order: 4 },
+  { name: "المنطقة الصناعية", line_type: "ramadan", station_order: 1 },
+  { name: "مدينة المعرفة", line_type: "ramadan", station_order: 2 }
+];
+
+const DEFAULT_AIRPORTS: any[] = [
+  {
+    name: "مطار القاهرة الدولي (CAI)",
+    code: "CAI",
+    city: "القاهرة",
+    type: "مطار دولي رئيسي",
+    terminals: "مبنى الركاب 1 (القديم)، مبنى الركاب 2 (المطور)، مبنى الركاب 3 (الجديد)، الصالة الموسمية (للحج والعمرة).",
+    services: ["مواقف سيارات متعددة الطوابق", "إنترنت واي فاي مجاني", "صالات كبار الشخصيات (VIP Lounge)", "بنوك وصرافة 24 ساعة", "سوق حرة (Duty Free)", "تأجير سيارات", "فنادق ملاصقة للمطار"],
+    airlines: "مصر للطيران (المركز الرئيسي)، طيران الإمارات، الخطوط السعودية، لوفتهانزا، الخطوط البريطانية، الخطوط الفرنسية، طيران الخليج، وغيرها.",
+    phone: "19934",
+    map_url: "https://maps.google.com/?q=Cairo+International+Airport"
+  },
+  {
+    name: "مطار برج العرب الدولي (HBE)",
+    code: "HBE",
+    city: "الإسكندرية",
+    type: "مطار دولي إقليمي",
+    terminals: "مبنى ركاب رئيسي مجهز، ويجري حالياً إنشاء مبنى ركاب صديق للبيئة جديد.",
+    services: ["صالة سفر ووصول مكيفة", "مكتب صرافة وماكينات ATM", "كافيهات ومطاعم", "مواقف سيارات", "سوق حرة مبسطة"],
+    airlines: "مصر للطيران، طيران العربية، فلاي دبي، طيران النيل، الخطوط السعودية، طيران الجزيرة.",
+    phone: "03-4631000",
+    map_url: "https://maps.google.com/?q=Borg+El+Arab+International+Airport"
+  },
+  {
+    name: "مطار سفنكس الدولي (SPX)",
+    code: "SPX",
+    city: "الجيزة (الشيخ زايد / 6 أكتوبر)",
+    type: "مطار دولي جديد",
+    terminals: "مبنى ركاب رئيسي يخدم غرب القاهرة ومحافظات الدلتا ويخدم المتحف المصري الكبير والأهرامات.",
+    services: ["مواقف سيارات", "خدمات بنكية ومكينات ATM", "كافيهات وقاعة ركاب حديثة", "سوق حرة"],
+    airlines: "مصر للطيران (رحلات داخلية وخارجية)، ويز إير (Wizz Air)، طيران أديل، طيران العربية.",
+    phone: "02-35391645",
+    map_url: "https://maps.google.com/?q=Sphinx+International+Airport"
+  },
+  {
+    name: "مطار العاصمة الدولي (CCE)",
+    code: "CCE",
+    city: "العاصمة الإدارية الجديدة",
+    type: "مطار دولي جديد",
+    terminals: "مبنى ركاب رئيسي مجهز بأحدث تكنولوجيا التفتيش والخدمات يخدم العاصمة الجديدة والقناة.",
+    services: ["تكييف مركزي متطور", "خدمات بنكية وصرافة", "صالات انتظار متميزة", "منطقة مطاعم وكافيهات"],
+    airlines: "مصر للطيران، ورسميات وشارتر وسياحية خاصة وخطوط طيران إقليمية.",
+    phone: "02-38594700",
+    map_url: "https://maps.google.com/?q=Capital+International+Airport+Egypt"
+  },
+  {
+    name: "مطار الغردقة الدولي (HRG)",
+    code: "HRG",
+    city: "البحر الأحمر (الغردقة)",
+    type: "مطار دولي سياحي",
+    terminals: "مبنى الركاب 1 (الجديد والمميز بتصميمه)، مبنى الركاب 2 (القديم).",
+    services: ["صالات سفر ووصول واسعة", "إنترنت واي فاي متاح", "سوق حرة سياحية ضخمة", "مكاتب تأجير سيارات وشركات سياحة", "بنوك وصرافة"],
+    airlines: "مصر للطيران، طيران إيزي جيت، طيران كورندون، طيران التكثيف الإقليمي والرحلات الشارتر الروسية والأوروبية.",
+    phone: "065-3412000",
+    map_url: "https://maps.google.com/?q=Hurghada+International+Airport"
+  },
+  {
+    name: "مطار شرم الشيخ الدولي (SSH)",
+    code: "SSH",
+    city: "جنوب سيناء (شرم الشيخ)",
+    type: "مطار دولي سياحي",
+    terminals: "مبنى الركاب 1 (المطور والجديد)، ومبنى الركاب 2.",
+    services: ["خدمات سياحية متكاملة", "سوق حرة متنوعة", "صالات VIP مخصصة للوفود", "بنوك وصرافة 24 ساعة", "منطقة كافيهات خارجية ممتازة"],
+    airlines: "مصر للطيران، طيران الخليج، الخطوط السعودية، والعديد من شركات الطيران الأوروبية والشارتر والروسية.",
+    phone: "069-3601140",
+    map_url: "https://maps.google.com/?q=Sharm+El-Sheikh+International+Airport"
+  },
+  {
+    name: "مطار الأقصر الدولي (LXR)",
+    code: "LXR",
+    city: "الأقصر",
+    type: "مطار دولي أثري",
+    terminals: "مبنى ركاب رئيسي مصمم بطراز يتماشى مع الطابع الأثري لمدينة الأقصر.",
+    services: ["سوق حرة للهدايا والتحف", "صالات انتظار مريحة ومكيفة", "ماكينات صرف آلي وبنوك", "مواقف حافلات سياحية واسعة"],
+    airlines: "مصر للطيران، طيران النيل، وطيران مصر للطيران إكسبريس، ورحلات سياحية عارضة من أوروبا والخليج.",
+    phone: "095-2374655",
+    map_url: "https://maps.google.com/?q=Luxor+International+Airport"
+  }
+];
+
+const DEFAULT_PORTS: any[] = [
+  {
+    name: "ميناء الإسكندرية البحري",
+    governorate: "الإسكندرية",
+    sea: "البحر الأبيض المتوسط",
+    type: "تجاري / ركاب / سياحي",
+    capacity: "أكثر من 60% من تجارة مصر الخارجية تعبر من خلاله.",
+    description: "أقدم وأهم ميناء بحري تجاري في مصر. يضم الميناء أرصفة مخصصة للحاويات، البضائع العامة، الفحم، ومحطة ركاب سياحية حديثة تستقبل السفن السياحية العالمية.",
+    map_url: "https://maps.google.com/?q=Alexandria+Port"
+  },
+  {
+    name: "ميناء الدخيلة",
+    governorate: "الإسكندرية",
+    sea: "البحر الأبيض المتوسط",
+    type: "تجاري / صناعي",
+    capacity: "يعتبر الامتداد الطبيعي لميناء الإسكندرية لتقليل التكدس.",
+    description: "يقع غرب ميناء الإسكندرية ويخدم بشكل كبير المجمعات الصناعية المجاورة، مثل مصانع الحديد والصلب وغيرها، ويمتلك أرصفة عميقة لاستقبال السفن الضخمة.",
+    map_url: "https://maps.google.com/?q=Dekheila+Port"
+  },
+  {
+    name: "ميناء دمياط",
+    governorate: "دمياط",
+    sea: "البحر الأبيض المتوسط",
+    type: "تجاري / حاويات / غاز مسال",
+    capacity: "يتميز بوجود أحدث محطة لتداول الحاويات والبضائع العامة والغاز.",
+    description: "من أهم الموانئ المصرية الحديثة، يقع بالقرب من مدخل قناة السويس. يحتوي على تسهيلات متطورة لتداول الحاويات ومصنع رائد لتسييل وتصدير الغاز الطبيعي.",
+    map_url: "https://maps.google.com/?q=Damietta+Port"
+  },
+  {
+    name: "ميناء بورسعيد (شرق وغرب)",
+    governorate: "بورسعيد",
+    sea: "البحر الأبيض المتوسط / مدخل القناة",
+    type: "تجاري / حاويات عالمي",
+    capacity: "يقع مباشرة على المجرى الملاحي لقناة السويس.",
+    description: "ينقسم إلى ميناء غرب بورسعيد وميناء شرق بورسعيد المحوري العملاق الذي يعد من أسرع موانئ تداول الحاويات نمواً في العالم، ويعمل كمحطة ترانزيت رئيسية لربط قارات العالم.",
+    map_url: "https://maps.google.com/?q=Port+Said+Port"
+  },
+  {
+    name: "ميناء العين السخنة",
+    governorate: "السويس",
+    sea: "خليج السويس / البحر الأحمر",
+    type: "تجاري / صناعي حديث",
+    capacity: "يتميز بأعماق تصل إلى 17 متراً لاستيعاب سفن الجيل الثالث.",
+    description: "ميناء محوري يخدم المنطقة الاقتصادية لقناة السويس ويعد البوابة الجنوبية الرئيسية للبضائع القادمة من آسيا وشرق إفريقيا باتجاه القاهرة والدلتا.",
+    map_url: "https://maps.google.com/?q=Sokhna+Port"
+  },
+  {
+    name: "ميناء سفاجا البحري",
+    governorate: "البحر الأحمر",
+    sea: "البحر الأحمر",
+    type: "ركاب / بضائع / سياحي",
+    capacity: "البوابة الرئيسية لخدمة محافظات الصعيد وحركة الركاب مع دول الخليج.",
+    description: "يتميز بموقعه الاستراتيجي وقربه من مدن الصعيد والأقصر، ويعتبر الميناء الرئيسي لحركة المعتمرين والحجاج والعمالة المصرية المسافرة عبر البحر الأحمر، بالإضافة لتداول الفوسفات والألومنيوم.",
+    map_url: "https://maps.google.com/?q=Safaga+Port"
+  },
+  {
+    name: "ميناء نويبع",
+    governorate: "جنوب سيناء",
+    sea: "خليج العقبة / البحر الأحمر",
+    type: "ركاب / شاحنات (ميناء ربط عربي)",
+    capacity: "يربط مصر بالأردن والمشرق العربي عبر خط الجسر العربي الملاحي.",
+    description: "يقع على خليج العقبة ويخدم حركة التجارة والركاب والتبادل البيني للشاحنات بين مصر والأردن ودول الخليج العربي والشام.",
+    map_url: "https://maps.google.com/?q=Nuweiba+Port"
+  }
+];
+
+const DEFAULT_BUS_STATIONS: any[] = [
+  {
+    name: "موقف ألماظة للسوبر جيت (Almaza Terminal)",
+    location: "مصر الجديدة - بجوار طريق السويس ومطار القاهرة",
+    governorate: "القاهرة",
+    companies: [
+      { name: "السوبر جيت (Super Jet)", phone: "19142", type: "رسمي حكومي" },
+      { name: "جو باص (Go Bus)", phone: "19567", type: "خاص فاخر" }
+    ],
+    destinations: ["الإسكندرية", "شرم الشيخ", "الغردقة", "المنيا", "أسيوط", "سوهاج", "قنا", "الأقصر", "أسوان", "السويس", "بورسعيد"],
+    description: "أحدث محطات السوبر جيت في القاهرة. تخدم بشكل رئيسي المسافرين إلى مدن القناة، البحر الأحمر، والوجه القبلي والصعيد بتنظيم ممتاز وصالة انتظار مكيفة.",
+    map_url: "https://maps.google.com/?q=Almaza+Super+Jet+Station"
+  },
+  {
+    name: "موقف الترجمان (Cairo Gateway)",
+    location: "وسط البلد - شارع الجلاء بجوار محطة مترو جمال عبد الناصر",
+    governorate: "القاهرة",
+    companies: [
+      { name: "شركة شرق الدلتا للنقل", phone: "02-25761311", type: "حكومي" },
+      { name: "شركة غرب ووسط الدلتا", phone: "02-25761211", type: "حكومي" },
+      { name: "شركة الصعيد للنقل", phone: "02-25761411", type: "حكومي" },
+      { name: "جو باص (Go Bus)", phone: "19567", type: "خاص فاخر" }
+    ],
+    destinations: ["الإسكندرية", "مطروح", "المنصورة", "الزقازيق", "شبه جزيرة سيناء (العريش/طور سيناء)", "محافظات الصعيد بأكملها", "البحر الأحمر"],
+    description: "المحطة المركزية الكبرى للنقل البري لجميع المحافظات والدول المجاورة. يضم مكاتب حجز لمعظم الشركات العامة والخاصة وصالة انتظار تجارية ضخمة.",
+    map_url: "https://maps.google.com/?q=Torgoman+Bus+Station"
+  },
+  {
+    name: "موقف عبد المنعم رياض (التحرير)",
+    location: "وسط البلد - ميدان التحرير خلف المتاحف والمكتبة وبجوار هيلتون",
+    governorate: "القاهرة",
+    companies: [
+      { name: "جو باص (Go Bus)", phone: "19567", type: "خاص فاخر" },
+      { name: "بلو باص (Blue Bus)", phone: "16148", type: "خاص فاخر" },
+      { name: "سوبر جيت (Super Jet)", phone: "19142", type: "حكومي" }
+    ],
+    destinations: ["الإسكندرية", "الساحل الشمالي", "شرم الشيخ", "دهب", "الغردقة", "المنيا", "أسيوط", "قنا", "الأقصر"],
+    description: "موقع استراتيجي بقلب القاهرة يتيح للمسافرين ركوب الحافلات السياحية الفاخرة مباشرة فور الخروج من محطة مترو السادات بالتحرير.",
+    map_url: "https://maps.google.com/?q=Abdel+Moneim+Riad+Bus+Station"
+  },
+  {
+    name: "موقف عبود الإقليمي",
+    location: "شمال القاهرة - شبرا بمقربة من الطريق الدائري ومترو المظلات",
+    governorate: "القاهرة",
+    companies: [
+      { name: "أتوبيسات غرب الدلتا", phone: "19142", type: "اقتصادي" },
+      { name: "أتوبيسات شرق الدلتا", phone: "02-22448400", type: "اقتصادي" }
+    ],
+    destinations: ["طنطا", "المحلة الكبرى", "المنصورة", "دمنهور", "كفر الشيخ", "الإسكندرية", "بلبيس", "الزقازيق"],
+    description: "الموقف الرئيسي والأكبر لربط القاهرة بجميع محافظات الوجه البحري والدلتا. يضم أتوبيسات السفر الاقتصادية وسيارات الأجرة الإقليمية الكبرى.",
+    map_url: "https://maps.google.com/?q=Abboud+Bus+Station"
+  },
+  {
+    name: "موقف المنيب الإقليمي",
+    location: "الجيزة - المنيب بجوار محطة مترو المنيب والطريق الدائري",
+    governorate: "الجيزة",
+    companies: [
+      { name: "شركة الصعيد للنقل والاتوبيسات", phone: "19142", type: "حكومي" },
+      { name: "السوبر جيت (Super Jet)", phone: "19142", type: "حكومي" }
+    ],
+    destinations: ["الفيوم", "بني سويف", "المنيا", "أسيوط", "سوهاج", "قنا", "الأقصر", "أسوان", "الواحات البحرية"],
+    description: "البوابة الجنوبية للقاهرة والجيزة ومركز النقل الرئيسي المتجه إلى محافظات الصعيد والوجه القبلي والفيوم والواحات.",
+    map_url: "https://maps.google.com/?q=Moneeb+Bus+Station"
+  }
+];
+
+const DEFAULT_MICROBUS: any[] = [
+  {
+    name: "موقف رمسيس (موقف أحمد حلمي / رمسيس الكبرى)",
+    location: "وسط البلد - بجوار محطة قطارات رمسيس ومترو الشهداء",
+    governorate: "القاهرة",
+    map_url: "https://maps.google.com/?q=Ramses+Microbus+Station",
+    routes: [
+      { destination: "6 أكتوبر", fare: "11-13 ج.م", vehicleType: "ميكروباص سقف عالي" },
+      { destination: "الشيخ زايد", fare: "12-14 ج.م", vehicleType: "ميكروباص سقف عالي" },
+      { destination: "التجمع الخامس", fare: "15-18 ج.م", vehicleType: "ميكروباص / ميني باص" },
+      { destination: "العبور", fare: "10-12 ج.م", vehicleType: "ميكروباص" },
+      { destination: "الشروق", fare: "12-14 ج.م", vehicleType: "ميكروباص" },
+      { destination: "حلوان", fare: "9-11 ج.م", vehicleType: "ميكروباص" },
+      { destination: "المرج", fare: "7-8 ج.م", vehicleType: "ميكروباص" },
+      { destination: "الجيزة (ميدان الجيزة)", fare: "5-6 ج.م", vehicleType: "ميكروباص" },
+      { destination: "شبرا الخيمة", fare: "5-6 ج.م", vehicleType: "ميكروباص" },
+      { destination: "مطار القاهرة", fare: "8-10 ج.م", vehicleType: "ميكروباص" }
+    ]
+  },
+  {
+    name: "موقف المرج الجديدة",
+    location: "شمال شرق القاهرة - أسفل محطة مترو المرج الجديدة ومحور الفريق عرابي",
+    governorate: "القاهرة",
+    map_url: "https://maps.google.com/?q=El+Marg+Microbus+Station",
+    routes: [
+      { destination: "العبور", fare: "7-9 ج.م", vehicleType: "ميكروباص" },
+      { destination: "الشروق", fare: "9-11 ج.م", vehicleType: "ميكروباص" },
+      { destination: "بدر", fare: "11-13 ج.م", vehicleType: "ميكروباص" },
+      { destination: "العاشر من رمضان", fare: "12-15 ج.م", vehicleType: "ميكروباص سقف عالي" },
+      { destination: "مدينتي", fare: "10-12 ج.م", vehicleType: "ميكروباص" },
+      { destination: "بلبيس", fare: "10-12 ج.م", vehicleType: "ميكروباص إقليمي" },
+      { destination: "الزقازيق", fare: "15-18 ج.م", vehicleType: "ميكروباص إقليمي" },
+      { destination: "مسطرد", fare: "5 ج.م", vehicleType: "ميكروباص" },
+      { destination: "رمسيس", fare: "7-8 ج.م", vehicleType: "ميكروباص" }
+    ]
+  },
+  {
+    name: "موقف ميدان الجيزة",
+    location: "الجيزة - ميدان الجيزة بجوار مسجد الاستقامة ومترو الجيزة",
+    governorate: "الجيزة",
+    map_url: "https://maps.google.com/?q=Giza+Square+Microbus+Station",
+    routes: [
+      { destination: "6 أكتوبر", fare: "9-11 ج.م", vehicleType: "ميكروباص سقف عالي" },
+      { destination: "الشيخ زايد", fare: "10-12 ج.م", vehicleType: "ميكروباص" },
+      { destination: "الهرم / فيصل", fare: "4-5 ج.م", vehicleType: "ميكروباص داخلي" },
+      { destination: "المنيب", fare: "3.5-4 ج.م", vehicleType: "ميكروباص داخلي" },
+      { destination: "حدائق الأهرام", fare: "5-6 ج.م", vehicleType: "ميكروباص" },
+      { destination: "رمسيس", fare: "5-6 ج.م", vehicleType: "ميكروباص" },
+      { destination: "التجمع الخامس", fare: "15-18 ج.م", vehicleType: "ميكروباص سقف عالي (عبر الدائري)" },
+      { destination: "المعادي", fare: "7-9 ج.م", vehicleType: "ميكروباص (عبر الدائري)" }
+    ]
+  },
+  {
+    name: "موقف السيدة عائشة",
+    location: "وسط القاهرة - ميدان السيدة عائشة أسفل القلعة",
+    governorate: "القاهرة",
+    map_url: "https://maps.google.com/?q=Sayeda+Aisha+Microbus+Station",
+    routes: [
+      { destination: "حلوان", fare: "8-10 ج.م", vehicleType: "ميكروباص" },
+      { destination: "المعادي (صقر قريش)", fare: "6-7 ج.م", vehicleType: "ميكروباص" },
+      { destination: "التجمع الخامس", fare: "12-14 ج.م", vehicleType: "ميكروباص (الدائري)" },
+      { destination: "رمسيس", fare: "5 ج.م", vehicleType: "ميكروباص" },
+      { destination: "الجيزة", fare: "5-6 ج.م", vehicleType: "ميكروباص" },
+      { destination: "المرج", fare: "8-10 ج.م", vehicleType: "ميكروباص" },
+      { destination: "المقطم", fare: "4-5 ج.م", vehicleType: "ميكروباص" }
+    ]
+  },
+  {
+    name: "موقف المنيب الكبرى",
+    location: "الجيزة - بجوار محطة مترو المنيب ومخرج الدائري للجنوب",
+    governorate: "الجيزة",
+    map_url: "https://maps.google.com/?q=Moneeb+Microbus+Station",
+    routes: [
+      { destination: "الفيوم", fare: "25-30 ج.م", vehicleType: "ميكروباص إقليمي" },
+      { destination: "بني سويف", fare: "30-35 ج.م", vehicleType: "ميكروباص إقليمي" },
+      { destination: "6 أكتوبر", fare: "9-11 ج.م", vehicleType: "ميكروباص سقف عالي" },
+      { destination: "حلوان", fare: "7-9 ج.م", vehicleType: "ميكروباص (عبر الدائري)" },
+      { destination: "المعادي", fare: "5-6 ج.م", vehicleType: "ميكروباص" },
+      { destination: "ميدان الجيزة", fare: "3.5-4 ج.م", vehicleType: "ميكروباص داخلي" }
+    ]
+  }
+];
+
+type ServiceType = "monorail" | "lrt" | "airports" | "ports" | "bus_stations" | "microbus_stations" | "directory" | "directions";
+
+export default function AdminServicesPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<ServiceType>("monorail");
+  const [dbStatus, setDbStatus] = useState<Record<ServiceType, boolean>>({
+    monorail: true,
+    lrt: true,
+    airports: true,
+    ports: true,
+    bus_stations: true,
+    microbus_stations: true,
+    directory: true,
+    directions: true
+  });
+
+  // Table Data States
+  const [monorailData, setMonorailData] = useState<any[]>([]);
+  const [lrtData, setLrtData] = useState<any[]>([]);
+  const [airportsData, setAirportsData] = useState<any[]>([]);
+  const [portsData, setPortsData] = useState<any[]>([]);
+  const [busStationsData, setBusStationsData] = useState<any[]>([]);
+  const [microbusStationsData, setMicrobusStationsData] = useState<any[]>([]);
+
+  // Search State
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Modal / Form States
+  const [showModal, setShowModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [formData, setFormData] = useState<any>({});
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user) {
+        router.push("/login");
+      } else {
+        checkAdmin();
+      }
+    }
+  }, [user, authLoading]);
+
+  const checkAdmin = async () => {
+    if (!supabase || !user) return;
+    try {
+      const { data, error: profileErr } = await supabase
+        .from("profiles")
+        .select("is_admin")
+        .eq("id", user.id)
+        .single();
+
+      if (profileErr || !data?.is_admin) {
+        setIsAdmin(false);
+        router.push("/");
+      } else {
+        setIsAdmin(true);
+        loadAllData();
+      }
+    } catch (err) {
+      console.error(err);
+      router.push("/");
+    }
+  };
+
+  const loadAllData = async () => {
+    setLoading(true);
+    await Promise.all([
+      fetchServiceData("monorail", "monorail_stations", DEFAULT_MONORAIL, setMonorailData),
+      fetchServiceData("lrt", "lrt_stations", DEFAULT_LRT, setLrtData),
+      fetchServiceData("airports", "airports", DEFAULT_AIRPORTS, setAirportsData),
+      fetchServiceData("ports", "ports", DEFAULT_PORTS, setPortsData),
+      fetchServiceData("bus_stations", "bus_stations", DEFAULT_BUS_STATIONS, setBusStationsData),
+      fetchServiceData("microbus_stations", "microbus_stations", DEFAULT_MICROBUS, setMicrobusStationsData)
+    ]);
+    setLoading(false);
+  };
+
+  const fetchServiceData = async (
+    type: ServiceType,
+    tableName: string,
+    defaultData: any[],
+    setData: React.Dispatch<React.SetStateAction<any[]>>
+  ) => {
+    if (!supabase) {
+      setData(getLocalData(type, defaultData));
+      setDbStatus(prev => ({ ...prev, [type]: false }));
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.from(tableName).select("*");
+      if (error) {
+        console.warn(`Failed to fetch from ${tableName}, using fallback.`, error);
+        setData(getLocalData(type, defaultData));
+        setDbStatus(prev => ({ ...prev, [type]: false }));
+      } else {
+        setData(data || []);
+        setDbStatus(prev => ({ ...prev, [type]: true }));
+      }
+    } catch (err) {
+      console.error(err);
+      setData(getLocalData(type, defaultData));
+      setDbStatus(prev => ({ ...prev, [type]: false }));
+    }
+  };
+
+  const getLocalData = (type: ServiceType, defaultVal: any[]) => {
+    if (typeof window === "undefined") return defaultVal;
+    const local = localStorage.getItem(`local_${type}`);
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch {
+        return defaultVal;
+      }
+    }
+    localStorage.setItem(`local_${type}`, JSON.stringify(defaultVal));
+    return defaultVal;
+  };
+
+  const saveLocalData = (type: ServiceType, data: any[]) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`local_${type}`, JSON.stringify(data));
+    }
+  };
+
+  const handleOpenAdd = () => {
+    setError("");
+    setSuccess("");
+    setEditingItem(null);
+    if (activeTab === "monorail") {
+      setFormData({ name: "", line_type: "east", station_order: 1 });
+    } else if (activeTab === "lrt") {
+      setFormData({ name: "", line_type: "trunk", station_order: 1 });
+    } else if (activeTab === "airports") {
+      setFormData({ name: "", code: "", city: "", type: "", terminals: "", services: "", airlines: "", phone: "", map_url: "" });
+    } else if (activeTab === "ports") {
+      setFormData({ name: "", governorate: "", sea: "", type: "", capacity: "", description: "", map_url: "" });
+    } else if (activeTab === "bus_stations") {
+      setFormData({ name: "", location: "", governorate: "", companies: "", destinations: "", description: "", map_url: "" });
+    } else if (activeTab === "microbus_stations") {
+      setFormData({ name: "", location: "", governorate: "", routes: "", map_url: "" });
+    }
+    setShowModal(true);
+  };
+
+  const handleOpenEdit = (item: any) => {
+    setError("");
+    setSuccess("");
+    setEditingItem(item);
+    if (activeTab === "airports") {
+      setFormData({
+        ...item,
+        services: Array.isArray(item.services) ? item.services.join(", ") : item.services || ""
+      });
+    } else if (activeTab === "bus_stations") {
+      setFormData({
+        ...item,
+        destinations: Array.isArray(item.destinations) ? item.destinations.join(", ") : item.destinations || "",
+        companies: Array.isArray(item.companies) ? JSON.stringify(item.companies, null, 2) : item.companies || ""
+      });
+    } else if (activeTab === "microbus_stations") {
+      setFormData({
+        ...item,
+        routes: Array.isArray(item.routes) ? JSON.stringify(item.routes, null, 2) : item.routes || ""
+      });
+    } else {
+      setFormData({ ...item });
+    }
+    setShowModal(true);
+  };
+
+  const getTableName = (type: ServiceType) => {
+    if (type === "monorail") return "monorail_stations";
+    if (type === "lrt") return "lrt_stations";
+    return type;
+  };
+
+  const getDataSetter = (type: ServiceType) => {
+    if (type === "monorail") return setMonorailData;
+    if (type === "lrt") return setLrtData;
+    if (type === "airports") return setAirportsData;
+    if (type === "ports") return setPortsData;
+    if (type === "bus_stations") return setBusStationsData;
+    return setMicrobusStationsData;
+  };
+
+  const getDefaultData = (type: ServiceType) => {
+    if (type === "monorail") return DEFAULT_MONORAIL;
+    if (type === "lrt") return DEFAULT_LRT;
+    if (type === "airports") return DEFAULT_AIRPORTS;
+    if (type === "ports") return DEFAULT_PORTS;
+    if (type === "bus_stations") return DEFAULT_BUS_STATIONS;
+    return DEFAULT_MICROBUS;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    const isDbConnected = dbStatus[activeTab];
+    const tableName = getTableName(activeTab);
+    const dataSetter = getDataSetter(activeTab);
+    const defaultData = getDefaultData(activeTab);
+
+    // Format fields
+    let payload = { ...formData };
+    if (activeTab === "airports") {
+      payload.services = typeof formData.services === "string" 
+        ? formData.services.split(",").map((s: string) => s.trim()).filter(Boolean)
+        : formData.services;
+    } else if (activeTab === "bus_stations") {
+      payload.destinations = typeof formData.destinations === "string" 
+        ? formData.destinations.split(",").map((d: string) => d.trim()).filter(Boolean)
+        : formData.destinations;
+      if (typeof formData.companies === "string") {
+        try {
+          payload.companies = JSON.parse(formData.companies);
+        } catch {
+          setError("خطأ في تنسيق JSON للشركات المشغلة. يجب أن يكون بتنسيق مصفوفة كائنات صالحة.");
+          return;
+        }
+      }
+    } else if (activeTab === "microbus_stations") {
+      if (typeof formData.routes === "string") {
+        try {
+          payload.routes = JSON.parse(formData.routes);
+        } catch {
+          setError("خطأ في تنسيق JSON للمسارات والتعريفة. يجب أن يكون بتنسيق مصفوفة كائنات صالحة.");
+          return;
+        }
+      }
+    }
+
+    if (isDbConnected && supabase) {
+      try {
+        if (editingItem) {
+          const { error: dbErr } = await supabase
+            .from(tableName)
+            .update(payload)
+            .eq("id", editingItem.id);
+          if (dbErr) throw dbErr;
+          setSuccess("تم تعديل السجل بنجاح في قاعدة البيانات.");
+        } else {
+          const { error: dbErr } = await supabase
+            .from(tableName)
+            .insert(payload);
+          if (dbErr) throw dbErr;
+          setSuccess("تم إضافة السجل بنجاح إلى قاعدة البيانات.");
+        }
+        // Reload from DB
+        const { data } = await supabase.from(tableName).select("*");
+        dataSetter(data || []);
+        setShowModal(false);
+      } catch (err: any) {
+        console.error(err);
+        setError("فشلت العملية في قاعدة البيانات: " + err.message);
+      }
+    } else {
+      // LocalStorage Fallback
+      let currentLocal = getLocalData(activeTab, defaultData);
+      if (editingItem) {
+        currentLocal = currentLocal.map((item: any) => {
+          if (editingItem.id && item.id === editingItem.id) {
+            return { ...item, ...payload };
+          }
+          // fallback search by name if id missing
+          if (!editingItem.id && item.name === editingItem.name) {
+            return { ...item, ...payload };
+          }
+          return item;
+        });
+        setSuccess("تم تعديل السجل بنجاح محلياً (LocalStorage).");
+      } else {
+        const newRecord = { 
+          id: Math.random().toString(36).substr(2, 9), 
+          ...payload,
+          created_at: new Date().toISOString() 
+        };
+        currentLocal = [newRecord, ...currentLocal];
+        setSuccess("تم إضافة السجل بنجاح محلياً (LocalStorage).");
+      }
+      saveLocalData(activeTab, currentLocal);
+      dataSetter(currentLocal);
+      setShowModal(false);
+    }
+  };
+
+  const handleDelete = async (item: any) => {
+    if (!confirm("هل أنت متأكد من حذف هذا السجل؟")) return;
+    setError("");
+    setSuccess("");
+
+    const isDbConnected = dbStatus[activeTab];
+    const tableName = getTableName(activeTab);
+    const dataSetter = getDataSetter(activeTab);
+    const defaultData = getDefaultData(activeTab);
+
+    if (isDbConnected && supabase) {
+      try {
+        const { error: dbErr } = await supabase
+          .from(tableName)
+          .delete()
+          .eq("id", item.id);
+        if (dbErr) throw dbErr;
+        setSuccess("تم حذف السجل بنجاح من قاعدة البيانات.");
+        // Reload
+        const { data } = await supabase.from(tableName).select("*");
+        dataSetter(data || []);
+      } catch (err: any) {
+        console.error(err);
+        setError("فشل الحذف في قاعدة البيانات: " + err.message);
+      }
+    } else {
+      let currentLocal = getLocalData(activeTab, defaultData);
+      currentLocal = currentLocal.filter((localItem: any) => {
+        if (item.id && localItem.id !== item.id) return true;
+        if (!item.id && localItem.name !== item.name) return true;
+        return false;
+      });
+      saveLocalData(activeTab, currentLocal);
+      dataSetter(currentLocal);
+      setSuccess("تم حذف السجل بنجاح محلياً (LocalStorage).");
+    }
+  };
+
+  // Filtered table rows based on activeTab and searchQuery
+  const getFilteredRows = () => {
+    let raw: any[] = [];
+    if (activeTab === "monorail") raw = monorailData;
+    else if (activeTab === "lrt") raw = lrtData;
+    else if (activeTab === "airports") raw = airportsData;
+    else if (activeTab === "ports") raw = portsData;
+    else if (activeTab === "bus_stations") raw = busStationsData;
+    else if (activeTab === "microbus_stations") raw = microbusStationsData;
+
+    if (!searchQuery) return raw;
+    return raw.filter((item: any) => {
+      const nameMatch = item.name?.toLowerCase().includes(searchQuery.toLowerCase());
+      const descMatch = item.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      const locationMatch = item.location?.toLowerCase().includes(searchQuery.toLowerCase());
+      const govMatch = item.governorate?.toLowerCase().includes(searchQuery.toLowerCase());
+      const codeMatch = item.code?.toLowerCase().includes(searchQuery.toLowerCase());
+      const cityMatch = item.city?.toLowerCase().includes(searchQuery.toLowerCase());
+      return nameMatch || descMatch || locationMatch || govMatch || codeMatch || cityMatch;
+    });
+  };
+
+  const filteredRows = getFilteredRows();
+
+  if (authLoading || loading) {
+    return (
+      <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--accent-ios, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة الخدمات...</p>
+      </div>
+    );
+  }
+
+  if (!isAdmin) return null;
+
+  return (
+    <div className={styles.adminShell} style={{ direction: "rtl", textAlign: "right" }}>
+      
+      {/* Upper Status/Welcome banner */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "#fff", marginBottom: "6px" }}>
+            إدارة الخدمات والنقل
+          </h1>
+          <p style={{ color: "#94a3b8", fontSize: "0.9rem", margin: 0 }}>
+            تحرير وتحديث خدمات ومحطات ومواقف ومطارات وموانئ القاهرة ومصر.
+          </p>
+        </div>
+
+        {activeTab !== "directory" && activeTab !== "directions" && (
+          <button onClick={handleOpenAdd} className="ios-btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "10px 20px" }}>
+            <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
+            إضافة سجل جديد
+          </button>
+        )}
+      </div>
+
+      {/* Tabs Row */}
+      <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "12px", borderBottom: "1px solid var(--border-glass)", marginBottom: "24px", scrollbarWidth: "none" }}>
+        {[
+          { id: "monorail", label: "المنوريل", icon: "bx bx-navigation" },
+          { id: "lrt", label: "القطار الكهربائي LRT", icon: "bx bx-train" },
+          { id: "airports", label: "المطارات", icon: "bx bx-plane" },
+          { id: "ports", label: "الموانئ", icon: "bx bx-anchor" },
+          { id: "microbus_stations", label: "المواقف (سرفيس)", icon: "bx bx-map-pin" },
+          { id: "bus_stations", label: "الأتوبيسات (سوبرجيت)", icon: "bx bx-bus" },
+          { id: "directory", label: "دليل الهواتف والأكواد", icon: "bx bx-phone-call" },
+          { id: "directions", label: "خطوط المواصلات", icon: "bx bx-git-compare" }
+        ].map(tab => {
+          const isActive = activeTab === tab.id;
+          const isConnected = dbStatus[tab.id as ServiceType];
+          return (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id as ServiceType);
+                setSearchQuery("");
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 18px",
+                borderRadius: "12px",
+                fontSize: "0.9rem",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                border: "1px solid",
+                borderColor: isActive ? "rgba(99, 102, 241, 0.4)" : "var(--border-glass)",
+                background: isActive ? "rgba(99, 102, 241, 0.15)" : "rgba(255,255,255,0.02)",
+                color: isActive ? "#818cf8" : "#94a3b8"
+              }}
+            >
+              <i className={tab.icon} style={{ fontSize: "1.1rem" }} />
+              <span>{tab.label}</span>
+              <span style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: isConnected ? "#10b981" : "#f59e0b",
+                boxShadow: isConnected ? "0 0 6px #10b981" : "0 0 6px #f59e0b",
+                marginRight: "4px"
+              }} title={isConnected ? "متصل بقاعدة البيانات السحابية" : "يعمل بوضع الحفظ المحلي (LocalStorage)"} />
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Directory Tab Content */}
+      {activeTab === "directory" && (
+        <AdminDirectoryPage isSubComponent={true} />
+      )}
+
+      {/* Directions Tab Content */}
+      {activeTab === "directions" && (
+        <AdminDirectionsPage isSubComponent={true} />
+      )}
+
+      {activeTab !== "directory" && activeTab !== "directions" && (
+        <>
+          {/* SQL Warning Card if DB is using LocalStorage fallback */}
+          {!dbStatus[activeTab] && (
+        <div style={{
+          background: "rgba(245, 158, 11, 0.08)",
+          border: "1px solid rgba(245, 158, 11, 0.2)",
+          padding: "16px 20px",
+          borderRadius: "14px",
+          marginBottom: "24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "#f59e0b", fontWeight: "bold" }}>
+            <i className="bx bx-warning" style={{ fontSize: "1.3rem" }} />
+            <span>يعمل في وضع الحفظ المحلي (LocalStorage)</span>
+          </div>
+          <p style={{ color: "#d97706", fontSize: "0.85rem", margin: 0, lineHeight: "1.6" }}>
+            لم يتم العثور على جدول قاعدة البيانات المناسب لهذه الخدمة في Supabase. التغييرات التي تقوم بها هنا سيتم حفظها في متصفحك الحالي فقط كحفظ احتياطي مؤقت.
+            لتفعيل حفظ التغييرات لكل مستخدمي الموقع بشكل دائم، يرجى فتح تبويب **SQL Editor** في لوحة تحكم Supabase الخاصة بك، وتشغيل السكريبت الموجود في ملف 
+            `[supabase_transport_services.sql](file:///d:/Development/Project/Cairo%20Map/supabase_transport_services.sql)`.
+          </p>
+        </div>
+      )}
+
+      {/* Search Input bar */}
+      <div style={{ marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="البحث عن محطة، مطار، موصف، أو مدينة..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="ios-input"
+          style={{ width: "100%", maxWidth: "450px", background: "rgba(255,255,255,0.03)" }}
+        />
+      </div>
+
+      {/* Notification Banner */}
+      {success && (
+        <div style={{ background: "rgba(16, 185, 129, 0.12)", border: "1px solid rgba(16, 185, 129, 0.3)", padding: "12px 16px", borderRadius: "10px", color: "#10b981", marginBottom: "16px", fontSize: "0.9rem" }}>
+          {success}
+        </div>
+      )}
+      {error && (
+        <div style={{ background: "rgba(239, 68, 68, 0.12)", border: "1px solid rgba(239, 68, 68, 0.3)", padding: "12px 16px", borderRadius: "10px", color: "#ef4444", marginBottom: "16px", fontSize: "0.9rem" }}>
+          {error}
+        </div>
+      )}
+
+      {/* Main Table Panel */}
+      <div className={styles.tableCard} style={{ overflowX: "auto" }}>
+        <table className={styles.adminTable} style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              {activeTab === "monorail" && (
+                <>
+                  <th>اسم المحطة</th>
+                  <th>خط النيل</th>
+                  <th>الترتيب</th>
+                  <th>خيارات</th>
+                </>
+              )}
+              {activeTab === "lrt" && (
+                <>
+                  <th>اسم المحطة</th>
+                  <th>مسار التفريعة</th>
+                  <th>الترتيب</th>
+                  <th>خيارات</th>
+                </>
+              )}
+              {activeTab === "airports" && (
+                <>
+                  <th>الاسم</th>
+                  <th>الكود</th>
+                  <th>المدينة</th>
+                  <th>النوع</th>
+                  <th>الهاتف</th>
+                  <th>الصالات</th>
+                  <th>خطوط الطيران</th>
+                  <th>خيارات</th>
+                </>
+              )}
+              {activeTab === "ports" && (
+                <>
+                  <th>اسم الميناء</th>
+                  <th>المحافظة</th>
+                  <th>المسطح المائي</th>
+                  <th>النوع</th>
+                  <th>السعة الاستيعابية</th>
+                  <th>خيارات</th>
+                </>
+              )}
+              {activeTab === "microbus_stations" && (
+                <>
+                  <th>اسم الموقف</th>
+                  <th>المحافظة</th>
+                  <th>العنوان بالتفصيل</th>
+                  <th>عدد الخطوط</th>
+                  <th>خيارات</th>
+                </>
+              )}
+              {activeTab === "bus_stations" && (
+                <>
+                  <th>اسم الموقف</th>
+                  <th>المحافظة</th>
+                  <th>العنوان بالتفصيل</th>
+                  <th>الوجهات المتاحة</th>
+                  <th>خيارات</th>
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredRows.length === 0 ? (
+              <tr>
+                <td colSpan={10} style={{ textAlign: "center", padding: "40px", color: "#94a3b8" }}>
+                  لا توجد أي سجلات متوفرة حالياً.
+                </td>
+              </tr>
+            ) : (
+              filteredRows.map((item, idx) => (
+                <tr key={item.id || idx}>
+                  {activeTab === "monorail" && (
+                    <>
+                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                      <td>{item.line_type === "east" ? "شرق النيل (العاصمة الإدارية)" : "غرب النيل (6 أكتوبر)"}</td>
+                      <td>{item.station_order}</td>
+                    </>
+                  )}
+                  {activeTab === "lrt" && (
+                    <>
+                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                      <td>
+                        {item.line_type === "trunk" && "الجذع الرئيسي (من عدلي منصور)"}
+                        {item.line_type === "capital" && "تفريعة العاصمة الإدارية"}
+                        {item.line_type === "ramadan" && "تفريعة العاشر من رمضان"}
+                      </td>
+                      <td>{item.station_order}</td>
+                    </>
+                  )}
+                  {activeTab === "airports" && (
+                    <>
+                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                      <td><span style={{ background: "rgba(255,255,255,0.05)", padding: "4px 8px", borderRadius: "6px", fontFamily: "monospace" }}>{item.code}</span></td>
+                      <td>{item.city}</td>
+                      <td>{item.type}</td>
+                      <td>{item.phone}</td>
+                      <td title={item.terminals} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.terminals}</td>
+                      <td title={item.airlines} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.airlines}</td>
+                    </>
+                  )}
+                  {activeTab === "ports" && (
+                    <>
+                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                      <td>{item.governorate}</td>
+                      <td>{item.sea}</td>
+                      <td>{item.type}</td>
+                      <td title={item.capacity} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.capacity}</td>
+                    </>
+                  )}
+                  {activeTab === "microbus_stations" && (
+                    <>
+                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                      <td>{item.governorate}</td>
+                      <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
+                      <td>{Array.isArray(item.routes) ? item.routes.length : 0} مساراً</td>
+                    </>
+                  )}
+                  {activeTab === "bus_stations" && (
+                    <>
+                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                      <td>{item.governorate}</td>
+                      <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
+                      <td title={Array.isArray(item.destinations) ? item.destinations.join("، ") : ""} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {Array.isArray(item.destinations) ? item.destinations.join("، ") : ""}
+                      </td>
+                    </>
+                  )}
+                  <td>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button onClick={() => handleOpenEdit(item)} className={styles.actionBtn} style={{ color: "#34c759", border: "1px solid rgba(52, 199, 89, 0.2)", background: "rgba(52, 199, 89, 0.05)" }} title="تعديل">
+                        <i className="bx bx-edit" />
+                      </button>
+                      <button onClick={() => handleDelete(item)} className={styles.actionBtn} style={{ color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.2)", background: "rgba(255, 59, 48, 0.05)" }} title="حذف">
+                        <i className="bx bx-trash" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Forms Modal */}
+      {showModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1100,
+          background: "rgba(0,0,0,0.75)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px"
+        }}>
+          <div className="glass-panel" style={{
+            width: "100%",
+            maxWidth: "650px",
+            maxHeight: "90vh",
+            overflowY: "auto",
+            padding: "30px",
+            border: "1px solid var(--border-glass)",
+            background: "#0f172a",
+            borderRadius: "20px",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "12px" }}>
+              <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "#fff", margin: 0 }}>
+                {editingItem ? "تعديل بيانات السجل" : "إضافة سجل جديد لـ " + (
+                  activeTab === "monorail" ? "المنوريل" :
+                  activeTab === "lrt" ? "القطار الكهربائي" :
+                  activeTab === "airports" ? "المطارات" :
+                  activeTab === "ports" ? "الموانئ" :
+                  activeTab === "microbus_stations" ? "مواقف الميكروباص" : "أتوبيسات السفر"
+                )}
+              </h2>
+              <button onClick={() => setShowModal(false)} style={{ background: "rgba(255,255,255,0.05)", border: "none", width: "32px", height: "32px", borderRadius: "50%", color: "#94a3b8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="bx bx-x" style={{ fontSize: "1.5rem" }} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              
+              {/* Monorail & LRT Form */}
+              {(activeTab === "monorail" || activeTab === "lrt") && (
+                <>
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name || ""}
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المسار / الخط *</label>
+                    <select
+                      value={formData.line_type || ""}
+                      onChange={e => setFormData({ ...formData, line_type: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", background: "#1e293b" }}
+                    >
+                      {activeTab === "monorail" ? (
+                        <>
+                          <option value="east">شرق النيل (العاصمة الإدارية)</option>
+                          <option value="west">غرب النيل (6 أكتوبر)</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="trunk">الجذع الرئيسي (عدلي منصور - بدر)</option>
+                          <option value="capital">تفريعة العاصمة الإدارية (بدر - الفنون)</option>
+                          <option value="ramadan">تفريعة العاشر من رمضان (بدر - المعرفة)</option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في المسار *</label>
+                    <input
+                      type="number"
+                      required
+                      min={1}
+                      value={formData.station_order || 1}
+                      onChange={e => setFormData({ ...formData, station_order: parseInt(e.target.value) })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Airports Form */}
+              {activeTab === "airports" && (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم المطار *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name || ""}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>كود المطار (IATA) *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="مثال: CAI"
+                        value={formData.code || ""}
+                        onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المدينة *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.city || ""}
+                        onChange={e => setFormData({ ...formData, city: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>نوع المطار *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="مثال: مطار دولي رئيسي"
+                        value={formData.type || ""}
+                        onChange={e => setFormData({ ...formData, type: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>أرقام الهواتف أو خدمة العملاء *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.phone || ""}
+                      onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الصالات ومباني الركاب</label>
+                    <textarea
+                      value={formData.terminals || ""}
+                      onChange={e => setFormData({ ...formData, terminals: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", height: "70px", resize: "vertical" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>خطوط الطيران العاملة</label>
+                    <textarea
+                      value={formData.airlines || ""}
+                      onChange={e => setFormData({ ...formData, airlines: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", height: "70px", resize: "vertical" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الخدمات المتاحة (افصل بينها بفاصلة)</label>
+                    <input
+                      type="text"
+                      placeholder="سوق حرة, مواقف سيارات, صرافة..."
+                      value={formData.services || ""}
+                      onChange={e => setFormData({ ...formData, services: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
+                    <input
+                      type="url"
+                      required
+                      value={formData.map_url || ""}
+                      onChange={e => setFormData({ ...formData, map_url: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Ports Form */}
+              {activeTab === "ports" && (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم الميناء *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name || ""}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المحافظة *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.governorate || ""}
+                        onChange={e => setFormData({ ...formData, governorate: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المسطح المائي (البحر) *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="البحر الأبيض المتوسط / البحر الأحمر"
+                        value={formData.sea || ""}
+                        onChange={e => setFormData({ ...formData, sea: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>نوع الميناء *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="تجاري / سياحي / صناعي"
+                        value={formData.type || ""}
+                        onChange={e => setFormData({ ...formData, type: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>السعة الاستيعابية / الأهمية التجارية *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.capacity || ""}
+                      onChange={e => setFormData({ ...formData, capacity: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الوصف والخدمات التفصيلية</label>
+                    <textarea
+                      value={formData.description || ""}
+                      onChange={e => setFormData({ ...formData, description: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", height: "80px", resize: "vertical" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
+                    <input
+                      type="url"
+                      required
+                      value={formData.map_url || ""}
+                      onChange={e => setFormData({ ...formData, map_url: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Bus Stations Form */}
+              {activeTab === "bus_stations" && (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم الموقف *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name || ""}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المحافظة *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.governorate || ""}
+                        onChange={e => setFormData({ ...formData, governorate: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>العنوان بالتفصيل *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.location || ""}
+                      onChange={e => setFormData({ ...formData, location: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الوجهات المتاحة (افصل بينها بفاصلة) *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="الإسكندرية, شرم الشيخ, أسيوط..."
+                      value={formData.destinations || ""}
+                      onChange={e => setFormData({ ...formData, destinations: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الشركات المشغلة وساعات العمل (بتنسيق JSON) *</label>
+                    <textarea
+                      required
+                      placeholder='[{"name": "السوبر جيت", "phone": "19142", "type": "رسمي"}]'
+                      value={formData.companies || ""}
+                      onChange={e => setFormData({ ...formData, companies: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", height: "100px", fontFamily: "monospace", direction: "ltr", textAlign: "left" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الوصف وملاحظات السفر</label>
+                    <textarea
+                      value={formData.description || ""}
+                      onChange={e => setFormData({ ...formData, description: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", height: "80px", resize: "vertical" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
+                    <input
+                      type="url"
+                      required
+                      value={formData.map_url || ""}
+                      onChange={e => setFormData({ ...formData, map_url: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Microbus Stations Form */}
+              {activeTab === "microbus_stations" && (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم الموقف *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name || ""}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المحافظة *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.governorate || ""}
+                        onChange={e => setFormData({ ...formData, governorate: e.target.value })}
+                        className="ios-input"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>العنوان بالتفصيل *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.location || ""}
+                      onChange={e => setFormData({ ...formData, location: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المسارات والتعريفة (بتنسيق JSON) *</label>
+                    <textarea
+                      required
+                      placeholder='[{"destination": "6 أكتوبر", "fare": "11 ج.م", "vehicleType": "ميكروباص"}]'
+                      value={formData.routes || ""}
+                      onChange={e => setFormData({ ...formData, routes: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", height: "130px", fontFamily: "monospace", direction: "ltr", textAlign: "left" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
+                    <input
+                      type="url"
+                      required
+                      value={formData.map_url || ""}
+                      onChange={e => setFormData({ ...formData, map_url: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "14px", justifyContent: "flex-end" }}>
+                <button type="button" onClick={() => setShowModal(false)} className={styles.backToSiteBtn} style={{ margin: 0 }}>
+                  إلغاء
+                </button>
+                <button type="submit" className="ios-btn" style={{ margin: 0, background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "#fff", padding: "10px 24px" }}>
+                  {editingItem ? "حفظ التغييرات" : "إضافة السجل"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+        </>
+      )}
+    </div>
+  );
+}

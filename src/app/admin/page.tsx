@@ -44,6 +44,7 @@ import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { ScheduleDay, WorkingHoursData, DAYS_OF_WEEK, generateTimeOptions } from "@/lib/workingHours";
 import { MultiSelectSearch } from "@/components/ui/MultiSelectSearch";
 import { SERVICES_LIST } from "@/data/services";
+import * as XLSX from "xlsx";
 
 const CATEGORY_ICONS: Record<string, string> = {
   all: "bx-grid-alt",
@@ -162,6 +163,15 @@ export default function AdminDashboard() {
   );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Excel Import States
+  const [showExcelImport, setShowExcelImport] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [parsedPlaces, setParsedPlaces] = useState<any[]>([]);
+  const [importError, setImportError] = useState("");
+  const [importSuccess, setImportSuccess] = useState("");
+  const [duplicates, setDuplicates] = useState<any[]>([]);
+  const [isDeletingDuplicates, setIsDeletingDuplicates] = useState(false);
 
   // Custom Categories States
   const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
@@ -481,6 +491,20 @@ export default function AdminDashboard() {
     setError("");
 
     try {
+      // Check if place already exists manually (Duplicate check)
+      const isManualDuplicate = places.some(p => 
+        p.name.trim().toLowerCase() === formData.name.trim().toLowerCase() &&
+        p.category.trim().toLowerCase() === formData.category.trim().toLowerCase() &&
+        (p.governorate || "").trim().toLowerCase() === formData.governorate.trim().toLowerCase() &&
+        (p.city || "").trim().toLowerCase() === formData.city.trim().toLowerCase()
+      );
+
+      if (isManualDuplicate) {
+        setError(`عفواً، المكان "${formData.name}" مسجل بالفعل مسبقاً بنفس التصنيف في ${formData.city}، ${formData.governorate}.`);
+        setIsSubmitting(false);
+        return;
+      }
+
       const phonesArray = formData.phones.split(",").map(p => p.trim()).filter(Boolean);
       const imagesArray = formData.image_url ? [formData.image_url.trim()] : [];
       const menuImagesArray = formData.menu_images.split(",").map(m => m.trim()).filter(Boolean);
@@ -640,6 +664,343 @@ export default function AdminDashboard() {
       setError("فشل إضافة المكان: " + (err.message || ""));
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDownloadTemplate = () => {
+    if (typeof window === "undefined") return;
+    try {
+      const headers = [
+        "الاسم", "القسم الرئيسي", "المدينة / المنطقة", "العنوان بالتفصيل", "رابط جوجل ماب",
+        "المحافظة", "الأقسام الفرعية", "الهواتف", "مواعيد العمل", "خط العرض", "خط الطول",
+        "وصف قصير", "الوصف التفصيلي", "رابط الصورة الرئيسية", "روابط المنيو",
+        "موقع الويب", "الميزات", "الخدمات", "نوع المكان", "أيقونة النوع"
+      ];
+      
+      const sampleData = [
+        {
+          "الاسم": "مطعم البركة",
+          "القسم الرئيسي": "أكل ومشروبات",
+          "المدينة / المنطقة": "مصر الجديدة",
+          "العنوان بالتفصيل": "15 شارع الثورة، بجوار مسجد جمال",
+          "رابط جوجل ماب": "https://maps.google.com/?q=30.0815,31.3256",
+          "المحافظة": "القاهرة",
+          "الأقسام الفرعية": "مشويات, بيتزا",
+          "الهواتف": "01012345678, 0224150000",
+          "مواعيد العمل": "يومياً من 09:00 ص حتى 11:00 م",
+          "خط العرض": 30.0815,
+          "خط الطول": 31.3256,
+          "وصف قصير": "أفضل مطعم مشويات في مصر الجديدة",
+          "الوصف التفصيلي": "يقدم مطعم البركة أشهى المأكولات والمشويات الطازجة يومياً مع صالة مخصصة للعائلات.",
+          "رابط الصورة الرئيسية": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
+          "روابط المنيو": "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae",
+          "موقع الويب": "https://albaraka-restaurant.com",
+          "الميزات": "تكييف, واي فاي, منطقة ألعاب",
+          "الخدمات": "توصيل طلبات, دفع بالفيزا, ساحة انتظار",
+          "نوع المكان": "مطعم مشويات",
+          "أيقونة النوع": "bx-utensils"
+        }
+      ];
+
+      const worksheet = XLSX.utils.json_to_sheet(sampleData, { header: headers });
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "الأماكن");
+      XLSX.writeFile(workbook, "places_template.xlsx");
+    } catch (err: any) {
+      alert("حدث خطأ أثناء تحميل الملف: " + err.message);
+    }
+  };
+
+  const handleExcelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImportError("");
+    setImportSuccess("");
+    setParsedPlaces([]);
+    setDuplicates([]);
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: "binary" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+
+        if (!data || data.length === 0) {
+          setImportError("الملف المرفوع فارغ أو يحتوي على بيانات غير صالحة.");
+          return;
+        }
+
+        // Map categories from labels to keys
+        const categoryMapByLabel: Record<string, string> = {};
+        CATEGORIES_STRUCTURE.forEach(main => {
+          categoryMapByLabel[main.label.trim()] = main.name;
+          main.subCategories.forEach(sub => {
+            categoryMapByLabel[sub.label.trim()] = sub.name;
+          });
+        });
+
+        // Create a set of keys for existing database places
+        const dbKeys = new Set<string>();
+        places.forEach(p => {
+          const key = `${p.name.trim().toLowerCase()}_${p.category.trim().toLowerCase()}_${(p.governorate || "").trim().toLowerCase()}_${(p.city || "").trim().toLowerCase()}`;
+          dbKeys.add(key);
+        });
+
+        const seenKeys = new Set<string>();
+        const duplicatesList: any[] = [];
+
+        // Map and validate columns
+        const mapped: any[] = [];
+        for (let i = 0; i < data.length; i++) {
+          const row: any = data[i];
+          
+          const name = row["الاسم"]?.toString().trim();
+          let category = row["القسم الرئيسي"]?.toString().trim();
+          const city = row["المدينة / المنطقة"]?.toString().trim();
+          const full_address = row["العنوان بالتفصيل"]?.toString().trim();
+          const google_maps_url = row["رابط جوجل ماب"]?.toString().trim();
+          
+          if (!name || !category || !city || !full_address || !google_maps_url) {
+            setImportError(`السطر رقم ${i + 2}: يحتوي على حقول مطلوبة مفقودة (الاسم، القسم الرئيسي، المدينة / المنطقة، العنوان بالتفصيل، ورابط جوجل ماب مطلوبة جميعها).`);
+            setParsedPlaces([]);
+            setDuplicates([]);
+            return;
+          }
+
+          // Convert label to key if needed
+          if (categoryMapByLabel[category]) {
+            category = categoryMapByLabel[category];
+          }
+
+          const governorate = row["المحافظة"]?.toString().trim() || "القاهرة";
+          const sub_categories = row["الأقسام الفرعية"]
+            ? row["الأقسام الفرعية"].toString().split(",").map((s: string) => {
+                const trimmed = s.trim();
+                return categoryMapByLabel[trimmed] || trimmed;
+              }).filter(Boolean)
+            : [];
+          const phones = row["الهواتف"]
+            ? row["الهواتف"].toString().split(",").map((p: string) => p.trim()).filter(Boolean)
+            : [];
+          
+          const excel_working_hours = row["مواعيد العمل"]?.toString().trim();
+          let finalWorkingHours = JSON.stringify({ type: "24/7" });
+          if (excel_working_hours) {
+            const lowerWH = excel_working_hours.toLowerCase();
+            if (lowerWH !== "24/7" && lowerWH !== "مفتوح 24 ساعة" && lowerWH !== "24 ساعة") {
+              finalWorkingHours = excel_working_hours;
+            }
+          }
+
+          const latitude = parseFloat(row["خط العرض"]) || null;
+          const longitude = parseFloat(row["خط الظول"]) || parseFloat(row["خط الطول"]) || null;
+          const short_description = row["وصف قصير"]?.toString().trim() || "";
+          const description = row["الوصف التفصيلي"]?.toString().trim() || "";
+          const image_url = row["رابط الصورة الرئيسية"]?.toString().trim();
+          const menu_images = row["روابط المنيو"]
+            ? row["روابط المنيو"].toString().split(",").map((m: string) => m.trim()).filter(Boolean)
+            : [];
+          const website_url = row["موقع الويب"]?.toString().trim() || null;
+          const features = row["الميزات"]
+            ? row["الميزات"].toString().split(",").map((f: string) => f.trim()).filter(Boolean)
+            : [];
+          const services = row["الخدمات"]
+            ? row["الخدمات"].toString().split(",").map((s: string) => s.trim()).filter(Boolean)
+            : [];
+          const place_type = row["نوع المكان"]?.toString().trim() || null;
+          const place_type_icon = row["أيقونة النوع"]?.toString().trim() || null;
+
+          const key = `${name.trim().toLowerCase()}_${category.trim().toLowerCase()}_${governorate.trim().toLowerCase()}_${city.trim().toLowerCase()}`;
+          
+          let duplicateType: "db" | "internal" | null = null;
+          if (dbKeys.has(key)) {
+            duplicateType = "db";
+          } else if (seenKeys.has(key)) {
+            duplicateType = "internal";
+          } else {
+            seenKeys.add(key);
+          }
+
+          const item = {
+            rowNum: i + 2,
+            name,
+            category,
+            category_label: CATEGORY_MAP[category] || category,
+            sub_categories,
+            governorate,
+            city,
+            short_description: short_description || (description ? description.substring(0, 80) : ""),
+            full_address,
+            phones,
+            google_maps_url,
+            images: image_url ? [image_url] : [],
+            menu_images,
+            working_hours: finalWorkingHours,
+            description,
+            latitude,
+            longitude,
+            website_url,
+            features,
+            services,
+            place_type,
+            place_type_icon: place_type ? (formatBoxIcon(place_type_icon || "").trim() || "bx bx-tag") : null,
+            duplicateType
+          };
+
+          if (duplicateType) {
+            duplicatesList.push(item);
+          }
+
+          mapped.push(item);
+        }
+
+        setParsedPlaces(mapped);
+        setDuplicates(duplicatesList);
+      } catch (err: any) {
+        setImportError("حدث خطأ أثناء قراءة الملف: " + err.message);
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  const handleRemoveDuplicates = () => {
+    const cleanPlaces = parsedPlaces.filter(p => p.duplicateType === null);
+    setParsedPlaces(cleanPlaces);
+    setDuplicates([]);
+    setImportSuccess("تم حذف الأماكن المتكررة بنجاح! الأماكن الباقية جاهزة للاستيراد.");
+  };
+
+  const dbDuplicatesList = React.useMemo(() => {
+    const seen = new Map<string, string>(); // key -> id of first seen
+    const dups: { originalId: string; duplicateId: string; place: DBPlace }[] = [];
+    places.forEach(p => {
+      const key = `${p.name.trim().toLowerCase()}_${p.category.trim().toLowerCase()}_${(p.governorate || "").trim().toLowerCase()}_${(p.city || "").trim().toLowerCase()}`;
+      if (seen.has(key)) {
+        const originalId = seen.get(key)!;
+        dups.push({ originalId, duplicateId: p.id, place: p });
+      } else {
+        seen.set(key, p.id);
+      }
+    });
+    return dups;
+  }, [places]);
+
+  const handleCleanDbDuplicates = async () => {
+    if (dbDuplicatesList.length === 0 || !supabase) return;
+    
+    const confirmClean = window.confirm(`هل أنت متأكد من رغبتك في حذف ${dbDuplicatesList.length} مكان مكرر من قاعدة البيانات نهائياً؟ لا يمكن التراجع عن هذه الخطوة.`);
+    if (!confirmClean) return;
+
+    setIsDeletingDuplicates(true);
+    setError("");
+
+    try {
+      const idsToDelete = dbDuplicatesList.map(d => d.duplicateId);
+
+      // 1. Delete branches of duplicates first to prevent foreign key errors
+      const { error: branchesDelError } = await supabase
+        .from("branches")
+        .delete()
+        .in("place_id", idsToDelete);
+
+      if (branchesDelError) throw branchesDelError;
+
+      // 2. Delete the actual duplicate places
+      const { error: placesDelError } = await supabase
+        .from("places")
+        .delete()
+        .in("id", idsToDelete);
+
+      if (placesDelError) throw placesDelError;
+
+      // Update local state
+      setPlaces(prev => prev.filter(p => !idsToDelete.includes(p.id)));
+      alert(`تم بنجاح تنظيف قاعدة البيانات وحذف ${idsToDelete.length} مكان مكرر!`);
+    } catch (err: any) {
+      setError("حدث خطأ أثناء تنظيف المكررات من قاعدة البيانات: " + (err.message || ""));
+    } finally {
+      setIsDeletingDuplicates(false);
+    }
+  };
+
+  const handleImportSubmit = async () => {
+    if (parsedPlaces.length === 0 || !supabase) return;
+
+    if (duplicates.length > 0) {
+      setImportError("يرجى إزالة الأماكن المتكررة أولاً بالضغط على زر 'حذف المتكرر' قبل الحفظ.");
+      return;
+    }
+
+    setImporting(true);
+    setImportError("");
+    setImportSuccess("");
+
+    try {
+      // Clean UI-only fields
+      const cleanData = parsedPlaces.map(({ duplicateType, rowNum, ...rest }) => rest);
+
+      // Bulk insert places
+      const { data: insertedPlaces, error: insertError } = await supabase
+        .from("places")
+        .insert(cleanData)
+        .select();
+
+      if (insertError) throw insertError;
+
+      if (insertedPlaces && insertedPlaces.length > 0) {
+        // Generate main branches payload
+        const branchesPayload = insertedPlaces.map(place => ({
+          place_id: place.id,
+          name: "الفرع الرئيسي",
+          governorate: place.governorate,
+          city: place.city,
+          full_address: place.full_address || "",
+          phones: place.phones || [],
+          google_maps_url: place.google_maps_url || "",
+          working_hours: place.working_hours || JSON.stringify({ type: "24/7" }),
+          latitude: place.latitude,
+          longitude: place.longitude,
+          is_main: true,
+          website_url: place.website_url || null,
+          features: place.features || [],
+          services: place.services || []
+        }));
+
+        // Bulk insert branches
+        const { error: branchesError } = await supabase
+          .from("branches")
+          .insert(branchesPayload);
+
+        if (branchesError) {
+          console.warn("Branches bulk insert failed:", branchesError);
+        }
+
+        // Fetch inserted places with branch info (matching standard places format in state)
+        const insertedWithBranches = insertedPlaces.map((place, idx) => {
+          const mainBranch = branchesPayload[idx];
+          return {
+            ...place,
+            branches: mainBranch ? [{ ...mainBranch, id: `temp-branch-${idx}` }] : []
+          };
+        });
+
+        // Update local state
+        setPlaces(prev => [...insertedWithBranches, ...prev]);
+        setImportSuccess(`تم استيراد ${insertedPlaces.length} مكان بنجاح وإنشاء فروعها الرئيسية!`);
+        setParsedPlaces([]);
+        setDuplicates([]);
+        
+        const fileInput = document.getElementById("excel-file-input") as HTMLInputElement;
+        if (fileInput) fileInput.value = "";
+      }
+    } catch (err: any) {
+      setImportError("حدث خطأ أثناء حفظ الأماكن: " + (err.message || ""));
+    } finally {
+      setImporting(false);
     }
   };
 
@@ -1292,12 +1653,7 @@ export default function AdminDashboard() {
     <div className="app-container" style={{ padding: "120px 10px", paddingTop: "60px", maxWidth: "100%", width: "100%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
         <div>
-          <h1 className="title-ios">🛠️ لوحة التحكم</h1>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
-            <a href="/" className="ios-btn" style={{ padding: "4px 12px", fontSize: "0.8rem", background: "rgba(52,199,89,0.1)", color: "#34c759", border: "1px solid rgba(52,199,89,0.2)" }}>
-              🌍 الذهاب للموقع
-            </a>
-          </div>
+          <h1 className="title-ios">إدارة الأماكن</h1>
         </div>
 
         <div style={{ display: "flex", gap: "10px" }}>
@@ -1306,7 +1662,10 @@ export default function AdminDashboard() {
               تفعيل بيانات تجريبية
             </button>
           )}
-          <button className="ios-btn ios-btn-primary" onClick={() => setShowAddForm(!showAddForm)}>
+          <button className="ios-btn" onClick={() => { setShowExcelImport(!showExcelImport); setShowAddForm(false); }} style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", border: "1px solid rgba(52, 199, 89, 0.3)", display: "flex", alignItems: "center", gap: "6px" }}>
+            {showExcelImport ? "إلغاء الاستيراد" : "📥 استيراد من Excel"}
+          </button>
+          <button className="ios-btn ios-btn-primary" onClick={() => { setShowAddForm(!showAddForm); setShowExcelImport(false); }}>
             {showAddForm ? "إلغاء الإضافة" : "+ إضافة مكان جديد"}
           </button>
         </div>
@@ -2007,6 +2366,162 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {/* Excel Import Panel */}
+      {showExcelImport && (
+        <div className="ios-sheet" style={{ maxWidth: "100%", padding: "28px 24px", marginBottom: "40px", borderRadius: "15px", border: "1px solid rgba(52, 199, 89, 0.3)", animation: "slide-in-section 0.4s ease" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "15px" }}>
+            <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
+              <i className="bx bx-file" style={{ color: "#34c759", fontSize: "1.6rem" }}></i> استيراد الأماكن من ملف Excel / CSV
+            </h2>
+            <button 
+              type="button" 
+              className="ios-btn" 
+              onClick={handleDownloadTemplate}
+              style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", border: "1px solid rgba(0, 122, 255, 0.3)", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.85rem", padding: "6px 14px" }}
+            >
+              <i className="bx bx-download"></i> تحميل نموذج Excel التجريبي
+            </button>
+          </div>
+
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: "1.6", marginBottom: "24px" }}>
+            يرجى تعبئة ملف الـ Excel بالبيانات المطلوبة مع الالتزام بأسماء الأعمدة الموضحة في النموذج لتفادي أخطاء الاستيراد.
+          </p>
+
+          <div style={{ border: "2px dashed rgba(52, 199, 89, 0.25)", borderRadius: "12px", padding: "30px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "rgba(52, 199, 89, 0.02)", marginBottom: "20px", cursor: "pointer", transition: "all 0.2s" }}>
+            <i className="bx bx-cloud-upload" style={{ fontSize: "3rem", color: "#34c759" }}></i>
+            <span style={{ fontSize: "0.95rem", fontWeight: "600" }}>اختر ملف Excel أو اسحبه إلى هنا</span>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>يدعم الملفات بصيغة .xlsx, .xls, .csv</span>
+            <input 
+              id="excel-file-input" 
+              type="file" 
+              accept=".xlsx, .xls, .csv" 
+              onChange={handleExcelUpload} 
+              style={{ display: "block", marginTop: "10px", fontSize: "0.85rem" }} 
+            />
+          </div>
+
+          {importError && (
+            <div style={{ background: "rgba(255, 59, 48, 0.12)", border: "1px solid rgba(255, 59, 48, 0.25)", padding: "14px 18px", borderRadius: "10px", color: "#ff3b30", marginBottom: "20px", fontSize: "0.88rem", display: "flex", alignItems: "center", gap: "8px" }}>
+              <i className="bx bx-error-circle" style={{ fontSize: "1.2rem" }}></i>
+              <div>{importError}</div>
+            </div>
+          )}
+
+          {importSuccess && (
+            <div style={{ background: "rgba(52, 199, 89, 0.12)", border: "1px solid rgba(52, 199, 89, 0.25)", padding: "14px 18px", borderRadius: "10px", color: "#34c759", marginBottom: "20px", fontSize: "0.88rem", display: "flex", alignItems: "center", gap: "8px" }}>
+              <i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }}></i>
+              <div>{importSuccess}</div>
+            </div>
+          )}
+
+          {parsedPlaces.length > 0 && (
+            <div style={{ marginBottom: "24px" }}>
+              <h3 style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                🎯 معاينة البيانات المستخرجة ({parsedPlaces.length} مكان جاهز للاستيراد):
+              </h3>
+              
+              {duplicates.length > 0 && (
+                <div style={{ background: "rgba(255, 149, 0, 0.12)", border: "1px solid rgba(255, 149, 0, 0.25)", padding: "14px 18px", borderRadius: "10px", color: "#ff9500", marginBottom: "20px", fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <i className="bx bx-error" style={{ fontSize: "1.3rem" }}></i>
+                    <strong>تحذير: تم اكتشاف {duplicates.length} مكان مكرر!</strong>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                    تم العثور على أسطر مكررة داخل ملف الإكسل نفسه أو أنها متطابقة مع أماكن مسجلة مسبقاً بالموقع (مطابقة الاسم والتصنيف والمحافظة والمدينة). يمكنك النقر على زر "حذف المتكرر" لتصفيتها تلقائياً.
+                  </p>
+                  <div>
+                    <button 
+                      type="button" 
+                      className="ios-btn"
+                      onClick={handleRemoveDuplicates}
+                      style={{ background: "#ff9500", color: "#fff", border: "none", fontSize: "0.82rem", padding: "6px 14px", fontWeight: "bold" }}
+                    >
+                      🧹 حذف المتكرر
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div style={{ overflowX: "auto", borderRadius: "8px", border: "1px solid var(--border-color, rgba(255,255,255,0.1))", maxHeight: "300px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "right" }}>
+                  <thead>
+                    <tr style={{ background: "var(--bg-secondary, rgba(255,255,255,0.05))", borderBottom: "1px solid var(--border-color, rgba(255,255,255,0.1))" }}>
+                      <th style={{ padding: "10px 14px" }}>الاسم</th>
+                      <th style={{ padding: "10px 14px" }}>القسم</th>
+                      <th style={{ padding: "10px 14px" }}>المدينة</th>
+                      <th style={{ padding: "10px 14px" }}>الهواتف</th>
+                      <th style={{ padding: "10px 14px" }}>رابط الخريطة</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {parsedPlaces.map((p, idx) => (
+                      <tr key={idx} style={{ 
+                        borderBottom: "1px solid var(--border-color, rgba(255,255,255,0.05))",
+                        background: p.duplicateType === "db" 
+                          ? "rgba(255, 59, 48, 0.08)" 
+                          : p.duplicateType === "internal" 
+                            ? "rgba(255, 149, 0, 0.08)" 
+                            : "transparent"
+                      }}>
+                        <td style={{ padding: "8px 14px", fontWeight: "600" }}>
+                          {p.name}
+                          {p.duplicateType === "db" && (
+                            <span style={{ fontSize: "0.75rem", color: "#ff3b30", marginRight: "8px", background: "rgba(255, 59, 48, 0.15)", padding: "2px 6px", borderRadius: "4px" }}>
+                              ⚠️ موجود مسبقاً بالموقع
+                            </span>
+                          )}
+                          {p.duplicateType === "internal" && (
+                            <span style={{ fontSize: "0.75rem", color: "#ff9500", marginRight: "8px", background: "rgba(255, 149, 0, 0.15)", padding: "2px 6px", borderRadius: "4px" }}>
+                              ⚠️ مكرر بالملف (السطر {p.rowNum})
+                            </span>
+                          )}
+                        </td>
+                        <td style={{ padding: "8px 14px" }}><span className="badge-ios" style={{ background: "rgba(108, 99, 255, 0.15)", color: "var(--accent-primary)" }}>{p.category_label}</span></td>
+                        <td style={{ padding: "8px 14px" }}>{p.city}</td>
+                        <td style={{ padding: "8px 14px" }}>{p.phones.join(", ") || "-"}</td>
+                        <td style={{ padding: "8px 14px", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "200px" }}>
+                          <a href={p.google_maps_url} target="_blank" rel="noopener noreferrer" style={{ color: "#007aff", textDecoration: "underline" }}>
+                            عرض الرابط
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ display: "flex", gap: "12px", marginTop: "20px" }}>
+                <button 
+                  type="button" 
+                  className="ios-btn ios-btn-primary" 
+                  disabled={importing}
+                  onClick={handleImportSubmit}
+                  style={{ background: "#34c759", border: "none", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  {importing ? (
+                    <>🔄 جاري حفظ الأماكن...</>
+                  ) : (
+                    <>📥 حفظ الأماكن في قاعدة البيانات</>
+                  )}
+                </button>
+                <button 
+                  type="button" 
+                  className="ios-btn" 
+                  style={{ background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.3)" }}
+                  onClick={() => {
+                    setParsedPlaces([]);
+                    const fileInput = document.getElementById("excel-file-input") as HTMLInputElement;
+                    if (fileInput) fileInput.value = "";
+                  }}
+                >
+                  إلغاء المعاينة
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Add Place Form */}
       {showAddForm && (
         <div className="ios-sheet" style={{ position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease" }}>
@@ -2334,6 +2849,24 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {dbDuplicatesList.length > 0 && (
+          <div style={{ background: "rgba(255, 149, 0, 0.12)", borderBottom: "1px solid rgba(255, 149, 0, 0.25)", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#ff9500", fontSize: "0.88rem" }}>
+              <i className="bx bx-error" style={{ fontSize: "1.2rem" }}></i>
+              <span>تنبيه: تم اكتشاف <strong>{dbDuplicatesList.length}</strong> مكان مكرر مسجل في قاعدة البيانات!</span>
+            </div>
+            <button 
+              type="button" 
+              className="ios-btn"
+              disabled={isDeletingDuplicates}
+              onClick={handleCleanDbDuplicates}
+              style={{ background: "#ff9500", color: "#fff", border: "none", fontSize: "0.8rem", padding: "6px 14px", fontWeight: "bold" }}
+            >
+              {isDeletingDuplicates ? "🔄 جاري تنظيف المتكرر..." : "🧹 حذف الأماكن المكررة"}
+            </button>
+          </div>
+        )}
+
         {places.length === 0 ? (
           <div style={{ textAlign: "center", padding: "50px 40px", color: "#94a3b8" }}>
             <i className="bx bx-map-alt" style={{ fontSize: "3rem", marginBottom: "12px", display: "block", color: "#475569" }} />
@@ -2352,16 +2885,25 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {places.map(place => (
-                  <tr key={place.id} className={styles.adminTr}>
-                    <td className={styles.adminTd}>
-                      {place.images && place.images.length > 0 ? (
-                        <img src={place.images[0]} alt={place.name} style={{ width: "44px", height: "44px", borderRadius: "10px", objectFit: "cover" }} />
-                      ) : (
-                        <div style={{ width: "44px", height: "44px", borderRadius: "10px", background: "rgba(99,102,241,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>🖼️</div>
-                      )}
-                    </td>
-                    <td className={styles.adminTd} style={{ fontWeight: "700", color: "#f1f5f9" }}>{place.name}</td>
+                {places.map(place => {
+                  const isDbDuplicate = dbDuplicatesList.some(d => d.duplicateId === place.id);
+                  return (
+                    <tr key={place.id} className={styles.adminTr} style={isDbDuplicate ? { background: "rgba(255, 149, 0, 0.04)" } : undefined}>
+                      <td className={styles.adminTd}>
+                        {place.images && place.images.length > 0 ? (
+                          <img src={place.images[0]} alt={place.name} style={{ width: "44px", height: "44px", borderRadius: "10px", objectFit: "cover" }} />
+                        ) : (
+                          <div style={{ width: "44px", height: "44px", borderRadius: "10px", background: "rgba(99,102,241,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>🖼️</div>
+                        )}
+                      </td>
+                      <td className={styles.adminTd} style={{ fontWeight: "700", color: "#f1f5f9" }}>
+                        {place.name}
+                        {isDbDuplicate && (
+                          <span style={{ fontSize: "0.72rem", color: "#ff9500", marginRight: "8px", background: "rgba(255, 149, 0, 0.15)", padding: "2px 6px", borderRadius: "4px", display: "inline-block", fontWeight: "bold" }}>
+                            ⚠️ مكرر
+                          </span>
+                        )}
+                      </td>
                     <td className={styles.adminTd}>
                       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                         <span className={`${styles.badge} ${styles.badgePrimary}`}>
@@ -2405,8 +2947,9 @@ export default function AdminDashboard() {
                         </button>
                       </div>
                     </td>
-                  </tr>
-                ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

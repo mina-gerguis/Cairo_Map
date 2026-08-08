@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 
 interface Airport {
+  id?: string;
   name: string;
   code: string;
   city: string;
@@ -12,10 +15,10 @@ interface Airport {
   services: string[];
   airlines: string;
   phone: string;
-  mapUrl: string;
+  map_url: string;
 }
 
-const AIRPORTS_DATA: Airport[] = [
+const DEFAULT_AIRPORTS: Airport[] = [
   {
     name: "مطار القاهرة الدولي (CAI)",
     code: "CAI",
@@ -25,7 +28,7 @@ const AIRPORTS_DATA: Airport[] = [
     services: ["مواقف سيارات متعددة الطوابق", "إنترنت واي فاي مجاني", "صالات كبار الشخصيات (VIP Lounge)", "بنوك وصرافة 24 ساعة", "سوق حرة (Duty Free)", "تأجير سيارات", "فنادق ملاصقة للمطار"],
     airlines: "مصر للطيران (المركز الرئيسي)، طيران الإمارات، الخطوط السعودية، لوفتهانزا، الخطوط البريطانية، الخطوط الفرنسية، طيران الخليج، وغيرها.",
     phone: "19934",
-    mapUrl: "https://maps.google.com/?q=Cairo+International+Airport"
+    map_url: "https://maps.google.com/?q=Cairo+International+Airport"
   },
   {
     name: "مطار برج العرب الدولي (HBE)",
@@ -36,7 +39,7 @@ const AIRPORTS_DATA: Airport[] = [
     services: ["صالة سفر ووصول مكيفة", "مكتب صرافة وماكينات ATM", "كافيهات ومطاعم", "مواقف سيارات", "سوق حرة مبسطة"],
     airlines: "مصر للطيران، طيران العربية، فلاي دبي، طيران النيل، الخطوط السعودية، طيران الجزيرة.",
     phone: "03-4631000",
-    mapUrl: "https://maps.google.com/?q=Borg+El+Arab+International+Airport"
+    map_url: "https://maps.google.com/?q=Borg+El+Arab+International+Airport"
   },
   {
     name: "مطار سفنكس الدولي (SPX)",
@@ -47,7 +50,7 @@ const AIRPORTS_DATA: Airport[] = [
     services: ["مواقف سيارات", "خدمات بنكية ومكينات ATM", "كافيهات وقاعة ركاب حديثة", "سوق حرة"],
     airlines: "مصر للطيران (رحلات داخلية وخارجية)، ويز إير (Wizz Air)، طيران أديل، طيران العربية.",
     phone: "02-35391645",
-    mapUrl: "https://maps.google.com/?q=Sphinx+International+Airport"
+    map_url: "https://maps.google.com/?q=Sphinx+International+Airport"
   },
   {
     name: "مطار العاصمة الدولي (CCE)",
@@ -56,9 +59,9 @@ const AIRPORTS_DATA: Airport[] = [
     type: "مطار دولي جديد",
     terminals: "مبنى ركاب رئيسي مجهز بأحدث تكنولوجيا التفتيش والخدمات يخدم العاصمة الجديدة والقناة.",
     services: ["تكييف مركزي متطور", "خدمات بنكية وصرافة", "صالات انتظار متميزة", "منطقة مطاعم وكافيهات"],
-    airlines: "مصر للطيران، ورحلات شارتر وسياحية خاصة وخطوط طيران إقليمية.",
+    airlines: "مصر للطيران، ورسميات وشارتر وسياحية خاصة وخطوط طيران إقليمية.",
     phone: "02-38594700",
-    mapUrl: "https://maps.google.com/?q=Capital+International+Airport+Egypt"
+    map_url: "https://maps.google.com/?q=Capital+International+Airport+Egypt"
   },
   {
     name: "مطار الغردقة الدولي (HRG)",
@@ -69,7 +72,7 @@ const AIRPORTS_DATA: Airport[] = [
     services: ["صالات سفر ووصول واسعة", "إنترنت واي فاي متاح", "سوق حرة سياحية ضخمة", "مكاتب تأجير سيارات وشركات سياحة", "بنوك وصرافة"],
     airlines: "مصر للطيران، طيران إيزي جيت، طيران كورندون، طيران التكثيف الإقليمي والرحلات الشارتر الروسية والأوروبية.",
     phone: "065-3412000",
-    mapUrl: "https://maps.google.com/?q=Hurghada+International+Airport"
+    map_url: "https://maps.google.com/?q=Hurghada+International+Airport"
   },
   {
     name: "مطار شرم الشيخ الدولي (SSH)",
@@ -80,7 +83,7 @@ const AIRPORTS_DATA: Airport[] = [
     services: ["خدمات سياحية متكاملة", "سوق حرة متنوعة", "صالات VIP مخصصة للوفود", "بنوك وصرافة 24 ساعة", "منطقة كافيهات خارجية ممتازة"],
     airlines: "مصر للطيران، طيران الخليج، الخطوط السعودية، والعديد من شركات الطيران الأوروبية والشارتر والروسية.",
     phone: "069-3601140",
-    mapUrl: "https://maps.google.com/?q=Sharm+El-Sheikh+International+Airport"
+    map_url: "https://maps.google.com/?q=Sharm+El-Sheikh+International+Airport"
   },
   {
     name: "مطار الأقصر الدولي (LXR)",
@@ -91,14 +94,215 @@ const AIRPORTS_DATA: Airport[] = [
     services: ["سوق حرة للهدايا والتحف", "صالات انتظار مريحة ومكيفة", "ماكينات صرف آلي وبنوك", "مواقف حافلات سياحية واسعة"],
     airlines: "مصر للطيران، طيران النيل، وطيران مصر للطيران إكسبريس، ورحلات سياحية عارضة من أوروبا والخليج.",
     phone: "095-2374655",
-    mapUrl: "https://maps.google.com/?q=Luxor+International+Airport"
+    map_url: "https://maps.google.com/?q=Luxor+International+Airport"
   }
 ];
 
 export default function AirportsPage() {
+  const { user, profile, loading: authLoading } = useAuth();
+  const [airports, setAirports] = useState<Airport[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredAirports = AIRPORTS_DATA.filter(
+  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const hasAccess = profile?.is_admin || 
+    ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
+
+  useEffect(() => {
+    if (user && hasAccess) {
+      loadAirports();
+    }
+  }, [user, hasAccess]);
+
+  if (authLoading) {
+    return (
+      <div className="app-container" style={{ maxWidth: "800px", paddingTop: "100px", textAlign: "center" }}>
+        <div style={{
+          width: "40px",
+          height: "40px",
+          border: "4px solid rgba(255,255,255,0.1)",
+          borderTop: "4px solid var(--accent-ios, #3b82f6)",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          margin: "0 auto 20px"
+        }} />
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
+      </div>
+    );
+  }
+
+  if (!user || !hasAccess) {
+    return (
+      <div className="app-container" style={{ maxWidth: "600px", paddingTop: "60px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
+        {/* Back Button */}
+        <div style={{ marginBottom: "24px" }}>
+          <Link 
+            href="/" 
+            style={{ 
+              display: "inline-flex", 
+              alignItems: "center", 
+              gap: "8px", 
+              color: "var(--accent-ios, #3b82f6)", 
+              textDecoration: "none", 
+              fontWeight: "600",
+              fontSize: "0.95rem" 
+            }}
+          >
+            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
+            <span>العودة للرئيسية</span>
+          </Link>
+        </div>
+
+        {/* Premium Lock Panel */}
+        <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(234, 179, 8, 0.2)", position: "relative", overflow: "hidden" }}>
+          <div style={{
+            position: "absolute",
+            top: "-20px",
+            left: "-20px",
+            width: "140px",
+            height: "140px",
+            background: "radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%)",
+            borderRadius: "50%"
+          }} />
+
+          {/* Lock Icon */}
+          <div style={{ 
+            fontSize: "4.5rem", 
+            marginBottom: "24px",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100px",
+            height: "100px",
+            background: "rgba(234, 179, 8, 0.08)",
+            borderRadius: "50%",
+            border: "1px solid rgba(234, 179, 8, 0.3)",
+            color: "#eab308",
+            animation: "pulse 2s infinite"
+          }}>
+            <i className="bx bxs-lock-alt"></i>
+          </div>
+
+          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#fff", marginBottom: "14px" }}>
+            دليل المطارات ميزة ذهبية 🥇
+          </h2>
+          
+          <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
+            تصفح دليل المطارات المصرية والصالات والخدمات وشركات الطيران العاملة بها متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
+          </p>
+
+          {/* Features list */}
+          <div style={{ background: "rgba(255,255,255,0.02)", padding: "18px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
+            <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية (60 ج.م/شهرياً):</div>
+            <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <li>✨ دليل المطارات المصرية (القاهرة، برج العرب، سفنكس، الغردقة، إلخ)</li>
+              <li>✨ تفاصيل الصالات والخدمات المتاحة للمسافرين</li>
+              <li>✨ دليل شركات الطيران العاملة وأرقام الهواتف الرسمية</li>
+              <li>✨ تشمل أيضاً الموانئ ومواقف السفر ومخطط الرحلات الذكي بالكامل</li>
+            </ul>
+          </div>
+
+          {/* Call to Actions */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
+            {user ? (
+              <Link
+                href="/profile"
+                style={{
+                  padding: "14px",
+                  borderRadius: "10px",
+                  background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+                  color: "#000",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  boxShadow: "0 4px 15px rgba(250, 204, 21, 0.3)",
+                  display: "block"
+                }}
+              >
+                🚀 اشترك الآن ورقّ حسابك للذهبية (60 ج.م)
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                style={{
+                  padding: "14px",
+                  borderRadius: "10px",
+                  background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                  color: "#fff",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
+                  display: "block"
+                }}
+              >
+                🔑 سجل دخولك أولاً لتفعيل الاشتراك
+              </Link>
+            )}
+            
+            <Link
+              href="/"
+              style={{
+                padding: "12px",
+                borderRadius: "10px",
+                background: "rgba(255, 255, 255, 0.04)",
+                color: "#94a3b8",
+                textDecoration: "none",
+                fontWeight: "bold",
+                fontSize: "0.9rem",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                display: "block"
+              }}
+            >
+              الرجوع للرئيسية
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const loadAirports = async () => {
+    setLoading(true);
+    if (!supabase) {
+      setAirports(getLocalAirports());
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("airports")
+        .select("*")
+        .order("name", { ascending: true });
+
+      if (error) {
+        setAirports(getLocalAirports());
+      } else {
+        setAirports(data || []);
+      }
+    } catch (err) {
+      setAirports(getLocalAirports());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getLocalAirports = () => {
+    if (typeof window === "undefined") return DEFAULT_AIRPORTS;
+    const local = localStorage.getItem("local_airports");
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch {
+        return DEFAULT_AIRPORTS;
+      }
+    }
+    localStorage.setItem("local_airports", JSON.stringify(DEFAULT_AIRPORTS));
+    return DEFAULT_AIRPORTS;
+  };
+
+  const filteredAirports = airports.filter(
     a =>
       a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       a.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -179,9 +383,14 @@ export default function AirportsPage() {
 
       {/* Airports List */}
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-        {filteredAirports.length > 0 ? (
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "40px" }}>
+            <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--accent-ios)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+            <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري تحميل البيانات...</span>
+          </div>
+        ) : filteredAirports.length > 0 ? (
           filteredAirports.map((airport, idx) => (
-            <div key={idx} className="glass-panel" style={{ padding: "28px 24px" }}>
+            <div key={airport.id || idx} className="glass-panel" style={{ padding: "28px 24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", alignItems: "flex-start", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "16px", marginBottom: "18px" }}>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: "1.3rem", fontWeight: "800", color: "#fff" }}>{airport.name}</h3>
@@ -210,16 +419,18 @@ export default function AirportsPage() {
                 </div>
 
                 {/* Services */}
-                <div>
-                  <strong style={{ color: "#fff", fontSize: "0.92rem", display: "block", marginBottom: "6px" }}>⚙️ الخدمات والتسهيلات المتاحة:</strong>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                    {airport.services.map((srv, sIdx) => (
-                      <span key={sIdx} style={{ fontSize: "0.78rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", padding: "4px 10px", borderRadius: "8px", color: "var(--text-secondary)" }}>
-                        ✨ {srv}
-                      </span>
-                    ))}
+                {Array.isArray(airport.services) && airport.services.length > 0 && (
+                  <div>
+                    <strong style={{ color: "#fff", fontSize: "0.92rem", display: "block", marginBottom: "6px" }}>⚙️ الخدمات والتسهيلات المتاحة:</strong>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      {airport.services.map((srv, sIdx) => (
+                        <span key={sIdx} style={{ fontSize: "0.78rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", padding: "4px 10px", borderRadius: "8px", color: "var(--text-secondary)" }}>
+                          ✨ {srv}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Phone & Directions */}
                 <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", alignItems: "center", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "18px", marginTop: "8px" }}>
@@ -229,7 +440,7 @@ export default function AirportsPage() {
                   </div>
                   
                   <a
-                    href={airport.mapUrl}
+                    href={airport.map_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{

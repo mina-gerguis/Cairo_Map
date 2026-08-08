@@ -670,7 +670,7 @@ export default function DirectionsPage() {
   // Paywall / Lock screen if user doesn't have Gold access
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin || 
-    ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
+    ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   if (!user || !hasAccess) {
     return (
@@ -695,14 +695,14 @@ export default function DirectionsPage() {
         </div>
 
         {/* Premium Lock Panel */}
-        <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(234, 179, 8, 0.2)", position: "relative", overflow: "hidden" }}>
+        <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(99, 102, 241, 0.2)", position: "relative", overflow: "hidden" }}>
           <div style={{
             position: "absolute",
             top: "-20px",
             left: "-20px",
             width: "140px",
             height: "140px",
-            background: "radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)",
             borderRadius: "50%"
           }} />
 
@@ -715,26 +715,26 @@ export default function DirectionsPage() {
             justifyContent: "center",
             width: "100px",
             height: "100px",
-            background: "rgba(234, 179, 8, 0.08)",
+            background: "rgba(99, 102, 241, 0.08)",
             borderRadius: "50%",
-            border: "1px solid rgba(234, 179, 8, 0.3)",
-            color: "#eab308",
+            border: "1px solid rgba(99, 102, 241, 0.3)",
+            color: "#6366f1",
             animation: "pulse 2s infinite"
           }}>
             <i className="bx bxs-lock-alt"></i>
           </div>
 
           <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#fff", marginBottom: "14px" }}>
-            دليل &quot;ازاي اروح&quot; ميزة ذهبية 🥇
+            دليل &quot;ازاي اروح&quot; ميزة فضية 🥈
           </h2>
           
           <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
-            محرك البحث المتقدم عن خطوط المواصلات والطرق المختصرة (ميكروباص، أتوبيسات، مترو، ومونوريل) متاح حصرياً لعملاء الباقة الذهبية المميزة.
+            محرك البحث المتقدم عن خطوط المواصلات والطرق المختصرة (ميكروباص، أتوبيسات، مترو، ومونوريل) متاح حصرياً للمشتركين في الباقة الفضية أو الذهبية أو المشوار.
           </p>
 
           {/* Features list */}
           <div style={{ background: "rgba(255,255,255,0.02)", padding: "18px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
-            <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية (60 ج.م/شهرياً):</div>
+            <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية (40 ج.م/شهرياً):</div>
             <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
               <li>✨ البحث عن مسارات مواصلات بين أي منطقتين بالتفصيل</li>
               <li>✨ حساب تكلفة الرحلة والمدة المتوقعة بدقة</li>
@@ -751,16 +751,16 @@ export default function DirectionsPage() {
                 style={{
                   padding: "14px",
                   borderRadius: "10px",
-                  background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-                  color: "#000",
+                  background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                  color: "#fff",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "1rem",
-                  boxShadow: "0 4px 15px rgba(250, 204, 21, 0.3)",
+                  boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)",
                   display: "block"
                 }}
               >
-                🚀 اشترك الآن ورقّ حسابك للذهبية
+                🚀 اشترك الآن ورقّ حسابك للفضية (40 ج.م)
               </Link>
             ) : (
               <Link

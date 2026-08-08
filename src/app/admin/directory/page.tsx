@@ -33,12 +33,12 @@ const COMPANY_LABELS: Record<string, string> = {
   we: "وي",
 };
 
-export default function AdminDirectoryPage() {
+export default function AdminDirectoryPage({ isSubComponent = false }: { isSubComponent?: boolean }) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(isSubComponent ? true : false);
+  const [loading, setLoading] = useState(isSubComponent ? false : true);
 
   // Tabs: 'phones' or 'codes'
   const [activeTab, setActiveTab] = useState<"phones" | "codes">("phones");
@@ -351,19 +351,21 @@ export default function AdminDirectoryPage() {
     }
   };
 
-  if (authLoading || loading) return <div style={{ paddingTop: "120px", textAlign: "center" }}>جاري التحميل...</div>;
-  if (!isAdmin) return <div style={{ paddingTop: "120px", textAlign: "center", color: "#ff3b30" }}>عفواً، لا تملك صلاحية الوصول لهذه الصفحة.</div>;
+  if (!isSubComponent && (authLoading || loading)) return <div style={{ paddingTop: "120px", textAlign: "center" }}>جاري التحميل...</div>;
+  if (!isSubComponent && !isAdmin) return <div style={{ paddingTop: "120px", textAlign: "center", color: "#ff3b30" }}>عفواً، لا تملك صلاحية الوصول لهذه الصفحة.</div>;
 
   return (
-    <div className="app-container" style={{ paddingTop: "20px", paddingBottom: "60px" }}>
+    <div className={isSubComponent ? "" : "app-container"} style={isSubComponent ? { paddingBottom: "40px" } : { paddingTop: "20px", paddingBottom: "60px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "30px" }}>
-        <div>
-          <h1
-            style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", fontSize: "26px", color: "var(--text-ios)" }}
-            className="title-ios">☎️ إدارة دليل الهاتف </h1>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
+        {!isSubComponent ? (
+          <div>
+            <h1
+              style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", fontSize: "26px", color: "var(--text-ios)" }}
+              className="title-ios">☎️ إدارة دليل الهاتف </h1>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
+            </div>
           </div>
-        </div>
+        ) : <div />}
 
         {activeTab === "phones" ? (
           <button className="ios-btn ios-btn-primary" style={{ width: "auto" }} onClick={() => {

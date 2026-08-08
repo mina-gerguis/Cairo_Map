@@ -245,6 +245,7 @@ export default function ProfilePage() {
   // Transactions History State
   const [userTransactions, setUserTransactions] = useState<any[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
+  const pendingTransactionsCount = userTransactions.filter((tx) => tx.status === "pending").length;
 
 
   // Suggestions & Bug Reports State
@@ -1130,6 +1131,28 @@ export default function ProfilePage() {
     setIsSubmittingDeposit(true);
     setDepositStatus(null);
 
+    // Strict spam prevention: check pending transactions count
+    try {
+      const { count, error: countError } = await supabase
+        .from("balance_transactions")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("status", "pending");
+
+      if (countError) throw countError;
+
+      if (count !== null && count >= 2) {
+        setDepositStatus({ type: "error", text: "عفواً، لا يمكنك تقديم طلب إيداع جديد لوجود طلبين معلقين بالفعل قيد المراجعة. يرجى الانتظار حتى يتم البت فيهما." });
+        setIsSubmittingDeposit(false);
+        return;
+      }
+    } catch (errCount: any) {
+      console.error("Error checking pending count:", errCount);
+      setDepositStatus({ type: "error", text: "فشل التحقق من الطلبات المعلقة." });
+      setIsSubmittingDeposit(false);
+      return;
+    }
+
     const amount = parseFloat(depositAmount);
     if (isNaN(amount) || amount <= 0) {
       setDepositStatus({ type: "error", text: "يرجى إدخال مبلغ صحيح أكبر من الصفر." });
@@ -1197,6 +1220,28 @@ export default function ProfilePage() {
     if (!supabase || !user) return;
     setIsSubmittingWithdraw(true);
     setWithdrawStatus(null);
+
+    // Strict spam prevention: check pending transactions count
+    try {
+      const { count, error: countError } = await supabase
+        .from("balance_transactions")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("status", "pending");
+
+      if (countError) throw countError;
+
+      if (count !== null && count >= 2) {
+        setWithdrawStatus({ type: "error", text: "عفواً، لا يمكنك تقديم طلب سحب جديد لوجود طلبين معلقين بالفعل قيد المراجعة. يرجى الانتظار حتى يتم البت فيهما." });
+        setIsSubmittingWithdraw(false);
+        return;
+      }
+    } catch (errCount: any) {
+      console.error("Error checking pending count:", errCount);
+      setWithdrawStatus({ type: "error", text: "فشل التحقق من الطلبات المعلقة." });
+      setIsSubmittingWithdraw(false);
+      return;
+    }
 
     const amount = parseFloat(withdrawAmount);
     if (isNaN(amount) || amount < 100) {
@@ -2597,8 +2642,8 @@ export default function ProfilePage() {
             onClick={() => setShowPasswordModal(true)}
           >
             <div className={styles.cardContent}>
-              <div style={{ color: "var(--accent-ios)" }}>
-                <i className={`bx bx-lock-alt ${styles.securityIcon}`}></i>
+              <div style={{ color: "#30b0c7" }}>
+                <i className={`bx bx-lock-alt ${styles.cardIcon}`}></i>
               </div>
               <div>
                 <h3 className={styles.cardTitle}>تغيير كلمة المرور</h3>
@@ -4518,12 +4563,17 @@ export default function ProfilePage() {
 
                     <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
-                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
                       <li>تصفح خطوط المترو الأساسية والبحث</li>
                       <li>عرض جداول المواعيد والمحطات التبادلية</li>
                       <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>خريطة المونوريل التفاعلية الكاملة 🚄</li>
+                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>دليل سكك حديد مصر ومواعيد القطارات 🚂</li>
+                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>دليل محطات وتعرفة القطار الكهربائي LRT 🚄</li>
+                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>محرك البحث "ازاي اروح" للمواصلات 🗺️</li>
                       <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>إضافة تذكيرات وملاحظات للأماكن 📝</li>
-                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل &quot;ازاي اروح&quot; للمواصلات</li>
+                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>دليل المطارات والموانئ المصرية</li>
+                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>مواقف الأتوبيسات والميكروباصات</li>
+                      <li style={{ textDecoration: "line-through", opacity: 0.5 }}>مخطط الرحلات الذكي بالذكاء الاصطناعي</li>
                     </ul>
                   </div>
 
@@ -4580,12 +4630,19 @@ export default function ProfilePage() {
 
                     <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
-                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "#94a3b8", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
                       <li>تصفح خطوط المترو الأساسية والبحث</li>
                       <li>عرض جداول المواعيد والمحطات التبادلية</li>
                       <li>خريطة المونوريل التفاعلية الكاملة 🚄</li>
-                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>محرك البحث المتقدم &quot;ازاي اروح&quot; للمواصلات 🗺️</li>
-                      <li style={{ color: "var(--text-primary)", fontWeight: "bold" }}>إضافة تذكيرات وملاحظات للأماكن 📝</li>
+                      <li>دليل مواعيد وأسعار سكك حديد مصر 🚂</li>
+                      <li>دليل محطات وتعرفة القطار الكهربائي LRT 🚄</li>
+                      <li>محرك البحث المتقدم "ازاي اروح" 🗺️</li>
+                      <li>إضافة تذكيرات وملاحظات للأماكن 📝</li>
+                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>دليل المطارات المصرية والصالات ✈️</li>
+                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>دليل الموانئ البحرية التجارية والسياحية ⚓</li>
+                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>دليل مواقف وأتوبيسات السفر 🚌</li>
+                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>دليل مواقف الميكروباص والسرفيس والتعرفة 🚐</li>
+                      <li style={{ color: "#fbbf24", fontWeight: "bold" }}>مخطط الرحلات الذكي بالذكاء الاصطناعي 🤖</li>
                     </ul>
                   </div>
 
@@ -4933,6 +4990,21 @@ export default function ProfilePage() {
             {/* TAB 2: DEPOSIT FORM */}
             {walletTab === "deposit" && (
               <form onSubmit={handleDepositSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "30px" }}>
+                {pendingTransactionsCount >= 2 && (
+                  <div style={{
+                    background: "rgba(239, 68, 68, 0.08)",
+                    border: "1px solid rgba(239, 68, 68, 0.15)",
+                    borderRadius: "12px",
+                    padding: "12px 16px",
+                    fontSize: "0.85rem",
+                    color: "#f87171",
+                    lineHeight: "1.6",
+                    textAlign: "right"
+                  }}>
+                    <i className="bx bx-error" style={{ marginLeft: "8px", verticalAlign: "middle" }}></i>
+                    <strong>تنبيه هام (الحد الأقصى للطلبات المعلقة):</strong> لديك حالياً <strong>{pendingTransactionsCount}</strong> طلبات معلقة قيد المراجعة.  لا يمكنك تقديم طلب إيداع جديد حتى تقوم الإدارة بمراجعة طلباتك الحالية.
+                  </div>
+                )}
                 <div>
                   <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>طريقة الإيداع</label>
                   <select
@@ -5068,9 +5140,21 @@ export default function ProfilePage() {
 
                 <button
                   type="submit"
-                  disabled={isSubmittingDeposit}
+                  disabled={isSubmittingDeposit || pendingTransactionsCount >= 2}
                   className="ios-btn ios-btn-primary"
-                  style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem" }}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                    ...(pendingTransactionsCount >= 2 ? {
+                      opacity: 0.35,
+                      cursor: "not-allowed",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      color: "var(--text-muted, #8e8e93)",
+                      borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))"
+                    } : {})
+                  }}
                 >
                   {isSubmittingDeposit ? (
                     <>
@@ -5090,6 +5174,21 @@ export default function ProfilePage() {
             {/* TAB 3: WITHDRAW FORM */}
             {walletTab === "withdraw" && (
               <form onSubmit={handleWithdrawSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
+                {pendingTransactionsCount >= 2 && (
+                  <div style={{
+                    background: "rgba(239, 68, 68, 0.08)",
+                    border: "1px solid rgba(239, 68, 68, 0.15)",
+                    borderRadius: "12px",
+                    padding: "12px 16px",
+                    fontSize: "0.85rem",
+                    color: "#f87171",
+                    lineHeight: "1.6",
+                    textAlign: "right"
+                  }}>
+                    <i className="bx bx-error" style={{ marginLeft: "8px", verticalAlign: "middle" }}></i>
+                    <strong>تنبيه هام (الحد الأقصى للطلبات المعلقة):</strong> لديك حالياً <strong>{pendingTransactionsCount}</strong> طلبات معلقة قيد المراجعة. لا يمكنك تقديم طلب سحب جديد حتى تقوم الإدارة بمراجعة طلباتك الحالية.
+                  </div>
+                )}
                 <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem", textAlign: "center" }}>
                   <span style={{ color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>الرصيد المتاح للسحب</span>
                   <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "#10b981" }}>{formatNumber(profile?.balance ?? 0, 2)} ج.م</h4>
@@ -5183,9 +5282,24 @@ export default function ProfilePage() {
 
                 <button
                   type="submit"
-                  disabled={isSubmittingWithdraw}
+                  disabled={isSubmittingWithdraw || pendingTransactionsCount >= 2}
                   className="ios-btn ios-btn-primary"
-                  style={{ width: "100%", padding: "12px", justifyContent: "center", fontSize: "0.9rem", background: "var(--accent-primary)", borderColor: "var(--accent-primary)" }}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                    ...(pendingTransactionsCount >= 2 ? {
+                      opacity: 0.35,
+                      cursor: "not-allowed",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      color: "var(--text-muted, #8e8e93)",
+                      borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))"
+                    } : {
+                      background: "var(--accent-primary)",
+                      borderColor: "var(--accent-primary)"
+                    })
+                  }}
                 >
                   {isSubmittingWithdraw ? (
                     <>
@@ -5293,9 +5407,15 @@ export default function ProfilePage() {
                       </div>
 
                       {tx.admin_notes && (
-                        <div style={{ background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.1)", borderRadius: "8px", padding: "8px 10px", fontSize: "0.72rem", color: "#f87171" }}>
-                          <strong>ملاحظة الإدارة:</strong> {tx.admin_notes}
-                        </div>
+                        tx.status === "rejected" ? (
+                          <div style={{ background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.1)", borderRadius: "8px", padding: "8px 10px", fontSize: "0.72rem", color: "#f87171" }}>
+                            <strong>سبب الرفض:</strong> {tx.admin_notes}
+                          </div>
+                        ) : (
+                          <div style={{ background: "rgba(59, 130, 246, 0.05)", border: "1px solid rgba(59, 130, 246, 0.1)", borderRadius: "8px", padding: "8px 10px", fontSize: "0.72rem", color: "#60a5fa" }}>
+                            <strong>الخدمة المستخدم بها الرصيد:</strong> {tx.admin_notes}
+                          </div>
+                        )
                       )}
                     </div>
                   ))

@@ -30,10 +30,10 @@ interface PlaceReport {
 export default function AdminReportsPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
-  
+
   const [reports, setReports] = useState<PlaceReport[]>([]);
   const [loadingReports, setLoadingReports] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -51,7 +51,7 @@ export default function AdminReportsPage() {
   const [contactMessages, setContactMessages] = useState<any[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [contactStatusFilter, setContactStatusFilter] = useState<string>("all");
-  
+
   // Admin Reply Inputs
   const [replyText, setReplyText] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -294,7 +294,7 @@ export default function AdminReportsPage() {
 
   const handleUpdateAppFeedbackStatus = async (feedback: any, newStatus: string) => {
     if (!supabase || !isAdmin) return;
-    
+
     let deleteEntry = false;
     if (newStatus === "action_taken") {
       deleteEntry = confirm("لقد قمت باتخاذ إجراء لحل هذه المشكلة/الاقتراح. هل تريد حذف هذا الطلب نهائياً من القائمة لتنظيف الشاشة؟");
@@ -331,7 +331,7 @@ export default function AdminReportsPage() {
 
       if (newStatus === "action_taken") {
         notifTitle = feedback.type === "suggestion" ? "💡 تم اعتماد وتطبيق اقتراحك!" : "✅ تم حل مشكلتك بنجاح!";
-        notifMessage = feedback.type === "suggestion" 
+        notifMessage = feedback.type === "suggestion"
           ? `تم اتخاذ إجراء وتطبيق اقتراحك بنجاح. شكراً لمساهمتك! ${replyText.trim() ? `رد الإدارة: ${replyText.trim()}` : ""}`
           : `تم اتخاذ إجراء وحل مشكلتك التي أبلغت عنها. ${replyText.trim() ? `رد الإدارة: ${replyText.trim()}` : ""}`;
       } else if (newStatus === "reviewed") {
@@ -491,22 +491,22 @@ export default function AdminReportsPage() {
   });
 
   return (
-    <div style={{ paddingBottom: "100px" }}>
+    <div style={{ padding: "30px 0 120px 0" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
         <div>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>البلاغات والشكاوى</h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>مراجعة وتعديل بلاغات واقتراحات مستخدمي دفتر والرد عليها لتحديث الأماكن والتطبيق.</p>
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.64rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>البلاغات</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>مراجعة التواصل و بلاغات الاماكن و الاقتراحات و الشكاوى و الرسائل النصية</p>
         </div>
-        <button 
+        <button
           onClick={() => {
             if (activeReportTab === "places") fetchReports();
             else if (activeReportTab === "app") fetchAppFeedbacks();
             else fetchContactMessages();
-          }} 
+          }}
           className="ios-btn"
-          style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px" }}
+          style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 5px" }}
         >
-          <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }}></i> تحديث البيانات
+          <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }}></i> تحديث
         </button>
       </div>
 
@@ -530,10 +530,10 @@ export default function AdminReportsPage() {
             fontSize: "0.9rem",
             cursor: "pointer",
             transition: "all 0.2s",
-            fontFamily: "var(--font-cairo)"
+            fontFamily: "var(--font-body)"
           }}
         >
-          بلاغات الأماكن ({reports.length})
+          الأماكن ({reports.length})
         </button>
         <button
           onClick={() => {
@@ -553,10 +553,10 @@ export default function AdminReportsPage() {
             fontSize: "0.9rem",
             cursor: "pointer",
             transition: "all 0.2s",
-            fontFamily: "var(--font-cairo)"
+            fontFamily: "var(--font-body)"
           }}
         >
-          اقتراحات ومشاكل التطبيق ({appFeedbacks.length})
+          الأقتراحات ({appFeedbacks.length})
         </button>
         <button
           onClick={() => {
@@ -576,10 +576,10 @@ export default function AdminReportsPage() {
             fontSize: "0.9rem",
             cursor: "pointer",
             transition: "all 0.2s",
-            fontFamily: "var(--font-cairo)"
+            fontFamily: "var(--font-body)"
           }}
         >
-          رسائل التواصل ({contactMessages.length})
+          التواصل ({contactMessages.length})
         </button>
       </div>
 
@@ -595,7 +595,7 @@ export default function AdminReportsPage() {
               if (status === "accepted") label = "مقبول";
               if (status === "rejected") label = "مرفوض";
               if (status === "retracted") label = "المتراجع عنها";
-              
+
               const isActive = statusFilter === status;
               return (
                 <button
@@ -608,7 +608,8 @@ export default function AdminReportsPage() {
                     background: isActive ? "var(--accent-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
-                    fontSize: "0.9rem",
+                    fontSize: "0.7rem",
+                    fontFamily: "var(--font-heading)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -617,11 +618,11 @@ export default function AdminReportsPage() {
                   }}
                 >
                   {label}
-                  <span style={{ 
-                    background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)", 
-                    padding: "2px 8px", 
-                    borderRadius: "10px", 
-                    fontSize: "0.78rem" 
+                  <span style={{
+                    background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)",
+                    padding: "2px 8px",
+                    borderRadius: "10px",
+                    fontSize: "0.78rem"
                   }}>
                     {count}
                   </span>
@@ -642,23 +643,23 @@ export default function AdminReportsPage() {
               {filteredReports.map((report) => {
                 const isOpen = activeReportId === report.id;
                 return (
-                  <div 
-                    key={report.id} 
-                    className="glass-card" 
-                    style={{ 
-                      padding: "20px", 
-                      borderRadius: "16px", 
+                  <div
+                    key={report.id}
+                    className="glass-card"
+                    style={{
+                      padding: "20px",
+                      borderRadius: "16px",
                       border: isOpen ? "1px solid var(--accent-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s"
                     }}
                   >
                     {/* Collapsed Header Summary */}
-                    <div 
+                    <div
                       onClick={() => {
                         setActiveReportId(isOpen ? null : report.id);
                         setReplyText("");
                         setActionStatus("");
-                      }} 
+                      }}
                       style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", cursor: "pointer", gap: "16px", flexWrap: "wrap" }}
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
@@ -667,7 +668,7 @@ export default function AdminReportsPage() {
                           <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>#{report.place_id}</span>
                           {getStatusBadge(report.status)}
                         </div>
-                        
+
                         <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
                           <span>المشكلة: <strong>{getProblemLabel(report.problem_type)}</strong></span>
                           <span>بواسطة: <strong>{report.user_profile?.full_name || "مستخدم غير مسجل الاسم"}</strong></span>
@@ -686,16 +687,16 @@ export default function AdminReportsPage() {
                     {/* Expanded Details Form */}
                     {isOpen && (
                       <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", animation: "fade-in 0.3s ease" }}>
-                        
+
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px", flexWrap: "wrap" }}>
-                          
+
                           {/* Left Column: Report Details */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>تفاصيل البلاغ</h4>
-                            
+
                             {/* Render details based on type */}
                             <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
-                              
+
                               {/* name incorrect */}
                               {report.problem_type === "name" && (
                                 <div>
@@ -797,10 +798,10 @@ export default function AdminReportsPage() {
                               <div>
                                 <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الصورة المرفقة بالبلاغ:</span>
                                 <a href={report.image_url} target="_blank" rel="noreferrer">
-                                  <img 
-                                    src={report.image_url} 
-                                    alt="المرفق" 
-                                    style={{ maxWidth: "100%", maxHeight: "180px", borderRadius: "10px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }} 
+                                  <img
+                                    src={report.image_url}
+                                    alt="المرفق"
+                                    style={{ maxWidth: "100%", maxHeight: "180px", borderRadius: "10px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }}
                                   />
                                 </a>
                               </div>
@@ -809,7 +810,7 @@ export default function AdminReportsPage() {
 
                           {/* Right Column: User Profile & Action Form */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                            
+
                             {/* Profile Info */}
                             <div>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
@@ -828,23 +829,23 @@ export default function AdminReportsPage() {
                             {/* Reply Form */}
                             <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px" }}>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800" }}>اتخاذ إجراء والرد على البلاغ</h4>
-                              
+
                               {report.status === "retracted" ? (
-                                <div style={{ 
-                                  background: "rgba(255, 255, 255, 0.04)", 
-                                  border: "1px dashed var(--border-glass)", 
-                                  padding: "16px", 
-                                  borderRadius: "12px", 
-                                  color: "var(--text-muted)", 
-                                  fontSize: "0.9rem", 
-                                  textAlign: "center" 
+                                <div style={{
+                                  background: "rgba(255, 255, 255, 0.04)",
+                                  border: "1px dashed var(--border-glass)",
+                                  padding: "16px",
+                                  borderRadius: "12px",
+                                  color: "var(--text-muted)",
+                                  fontSize: "0.9rem",
+                                  textAlign: "center"
                                 }}>
                                   ℹ️ تم التراجع عن هذا البلاغ وحذفه من قبل المستخدم.
                                 </div>
                               ) : (
                                 <>
                                   {actionStatus && (
-                                    <div style={{ 
+                                    <div style={{
                                       background: actionStatus.startsWith("خطأ") ? "rgba(255,59,48,0.1)" : "rgba(52,199,89,0.1)",
                                       color: actionStatus.startsWith("خطأ") ? "#ff3b30" : "#34c759",
                                       padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "600", marginBottom: "12px"
@@ -870,14 +871,14 @@ export default function AdminReportsPage() {
 
                                   {/* Action Buttons */}
                                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                                    
+
                                     <button
                                       onClick={() => handleUpdateStatus(report, "reviewed")}
                                       disabled={updatingId !== null}
                                       className="ios-btn"
-                                      style={{ 
-                                        flex: 1, 
-                                        background: "rgba(0, 122, 255, 0.1)", 
+                                      style={{
+                                        flex: 1,
+                                        background: "rgba(0, 122, 255, 0.1)",
                                         border: "1px solid rgba(0, 122, 255, 0.2)",
                                         color: "#007aff",
                                         fontSize: "0.85rem",
@@ -891,9 +892,9 @@ export default function AdminReportsPage() {
                                       onClick={() => handleUpdateStatus(report, "accepted")}
                                       disabled={updatingId !== null}
                                       className="ios-btn"
-                                      style={{ 
-                                        flex: 1, 
-                                        background: "rgba(52, 199, 89, 0.1)", 
+                                      style={{
+                                        flex: 1,
+                                        background: "rgba(52, 199, 89, 0.1)",
                                         border: "1px solid rgba(52, 199, 89, 0.2)",
                                         color: "#34c759",
                                         fontSize: "0.85rem",
@@ -907,9 +908,9 @@ export default function AdminReportsPage() {
                                       onClick={() => handleUpdateStatus(report, "rejected")}
                                       disabled={updatingId !== null}
                                       className="ios-btn"
-                                      style={{ 
-                                        flex: 1, 
-                                        background: "rgba(255, 59, 48, 0.1)", 
+                                      style={{
+                                        flex: 1,
+                                        background: "rgba(255, 59, 48, 0.1)",
                                         border: "1px solid rgba(255, 59, 48, 0.2)",
                                         color: "#ff3b30",
                                         fontSize: "0.85rem",
@@ -924,8 +925,8 @@ export default function AdminReportsPage() {
                               )}
 
                               <div style={{ marginTop: "14px", display: "flex", gap: "8px" }}>
-                                <Link 
-                                  href={`/places/${report.place_id}`} 
+                                <Link
+                                  href={`/places/${report.place_id}`}
                                   target="_blank"
                                   className="ios-btn"
                                   style={{ width: "100%", textAlign: "center", textDecoration: "none", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
@@ -956,17 +957,17 @@ export default function AdminReportsPage() {
             <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
               تصفية حسب الحالة:
             </div>
-            <div style={{ 
-              background: "rgba(52, 199, 89, 0.12)", 
-              border: "1px solid rgba(52, 199, 89, 0.2)", 
-              borderRadius: "14px", 
-              padding: "8px 16px", 
-              display: "flex", 
-              alignItems: "center", 
-              gap: "8px", 
-              color: "#34c759", 
-              fontWeight: "bold", 
-              fontSize: "0.9rem" 
+            <div style={{
+              background: "rgba(52, 199, 89, 0.12)",
+              border: "1px solid rgba(52, 199, 89, 0.2)",
+              borderRadius: "14px",
+              padding: "8px 16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              color: "#34c759",
+              fontWeight: "bold",
+              fontSize: "0.9rem"
             }}>
               <i className="bx bx-check-double" style={{ fontSize: "1.2rem" }}></i>
               <span>عدد البلاغات/المشاكل المحلولة: {solvedCount}</span>
@@ -981,7 +982,7 @@ export default function AdminReportsPage() {
               if (status === "pending") label = "قيد النظر";
               if (status === "reviewed") label = "تمت المراجعة";
               if (status === "action_taken") label = "تم اتخاذ إجراء";
-              
+
               const isActive = appStatusFilter === status;
               return (
                 <button
@@ -994,7 +995,8 @@ export default function AdminReportsPage() {
                     background: isActive ? "var(--accent-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
-                    fontSize: "0.9rem",
+                    fontSize: "0.7rem",
+                    fontFamily: "var(--font-heading)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -1003,11 +1005,11 @@ export default function AdminReportsPage() {
                   }}
                 >
                   {label}
-                  <span style={{ 
-                    background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)", 
-                    padding: "2px 8px", 
-                    borderRadius: "10px", 
-                    fontSize: "0.78rem" 
+                  <span style={{
+                    background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)",
+                    padding: "2px 8px",
+                    borderRadius: "10px",
+                    fontSize: "0.78rem"
                   }}>
                     {count}
                   </span>
@@ -1026,8 +1028,8 @@ export default function AdminReportsPage() {
               { key: "suggestion", label: "الاقتراحات فقط 💡", icon: "bx-bulb" },
               { key: "bug", label: "البلاغات والمشاكل فقط ⚠️", icon: "bx-error-alt" }
             ].map((type) => {
-              const count = type.key === "all" 
-                ? appFeedbacks.length 
+              const count = type.key === "all"
+                ? appFeedbacks.length
                 : appFeedbacks.filter(r => r.type === type.key).length;
               const isActive = appTypeFilter === type.key;
               return (
@@ -1041,7 +1043,8 @@ export default function AdminReportsPage() {
                     background: isActive ? "var(--accent-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
-                    fontSize: "0.9rem",
+                    fontSize: "0.7rem",
+                    fontFamily: "var(--font-heading)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -1051,11 +1054,11 @@ export default function AdminReportsPage() {
                 >
                   <i className={`bx ${type.icon}`} style={{ fontSize: "1.1rem" }}></i>
                   {type.label}
-                  <span style={{ 
-                    background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)", 
-                    padding: "2px 8px", 
-                    borderRadius: "10px", 
-                    fontSize: "0.78rem" 
+                  <span style={{
+                    background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)",
+                    padding: "2px 8px",
+                    borderRadius: "10px",
+                    fontSize: "0.78rem"
                   }}>
                     {count}
                   </span>
@@ -1076,24 +1079,24 @@ export default function AdminReportsPage() {
               {filteredAppFeedbacks.map((feedback) => {
                 const isOpen = activeReportId === feedback.id;
                 return (
-                  <div 
-                    key={feedback.id} 
-                    className="glass-card" 
-                    style={{ 
-                      padding: "20px", 
-                      borderRadius: "16px", 
+                  <div
+                    key={feedback.id}
+                    className="glass-card"
+                    style={{
+                      padding: "20px",
+                      borderRadius: "16px",
                       border: isOpen ? "1px solid var(--accent-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
                   >
                     {/* Collapsed Header Summary */}
-                    <div 
+                    <div
                       onClick={() => {
                         setActiveReportId(isOpen ? null : feedback.id);
                         setReplyText("");
                         setActionStatus("");
-                      }} 
+                      }}
                       style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", cursor: "pointer", gap: "16px", flexWrap: "wrap" }}
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
@@ -1103,7 +1106,7 @@ export default function AdminReportsPage() {
                           </span>
                           {getAppStatusBadge(feedback.status)}
                         </div>
-                        
+
                         <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
                           <span>بواسطة: <strong>{feedback.user_profile?.full_name || "مستخدم غير مسجل الاسم"}</strong></span>
                           <span>التاريخ: {new Date(feedback.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
@@ -1122,11 +1125,11 @@ export default function AdminReportsPage() {
                     {isOpen && (
                       <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", animation: "fade-in 0.3s ease" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px", flexWrap: "wrap" }}>
-                          
+
                           {/* Left: Feedback Details */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>التفاصيل ومحتوى الرسالة</h4>
-                            
+
                             <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
                                 <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>الرسالة / تفاصيل المشكلة:</span>
@@ -1140,10 +1143,10 @@ export default function AdminReportsPage() {
                               <div>
                                 <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الصورة المرفقة للمشكلة:</span>
                                 <a href={feedback.image_url} target="_blank" rel="noreferrer">
-                                  <img 
-                                    src={feedback.image_url} 
-                                    alt="مرفق المشكلة" 
-                                    style={{ maxWidth: "100%", maxHeight: "220px", borderRadius: "12px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }} 
+                                  <img
+                                    src={feedback.image_url}
+                                    alt="مرفق المشكلة"
+                                    style={{ maxWidth: "100%", maxHeight: "220px", borderRadius: "12px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }}
                                   />
                                 </a>
                               </div>
@@ -1169,9 +1172,9 @@ export default function AdminReportsPage() {
                             {/* Actions form */}
                             <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px" }}>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800" }}>اتخاذ إجراء والرد</h4>
-                              
+
                               {actionStatus && (
-                                <div style={{ 
+                                <div style={{
                                   background: actionStatus.startsWith("خطأ") ? "rgba(255,59,48,0.1)" : "rgba(52,199,89,0.1)",
                                   color: actionStatus.startsWith("خطأ") ? "#ff3b30" : "#34c759",
                                   padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "600", marginBottom: "12px"
@@ -1200,9 +1203,9 @@ export default function AdminReportsPage() {
                                   onClick={() => handleUpdateAppFeedbackStatus(feedback, "pending")}
                                   disabled={updatingId !== null}
                                   className="ios-btn"
-                                  style={{ 
-                                    flex: 1, 
-                                    background: "rgba(255, 149, 0, 0.1)", 
+                                  style={{
+                                    flex: 1,
+                                    background: "rgba(255, 149, 0, 0.1)",
                                     border: "1px solid rgba(255, 149, 0, 0.2)",
                                     color: "#ff9500",
                                     fontSize: "0.85rem",
@@ -1216,9 +1219,9 @@ export default function AdminReportsPage() {
                                   onClick={() => handleUpdateAppFeedbackStatus(feedback, "reviewed")}
                                   disabled={updatingId !== null}
                                   className="ios-btn"
-                                  style={{ 
-                                    flex: 1, 
-                                    background: "rgba(0, 122, 255, 0.1)", 
+                                  style={{
+                                    flex: 1,
+                                    background: "rgba(0, 122, 255, 0.1)",
                                     border: "1px solid rgba(0, 122, 255, 0.2)",
                                     color: "#007aff",
                                     fontSize: "0.85rem",
@@ -1232,9 +1235,9 @@ export default function AdminReportsPage() {
                                   onClick={() => handleUpdateAppFeedbackStatus(feedback, "action_taken")}
                                   disabled={updatingId !== null}
                                   className="ios-btn"
-                                  style={{ 
-                                    flex: 1, 
-                                    background: "rgba(52, 199, 89, 0.1)", 
+                                  style={{
+                                    flex: 1,
+                                    background: "rgba(52, 199, 89, 0.1)",
                                     border: "1px solid rgba(52, 199, 89, 0.2)",
                                     color: "#34c759",
                                     fontSize: "0.85rem",
@@ -1267,7 +1270,7 @@ export default function AdminReportsPage() {
               let label = "الكل";
               if (status === "pending") label = "قيد الانتظار";
               if (status === "replied") label = "تم الرد";
-              
+
               const isActive = contactStatusFilter === status;
               return (
                 <button
@@ -1306,24 +1309,24 @@ export default function AdminReportsPage() {
               {filteredContactMessages.map((contact) => {
                 const isOpen = activeReportId === contact.id;
                 return (
-                  <div 
-                    key={contact.id} 
-                    className="glass-card" 
-                    style={{ 
-                      padding: "20px", 
-                      borderRadius: "16px", 
+                  <div
+                    key={contact.id}
+                    className="glass-card"
+                    style={{
+                      padding: "20px",
+                      borderRadius: "16px",
                       border: isOpen ? "1px solid var(--accent-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
                   >
                     {/* Collapsed Header Summary */}
-                    <div 
+                    <div
                       onClick={() => {
                         setActiveReportId(isOpen ? null : contact.id);
                         setReplyText("");
                         setActionStatus("");
-                      }} 
+                      }}
                       style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", cursor: "pointer", gap: "16px", flexWrap: "wrap" }}
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
@@ -1331,10 +1334,10 @@ export default function AdminReportsPage() {
                           <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                             📩 {contact.contact_type}: {contact.first_name} {contact.last_name}
                           </span>
-                          <span style={{ 
-                            padding: "4px 8px", 
-                            borderRadius: "8px", 
-                            fontSize: "0.75rem", 
+                          <span style={{
+                            padding: "4px 8px",
+                            borderRadius: "8px",
+                            fontSize: "0.75rem",
                             fontWeight: "bold",
                             background: contact.status === "replied" ? "rgba(52, 199, 89, 0.12)" : "rgba(255, 149, 0, 0.12)",
                             color: contact.status === "replied" ? "#34c759" : "#ff9500"
@@ -1342,7 +1345,7 @@ export default function AdminReportsPage() {
                             {contact.status === "replied" ? "تم الرد" : "قيد الانتظار"}
                           </span>
                         </div>
-                        
+
                         <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
                           <span>البريد: <strong>{contact.email}</strong></span>
                           <span>الهاتف: <strong>{contact.phone}</strong></span>
@@ -1362,11 +1365,11 @@ export default function AdminReportsPage() {
                     {isOpen && (
                       <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid rgba(255,255,255,0.06)", animation: "fade-in 0.3s ease" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px", flexWrap: "wrap" }}>
-                          
+
                           {/* Left: Message Details */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--accent-primary)", paddingBottom: "6px", width: "fit-content" }}>محتوى رسالة التواصل</h4>
-                            
+
                             <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
                                 <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>نص الرسالة:</span>
@@ -1392,9 +1395,9 @@ export default function AdminReportsPage() {
                             {/* Actions form */}
                             <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px" }}>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800" }}>الرد على الرسالة كـ إيميل</h4>
-                              
+
                               {actionStatus && (
-                                <div style={{ 
+                                <div style={{
                                   background: actionStatus.startsWith("خطأ") ? "rgba(255,59,48,0.1)" : "rgba(52,199,89,0.1)",
                                   color: actionStatus.startsWith("خطأ") ? "#ff3b30" : "#34c759",
                                   padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "600", marginBottom: "12px"
@@ -1423,8 +1426,8 @@ export default function AdminReportsPage() {
                                   onClick={() => handleSendContactReply(contact)}
                                   disabled={updatingId !== null}
                                   className="ios-btn ios-btn-primary"
-                                  style={{ 
-                                    flex: 2, 
+                                  style={{
+                                    flex: 2,
                                     fontSize: "0.85rem",
                                     fontWeight: "bold"
                                   }}
@@ -1436,9 +1439,9 @@ export default function AdminReportsPage() {
                                   onClick={() => handleDeleteContactMessage(contact.id)}
                                   disabled={updatingId !== null}
                                   className="ios-btn"
-                                  style={{ 
-                                    flex: 1, 
-                                    background: "rgba(255, 59, 48, 0.1)", 
+                                  style={{
+                                    flex: 1,
+                                    background: "rgba(255, 59, 48, 0.1)",
                                     border: "1px solid rgba(255, 59, 48, 0.2)",
                                     color: "#ff3b30",
                                     fontSize: "0.85rem",

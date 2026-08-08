@@ -51,7 +51,21 @@ export default function AdminPointsPage() {
   
   const [selectedRequest, setSelectedRequest] = useState<any | null>(null); // For rejection notes modal
   const [rejectNotes, setRejectNotes] = useState("");
+  const [savedReasons, setSavedReasons] = useState<string[]>([]);
 
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("rejected_balance_reasons");
+      if (saved) {
+        try {
+          setSavedReasons(JSON.parse(saved));
+        } catch (e) {
+          console.error("Error parsing saved rejection reasons:", e);
+        }
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (authLoading) return;
@@ -207,6 +221,16 @@ export default function AdminPointsPage() {
         .eq("id", selectedRequest.id);
 
       if (error) throw error;
+
+      // Save reason to history (localStorage)
+      const trimmedReason = rejectNotes.trim();
+      if (trimmedReason) {
+        setSavedReasons((prev) => {
+          const updated = [trimmedReason, ...prev.filter((r) => r !== trimmedReason)].slice(0, 15);
+          localStorage.setItem("rejected_balance_reasons", JSON.stringify(updated));
+          return updated;
+        });
+      }
 
       // Send notification to the user
       try {
@@ -1293,6 +1317,83 @@ export default function AdminPointsPage() {
                   style={{ width: "100%", padding: "12px", fontSize: "0.88rem", fontFamily: "var(--font-cairo)", resize: "none" }}
                 />
               </div>
+
+              {savedReasons.length > 0 && (
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                    أسباب رفض سابقة (اضغط للاختيار السريع):
+                  </label>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", maxHeight: "120px", overflowY: "auto", padding: "4px" }}>
+                    {savedReasons.map((reason, index) => (
+                      <div
+                        key={index}
+                        onClick={() => setRejectNotes(reason)}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          padding: "6px 12px",
+                          borderRadius: "20px",
+                          background: "var(--bg-secondary, rgba(255,255,255,0.05))",
+                          border: "1px solid var(--border-glass, rgba(255,255,255,0.1))",
+                          fontSize: "0.8rem",
+                          color: "var(--text-primary)",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                          maxWidth: "100%",
+                          whiteSpace: "normal",
+                          wordBreak: "break-word"
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                          e.currentTarget.style.borderColor = "rgba(239, 68, 68, 0.3)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "var(--bg-secondary, rgba(255,255,255,0.05))";
+                          e.currentTarget.style.borderColor = "var(--border-glass, rgba(255,255,255,0.1))";
+                        }}
+                      >
+                        <span style={{ flex: 1 }}>{reason}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSavedReasons((prev) => {
+                              const updated = prev.filter((r) => r !== reason);
+                              localStorage.setItem("rejected_balance_reasons", JSON.stringify(updated));
+                              return updated;
+                            });
+                          }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            margin: 0,
+                            color: "var(--text-secondary)",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: "50%",
+                            width: "16px",
+                            height: "16px"
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = "#ff3b30";
+                            e.currentTarget.style.backgroundColor = "rgba(255, 59, 48, 0.1)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = "var(--text-secondary)";
+                            e.currentTarget.style.backgroundColor = "transparent";
+                          }}
+                        >
+                          <i className="bx bx-x" style={{ fontSize: "1rem" }}></i>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Modal Actions */}
