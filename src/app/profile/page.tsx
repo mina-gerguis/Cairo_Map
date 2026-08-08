@@ -5042,7 +5042,7 @@ export default function ProfilePage() {
                       <br />
                       الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina G***** A</strong>
                       <br />
-                      الرابط السريع : <a href="https://instapay.app/cairomap" target="_blank" rel="noopener noreferrer"><strong style={{ color: "var(--accent-ios)" }}>https://ipn.eg/S/cairomap/instapay/2FxCLI</strong></a>
+                      الرابط السريع : <a href="https://ipn.eg/S/cairomap/instapay/2FxCLI" target="_blank" rel="noopener noreferrer"><strong style={{ color: "var(--accent-ios)" }}>https://ipn.eg/S/cairomap/instapay/2FxCLI</strong></a>
                     </p>
                   )}
                   {depositMethod === "telda" && (
