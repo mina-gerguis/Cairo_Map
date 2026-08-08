@@ -5042,7 +5042,7 @@ export default function ProfilePage() {
                       <br />
                       الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina G***** A</strong>
                       <br />
-                      الرابط السريع : <a href="https://instapay.app/cairomap" target="_blank" rel="noopener noreferrer"><strong style={{ color: "var(--accent-ios)" }}>https://instapay.app/cairomap</strong></a>
+                      الرابط السريع : <a href="https://instapay.app/cairomap" target="_blank" rel="noopener noreferrer"><strong style={{ color: "var(--accent-ios)" }}>https://ipn.eg/S/cairomap/instapay/2FxCLI</strong></a>
                     </p>
                   )}
                   {depositMethod === "telda" && (
@@ -5130,6 +5130,12 @@ export default function ProfilePage() {
                   <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)", fontSize: "0.85rem" }}>
                     لتسريع عملية الشحن، يرجى إرفاق صورة إيصال التحويل. <br />
                     سيتم مراجعة طلب الشحن الخاص بك من قبل الإدارة وسيتم شحن رصيدك في أقرب وقت ممكن.
+                  </p>
+                  <p style={{ marginTop: "10px", fontSize: "0.8rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
+                    **ملاحظات هامة:**
+                    <br />• يتم مراجعة طلبات الشحن يدوياً وسيتم شحن رصيدك في أقرب وقت ممكن.
+                    <br />• تستغرق عملية الشحن من 5 دقائق إلى 24 ساعة.
+                    <br />• في حالة وجود أي خطأ، يرجى التواصل مع الدعم 
                   </p>
                 </div>
 
