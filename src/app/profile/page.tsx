@@ -1954,7 +1954,12 @@ export default function ProfilePage() {
                   <label className="help-label">رقم الهاتف (بدون صفر البداية)</label>
                   <div className={styles.phoneInputContainer}>
                     <div className={styles.phonePrefix}>
-                      <span>🇪🇬</span>
+                      <Image
+                      src="/image/profile/flag-egypt.png"
+                      alt="phone"
+                      width={20}
+                      height={20}
+                      />
                       <span className={styles.phonePrefixCode}>+20</span>
                       <span className={styles.phonePrefixDivider} />
                     </div>
@@ -2006,8 +2011,8 @@ export default function ProfilePage() {
                 </div>
 
                 <div className={styles.formButtonsRow}>
-                  <button className={`ios-btn ${styles.flex1}`} onClick={() => setEditMode(false)} style={{ border: "1px solid var(--border-glass)", borderRadius: "16px", width: "50%", alignItems: "center", justifyContent: "center" }}>إلغاء</button>
-                  <button className={`ios-btn ios-btn-primary ${styles.flex1}`} onClick={handleSave} disabled={saving}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
+                  <button className={`ios-btn ${styles.flex1}`} onClick={() => setEditMode(false)} style={{ border: "1px solid var(--border-glass)", borderRadius: "16px", width: "50%", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", padding: "var(--pa-btn)" }}>إلغاء</button>
+                  <button className={`ios-btn ios-btn-primary ${styles.flex1}`} onClick={handleSave} disabled={saving} style={{ border: "1px solid var(--border-glass)", borderRadius: "16px", width: "50%", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", padding: "var(--pa-btn)" }}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
                 </div>
               </div>
             ) : (
@@ -2015,7 +2020,7 @@ export default function ProfilePage() {
                 <div className={styles.infoRow}>
                   <span className={styles.infoLabel}>اسم المستخدم</span>
                   <div className={styles.usernameWrapper}>
-                    <span className={styles.infoValue}>@{profile?.username}</span>
+                    <span className={styles.infoValue}>{profile?.username}@</span>
                     <button
                       className={styles.copyButton}
                       onClick={() => {
@@ -2033,7 +2038,14 @@ export default function ProfilePage() {
                 </div>
                 <div className={styles.infoRow}>
                   <span className={styles.infoLabel}>رقم الهاتف</span>
-                  <span className={styles.infoValue} dir="ltr">{profile?.phone}</span>
+                  <span className={styles.infoValue} dir="ltr" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                    <Image
+                      src="/image/profile/flag-egypt.png"
+                      alt="phone"
+                      width={20}
+                      height={20}
+                    />
+                    {profile?.phone}</span>
                 </div>
                 {profile?.dob && (
                   <div className={styles.infoRow}>
@@ -5409,11 +5421,11 @@ export default function ProfilePage() {
                       {tx.admin_notes && (
                         tx.status === "rejected" ? (
                           <div style={{ background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.1)", borderRadius: "8px", padding: "8px 10px", fontSize: "0.72rem", color: "#f87171" }}>
-                            <strong>سبب الرفض:</strong> {tx.admin_notes}
+                            <strong>تم رفض طلبك لأن</strong> {tx.admin_notes}
                           </div>
                         ) : (
                           <div style={{ background: "rgba(59, 130, 246, 0.05)", border: "1px solid rgba(59, 130, 246, 0.1)", borderRadius: "8px", padding: "8px 10px", fontSize: "0.72rem", color: "#60a5fa" }}>
-                            <strong>الخدمة المستخدم بها الرصيد:</strong> {tx.admin_notes}
+                            <strong>تم استخدام الرصيد في</strong> {tx.admin_notes}
                           </div>
                         )
                       )}
