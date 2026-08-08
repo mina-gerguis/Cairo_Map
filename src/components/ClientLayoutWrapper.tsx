@@ -13,8 +13,9 @@ export default function ClientLayoutWrapper({
 }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isAuth = pathname === "/login" || pathname === "/signup";
 
-  if (isAdmin) {
+  if (isAdmin || isAuth) {
     return (
       <main style={{ minHeight: "100vh" }}>
         {children}

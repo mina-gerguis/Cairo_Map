@@ -15,7 +15,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "80px 20px 40px",
+    padding: "40px 20px",
     position: "relative",
     overflow: "hidden",
   }}>
@@ -143,6 +143,9 @@ const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
                 </button>
                 <Link href="/login" style={{ padding: "13px", fontSize: "0.95rem", fontWeight: "700", borderRadius: "16px", border: "1px solid var(--border-glass)", background: "rgba(255, 255, 255, 0.05)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", textDecoration: "none", transition: "all 0.3s ease" }}>
                   <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> لدي حساب بالفعل
+                </Link>
+                <Link href="/" style={{ padding: "13px", fontSize: "0.92rem", fontWeight: "700", borderRadius: "16px", border: "none", background: "transparent", color: "rgba(255, 255, 255, 0.5)", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", textDecoration: "none", transition: "all 0.3s ease", fontFamily: "var(--font-body)" }}>
+                  <i className="bx bx-walk" style={{ fontSize: "1.3rem" }}></i> دخول كزائر
                 </Link>
               </div>
             )}

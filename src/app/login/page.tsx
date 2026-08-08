@@ -153,7 +153,7 @@ export default function LoginPage() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "80px 20px 40px",
+      padding: "40px 20px",
       position: "relative",
       overflow: "hidden",
     }}>
@@ -530,6 +530,26 @@ export default function LoginPage() {
             }}>
               <i className="bx bx-user-plus" style={{ fontSize: "1.2rem", color: "var(--accent-primary)" }}></i>
               إنشاء حساب جديد
+            </Link>
+
+            <Link href="/" style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              padding: "13px",
+              borderRadius: "16px",
+              border: "none",
+              background: "transparent",
+              color: "var(--text-secondary)",
+              fontWeight: "700",
+              fontSize: "0.92rem",
+              textDecoration: "none",
+              transition: "all 0.3s ease",
+              marginTop: "4px",
+            }}>
+              <i className="bx bx-walk" style={{ fontSize: "1.3rem" }}></i>
+              دخول كزائر
             </Link>
           </div>
         </div>
