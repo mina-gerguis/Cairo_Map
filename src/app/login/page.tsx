@@ -191,6 +191,8 @@ export default function LoginPage() {
         padding: "40px 20px",
         position: "relative",
         overflow: "hidden",
+        backdropFilter: "blur(5px)",
+        WebkitBackdropFilter: "blur(5px)",
       }}>
         {/* Background orbs */}
         <div style={{ position: "fixed", top: "-20%", right: "-10%", width: "600px", height: "600px", background: "radial-gradient(circle, rgba(108,99,255,0.25) 0%, transparent 70%)", borderRadius: "50%", filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
@@ -222,7 +224,7 @@ export default function LoginPage() {
 
           {/* Card */}
           <div style={{
-            background: "var(--bg-glass-card)",
+            background: "var(--card-glass)",
             backdropFilter: "blur(100px) saturate(180%)",
             WebkitBackdropFilter: "blur(30px) saturate(180%)",
             border: "1px solid var(--border-glass)",

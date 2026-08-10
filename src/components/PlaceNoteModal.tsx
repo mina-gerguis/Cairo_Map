@@ -176,7 +176,7 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
               marginBottom: "10px", 
               fontFamily: "var(--font-cairo)" 
             }}>
-              ميزة التذكيرات والملاحظات الخاصة
+              {!user ? "يجب تسجيل الدخول أولاً" : "ميزة التذكيرات والملاحظات الخاصة"}
             </h4>
             <p style={{ 
               fontSize: "0.85rem", 
@@ -186,10 +186,13 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
               fontFamily: "var(--font-cairo)",
               padding: "0 10px"
             }}>
-              إضافة تذكيرات وملاحظات خاصة للأماكن هي ميزة متوفرة حصرياً لمشتركي باقة المشوار، الفضية، والذهبية. اشترك الآن للاستفادة منها!
+              {!user 
+                ? "يجب تسجيل الدخول أولاً لكي تتمكن من استخدام ميزة التذكيرات والملاحظات الخاصة بالأماكن."
+                : "إضافة تذكيرات وملاحظات خاصة للأماكن هي ميزة متوفرة حصرياً لمشتركي باقة المشوار، الفضية، والذهبية. اشترك الآن للاستفادة منها!"
+              }
             </p>
             <a 
-              href="/profile" 
+              href={!user ? "/login" : "/profile"} 
               className="ios-btn ios-btn-primary" 
               style={{ 
                 display: "inline-flex", 
@@ -201,14 +204,16 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
                 fontSize: "0.95rem", 
                 textDecoration: "none",
                 fontWeight: "bold",
-                background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                background: !user 
+                  ? "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)" 
+                  : "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
                 color: "#fff",
                 border: "none",
                 borderRadius: "12px",
                 cursor: "pointer"
               }}
             >
-              🚀 اشترك أو رقّي حسابك الآن
+              {!user ? "🔑 سجل دخولك أولاً" : "🚀 اشترك أو رقّي حسابك الآن"}
             </a>
           </div>
         ) : (

@@ -110,6 +110,17 @@ BEGIN
     RETURN jsonb_build_object('success', false, 'message', 'يجب تسجيل الدخول أولاً.');
   END IF;
 
+  -- أولاً: تنظيف أي اشتراك منتهٍ مسبقاً وتحديث حالته للباقة المجانية
+  UPDATE public.profiles
+  SET 
+    subscription_tier = 'free',
+    subscription_period = NULL,
+    subscription_status = 'expired'
+  WHERE id = v_user_id 
+    AND subscription_tier <> 'free' 
+    AND subscription_end IS NOT NULL 
+    AND subscription_end < now();
+
   -- جلب تفاصيل الاشتراك الحالي
   SELECT subscription_tier, subscription_period, subscription_end, subscription_status
   INTO v_current_tier, v_current_period, v_current_end, v_current_status
@@ -334,3 +345,43 @@ EXCEPTION WHEN OTHERS THEN
   RETURN jsonb_build_object('success', false, 'message', 'حدث خطأ أثناء تحديث الاشتراك: ' || SQLERRM);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- 6. Create secure function to check and auto-reset expired subscriptions
+CREATE OR REPLACE FUNCTION public.check_user_subscription_status(p_user_id UUID DEFAULT NULL)
+RETURNS JSONB AS $$
+DECLARE
+  v_target_user UUID;
+  v_updated_count INT := 0;
+BEGIN
+  v_target_user := COALESCE(p_user_id, auth.uid());
+
+  IF v_target_user IS NOT NULL THEN
+    UPDATE public.profiles
+    SET 
+      subscription_tier = 'free',
+      subscription_period = NULL,
+      subscription_status = 'expired'
+    WHERE id = v_target_user 
+      AND subscription_tier <> 'free' 
+      AND subscription_end IS NOT NULL 
+      AND subscription_end < now();
+  ELSE
+    UPDATE public.profiles
+    SET 
+      subscription_tier = 'free',
+      subscription_period = NULL,
+      subscription_status = 'expired'
+    WHERE subscription_tier <> 'free' 
+      AND subscription_end IS NOT NULL 
+      AND subscription_end < now();
+  END IF;
+
+  GET DIAGNOSTICS v_updated_count = ROW_COUNT;
+
+  RETURN jsonb_build_object('success', true, 'updated_count', v_updated_count);
+EXCEPTION WHEN OTHERS THEN
+  RETURN jsonb_build_object('success', false, 'message', SQLERRM);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+

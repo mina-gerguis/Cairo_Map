@@ -31,6 +31,7 @@
   --border-glass-bright: rgba(255, 255, 255, 0.15);
   --border-break: rgba(39, 39, 39, 0.664);
   --text-primary: #f4f4f5;
+  --card-glass: rgba(17, 17, 17, 0.986);
   /* Zinc 100 */
   --text-secondary: #a1a1aa;
   /* Zinc 400 */
@@ -91,6 +92,7 @@ html.light {
   --border-glass-bright: rgba(0, 0, 0, 0.15);
   --border-break: rgba(114, 114, 114, 0.137);
   --text-primary: #18181b;
+  --card-glass: rgba(255, 255, 255, 0.897);
   /* Zinc 900 */
   --text-secondary: #52525b;
   /* Zinc 600 */
@@ -1935,8 +1937,13 @@ html.light .auth-card {
 }
 
 @keyframes metro-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes metro-slide-down {
@@ -1944,6 +1951,7 @@ html.light .auth-card {
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1955,8 +1963,9 @@ html.light .auth-card {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
+}

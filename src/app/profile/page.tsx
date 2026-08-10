@@ -447,6 +447,10 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (authLoading) return;
+
+    // Fetch FAQs for all users (including guests)
+    fetchFAQs();
+
     if (!user) {
       // Don't redirect - show guest view
       setLoading(false);
@@ -454,7 +458,6 @@ export default function ProfilePage() {
     }
 
     fetchProfileData();
-    fetchFAQs();
     fetchMfaStatus();
 
     // Check for parameter to expand help
@@ -587,6 +590,13 @@ export default function ProfilePage() {
     if (!supabase || !user) return;
     setLoading(true);
 
+    // Auto-check and reset expired subscription in DB
+    try {
+      await supabase.rpc("check_user_subscription_status", { p_user_id: user.id });
+    } catch (e) {
+      // Fallback silently if RPC does not exist yet
+    }
+
     // Fetch profile
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
@@ -595,17 +605,25 @@ export default function ProfilePage() {
       .single();
 
     if (profileData) {
-      setProfile({ ...profileData, email: user.email }); // Combine with auth email
+      const isExpired = profileData.subscription_tier !== "free" && profileData.subscription_end && new Date(profileData.subscription_end) < new Date();
+      const updatedProfileData = isExpired ? {
+        ...profileData,
+        subscription_tier: "free",
+        subscription_status: "expired",
+        subscription_period: null
+      } : profileData;
+
+      setProfile({ ...updatedProfileData, email: user.email }); // Combine with auth email
       setFormData({
-        fullName: profileData.full_name || "",
-        username: profileData.username || "",
-        phone: profileData.phone?.replace('+20', '') || "", // Strip +20 for editing
+        fullName: updatedProfileData.full_name || "",
+        username: updatedProfileData.username || "",
+        phone: updatedProfileData.phone?.replace('+20', '') || "", // Strip +20 for editing
         email: user.email || "",
-        governorate: profileData.governorate || "",
-        city: profileData.city || "",
-        dob: profileData.dob || "",
-        avatarUrl: profileData.avatar_url || "",
-        interests: profileData.interests || [],
+        governorate: updatedProfileData.governorate || "",
+        city: updatedProfileData.city || "",
+        dob: updatedProfileData.dob || "",
+        avatarUrl: updatedProfileData.avatar_url || "",
+        interests: updatedProfileData.interests || [],
       });
     }
 
@@ -1837,7 +1855,10 @@ export default function ProfilePage() {
               <h3 className={styles.guestTitle}>أهلاً بك!</h3>
               <p className={styles.guestSubtitle}>سجل دخولك للوصول إلى ملفك الشخصي وكل مزايا التطبيق</p>
             </div>
-            <Link href="/login" className={`ios-btn ios-btn-primary ${styles.guestLoginBtn}`}>
+            <Link href="/login" className={`ios-btn ios-btn-primary ${styles.guestLoginBtn}`} style={{
+              padding: "var(--pa-btn)",
+              borderRadius:"8px"
+            }}>
               <i className={`bx bx-log-in ${styles.guestLoginIcon}`}></i> تسجيل الدخول
             </Link>
             <Link href="/signup" className={styles.guestSignupLink}>ليس لديك حساب؟ إنشاء حساب جديد</Link>
@@ -2142,45 +2163,51 @@ export default function ProfilePage() {
       {/* ─── Section 2 (Theme, Favorites, Notifications, Add Places) ─── */}
       <div className={styles.sectionCard}>
 
-        {/* ─── Start Subscription Card ─── */}
-        <div
-          className={styles.cardContainer}
-          onClick={() => {
-            setSubMessage(null);
-            setShowSubModal(true);
-          }}
-          style={{ cursor: "pointer" }}
-        >
-          <div className={styles.cardContent}>
-            {/* Icon */}
-            <div style={{ color: "var(--accent-gold, #eab308)" }}>
-              <i className={`bx bxs-crown ${styles.cardIcon}`}></i>
+        {/* ─── Start Subscription Card (only for logged-in users) ─── */}
+        {user && (
+          <>
+            <div
+              className={styles.cardContainer}
+              onClick={() => {
+                setSubMessage(null);
+                setShowSubModal(true);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              <div className={styles.cardContent}>
+                {/* Icon */}
+                <div style={{ color: "var(--accent-gold, #eab308)" }}>
+                  <i className={`bx bxs-crown ${styles.cardIcon}`}></i>
+                </div>
+                {/* Title */}
+                <div>
+                  <h3 className={styles.cardTitle}>ترقية الاشتراك</h3>
+                  <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                    {profileExpired || !profile?.subscription_tier || profile?.subscription_tier === 'free'
+                      ? 'الباقة المجانية'
+                      : profile?.subscription_tier === 'mishwar'
+                        ? (profile?.subscription_status === 'cancelled' ? 'باقة المشوار' : 'باقة المشوار ')
+                        : profile?.subscription_tier === 'silver'
+                          ? (profile?.subscription_status === 'cancelled' ? 'الباقة الفضية ' : 'الباقة الفضية')
+                          : profile?.subscription_tier === 'gold'
+                            ? (profile?.subscription_status === 'cancelled' ? 'الباقة الذهبية' : 'الباقة الذهبية')
+                            : 'الباقة المجانية'}
+                    {!profileExpired && profile?.subscription_tier !== 'free' && profile?.subscription_end && ` (${profile?.subscription_status === 'cancelled' ? 'ستنتهي في' : 'ينتهي في'} ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')})`}
+                  </p>
+                </div>
+              </div>
+              <div className={styles.badgeRight}>
+                <span className={styles.favBadge} style={{ background: "none", color: "var(--accent-ios)", fontWeight: "bold", fontSize: "0.8rem" }}>
+                  {!profileExpired && profile?.subscription_tier === 'mishwar' ? 'المشوار' : !profileExpired && profile?.subscription_tier === 'silver' ? 'الفضية' : !profileExpired && profile?.subscription_tier === 'gold' ? 'الذهبية' : 'ترقية'}
+                </span>
+                <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+              </div>
             </div>
-            {/* Title */}
-            <div>
-              <h3 className={styles.cardTitle}>ترقية الاشتراك</h3>
-              <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
-                {profile?.subscription_tier === 'mishwar'
-                  ? (profile?.subscription_status === 'cancelled' ? 'باقة المشوار' : 'باقة المشوار ')
-                  : profile?.subscription_tier === 'silver'
-                    ? (profile?.subscription_status === 'cancelled' ? 'الباقة الفضية ' : 'الباقة الفضية')
-                    : profile?.subscription_tier === 'gold'
-                      ? (profile?.subscription_status === 'cancelled' ? 'الباقة الذهبية' : 'الباقة الذهبية')
-                      : 'الباقة المجانية'}
-                {profile?.subscription_tier !== 'free' && profile?.subscription_end && ` (${profile?.subscription_status === 'cancelled' ? 'ستنتهي في' : 'ينتهي في'} ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')})`}
-              </p>
-            </div>
-          </div>
-          <div className={styles.badgeRight}>
-            <span className={styles.favBadge} style={{ background: "none", color: "var(--accent-ios)", fontWeight: "bold", fontSize: "0.8rem" }}>
-              {profile?.subscription_tier === 'mishwar' ? 'المشوار' : profile?.subscription_tier === 'silver' ? 'الفضية' : profile?.subscription_tier === 'gold' ? 'الذهبية' : 'ترقية'}
-            </span>
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-          </div>
-        </div>
-        {/* End Subscription Card */}
+            {/* End Subscription Card */}
 
-        <hr className={styles.dividerDashed} />
+            <hr className={styles.dividerDashed} />
+          </>
+        )}
 
         {/* ─── Start App Theme (Dark / Light Mode) ─── */}
         <div
@@ -3657,7 +3684,7 @@ export default function ProfilePage() {
                   marginBottom: "10px",
                   fontFamily: "var(--font-cairo)"
                 }}>
-                  تنبيه: باقة غير صالحة
+                  {!user ? "يجب تسجيل الدخول أولاً" : "تنبيه: باقة غير صالحة"}
                 </h4>
                 <p style={{ 
                   fontSize: "0.85rem", 
@@ -3666,28 +3693,54 @@ export default function ProfilePage() {
                   marginBottom: "24px",
                   fontFamily: "var(--font-cairo)"
                 }}>
-                  ميزة التذكيرات والملاحظات الخاصة بالأماكن متوفرة فقط لمشتركي باقة المشوار، الفضية، والذهبية. يرجى الاشتراك أو الترقية لتفعيلها!
+                  {!user 
+                    ? "يجب تسجيل الدخول أولاً لكي تتمكن من استخدام ميزة التذكيرات والملاحظات الخاصة بالأماكن."
+                    : "ميزة التذكيرات والملاحظات الخاصة بالأماكن متوفرة فقط لمشتركي باقة المشوار، الفضية، والذهبية. يرجى الاشتراك أو الترقية لتفعيلها!"
+                  }
                 </p>
-                <button 
-                  className="ios-btn ios-btn-primary" 
-                  style={{ 
-                    width: "100%", 
-                    padding: "12px", 
-                    fontSize: "0.95rem", 
-                    fontWeight: "bold",
-                    background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer"
-                  }}
-                  onClick={() => {
-                    setIsRemindersModalOpen(false);
-                    setShowSubModal(true);
-                  }}
-                >
-                  🚀 اشترك أو رقّي حسابك الآن
-                </button>
+                {!user ? (
+                  <Link 
+                    href="/login"
+                    style={{ 
+                      width: "100%", 
+                      padding: "12px", 
+                      fontSize: "0.95rem", 
+                      fontWeight: "bold",
+                      background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      display: "block",
+                      textAlign: "center"
+                    }}
+                    onClick={() => setIsRemindersModalOpen(false)}
+                  >
+                    🔑 سجل دخولك أولاً
+                  </Link>
+                ) : (
+                  <button 
+                    className="ios-btn ios-btn-primary" 
+                    style={{ 
+                      width: "100%", 
+                      padding: "12px", 
+                      fontSize: "0.95rem", 
+                      fontWeight: "bold",
+                      background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "8px",
+                      cursor: "pointer"
+                    }}
+                    onClick={() => {
+                      setIsRemindersModalOpen(false);
+                      setShowSubModal(true);
+                    }}
+                  >
+                    🚀 اشترك أو رقّي حسابك الآن
+                  </button>
+                )}
               </div>
             ) : (
               <>
@@ -4276,6 +4329,7 @@ export default function ProfilePage() {
       {/* ─── Subscription Modal ─── */}
       {showSubModal && (() => {
         const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+        const effectiveTier = (!profile?.subscription_tier || isExpired) ? "free" : profile.subscription_tier;
         return (
           <div className={`modal-backdrop ${styles.modalBackdropSlow}`} onClick={() => setShowSubModal(false)}>
             <div
@@ -4328,19 +4382,21 @@ export default function ProfilePage() {
                 <div>
                   <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>باقيتك الحالية:</div>
                   <div style={{ fontSize: "1.1rem", fontWeight: "bold", color: "var(--text-primary)", marginTop: "2px" }}>
-                    {profile?.subscription_tier === 'mishwar'
+                    {effectiveTier === 'mishwar'
                       ? (profile?.subscription_status === 'cancelled' ? ' باقة المشوار (بانتظار الإلغاء)' : ' باقة المشوار (نشط)')
-                      : profile?.subscription_tier === 'silver'
+                      : effectiveTier === 'silver'
                         ? (profile?.subscription_status === 'cancelled' ? ' الباقة الفضية (بانتظار الإلغاء)' : ' الباقة الفضية (نشط)')
-                        : profile?.subscription_tier === 'gold'
+                        : effectiveTier === 'gold'
                           ? (profile?.subscription_status === 'cancelled' ? ' الباقة الذهبية (بانتظار الإلغاء)' : ' الباقة الذهبية (نشط)')
-                          : 'الباقة المجانية'}
+                          : (isExpired ? 'الباقة المجانية (انتهت صلاحية الباقة السابقة)' : 'الباقة المجانية')}
                   </div>
                   {profile?.subscription_tier !== 'free' && profile?.subscription_end && (
-                    <div style={{ fontSize: "0.78rem", color: profile?.subscription_status === 'cancelled' ? '#ef4444' : 'var(--accent-gold, #eab308)', marginTop: "2px" }}>
-                      {profile?.subscription_status === 'cancelled'
-                        ? `تم إلغاء التجديد التلقائي. ستنتهي في: ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')}`
-                        : `تاريخ انتهاء الصلاحية: ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')}`}
+                    <div style={{ fontSize: "0.78rem", color: isExpired || profile?.subscription_status === 'cancelled' ? '#ef4444' : 'var(--accent-gold, #eab308)', marginTop: "2px" }}>
+                      {isExpired
+                        ? `انتهت الصلاحية بتاريخ: ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')} (تم العودة للباقة المجانية)`
+                        : profile?.subscription_status === 'cancelled'
+                          ? `تم إلغاء التجديد التلقائي. ستنتهي في: ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')}`
+                          : `تاريخ انتهاء الصلاحية: ${new Date(profile.subscription_end).toLocaleDateString('ar-EG')}`}
                     </div>
                   )}
                 </div>
@@ -4440,7 +4496,7 @@ export default function ProfilePage() {
                 {/* Card 1: Free */}
                 <div style={{
                   background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
-                  border: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "2px solid var(--border-glass)" : "1px solid var(--border-glass)",
+                  border: effectiveTier === "free" ? "2px solid var(--border-glass)" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
@@ -4469,36 +4525,36 @@ export default function ProfilePage() {
 
                   <button
                     type="button"
-                    disabled={subscribing || !profile?.subscription_tier || profile?.subscription_tier === "free"}
+                    disabled={subscribing || effectiveTier === "free"}
                     onClick={() => handleConfirmSubscribe("free", null)}
                     style={{
                       width: "100%",
                       padding: "10px",
                       borderRadius: "8px",
-                      background: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.1)",
-                      color: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "#64748b" : "#fff",
+                      background: effectiveTier === "free" ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.1)",
+                      color: effectiveTier === "free" ? "#64748b" : "#fff",
                       border: "none",
                       fontWeight: "bold",
                       marginTop: "24px",
-                      cursor: (!profile?.subscription_tier || profile?.subscription_tier === "free") ? "default" : "pointer",
+                      cursor: effectiveTier === "free" ? "default" : "pointer",
                       fontSize: "0.88rem"
                     }}
                   >
-                    {(!profile?.subscription_tier || profile?.subscription_tier === "free") ? "باقتك الحالية" : "الرجوع للمجانية"}
+                    {effectiveTier === "free" ? "باقتك الحالية" : "الرجوع للمجانية"}
                   </button>
                 </div>
 
                 {/* Card 1.5: Mishwar */}
                 <div style={{
                   background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
-                  border: profile?.subscription_tier === "mishwar" ? "2px solid #10b981" : "1px solid var(--border-glass)",
+                  border: effectiveTier === "mishwar" ? "2px solid #10b981" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   position: "relative",
-                  boxShadow: profile?.subscription_tier === "mishwar" ? "0 8px 24px rgba(16, 185, 129, 0.15)" : "none",
+                  boxShadow: effectiveTier === "mishwar" ? "0 8px 24px rgba(16, 185, 129, 0.15)" : "none",
                   transition: "all 0.3s",
                   width: "280px",
                   flexShrink: 0,
@@ -4527,37 +4583,37 @@ export default function ProfilePage() {
 
                   <button
                     type="button"
-                    disabled={subscribing || (profile?.subscription_tier === "mishwar" && !isExpired)}
+                    disabled={subscribing || effectiveTier === "mishwar"}
                     onClick={() => handleConfirmSubscribe("mishwar", "daily")}
                     style={{
                       width: "100%",
                       padding: "10px",
                       borderRadius: "8px",
-                      background: (profile?.subscription_tier === "mishwar" && !isExpired) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                      color: (profile?.subscription_tier === "mishwar" && !isExpired) ? "#64748b" : "#fff",
+                      background: effectiveTier === "mishwar" ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                      color: effectiveTier === "mishwar" ? "#64748b" : "#fff",
                       border: "none",
                       fontWeight: "bold",
                       marginTop: "24px",
-                      cursor: (profile?.subscription_tier === "mishwar" && !isExpired) ? "default" : "pointer",
+                      cursor: effectiveTier === "mishwar" ? "default" : "pointer",
                       fontSize: "0.88rem"
                     }}
                   >
                     {subscribing && selectedPlanId === "mishwar" ? "جاري التفعيل..." :
-                      (profile?.subscription_tier === "mishwar" && !isExpired) ? "باقتك الحالية" : "اشترك الآن"}
+                      (effectiveTier === "mishwar") ? "باقتك الحالية" : "اشترك الآن"}
                   </button>
                 </div>
 
                 {/* Card 2: Silver */}
                 <div style={{
                   background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
-                  border: profile?.subscription_tier === "silver" ? "2px solid #6366f1" : "1px solid var(--border-glass)",
+                  border: effectiveTier === "silver" ? "2px solid #6366f1" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   position: "relative",
-                  boxShadow: profile?.subscription_tier === "silver" ? "0 8px 24px rgba(99, 102, 241, 0.15)" : "none",
+                  boxShadow: effectiveTier === "silver" ? "0 8px 24px rgba(99, 102, 241, 0.15)" : "none",
                   transition: "all 0.3s",
                   width: "280px",
                   flexShrink: 0,
@@ -4591,37 +4647,37 @@ export default function ProfilePage() {
 
                   <button
                     type="button"
-                    disabled={subscribing || (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod)}
+                    disabled={subscribing || (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod)}
                     onClick={() => handleConfirmSubscribe("silver", subscriptionPeriod)}
                     style={{
                       width: "100%",
                       padding: "10px",
                       borderRadius: "8px",
-                      background: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
-                      color: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#fff",
+                      background: (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
+                      color: (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#fff",
                       border: "none",
                       fontWeight: "bold",
                       marginTop: "24px",
-                      cursor: (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
+                      cursor: (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
                       fontSize: "0.88rem"
                     }}
                   >
                     {subscribing && selectedPlanId === "silver" ? "جاري التفعيل..." :
-                      (profile?.subscription_tier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
+                      (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
                   </button>
                 </div>
 
                 {/* Card 3: Gold */}
                 <div style={{
                   background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
-                  border: profile?.subscription_tier === "gold" ? "2px solid #eab308" : "1px solid var(--border-glass)",
+                  border: effectiveTier === "gold" ? "2px solid #eab308" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   position: "relative",
-                  boxShadow: profile?.subscription_tier === "gold" ? "0 8px 24px rgba(234, 179, 8, 0.15)" : "none",
+                  boxShadow: effectiveTier === "gold" ? "0 8px 24px rgba(234, 179, 8, 0.15)" : "none",
                   transition: "all 0.3s",
                   width: "280px",
                   flexShrink: 0,
@@ -4660,23 +4716,23 @@ export default function ProfilePage() {
 
                   <button
                     type="button"
-                    disabled={subscribing || (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod)}
+                    disabled={subscribing || (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod)}
                     onClick={() => handleConfirmSubscribe("gold", subscriptionPeriod)}
                     style={{
                       width: "100%",
                       padding: "10px",
                       borderRadius: "8px",
-                      background: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-                      color: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#000",
+                      background: (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+                      color: (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#000",
                       border: "none",
                       fontWeight: "bold",
                       marginTop: "24px",
-                      cursor: (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
+                      cursor: (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "default" : "pointer",
                       fontSize: "0.88rem"
                     }}
                   >
                     {subscribing && selectedPlanId === "gold" ? "جاري التفعيل..." :
-                      (profile?.subscription_tier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
+                      (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "باقتك الحالية" : "اشترك الآن"}
                   </button>
                 </div>
 

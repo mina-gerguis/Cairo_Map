@@ -34,13 +34,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchProfile = async (userId: string, currentUser?: User | null) => {
     if (!supabase) return;
     try {
+      // Auto-check and reset expired subscription in DB
+      try {
+        await supabase.rpc("check_user_subscription_status", { p_user_id: userId });
+      } catch (rpcErr) {
+        // Fallback silently if RPC doesn't exist yet
+      }
+
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", userId)
         .single();
       if (data) {
-        setProfile(data);
+        // Fallback check: if subscription_end has passed, treat as free/expired
+        const isExpired = data.subscription_tier !== "free" && data.subscription_end && new Date(data.subscription_end) < new Date();
+        const profileData = isExpired ? {
+          ...data,
+          subscription_tier: "free",
+          subscription_status: "expired",
+          subscription_period: null
+        } : data;
+
+        setProfile(profileData);
         // Sync email if it doesn't match
         const activeUser = currentUser || user;
         if (activeUser?.email && data.email !== activeUser.email) {
@@ -48,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .from("profiles")
             .update({ email: activeUser.email })
             .eq("id", userId);
-          setProfile({ ...data, email: activeUser.email });
+          setProfile({ ...profileData, email: activeUser.email });
         }
       }
     } catch (e) {
