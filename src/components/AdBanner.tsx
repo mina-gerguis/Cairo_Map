@@ -11,6 +11,29 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
   const [adType, setAdType] = useState<"adsense" | "sponsor">(
     type === "auto" ? "sponsor" : type
   );
+  const [isLight, setIsLight] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsLight(document.documentElement.classList.contains("light"));
+    };
+    checkTheme();
+    
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          checkTheme();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     // If it's AdSense, try to load adsbygoogle
@@ -29,8 +52,10 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
     description: "خصم خاص 15% لجميع مستخدمي تطبيق 'ماب القاهرة' بمناسبة الافتتاح! اضغط لمعرفة موقع الفرع القريب منك.",
     ctaText: "اطلب الآن 🚀",
     tag: "إعلان مميز ✨",
-    gradient: "linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)",
-    borderColor: "rgba(239, 68, 68, 0.25)",
+    gradient: isLight
+      ? "linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(245, 158, 11, 0.05) 100%)"
+      : "linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)",
+    borderColor: isLight ? "rgba(239, 68, 68, 0.2)" : "rgba(239, 68, 68, 0.25)",
   };
 
   return (
@@ -42,9 +67,9 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
         padding: "16px",
         background: adType === "sponsor" 
           ? sponsorDetails.gradient 
-          : "linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%)",
+          : "var(--bg-glass-card, rgba(255, 255, 255, 0.03))",
         border: `1px solid ${adType === "sponsor" ? sponsorDetails.borderColor : "var(--border-glass, rgba(255, 255, 255, 0.08))"}`,
-        boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
+        boxShadow: isLight ? "0 4px 20px rgba(0, 0, 0, 0.05)" : "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
         position: "relative",
         overflow: "hidden",
         display: "flex",
@@ -64,8 +89,8 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
           height: "150px",
           borderRadius: "50%",
           background: adType === "sponsor" 
-            ? "radial-gradient(circle, rgba(239, 68, 68, 0.12) 0%, transparent 70%)"
-            : "radial-gradient(circle, rgba(108, 99, 255, 0.08) 0%, transparent 70%)",
+            ? (isLight ? "radial-gradient(circle, rgba(239, 68, 68, 0.06) 0%, transparent 70%)" : "radial-gradient(circle, rgba(239, 68, 68, 0.12) 0%, transparent 70%)")
+            : (isLight ? "radial-gradient(circle, rgba(108, 99, 255, 0.04) 0%, transparent 70%)" : "radial-gradient(circle, rgba(108, 99, 255, 0.08) 0%, transparent 70%)"),
           pointerEvents: "none",
         }} 
       />
@@ -78,9 +103,15 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
             fontWeight: "bold",
             padding: "4px 8px",
             borderRadius: "6px",
-            background: adType === "sponsor" ? "rgba(239, 68, 68, 0.2)" : "rgba(255, 255, 255, 0.08)",
-            color: adType === "sponsor" ? "#f87171" : "var(--text-muted, #94a3b8)",
-            border: `1px solid ${adType === "sponsor" ? "rgba(239, 68, 68, 0.3)" : "rgba(255, 255, 255, 0.1)"}`,
+            background: adType === "sponsor" 
+              ? (isLight ? "rgba(239, 68, 68, 0.1)" : "rgba(239, 68, 68, 0.2)") 
+              : "var(--bg-glass-active, rgba(255, 255, 255, 0.08))",
+            color: adType === "sponsor" 
+              ? (isLight ? "#dc2626" : "#f87171") 
+              : "var(--text-muted, #94a3b8)",
+            border: `1px solid ${adType === "sponsor" 
+              ? (isLight ? "rgba(239, 68, 68, 0.2)" : "rgba(239, 68, 68, 0.3)") 
+              : "var(--border-glass, rgba(255, 255, 255, 0.1))"}`,
           }}
         >
           {adType === "sponsor" ? sponsorDetails.tag : "مساحة إعلانية للتجربة 📊"}
@@ -96,8 +127,8 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
               borderRadius: "6px",
               cursor: "pointer",
               border: "none",
-              background: adType === "sponsor" ? "rgba(255,255,255,0.1)" : "transparent",
-              color: adType === "sponsor" ? "#fff" : "var(--text-muted, #94a3b8)",
+              background: adType === "sponsor" ? "var(--bg-glass-active, rgba(255,255,255,0.1))" : "transparent",
+              color: adType === "sponsor" ? "var(--text-primary, #fff)" : "var(--text-muted, #94a3b8)",
               transition: "all 0.2s",
             }}
           >
@@ -111,8 +142,8 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
               borderRadius: "6px",
               cursor: "pointer",
               border: "none",
-              background: adType === "adsense" ? "rgba(255,255,255,0.1)" : "transparent",
-              color: adType === "adsense" ? "#fff" : "var(--text-muted, #94a3b8)",
+              background: adType === "adsense" ? "var(--bg-glass-active, rgba(255,255,255,0.1))" : "transparent",
+              color: adType === "adsense" ? "var(--text-primary, #fff)" : "var(--text-muted, #94a3b8)",
               transition: "all 0.2s",
             }}
           >
@@ -125,7 +156,7 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
       {adType === "sponsor" && (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", zIndex: 1 }}>
           <div style={{ flex: "1 1 200px" }}>
-            <h4 style={{ margin: "0 0 6px 0", fontSize: "1.1rem", fontWeight: "800", color: "#fff" }}>
+            <h4 style={{ margin: "0 0 6px 0", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary, #fff)" }}>
               {sponsorDetails.title}
             </h4>
             <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", lineHeight: "1.5" }}>
@@ -176,13 +207,13 @@ export default function AdBanner({ type = "auto", slotId }: AdBannerProps) {
           <div 
             style={{
               padding: "16px",
-              border: "1px dashed rgba(255, 255, 255, 0.15)",
+              border: "1px dashed var(--border-glass-bright, rgba(255, 255, 255, 0.15))",
               borderRadius: "12px",
-              background: "rgba(0, 0, 0, 0.15)",
+              background: "var(--bg-glass-hover, rgba(0, 0, 0, 0.15))",
             }}
           >
             <div style={{ fontSize: "1.8rem", marginBottom: "8px" }}>📊</div>
-            <h4 style={{ margin: "0 0 4px 0", color: "#6c63ff", fontSize: "0.95rem" }}>
+            <h4 style={{ margin: "0 0 4px 0", color: "var(--accent-primary, #6c63ff)", fontSize: "0.95rem" }}>
               وحدة إعلانات Google AdSense نشطة
             </h4>
             <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>

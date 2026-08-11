@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { 
-  FaSearch, 
-  FaMapMarkerAlt, 
-  FaPhoneAlt, 
-  FaSubway, 
-  FaRobot, 
-  FaCompass, 
-  FaPlusCircle, 
+import {
+  FaSearch,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaSubway,
+  FaRobot,
+  FaCompass,
+  FaPlusCircle,
   FaArrowLeft,
   FaLightbulb,
   FaChevronLeft
@@ -18,6 +18,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { initialPlaces, CATEGORIES_STRUCTURE, Place } from "@/data/places";
 import AdSlider from "@/components/AdSlider";
+import TextLoop from "@/components/ui/TextLoop";
 
 // ── 1. دالة توحيد وتنظيف النصوص العربية لبحث دقيق ──
 function normalizeArabic(text: string): string {
@@ -308,38 +309,38 @@ export default function HomePage() {
   // ── 5. فلترة خدمات الموقع المطابقة للبحث ──
   const matchedServices = searchQuery.trim()
     ? SITE_SERVICES.filter(service => {
-        const normLabel = normalizeArabic(service.label);
-        const normSubtitle = normalizeArabic(service.subtitle);
-        const normKeywords = service.keywords.map(k => normalizeArabic(k));
-        
-        return normLabel.includes(normalizedQuery) ||
-               normSubtitle.includes(normalizedQuery) ||
-               normKeywords.some(k => k.includes(normalizedQuery) || normalizedQuery.includes(k));
-      })
+      const normLabel = normalizeArabic(service.label);
+      const normSubtitle = normalizeArabic(service.subtitle);
+      const normKeywords = service.keywords.map(k => normalizeArabic(k));
+
+      return normLabel.includes(normalizedQuery) ||
+        normSubtitle.includes(normalizedQuery) ||
+        normKeywords.some(k => k.includes(normalizedQuery) || normalizedQuery.includes(k));
+    })
     : [];
 
   // ── 6. فلترة الأماكن والمحلات الحية في دليل الأماكن ──
   const matchedPlaces: Place[] = searchQuery.trim()
     ? activePlaces.filter(place => {
-        const normName = normalizeArabic(place.name);
-        const normLoc = normalizeArabic(place.briefLocation || "");
-        const normAddr = normalizeArabic(place.fullAddress || "");
-        const normCat = normalizeArabic(place.categoryLabel || "");
+      const normName = normalizeArabic(place.name);
+      const normLoc = normalizeArabic(place.briefLocation || "");
+      const normAddr = normalizeArabic(place.fullAddress || "");
+      const normCat = normalizeArabic(place.categoryLabel || "");
 
-        return normName.includes(normalizedQuery) ||
-               normLoc.includes(normalizedQuery) ||
-               normAddr.includes(normalizedQuery) ||
-               normCat.includes(normalizedQuery);
-      }).slice(0, 5)
+      return normName.includes(normalizedQuery) ||
+        normLoc.includes(normalizedQuery) ||
+        normAddr.includes(normalizedQuery) ||
+        normCat.includes(normalizedQuery);
+    }).slice(0, 5)
     : [];
 
   // ── 7. فلترة الفئات الرئيسية والفرعية ──
   const matchedCategories = searchQuery.trim()
     ? CATEGORIES_STRUCTURE.filter(cat => {
-        const normLabel = normalizeArabic(cat.label);
-        const normSub = cat.subCategories.some(sub => normalizeArabic(sub.label).includes(normalizedQuery));
-        return normLabel.includes(normalizedQuery) || normSub;
-      }).slice(0, 3)
+      const normLabel = normalizeArabic(cat.label);
+      const normSub = cat.subCategories.some(sub => normalizeArabic(sub.label).includes(normalizedQuery));
+      return normLabel.includes(normalizedQuery) || normSub;
+    }).slice(0, 3)
     : [];
 
   const hasResults = matchedServices.length > 0 || matchedPlaces.length > 0 || matchedCategories.length > 0;
@@ -453,7 +454,7 @@ export default function HomePage() {
         borderBottom: "1px solid var(--border-glass)"
       }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
-          
+
           {/* Badge */}
           <div style={{
             display: "inline-flex",
@@ -469,7 +470,7 @@ export default function HomePage() {
             boxShadow: "var(--shadow-sm)"
           }}>
             <span>✨</span>
-            <span>دليلك الذكي الشامل لشوارع وأماكن القاهرة والمحافظات</span>
+            <span>دليلك الذكي الشامل لشوارع وأماكن القاهرة</span>
           </div>
 
           {/* Title */}
@@ -480,7 +481,7 @@ export default function HomePage() {
             marginBottom: "20px",
             letterSpacing: "-0.5px"
           }}>
-            استكشف القاهرة وتنقّل بذكاء وسرعة ودقة متناهية
+            استكشف مصر  وتنقّل بذكاء وسرعة ودقة متناهية
           </h1>
 
           {/* Subtitle */}
@@ -493,6 +494,27 @@ export default function HomePage() {
           }}>
             منصتك المتكاملة لاستكشاف أماكن المطاعم، الكافيهات، العيادات، شبكات المترو والمنورايل، خطوط المواصلات، ودليل الهواتف والأكواد المختصرة.
           </p>
+          <TextLoop
+            text="Cairo ✦ Map"
+            shape="wave"
+            speed={90}
+            direction="forward"
+            separator="✦"
+            curviness={90}
+            fontSize={46}
+            fontWeight={800}
+            letterSpacing={2}
+            uppercase
+            color="#ffffff"
+            ribbon
+            ribbonColor="#5227FF"
+            ribbonWidth={86}
+            pauseOnHover
+            style={{
+              padding: "0",
+              margin: "0"
+            }}
+          />
 
           {/* Hero Universal Live Search Box Container */}
           <div ref={searchContainerRef} style={{
@@ -515,7 +537,7 @@ export default function HomePage() {
                 <FaSearch style={{ fontSize: "1.2rem", color: "var(--text-muted)", marginLeft: "12px" }} />
                 <input
                   type="text"
-                  placeholder="ابحث عن مكان، مطعم، كافيه، أو وسيلة مواصلات (مثال: مترو، رمسيس)..."
+                  placeholder="ابحث عن الخدمة المطلوبة "
                   value={searchQuery}
                   onFocus={() => setIsDropdownOpen(true)}
                   onChange={(e) => {
@@ -539,9 +561,10 @@ export default function HomePage() {
                     color: "#fff",
                     border: "none",
                     borderRadius: "var(--radius-lg)",
-                    padding: "12px 24px",
+                    padding: "8px 24px",
                     fontSize: "0.95rem",
                     fontWeight: "600",
+                    fontFamily:"var(--font-heading)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -748,13 +771,14 @@ export default function HomePage() {
                   style={{
                     width: "100%",
                     marginTop: "8px",
-                    padding: "12px",
+                    padding: "var(--pa-btn)",
                     borderRadius: "var(--radius-md)",
                     backgroundColor: "var(--accent-primary)",
                     color: "#ffffff",
                     border: "none",
                     fontWeight: "700",
                     fontSize: "0.9rem",
+                    fontFamily:"var(--font-heading)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -799,6 +823,7 @@ export default function HomePage() {
                   border: "1px solid var(--border-glass)",
                   color: "var(--text-secondary)",
                   fontSize: "0.85rem",
+                  fontFamily:"var(--font-body)",
                   cursor: "pointer",
                   transition: "var(--transition-fast)"
                 }}
@@ -810,7 +835,7 @@ export default function HomePage() {
           </div>
 
           {/* CTA Action Buttons */}
-          <div style={{
+          {/* <div style={{
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
@@ -822,42 +847,43 @@ export default function HomePage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "10px",
-                padding: "14px 28px",
-                borderRadius: "var(--radius-md)",
+                padding: "12px 30px",
+                borderRadius: "25px",
                 backgroundColor: "var(--accent-primary)",
                 color: "#ffffff",
                 fontWeight: "700",
                 fontSize: "1rem",
+                fontFamily:"var(--font-body)",
                 textDecoration: "none",
-                boxShadow: "0 8px 20px rgba(0, 111, 238, 0.35)",
                 transition: "var(--transition-smooth)"
               }}
             >
               <FaMapMarkerAlt style={{ fontSize: "1.1rem" }} />
-              <span>دليل الأماكن (دليل القاهرة)</span>
+              <span>دليل الأماكن</span>
             </Link>
 
             <Link
               href="/ai-planner"
               style={{
+                background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "10px",
-                padding: "14px 28px",
-                borderRadius: "var(--radius-md)",
-                background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+                padding: "12px 30px",
+                borderRadius: "25px",
+                backgroundColor: "var(--accent-primary)",
                 color: "#ffffff",
                 fontWeight: "700",
                 fontSize: "1rem",
+                fontFamily:"var(--font-body)",
                 textDecoration: "none",
-                boxShadow: "0 8px 20px rgba(139, 92, 246, 0.35)",
                 transition: "var(--transition-smooth)"
               }}
             >
               <FaRobot style={{ fontSize: "1.2rem" }} />
               <span>مخطط الرحلات بالذكاء الاصطناعي</span>
             </Link>
-          </div>
+          </div> */}
 
           {/* ── SPONSORED AD SLIDER BANNER ── */}
           <div style={{ marginTop: "44px" }}>
@@ -868,7 +894,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 2. DYNAMIC STATS STRIP ── */}
-      <section style={{
+      <section className="hide-on-mobile" style={{
         padding: "30px 20px",
         backgroundColor: "var(--bg-secondary)",
         borderBottom: "1px solid var(--border-glass)"
@@ -1122,7 +1148,7 @@ export default function HomePage() {
               boxShadow: "0 8px 24px rgba(139, 92, 246, 0.4)"
             }}
           >
-            <span>جرب مخطط الرحلات الذكي الآن</span>
+            <span>جرب مخطط الرحلات الذكي </span>
             <FaArrowLeft style={{ fontSize: "0.9rem" }} />
           </Link>
         </div>

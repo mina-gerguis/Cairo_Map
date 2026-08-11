@@ -101,6 +101,73 @@ interface AdSliderProps {
   autoPlayInterval?: number;
 }
 
+function getSlideTheme(slide: AdSlide, isLight: boolean) {
+  let themeColor = "#3b82f6"; // default blue
+  let tagBg = "rgba(59, 130, 246, 0.2)";
+  let tagColor = isLight ? "#2563eb" : "#93c5fd";
+  let badgeBg = "rgba(59, 130, 246, 0.15)";
+  let badgeColor = isLight ? "#2563eb" : "#93c5fd";
+  let bgGradient = slide.bgGradient || "var(--bg-glass-card)";
+  let borderColor = slide.borderColor || "var(--border-glass)";
+
+  if (slide.id === "shawarma-sponsor") {
+    themeColor = "#ef4444"; // red
+    tagBg = isLight ? "rgba(239, 68, 68, 0.1)" : "rgba(239, 68, 68, 0.25)";
+    tagColor = isLight ? "#dc2626" : "#f87171";
+    badgeBg = isLight ? "rgba(239, 68, 68, 0.12)" : "rgba(239, 68, 68, 0.2)";
+    badgeColor = isLight ? "#dc2626" : "#f87171";
+    bgGradient = isLight 
+      ? "linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(245, 158, 11, 0.05) 100%)" 
+      : "linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(245, 158, 11, 0.15) 100%)";
+    borderColor = isLight ? "rgba(239, 68, 68, 0.2)" : "rgba(239, 68, 68, 0.4)";
+  } else if (slide.id === "ai-planner-promo") {
+    themeColor = "#a855f7"; // purple
+    tagBg = isLight ? "rgba(168, 85, 247, 0.1)" : "rgba(168, 85, 247, 0.25)";
+    tagColor = isLight ? "#7c3aed" : "#c084fc";
+    badgeBg = isLight ? "rgba(168, 85, 247, 0.12)" : "rgba(168, 85, 247, 0.2)";
+    badgeColor = isLight ? "#7c3aed" : "#c084fc";
+    bgGradient = isLight
+      ? "linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%)"
+      : "linear-gradient(135deg, rgba(168, 85, 247, 0.22) 0%, rgba(59, 130, 246, 0.15) 100%)";
+    borderColor = isLight ? "rgba(168, 85, 247, 0.2)" : "rgba(168, 85, 247, 0.4)";
+  } else if (slide.id === "sponsor-business-space") {
+    themeColor = "#10b981"; // green
+    tagBg = isLight ? "rgba(16, 185, 129, 0.1)" : "rgba(16, 185, 129, 0.25)";
+    tagColor = isLight ? "#059669" : "#34d399";
+    badgeBg = isLight ? "rgba(16, 185, 129, 0.12)" : "rgba(16, 185, 129, 0.2)";
+    badgeColor = isLight ? "#059669" : "#34d399";
+    bgGradient = isLight
+      ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.05) 100%)"
+      : "linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.15) 100%)";
+    borderColor = isLight ? "rgba(16, 185, 129, 0.2)" : "rgba(16, 185, 129, 0.4)";
+  } else if (slide.id === "metro-guide-promo") {
+    themeColor = "#f59e0b"; // orange/yellow
+    tagBg = isLight ? "rgba(245, 158, 11, 0.1)" : "rgba(245, 158, 11, 0.25)";
+    tagColor = isLight ? "#d97706" : "#fbbf24";
+    badgeBg = isLight ? "rgba(245, 158, 11, 0.12)" : "rgba(245, 158, 11, 0.2)";
+    badgeColor = isLight ? "#d97706" : "#fbbf24";
+    bgGradient = isLight
+      ? "linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(239, 68, 68, 0.05) 100%)"
+      : "linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(239, 68, 68, 0.15) 100%)";
+    borderColor = isLight ? "rgba(245, 158, 11, 0.2)" : "rgba(245, 158, 11, 0.4)";
+  } else {
+    if (slide.tagBg) tagBg = slide.tagBg;
+    if (slide.tagColor) tagColor = slide.tagColor;
+    if (slide.bgGradient) bgGradient = slide.bgGradient;
+    if (slide.borderColor) borderColor = slide.borderColor;
+  }
+
+  return {
+    themeColor,
+    tagBg,
+    tagColor,
+    badgeBg,
+    badgeColor,
+    bgGradient,
+    borderColor
+  };
+}
+
 export default function AdSlider({
   slides: initialSlides,
   autoPlayInterval = 5000,
@@ -110,6 +177,30 @@ export default function AdSlider({
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLight, setIsLight] = useState(false);
+
+  // ── Theme Observer: detect light/dark theme ──
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsLight(document.documentElement.classList.contains("light"));
+    };
+    checkTheme();
+    
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          checkTheme();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // ── Responsive: detect mobile screen (≤640px) ──
   useEffect(() => {
@@ -239,6 +330,7 @@ export default function AdSlider({
 
   const currentSlide = activeSlides[currentIndex] || activeSlides[0];
   const isPureImageOnly = Boolean(currentSlide.isImageOnly && currentSlide.image);
+  const currentSlideTheme = getSlideTheme(currentSlide, isLight);
 
   return (
     <div
@@ -261,8 +353,9 @@ export default function AdSlider({
           overflow: "hidden",
           background: currentSlide.image
             ? "var(--bg-primary, #0f172a)"
-            : "var(--bg-glass-card, rgba(15, 23, 42, 0.6))",
-          border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
+            : (currentSlideTheme.bgGradient || "var(--bg-glass-card, rgba(15, 23, 42, 0.6))"),
+          border: `1px solid ${currentSlideTheme.borderColor || "var(--border-glass, rgba(255, 255, 255, 0.08))"}`,
+          boxShadow: isLight ? "0 4px 20px rgba(0, 0, 0, 0.05)" : "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
           transition: "all 0.4s ease",
           display: "flex",
           flexDirection: "column",
@@ -284,7 +377,7 @@ export default function AdSlider({
             style={{
               height: "100%",
               width: `${progress}%`,
-              backgroundColor: currentSlide.tagColor || "var(--accent-primary, #3b82f6)",
+              backgroundColor: currentSlideTheme.themeColor,
               transition: isPaused ? "none" : "width 0.05s linear",
               borderRadius: "0 2px 2px 0",
             }}
@@ -407,9 +500,9 @@ export default function AdSlider({
                       fontWeight: "600",
                       padding: isMobile ? "3px 8px" : "4px 12px",
                       borderRadius: "6px",
-                      backgroundColor: "rgba(255, 255, 255, 0.08)",
-                      color: currentSlide.tagColor || "var(--text-secondary, #94a3b8)",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      backgroundColor: currentSlideTheme.tagBg,
+                      color: currentSlideTheme.tagColor,
+                      border: `1px solid ${isLight ? "rgba(0,0,0,0.05)" : "rgba(255, 255, 255, 0.1)"}`,
                     }}
                   >
                     {currentSlide.tag}
@@ -422,9 +515,9 @@ export default function AdSlider({
                         fontWeight: "700",
                         padding: isMobile ? "2px 7px" : "3px 10px",
                         borderRadius: "6px",
-                        backgroundColor: "rgba(239, 68, 68, 0.15)",
-                        color: "#f87171",
-                        border: "1px solid rgba(239, 68, 68, 0.2)",
+                        backgroundColor: currentSlideTheme.badgeBg,
+                        color: currentSlideTheme.badgeColor,
+                        border: `1px solid ${isLight ? "rgba(0,0,0,0.03)" : "rgba(255, 255, 255, 0.05)"}`,
                       }}
                     >
                       {currentSlide.badge}
@@ -437,18 +530,18 @@ export default function AdSlider({
               <div style={{
                 display: "flex",
                 alignItems: isMobile ? "stretch" : "center",
-                justifyContent: "space-between",
+                justifyContent: "center",
                 gap: isMobile ? "12px" : "20px",
                 flexDirection: isMobile ? "column" : "row",
                 flexWrap: isMobile ? "nowrap" : "wrap",
               }}>
-                <div style={{ flex: "1 1 auto", minWidth: 0 }}>
+                <div style={{ minWidth: 0 }}>
                   <h3
                     style={{
                       margin: isMobile ? "0 0 4px 0" : "0 0 6px 0",
                       fontSize: isMobile ? "0.95rem" : "clamp(1.05rem, 2.2vw, 1.3rem)",
                       fontWeight: "700",
-                      color: "#ffffff",
+                      color: "var(--text-primary)",
                       lineHeight: "1.4",
                     }}
                   >
@@ -459,7 +552,7 @@ export default function AdSlider({
                     style={{
                       margin: 0,
                       fontSize: isMobile ? "0.78rem" : "clamp(0.82rem, 1.6vw, 0.92rem)",
-                      color: "rgba(255, 255, 255, 0.7)",
+                      color: "var(--text-muted)",
                       lineHeight: isMobile ? "1.5" : "1.6",
                       maxWidth: "700px",
                     }}
@@ -537,7 +630,7 @@ export default function AdSlider({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+            borderTop: `1px solid ${isLight ? "rgba(0,0,0,0.05)" : "rgba(255, 255, 255, 0.05)"}`,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "6px" : "8px" }}>
@@ -552,8 +645,8 @@ export default function AdSlider({
                   borderRadius: "999px",
                   backgroundColor:
                     idx === currentIndex
-                      ? currentSlide.tagColor || "var(--accent-primary, #3b82f6)"
-                      : "rgba(255, 255, 255, 0.2)",
+                      ? currentSlideTheme.themeColor
+                      : (isLight ? "rgba(0, 0, 0, 0.15)" : "rgba(255, 255, 255, 0.2)"),
                   border: "none",
                   cursor: "pointer",
                   transition: "all 0.3s ease",
