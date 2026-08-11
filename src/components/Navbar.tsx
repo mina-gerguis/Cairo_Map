@@ -68,7 +68,7 @@ export default function Navbar() {
       label: "الخدمات",
       isDropdown: true,
       subItems: [
-        { href: "/#places-section", label: "دليل الأماكن", icon: "bx bx-map" },
+        { href: "/places", label: "دليل الأماكن", icon: "bx bx-map" },
         { href: "/directory", label: "دليل الهاتف", icon: "bx bx-phone" },
         { href: "/metro", label: "خريطة المترو", icon: "bx bx-train" },
         { href: "/monorail", label: "خريطة المنورايل", icon: "bx bx-navigation" },
