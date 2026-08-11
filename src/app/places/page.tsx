@@ -1208,7 +1208,7 @@ function HomeContent() {
                         }}
                       >
                         <i className={favoriteIds.has(selectedPlace.id.toString()) ? "bx bxs-heart" : "bx bx-heart"} style={{ fontSize: "1.2rem" }}></i>
-                        <span style={{ fontFamily: "var(--font-cairo)", fontSize: "0.75rem", fontWeight: "bold" }}>المفضلة</span>
+                        <span style={{ fontFamily: "var(--font-body)", fontSize: "0.75rem", fontWeight: "bold" }}>المفضلة</span>
                       </button>
                     </div>
 

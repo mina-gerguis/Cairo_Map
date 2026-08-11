@@ -38,7 +38,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [userReview, setUserReview] = useState<Review | null>(null);
-  
+
   const [ratingInput, setRatingInput] = useState<number>(0);
   const [commentInput, setCommentInput] = useState<string>("");
   const [submittingReview, setSubmittingReview] = useState(false);
@@ -162,17 +162,8 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
       setReviewError("الرجاء اختيار تقييم من 1 إلى 5 نجوم");
       return;
     }
-    
-    if (userReview) {
-      const lastUpdate = new Date(userReview.updated_at).getTime();
-      const now = new Date().getTime();
-      const diffDays = (now - lastUpdate) / (1000 * 60 * 60 * 24);
-      
-      if (diffDays < 7) {
-        setReviewError(`لا يمكنك تعديل التقييم إلا بعد مرور 7 أيام. متبقي ${Math.ceil(7 - diffDays)} أيام.`);
-        return;
-      }
-    }
+
+
 
     setSubmittingReview(true);
     setReviewError("");
@@ -210,15 +201,15 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
         newReviewData = data;
         setReviews([newReviewData, ...reviews] as unknown as Review[]);
       }
-      
+
       setUserReview(newReviewData as unknown as Review);
-      
+
       if (onRatingUpdate) {
         const newTotalRating = (place.rating || 0) * (place.reviewsCount || 0) - (userReview?.rating || 0) + ratingInput;
         const newCount = userReview ? (place.reviewsCount || 0) : (place.reviewsCount || 0) + 1;
         onRatingUpdate(newCount > 0 ? newTotalRating / newCount : 0, newCount);
       }
-      
+
     } catch (err: any) {
       console.error("Error submitting review:", err);
       setReviewError(err.message || "حدث خطأ أثناء إرسال التقييم");
@@ -242,9 +233,9 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
               {userReview ? "تعديل تقييمك" : "أضف تقييمك"}
             </h5>
             {userReview && (
-              <button 
-                type="button" 
-                onClick={deleteReview} 
+              <button
+                type="button"
+                onClick={deleteReview}
                 disabled={deletingReview}
                 style={{
                   background: "rgba(255, 59, 48, 0.1)",
@@ -269,8 +260,8 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
           <form onSubmit={submitReview}>
             <div style={{ display: "flex", gap: "8px", marginBottom: "16px", direction: "ltr", justifyContent: "flex-end" }}>
               {[1, 2, 3, 4, 5].map((star) => (
-                <span 
-                  key={star} 
+                <span
+                  key={star}
                   onClick={() => setRatingInput(star)}
                   style={{ fontSize: "2rem", cursor: "pointer", color: star <= ratingInput ? "#ff9f0a" : "var(--border-glass)", transition: "color 0.2s" }}
                 >
@@ -278,20 +269,20 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
                 </span>
               ))}
             </div>
-            <textarea 
+            <textarea
               className="ios-input"
-              placeholder="اكتب تعليقك هنا (اختياري)..."
+              placeholder="اكتب تعليقك هنا..."
               value={commentInput}
               onChange={(e) => setCommentInput(e.target.value)}
               rows={3}
               style={{ marginBottom: "12px", background: "rgba(255,255,255,0.03)" }}
             />
             {reviewError && <div style={{ color: "#ff3b30", fontSize: "0.85rem", marginBottom: "12px" }}>{reviewError}</div>}
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={submittingReview || ratingInput === 0}
               className="ios-btn ios-btn-primary"
-              style={{ width: "100%" }}
+              style={{ width: "100%", padding: "var(--pa-btn)", borderRadius: "8px" }}
             >
               {submittingReview ? "جاري الإرسال..." : <><i className="bx bx-save" style={{ fontSize: "1.2rem" }}></i> حفظ التقييم</>}
             </button>
@@ -300,7 +291,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
       ) : (
         <div style={{ textAlign: "center", padding: "20px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px", marginBottom: "30px" }}>
           <p style={{ color: "var(--text-secondary)", marginBottom: "12px" }}>سجل دخولك لتتمكن من تقييم هذا المكان</p>
-          <button className="ios-btn ios-btn-primary" onClick={() => router.push("/login")}><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
+          <button className="ios-btn ios-btn-primary" onClick={() => router.push("/login")} style={{ padding: "var(--pa-btn)", borderRadius: "8px" }}><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
         </div>
       )}
 
@@ -311,31 +302,42 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
             <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "10px" }}>
                 <div>
-                  <div style={{ color: "#ff9f0a", fontSize: "1.1rem", marginBottom: "4px" }}>
-                    {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-                  </div>
-                  {review.branches && (
-                    <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px", background: "rgba(120,120,120,0.1)", padding: "4px 8px", borderRadius: "8px", width: "fit-content" }}>
-                      <span>🏢</span>
-                      <span style={{ fontWeight: "600" }}>{review.branches.name}</span>
-                      <span>-</span>
-                      <span style={{ opacity: 0.8 }}>{review.branches.city}</span>
+                  <div style={{
+                    color: "#ff9f0a", fontSize: "1.1rem", marginBottom: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px",
+                  }}>
+
+                    <div>
+                      {review.branches && (
+                        <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px", background: "rgba(120,120,120,0.1)", padding: "4px 8px", borderRadius: "8px" }}>
+                          <span style={{ opacity: 0.8 }}>فرع {review.branches.city}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
+
+                    <div style={{ alignItems: "left", alignContent: "right" }}>
+                      {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                    </div>
+
+                  </div>
+
                 </div>
-                <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ fontWeight: "600" }}>{review.profiles?.full_name || "مستخدم"}</span>
-                  <span>•</span>
-                  <span>
-                    {new Date(review.created_at).toLocaleDateString("ar-EG", { month: "short", year: "numeric" })}
-                  </span>
-                </div>
+
               </div>
               {review.comment && (
                 <p style={{ color: "var(--text-primary)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px", paddingRight: review.branches ? "4px" : "0" }}>
                   {review.comment}
                 </p>
               )}
+              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ fontWeight: "600" }}>{review.profiles?.full_name || "مستخدم"}</span>
+                <span>•</span>
+                <span>
+                  {new Date(review.created_at).toLocaleDateString("ar-EG", { month: "short", year: "numeric" })}
+                </span>
+              </div>
             </div>
           ))
         ) : (
@@ -347,14 +349,14 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
       {reviews.length > 5 && (
         <div style={{ textAlign: "center", marginTop: "24px" }}>
-          <button 
+          <button
             type="button"
             className="ios-btn"
             onClick={() => router.push(`/places/${place.id}/reviews`)}
-            style={{ 
-              width: "100%", 
-              padding: "14px", 
-              background: "rgba(120, 120, 120, 0.08)", 
+            style={{
+              width: "100%",
+              padding: "14px",
+              background: "rgba(120, 120, 120, 0.08)",
               border: "1px solid var(--border-glass)",
               borderRadius: "14px",
               fontWeight: "600",

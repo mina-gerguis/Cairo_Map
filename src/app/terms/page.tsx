@@ -74,7 +74,7 @@ export default function TermsPage() {
         <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
           <h2 style={{ fontSize: "1.3rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>4. تعديل التقييمات</h2>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
-            لضمان مصداقية التقييمات ومنع التلاعب اللحظي، **يمكن للمستخدم تعديل تقييمه للمكان مرة واحدة كل 7 أيام كحد أقصى**.
+            يمكن للمستخدم كتابة تقييم واحد لكل مكان، وله الحق في تعديله أو تحديثه في أي وقت.
           </p>
         </div>
 
