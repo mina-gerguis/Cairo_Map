@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 
 /* ═══════════════════════════════════════════
-   Shared wrapper for auth pages (White background on data step)
+   Shared wrapper for auth pages (White background)
    ═══════════════════════════════════════════ */
 const AuthLayout = ({ children }: { children: React.ReactNode }) => (
   <div style={{
@@ -36,6 +36,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => (
    ═══════════════════════════════════════════ */
 const GlassCard = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div style={{
+    background: "#ffffff",
+    borderRadius: "16px",
+    border: "1px solid rgba(0, 0, 0, 0.08)",
+    boxShadow: "0 20px 40px -15px rgba(0, 0, 0, 0.08)",
     ...style,
   }}>
     {children}
@@ -43,7 +47,7 @@ const GlassCard = ({ children, style }: { children: React.ReactNode; style?: Rea
 );
 
 /* ═══════════════════════════════════════════
-   Onboarding Slider (Full-screen version)
+   Onboarding Slider (Text & buttons overlaid on fixed-size image card)
    ═══════════════════════════════════════════ */
 const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -74,53 +78,209 @@ const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
     return () => clearInterval(timer);
   }, [currentSlide, slides.length]);
 
-  const slide = slides[currentSlide];
-
   return (
-    <div style={{
-      width: "100%", height: "100vh", position: "relative", overflow: "hidden",
-      display: "flex", flexDirection: "column", justifyContent: "flex-end", background: "#0a0c23",
-    }}>
-      {/* Background Images with Crossfade */}
-      {slides.map((s, idx) => (
-        <div key={idx} style={{
-          position: "absolute", inset: 0,
-          backgroundImage: `url(${s.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center",
-          opacity: currentSlide === idx ? 1 : 0,
-          transform: currentSlide === idx ? "scale(1)" : "scale(1.1)",
-          transition: "opacity .3s ease-in-out, transform 1.2s ease-in-out", zIndex: 0,
+    <>
+      {/* Responsive Fixed Card Container for PC & Mobile */}
+      <div style={{
+        width: "100%",
+        maxWidth: "100%",
+        height: "100vh",
+        maxHeight: "100vh",
+        position: "relative",
+        overflow: "hidden",
+        padding: "0 !important"
+      }}>
+        {/* Background Images Crossfade */}
+        {slides.map((s, idx) => (
+          <img
+            key={idx}
+            src={`/${s.imageUrl}`}
+            alt={s.title}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              opacity: currentSlide === idx ? 1 : 0,
+              transform: currentSlide === idx ? "scale(1)" : "scale(1.05)",
+              transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out",
+              zIndex: 0,
+            }}
+          />
+        ))}
+
+        {/* Gradient Overlay over image for text readability */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.1) 35%, rgba(0, 0, 0, 0.75) 70%, rgba(0, 0, 0, 0.92) 100%)",
+          zIndex: 1,
         }} />
-      ))}
 
-      {/* Dark overlay */}
-      <div style={{}} />
+        {/* Content Overlaid on Image (Bottom half) */}
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: "24px 24px 28px",
+          zIndex: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+          boxSizing: "border-box",
+        }}>
+          {/* Title & Description */}
+          <div style={{ minHeight: "5px", display: "flex", flexDirection: "column", justifyContent: "center", marginBottom: "16px", width: "100%" }}>
+            <h2 style={{
+              fontSize: "1.3rem",
+              fontWeight: "800",
+              color: "#ffffff",
+              marginBottom: "8px",
+              fontFamily: "var(--font-heading)",
+              lineHeight: 1.4,
+              textShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+            }}>
+              {slides[currentSlide].title}
+            </h2>
+            <p style={{
+              fontSize: "0.9rem",
+              color: "rgba(255, 255, 255, 0.88)",
+              lineHeight: 1.6,
+              fontFamily: "var(--font-body)",
+              margin: 0,
+              textShadow: "0 1px 4px rgba(0, 0, 0, 0.5)",
+            }}>
+              {slides[currentSlide].desc}
+            </p>
+          </div>
 
-      {/* Bottom Content */}
-      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: "480px", margin: "0 auto", padding: "0 24px 20px", boxSizing: "border-box" }}>
-        <div>
-          {/* Navigation */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
+          {/* Dots Indicators */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentSlide(i)}
+                aria-label={`الشريحة ${i + 1}`}
+                style={{
+                  border: "none",
+                  padding: 0,
+                  height: "8px",
+                  width: currentSlide === i ? "24px" : "8px",
+                  borderRadius: "12px",
+                  background: currentSlide === i ? "#ffffff" : "rgba(255, 255, 255, 0.35)",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Action Buttons overlaid on image */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
             {currentSlide < slides.length - 1 ? (
-              <button onClick={() => setCurrentSlide((prev) => prev + 1)} style={{ padding: "var(--pa-btn)", fontSize: "1rem", fontWeight: "800", borderRadius: "50px", border: "none", background: "#fff", color: "#000000ff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "transform 0.2s ease, opacity 0.2s ease", fontFamily: "var(--font-heading)" }}>
-                التالي
+              <button
+                onClick={() => setCurrentSlide((prev) => prev + 1)}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  fontSize: "0.95rem",
+                  fontWeight: "800",
+                  borderRadius: "50px",
+                  border: "none",
+                  background: "#ffffff",
+                  color: "#000000",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  transition: "all 0.2s ease",
+                  fontFamily: "var(--font-heading)",
+                  boxShadow: "0 6px 20px rgba(0, 0, 0, 0.25)",
+                }}
+              >
+                التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i>
               </button>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
-                <button onClick={onStartSignup} style={{ padding: "var(--pa-btn)", fontSize: "1rem", fontWeight: "800", borderRadius: "50px", border: "none", background: "#000000", color: "#ffffff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "transform 0.2s ease, opacity 0.2s ease", fontFamily: "var(--font-heading)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+                <button
+                  onClick={onStartSignup}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    fontSize: "0.95rem",
+                    fontWeight: "800",
+                    borderRadius: "50px",
+                    border: "none",
+                    background: "#ffffff",
+                    color: "#000000",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    transition: "all 0.2s ease",
+                    fontFamily: "var(--font-heading)",
+                    boxShadow: "0 6px 20px rgba(0, 0, 0, 0.25)",
+                  }}
+                >
                   <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }}></i> إنشاء حساب جديد
                 </button>
-                <Link href="/login" style={{ padding: "var(--pa-btn)", fontSize: "1rem", fontWeight: "800", borderRadius: "50px", border: "none", background: "#fff", color: "#000000ff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "transform 0.2s ease, opacity 0.2s ease", fontFamily: "var(--font-heading)" }}>
+
+                <Link
+                  href="/login"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    fontSize: "0.95rem",
+                    fontWeight: "800",
+                    borderRadius: "50px",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    background: "rgba(255, 255, 255, 0.18)",
+                    backdropFilter: "blur(10px)",
+                    color: "#ffffff",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    transition: "all 0.2s ease",
+                    fontFamily: "var(--font-heading)",
+                    textDecoration: "none",
+                    boxSizing: "border-box",
+                  }}
+                >
                   <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> لدي حساب بالفعل
-                </Link>
-                <Link href="/" style={{ padding: "var(--pa-btn)", fontSize: "1rem", fontWeight: "800", borderRadius: "50px", border: "none", background: "none", color: "#ffffffff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "transform 0.2s ease, opacity 0.2s ease", fontFamily: "var(--font-heading)" }}>
-                  <i className="bx bx-walk" style={{ fontSize: "1.3rem" }}></i> <span style={{ textDecoration: "underline" }}>دخول كزائر</span>
                 </Link>
               </div>
             )}
+
+            <Link
+              href="/"
+              style={{
+                padding: "6px",
+                fontSize: "0.85rem",
+                fontWeight: "700",
+                color: "rgba(255, 255, 255, 0.85)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                fontFamily: "var(--font-heading)",
+                textDecoration: "none",
+                marginTop: "2px",
+              }}
+            >
+              <i className="bx bx-walk" style={{ fontSize: "1.1rem" }}></i> <span style={{ textDecoration: "underline" }}>دخول كزائر</span>
+            </Link>
           </div>
         </div>
       </div>
-    </div>
+      </>
   );
 };
 
@@ -132,16 +292,31 @@ export default function SignupPage() {
   const [step, setStep] = useState(0);
 
   const [formData, setFormData] = useState({
-    fullName: "", username: "", phone: "", email: "", dob: "",
-    gender: "ذكر", governorate: "", city: "", avatarUrl: "",
-    password: "", confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+    phone: "",
+    email: "",
+    dob: "",
+    gender: "ذكر",
+    governorate: "",
+    city: "",
+    avatarUrl: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const [fieldErrors, setFieldErrors] = useState({ fullName: "", username: "", phone: "", email: "" });
+  const [fieldErrors, setFieldErrors] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    phone: "",
+    email: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -158,23 +333,35 @@ export default function SignupPage() {
     return text.split('').map(c => map[c] || c).join('').replace(/[^a-z0-9_]/gi, '');
   };
 
+  // Name validation & suggestions
   useEffect(() => {
-    if (formData.fullName.length >= 3) {
-      const base = transliterate(formData.fullName.trim().toLowerCase());
+    if (formData.firstName.length > 0) {
+      const hasArabic = /[\u0600-\u06FF]/.test(formData.firstName);
+      const hasEnglish = /[a-zA-Z]/.test(formData.firstName);
+      if (formData.firstName.length < 2) setFieldErrors(p => ({ ...p, firstName: "الاسم الأول يجب أن يكون حرفين على الأقل" }));
+      else if (/[0-9]/.test(formData.firstName)) setFieldErrors(p => ({ ...p, firstName: "لا يسمح باستخدام الأرقام" }));
+      else if (hasArabic && hasEnglish) setFieldErrors(p => ({ ...p, firstName: "يجب كتابة الاسم بلغة واحدة فقط" }));
+      else setFieldErrors(p => ({ ...p, firstName: "" }));
+    } else setFieldErrors(p => ({ ...p, firstName: "" }));
+
+    if (formData.lastName.length > 0) {
+      const hasArabic = /[\u0600-\u06FF]/.test(formData.lastName);
+      const hasEnglish = /[a-zA-Z]/.test(formData.lastName);
+      if (formData.lastName.length < 2) setFieldErrors(p => ({ ...p, lastName: "الاسم الأخير يجب أن يكون حرفين على الأقل" }));
+      else if (/[0-9]/.test(formData.lastName)) setFieldErrors(p => ({ ...p, lastName: "لا يسمح باستخدام الأرقام" }));
+      else if (hasArabic && hasEnglish) setFieldErrors(p => ({ ...p, lastName: "يجب كتابة الاسم بلغة واحدة فقط" }));
+      else setFieldErrors(p => ({ ...p, lastName: "" }));
+    } else setFieldErrors(p => ({ ...p, lastName: "" }));
+
+    const combinedName = `${formData.firstName} ${formData.lastName}`.trim();
+    if (combinedName.length >= 3) {
+      const base = transliterate(combinedName.toLowerCase().replace(/\s+/g, '_'));
       if (base) setSuggestions([base, `${base}${Math.floor(Math.random() * 100)}`, `${base}_eg`]);
       else setSuggestions([]);
     } else setSuggestions([]);
+  }, [formData.firstName, formData.lastName]);
 
-    if (formData.fullName.length > 0) {
-      const hasArabic = /[\u0600-\u06FF]/.test(formData.fullName);
-      const hasEnglish = /[a-zA-Z]/.test(formData.fullName);
-      if (formData.fullName.length < 3) setFieldErrors(p => ({ ...p, fullName: "الاسم يجب أن يكون 3 حروف على الأقل" }));
-      else if (/[0-9]/.test(formData.fullName)) setFieldErrors(p => ({ ...p, fullName: "لا يسمح باستخدام الأرقام في الاسم" }));
-      else if (hasArabic && hasEnglish) setFieldErrors(p => ({ ...p, fullName: "يجب كتابة الاسم بلغة واحدة فقط" }));
-      else setFieldErrors(p => ({ ...p, fullName: "" }));
-    } else setFieldErrors(p => ({ ...p, fullName: "" }));
-  }, [formData.fullName]);
-
+  // Phone validation
   useEffect(() => {
     if (formData.phone.length > 0) {
       if (!formData.phone.startsWith("1")) {
@@ -189,6 +376,7 @@ export default function SignupPage() {
     }
   }, [formData.phone]);
 
+  // Email validation
   useEffect(() => {
     if (formData.email.length > 0) setFieldErrors(p => ({ ...p, email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) ? "" : "صيغة البريد الإلكتروني غير صحيحة" }));
     else setFieldErrors(p => ({ ...p, email: "" }));
@@ -232,9 +420,9 @@ export default function SignupPage() {
     setLoading(false);
   };
 
-  const handleStep1Submit = async (e: React.FormEvent) => {
+  // Step 3 Submit (Validates location, DOB & DB Uniqueness before moving to Avatar step)
+  const handleStep3Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (fieldErrors.fullName || fieldErrors.username || fieldErrors.phone || fieldErrors.email) { setError("يرجى تصحيح الأخطاء قبل المتابعة."); return; }
     if (!formData.dob) { setError("يرجى إدخال تاريخ الميلاد."); return; }
     const dobDate = new Date(formData.dob);
     const today = new Date();
@@ -242,18 +430,17 @@ export default function SignupPage() {
     const m = today.getMonth() - dobDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) age--;
     if (age < 6) { setError("يجب أن يكون العمر 6 سنوات على الأقل للتسجيل."); return; }
-    if (formData.username.length < 3) { setError("اسم المستخدم يجب أن يكون 3 حروف على الأقل."); return; }
-    if (/^\d+$/.test(formData.username) || !/[a-z]/i.test(formData.username)) { setError("اسم المستخدم لا يمكن أن يتكون من أرقام فقط (يجب أن يحتوي على حروف إنجليزية)."); return; }
-    if (formData.phone.length !== 10) { setError("رقم الهاتف يجب أن يتكون من 10 أرقام."); return; }
-    if (!supabase) return;
+
+    if (!supabase) { setShowDobConfirmModal(true); return; }
+
     setLoading(true); setError("");
     const fullPhone = `+20${formData.phone}`;
     const { data: existing } = await supabase.from('profiles').select('username, email, phone').or(`username.eq.${formData.username},email.eq.${formData.email},phone.eq.${fullPhone}`).limit(1);
     if (existing && existing.length > 0) {
       const c = existing[0];
-      if (c.username === formData.username) setError("اسم المستخدم محجوز، يرجى اختيار اسم آخر.");
-      else if (c.email === formData.email) setError("البريد الإلكتروني مسجل مسبقاً.");
-      else setError("رقم الهاتف مسجل مسبقاً.");
+      if (c.username === formData.username) { setError("اسم المستخدم محجوز، يرجى اختيار اسم آخر."); setStep(1); }
+      else if (c.email === formData.email) { setError("البريد الإلكتروني مسجل مسبقاً."); setStep(1); }
+      else { setError("رقم الهاتف مسجل مسبقاً."); setStep(2); }
       setLoading(false); return;
     }
     setLoading(false);
@@ -275,15 +462,30 @@ export default function SignupPage() {
     if (!isPasswordValid) { setError("يرجى التأكد من استيفاء جميع شروط كلمة المرور."); return; }
     if (!supabase) { setError("لم يتم تكوين إعدادات قاعدة البيانات بعد."); return; }
     setLoading(true); setError("");
+
+    const fullNameCombined = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
     const { error: signUpError } = await supabase.auth.signUp({
       email: formData.email, password: formData.password,
-      options: { data: { full_name: formData.fullName, username: formData.username, phone: `+20${formData.phone}`, gender: formData.gender, governorate: formData.governorate, city: formData.city, avatar_url: formData.avatarUrl, dob: formData.dob } },
+      options: {
+        data: {
+          full_name: fullNameCombined,
+          first_name: formData.firstName.trim(),
+          last_name: formData.lastName.trim(),
+          username: formData.username,
+          phone: `+20${formData.phone}`,
+          gender: formData.gender,
+          governorate: formData.governorate,
+          city: formData.city,
+          avatar_url: formData.avatarUrl,
+          dob: formData.dob
+        }
+      },
     });
+
     if (signUpError) {
       let msg = signUpError.message;
       if (typeof msg === 'object') msg = JSON.stringify(msg);
 
-      // Fallback translations for common Supabase errors
       if (msg && msg.includes("User already registered")) msg = "هذا البريد الإلكتروني مسجل مسبقاً.";
       else if (msg && msg.includes("Database error saving new user")) msg = "حدث خطأ أثناء الحفظ. قد يكون رقم الهاتف أو اسم المستخدم محجوزاً.";
       else if (!msg || msg === "{}") msg = "تفاصيل الخطأ: " + JSON.stringify(signUpError);
@@ -300,12 +502,39 @@ export default function SignupPage() {
   maxDobDate.setFullYear(maxDobDate.getFullYear() - 6);
   const maxDobDateStr = maxDobDate.toISOString().split("T")[0];
 
-  /* ── Step labels & colors ── */
+  /* ── Step info array ── */
   const stepInfo = [
     null,
-    { label: "البيانات الأساسية", icon: "👤", gradient: "linear-gradient(135deg, #6c63ff, #3b82f6)" },
-    { label: "الصورة الشخصية", icon: "🖼️", gradient: "linear-gradient(135deg, #00d4aa, #3b82f6)" },
-    { label: "حماية الحساب", icon: "🔐", gradient: "linear-gradient(135deg, #ff3f8e, #6c63ff)" },
+    {
+      label: "عرفنا بنفسك",
+      headerTitle: "عرفنا بنفسك؟",
+      subTitle: "أدخل بياناتك الشخصية الأساسية",
+      gradient: "linear-gradient(135deg, #6c63ff, #3b82f6)",
+    },
+    {
+      label: "رقم الهاتف",
+      headerTitle: "إيه هو رقم تليفونك؟",
+      subTitle: "سنحتاج رقم هاتفك للتحقق والتواصل",
+      gradient: "linear-gradient(135deg, #3b82f6, #00d4aa)",
+    },
+    {
+      label: "الإقامة والسِن",
+      headerTitle: "منين وعندك كام سنه؟",
+      subTitle: "حدد تاريخ ميلادك ومكان إقامتك",
+      gradient: "linear-gradient(135deg, #00d4aa, #ffa500)",
+    },
+    {
+      label: "الصورة الشخصية",
+      headerTitle: "الصورة الشخصية",
+      subTitle: "اختر صورتك المفضلة أو ارفع صورة جديدة",
+      gradient: "linear-gradient(135deg, #ff3f8e, #6c63ff)",
+    },
+    {
+      label: "حماية الحساب",
+      headerTitle: "حماية الحساب",
+      subTitle: "أنشئ كلمة مرور قوية لحماية حسابك",
+      gradient: "linear-gradient(135deg, #6c63ff, #10b981)",
+    },
   ];
   const current = stepInfo[step]!;
 
@@ -333,16 +562,24 @@ export default function SignupPage() {
     appearance: "auto" as const, cursor: "pointer", background: "#f8fafc", color: "#0f172a",
   });
 
-  /* ── Step 1 Validation state ── */
+  /* ── Validation flags per step ── */
   const isStep1Valid = Boolean(
-    formData.fullName.trim().length >= 3 &&
-    !fieldErrors.fullName &&
+    formData.firstName.trim().length >= 2 &&
+    !fieldErrors.firstName &&
+    formData.lastName.trim().length >= 2 &&
+    !fieldErrors.lastName &&
     formData.username.trim().length >= 3 &&
     !fieldErrors.username &&
-    formData.phone.length === 10 &&
-    !fieldErrors.phone &&
     formData.email.trim() !== "" &&
-    !fieldErrors.email &&
+    !fieldErrors.email
+  );
+
+  const isStep2Valid = Boolean(
+    formData.phone.length === 10 &&
+    !fieldErrors.phone
+  );
+
+  const isStep3Valid = Boolean(
     formData.dob &&
     formData.governorate &&
     formData.city
@@ -350,30 +587,94 @@ export default function SignupPage() {
 
   return (
     <AuthLayout>
+      <GlassCard style={{ padding: "32px 28px", animation: "slide-in-section 0.6s ease 0.1s both" }}>
 
-      <GlassCard style={{ padding: "36px 32px", animation: "slide-in-section 0.6s ease 0.1s both" }}>
-        {/* Progress indicator */}
-        <div style={{ display: "flex", gap: "8px", marginBottom: "28px", alignItems: "center" }}>
-          {[1, 2, 3].map((s) => (
-            <React.Fragment key={s}>
-              <div style={{
-                height: "6px", flex: 1, borderRadius: "3px",
+        {/* Header Navigation Bar with Back Arrow */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+          <button
+            type="button"
+            onClick={() => {
+              setError("");
+              setStep((prev) => Math.max(0, prev - 1));
+            }}
+            aria-label="رجوع للخلف"
+            style={{
+              padding: "6px 14px",
+              border: "none",
+              color: "#334155",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "0.85rem",
+              fontWeight: "700",
+              fontFamily: "var(--font-heading)",
+              transition: "all 0.2s ease",
+              backgroundColor: "transparent"
+            }}
+          >
+            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.2rem" }}></i>
+          </button>
+
+          <span style={{
+            fontSize: "0.82rem",
+            fontWeight: "700",
+            color: "#64748b",
+            background: "#f8fafc",
+            padding: "4px 12px",
+            borderRadius: "20px",
+            border: "1px solid #e2e8f0",
+            fontFamily: "var(--font-heading)"
+          }}>
+            الخطوة {step} من 5
+          </span>
+        </div>
+
+        {/* Step Title Header */}
+        <div style={{ marginBottom: "20px" }}>
+          <h2 style={{
+            fontSize: "1.35rem",
+            fontWeight: "800",
+            color: "#0f172a",
+            fontFamily: "Hagrid",
+            fontWidth: "800",
+            marginBottom: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px"
+          }}>
+            {current.headerTitle}
+          </h2>
+          <p style={{ fontSize: "0.85rem", color: "#64748b", margin: 0, fontFamily: "var(--font-heading)" }}>
+            {current.subTitle}
+          </p>
+        </div>
+
+        {/* 5-Step Progress Indicator */}
+        <div style={{ display: "flex", gap: "6px", marginBottom: "24px", alignItems: "center" }}>
+          {[1, 2, 3, 4, 5].map((s) => (
+            <div
+              key={s}
+              style={{
+                height: "5px",
+                flex: 1,
+                borderRadius: "3px",
                 background: step >= s ? current.gradient : "#e2e8f0",
                 transition: "all 0.5s ease",
-                boxShadow: step >= s ? "0 0 10px rgba(108,99,255,0.3)" : "none",
-              }} />
-            </React.Fragment>
+                boxShadow: step >= s ? "0 0 8px rgba(108,99,255,0.25)" : "none",
+              }}
+            />
           ))}
         </div>
 
-        {/* Error */}
+        {/* Global Error Banner */}
         {error && (
-          <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "14px", padding: "12px 16px", color: "#dc2626", marginBottom: "20px", fontSize: "0.88rem", textAlign: "center", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center", animation: "slide-in-section 0.3s ease" }}>
+          <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "12px", padding: "10px 14px", color: "#dc2626", marginBottom: "18px", fontSize: "0.85rem", textAlign: "center", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center", animation: "slide-in-section 0.3s ease" }}>
             <span>⚠️</span> {error}
           </div>
         )}
 
-        {/* Success */}
+        {/* Global Success Banner */}
         {success && (
           <div style={{ background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: "14px", padding: "16px", color: "#059669", marginBottom: "20px", textAlign: "center", fontSize: "1rem", fontWeight: "700", animation: "pop-in 0.5s ease" }}>
             🎉 تم إنشاء حسابك بنجاح! جاري التحويل...
@@ -381,28 +682,74 @@ export default function SignupPage() {
         )}
 
         {!success && (
-          <form onSubmit={step === 3 ? handleFinalSubmit : step === 1 ? handleStep1Submit : (e) => { e.preventDefault(); setStep(step + 1); }}>
+          <form onSubmit={
+            step === 5 ? handleFinalSubmit :
+              step === 3 ? handleStep3Submit :
+                (e) => { e.preventDefault(); setError(""); setStep(step + 1); }
+          }>
 
-            {/* ── STEP 1: Personal Info ── */}
+            {/* ── STEP 1: عرفنا بنفسك؟ ── */}
             {step === 1 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "slide-in-section 0.4s ease", fontFamily: "var(--font-display)" }}>
-                {/* Full Name */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontFamily: "var(--font-display)" }}>
-                  <label htmlFor="fullName">{fieldLabel("bx bx-user", "الاسم بالكامل")}</label>
-                  <input id="fullName" type="text" required value={formData.fullName} onChange={(e) => updateData("fullName", e.target.value)} onFocus={() => setFocusedField("fullName")} onBlur={() => setFocusedField(null)} placeholder="أحمد محمد" style={fieldInputStyle("fullName", !!fieldErrors.fullName)} />
-                  {fieldErrors.fullName && <div style={{ color: "#dc2626", fontSize: "0.8rem", marginTop: "-4px", display: "flex", alignItems: "center", gap: "4px" }}><span>⚠</span> {fieldErrors.fullName}</div>}
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", animation: "slide-in-section 0.4s ease", fontFamily: "var(--font-display)" }}>
+
+                {/* First Name & Last Name (Side by side) */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  {/* First Name */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label htmlFor="firstName">{fieldLabel("bx bx-user", "الاسم الأول")}</label>
+                    <input
+                      id="firstName"
+                      type="text"
+                      required
+                      value={formData.firstName}
+                      onChange={(e) => updateData("firstName", e.target.value)}
+                      onFocus={() => setFocusedField("firstName")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="أحمد"
+                      style={fieldInputStyle("firstName", !!fieldErrors.firstName)}
+                    />
+                    {fieldErrors.firstName && <div style={{ color: "#dc2626", fontSize: "0.78rem" }}>⚠ {fieldErrors.firstName}</div>}
+                  </div>
+
+                  {/* Last Name */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label htmlFor="lastName">{fieldLabel("bx bx-user", "الاسم الأخير")}</label>
+                    <input
+                      id="lastName"
+                      type="text"
+                      required
+                      value={formData.lastName}
+                      onChange={(e) => updateData("lastName", e.target.value)}
+                      onFocus={() => setFocusedField("lastName")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="محمود"
+                      style={fieldInputStyle("lastName", !!fieldErrors.lastName)}
+                    />
+                    {fieldErrors.lastName && <div style={{ color: "#dc2626", fontSize: "0.78rem" }}>⚠ {fieldErrors.lastName}</div>}
+                  </div>
                 </div>
 
                 {/* Username */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontFamily: "var(--font-display)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   <label htmlFor="username">{fieldLabel("bx bx-at", "اسم المستخدم")}</label>
-                  <input id="username" type="text" required minLength={3} value={formData.username} onChange={(e) => updateData("username", e.target.value)} onFocus={() => setFocusedField("username")} onBlur={() => setFocusedField(null)} placeholder="ahmed_mohamed" style={{ ...fieldInputStyle("username", !!fieldErrors.username), textAlign: "left", direction: "ltr" }} />
-                  {fieldErrors.username && <div style={{ color: "#dc2626", fontSize: "0.8rem", marginTop: "-4px" }}>⚠ {fieldErrors.username}</div>}
+                  <input
+                    id="username"
+                    type="text"
+                    required
+                    minLength={3}
+                    value={formData.username}
+                    onChange={(e) => updateData("username", e.target.value)}
+                    onFocus={() => setFocusedField("username")}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="ahmed_mahmoud"
+                    style={{ ...fieldInputStyle("username", !!fieldErrors.username), textAlign: "left", direction: "ltr" }}
+                  />
+                  {fieldErrors.username && <div style={{ color: "#dc2626", fontSize: "0.78rem" }}>⚠ {fieldErrors.username}</div>}
                   {suggestions.length > 0 && !fieldErrors.username && (
-                    <div style={{ display: "flex", gap: "8px", marginTop: "-2px", flexWrap: "wrap" }}>
-                      <span style={{ fontSize: "0.78rem", color: "#64748b", alignSelf: "center" }}>أسماء مقترحة</span>
+                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "2px" }}>
+                      <span style={{ fontSize: "0.75rem", color: "#64748b", alignSelf: "center" }}>مقترحات:</span>
                       {suggestions.map((s, i) => (
-                        <button key={i} type="button" onClick={() => updateData("username", s)} style={{ fontSize: "0.8rem", background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.25)", borderRadius: "20px", padding: "4px 12px", color: "#6c63ff", cursor: "pointer", transition: "all 0.2s ease", fontFamily: "monospace", fontWeight: "600" }}>
+                        <button key={i} type="button" onClick={() => updateData("username", s)} style={{ fontSize: "0.75rem", background: "rgba(108,99,255,0.08)", border: "1px solid rgba(108,99,255,0.25)", borderRadius: "20px", padding: "3px 10px", color: "#6c63ff", cursor: "pointer", transition: "all 0.2s ease", fontFamily: "monospace", fontWeight: "600" }}>
                           {s}
                         </button>
                       ))}
@@ -410,9 +757,55 @@ export default function SignupPage() {
                   )}
                 </div>
 
-                {/* Phone */}
+                {/* Email */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  <label htmlFor="signupEmail">{fieldLabel("bx bx-envelope", "البريد الإلكتروني")}</label>
+                  <input
+                    id="signupEmail"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => updateData("email", e.target.value)}
+                    onFocus={() => setFocusedField("email")}
+                    onBlur={() => setFocusedField(null)}
+                    placeholder="example@email.com"
+                    style={{ ...fieldInputStyle("email", !!fieldErrors.email), textAlign: "left", direction: "ltr" }}
+                  />
+                  {fieldErrors.email && <div style={{ color: "#dc2626", fontSize: "0.78rem" }}>⚠ {fieldErrors.email}</div>}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={!isStep1Valid}
+                  style={{
+                    marginTop: "8px",
+                    padding: "12px 26px",
+                    fontSize: "0.95rem",
+                    fontWeight: "800",
+                    borderRadius: "50px",
+                    border: "none",
+                    background: isStep1Valid ? "var(--ios-blue)" : "#e2e8f0",
+                    color: isStep1Valid ? "#ffffff" : "#94a3b8",
+                    cursor: isStep1Valid ? "pointer" : "not-allowed",
+                    opacity: isStep1Valid ? 1 : 0.65,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    transition: "all 0.25s ease",
+                    fontFamily: "Hagrid",
+                  }}
+                >
+                  التالي
+                </button>
+              </div>
+            )}
+
+            {/* ── STEP 2: إيه هو رقم تليفونك؟ ── */}
+            {step === 2 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "slide-in-section 0.4s ease" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <label htmlFor="phone">{fieldLabel("bx bx-phone", "الهاتف")}</label>
+                  <label htmlFor="phone">{fieldLabel("bx bx-phone", "رقم الهاتف")}</label>
                   <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
                     <span style={{ position: "absolute", left: "14px", fontSize: "0.85rem", color: "#475569", fontWeight: "700", pointerEvents: "none", display: "flex", alignItems: "center", gap: "6px" }}>
                       <span style={{ height: "16px", width: "1px", background: "#cbd5e1", display: "inline-block" }} />
@@ -424,35 +817,63 @@ export default function SignupPage() {
                         height={20}
                       />
                     </span>
-                    <input id="phone" type="tel" required value={formData.phone} onChange={(e) => updateData("phone", e.target.value)} onFocus={() => setFocusedField("phone")} onBlur={() => setFocusedField(null)} placeholder="1xxxxxxxxx" style={{ ...fieldInputStyle("phone", !!fieldErrors.phone), textAlign: "left", direction: "ltr", paddingLeft: "90px" }} />
+                    <input
+                      id="phone"
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => updateData("phone", e.target.value)}
+                      onFocus={() => setFocusedField("phone")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="1xxxxxxxxx"
+                      style={{ ...fieldInputStyle("phone", !!fieldErrors.phone), textAlign: "left", direction: "ltr", paddingLeft: "90px" }}
+                    />
                   </div>
                   {fieldErrors.phone && <div style={{ color: "#dc2626", fontSize: "0.8rem", marginTop: "-4px" }}>⚠ {fieldErrors.phone}</div>}
                 </div>
 
-                {/* Email */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <label htmlFor="signupEmail">{fieldLabel("bx bx-envelope", "البريد الإلكتروني")}</label>
-                  <input id="signupEmail" type="email" required value={formData.email} onChange={(e) => updateData("email", e.target.value)} onFocus={() => setFocusedField("email")} onBlur={() => setFocusedField(null)} placeholder="example@email.com" style={{ ...fieldInputStyle("email", !!fieldErrors.email), textAlign: "left", direction: "ltr" }} />
-                  {fieldErrors.email && <div style={{ color: "#dc2626", fontSize: "0.8rem", marginTop: "-4px" }}>⚠ {fieldErrors.email}</div>}
+                <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                  <button
+                    type="submit"
+                    disabled={!isStep2Valid}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      borderRadius: "50px",
+                      border: "none",
+                      background: isStep2Valid ? "var(--ios-blue)" : "#e2e8f0", color: isStep2Valid ? "#ffffff" : "#94a3b8", cursor: isStep2Valid ? "pointer" : "not-allowed", opacity: isStep2Valid ? 1 : 0.65, fontWeight: "800", fontFamily: "Hagrid", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                    }}
+                  >
+                    التالي
+                  </button>
                 </div>
+              </div>
+            )}
 
-                {/* Date of Birth */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <label htmlFor="dob">{fieldLabel("bx bx-calendar", "تاريخ الميلاد")}</label>
-                  <input id="dob" type="date" required max={maxDobDateStr} lang="en-US" value={formData.dob} onChange={(e) => updateData("dob", e.target.value)} onFocus={() => setFocusedField("dob")} onBlur={() => setFocusedField(null)} className="date-field-input" style={{ ...fieldInputStyle("dob"), direction: "ltr" }} />
-                </div>
+            {/* ── STEP 3: منين وعندك كام سنه؟ ── */}
+            {step === 3 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", animation: "slide-in-section 0.4s ease" }}>
 
-                {/* Gender */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <label htmlFor="gender">{fieldLabel("bx bx-male-female", "الجنس")}</label>
-                  <select id="gender" required value={formData.gender} onChange={(e) => updateData("gender", e.target.value)} style={selectStyle("gender")}>
-                    <option value="ذكر">ذكر</option>
-                    <option value="أنثى">أنثى</option>
-                  </select>
+                {/* Date of Birth & Gender in 2 columns */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  {/* DOB */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label htmlFor="dob">{fieldLabel("bx bx-calendar", "تاريخ الميلاد")}</label>
+                    <input id="dob" type="date" required max={maxDobDateStr} lang="en-US" value={formData.dob} onChange={(e) => updateData("dob", e.target.value)} onFocus={() => setFocusedField("dob")} onBlur={() => setFocusedField(null)} className="date-field-input" style={{ ...fieldInputStyle("dob"), direction: "ltr" }} />
+                  </div>
+
+                  {/* Gender */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <label htmlFor="gender">{fieldLabel("bx bx-male-female", "الجنس")}</label>
+                    <select id="gender" required value={formData.gender} onChange={(e) => updateData("gender", e.target.value)} style={selectStyle("gender")}>
+                      <option value="ذكر">ذكر</option>
+                      <option value="أنثى">أنثى</option>
+                    </select>
+                  </div>
                 </div>
 
                 {/* Governorate */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   <label htmlFor="governorate">{fieldLabel("bx bx-map", "المحافظة")}</label>
                   <select id="governorate" required value={formData.governorate} onChange={(e) => { updateData("governorate", e.target.value); updateData("city", ""); }} style={selectStyle("gov")}>
                     <option value="" disabled>اختر المحافظة...</option>
@@ -462,7 +883,7 @@ export default function SignupPage() {
 
                 {/* City */}
                 {formData.governorate && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                     <label htmlFor="city">{fieldLabel("bx bx-buildings", "المدينة")}</label>
                     <select id="city" required value={formData.city} onChange={(e) => updateData("city", e.target.value)} style={selectStyle("city")}>
                       <option value="" disabled>اختر المدينة...</option>
@@ -471,36 +892,39 @@ export default function SignupPage() {
                   </div>
                 )}
 
-                <button type="submit" disabled={loading || !isStep1Valid} style={{ padding: "12px 26px", fontSize: "1rem", fontWeight: "800", borderRadius: "50px", border: "none", background: isStep1Valid && !loading ? "#000000" : "#e2e8f0", color: isStep1Valid && !loading ? "#ffffff" : "#94a3b8", cursor: isStep1Valid && !loading ? "pointer" : "not-allowed", opacity: isStep1Valid && !loading ? 1 : 0.65, display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "all 0.25s ease", fontFamily: "var(--font-heading)", boxShadow: isStep1Valid && !loading ? "0 4px 14px rgba(0,0,0,0.15)" : "none" }}>
-                  {loading ? <><div className="spinner" /> جاري التحقق...</> : <>التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i></>}
-                </button>
+                <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                  <button
+                    type="submit"
+                    disabled={loading || !isStep3Valid}
+                    style={{ flex: 1, padding: "12px", borderRadius: "50px", border: "none", background: isStep3Valid && !loading ? "var(--ios-blue)" : "#e2e8f0", color: isStep3Valid && !loading ? "#ffffff" : "#94a3b8", cursor: isStep3Valid && !loading ? "pointer" : "not-allowed", opacity: isStep3Valid && !loading ? 1 : 0.65, fontWeight: "800", fontFamily: "Hagrid", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", boxShadow: isStep3Valid && !loading ? "0 4px 14px rgba(0,0,0,0.15)" : "none" }}
+                  >
+                    {loading ? <><div className="spinner" style={{ width: "18px", height: "18px" }} /> جاري التحقق...</> : <>التالي</>}
+                  </button>
+                </div>
               </div>
             )}
 
-            {/* ── STEP 2: Avatar ── */}
-            {step === 2 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px", animation: "slide-in-section 0.4s ease" }}>
-                <p style={{ color: "#475569", fontSize: "0.92rem", lineHeight: "1.7" }}>
-                  ارفع صورتك الشخصية أو اختر أفاتار جاهز..
-                </p>
+            {/* ── STEP 4: الصورة الشخصية ── */}
+            {step === 4 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "18px", animation: "slide-in-section 0.4s ease" }}>
 
                 {/* File Upload */}
-                <label style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", padding: "24px", border: "2px dashed rgba(108,99,255,0.4)", borderRadius: "18px", background: "rgba(108,99,255,0.03)", transition: "all 0.3s ease" }}>
+                <label style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px", padding: "20px", border: "2px dashed rgba(108,99,255,0.4)", borderRadius: "18px", background: "rgba(108,99,255,0.03)", transition: "all 0.3s ease" }}>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6c63ff" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" /></svg>
-                  <span style={{ color: "#6c63ff", fontWeight: "700", fontSize: "0.9rem" }}>{loading ? "جاري الرفع..." : "ارفع صورة / التقط بكاميرا الهاتف"}</span>
+                  <span style={{ color: "#6c63ff", fontWeight: "700", fontSize: "0.88rem" }}>{loading ? "جاري الرفع..." : "ارفع صورة / التقط بكاميرا الهاتف"}</span>
                   <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: "none" }} disabled={loading} />
                 </label>
 
                 {/* Preview */}
                 {formData.avatarUrl && (
                   <div style={{ textAlign: "center", animation: "pop-in 0.4s ease" }}>
-                    <img src={formData.avatarUrl} alt="preview" style={{ width: "90px", height: "90px", borderRadius: "50%", objectFit: "cover", border: "3px solid #6c63ff", boxShadow: "0 0 20px rgba(108,99,255,0.2)" }} />
+                    <img src={formData.avatarUrl} alt="preview" style={{ width: "84px", height: "84px", borderRadius: "50%", objectFit: "cover", border: "3px solid #6c63ff", boxShadow: "0 0 20px rgba(108,99,255,0.2)" }} />
                   </div>
                 )}
 
                 {/* Avatar grid */}
                 <div>
-                  <p style={{ color: "#64748b", fontSize: "0.82rem", marginBottom: "12px", fontWeight: "600" }}>أو اختر أفاتار جاهز:</p>
+                  <p style={{ color: "#64748b", fontSize: "0.82rem", marginBottom: "10px", fontWeight: "600" }}>أو اختر أفاتار جاهز:</p>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px" }}>
                     {avatars.map((url, i) => (
                       <div key={i} onClick={() => updateData("avatarUrl", url)} style={{ border: formData.avatarUrl === url ? "3px solid #6c63ff" : "3px solid transparent", borderRadius: "50%", overflow: "hidden", cursor: "pointer", transition: "all 0.3s ease", opacity: formData.avatarUrl && formData.avatarUrl !== url ? 0.45 : 1, boxShadow: formData.avatarUrl === url ? "0 0 16px rgba(108,99,255,0.3)" : "none" }}>
@@ -510,19 +934,20 @@ export default function SignupPage() {
                   </div>
                 </div>
 
-                <div style={{ display: "flex", gap: "12px" }}>
-                  <button type="button" onClick={() => setStep(1)} style={{ flex: 1, padding: "var(--pa-btn)", borderRadius: "12px", border: "1px solid #cbd5e1", background: "#f1f5f9", color: "#334155", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-heading)", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}><i className="bx bx-right-arrow-alt" style={{ fontSize: "1.2rem" }}></i> رجوع</button>
-
-                  <button type="submit" style={{ flex: 1, padding: "var(--pa-btn)", borderRadius: "12px", border: "none", background: "#000000ff", color: "#fff", cursor: "pointer", fontWeight: "800", fontFamily: "var(--font-heading)", fontSize: "0.95rem", boxShadow: "0 6px 20px rgba(0,212,170,0.35)", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i></button>
+                <div style={{ display: "flex", gap: "12px", marginTop: "4px" }}>
+                  <button type="submit" style={{ flex: 1, padding: "12px", borderRadius: "50px", border: "none", background: "var(--ios-blue)", color: "#fff", cursor: "pointer", fontWeight: "800", fontFamily: "Hagrid", fontSize: "0.95rem", boxShadow: "0 4px 14px rgba(0,0,0,0.15)", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                    التالي
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* ── STEP 3: Password ── */}
-            {step === 3 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px", animation: "slide-in-section 0.4s ease" }}>
+            {/* ── STEP 5: حماية الحساب ── */}
+            {step === 5 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "14px", animation: "slide-in-section 0.4s ease" }}>
+
                 {/* Password */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   <label htmlFor="signupPassword">{fieldLabel("bx bx-lock-alt", "كلمة المرور")}</label>
                   <div style={{ position: "relative" }}>
                     <input id="signupPassword" type={showPassword ? "text" : "password"} required value={formData.password} onChange={(e) => updateData("password", e.target.value)} onFocus={() => setFocusedField("password")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...fieldInputStyle("password"), textAlign: "left", direction: "ltr", paddingRight: "44px" }} />
@@ -533,7 +958,7 @@ export default function SignupPage() {
                 </div>
 
                 {/* Confirm Password */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   <label htmlFor="confirmPassword">{fieldLabel("bx bx-check-shield", "تأكيد كلمة المرور")}</label>
                   <div style={{ position: "relative" }}>
                     <input id="confirmPassword" type={showConfirmPassword ? "text" : "password"} required value={formData.confirmPassword} onChange={(e) => updateData("confirmPassword", e.target.value)} onFocus={() => setFocusedField("confirmPassword")} onBlur={() => setFocusedField(null)} placeholder="••••••••" style={{ ...fieldInputStyle("confirmPassword"), textAlign: "left", direction: "ltr", paddingRight: "44px" }} />
@@ -544,7 +969,7 @@ export default function SignupPage() {
                 </div>
 
                 {/* Rules */}
-                <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "16px", padding: "18px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", fontSize: "0.82rem" }}>
+                <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "14px", padding: "14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", fontSize: "0.8rem" }}>
                   {[
                     { ok: pwdRules.length, label: "من 8 إلى 32 حرف" },
                     { ok: pwdRules.upper, label: "حرف كبير (A-Z)" },
@@ -554,15 +979,14 @@ export default function SignupPage() {
                     { ok: pwdRules.match, label: "كلمتا المرور متطابقتان" },
                   ].map(({ ok, label }) => (
                     <div key={label} style={{ display: "flex", alignItems: "center", gap: "6px", color: ok ? "#059669" : "#64748b", transition: "color 0.3s ease" }}>
-                      <span style={{ fontSize: "0.9rem" }}>{ok ? <i className="fa-solid fa-circle-check"></i> : <i className="fa-solid fa-circle"></i>}</span> {label}
+                      <span style={{ fontSize: "0.85rem" }}>{ok ? <i className="fa-solid fa-circle-check"></i> : <i className="fa-solid fa-circle"></i>}</span> {label}
                     </div>
                   ))}
                 </div>
 
-                <div style={{ display: "flex", gap: "12px" }}>
-                  <button type="button" onClick={() => setStep(2)} style={{ flex: 1, padding: "var(--pa-btn)", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#f1f5f9", color: "#334155", cursor: "pointer", fontWeight: "700", fontFamily: "var(--font-heading)", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}><i className="bx bx-right-arrow-alt" style={{ fontSize: "1.2rem" }}></i> رجوع</button>
-                  <button type="submit" disabled={loading || !isPasswordValid} style={{ flex: 1, padding: "var(--pa-btn)", borderRadius: "8px", border: "none", background: isPasswordValid && !loading ? "#000" : "#e2e8f0", color: isPasswordValid && !loading ? "#fff" : "#94a3b8", cursor: loading || !isPasswordValid ? "not-allowed" : "pointer", opacity: loading || !isPasswordValid ? 0.65 : 1, fontWeight: "800", fontFamily: "var(--font-heading)", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "all 0.3s ease" }}>
-                    {loading ? <><div className="spinner" style={{ width: "18px", height: "18px" }} /> جاري الإنشاء...</> : <><i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }}></i> متابعة</>}
+                <div style={{ display: "flex", gap: "12px", marginTop: "6px" }}>
+                  <button type="submit" disabled={loading || !isPasswordValid} style={{ flex: 1, padding: "12px", borderRadius: "50px", border: "none", background: isPasswordValid && !loading ? "var(--ios-blue)" : "#e2e8f0", color: isPasswordValid && !loading ? "#fff" : "#94a3b8", cursor: loading || !isPasswordValid ? "not-allowed" : "pointer", opacity: loading || !isPasswordValid ? 0.65 : 1, fontWeight: "800", fontFamily: "Hagrid", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", transition: "all 0.3s ease" }}>
+                    {loading ? <><div className="spinner" style={{ width: "18px", height: "18px" }} /> جاري الإنشاء...</> : <>إنشاء الحساب</>}
                   </button>
                 </div>
               </div>
@@ -571,7 +995,7 @@ export default function SignupPage() {
         )}
       </GlassCard>
 
-      <p style={{ textAlign: "center", color: "#64748b", fontSize: "0.8rem", marginTop: "10px", animation: "fade-in 0.8s ease 0.5s both" }}>
+      <p style={{ textAlign: "center", color: "#64748b", fontSize: "0.8rem", marginTop: "12px", animation: "fade-in 0.8s ease 0.5s both" }}>
         بالتسجيل أنت توافق على{" "}
         <Link href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#6c63ff", fontWeight: "600", cursor: "pointer" }}>الشروط والأحكام</Link>
         {" "}و{" "}
@@ -619,11 +1043,11 @@ export default function SignupPage() {
             </div>
 
             <div style={{ display: "flex", gap: "12px" }}>
-              <button type="button" onClick={() => setShowDobConfirmModal(false)} style={{ flex: 1, padding: "var(--pa-btn)", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#f8fafc", color: "#334155", fontWeight: "700", cursor: "pointer", fontFamily: "var(--font-heading)" }}>
+              <button type="button" onClick={() => setShowDobConfirmModal(false)} style={{ flex: 1, padding: "10px", borderRadius: "50px", border: "1px solid #cbd5e1", background: "#f8fafc", color: "#334155", fontWeight: "700", cursor: "pointer", fontFamily: "var(--font-heading)" }}>
                 تعديل التاريخ
               </button>
-              <button type="button" onClick={() => { setShowDobConfirmModal(false); setStep(2); }} style={{ flex: 1, padding: "var(--pa-btn)", borderRadius: "8px", border: "none", background: "#000", color: "#fff", fontWeight: "700", cursor: "pointer", fontFamily: "var(--font-heading)" }}>
-               عمري {(() => {
+              <button type="button" onClick={() => { setShowDobConfirmModal(false); setStep(4); }} style={{ flex: 1, padding: "10px", borderRadius: "50px", border: "none", background: "#000", color: "#fff", fontWeight: "700", cursor: "pointer", fontFamily: "var(--font-heading)" }}>
+                عمري {(() => {
                   const dobDate = new Date(formData.dob);
                   const today = new Date();
                   let age = today.getFullYear() - dobDate.getFullYear();
