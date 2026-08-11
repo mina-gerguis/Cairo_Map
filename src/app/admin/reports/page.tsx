@@ -438,7 +438,10 @@ export default function AdminReportsPage() {
     );
   }
 
-  const getProblemLabel = (type: string) => {
+  const getProblemLabel = (type: string, details?: any) => {
+    if ((type === "other" || details?.isMultiReport) && details?.selectedIssues && details.selectedIssues.length > 0) {
+      return `بلاغ متعدد (${details.selectedIssues.length} مشاكل) 📝`;
+    }
     switch (type) {
       case "name": return "الاسم غير صحيح ✏️";
       case "address": return "العنوان أو موقع الخريطة غير صحيح 📍";
@@ -446,7 +449,7 @@ export default function AdminReportsPage() {
       case "working_hours": return "ساعات العمل غير صحيحة 🕐";
       case "closed": return "المكان مغلق 🔴";
       case "category": return "الفئة غير صحيحة 🗂️";
-      default: return "شيء آخر غير صحيح ⚠️";
+      default: return "شيء آخر أو تعديلات متعددة ⚠️";
     }
   };
 
@@ -670,7 +673,7 @@ export default function AdminReportsPage() {
                         </div>
 
                         <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
-                          <span>المشكلة: <strong>{getProblemLabel(report.problem_type)}</strong></span>
+                          <span>المشكلة: <strong>{getProblemLabel(report.problem_type, report.details)}</strong></span>
                           <span>بواسطة: <strong>{report.user_profile?.full_name || "مستخدم غير مسجل الاسم"}</strong></span>
                           <span>التاريخ: {new Date(report.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
                         </div>
@@ -773,6 +776,109 @@ export default function AdminReportsPage() {
                                     {report.details.closureStatus === "temporarily_closed" && "مغلق مؤقتاً ⚠️"}
                                     {report.details.closureStatus === "not_exist" && "غير موجود بالمرة 🚫"}
                                   </strong>
+                                </div>
+                              )}
+
+                              {/* multi-issue / other incorrect */}
+                              {(report.problem_type === "other" || report.details?.isMultiReport) && (
+                                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                                  {report.details?.selectedIssues && report.details.selectedIssues.length > 0 && (
+                                    <div style={{ marginBottom: "6px" }}>
+                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الأقسام المحددة للتعديل:</span>
+                                      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                                        {report.details.selectedIssues.map((issueId: string) => (
+                                          <span key={issueId} style={{ background: "rgba(0, 122, 255, 0.12)", color: "var(--accent-ios)", padding: "4px 10px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "bold", border: "1px solid rgba(0, 122, 255, 0.2)" }}>
+                                            {getProblemLabel(issueId)}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Sub-issue: Name */}
+                                  {report.details?.name?.newName && (
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "2px" }}>الاسم المقترح الجديد:</span>
+                                      <strong style={{ fontSize: "1rem", color: "var(--accent-success)" }}>{report.details.name.newName}</strong>
+                                    </div>
+                                  )}
+
+                                  {/* Sub-issue: Address */}
+                                  {report.details?.address && (
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "4px" }}>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)" }}>العنوان المقترح:</span>
+                                      <strong>{report.details.address.newAddress || "غير محدد"}</strong>
+                                      {report.details.address.newMapsUrl && (
+                                        <div>
+                                          <span style={{ display: "block", fontSize: "0.78rem", color: "var(--text-muted)" }}>رابط الخريطة:</span>
+                                          <a href={report.details.address.newMapsUrl} target="_blank" rel="noreferrer" style={{ color: "var(--accent-primary)", wordBreak: "break-all", fontSize: "0.8rem" }}>{report.details.address.newMapsUrl}</a>
+                                        </div>
+                                      )}
+                                      {(report.details.address.newLatitude && report.details.address.newLongitude) && (
+                                        <div>
+                                          <span style={{ display: "block", fontSize: "0.78rem", color: "var(--text-muted)" }}>الإحداثيات:</span>
+                                          <code style={{ fontSize: "0.8rem" }}>{report.details.address.newLatitude}, {report.details.address.newLongitude}</code>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Sub-issue: Phone / Website */}
+                                  {report.details?.phone_website && (
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "4px" }}>
+                                      {report.details.phone_website.newPhones && report.details.phone_website.newPhones.length > 0 && (
+                                        <div>
+                                          <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)" }}>أرقام الهاتف المقترحة:</span>
+                                          <strong>{report.details.phone_website.newPhones.join(" - ")}</strong>
+                                        </div>
+                                      )}
+                                      {report.details.phone_website.newWebsite && (
+                                        <div>
+                                          <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)" }}>موقع الويب المقترح:</span>
+                                          <a href={report.details.phone_website.newWebsite} target="_blank" rel="noreferrer" style={{ color: "var(--accent-primary)", fontSize: "0.8rem" }}>{report.details.phone_website.newWebsite}</a>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Sub-issue: Working Hours */}
+                                  {report.details?.working_hours?.workingHours && (
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "4px" }}>مواعيد العمل المقترحة:</span>
+                                      {report.details.working_hours.workingHours.type === "24/7" ? (
+                                        <strong style={{ color: "#34c759" }}>🟢 مفتوح 24/7</strong>
+                                      ) : (
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                          {report.details.working_hours.workingHours.schedule?.map((s: any, i: number) => (
+                                            <div key={i} style={{ fontSize: "0.82rem", display: "flex", justifyContent: "space-between" }}>
+                                              <span>{s.day}:</span>
+                                              <span>{s.isWorking ? `${s.openTime} ${s.openPeriod} - ${s.closeTime} ${s.closePeriod}` : <span style={{ color: "#ff3b30" }}>مغلق</span>}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Sub-issue: Closed */}
+                                  {report.details?.closed?.closureStatus && (
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "2px" }}>حالة الإغلاق المبلّغ عنها:</span>
+                                      <strong style={{ color: "#ff3b30" }}>
+                                        {report.details.closed.closureStatus === "permanently_closed" && "مغلق نهائياً 🔴"}
+                                        {report.details.closed.closureStatus === "temporarily_closed" && "مغلق مؤقتاً ⚠️"}
+                                        {report.details.closed.closureStatus === "not_exist" && "غير موجود بالمرة 🚫"}
+                                      </strong>
+                                    </div>
+                                  )}
+
+                                  {/* Sub-issue: Category */}
+                                  {report.details?.category?.newCategoryLabel && (
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "2px" }}>التصنيف المقترح:</span>
+                                      <strong>{report.details.category.newCategoryLabel} ({report.details.category.newCategory})</strong>
+                                    </div>
+                                  )}
                                 </div>
                               )}
 

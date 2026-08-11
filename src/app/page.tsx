@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import { supabase } from "@/lib/supabase";
 import { initialPlaces, CATEGORIES_STRUCTURE, Place } from "@/data/places";
+import AdSlider from "@/components/AdSlider";
 
 // ── 1. دالة توحيد وتنظيف النصوص العربية لبحث دقيق ──
 function normalizeArabic(text: string): string {
@@ -856,6 +857,11 @@ export default function HomePage() {
               <FaRobot style={{ fontSize: "1.2rem" }} />
               <span>مخطط الرحلات بالذكاء الاصطناعي</span>
             </Link>
+          </div>
+
+          {/* ── SPONSORED AD SLIDER BANNER ── */}
+          <div style={{ marginTop: "44px" }}>
+            <AdSlider />
           </div>
 
         </div>

@@ -59,10 +59,12 @@ export default function AdminLayout({
 
   const navItems = [
     { href: "/admin", label: " الأماكن", icon: "bx bx-grid-alt" },
+    { href: "/admin/ads", label: "إدارة الإعلانات", icon: "bx bx-slideshow" },
     // { href: "/admin/directory", label: "دليل الهواتف", icon: "bx bx-book-bookmark" },
     // { href: "/admin/directions", label: "خطوط المواصلات", icon: "bx bx-compass" },
     { href: "/admin/services", label: "إدارة الخدمات", icon: "bx bx-git-merge" },
     { href: "/admin/notifications", label: "الإشعارات", icon: "bx bx-bell" },
+    { href: "/admin/alerts", label: "تنبيهات الموقع", icon: "bx bx-info-circle" },
     { href: "/admin/reports", label: "البلاغات والشكاوى", icon: "bx bx-error-circle" },
     { href: "/admin/points", label: "الرصيد", icon: "bx bx-coin-stack" },
     { href: "/admin/subscriptions", label: "الاشتراكات", icon: "bx bx-crown" },

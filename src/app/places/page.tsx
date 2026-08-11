@@ -12,6 +12,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
 import AdBanner from "@/components/AdBanner";
+import Image from "next/image";
 // Icon
 import { MdDomain } from "react-icons/md";
 import { AiOutlineBranches } from "react-icons/ai";
@@ -84,7 +85,7 @@ function HomeContent() {
   // ── الحالات الأساسية (State Management) ──
   const { user, profile } = useAuth(); // حالة المستخدم الحالي
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin || 
+  const hasAccess = profile?.is_admin ||
     ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
   const searchParams = useSearchParams();
   const [places, setPlaces] = useState<Place[]>([]); // قائمة الأماكن
@@ -632,128 +633,21 @@ function HomeContent() {
         {/* ── Ad Space Banner ── */}
         <AdBanner />
 
-        {/* ── New Features Banners ── */}
-        <div style={{ display: "flex", gap: "16px", marginBottom: "32px", flexWrap: "wrap" }}>
-          {/* Metro Banner */}
-          <Link href="/metro" style={{ flex: "1 1 300px", textDecoration: "none", display: "block" }}>
-            <div style={{
-              background: "linear-gradient(135deg, #101528, #182542)",
-              borderRadius: "16px",
-              padding: "20px",
-              border: "1px solid rgba(108, 99, 255, 0.3)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-              position: "relative",
-              overflow: "hidden",
-            }}>
-              <div style={{ position: "absolute", top: "-20px", left: "-20px", width: "100px", height: "100px", background: "radial-gradient(circle, rgba(108,99,255,0.4) 0%, transparent 70%)", pointerEvents: "none" }} />
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ fontSize: "2.5rem" }}>🚇</div>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#fff" }}>اعرف طريقك بالمترو</h3>
-                    <span style={{ background: "#ff3f8e", color: "#fff", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "8px", fontWeight: "800" }}>جديد</span>
-                  </div>
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>خريطة محطات المترو وأسعار التذاكر .</p>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          {/* Phone Directory Banner */}
-          <Link href="/directory" style={{ flex: "1 1 300px", textDecoration: "none", display: "block" }}>
-            <div style={{
-              background: "linear-gradient(135deg, #101528, #182542)",
-              borderRadius: "16px",
-              padding: "20px",
-              border: "1px solid rgba(52, 199, 89, 0.3)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-              position: "relative",
-              overflow: "hidden",
-            }}>
-              <div style={{ position: "absolute", top: "-20px", left: "-20px", width: "100px", height: "100px", background: "radial-gradient(circle, rgba(52,199,89,0.3) 0%, transparent 70%)", pointerEvents: "none" }} />
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ fontSize: "2.5rem" }}>☎️</div>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                    <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "#fff" }}>دليل الهاتف والخدمات</h3>
-                    <span style={{ background: "#ff3f8e", color: "#fff", fontSize: "0.7rem", padding: "2px 6px", borderRadius: "8px", fontWeight: "800" }}>جديد</span>
-                  </div>
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>أرقام الشركات، الطوارئ، وخدمات العملاء.</p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        {/* ── Quick Transport Services Grid ── */}
-        <div style={{ marginBottom: "36px", direction: "rtl" }}>
-          <h3 style={{ 
-            fontFamily: "var(--font-display)", 
-            fontSize: "1.15rem", 
-            fontWeight: "800", 
-            marginBottom: "16px", 
-            color: "var(--text-primary)",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
-          }}>
-            <i className="bx bx-compass" style={{ color: "var(--accent-ios, #3b82f6)", fontSize: "1.3rem" }}></i>
-            <span>دليل النقل والمواصلات في مصر</span>
-          </h3>
-          <div style={{ 
-            display: "grid", 
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", 
-            gap: "14px" 
-          }}>
-            {[
-              { href: "/lrt", label: "القطار الكهربائي LRT", icon: "🚄", desc: "محطات وتعرفة LRT", color: "rgba(6, 182, 212, 0.15)", border: "rgba(6, 182, 212, 0.3)" },
-              { href: "/railways", label: "سكك حديد مصر", icon: "🚂", desc: "مواعيد وأسعار القطارات", color: "rgba(239, 68, 68, 0.15)", border: "rgba(239, 68, 68, 0.3)" },
-              { href: "/airports", label: "المطارات المصرية", icon: "✈️", desc: "دليل الصالات والخدمات", color: "rgba(99, 102, 241, 0.15)", border: "rgba(99, 102, 241, 0.3)" },
-              { href: "/ports", label: "الموانئ البحرية", icon: "⚓", desc: "الموانئ التجارية والسياحية", color: "rgba(20, 184, 166, 0.15)", border: "rgba(20, 184, 166, 0.3)" },
-              { href: "/bus-stations", label: "مواقف الأتوبيسات", icon: "🚌", desc: "أتوبيسات السفر والشركات", color: "rgba(245, 158, 11, 0.15)", border: "rgba(245, 158, 11, 0.3)" },
-              { href: "/microbus-stations", label: "مواقف الميكروباص", icon: "🚐", desc: "دليل السرفيس والتعرفة", color: "rgba(139, 92, 246, 0.15)", border: "rgba(139, 92, 246, 0.3)" },
-            ].map((item, idx) => (
-              <Link 
-                key={idx} 
-                href={item.href} 
-                style={{ textDecoration: "none", display: "block" }}
-              >
-                <div 
-                  className="glass-panel" 
-                  style={{
-                    padding: "16px",
-                    textAlign: "center",
-                    border: `1px solid ${item.border}`,
-                    background: `linear-gradient(135deg, rgba(20, 25, 45, 0.7), ${item.color})`,
-                    borderRadius: "14px",
-                    height: "100%",
-                    transition: "all 0.25s ease-in-out",
-                    cursor: "pointer",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "8px"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "none";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                >
-                  <div style={{ fontSize: "2rem", marginBottom: "4px" }}>{item.icon}</div>
-                  <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "#fff" }}>{item.label}</h4>
-                  <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)", lineHeight: "1.3" }}>{item.desc}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-
         {/* ── Categories + Proximity ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
+          <button
+            className={`ios-btn ${isProximityEnabled ? "ios-btn-primary" : ""}`}
+            onClick={handleToggleProximity}
+            disabled={locationLoading}
+            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px", border: "1px solid var(--border-glass)" }}
+          >
+            {locationLoading ? (
+              <span style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
+            ) : (
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /></svg>
+            )}
+            {isProximityEnabled ? "قريب مني ✓" : "قريب مني"}
+          </button>
           <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", flexGrow: 1 }}>
             {["all", ...CATEGORIES_STRUCTURE.map(c => c.name)].map((cat) => (
               <button
@@ -772,19 +666,7 @@ function HomeContent() {
             ))}
           </div>
 
-          <button
-            className={`ios-btn ${isProximityEnabled ? "ios-btn-primary" : ""}`}
-            onClick={handleToggleProximity}
-            disabled={locationLoading}
-            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px", border: "1px solid var(--border-glass)" }}
-          >
-            {locationLoading ? (
-              <span style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
-            ) : (
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /></svg>
-            )}
-            {isProximityEnabled ? "قريب مني ✓" : "قريب مني"}
-          </button>
+
         </div>
 
         {/* Secondary Subcategories Row */}
@@ -1015,8 +897,10 @@ function HomeContent() {
                 ))}
               </div>
             ) : (
-              <div className="glass-panel" style={{ padding: "60px 20px", textAlign: "center" }}>
-                <div style={{ fontSize: "3.5rem", marginBottom: "16px" }}>🔍</div>
+              <div className="glass-panel" style={{ padding: "60px 20px", textAlign: "center", border: "none" }}>
+                <div style={{ fontSize: "3.5rem", marginBottom: "16px" }}>
+                  <Image src="/image/404.jpg" alt="Not Found" width={250} height={250} style={{ width: '250px', height: 'auto' }} />
+                </div>
                 <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem" }}>لم يُعثر على نتائج — جرّب كلمة بحث أخرى</p>
               </div>
             )}
@@ -1069,7 +953,7 @@ function HomeContent() {
                   {selectedPlace.place_type && (
                     <>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: "2px" }}>
-                       - {selectedPlace.place_type}
+                        - {selectedPlace.place_type}
                       </span>
                     </>
                   )}
