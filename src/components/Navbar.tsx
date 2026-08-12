@@ -15,6 +15,7 @@ interface NavSubItem {
 interface NavLink {
   href?: string;
   label: string;
+  icon: string;
   isDropdown?: boolean;
   subItems?: NavSubItem[];
 }
@@ -63,26 +64,27 @@ export default function Navbar() {
 
   // ── قائمة الروابط الرئيسية للموقع ──
   const mainLinks: NavLink[] = [
-    { href: "/", label: "الصفحة الرئيسية" },
+    { href: "/", label: "الصفحة الرئيسية", icon: "fa-solid fa-house-chimney" },
     {
       label: "الخدمات",
       isDropdown: true,
+      icon: "fa-solid fa-star-of-life",
       subItems: [
         { href: "/places", label: "دليل الأماكن", icon: "bx bx-map" },
         { href: "/directory", label: "دليل الهاتف", icon: "bx bx-phone" },
         { href: "/metro", label: "خريطة المترو", icon: "bx bx-train" },
         { href: "/monorail", label: "خريطة المنورايل", icon: "bx bx-navigation" },
         { href: "/lrt", label: "القطار الكهربائي LRT", icon: "bx bx-train" },
-        { href: "/railways", label: "سكك حديد مصر", icon: "bx bx-train" },
-        { href: "/airports", label: "المطارات", icon: "bx bx-plane" },
-        { href: "/ports", label: "الموانئ", icon: "bx bx-anchor" },
-        { href: "/bus-stations", label: "مواقف الأتوبيسات", icon: "bx bx-bus" },
+        { href: "/railways", label: "سكك حديد مصر", icon: "fa-solid fa-train-subway" },
+        { href: "/airports", label: "المطارات", icon: "fa-solid fa-plane-departure" },
+        { href: "/ports", label: "الموانئ", icon: "fa-solid fa-ship" },
+        { href: "/bus-stations", label: "مواقف الأتوبيسات", icon: "fa-solid fa-bus" },
         { href: "/microbus-stations", label: "مواقف الميكروباص", icon: "bx bx-car" },
         { href: "/directions", label: "ازاي اروح ؟", icon: "bx bx-compass" },
       ]
     },
-    { href: "/ai-planner", label: "مخطط الرحلات الذكي" },
-    { href: "/help", label: "المساعدة" },
+    { href: "/ai-planner", label: "مخطط الرحلات الذكي", icon: "fa-solid fa-brain" },
+    { href: "/help", label: "المساعدة", icon: "fa-solid fa-question" },
   ];
 
   // Mobile dropdown state
@@ -113,8 +115,8 @@ export default function Navbar() {
       <div className="navbar-inner">
         {/* Logo */}
         <Link href="/" className="navbar-logo">
-          <img src="/logo/darkMode_logo.png" alt="Map Cairo" className="logo-img-dark" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
-          <img src="/logo/lightMode_logo.png" alt="Map Cairo" className="logo-img-light" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
+          <img src="images/logo/darkMode_logo.png" alt="Map Cairo" className="logo-img-dark" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
+          <img src="images/logo/lightMode_logo.png" alt="Map Cairo" className="logo-img-light" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
         </Link>
 
         {/* Desktop Links */}
@@ -124,13 +126,13 @@ export default function Navbar() {
               const active = isLinkActive(link);
               return (
                 <div key={idx} className="navbar-item-dropdown">
-                  <button className={`navbar-link navbar-dropdown-toggle ${active ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "4px", fontFamily: "var(--font-cairo)" }}>
+                  <button className={`navbar-link navbar-dropdown-toggle ${active ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "4px", fontFamily: "var(--font-heading)" }}>
                     {link.label}
                     <i className="bx bx-chevron-down" style={{ fontSize: "0.95rem" }} />
                   </button>
                   <div className="navbar-dropdown-menu">
                     {link.subItems?.map((sub, sIdx) => (
-                      <Link key={sIdx} href={sub.href} className={`heroui-dropdown-item ${pathname === sub.href ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Link key={sIdx} href={sub.href} className={`heroui-dropdown-item ${pathname === sub.href ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-heading)" }}>
                         <i className={sub.icon} style={{ fontSize: "1.1rem" }} />
                         <span>{sub.label}</span>
                       </Link>
@@ -140,7 +142,7 @@ export default function Navbar() {
               );
             }
             return (
-              <Link key={link.href || idx} href={link.href || ""} className={`navbar-link ${pathname === link.href ? "active" : ""}`}>
+              <Link key={link.href || idx} href={link.href || ""} className={`navbar-link ${pathname === link.href ? "active" : ""}`} style={{ fontFamily: "var(--font-heading)", display: "flex", alignItems: "center", gap: "0px" }}>
                 {link.label}
               </Link>
             );
@@ -255,7 +257,7 @@ export default function Navbar() {
                 <i className={theme === "dark" ? "bx bx-sun" : "bx bx-moon"} style={{ fontSize: "1.2rem" }}></i>
                 {theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}
               </button>
-              
+
               {user && (
                 <>
                   <div className="heroui-dropdown-divider"></div>
@@ -287,7 +289,7 @@ export default function Navbar() {
               const isExpanded = expandedMobileDropdowns[idx] || false;
               return (
                 <div key={idx} className="navbar-mobile-dropdown-group">
-                  <button 
+                  <button
                     className="navbar-mobile-link"
                     onClick={() => toggleMobileDropdown(idx)}
                     style={{
@@ -302,9 +304,9 @@ export default function Navbar() {
                       fontFamily: "var(--font-cairo)"
                     }}
                   >
-                    <span>{link.label}</span>
-                    <i 
-                      className={`bx bx-chevron-down`} 
+                    <span> <i className={link.icon} style={{ fontSize: "1.1rem" }}></i> {link.label}</span>
+                    <i
+                      className={`bx bx-chevron-down`}
                       style={{
                         transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
                         transition: "transform 0.2s ease",
@@ -316,9 +318,9 @@ export default function Navbar() {
                   {isExpanded && (
                     <div className="navbar-mobile-dropdown-items" style={{ paddingRight: "16px" }}>
                       {link.subItems?.map((sub, sIdx) => (
-                        <Link 
-                          key={sIdx} 
-                          href={sub.href} 
+                        <Link
+                          key={sIdx}
+                          href={sub.href}
                           className={`navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
                           onClick={() => setMenuOpen(false)}
                         >
@@ -332,12 +334,13 @@ export default function Navbar() {
               );
             }
             return (
-              <Link 
-                key={link.href || idx} 
-                href={link.href || ""} 
+              <Link
+                key={link.href || idx}
+                href={link.href || ""}
                 className={`navbar-mobile-link ${pathname === link.href ? "active" : ""}`}
                 onClick={() => setMenuOpen(false)}
               >
+                <i className={link.icon} style={{ fontSize: "1.1rem", marginLeft: "8px" }} />
                 {link.label}
               </Link>
             );
@@ -345,12 +348,13 @@ export default function Navbar() {
           {user ? (
             <>
               <Link href="/profile" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
-                الملف الشخصي (@{profile?.username || user.user_metadata?.username || "حسابي"})
+                <i className="fa-solid fa-user" style={{ fontSize: "1.2rem", marginLeft: "8px" }}></i>
+                الملف الشخصي ({profile?.username || user.user_metadata?.username || "حسابي"}@)
               </Link>
-              <button onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="navbar-mobile-link" style={{ color: "#ff3f8e", textAlign: "right", background: "none", border: "none", width: "100%", fontSize: "1rem", fontWeight: "700" }}><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تسجيل الخروج</button>
+              <button onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="navbar-mobile-link" style={{ color: "#ff3f8e", textAlign: "right", background: "none",fontFamily:"var(--font-body)", border: "none", width: "100%", fontSize: "1rem", fontWeight: "700" }}><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تسجيل الخروج</button>
             </>
           ) : (
-            <Link href="/login" className="navbar-mobile-link" style={{ color: "var(--accent-primary)", fontWeight: "700" }} onClick={() => setMenuOpen(false)}>
+            <Link href="/login" className="navbar-mobile-link" style={{ color: "var(--accent-primary)", fontWeight: "700",fontFamily:"var(--font-body)" }} onClick={() => setMenuOpen(false)}>
               تسجيل الدخول / حساب جديد
             </Link>
           )}
@@ -359,25 +363,25 @@ export default function Navbar() {
 
       {/* ── نافذة تأكيد تسجيل الخروج المعتمة (Logout Confirmation Modal) ── */}
       {showLogoutModal && (
-        <div style={{ 
-          position: "fixed", 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0, 
-          background: "rgba(0, 0, 0, 0.85)", 
-          zIndex: 20000, 
-          display: "flex", 
-          alignItems: "center", 
-          justifyContent: "center", 
-          padding: "20px" 
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.85)",
+          zIndex: 20000,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px"
         }}>
           <div className="glass-panel" style={{ maxWidth: "440px", width: "100%", padding: "30px", animation: "fade-in 0.3s ease", border: "1px solid rgba(255, 149, 0, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.5)", borderRadius: "28px" }}>
             <h3 style={{ fontSize: "1.3rem", color: "#ff9500", marginBottom: "16px", textAlign: "center" }}>تسجيل الخروج</h3>
             <p style={{ fontSize: "0.95rem", color: "var(--text-primary)", marginBottom: "24px", lineHeight: "1.6", textAlign: "center" }}>
               هل أنت متأكد من تسجيل الخروج؟
             </p>
-            
+
             <div style={{ display: "flex", gap: "12px" }}>
               <button className="ios-btn" onClick={() => setShowLogoutModal(false)} style={{ flex: 1 }}>
                 <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i> إلغاء

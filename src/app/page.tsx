@@ -36,7 +36,7 @@ function normalizeArabic(text: string): string {
 function cleanArabicWord(word: string): string {
   let w = word.trim();
   if (w.length <= 3) return w;
-  
+
   if (w.startsWith("وال") && w.length > 4) {
     w = w.substring(3);
   } else if (w.startsWith("ال") && w.length > 3) {
@@ -46,7 +46,7 @@ function cleanArabicWord(word: string): string {
   } else if (w.startsWith("لل") && w.length > 3) {
     w = w.substring(2);
   }
-  
+
   return w;
 }
 
@@ -54,7 +54,7 @@ function cleanArabicWord(word: string): string {
 function getSearchWords(text: string): string[] {
   const normalized = normalizeArabic(text);
   const stopWords = ["في", "من", "ب", "بـ", "بمنطقة", "بمحافظة", "مدينة", "حي", "علي", "الي", "التي", "الذي", "مع"];
-  
+
   return normalized
     .split(/\s+/)
     .map(w => w.trim())
@@ -350,62 +350,62 @@ export default function HomePage() {
   // ── 5. فلترة خدمات الموقع المطابقة للبحث ──
   const matchedServices = searchQuery.trim() && queryWords.length > 0
     ? SITE_SERVICES.filter(service => {
-        const serviceText = getSearchCleanedText([
-          service.label,
-          service.subtitle,
-          ...service.keywords
-        ].join(" "));
+      const serviceText = getSearchCleanedText([
+        service.label,
+        service.subtitle,
+        ...service.keywords
+      ].join(" "));
 
-        return queryWords.every(word => serviceText.includes(word));
-      })
+      return queryWords.every(word => serviceText.includes(word));
+    })
     : [];
 
   // ── 6. فلترة الأماكن والمحلات الحية في دليل الأماكن ──
   const matchedPlaces: Place[] = searchQuery.trim() && queryWords.length > 0
     ? activePlaces.filter(place => {
-        const categoryLabels: Record<string, string> = {};
-        CATEGORIES_STRUCTURE.forEach(main => {
-          categoryLabels[main.name] = main.label;
-          main.subCategories.forEach(sub => {
-            categoryLabels[sub.name] = sub.label;
-          });
+      const categoryLabels: Record<string, string> = {};
+      CATEGORIES_STRUCTURE.forEach(main => {
+        categoryLabels[main.name] = main.label;
+        main.subCategories.forEach(sub => {
+          categoryLabels[sub.name] = sub.label;
         });
+      });
 
-        const rawSearchableText = [
-          place.name,
-          place.categoryLabel,
-          categoryLabels[place.category] || place.category,
-          ...(place.subCategories || []).map(sc => categoryLabels[sc] || sc),
-          place.place_type || "",
-          place.city || "",
-          place.governorate || "",
-          place.briefLocation || "",
-          place.fullAddress || "",
-          place.description || "",
-          place.category === "food_drinks" ? "اكل مشروبات مطعم مطاعم كافيه كافيهات مقهى قهاوي" : "",
-          place.subCategories?.includes("restaurant") ? "مطعم مطاعم اكل" : "",
-          place.subCategories?.includes("cafe") ? "كافيه كافيهات مقهى قهاوي مشروبات" : "",
-          place.subCategories?.includes("pharmacy") ? "صيدلية صيدليات علاج دواء" : "",
-          place.subCategories?.includes("hospital") ? "مستشفى مستشفيات عيادة مركز طبي صحة" : "",
-          place.subCategories?.includes("park") ? "حديقة حدائق منتزه ملاهي اماكن عامة" : "",
-        ].filter(Boolean).join(" ");
+      const rawSearchableText = [
+        place.name,
+        place.categoryLabel,
+        categoryLabels[place.category] || place.category,
+        ...(place.subCategories || []).map(sc => categoryLabels[sc] || sc),
+        place.place_type || "",
+        place.city || "",
+        place.governorate || "",
+        place.briefLocation || "",
+        place.fullAddress || "",
+        place.description || "",
+        place.category === "food_drinks" ? "اكل مشروبات مطعم مطاعم كافيه كافيهات مقهى قهاوي" : "",
+        place.subCategories?.includes("restaurant") ? "مطعم مطاعم اكل" : "",
+        place.subCategories?.includes("cafe") ? "كافيه كافيهات مقهى قهاوي مشروبات" : "",
+        place.subCategories?.includes("pharmacy") ? "صيدلية صيدليات علاج دواء" : "",
+        place.subCategories?.includes("hospital") ? "مستشفى مستشفيات عيادة مركز طبي صحة" : "",
+        place.subCategories?.includes("park") ? "حديقة حدائق منتزه ملاهي اماكن عامة" : "",
+      ].filter(Boolean).join(" ");
 
-        const searchableText = getSearchCleanedText(rawSearchableText);
+      const searchableText = getSearchCleanedText(rawSearchableText);
 
-        return queryWords.every(word => searchableText.includes(word));
-      }).slice(0, 5)
+      return queryWords.every(word => searchableText.includes(word));
+    }).slice(0, 5)
     : [];
 
   // ── 7. فلترة الفئات الرئيسية والفرعية ──
   const matchedCategories = searchQuery.trim() && queryWords.length > 0
     ? CATEGORIES_STRUCTURE.filter(cat => {
-        const categorySearchable = getSearchCleanedText([
-          cat.label,
-          ...cat.subCategories.map(sub => sub.label)
-        ].join(" "));
+      const categorySearchable = getSearchCleanedText([
+        cat.label,
+        ...cat.subCategories.map(sub => sub.label)
+      ].join(" "));
 
-        return queryWords.every(word => categorySearchable.includes(word));
-      }).slice(0, 3)
+      return queryWords.every(word => categorySearchable.includes(word));
+    }).slice(0, 3)
     : [];
 
   const hasResults = matchedServices.length > 0 || matchedPlaces.length > 0 || matchedCategories.length > 0;
@@ -457,7 +457,7 @@ export default function HomePage() {
       id: "directory",
       title: "دليل الهواتف والأكواد",
       desc: "دليل شامل لأرقام الطوارئ، الهيئات الخدمية، وأكواد باقات وفليكسات شبكات المحمول (فودافون، أورنج، اتصالات، وي).",
-      icon:"Cairo_directory.webp",
+      icon: "Cairo_directory.webp",
       badge: "دليل سريع",
       link: "/directory",
       color: "rgba(16, 185, 129, 0.12)",
@@ -623,7 +623,7 @@ export default function HomePage() {
                     padding: "8px 24px",
                     fontSize: "0.95rem",
                     fontWeight: "600",
-                    fontFamily:"var(--font-heading)",
+                    fontFamily: "var(--font-heading)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -693,11 +693,11 @@ export default function HomePage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <img
-                              src={`/images/searchBar/${service.icon}`}
-                              alt={service.label}
-                              style={{ width: "30px", height: "30px", objectFit: "contain" }}
-                            />
+                          <img
+                            src={`/images/searchBar/${service.icon}`}
+                            alt={service.label}
+                            style={{ width: "30px", height: "30px", objectFit: "contain" }}
+                          />
                           <div>
                             <div style={{ fontWeight: "700", fontSize: "0.95rem" }}>{service.label}</div>
                             <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{service.subtitle}</div>
@@ -760,11 +760,11 @@ export default function HomePage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                           <img
-                              src={'/images/searchBar/shop.png'}
-                              alt={place.name}
-                              style={{ width: "30px", height: "30px", objectFit: "contain" }}
-                            />
+                          <img
+                            src={'/images/searchBar/shop.png'}
+                            alt={place.name}
+                            style={{ width: "30px", height: "30px", objectFit: "contain" }}
+                          />
                           <div>
                             <div style={{ fontWeight: "700", fontSize: "0.95rem" }}>{place.name}</div>
                             <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
@@ -845,7 +845,7 @@ export default function HomePage() {
                     border: "none",
                     fontWeight: "700",
                     fontSize: "0.9rem",
-                    fontFamily:"var(--font-heading)",
+                    fontFamily: "var(--font-heading)",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -890,7 +890,7 @@ export default function HomePage() {
                   border: "1px solid var(--border-glass)",
                   color: "var(--text-secondary)",
                   fontSize: "0.85rem",
-                  fontFamily:"var(--font-body)",
+                  fontFamily: "var(--font-body)",
                   cursor: "pointer",
                   transition: "var(--transition-fast)"
                 }}
@@ -1000,10 +1000,10 @@ export default function HomePage() {
       {/* ── 3. MAIN SERVICES GRID ── */}
       <section style={{ padding: "70px 20px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "48px" }}>
-          <h2 style={{ fontSize: "2rem", fontWeight: "800", marginBottom: "12px" }}>
+          <h2 style={{ fontFamily: "var(--font-body)", fontSize: "2rem", fontWeight: "800", marginBottom: "12px" }}>
             جميع خدمات القاهرة ماب بين يديك
           </h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", maxWidth: "600px", margin: "0 auto" }}>
+          <p style={{ fontFamily: "var(--font-body)", color: "var(--text-secondary)", fontSize: "1.05rem", maxWidth: "600px", margin: "0 auto" }}>
             اختر الخدمة التي تحتاجها للوصول السريع إلى أدق التفاصيل والمؤشرات الحية.
           </p>
         </div>
@@ -1051,6 +1051,7 @@ export default function HomePage() {
                     />
                   </div>
                   <span style={{
+                    fontFamily: "var(--font-body)", 
                     fontSize: "0.75rem",
                     fontWeight: "700",
                     padding: "4px 12px",
@@ -1063,10 +1064,10 @@ export default function HomePage() {
                   </span>
                 </div>
 
-                <h3 style={{ fontSize: "1.3rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "10px" }}>
+                <h3 style={{ fontFamily: "var(--font-body)", fontSize: "1.3rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "10px" }}>
                   {service.title}
                 </h3>
-                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "24px" }}>
+                <p style={{ fontFamily: "var(--font-body)", fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "24px" }}>
                   {service.desc}
                 </p>
               </div>
@@ -1097,10 +1098,10 @@ export default function HomePage() {
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "36px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontFamily:"var(--font-body)", fontSize: "1.8rem", fontWeight: "800", marginBottom: "8px", textAlign: "center" }}>
+              <h2 style={{ fontFamily: "var(--font-body)", fontSize: "1.8rem", fontWeight: "800", marginBottom: "8px", textAlign: "center" }}>
                 تصفّح حسب الفئة في دليل الأماكن
               </h2>
-              <p style={{ fontFamily:"var(--font-body)", color: "var(--text-secondary)", fontSize: "0.95rem", textAlign: "center" }}>
+              <p style={{ fontFamily: "var(--font-body)", color: "var(--text-secondary)", fontSize: "0.95rem", textAlign: "center" }}>
                 اختر الفئة للاطلاع على كافة الفروع، المواعيد، وتقييمات الزوار
               </p>
             </div>
@@ -1112,7 +1113,7 @@ export default function HomePage() {
                 alignItems: "center",
                 gap: "8px",
                 color: "var(--accent-primary)",
-                fontFamily:"var(--font-body)",
+                fontFamily: "var(--font-body)",
                 fontWeight: "700",
                 fontSize: "0.95rem",
                 textDecoration: "none"
@@ -1134,7 +1135,7 @@ export default function HomePage() {
                 href={`/places?category=${cat.name}`}
                 style={{
                   textDecoration: "none",
-                  fontFamily:"var(--font-body)",
+                  fontFamily: "var(--font-body)",
                   padding: "20px",
                   borderRadius: "var(--radius-md)",
                   backgroundColor: "var(--bg-glass-card)",
@@ -1175,7 +1176,7 @@ export default function HomePage() {
       {/* ── 5. AI PLANNER BANNER ── */}
       <section style={{ padding: "70px 20px", maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{
-          borderRadius: "var(--radius-xl)",
+          borderRadius: "20px",
           background: "linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%)",
           border: "1.5px solid rgba(139, 92, 246, 0.4)",
           padding: "48px 32px",
@@ -1197,10 +1198,10 @@ export default function HomePage() {
             <FaRobot style={{ fontSize: "2rem", color: "#c084fc" }} />
           </div>
 
-          <h2 style={{ fontSize: "2rem", fontWeight: "800", marginBottom: "16px", color: "var(--text-primary)" }}>
+          <h2 style={{fontFamily:"var(--font-body)", fontSize: "2rem", fontWeight: "800", marginBottom: "16px", color: "var(--text-primary)" }}>
             محتار تخرج فين النهاردة؟ اترك التخطيط للذكاء الاصطناعي!
           </h2>
-          <p style={{ fontSize: "1.05rem", color: "var(--text-secondary)", maxWidth: "650px", margin: "0 auto 28px auto", lineHeight: "1.7" }}>
+          <p style={{fontFamily:"var(--font-body)", fontSize: "1.05rem", color: "var(--text-secondary)", maxWidth: "650px", margin: "0 auto 28px auto", lineHeight: "1.7" }}>
             حدد ميزانيتك، عدد الأفراد، والمنطقة المفضلة، وسيقوم المساعد الذكي بتنسيق برنامج يومك بالكامل مع أماكن الأكل والكافيهات والمواصلات المناسبة.
           </p>
 
@@ -1216,6 +1217,7 @@ export default function HomePage() {
               color: "#ffffff",
               fontWeight: "700",
               fontSize: "1rem",
+              fontFamily:"var(--font-body)",
               textDecoration: "none",
               boxShadow: "0 8px 24px rgba(139, 92, 246, 0.4)"
             }}
@@ -1234,10 +1236,10 @@ export default function HomePage() {
         textAlign: "center"
       }}>
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-          <h3 style={{ fontSize: "1.6rem", fontWeight: "800", marginBottom: "12px" }}>
+          <h3 style={{fontFamily:"var(--font-body)", fontSize: "1.6rem", fontWeight: "800", marginBottom: "12px" }}>
             هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد؟
           </h3>
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", marginBottom: "24px" }}>
+          <p style={{fontFamily:"var(--font-body)", color: "var(--text-secondary)", fontSize: "0.95rem", marginBottom: "24px" }}>
             ساهم معنا في تحديث دليل القاهرة ماب وأضف محلّك أو مكانك المفضّل مجاناً ليصل إلى آلاف الزوار.
           </p>
           <Link
@@ -1253,6 +1255,7 @@ export default function HomePage() {
               color: "var(--accent-primary)",
               fontWeight: "700",
               fontSize: "0.95rem",
+              fontFamily:"var(--font-body)",
               textDecoration: "none"
             }}
           >
