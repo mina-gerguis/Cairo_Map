@@ -45,6 +45,7 @@ export default function PhoneDirectoryPage() {
   const [activeCompany, setActiveCompany] = useState<string>("vodafone");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [codeInputs, setCodeInputs] = useState<Record<string, string>>({});
 
   useEffect(() => {
     // Load recent searches
@@ -208,89 +209,137 @@ export default function PhoneDirectoryPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: "120px" }}>
-      {/* Header */}
-      <div style={{
-        background: "linear-gradient(135deg, #0b0f19 0%, #151c2c 100%)",
-        padding: "80px 20px 50px",
+    <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bg-primary)" }}>
+      {/* Header Banner - Redesigned with a beautiful cover image matching Metro */}
+      <div className="metro-animate-fade" style={{
+        backgroundColor: "var(--bg-primary)",
+        padding: "24px 20px 24px",
         textAlign: "center",
         position: "relative",
-        borderBottom: "1px solid var(--border-glass)"
+        borderBottom: "1px solid var(--border-glass)",
       }}>
-        <div style={{ fontSize: "3rem", marginBottom: "12px" }}>☎️</div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: "2.4rem", fontWeight: "800", color: "#fff", margin: "0 0 10px" }}>
-          دليل الهاتف والخدمات
-        </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>
-          أرقام الشركات وخدمات العملاء وأكواد شبكات الاتصالات
-        </p>
+        {/* Cover Image Banner */}
+        
 
-        {/* Search Input */}
-        <div style={{ maxWidth: "500px", margin: "30px auto 0", position: "relative" }}>
-          <input
-            className="ios-input"
-            type="text"
-            placeholder="ابحث بالاسم، الرقم، أو التخصص..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSaveSearch(searchQuery);
-              }
-            }}
-            style={{ paddingRight: "40px", height: "50px", fontSize: "1rem", borderRadius: "25px" }}
-          />
-          <div style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }}>
-            🔍
+        <div className="metro-animate-slide-up metro-delay-100">
+          <h1 style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
+            fontWeight: "600",
+            color: "var(--text-primary)",
+            margin: "0 0 10px",
+            letterSpacing: "-0.5px",
+          }}>دليل الهاتف والخدمات</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+            أرقام الطوارئ، شركات الاتصالات، وخدمات العملاء في مكان واحد.
+          </p>
+
+          {/* Directory Sections badges */}
+          <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--accent-ios)",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>☎️ أرقام خدمة العملاء</span>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--accent-success)",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>📶 أكواد الشبكات</span>
           </div>
         </div>
-
-        {/* Recent Searches Row */}
-        {recentSearches.length > 0 && (
-          <div style={{
-            marginTop: "16px",
-            display: "flex",
-            gap: "8px",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "center",
-            animation: "slide-in-section 0.3s ease"
-          }}>
-            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>آخر عمليات البحث:</span>
-            {recentSearches.map((term, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setSearchQuery(term);
-                  handleSaveSearch(term);
-                }}
-                className="category-pill"
-                style={{ fontSize: "0.8rem", padding: "4px 12px", border: "1px solid var(--border-glass)" }}
-              >
-                🔍 {term}
-              </button>
-            ))}
-            <button
-              onClick={() => {
-                setRecentSearches([]);
-                localStorage.removeItem("recent_phone_searches");
-              }}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "var(--accent-danger)",
-                fontSize: "0.8rem",
-                cursor: "pointer",
-                padding: "4px 8px"
-              }}
-            >
-              مسح السجل 🗑️
-            </button>
-          </div>
-        )}
       </div>
 
-      <div className="app-container" style={{ paddingTop: "40px" }}>
+      {/* Main Container */}
+      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
+
+        {/* Search Panel Card - Styled matching Metro searchCard */}
+        <div className="metro-animate-slide-up metro-delay-200" style={{
+          backgroundColor: "var(--bg-primary)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "15px",
+          padding: "20px",
+          marginTop: "24px",
+          boxShadow: "var(--shadow-card)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}>
+          <div style={{ position: "relative" }}>
+            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
+              <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--accent-ios)" }}></i> ابحث في الدليل (الاسم، الرقم أو التخصص)
+            </label>
+            <input
+              className="ios-input"
+              type="text"
+              placeholder="ابحث بالاسم، الرقم، أو التخصص..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSaveSearch(searchQuery);
+                }
+              }}
+              style={{
+                width: "100%",
+                direction: "rtl",
+                fontFamily: "var(--font-cairo)",
+                height: "50px",
+              }}
+            />
+          </div>
+
+          {/* Recent Searches Row */}
+          {recentSearches.length > 0 && (
+            <div style={{
+              display: "flex",
+              gap: "8px",
+              flexWrap: "wrap",
+              alignItems: "center",
+              animation: "slide-in-section 0.3s ease"
+            }}>
+              <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>آخر عمليات البحث:</span>
+              {recentSearches.map((term, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setSearchQuery(term);
+                    handleSaveSearch(term);
+                  }}
+                  className="category-pill"
+                  style={{ fontSize: "0.75rem", padding: "4px 12px", border: "1px solid var(--border-glass)" }}
+                >
+                  🔍 {term}
+                </button>
+              ))}
+              <button
+                onClick={() => {
+                  setRecentSearches([]);
+                  localStorage.removeItem("recent_phone_searches");
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--accent-danger)",
+                  fontSize: "0.75rem",
+                  cursor: "pointer",
+                  padding: "4px 8px"
+                }}
+              >
+                مسح 🗑️
+              </button>
+            </div>
+          )}
+        </div>
+
         {loading ? (
           <div style={{ textAlign: "center", padding: "50px 0", color: "var(--text-secondary)" }}>
             <span style={{ display: "inline-block", width: "24px", height: "24px", border: "3px solid var(--border-glass)", borderTopColor: "var(--accent-primary)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
@@ -299,16 +348,41 @@ export default function PhoneDirectoryPage() {
         ) : (
           <>
             {/* ==================== PHONES SECTION ==================== */}
-            <div style={{ marginBottom: "50px" }}>
-              <h2 className="section-title" style={{ marginBottom: "16px" }}><i style={{ color: "var(--accent-ios)" }} className="fa-solid fa-building"></i>
-                أرقام خدمة العملاء والطوارئ</h2>
+            <div style={{ marginTop: "32px" }}>
+              <h2 style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "1.25rem",
+                fontWeight: "800",
+                color: "var(--text-primary)",
+                marginBottom: "8px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}>
+                <i style={{ color: "var(--accent-ios)" }} className="fa-solid fa-building"></i>
+                أرقام خدمة العملاء والطوارئ
+              </h2>
+              <p style={{ color: "var(--text-secondary)", marginBottom: "20px", fontSize: "0.88rem" }}>
+                كل أرقام الطوارئ والخدمات في مكان واحد
+              </p>
 
               {/* Dynamic Categories Tabs */}
-              <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", marginBottom: "24px" }}>
+              <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", marginBottom: "20px" }}>
                 <button
                   onClick={() => setSelectedSpecialty("all")}
-                  className={`category-pill ${selectedSpecialty === "all" ? "active" : ""}`}
-                  style={{ background: selectedSpecialty === "all" ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)", fontFamily: "var(--font-cairo)" }}
+                  style={{
+                    background: selectedSpecialty === "all" ? "rgba(59, 130, 246, 0.15)" : "var(--bg-secondary)",
+                    border: `1px solid ${selectedSpecialty === "all" ? "var(--accent-ios)" : "var(--border-glass)"}`,
+                    color: selectedSpecialty === "all" ? "var(--text-primary)" : "var(--text-secondary)",
+                    padding: "8px 16px",
+                    borderRadius: "50px",
+                    fontSize: "0.82rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    fontFamily: "var(--font-cairo)",
+                    whiteSpace: "nowrap",
+                    transition: "all 0.2s ease"
+                  }}
                 >
                   🌐 الكل
                 </button>
@@ -316,58 +390,105 @@ export default function PhoneDirectoryPage() {
                   <button
                     key={spec}
                     onClick={() => setSelectedSpecialty(spec)}
-                    className={`category-pill ${selectedSpecialty === spec ? "active" : ""}`}
-                    style={{ background: selectedSpecialty === spec ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-cairo)" }}
+                    style={{
+                      background: selectedSpecialty === spec ? "rgba(59, 130, 246, 0.15)" : "var(--bg-secondary)",
+                      border: `1px solid ${selectedSpecialty === spec ? "var(--accent-ios)" : "var(--border-glass)"}`,
+                      color: selectedSpecialty === spec ? "var(--text-primary)" : "var(--text-secondary)",
+                      padding: "8px 16px",
+                      borderRadius: "50px",
+                      fontSize: "0.82rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-cairo)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      whiteSpace: "nowrap",
+                      transition: "all 0.2s ease"
+                    }}
                   >
-                    <i className={formatBoxIcon(specialtyIcons[spec] || 'bx-building')} style={{ fontSize: "1.05rem" }}></i>
+                    <i className={formatBoxIcon(specialtyIcons[spec] || 'bx-building')} style={{ fontSize: "1rem" }}></i>
                     {spec}
                   </button>
                 ))}
                 {entries.some((e) => !e.specialty || e.specialty.trim() === "") && (
                   <button
                     onClick={() => setSelectedSpecialty("other")}
-                    className={`category-pill ${selectedSpecialty === "other" ? "active" : ""}`}
-                    style={{ background: selectedSpecialty === "other" ? "" : "var(--bg-secondary)", border: "1px solid var(--border-glass)", fontFamily: "var(--font-cairo)" }}
+                    style={{
+                      background: selectedSpecialty === "other" ? "rgba(59, 130, 246, 0.15)" : "var(--bg-secondary)",
+                      border: `1px solid ${selectedSpecialty === "other" ? "var(--accent-ios)" : "var(--border-glass)"}`,
+                      color: selectedSpecialty === "other" ? "var(--text-primary)" : "var(--text-secondary)",
+                      padding: "8px 16px",
+                      borderRadius: "50px",
+                      fontSize: "0.82rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-cairo)",
+                      whiteSpace: "nowrap",
+                      transition: "all 0.2s ease"
+                    }}
                   >
                     📦 أخرى
                   </button>
                 )}
               </div>
 
-              {/* Grid of phones */}
+              {/* Stack of phones */}
               {slicedEntries.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "30px", color: "var(--text-secondary)" }}>
+                <div style={{
+                  textAlign: "center",
+                  padding: "40px",
+                  color: "var(--text-secondary)",
+                  backgroundColor: "var(--bg-primary)",
+                  border: "1px solid var(--border-glass)",
+                  borderRadius: "15px"
+                }}>
                   <div style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
                   <p>لا توجد أرقام مطابقة لبحثك في هذا التبويب</p>
                 </div>
               ) : (
                 <>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "20px" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                     {slicedEntries.map((entry) => (
-                      <div key={entry.id} className="glass-panel" style={{ borderRadius: "16px", padding: "20px", display: "flex", alignItems: "center", gap: "16px", transition: "transform 0.2s" }}>
+                      <div
+                        key={entry.id}
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          border: "1px solid var(--border-glass)",
+                          borderRadius: "15px",
+                          padding: "16px",
+                          boxShadow: "var(--shadow-card)",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "16px",
+                          transition: "transform 0.2s ease",
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
+                        onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
+                      >
                         {entry.logo_url ? (
-                          <img src={entry.logo_url} alt={entry.name} style={{ width: "60px", height: "60px", borderRadius: "12px", objectFit: "cover", backgroundColor: "#fff" }} />
+                          <img src={entry.logo_url} alt={entry.name} style={{ width: "50px", height: "50px", borderRadius: "10px", objectFit: "cover", backgroundColor: "#fff", border: "1px solid var(--border-glass)" }} />
                         ) : (
-                          <div style={{ width: "60px", height: "60px", borderRadius: "12px", background: "rgba(108,99,255,0.05)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>
+                          <div style={{ width: "50px", height: "50px", borderRadius: "10px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem" }}>
                             🏢
                           </div>
                         )}
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <h3 style={{ margin: "0 0 4px", fontSize: "1.1rem", color: "var(--text-primary)" }}>{entry.name}</h3>
+                        <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                          <h3 style={{ margin: "0 0 4px", fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>{entry.name}</h3>
 
                           {entry.description && (
-                            <p style={{ margin: "0 0 10px", fontSize: "0.8rem", color: "var(--text-muted)", lineHeight: "1.4" }}>
+                            <p style={{ margin: "0 0 10px", fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.4", fontFamily: "var(--font-body)" }}>
                               {entry.description}
                             </p>
                           )}
                           <a href={getDialUrl(entry.phone_number)} style={{
                             display: "inline-flex", alignItems: "center", gap: "6px",
-                            background: "rgba(52,199,89,0.1)", color: "#10b981",
-                            padding: "6px 12px", borderRadius: "20px", textDecoration: "none",
-                            fontWeight: "800", fontSize: "0.95rem"
+                            background: "rgba(16, 185, 129, 0.1)", color: "var(--accent-success)",
+                            padding: "6px 14px", borderRadius: "20px", textDecoration: "none",
+                            fontWeight: "800", fontSize: "0.85rem", width: "fit-content"
                           }}>
-                             {entry.phone_number} 
-                              <i className="bx bx-phone" style={{ fontSize: "1.1rem" }} />
+                            {entry.phone_number} 
+                            <i className="bx bx-phone" style={{ fontSize: "1rem" }} />
                           </a>
                         </div>
                       </div>
@@ -376,11 +497,24 @@ export default function PhoneDirectoryPage() {
 
                   {/* Load More Button */}
                   {filteredEntries.length > visibleCount && (
-                    <div style={{ textAlign: "center", marginTop: "30px" }}>
+                    <div style={{ textAlign: "center", marginTop: "20px" }}>
                       <button
                         onClick={() => setVisibleCount((prev) => prev + 10)}
-                        className="ios-btn ios-btn-primary"
-                        style={{ width: "auto", padding: "12px 30px", borderRadius: "25px" }}
+                        style={{
+                          width: "auto",
+                          padding: "10px 24px",
+                          borderRadius: "20px",
+                          background: "var(--accent-ios)",
+                          color: "#ffffff",
+                          fontSize: "0.88rem",
+                          fontWeight: "700",
+                          border: "none",
+                          cursor: "pointer",
+                          fontFamily: "var(--font-cairo)",
+                          transition: "opacity 0.2s"
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
+                        onMouseLeave={e => e.currentTarget.style.opacity = "1"}
                       >
                         🔄 عرض المزيد (+10)
                       </button>
@@ -390,39 +524,51 @@ export default function PhoneDirectoryPage() {
               )}
             </div>
 
-            <hr style={{ border: "none", height: "1px", background: "var(--border-glass)", margin: "40px 0" }} />
+            <hr style={{ border: "none", height: "1px", background: "var(--border-glass)", margin: "32px 0" }} />
 
             {/* ==================== TELECOM CODES SECTION ==================== */}
             <div>
-              <h2 className="section-title" style={{ marginBottom: "10px" }}>
+              <h2 style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "1.25rem",
+                fontWeight: "800",
+                color: "var(--text-primary)",
+                marginBottom: "6px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}>
                 <i className="fa-solid fa-phone-volume" style={{ color: "var(--accent-ios)" }}></i>
-                دليل أكواد شركات الاتصالات</h2>
-              <p style={{ color: "var(--text-secondary)", marginBottom: "24px", fontSize: "0.95rem" }}>
-                دليلك الشامل لجميع أكواد شركات الاتصالات
+                دليل أكواد شركات الاتصالات
+              </h2>
+              <p style={{ color: "var(--text-secondary)", marginBottom: "20px", fontSize: "0.88rem" }}>
+                دليلك الشامل لجميع أكواد شركات المحمول في مصر.
               </p>
 
               {/* Company Tabs */}
-              <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "10px", marginBottom: "30px" }}>
+              <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "10px", marginBottom: "20px" }}>
                 {Object.entries(COMPANY_META).map(([key, meta]) => (
                   <button
                     key={key}
                     onClick={() => setActiveCompany(key)}
-                    className={`category-pill ${activeCompany === key ? "active" : ""}`}
                     style={{
                       display: "flex",
                       alignItems: "center",
                       gap: "8px",
-                      background: activeCompany === key ? "" : "var(--bg-secondary)",
+                      background: activeCompany === key ? "rgba(59, 130, 246, 0.15)" : "var(--bg-secondary)",
                       border: activeCompany === key ? `1px solid ${meta.border}` : "1px solid var(--border-glass)",
-                      padding: "8px 20px",
-                      fontFamily: "Cairo",
-                      fontSize: "14px",
-                      fontWeight: "bold"
+                      color: activeCompany === key ? "var(--text-primary)" : "var(--text-secondary)",
+                      padding: "8px 16px",
+                      borderRadius: "10px",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-cairo)",
+                      fontSize: "0.82rem",
+                      fontWeight: "700",
+                      whiteSpace: "nowrap",
+                      transition: "all 0.2s ease"
                     }}
                   >
-
-
-                    <Image src={meta.logo} alt={meta.label} width={20} height={20} style={{ borderRadius: "50%" }} />
+                    <Image src={meta.logo} alt={meta.label} width={18} height={18} style={{ borderRadius: "50%" }} />
                     {meta.label}
                   </button>
                 ))}
@@ -430,22 +576,40 @@ export default function PhoneDirectoryPage() {
 
               {/* Accordions */}
               {Object.keys(groupedCodes).length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px", color: "var(--text-secondary)", background: "var(--bg-secondary)", borderRadius: "16px" }}>
+                <div style={{
+                  textAlign: "center",
+                  padding: "40px",
+                  color: "var(--text-secondary)",
+                  backgroundColor: "var(--bg-secondary)",
+                  borderRadius: "15px",
+                  border: "1px solid var(--border-glass)"
+                }}>
                   <div style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
                   <p>لا توجد أكواد مضافة لهذه الشركة بعد</p>
-                  <p>تعمل الأدارة علي تحسين الموقع بشكل كبير وسوف يتم أضافة الاكواد قريبا.</p>
+                  <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px" }}>
+                    تعمل الإدارة على تحديث البيانات وإضافة الأكواد قريباً.
+                  </p>
                 </div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   {Object.entries(groupedCodes).map(([sectionName, codeList]) => {
                     const isExpanded = !!expandedSections[sectionName];
                     return (
-                      <div key={sectionName} className="glass-panel" style={{ borderRadius: "16px", overflow: "hidden", border: "1px solid var(--border-glass)" }}>
+                      <div
+                        key={sectionName}
+                        style={{
+                          backgroundColor: "var(--bg-primary)",
+                          border: "1px solid var(--border-glass)",
+                          borderRadius: "15px",
+                          overflow: "hidden",
+                          boxShadow: "var(--shadow-card)",
+                        }}
+                      >
                         {/* Header of Accordion */}
                         <div
                           onClick={() => toggleSection(sectionName)}
                           style={{
-                            padding: "18px 24px",
+                            padding: "16px 20px",
                             background: "var(--bg-secondary)",
                             cursor: "pointer",
                             display: "flex",
@@ -454,83 +618,146 @@ export default function PhoneDirectoryPage() {
                             userSelect: "none",
                           }}
                         >
-                          <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-                            <i className={formatBoxIcon(sectionIcons[sectionName] || 'bx-folder')} style={{ fontSize: "1.2rem" }}></i>
+                          <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+                            <i className={formatBoxIcon(sectionIcons[sectionName] || 'bx-folder')} style={{ fontSize: "1.1rem", color: "var(--accent-ios)" }}></i>
                             {sectionName}
                           </h3>
-                          <span style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}>
+                          <span style={{ fontSize: "1rem", color: "var(--text-secondary)" }}>
                             {isExpanded ? <i className="fa-solid fa-chevron-up"></i> : <i className="fa-solid fa-chevron-down"></i>}
                           </span>
                         </div>
 
-                        {/* List / Table of Codes inside Accordion */}
+                        {/* List of Codes inside Accordion */}
                         {isExpanded && (
-                          <div style={{ padding: "16px 24px", background: "rgba(0,0,0,0.05)", borderTop: "1px solid var(--border-glass)" }}>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                              {codeList.map((item) => (
-                                <div
-                                  key={item.id}
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    padding: "12px 0",
-                                    borderBottom: "1px solid var(--border-glass)",
-                                    flexWrap: "wrap",
-                                    gap: "12px"
-                                  }}
-                                >
-                                  <div>
-                                    <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.95rem" }}>
-                                      {item.title}
-                                    </div>
-                                    <div style={{ fontSize: "1.1rem", color: "var(--accent-primary)", marginTop: "4px", direction: "ltr", textAlign: "right" }}>
-                                      {item.code}
-                                    </div>
-                                  </div>
+                          <div style={{ padding: "12px 20px", background: "var(--bg-primary)", borderTop: "1px solid var(--border-glass)" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                               {codeList.map((item) => {
+                                const codeParts = item.code.split(" | ");
+                                const displayCode = codeParts[0];
+                                const displayNote = codeParts[1];
 
-                                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                                    <button
-                                      onClick={() => handleCopyCode(item.code, item.id)}
-                                      style={{
-                                        background: copiedId === item.id ? "rgba(16, 185, 129, 0.15)" : "#00000027",
-                                        border: copiedId === item.id ? "1px solid var(--accent-success)" : "1px solid var(--border-glass)",
-                                        color: copiedId === item.id ? "var(--accent-success)" : "var(--text-primary)",
-                                        padding: "8px 18px",
-                                        borderRadius: "20px",
-                                        fontSize: "0.9rem",
-                                        fontWeight: "800",
-                                        cursor: "pointer",
-                                        display: "inline-flex",
+                                const placeholderMatch = displayCode.match(/\[(.*?)\]/);
+                                const placeholder = placeholderMatch ? placeholderMatch[1] : null;
+
+                                const userVal = codeInputs[item.id] || "";
+                                const finalCode = userVal 
+                                  ? displayCode.replace(/\[.*?\]/, userVal) 
+                                  : displayCode;
+
+                                return (
+                                  <div
+                                    key={item.id}
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: "8px",
+                                      padding: "12px 0",
+                                      borderBottom: "1px solid var(--border-glass)",
+                                      width: "100%"
+                                    }}
+                                  >
+                                    <div style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      flexWrap: "wrap",
+                                      gap: "12px",
+                                      width: "100%"
+                                    }}>
+                                      <div>
+                                        <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.88rem" }}>
+                                          {item.title}
+                                        </div>
+                                        <div style={{ fontSize: "1rem", color: "var(--accent-ios)", marginTop: "4px", direction: "ltr", textAlign: "right", fontWeight: "700" }}>
+                                          {finalCode}
+                                        </div>
+                                      </div>
+
+                                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                        <button
+                                          onClick={() => handleCopyCode(finalCode, item.id)}
+                                          style={{
+                                            background: copiedId === item.id ? "rgba(16, 185, 129, 0.15)" : "var(--bg-secondary)",
+                                            border: copiedId === item.id ? "1px solid var(--accent-success)" : "1px solid var(--border-glass)",
+                                            color: copiedId === item.id ? "var(--accent-success)" : "var(--text-primary)",
+                                            padding: "8px 16px",
+                                            borderRadius: "20px",
+                                            fontSize: "0.85rem",
+                                            fontWeight: "800",
+                                            cursor: "pointer",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: "6px",
+                                            transition: "all 0.2s ease"
+                                          }}
+                                          title="نسخ الكود"
+                                        >
+                                          <i className={copiedId === item.id ? "fa-solid fa-check" : "fa-solid fa-copy"}></i>
+                                        </button>
+
+                                        <a
+                                          href={getDialUrl(finalCode)}
+                                          style={{
+                                            background: "var(--accent-ios)",
+                                            color: "#fff",
+                                            padding: "8px 16px",
+                                            borderRadius: "20px",
+                                            fontSize: "0.85rem",
+                                            fontWeight: "800",
+                                            textDecoration: "none",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: "6px"
+                                          }}
+                                        >
+                                          <i className="fa-solid fa-phone"></i>
+                                        </a>
+                                      </div>
+                                    </div>
+
+                                    {/* Placeholder Input Field */}
+                                    {placeholder && (
+                                      <div style={{ marginTop: "4px", width: "100%" }}>
+                                        <input
+                                          type="text"
+                                          className="ios-input"
+                                          placeholder={`أدخل ${placeholder} هنا...`}
+                                          value={codeInputs[item.id] || ""}
+                                          onChange={(e) => setCodeInputs({ ...codeInputs, [item.id]: e.target.value })}
+                                          style={{
+                                            height: "36px",
+                                            fontSize: "0.85rem",
+                                            borderRadius: "8px",
+                                            background: "var(--bg-secondary)",
+                                            border: "1px solid var(--border-glass)",
+                                            padding: "0 12px",
+                                            width: "100%",
+                                            fontFamily: "var(--font-cairo)"
+                                          }}
+                                        />
+                                      </div>
+                                    )}
+
+                                    {/* Helper Note Bubble */}
+                                    {displayNote && (
+                                      <div style={{
+                                        marginTop: "0px",
+                                        padding: "0px 0px",
+                                        fontSize: "0.78rem",
+                                        color: "var(--text-secondary)",
+                                        fontWeight: "600",
+                                        display: "flex",
                                         alignItems: "center",
                                         gap: "6px",
-                                        transition: "all 0.2s ease"
-                                      }}
-                                      title="نسخ الكود"
-                                    >
-                                      <i className={copiedId === item.id ? "fa-solid fa-check" : "fa-solid fa-copy"}></i>
-                                    </button>
-
-                                    <a
-                                      href={getDialUrl(item.code)}
-                                      style={{
-                                        background: "var(--accent-primary)",
-                                        color: "#fff",
-                                        padding: "8px 18px",
-                                        borderRadius: "20px",
-                                        fontSize: "0.9rem",
-                                        fontWeight: "800",
-                                        textDecoration: "none",
-                                        display: "inline-flex",
-                                        alignItems: "center",
-                                        gap: "6px"
-                                      }}
-                                    >
-                                      <i className="fa-solid fa-phone"></i>
-                                    </a>
+                                        width: "100%"
+                                      }}>
+                                        <i className="bx bx-info-circle" style={{ fontSize: "0.9rem" }} />
+                                        <span>{displayNote}</span>
+                                      </div>
+                                    )}
                                   </div>
-                                </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           </div>
                         )}

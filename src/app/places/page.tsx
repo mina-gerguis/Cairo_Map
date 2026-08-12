@@ -142,6 +142,24 @@ function HomeContent() {
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
+
+  // ── حالات واقتراحات البحث الفوري (Instant Search Suggestions States) ──
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+  const searchRef = React.useRef<HTMLDivElement>(null);
+  const [isLight, setIsLight] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const checkTheme = () => {
+      setIsLight(document.documentElement.classList.contains("light"));
+    };
+    checkTheme();
+    const observer = new MutationObserver(() => checkTheme());
+    observer.observe(document.documentElement, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (activeMenuIndex === null || !selectedPlace?.menuImages) return;
 
@@ -444,6 +462,43 @@ function HomeContent() {
     });
   }, [places, userLocation]);
 
+  // تصفية الاقتراحات الفورية بناءً على الكلمة المكتوبة
+  const suggestions = React.useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const queryWords = getSearchWords(searchQuery);
+    if (queryWords.length === 0) return [];
+
+    return enrichedPlaces.filter((p) => {
+      const searchableText = getSearchCleanedText([
+        p.name,
+        p.categoryLabel,
+        ...(p.subCategories || []).map(sc => CATEGORY_LABELS[sc] || sc),
+        p.city,
+        p.governorate,
+      ].filter(Boolean).join(" "));
+
+      return queryWords.every(word => searchableText.includes(word));
+    }).slice(0, 5);
+  }, [enrichedPlaces, searchQuery]);
+
+  // إعادة ضبط مؤشر التحديد النشط عند تغيير نص البحث
+  useEffect(() => {
+    setActiveSuggestionIndex(-1);
+  }, [searchQuery]);
+
+  // إغلاق قائمة الاقتراحات عند النقر خارج صندوق البحث
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   /* Main filtered + searched list */
   const filteredPlaces = React.useMemo(() => {
     const queryWords = getSearchWords(searchQuery);
@@ -615,7 +670,7 @@ function HomeContent() {
           </p>
 
           {/* Integrated Search in Hero */}
-          <div className="hero-search-wrapper">
+          <div className="hero-search-wrapper" ref={searchRef} style={{ position: "relative", zIndex: 110 }}>
             <div className="hero-search-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -628,10 +683,128 @@ function HomeContent() {
               placeholder="ابحث عن مطعم، كافيه، حديقة..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setShowSuggestions(true)}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setShowSuggestions(true);
+                  setActiveSuggestionIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
+                } else if (e.key === "ArrowUp") {
+                  e.preventDefault();
+                  setActiveSuggestionIndex(prev => (prev > 0 ? prev - 1 : -1));
+                } else if (e.key === "Enter") {
+                  if (activeSuggestionIndex >= 0 && activeSuggestionIndex < suggestions.length) {
+                    e.preventDefault();
+                    const selected = suggestions[activeSuggestionIndex];
+                    setSelectedPlace(selected);
+                    setShowSuggestions(false);
+                  }
+                } else if (e.key === "Escape") {
+                  setShowSuggestions(false);
+                }
+              }}
             />
+            {showSuggestions && suggestions.length > 0 && (
+              <div
+                className="search-suggestions-dropdown"
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  backgroundColor: isLight ? "rgba(255, 255, 255, 0.98)" : "rgba(30, 30, 40, 0.96)",
+                  border: isLight ? "1px solid rgba(0, 0, 0, 0.08)" : "1px solid rgba(255, 255, 255, 0.12)",
+                  borderRadius: "20px",
+                  marginTop: "10px",
+                  maxHeight: "320px",
+                  overflowY: "auto",
+                  zIndex: 99999,
+                  boxShadow: isLight ? "0 20px 40px rgba(0, 0, 0, 0.12)" : "0 20px 40px rgba(0, 0, 0, 0.5)",
+                  backdropFilter: "blur(25px)",
+                  WebkitBackdropFilter: "blur(25px)",
+                  padding: "8px",
+                  direction: "rtl",
+                }}
+              >
+                {suggestions.map((place, index) => {
+                  const isActive = index === activeSuggestionIndex;
+                  const categoryColor = getCategoryColor(place.category);
+                  const iconClass = CATEGORY_ICONS[place.category] || "bx-map-pin";
+                  
+                  return (
+                    <div
+                      key={place.id}
+                      className={`suggestion-item ${isActive ? "active" : ""}`}
+                      onClick={() => {
+                        setSelectedPlace(place);
+                        setShowSuggestions(false);
+                      }}
+                      onMouseEnter={() => setActiveSuggestionIndex(index)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "12px 16px",
+                        borderRadius: "14px",
+                        cursor: "pointer",
+                        gap: "16px",
+                        border: "1px solid transparent",
+                        backgroundColor: isActive
+                          ? (isLight ? "rgba(108, 99, 255, 0.1)" : "rgba(108, 99, 255, 0.2)")
+                          : "transparent",
+                        borderColor: isActive
+                          ? (isLight ? "rgba(108, 99, 255, 0.15)" : "rgba(108, 99, 255, 0.25)")
+                          : "transparent",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      <div className="suggestion-item-main" style={{ display: "flex", alignItems: "center", gap: "14px", flex: 1, minWidth: 0 }}>
+                        <div
+                          className="suggestion-icon"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "12px",
+                            backgroundColor: isActive
+                              ? "#6c63ff"
+                              : (isLight ? "rgba(0, 0, 0, 0.04)" : "rgba(255, 255, 255, 0.06)"),
+                            color: isActive
+                              ? "#ffffff"
+                              : categoryColor,
+                            fontSize: "1.25rem",
+                            flexShrink: 0,
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          <i className={`bx ${iconClass}`}></i>
+                        </div>
+                        <div className="suggestion-details" style={{ display: "flex", flexDirection: "column", textAlign: "right", minWidth: 0, flex: 1 }}>
+                          <span className="suggestion-name" style={{ fontFamily: "var(--font-cairo), sans-serif", fontWeight: 700, fontSize: "0.98rem", color: isLight ? "#1f2937" : "#f3f4f6", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {place.name}
+                          </span>
+                          <span className="suggestion-subtitle" style={{ fontFamily: "var(--font-cairo), sans-serif", fontSize: "0.8rem", color: isLight ? "#6b7280" : "#9ca3af", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: "3px", opacity: 0.85 }}>
+                            {place.categoryLabel} • {place.city}، {place.governorate}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {place.rating !== undefined && place.rating > 0 && (
+                        <div className="suggestion-meta" style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "0.85rem", fontWeight: 700, color: "#ff9f0a", flexShrink: 0, direction: "ltr" }}>
+                          <span>{Number(place.rating).toFixed(1)}</span>
+                          <i className="bx bxs-star" style={{ fontSize: "0.95rem" }}></i>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          <div className="hero-actions">
+          <div className="hero-actions" style={{zIndex:"10"}}>
             <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })} style={{ fontFamily: "Cairo" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
               استكشف الأماكن
@@ -668,8 +841,8 @@ function HomeContent() {
       {/* ══════════════ MAIN CONTENT ══════════════ */}
       <div className="app-container" id="places-section">
 
-        {/* ── Ad Space Banner ── */}
-        <AdBanner />
+        {/* ── Ad Space Banner (Top) ── */}
+        <AdBanner placement="places_top" />
 
         {/* ── Categories + Proximity ── */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
@@ -882,6 +1055,9 @@ function HomeContent() {
               itemsPerPage={3}
             />
 
+            {/* Ad Space Banner (Middle) */}
+            <AdBanner placement="places_middle" />
+
             {/* Section 3: Family */}
             <PaginatedSection
               title="👨‍👩‍👧‍👦 أماكن عائلية"
@@ -901,6 +1077,9 @@ function HomeContent() {
               toggleFavorite={toggleFavorite}
               favoriteIds={favoriteIds}
             />
+
+            {/* Ad Space Banner (Bottom) */}
+            <AdBanner placement="places_bottom" />
 
             {/* Section 5: All Places */}
             <PaginatedSection
@@ -927,17 +1106,22 @@ function HomeContent() {
               {activeFeatures.length > 0 ? ` مع مميزات محددة` : ""}
             </p>
             {filteredPlaces.length > 0 ? (
-              <div className="grid-places">
-                {filteredPlaces.map((place) => (
-                  <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
-                    <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
-                  </div>
-                ))}
-              </div>
+              <>
+                <div className="grid-places">
+                  {filteredPlaces.map((place) => (
+                    <div key={place.id} className="glass-card" onClick={() => setSelectedPlace(place)} style={{ cursor: "pointer", position: "relative" }}>
+                      <PlaceCardContent place={place} getCategoryColor={getCategoryColor} toggleFavorite={toggleFavorite} favoriteIds={favoriteIds} />
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: "24px" }}>
+                  <AdBanner placement="places_bottom" />
+                </div>
+              </>
             ) : (
               <div className="glass-panel" style={{ padding: "60px 20px", textAlign: "center", border: "none" }}>
                 <div style={{ fontSize: "3.5rem", marginBottom: "16px" }}>
-                  <Image src="/image/404.jpg" alt="Not Found" width={250} height={250} style={{ width: '250px', height: 'auto' }} />
+                  <Image src="/images/404.jpg" alt="Not Found" width={250} height={250} style={{ width: '250px', height: 'auto' }} />
                 </div>
                 <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem" }}>لم يُعثر على نتائج — جرّب كلمة بحث أخرى</p>
               </div>
@@ -1577,7 +1761,7 @@ function HomeContent() {
               src={((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!)[activeMenuIndex]}
               alt="ميديا"
               onClick={(e: any) => e.stopPropagation()}
-              style={{ maxWidth: "90vw", maxHeight: "85vh", borderRadius: "var(--radius-md)", objectFit: "contain", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }}
+              style={{ maxWidth: "80vw", maxHeight: "95vh", height: "50%", borderRadius: "var(--radius-md)", objectFit: "fill", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }}
             />
 
             {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (

@@ -1445,7 +1445,8 @@ html.light .ios-sheet {
 
   body:has(.ios-sheet-overlay) .mobile-bottom-nav,
   body:has(.modal-backdrop) .mobile-bottom-nav,
-  body:has([class*="modalBackdrop"]) .mobile-bottom-nav {
+  body:has([class*="modalBackdrop"]) .mobile-bottom-nav,
+  body:has(.navbar-mobile-menu) .mobile-bottom-nav {
     transform: translateY(120px) scale(0.9) !important;
     opacity: 0 !important;
     pointer-events: none !important;
@@ -1991,3 +1992,153 @@ html.light .auth-card {
     display: none !important;
   }
 }
+
+/* ============================================================
+   Search suggestions dropdown - Glassmorphism & High-end UI
+   ============================================================ */
+.search-suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(30, 30, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  margin-top: 10px;
+  max-height: 350px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px;
+  direction: rtl;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  animation: metro-slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html.light .search-suggestions-dropdown {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.search-suggestions-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-suggestions-dropdown::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+html.light .search-suggestions-dropdown::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 16px;
+  border: 1px solid transparent;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+  background: rgba(108, 99, 255, 0.15);
+  border-color: rgba(108, 99, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+html.light .suggestion-item:hover,
+html.light .suggestion-item.active {
+  background: rgba(108, 99, 255, 0.08);
+  border-color: rgba(108, 99, 255, 0.15);
+}
+
+.suggestion-item:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.suggestion-item-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.suggestion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1.25rem;
+  color: var(--accent-primary, #6c63ff);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.suggestion-item:hover .suggestion-icon,
+.suggestion-item.active .suggestion-icon {
+  background: var(--accent-primary, #6c63ff);
+  color: #fff;
+}
+
+html.light .suggestion-icon {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.suggestion-details {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  min-width: 0;
+  flex: 1;
+}
+
+.suggestion-name {
+  font-family: var(--font-cairo), sans-serif;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-subtitle {
+  font-family: var(--font-cairo), sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 3px;
+  opacity: 0.85;
+}
+
+.suggestion-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ff9f0a;
+  flex-shrink: 0;
+  direction: ltr;
+}
+
+.suggestion-meta i {
+  font-size: 0.95rem;
+}

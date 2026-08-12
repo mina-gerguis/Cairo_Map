@@ -432,49 +432,21 @@ export default function MetroPage() {
         position: "relative",
         borderBottom: "1px solid var(--border-glass)",
       }}>
-        {/* Cover Image Banner */}
-        <div className="metro-animate-slide-down" style={{
-          position: "relative",
-          width: "100%",
-          maxWidth: "800px",
-          height: "clamp(140px, 22vh, 200px)",
-          margin: "0 auto 20px",
-          borderRadius: "var(--radius-md)",
-          overflow: "hidden",
-          border: "1px solid var(--border-glass)",
-          boxShadow: "var(--shadow-card)",
-          background: "var(--bg-glass-card)",
-        }}>
-          <img
-            src="/image/metro/metro_cover.jpeg"
-            alt="Cairo Metro Cover"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-          {/* Subtle gradient overlay to shade the image and fade nicely */}
-          <div style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%)",
-            pointerEvents: "none",
-          }} />
-        </div>
-
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             fontFamily: "var(--font-display)",
             fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "600",
             color: "var(--text-primary)",
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
-          }}> مترو القاهرة</h1>
+          }}>
+            <img src="/images/searchBar/Cairo_metro.svg" alt="" style={{ width: "40px", height: "40px", marginRight: "10px" }} />
+            مترو القاهرة
+          </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
             احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة تذكرتك.
           </p>
@@ -1342,7 +1314,7 @@ export default function MetroPage() {
           }}>
             <a href="/image/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
               <img
-                src="/image/cairo-metro-map.png"
+                src="/images/metro/cairo-metro-map.png"
                 alt="Cairo Metro Official Map"
                 style={{
                   width: "100%",

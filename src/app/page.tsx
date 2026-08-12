@@ -1047,7 +1047,7 @@ export default function HomePage() {
                     <img
                       src={`/images/searchBar/${service.icon}`}
                       alt={service.title}
-                      style={{ width: "50px", height: "50px", objectFit: "contain" }}
+                      style={{ width: "60px", height: "60px", objectFit: "contain" }}
                     />
                   </div>
                   <span style={{

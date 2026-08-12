@@ -27,6 +27,7 @@ export interface AdSlide {
   image?: string; // Optional Background/Full Banner Image (URL or Base64)
   isImageOnly?: boolean; // If true, renders image only with whole banner clickable
   isActive?: boolean;
+  placement?: "home_slider" | "places_top" | "places_middle" | "places_bottom";
 }
 
 export const DEFAULT_SLIDES: AdSlide[] = [
@@ -214,7 +215,7 @@ export default function AdSlider({
   // Load active slides (from props, localStorage or defaults)
   const loadSlides = useCallback(() => {
     if (initialSlides && initialSlides.length > 0) {
-      setActiveSlides(initialSlides.filter(s => s.isActive !== false));
+      setActiveSlides(initialSlides.filter(s => s.isActive !== false && (!s.placement || s.placement === "home_slider")));
       return;
     }
 
@@ -222,7 +223,7 @@ export default function AdSlider({
       const stored = localStorage.getItem("cairo_map_ad_slides");
       if (stored) {
         const parsed: AdSlide[] = JSON.parse(stored);
-        const filtered = parsed.filter((s) => s.isActive !== false);
+        const filtered = parsed.filter((s) => s.isActive !== false && (!s.placement || s.placement === "home_slider"));
         if (filtered.length > 0) {
           setActiveSlides(filtered);
           return;

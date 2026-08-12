@@ -61,7 +61,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
   // State for Telecom Codes
   const [codes, setCodes] = useState<TelecomCodeEntry[]>([]);
   const [showAddCodeForm, setShowAddCodeForm] = useState(false);
-  const [codeFormData, setCodeFormData] = useState({ company: "vodafone", title: "", code: "" });
+  const [codeFormData, setCodeFormData] = useState({ company: "vodafone", title: "", code: "", note: "" });
 
   // Custom section states for telecom codes dropdown
   const [sectionSelect, setSectionSelect] = useState("");
@@ -248,10 +248,12 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
 
   const startEditCode = (item: TelecomCodeEntry) => {
     setEditingCodeId(item.id);
+    const parts = item.code.split(" | ");
     setCodeFormData({
       company: item.company,
       title: item.title,
-      code: item.code,
+      code: parts[0] || "",
+      note: parts[1] || "",
     });
     setSectionSelect(item.section_name || "");
     setCustomSection("");
@@ -263,7 +265,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
   const handleCancelCode = () => {
     setShowAddCodeForm(false);
     setEditingCodeId(null);
-    setCodeFormData({ company: "vodafone", title: "", code: "" });
+    setCodeFormData({ company: "vodafone", title: "", code: "", note: "" });
     setSectionSelect("");
     setCustomSection("");
     setCustomSectionIcon("");
@@ -293,6 +295,10 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         }
       }
 
+      const finalCodeValue = codeFormData.note.trim()
+        ? `${codeFormData.code.trim()} | ${codeFormData.note.trim()}`
+        : codeFormData.code.trim();
+
       if (editingCodeId) {
         // Edit Mode
         const { data, error } = await supabase
@@ -301,7 +307,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
             company: codeFormData.company,
             section_name: finalSection,
             title: codeFormData.title.trim(),
-            code: codeFormData.code.trim(),
+            code: finalCodeValue,
             icon: finalIcon
           })
           .eq("id", editingCodeId)
@@ -320,7 +326,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
             company: codeFormData.company,
             section_name: finalSection,
             title: codeFormData.title.trim(),
-            code: codeFormData.code.trim(),
+            code: finalCodeValue,
             icon: finalIcon
           }])
           .select();
@@ -619,6 +625,10 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   <label className="help-label">الكود الرقمي (مثال: *858#)</label>
                   <input required className="ios-input" style={{ direction: "ltr", textAlign: "right" }} value={codeFormData.code} placeholder="*858#" onChange={e => setCodeFormData({ ...codeFormData, code: e.target.value })} />
                 </div>
+                <div>
+                  <label className="help-label">ملاحظة / تنبيه للمستخدم (اختياري)</label>
+                  <input className="ios-input" value={codeFormData.note} placeholder="مثال: ضع كود الشحن بعد النجمة" onChange={e => setCodeFormData({ ...codeFormData, note: e.target.value })} />
+                </div>
                 <div style={{ gridColumn: "1 / -1", marginTop: "10px" }}>
                   <button type="submit" disabled={isSubmitting} className="ios-btn ios-btn-primary" style={{ width: "100%", height: "50px", fontSize: "1.05rem" }}>
                     {isSubmitting ? "جاري الحفظ..." : editingCodeId ? "تعديل الكود" : "حفظ الكود"}
@@ -671,7 +681,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                           {item.section_name}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>{item.title}</td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#4ade80", fontFamily: "monospace", fontSize: "1.05rem" }}>{item.code}</td>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#4ade80", fontFamily: "monospace", fontSize: "1.05rem" }}>
+                          {item.code.split(" | ")[0]}
+                          {item.code.split(" | ")[1] && (
+                            <div style={{ fontSize: "0.8rem", color: "#94a3b8", direction: "rtl", textAlign: "right", marginTop: "4px", fontFamily: "var(--font-cairo)" }}>
+                              ({item.code.split(" | ")[1]})
+                            </div>
+                          )}
+                        </td>
                         <td className={styles.adminTd} style={{ textAlign: "left" }}>
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                             <button onClick={() => startEditCode(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`}>

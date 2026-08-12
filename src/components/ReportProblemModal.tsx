@@ -819,7 +819,10 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
 
   return (
     <div className="ios-sheet-overlay" style={{ zIndex: 1050 }}>
-      <div className="ios-sheet" style={{ height: "94vh", maxHeight: "94vh", maxWidth: "600px", margin: "0 auto" }}>
+      <div className="ios-sheet" style={{ height: "94vh", maxHeight: "94vh", maxWidth: "600px", margin: "0 auto",
+         borderTopRightRadius: "20px",
+          borderTopLeftRadius: "20px",
+       }}>
 
         {/* Header */}
         <div style={{

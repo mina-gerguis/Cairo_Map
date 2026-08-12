@@ -82,6 +82,7 @@ export default function AdminAdsPage() {
     tagBg: GRADIENT_PRESETS[0].tagBg,
     tagColor: GRADIENT_PRESETS[0].tagColor,
     isActive: true,
+    placement: "home_slider",
   });
 
   // Load slides from localStorage
@@ -162,6 +163,7 @@ export default function AdminAdsPage() {
       tagBg: GRADIENT_PRESETS[0].tagBg,
       tagColor: GRADIENT_PRESETS[0].tagColor,
       isActive: true,
+      placement: "home_slider",
     });
     setIsModalOpen(true);
   };
@@ -245,6 +247,7 @@ export default function AdminAdsPage() {
         tagBg: formData.tagBg || GRADIENT_PRESETS[0].tagBg,
         tagColor: formData.tagColor || GRADIENT_PRESETS[0].tagColor,
         isActive: formData.isActive !== false,
+        placement: formData.placement || "home_slider",
       };
       updated = [newSlide, ...slides];
       showToast("تمت إضافة الإعلان الجديد بنجاح 🎉");
@@ -439,6 +442,25 @@ export default function AdminAdsPage() {
                       }}
                     >
                       {isActive ? "نشط ●" : "معطل ⚪"}
+                    </span>
+
+                    <span
+                      style={{
+                        fontSize: "0.72rem",
+                        fontWeight: "700",
+                        padding: "3px 8px",
+                        borderRadius: "6px",
+                        backgroundColor: "rgba(59, 130, 246, 0.15)",
+                        color: "#60a5fa",
+                        border: "1px solid rgba(59, 130, 246, 0.25)",
+                      }}
+                    >
+                      {
+                        slide.placement === "places_top" ? "أعلى الأماكن 🔝" :
+                        slide.placement === "places_middle" ? "وسط الأماكن ↔️" :
+                        slide.placement === "places_bottom" ? "أسفل الأماكن ⬇️" :
+                        "سلايدر الرئيسية 🏠"
+                      }
                     </span>
                   </div>
                 </div>
@@ -641,7 +663,14 @@ export default function AdminAdsPage() {
                     }}
                   >
                     <FaLink />
-                    <span>إعلان صورة فقط (النقر يفتح: {formData.ctaLink || "/"})</span>
+                    <span>
+                      إعلان صورة في [
+                      {formData.placement === "places_top" ? "أعلى الأماكن" :
+                       formData.placement === "places_middle" ? "وسط الأماكن" :
+                       formData.placement === "places_bottom" ? "أسفل الأماكن" :
+                       "سلايدر الرئيسية"}
+                      ] (يفتح: {formData.ctaLink || "/"})
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -820,6 +849,31 @@ export default function AdminAdsPage() {
                     <span>رابط خارجي (نافذة جديدة)</span>
                   </label>
                 </div>
+              </div>
+
+              {/* Placement Selection */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>موضع ومكان ظهور الإعلان *</label>
+                <select
+                  value={formData.placement || "home_slider"}
+                  onChange={(e) => setFormData({ ...formData, placement: e.target.value as any })}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    borderRadius: "10px",
+                    backgroundColor: "rgba(255, 255, 255, 0.06)",
+                    border: "1px solid rgba(255, 255, 255, 0.15)",
+                    color: "#fff",
+                    fontSize: "0.9rem",
+                    outline: "none",
+                    fontFamily: "var(--font-cairo)",
+                  }}
+                >
+                  <option value="home_slider" style={{ background: "#0f172a" }}>🏠 سلايدر الصفحة الرئيسية (Home Slider)</option>
+                  <option value="places_top" style={{ background: "#0f172a" }}>🔝 أعلى صفحة الأماكن (Places Top)</option>
+                  <option value="places_middle" style={{ background: "#0f172a" }}>↔️ وسط صفحة الأماكن (Places Middle)</option>
+                  <option value="places_bottom" style={{ background: "#0f172a" }}>⬇️ أسفل صفحة الأماكن (Places Bottom)</option>
+                </select>
               </div>
 
               {/* Text Fields (Title, Description, CTA text) - Hide or Optional if isImageOnly */}

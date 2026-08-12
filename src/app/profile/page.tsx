@@ -4097,7 +4097,7 @@ export default function ProfilePage() {
                   marginBottom: "14px",
                 }}
               >
-                <Image src="/image/profile/coin3dMapCairo.png"
+                <Image src="/images/profile/coin3dMapCairo.png"
                   alt="عملة ماب القاهرة"
                   draggable={false}
                   width={100}
@@ -4124,7 +4124,7 @@ export default function ProfilePage() {
                   setConvertStatus(null);
                 }}
                 className="ios-btn ios-btn-primary"
-                style={{ flex: 1, padding: "8px 4px", justifyContent: "center", fontSize: "0.9rem" }}
+                style={{ flex: 1, padding: "var(--pa-btn)", justifyContent: "center", fontSize: "0.9rem" }}
               >
                 <IoWalletOutline style={{ fontSize: "1rem" }} />
                 التحويل لرصيد
@@ -4135,7 +4135,7 @@ export default function ProfilePage() {
                 className="ios-btn"
                 style={{
                   flex: 1,
-                  padding: "12px",
+                  padding: "var(--pa-btn)",
                   justifyContent: "center",
                   fontSize: "0.9rem",
                   opacity: 0.5,
@@ -4982,7 +4982,7 @@ export default function ProfilePage() {
                       marginBottom: "14px"
                     }}
                   >
-                    <Image src="/image/profile/egyptianPounds3d.png"
+                    <Image src="/images/profile/egyptianPounds3d.png"
                       alt="رصيد المحفظة"
                       draggable={false}
                       width={100}
@@ -5599,14 +5599,14 @@ export default function ProfilePage() {
                   </p>
                   <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "16px", border: "1px solid var(--border-glass)" }}>
                     {[
-                      { name: "vodafone cash", title: "فودافون كاش", icon: "/image/telCompany/vodafone-logo.png" },
-                      { name: "instapay", title: "انستاباي", icon: "/image/payment/instapay.png" },
-                      { name: "meeza", title: "ميزة", icon: "/image/payment/meeza.png" },
-                      { name: "fawry", title: "فوري", icon: "/image/payment/fawry.png" },
-                      { name: "visa", title: "فيزا", icon: "/image/payment/visa.png" },
-                      { name: "mastercard", title: "ماستركارد", icon: "/image/payment/mastercard.png" },
-                      { name: "applepay", title: "ابل باي", icon: "/image/payment/applepay.png" },
-                      { name: "telda", title: "تيلدا", icon: "/image/payment/telda.jpg" }
+                      { name: "vodafone cash", title: "فودافون كاش", icon: "/images/telCompany/vodafone-logo.png" },
+                      { name: "instapay", title: "انستاباي", icon: "/images/payment/instapay.png" },
+                      { name: "meeza", title: "ميزة", icon: "/images/payment/meeza.png" },
+                      { name: "fawry", title: "فوري", icon: "/images/payment/fawry.png" },
+                      { name: "visa", title: "فيزا", icon: "/images/payment/visa.png" },
+                      { name: "mastercard", title: "ماستركارد", icon: "/images/payment/mastercard.png" },
+                      { name: "applepay", title: "ابل باي", icon: "/images/payment/applepay.png" },
+                      { name: "telda", title: "تيلدا", icon: "/images/payment/telda.jpg" }
                     ].map((pay) => (
                       <div
                         key={pay.name}

@@ -37,7 +37,7 @@ export default function MobileBottomNav() {
 
   useEffect(() => {
     const checkModals = () => {
-      const modalExists = document.querySelector(".ios-sheet-overlay, .modal-backdrop, [class*=\"modalBackdrop\"]") !== null;
+      const modalExists = document.querySelector(".ios-sheet-overlay, .modal-backdrop, [class*=\"modalBackdrop\"], .navbar-mobile-menu") !== null;
       setIsModalActive(modalExists);
     };
 

@@ -5,14 +5,14 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const payicon = [
-  { name: "vodafone cash", title: "فودافون كاش", icon: "/image/telCompany/vodafone-logo.png" },
-  { name: "instapay", title: "انستاباي", icon: "/image/payment/instapay.png" },
-  { name: "meeza", title: "ميزة", icon: "/image/payment/meeza.png" },
-  { name: "fawry", title: "فوري", icon: "/image/payment/fawry.png" },
-  { name: "visa", title: "فيزا", icon: "/image/payment/visa.png" },
-  { name: "mastercard", title: "ماستركارد", icon: "/image/payment/mastercard.png" },
-  { name: "applepay", title: "ابل باي", icon: "/image/payment/applepay.png" },
-  { name: "telda", title: "تيلدا", icon: "/image/payment/telda.jpg" },
+  { name: "vodafone cash", title: "فودافون كاش", icon: "/images/telCompany/vodafone-logo.png" },
+  { name: "instapay", title: "انستاباي", icon: "/images/payment/instapay.png" },
+  { name: "meeza", title: "ميزة", icon: "/images/payment/meeza.png" },
+  { name: "fawry", title: "فوري", icon: "/images/payment/fawry.png" },
+  { name: "visa", title: "فيزا", icon: "/images/payment/visa.png" },
+  { name: "mastercard", title: "ماستركارد", icon: "/images/payment/mastercard.png" },
+  { name: "applepay", title: "ابل باي", icon: "/images/payment/applepay.png" },
+  { name: "telda", title: "تيلدا", icon: "/images/payment/telda.jpg" },
 ];
 
 export default function Footer() {
