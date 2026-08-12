@@ -32,6 +32,47 @@ function normalizeArabic(text: string): string {
     .trim();
 }
 
+// ── دالة إزالة السوابق والتعريفات العربية (الـ، للـ، بالـ، والـ) لضمان تطابق مرن ──
+function cleanArabicWord(word: string): string {
+  let w = word.trim();
+  if (w.length <= 3) return w;
+  
+  if (w.startsWith("وال") && w.length > 4) {
+    w = w.substring(3);
+  } else if (w.startsWith("ال") && w.length > 3) {
+    w = w.substring(2);
+  } else if (w.startsWith("بال") && w.length > 4) {
+    w = w.substring(3);
+  } else if (w.startsWith("لل") && w.length > 3) {
+    w = w.substring(2);
+  }
+  
+  return w;
+}
+
+// ── دالة تقسيم نص البحث إلى كلمات نظيفة مفلترة ──
+function getSearchWords(text: string): string[] {
+  const normalized = normalizeArabic(text);
+  const stopWords = ["في", "من", "ب", "بـ", "بمنطقة", "بمحافظة", "مدينة", "حي", "علي", "الي", "التي", "الذي", "مع"];
+  
+  return normalized
+    .split(/\s+/)
+    .map(w => w.trim())
+    .filter(w => w.length > 0 && !stopWords.includes(w))
+    .map(cleanArabicWord);
+}
+
+// ── دالة تنظيف الكلمات في النص الكامل للمقارنة ──
+function getSearchCleanedText(text: string): string {
+  if (!text) return "";
+  return normalizeArabic(text)
+    .split(/\s+/)
+    .map(w => w.trim())
+    .map(cleanArabicWord)
+    .filter(Boolean)
+    .join(" ");
+}
+
 // ── 2. دالة تحويل وتوحيد بيانات المكان من Supabase لضمان التطابق مع دليل الأماكن ──
 function mapDbPlaceToPlace(dbPlace: any): Place {
   const rawCategory = dbPlace.category;
@@ -122,91 +163,91 @@ interface SiteServiceItem {
 const SITE_SERVICES: SiteServiceItem[] = [
   {
     id: "metro",
-    label: "خريطة مترو القاهرة والأنفاق",
-    subtitle: "خطوط المترو الـ 4، محطات المترو والمواقف القريبة",
+    label: "خريطة مترو الأنفاق",
+    subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon: "🚇",
+    icon: "Cairo_metro.svg",
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },
   {
     id: "monorail",
-    label: "قطار المنورايل (العاصمة الإدارية / 6 أكتوبر)",
-    subtitle: "مسارات، محطات وأسعار تذاكر المنورايل المعلق",
+    label: "قطار المونوريل",
+    subtitle: "محطات وأسعار تذاكر المونوريل",
     href: "/monorail",
-    icon: "🚝",
+    icon: "Cairo_monorail.png",
     badge: "قطار معلق",
     keywords: ["منورايل", "المنورايل", "قطار العاصمة", "العاصمة الادارية", "اكتوبر", "monorail"]
   },
   {
     id: "lrt",
-    label: "القطار الكهربائي الخفيف (LRT)",
-    subtitle: "محطات ومواعيد القطار الكهربائي الخفيف",
+    label: "القطار الكهربائي الخفيف",
+    subtitle: "محطات ومواعيد القطار الكهربائي",
     href: "/lrt",
-    icon: "⚡",
+    icon: "Cairo_lrt.png",
     badge: "القطار الكهربائي",
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"]
   },
   {
     id: "railways",
-    label: "سكك حديد مصر ومحطة رمسيس",
-    subtitle: "مواعيد وأسعار قطارات القاهرة والصعيد والوجه البحري",
+    label: "قطارات السكك الحديدية",
+    subtitle: "قطارات القاهرة والصعيد",
     href: "/railways",
-    icon: "🚂",
+    icon: "Cairo_train.png",
     badge: "قطارات مصر",
     keywords: ["قطار", "قطارات", "سكك حديد", "سكك حديد مصر", "محطة رمسيس", "رمسيس", "قطار الصعيد", "قطار اسكندرية"]
   },
   {
     id: "directory",
-    label: "دليل التليفونات والأكواد المختصرة",
-    subtitle: "أرقام الطوارئ، الخدمات الحكومية، وأكواد شبكات المحمول",
+    label: "دليل الهاتف والأكواد",
+    subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "📞",
+    icon: "Cairo_directory.webp",
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
   {
     id: "directions",
-    label: "خدمة ازاي اروح؟ (دليل الطرق والمواصلات)",
-    subtitle: "دليل طرق الوصول والتنقل لأي مكان في مصر بسهولة",
+    label: "ازاي اروح؟",
+    subtitle: "دليل الوصول لأي مكان في مصر",
     href: "/directions",
-    icon: "🧭",
+    icon: "Cairo_directions.svg",
     badge: "اتجاهات ومسارات",
     keywords: ["ازاي اروح", "ازاي اوصل", "اروح ازاي", "مواصلات", "طريق", "مسار", "اتجاهات"]
   },
   {
     id: "ai-planner",
-    label: "مخطط الرحلات الذكي (AI Travel Planner)",
-    subtitle: "برنامج خروجة مخصص وتخطيط يومك بالذكاء الاصطناعي",
+    label: "مخطط الرحلات الذكي",
+    subtitle: "تخطيط يومك بالذكاء الاصطناعي",
     href: "/ai-planner",
-    icon: "🤖",
+    icon: "ai.webp",
     badge: "ذكاء اصطناعي",
     keywords: ["خروجة", "تخطيط", "مخطط", "رحلات", "برنامج", "ذكاء", "ذكاء اصطناعي", "ai", "افكار خروج"]
   },
   {
     id: "bus-stations",
-    label: "مواقف الأتوبيسات وهيئة النقل العام",
-    subtitle: "أماكن محطات ومواقف الأتوبيسات بالقاهرة والجيزة",
+    label: "مواقف الأتوبيسات",
+    subtitle: "محطات الأتوبيسات بالقاهرة والجيزة",
     href: "/bus-stations",
-    icon: "🚌",
+    icon: "Cairo_bus.png",
     badge: "مواقف أتوبيس",
     keywords: ["اتوبيس", "أتوبيس", "موقف اتوبيس", "نقل عام", "مواقف الأتوبيس"]
   },
   {
     id: "microbus-stations",
-    label: "مواقف الميكروباص والسرفيس",
-    subtitle: "مواقف خطوط السرفيس والميكروباص بين المحافظات",
+    label: "مواقف السرفيس",
+    subtitle: "خطوط السرفيس بين المحافظات",
     href: "/microbus-stations",
-    icon: "🚐",
+    icon: "Cairo_microbus.png",
     badge: "مواقف ميكروباص",
     keywords: ["ميكروباص", "موقف ميكروباص", "سرفيس", "موقف سرفيس", "مواقف"]
   },
   {
     id: "airports",
     label: "المطارات والموانئ المصرية",
-    subtitle: "معلومات مطار القاهرة، مطار سفنكس، والموانئ",
+    subtitle: "معلومات مطار القاهرة والموانئ",
     href: "/airports",
-    icon: "✈️",
+    icon: "Cairo_airport.png",
     badge: "مطارات وموانئ",
     keywords: ["مطار", "مطارات", "مطار القاهرة", "سفنكس", "موانئ", "ميناء"]
   }
@@ -304,43 +345,67 @@ export default function HomePage() {
     };
   }, []);
 
-  const normalizedQuery = normalizeArabic(searchQuery);
+  const queryWords = getSearchWords(searchQuery);
 
   // ── 5. فلترة خدمات الموقع المطابقة للبحث ──
-  const matchedServices = searchQuery.trim()
+  const matchedServices = searchQuery.trim() && queryWords.length > 0
     ? SITE_SERVICES.filter(service => {
-      const normLabel = normalizeArabic(service.label);
-      const normSubtitle = normalizeArabic(service.subtitle);
-      const normKeywords = service.keywords.map(k => normalizeArabic(k));
+        const serviceText = getSearchCleanedText([
+          service.label,
+          service.subtitle,
+          ...service.keywords
+        ].join(" "));
 
-      return normLabel.includes(normalizedQuery) ||
-        normSubtitle.includes(normalizedQuery) ||
-        normKeywords.some(k => k.includes(normalizedQuery) || normalizedQuery.includes(k));
-    })
+        return queryWords.every(word => serviceText.includes(word));
+      })
     : [];
 
   // ── 6. فلترة الأماكن والمحلات الحية في دليل الأماكن ──
-  const matchedPlaces: Place[] = searchQuery.trim()
+  const matchedPlaces: Place[] = searchQuery.trim() && queryWords.length > 0
     ? activePlaces.filter(place => {
-      const normName = normalizeArabic(place.name);
-      const normLoc = normalizeArabic(place.briefLocation || "");
-      const normAddr = normalizeArabic(place.fullAddress || "");
-      const normCat = normalizeArabic(place.categoryLabel || "");
+        const categoryLabels: Record<string, string> = {};
+        CATEGORIES_STRUCTURE.forEach(main => {
+          categoryLabels[main.name] = main.label;
+          main.subCategories.forEach(sub => {
+            categoryLabels[sub.name] = sub.label;
+          });
+        });
 
-      return normName.includes(normalizedQuery) ||
-        normLoc.includes(normalizedQuery) ||
-        normAddr.includes(normalizedQuery) ||
-        normCat.includes(normalizedQuery);
-    }).slice(0, 5)
+        const rawSearchableText = [
+          place.name,
+          place.categoryLabel,
+          categoryLabels[place.category] || place.category,
+          ...(place.subCategories || []).map(sc => categoryLabels[sc] || sc),
+          place.place_type || "",
+          place.city || "",
+          place.governorate || "",
+          place.briefLocation || "",
+          place.fullAddress || "",
+          place.description || "",
+          place.category === "food_drinks" ? "اكل مشروبات مطعم مطاعم كافيه كافيهات مقهى قهاوي" : "",
+          place.subCategories?.includes("restaurant") ? "مطعم مطاعم اكل" : "",
+          place.subCategories?.includes("cafe") ? "كافيه كافيهات مقهى قهاوي مشروبات" : "",
+          place.subCategories?.includes("pharmacy") ? "صيدلية صيدليات علاج دواء" : "",
+          place.subCategories?.includes("hospital") ? "مستشفى مستشفيات عيادة مركز طبي صحة" : "",
+          place.subCategories?.includes("park") ? "حديقة حدائق منتزه ملاهي اماكن عامة" : "",
+        ].filter(Boolean).join(" ");
+
+        const searchableText = getSearchCleanedText(rawSearchableText);
+
+        return queryWords.every(word => searchableText.includes(word));
+      }).slice(0, 5)
     : [];
 
   // ── 7. فلترة الفئات الرئيسية والفرعية ──
-  const matchedCategories = searchQuery.trim()
+  const matchedCategories = searchQuery.trim() && queryWords.length > 0
     ? CATEGORIES_STRUCTURE.filter(cat => {
-      const normLabel = normalizeArabic(cat.label);
-      const normSub = cat.subCategories.some(sub => normalizeArabic(sub.label).includes(normalizedQuery));
-      return normLabel.includes(normalizedQuery) || normSub;
-    }).slice(0, 3)
+        const categorySearchable = getSearchCleanedText([
+          cat.label,
+          ...cat.subCategories.map(sub => sub.label)
+        ].join(" "));
+
+        return queryWords.every(word => categorySearchable.includes(word));
+      }).slice(0, 3)
     : [];
 
   const hasResults = matchedServices.length > 0 || matchedPlaces.length > 0 || matchedCategories.length > 0;
@@ -370,18 +435,18 @@ export default function HomePage() {
       id: "places",
       title: "دليل الأماكن والمحلات",
       desc: "استكشف المطاعم، الكافيهات، الأطباء، والمحلات في القاهرة والجيزة مع مواعيد العمل الرسمية، الفروع، وأرقام الهواتف.",
-      icon: <FaMapMarkerAlt style={{ fontSize: "1.6rem", color: "#3b82f6" }} />,
+      icon: "shop.png",
       badge: "الأكثر استخداماً",
       link: "/places",
-      color: "rgba(59, 130, 246, 0.12)",
-      borderColor: "rgba(59, 130, 246, 0.3)",
+      color: "rgba(0, 96, 250, 0.12)",
+      borderColor: "rgba(0, 112, 216, 0.3)",
       iconBg: "rgba(59, 130, 246, 0.15)",
     },
     {
       id: "ai-planner",
       title: "مخطط الرحلات الذكي (AI)",
       desc: "صمّم خطة خروجة أو يوم كامل بالذكاء الاصطناعي بناءً على ميزانيتك، اهتماماتك الشخصية، والمنطقة التي تفضلها.",
-      icon: <FaRobot style={{ fontSize: "1.6rem", color: "#a855f7" }} />,
+      icon: "ai.webp",
       badge: "ذكاء اصطناعي",
       link: "/ai-planner",
       color: "rgba(168, 85, 247, 0.12)",
@@ -392,7 +457,7 @@ export default function HomePage() {
       id: "directory",
       title: "دليل الهواتف والأكواد",
       desc: "دليل شامل لأرقام الطوارئ، الهيئات الخدمية، وأكواد باقات وفليكسات شبكات المحمول (فودافون، أورنج، اتصالات، وي).",
-      icon: <FaPhoneAlt style={{ fontSize: "1.6rem", color: "#10b981" }} />,
+      icon:"Cairo_directory.webp",
       badge: "دليل سريع",
       link: "/directory",
       color: "rgba(16, 185, 129, 0.12)",
@@ -401,9 +466,9 @@ export default function HomePage() {
     },
     {
       id: "transit",
-      title: "شبكات المترو والمنورايل والقطارات",
-      desc: "خرائط تفاعلية لخطوط مترو الأنفاق 1 و 2 و 3 و 4، القطار الكهربائي LRT، المنورايل، ومواعيد القطارات.",
-      icon: <FaSubway style={{ fontSize: "1.6rem", color: "#f59e0b" }} />,
+      title: "شبكات مترو القاهرة الكبري",
+      desc: "خرائط تفاعلية لخطوط مترو الأنفاق الخط الأول و الثاني و الثالث.",
+      icon: "Cairo_metro.svg",
       badge: "مواصلات",
       link: "/metro",
       color: "rgba(245, 158, 11, 0.12)",
@@ -414,7 +479,7 @@ export default function HomePage() {
       id: "directions",
       title: "دليل ازاي اروح والمواقف",
       desc: "اعثر على طريقة الوصول لأي مكان في مصر بسهولة مع مواقف الأتوبيس، الميكروباص، المطارات، والموانئ.",
-      icon: <FaCompass style={{ fontSize: "1.6rem", color: "#f43f5e" }} />,
+      icon: "Cairo_bus.png",
       badge: "اتجاهات",
       link: "/directions",
       color: "rgba(244, 63, 94, 0.12)",
@@ -422,10 +487,21 @@ export default function HomePage() {
       iconBg: "rgba(244, 63, 94, 0.15)",
     },
     {
+      id: "microbus-stations",
+      title: "مواقف الميكروباص",
+      desc: "دليل مواقف الميكروباص في القاهرة الكبري و الجيزة  وجميع المحافظات المصرية",
+      icon: "Cairo_microbus.png",
+      badge: "مواصلات",
+      link: "/microbus-stations",
+      color: "rgba(178, 63, 244, 0.12)",
+      borderColor: "rgba(178, 63, 244, 0.3)",
+      iconBg: "rgba(178, 63, 244, 0.15)",
+    },
+    {
       id: "propose",
       title: "إضافة واقتراح مكان جديد",
       desc: "هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد على دليل القاهرة ماب؟ أضفه مجاناً ليصل لملايين الزوار.",
-      icon: <FaPlusCircle style={{ fontSize: "1.6rem", color: "#06b6d4" }} />,
+      icon: "shop2.png",
       badge: "مجاني",
       link: "/propose-place",
       color: "rgba(6, 182, 212, 0.12)",
@@ -494,27 +570,6 @@ export default function HomePage() {
           }}>
             منصتك المتكاملة لاستكشاف أماكن المطاعم، الكافيهات، العيادات، شبكات المترو والمنورايل، خطوط المواصلات، ودليل الهواتف والأكواد المختصرة.
           </p>
-          <TextLoop
-            text="Cairo ✦ Map"
-            shape="wave"
-            speed={90}
-            direction="forward"
-            separator="✦"
-            curviness={90}
-            fontSize={46}
-            fontWeight={800}
-            letterSpacing={2}
-            uppercase
-            color="#ffffff"
-            ribbon
-            ribbonColor="#5227FF"
-            ribbonWidth={86}
-            pauseOnHover
-            style={{
-              padding: "0",
-              margin: "0"
-            }}
-          />
 
           {/* Hero Universal Live Search Box Container */}
           <div ref={searchContainerRef} style={{
@@ -530,7 +585,7 @@ export default function HomePage() {
                 border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--accent-primary)" : "1.5px solid var(--border-glass-bright)",
                 borderRadius: "var(--radius-xl)",
                 padding: "8px 12px 8px 18px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
                 backdropFilter: "blur(12px)",
                 transition: "border-color 0.2s ease"
               }}>
@@ -555,7 +610,11 @@ export default function HomePage() {
                   }}
                 />
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setIsDropdownOpen(false);
+                  }}
                   style={{
                     backgroundColor: "var(--accent-primary)",
                     color: "#fff",
@@ -634,7 +693,11 @@ export default function HomePage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <span style={{ fontSize: "1.4rem" }}>{service.icon}</span>
+                            <img
+                              src={`/images/searchBar/${service.icon}`}
+                              alt={service.label}
+                              style={{ width: "30px", height: "30px", objectFit: "contain" }}
+                            />
                           <div>
                             <div style={{ fontWeight: "700", fontSize: "0.95rem" }}>{service.label}</div>
                             <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{service.subtitle}</div>
@@ -697,7 +760,11 @@ export default function HomePage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <span style={{ fontSize: "1.2rem" }}>📍</span>
+                           <img
+                              src={'/images/searchBar/shop.png'}
+                              alt={place.name}
+                              style={{ width: "30px", height: "30px", objectFit: "contain" }}
+                            />
                           <div>
                             <div style={{ fontWeight: "700", fontSize: "0.95rem" }}>{place.name}</div>
                             <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
@@ -787,7 +854,7 @@ export default function HomePage() {
                   }}
                 >
                   <FaSearch style={{ fontSize: "0.85rem" }} />
-                  <span>عرض كافة النتائج في دليل الأماكن لـ &quot;{searchQuery}&quot;</span>
+                  <span>عرض كافة النتائج لـ &quot;{searchQuery}&quot;</span>
                 </button>
 
               </div>
@@ -973,12 +1040,15 @@ export default function HomePage() {
                     width: "54px",
                     height: "54px",
                     borderRadius: "var(--radius-md)",
-                    backgroundColor: service.iconBg,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center"
                   }}>
-                    {service.icon}
+                    <img
+                      src={`/images/searchBar/${service.icon}`}
+                      alt={service.title}
+                      style={{ width: "50px", height: "50px", objectFit: "contain" }}
+                    />
                   </div>
                   <span style={{
                     fontSize: "0.75rem",
@@ -1025,12 +1095,12 @@ export default function HomePage() {
         borderBottom: "1px solid var(--border-glass)"
       }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "36px", flexWrap: "wrap", gap: "16px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "36px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontSize: "1.8rem", fontWeight: "800", marginBottom: "8px" }}>
+              <h2 style={{ fontFamily:"var(--font-body)", fontSize: "1.8rem", fontWeight: "800", marginBottom: "8px", textAlign: "center" }}>
                 تصفّح حسب الفئة في دليل الأماكن
               </h2>
-              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
+              <p style={{ fontFamily:"var(--font-body)", color: "var(--text-secondary)", fontSize: "0.95rem", textAlign: "center" }}>
                 اختر الفئة للاطلاع على كافة الفروع، المواعيد، وتقييمات الزوار
               </p>
             </div>
@@ -1042,6 +1112,7 @@ export default function HomePage() {
                 alignItems: "center",
                 gap: "8px",
                 color: "var(--accent-primary)",
+                fontFamily:"var(--font-body)",
                 fontWeight: "700",
                 fontSize: "0.95rem",
                 textDecoration: "none"
@@ -1063,6 +1134,7 @@ export default function HomePage() {
                 href={`/places?category=${cat.name}`}
                 style={{
                   textDecoration: "none",
+                  fontFamily:"var(--font-body)",
                   padding: "20px",
                   borderRadius: "var(--radius-md)",
                   backgroundColor: "var(--bg-glass-card)",

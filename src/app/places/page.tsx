@@ -44,6 +44,48 @@ function normalizeArabic(text: string) {
     .replace(/ـ/g, ""); // remove tatweel
 }
 
+// ── دالة إزالة السوابق والتعريفات العربية (الـ، للـ، بالـ، والـ) لضمان تطابق مرن ──
+function cleanArabicWord(word: string): string {
+  let w = word.trim();
+  if (w.length <= 3) return w;
+  
+  if (w.startsWith("وال") && w.length > 4) {
+    w = w.substring(3);
+  } else if (w.startsWith("ال") && w.length > 3) {
+    w = w.substring(2);
+  } else if (w.startsWith("بال") && w.length > 4) {
+    w = w.substring(3);
+  } else if (w.startsWith("لل") && w.length > 3) {
+    w = w.substring(2);
+  }
+  
+  return w;
+}
+
+// ── دالة تقسيم نص البحث إلى كلمات نظيفة مفلترة ──
+function getSearchWords(text: string): string[] {
+  const normalized = normalizeArabic(text).toLowerCase();
+  const stopWords = ["في", "من", "ب", "بـ", "بمنطقة", "بمحافظة", "مدينة", "حي", "علي", "الي", "التي", "الذي", "مع"];
+  
+  return normalized
+    .split(/\s+/)
+    .map(w => w.trim())
+    .filter(w => w.length > 0 && !stopWords.includes(w))
+    .map(cleanArabicWord);
+}
+
+// ── دالة تنظيف الكلمات في النص الكامل للمقارنة ──
+function getSearchCleanedText(text: string): string {
+  if (!text) return "";
+  return normalizeArabic(text)
+    .toLowerCase()
+    .split(/\s+/)
+    .map(w => w.trim())
+    .map(cleanArabicWord)
+    .filter(Boolean)
+    .join(" ");
+}
+
 // خرائط التصنيفات والأيقونات والألوان للأماكن (يتم توليدها ديناميكياً من هيكل التصنيفات)
 const CATEGORY_EMOJIS: Record<string, string> = {
   all: "🗂️",
@@ -404,11 +446,7 @@ function HomeContent() {
 
   /* Main filtered + searched list */
   const filteredPlaces = React.useMemo(() => {
-    const q = normalizeArabic(searchQuery.trim().toLowerCase());
-
-    // Split query into words, ignore common stop words
-    const stopWords = ["في", "من", "ب", "بـ", "بمنطقة", "بمحافظة", "مدينة", "حي"];
-    const queryWords = q.split(/\s+/).filter(w => !stopWords.includes(w) && w.length > 0);
+    const queryWords = getSearchWords(searchQuery);
 
     return enrichedPlaces.filter((p) => {
       // 1. Main Category filter
@@ -442,7 +480,7 @@ function HomeContent() {
       if (queryWords.length === 0) return true;
 
       // Build a comprehensive searchable string for the place
-      const searchableText = normalizeArabic([
+      const searchableText = getSearchCleanedText([
         p.name,
         p.categoryLabel,
         ...(p.subCategories || []).map(sc => CATEGORY_LABELS[sc] || sc),
@@ -461,7 +499,7 @@ function HomeContent() {
         p.subCategories?.includes("pharmacy") ? "صيدلية صيدليات علاج دواء" : "",
         p.subCategories?.includes("hospital") ? "مستشفى مستشفيات عيادة مركز طبي صحة" : "",
         p.subCategories?.includes("park") ? "حديقة حدائق منتزه ملاهي اماكن عامة" : "",
-      ].filter(Boolean).join(" ").toLowerCase());
+      ].filter(Boolean).join(" "));
 
       // Check if ALL searched words exist somewhere in the searchable text
       return queryWords.every(word => searchableText.includes(word));
