@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../admin.module.css";
 
 interface UserProfile {
@@ -21,8 +21,10 @@ interface UserProfile {
   is_admin: boolean;
 }
 
-export default function AdminPointsPage() {
+function AdminPointsPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
   const { user, loading: authLoading } = useAuth();
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -42,7 +44,7 @@ export default function AdminPointsPage() {
   const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Deposit/Withdraw requests states
-  const [activeTab, setActiveTab] = useState<"users" | "requests">("users");
+  const [activeTab, setActiveTab] = useState<"users" | "requests">((tabParam === "requests" || tabParam === "users") ? tabParam : "users");
   const [requestsList, setRequestsList] = useState<any[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(true);
   const [requestSearchQuery, setRequestSearchQuery] = useState("");
@@ -53,6 +55,12 @@ export default function AdminPointsPage() {
   const [rejectNotes, setRejectNotes] = useState("");
   const [savedReasons, setSavedReasons] = useState<string[]>([]);
 
+
+  useEffect(() => {
+    if (tabParam === "requests" || tabParam === "users") {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -1419,6 +1427,14 @@ export default function AdminPointsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminPointsPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-text-secondary)", direction: "rtl", textAlign: "center" }}>جاري التحميل...</div>}>
+      <AdminPointsPageInner />
+    </Suspense>
   );
 }
 

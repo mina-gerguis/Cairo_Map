@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -56,7 +56,8 @@ export default function AdminLayout({
           { label: "إدارة تنبيهات الموقع", href: "/admin/alerts", category: "صفحة إدارية", icon: "bx bx-info-circle" },
           { label: "الإشعارات والرسائل الجماعية", href: "/admin/notifications", category: "صفحة إدارية", icon: "bx bx-bell" },
           { label: "البلاغات والشكاوى", href: "/admin/reports", category: "صفحة إدارية", icon: "bx bx-error-circle" },
-          { label: "الرصيد والشحن المالي", href: "/admin/points", category: "صفحة إدارية", icon: "bx bx-coin-stack" },
+          { label: "الرصيد والشحن المالي", href: "/admin/points?tab=users", category: "صفحة إدارية", icon: "bx bx-coin-stack" },
+          { label: "طلبات الإيداع والسحب المعلقة", href: "/admin/points?tab=requests", category: "صفحة إدارية", icon: "bx bx-transfer" },
           { label: "الاشتراكات المميزة والذهبية", href: "/admin/subscriptions", category: "صفحة إدارية", icon: "bx bx-crown" },
           { label: "إدارة المطارات", href: "/admin/services?tab=airports", category: "خدمة موقع", icon: "bx bx-plane" },
           { label: "إدارة الموانئ البحرية", href: "/admin/services?tab=ports", category: "خدمة موقع", icon: "bx bx-anchor" },
@@ -232,7 +233,10 @@ export default function AdminLayout({
   else if (pathname === "/admin/notifications") pageTitle = "الإشعارات والرسائل";
   else if (pathname === "/admin/alerts") pageTitle = "تنبيهات الموقع";
   else if (pathname === "/admin/reports") pageTitle = "البلاغات والشكاوى";
-  else if (pathname === "/admin/points") pageTitle = "الرصيد والشحن";
+  else if (pathname === "/admin/points") {
+    if (activeSubTab === "requests") pageTitle = "طلبات الإيداع والسحب";
+    else pageTitle = "الرصيد والشحن";
+  }
   else if (pathname === "/admin/subscriptions") pageTitle = "الاشتراكات المميزة";
 
   // Compute greeting based on time
@@ -515,15 +519,35 @@ export default function AdminLayout({
 
             {/* الرصيد والشحن */}
             <Link
-              href="/admin/points"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/points" ? styles.sidebarNavLinkActive : ""}`}
+              href="/admin/points?tab=users"
+              className={`${styles.sidebarNavLink} ${
+                pathname === "/admin/points" && (activeSubTab === "users" || !activeSubTab) ? styles.sidebarNavLinkActive : ""
+              }`}
               onClick={() => {
+                setActiveSubTab("users");
                 if (isMobile) setIsSidebarOpen(false);
               }}
             >
               <div className={styles.linkLeftGroup}>
                 <i className={`bx bx-coin-stack ${styles.linkIcon}`} />
                 <span className={styles.linkLabel}>الرصيد والشحن</span>
+              </div>
+            </Link>
+
+            {/* طلبات الإيداع والسحب */}
+            <Link
+              href="/admin/points?tab=requests"
+              className={`${styles.sidebarNavLink} ${
+                pathname === "/admin/points" && activeSubTab === "requests" ? styles.sidebarNavLinkActive : ""
+              }`}
+              onClick={() => {
+                setActiveSubTab("requests");
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-transfer ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>طلبات الإيداع والسحب</span>
               </div>
               {pendingPointsCount > 0 && (
                 <span className={styles.sidebarBadge} title={`هناك ${pendingPointsCount} معلقة`}>

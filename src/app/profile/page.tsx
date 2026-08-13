@@ -71,6 +71,8 @@ export default function ProfilePage() {
   const [loadingReminders, setLoadingReminders] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [profileUserId, setProfileUserId] = useState<string | null>(null);
+  const isOwnProfile = !profileUserId || (user && profileUserId === user.id);
 
   const profileExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasRemindersAccess = profile?.is_admin || 
@@ -153,7 +155,7 @@ export default function ProfilePage() {
 
   const handleAvatarFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !supabase || !user) return;
+    if (!file || !supabase || !user || !isOwnProfile) return;
     setUploadingAvatar(true);
     try {
       const fileExt = file.name.split('.').pop();
@@ -451,13 +453,23 @@ export default function ProfilePage() {
     // Fetch FAQs for all users (including guests)
     fetchFAQs();
 
+    let queryUserId = user?.id || null;
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlUserId = params.get("id");
+      if (urlUserId) {
+        queryUserId = urlUserId;
+      }
+    }
+    setProfileUserId(queryUserId);
+
     if (!user) {
       // Don't redirect - show guest view
       setLoading(false);
       return;
     }
 
-    fetchProfileData();
+    fetchProfileData(queryUserId || undefined);
     fetchMfaStatus();
 
     // Check for parameter to expand help
@@ -586,13 +598,15 @@ export default function ProfilePage() {
     }
   };
 
-  const fetchProfileData = async () => {
+  const fetchProfileData = async (targetId?: string) => {
     if (!supabase || !user) return;
     setLoading(true);
 
+    const queryUserId = targetId || (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("id") : null) || user.id;
+
     // Auto-check and reset expired subscription in DB
     try {
-      await supabase.rpc("check_user_subscription_status", { p_user_id: user.id });
+      await supabase.rpc("check_user_subscription_status", { p_user_id: queryUserId });
     } catch (e) {
       // Fallback silently if RPC does not exist yet
     }
@@ -601,7 +615,7 @@ export default function ProfilePage() {
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('id', queryUserId)
       .single();
 
     if (profileData) {
@@ -613,12 +627,12 @@ export default function ProfilePage() {
         subscription_period: null
       } : profileData;
 
-      setProfile({ ...updatedProfileData, email: user.email }); // Combine with auth email
+      setProfile({ ...updatedProfileData, email: updatedProfileData.email || user.email }); // Combine with auth email
       setFormData({
         fullName: updatedProfileData.full_name || "",
         username: updatedProfileData.username || "",
         phone: updatedProfileData.phone?.replace('+20', '') || "", // Strip +20 for editing
-        email: user.email || "",
+        email: updatedProfileData.email || user.email || "",
         governorate: updatedProfileData.governorate || "",
         city: updatedProfileData.city || "",
         dob: updatedProfileData.dob || "",
@@ -643,7 +657,7 @@ export default function ProfilePage() {
     const { data: favs } = await supabase
       .from('favorite_places')
       .select('place_id')
-      .eq('user_id', user.id);
+      .eq('user_id', queryUserId);
 
     if (favs && favs.length > 0) {
       const placeIds = favs.map((f: any) => f.place_id);
@@ -682,7 +696,7 @@ export default function ProfilePage() {
       const { data: notes } = await supabase
         .from("place_notes")
         .select("*, places(name)")
-        .eq("user_id", user.id)
+        .eq("user_id", queryUserId)
         .order("updated_at", { ascending: false });
 
       if (notes) {
@@ -702,7 +716,7 @@ export default function ProfilePage() {
       setLoadingReminders(false);
     }
 
-    await fetchUserRequestsAndReports();
+    await fetchUserRequestsAndReports(queryUserId);
 
     setLoading(false);
   };
@@ -830,15 +844,16 @@ export default function ProfilePage() {
     }
   };
 
-  const fetchUserRequestsAndReports = async () => {
+  const fetchUserRequestsAndReports = async (targetId?: string) => {
     if (!supabase || !user) return;
     setLoadingRequests(true);
+    const queryUserId = targetId || (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("id") : null) || user.id;
     try {
       // 1. Fetch place proposals
       const { data: propData, error: propErr } = await supabase
         .from("place_proposals")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", queryUserId)
         .order("created_at", { ascending: false });
 
       if (propErr) console.error("Error fetching user proposals:", propErr);
@@ -848,7 +863,7 @@ export default function ProfilePage() {
       const { data: repData, error: repErr } = await supabase
         .from("place_reports")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", queryUserId)
         .order("created_at", { ascending: false });
 
       if (repErr) {
@@ -883,7 +898,7 @@ export default function ProfilePage() {
       const { data: feedbackData, error: feedbackErr } = await supabase
         .from("app_feedback")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", queryUserId)
         .order("created_at", { ascending: false });
 
       if (feedbackErr) {
@@ -1328,7 +1343,7 @@ export default function ProfilePage() {
 
 
   const handleSave = async () => {
-    if (!supabase || !user || !profile) return;
+    if (!supabase || !user || !profile || !isOwnProfile) return;
     setSaving(true);
     setMessage(null);
 
@@ -2103,18 +2118,22 @@ export default function ProfilePage() {
                       <p className={styles.noInterestsText}>
                         قم بإضافة اهتماماتك الآن لنتمكن من إرسال أقوى العروض والإشعارات التي تناسبك خصيصاً!
                       </p>
-                      <button className={`ios-btn ${styles.addInterestsBtn}`} onClick={(e) => { e.stopPropagation(); setEditMode(true); }}>
-                        أضف الآن
-                      </button>
+                      {isOwnProfile && (
+                        <button className={`ios-btn ${styles.addInterestsBtn}`} onClick={(e) => { e.stopPropagation(); setEditMode(true); }}>
+                          أضف الآن
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
 
-                <div className={styles.formButtonsRow}>
-                  <button className={`ios-btn ios-btn-primary ${styles.flex1}`} onClick={() => setEditMode(true)}>
-                    تعديل البيانات
-                  </button>
-                </div>
+                {isOwnProfile && (
+                  <div className={styles.formButtonsRow}>
+                    <button className={`ios-btn ios-btn-primary ${styles.flex1}`} onClick={() => setEditMode(true)}>
+                      تعديل البيانات
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -2129,12 +2148,13 @@ export default function ProfilePage() {
             className={`${styles.badgePill} ${styles.badgePoints}`}
             title="النقاط"
             onClick={(e) => {
+              if (!isOwnProfile) return;
               e.stopPropagation();
               setShowPointsModal(true);
               setShowConvertSection(false);
               setConvertStatus(null);
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: isOwnProfile ? "pointer" : "default" }}
           >
             <i className="bx bxs-coin"></i>
             <span>{formatNumber(profile?.points ?? 0)} نقطة</span>
@@ -2144,10 +2164,11 @@ export default function ProfilePage() {
             className={`${styles.badgePill} ${styles.badgeWallet}`}
             title="الرصيد الأساسي"
             onClick={(e) => {
+              if (!isOwnProfile) return;
               e.stopPropagation();
               handleOpenWalletModal();
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: isOwnProfile ? "pointer" : "default" }}
           >
             <i className="bx bxs-wallet"></i>
             <span>{formatNumber(profile?.balance ?? 0, 2)} ج.م</span>
@@ -2169,10 +2190,11 @@ export default function ProfilePage() {
             <div
               className={styles.cardContainer}
               onClick={() => {
+                if (!isOwnProfile) return;
                 setSubMessage(null);
                 setShowSubModal(true);
               }}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: isOwnProfile ? "pointer" : "default" }}
             >
               <div className={styles.cardContent}>
                 {/* Icon */}
@@ -2200,7 +2222,7 @@ export default function ProfilePage() {
                 <span className={styles.favBadge} style={{ background: "none", color: "var(--accent-ios)", fontWeight: "bold", fontSize: "0.8rem" }}>
                   {!profileExpired && profile?.subscription_tier === 'mishwar' ? 'المشوار' : !profileExpired && profile?.subscription_tier === 'silver' ? 'الفضية' : !profileExpired && profile?.subscription_tier === 'gold' ? 'الذهبية' : 'ترقية'}
                 </span>
-                <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+                {isOwnProfile && <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>}
               </div>
             </div>
             {/* End Subscription Card */}
@@ -2230,170 +2252,183 @@ export default function ProfilePage() {
         </div>
         {/* End Theme (Dark / Light Mode) */}
 
-        <hr className={styles.dividerDashed} />
-
-        {/* Start Favorite Places Card */}
-        <div
-          className={styles.cardContainer}
-          onClick={() => router.push('/favorites')}
-        >
-          <div className={styles.cardContent}>
-            {/* Icon */}
-            <div style={{ color: "var(--accent-red)" }}>
-              <i className={`bx bxs-heart ${styles.cardIcon}`}></i>
-            </div>
-            {/* Title */}
-            <div>
-              <h3 className={styles.cardTitle}>الأماكن المفضلة</h3>
-            </div>
-          </div>
-          <div className={styles.badgeRight}>
-            {favorites.length > 0 && (
-              <span className={styles.favBadge}>
-                {favorites.length}
-              </span>
-            )}
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-          </div>
-        </div>
-        {/* End Favorites Card */}
-
-        <hr className={styles.dividerDashed} />
-
-        {/* Start Reminders Card */}
-        <div
-          className={styles.cardContainer}
-          onClick={() => {
-            fetchProfileData();
-            setIsRemindersModalOpen(true);
-          }}
-        >
-          <div className={styles.cardContent}>
-            {/* Icon */}
-            <div style={{ color: "#34c759" }}>
-              <i className={`bx bx-notepad ${styles.cardIcon}`}></i>
-            </div>
-            {/* Title */}
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <h3 className={styles.cardTitle}>التذكيرات والملاحظات</h3>
-              {!hasRemindersAccess && <i className="bx bxs-crown" style={{ fontSize: "1rem", color: "#fbbf24" }}></i>}
-            </div>
-          </div>
-          <div className={styles.badgeRight}>
-            {reminders.length > 0 && (
-              <span className={styles.favBadge} style={{ background: "none" }}>
-                {reminders.length}
-              </span>
-            )}
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-          </div>
-        </div>
-        {/* End Reminders Card */}
-
-        <hr className={styles.dividerDashed} />
-        {/* Start Notifications Card */}
-        <div
-          className={styles.cardContainer}
-          style={{ flexDirection: "column", alignItems: "stretch" }}
-          onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
-        >
-          <div className={styles.cardContent}
-            style={{ justifyContent: "space-between" }}>
-            <div className={styles.notifHeaderLeft}>
-              <div style={{ color: "var(--accent-ios)" }}>
-                <i className={`bx bxs-bell ${styles.cardIcon}`}></i>
+        {isOwnProfile && (
+          <>
+            <hr className={styles.dividerDashed} />
+            {/* Start Favorite Places Card */}
+            <div
+              className={styles.cardContainer}
+              onClick={() => router.push('/favorites')}
+            >
+              <div className={styles.cardContent}>
+                {/* Icon */}
+                <div style={{ color: "var(--accent-red)" }}>
+                  <i className={`bx bxs-heart ${styles.cardIcon}`}></i>
+                </div>
+                {/* Title */}
+                <div>
+                  <h3 className={styles.cardTitle}>الأماكن المفضلة</h3>
+                </div>
               </div>
-              <div>
-                <h3 className={styles.cardTitle}>الإشعارات</h3>
+              <div className={styles.badgeRight}>
+                {favorites.length > 0 && (
+                  <span className={styles.favBadge}>
+                    {favorites.length}
+                  </span>
+                )}
+                <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
               </div>
             </div>
-            <div className={styles.badgeRight}>
-              {unreadCount > 0 && (
-                <span className={styles.notifBadgeRed}>
-                  {unreadCount > 99 ? '99+' : unreadCount}
-                </span>
-              )}
-              <i className={`bx bx-chevron-${isNotificationsExpanded ? "down" : "left"} ${styles.chevronIcon}`}></i>
-            </div>
-          </div>
+            {/* End Favorites Card */}
+          </>
+        )}
 
-          {/* Notifications Expanded Section */}
-          {isNotificationsExpanded && (
-            <div className={styles.notifExpandedContent}>
-              <div className={styles.notifExpandedHeader}>
-                <h4 className={styles.notifExpandedTitle}>السجل</h4>
-                <div className={styles.notifActions}>
+        {isOwnProfile && (
+          <>
+            <hr className={styles.dividerDashed} />
+            {/* Start Reminders Card */}
+            <div
+              className={styles.cardContainer}
+              onClick={() => {
+                fetchProfileData();
+                setIsRemindersModalOpen(true);
+              }}
+            >
+              <div className={styles.cardContent}>
+                {/* Icon */}
+                <div style={{ color: "#34c759" }}>
+                  <i className={`bx bx-notepad ${styles.cardIcon}`}></i>
+                </div>
+                {/* Title */}
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <h3 className={styles.cardTitle}>التذكيرات والملاحظات</h3>
+                  {!hasRemindersAccess && <i className="bx bxs-crown" style={{ fontSize: "1rem", color: "#fbbf24" }}></i>}
+                </div>
+              </div>
+              <div className={styles.badgeRight}>
+                {reminders.length > 0 && (
+                  <span className={styles.favBadge} style={{ background: "none" }}>
+                    {reminders.length}
+                  </span>
+                )}
+                <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+              </div>
+            </div>
+            {/* End Reminders Card */}
+          </>
+        )}
+
+        {isOwnProfile && (
+          <>
+            <hr className={styles.dividerDashed} />
+            {/* Start Notifications Card */}
+            <div
+              className={styles.cardContainer}
+              style={{ flexDirection: "column", alignItems: "stretch" }}
+              onClick={() => setIsNotificationsExpanded(!isNotificationsExpanded)}
+            >
+              <div className={styles.cardContent}
+                style={{ justifyContent: "space-between" }}>
+                <div className={styles.notifHeaderLeft}>
+                  <div style={{ color: "var(--accent-ios)" }}>
+                    <i className={`bx bxs-bell ${styles.cardIcon}`}></i>
+                  </div>
+                  <div>
+                    <h3 className={styles.cardTitle}>الإشعارات</h3>
+                  </div>
+                </div>
+                <div className={styles.badgeRight}>
                   {unreadCount > 0 && (
-                    <button onClick={(e) => { e.stopPropagation(); markAllAsRead(); }} className={`ios-btn ${styles.notifBtnSmall}`}>
-                      قراءة الكل
-                    </button>
+                    <span className={styles.notifBadgeRed}>
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
                   )}
-                  {notifications.length > 0 && (
-                    <button onClick={(e) => { e.stopPropagation(); deleteAll(); }} className={`ios-btn ${styles.notifBtnDeleteAll}`}>
-                      حذف الكل
-                    </button>
-                  )}
+                  <i className={`bx bx-chevron-${isNotificationsExpanded ? "down" : "left"} ${styles.chevronIcon}`}></i>
                 </div>
               </div>
 
-              {notifications.length === 0 ? (
-                <div className={styles.notifEmpty}>
-                  <i className={`bx bx-bell-off ${styles.notifEmptyIcon}`}></i>
-                  <p className={styles.notifEmptyText}>لا توجد إشعارات حالياً</p>
-                </div>
-              ) : (
-                <div className={styles.notifList}>
-                  {notifications.map(notif => (
-                    <div key={notif.id} onClick={(e) => { e.stopPropagation(); if (!notif.is_read) markAsRead(notif.id); setSelectedNotification(notif); }} className={`${styles.notifItem} ${notif.is_read ? styles.notifItemRead : styles.notifItemUnread}`}>
-                      <div className={styles.notifEmoji}>
-                        {notif.type === "success" ? "✅" : notif.type === "warning" ? "⚠️" : "🔔"}
-                      </div>
-                      <div className={styles.notifItemBody}>
-                        <h5 className={`${styles.notifItemTitle} ${notif.is_read ? styles.notifItemTitleRead : styles.notifItemTitleUnread}`}>{notif.title}</h5>
-                        <p className={styles.notifItemMsg}>{notif.message}</p>
-                        <span className={styles.notifItemDate}>
-                          {new Date(notif.created_at).toLocaleDateString("ar-EG", { hour: "2-digit", minute: "2-digit" })}
-                        </span>
-                      </div>
-                      {!notif.is_read && (
-                        <div className={styles.notifUnreadDot} />
+              {/* Notifications Expanded Section */}
+              {isNotificationsExpanded && (
+                <div className={styles.notifExpandedContent}>
+                  <div className={styles.notifExpandedHeader}>
+                    <h4 className={styles.notifExpandedTitle}>السجل</h4>
+                    <div className={styles.notifActions}>
+                      {unreadCount > 0 && (
+                        <button onClick={(e) => { e.stopPropagation(); markAllAsRead(); }} className={`ios-btn ${styles.notifBtnSmall}`}>
+                          قراءة الكل
+                        </button>
+                      )}
+                      {notifications.length > 0 && (
+                        <button onClick={(e) => { e.stopPropagation(); deleteAll(); }} className={`ios-btn ${styles.notifBtnDeleteAll}`}>
+                          حذف الكل
+                        </button>
                       )}
                     </div>
-                  ))}
+                  </div>
+
+                  {notifications.length === 0 ? (
+                    <div className={styles.notifEmpty}>
+                      <i className={`bx bx-bell-off ${styles.notifEmptyIcon}`}></i>
+                      <p className={styles.notifEmptyText}>لا توجد إشعارات حالياً</p>
+                    </div>
+                  ) : (
+                    <div className={styles.notifList}>
+                      {notifications.map(notif => (
+                        <div key={notif.id} onClick={(e) => { e.stopPropagation(); if (!notif.is_read) markAsRead(notif.id); setSelectedNotification(notif); }} className={`${styles.notifItem} ${notif.is_read ? styles.notifItemRead : styles.notifItemUnread}`}>
+                          <div className={styles.notifEmoji}>
+                            {notif.type === "success" ? "✅" : notif.type === "warning" ? "⚠️" : "🔔"}
+                          </div>
+                          <div className={styles.notifItemBody}>
+                            <h5 className={`${styles.notifItemTitle} ${notif.is_read ? styles.notifItemTitleRead : styles.notifItemTitleUnread}`}>{notif.title}</h5>
+                            <p className={styles.notifItemMsg}>{notif.message}</p>
+                            <span className={styles.notifItemDate}>
+                              {new Date(notif.created_at).toLocaleDateString("ar-EG", { hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                          </div>
+                          {!notif.is_read && (
+                            <div className={styles.notifUnreadDot} />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
-        </div>
-        {/*End Notifications Card */}
-        <hr className={styles.dividerDashed} />
-        {/*Start Propose Place Card */}
-        {user && (
-          <div
-            className={styles.cardContainer}
-            onClick={() => {
-              if (isLimitReached) {
-                setMessage({ type: 'error', text: "لقد وصلت للحد الأقصى (5 طلبات معلقة). يرجى الانتظار حتى تقوم الإدارة بمراجعة طلباتك السابقة قبل تقديم اقتراحات جديدة." });
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              } else {
-                router.push('/propose-place');
-              }
-            }}
-          >
-            <div className={styles.cardContent}>
-              <div style={{ color: "var(--accent-secondary)" }}>
-                <i className={`bx bx-map-pin ${styles.cardIcon}`}></i>
-              </div>
-              <div>
-                <h3 className={styles.cardTitle}>اقتراحات الأماكن</h3>
-              </div>
-            </div>
-            <div className={styles.badgeRight}>
-              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-            </div>
-          </div>
+            {/*End Notifications Card */}
+          </>
         )}
-        {/*End Propose Place Card */}
+
+        {isOwnProfile && user && (
+          <>
+            <hr className={styles.dividerDashed} />
+            {/*Start Propose Place Card */}
+            <div
+              className={styles.cardContainer}
+              onClick={() => {
+                if (isLimitReached) {
+                  setMessage({ type: 'error', text: "لقد وصلت للحد الأقصى (5 طلبات معلقة). يرجى الانتظار حتى تقوم الإدارة بمراجعة طلباتك السابقة قبل تقديم اقتراحات جديدة." });
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                  router.push('/propose-place');
+                }
+              }}
+            >
+              <div className={styles.cardContent}>
+                <div style={{ color: "var(--accent-secondary)" }}>
+                  <i className={`bx bx-map-pin ${styles.cardIcon}`}></i>
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>اقتراحات الأماكن</h3>
+                </div>
+              </div>
+              <div className={styles.badgeRight}>
+                <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+              </div>
+            </div>
+            {/*End Propose Place Card */}
+          </>
+        )}
 
         {/*Start My Requests Card */}
         {user && (
@@ -2513,7 +2548,7 @@ export default function ProfilePage() {
                                 <strong>سبب الرفض:</strong> {prop.rejection_reason}
                               </div>
                             )}
-                            {prop.status === "pending" && (
+                            {prop.status === "pending" && isOwnProfile && (
                               <button
                                 type="button"
                                 onClick={() => setProposalToRetract(prop.id)}
@@ -2563,7 +2598,7 @@ export default function ProfilePage() {
                             )}
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                               <span>{new Date(report.created_at).toLocaleDateString("ar-EG", { dateStyle: "short" })}</span>
-                              {report.status === "pending" && (
+                              {report.status === "pending" && isOwnProfile && (
                                 <button
                                   type="button"
                                   onClick={() => setReportToRetract(report.id)}
@@ -2635,7 +2670,7 @@ export default function ProfilePage() {
                             )}
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                               <span>{new Date(fb.created_at).toLocaleDateString("ar-EG", { dateStyle: "short" })}</span>
-                              {fb.status === "pending" && (
+                              {fb.status === "pending" && isOwnProfile && (
                                 <button
                                   type="button"
                                   onClick={() => setFeedbackToDelete(fb)}
@@ -2673,7 +2708,7 @@ export default function ProfilePage() {
       </div>
 
       {/* ─── Section 3: Security & 2FA (For logged in users) ─── */}
-      {user && (
+      {user && isOwnProfile && (
         <div className={styles.sectionCard}>
           {/* Start Change password Card */}
           <div
@@ -2740,7 +2775,7 @@ export default function ProfilePage() {
       )}
 
       {/* ─── Section 3.5: Suggestions & Bug Reports (For logged in users) ─── */}
-      {user && (
+      {user && isOwnProfile && (
         <div className={styles.sectionCard}>
           {/* Start Suggestion Card */}
           <div
@@ -3007,7 +3042,7 @@ export default function ProfilePage() {
       </div>
 
       {/* ─── Section 5: Advanced Settings & Logout ─── */}
-      {user && (
+      {user && isOwnProfile && (
         <>
           <div className={styles.sectionCard}>
             {/* Start Logout */}

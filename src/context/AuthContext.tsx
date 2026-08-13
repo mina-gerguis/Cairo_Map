@@ -243,11 +243,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (!session_id) return;
 
       try {
-        const { data, error } = await supabase
+        // Try to update last_seen_at to keep the session alive in real-time
+        let updateRes = await supabase
           .from("user_devices")
-          .select("is_active, logged_out_at")
+          .update({ last_seen_at: new Date().toISOString() })
           .eq("session_id", session_id)
+          .select("is_active, logged_out_at")
           .maybeSingle();
+
+        let data = updateRes.data;
+        let error = updateRes.error;
+
+        // Fallback if last_seen_at column does not exist in the database yet
+        if (error && (error.message.includes("last_seen_at") || error.code === "PGRST204")) {
+          const fallbackRes = await supabase
+            .from("user_devices")
+            .select("is_active, logged_out_at")
+            .eq("session_id", session_id)
+            .maybeSingle();
+          data = fallbackRes.data;
+          error = fallbackRes.error;
+        }
 
         if (error || cancelled) {
           if (error) console.error("Error verifying active session:", error);

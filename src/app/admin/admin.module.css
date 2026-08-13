@@ -1197,6 +1197,7 @@
   color: #cbd5e1;
   padding: 6px 12px;
   border-radius: 10px;
+  font-family: var(--font-heading);
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
