@@ -203,8 +203,8 @@ export default function LoginPage() {
           {/* Logo / Brand Header */}
           <div style={{ textAlign: "center", marginBottom: "40px", animation: "slide-in-section 0.6s ease both" }}>
             <div style={{ margin: "0 auto 20px", display: "flex", justifyContent: "center" }}>
-              <img src="/logo/darkMode_logo.png" alt="القاهرة ماب" className="logo-img-dark" style={{ height: "54px", width: "auto", objectFit: "contain" }} />
-              <img src="/logo/lightMode_logo.png" alt="القاهرة ماب" className="logo-img-light" style={{ height: "54px", width: "auto", objectFit: "contain" }} />
+              <img src="images/logo/darkMode_logo.png" alt="القاهرة ماب" className="logo-img-dark" style={{ height: "54px", width: "auto", objectFit: "contain" }} />
+              <img src="images/logo/lightMode_logo.png" alt="القاهرة ماب" className="logo-img-light" style={{ height: "54px", width: "auto", objectFit: "contain" }} />
             </div>
             <h1 style={{
               fontFamily: "var(--font-display)",

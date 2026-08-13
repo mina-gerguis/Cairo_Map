@@ -811,7 +811,7 @@ export default function SignupPage() {
                       <span style={{ height: "16px", width: "1px", background: "#cbd5e1", display: "inline-block" }} />
                       +20
                       <Image
-                        src="/image/profile/flag-egypt.png"
+                        src="/images/profile/flag-egypt.png"
                         alt="phone"
                         width={20}
                         height={20}

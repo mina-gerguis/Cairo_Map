@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS public.monorail_stations (
     name TEXT NOT NULL,
     line_type TEXT NOT NULL CHECK (line_type IN ('east', 'west')),
     station_order INTEGER NOT NULL DEFAULT 0,
+    landmarks JSONB NOT NULL DEFAULT '[]'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
@@ -15,6 +16,7 @@ CREATE TABLE IF NOT EXISTS public.lrt_stations (
     name TEXT NOT NULL,
     line_type TEXT NOT NULL CHECK (line_type IN ('trunk', 'capital', 'ramadan')),
     station_order INTEGER NOT NULL DEFAULT 0,
+    landmarks JSONB NOT NULL DEFAULT '[]'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 

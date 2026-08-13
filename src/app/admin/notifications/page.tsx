@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
@@ -191,7 +191,7 @@ export default function AdminNotificationsPage() {
                 padding: "10px",
                 fontSize: "1rem",
                 fontWeight: "600",
-                fontFamily: "var(--font-cairo)",
+                fontFamily: "var(--font-heading)",
                 borderRadius: "25px",
                 border: "none",
                 cursor: loading ? "not-allowed" : "pointer",
@@ -214,3 +214,4 @@ export default function AdminNotificationsPage() {
     </div>
   );
 }
+

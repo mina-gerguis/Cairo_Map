@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -366,7 +366,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         {!isSubComponent ? (
           <div>
             <h1
-              style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", fontSize: "26px", color: "var(--text-ios)" }}
+              style={{ fontFamily: "var(--font-heading)", fontWeight: "600", fontSize: "26px", color: "var(--text-ios)" }}
               className="title-ios">☎️ إدارة دليل الهاتف </h1>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
             </div>
@@ -401,14 +401,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         <button
           onClick={() => { setActiveTab("phones"); setError(""); }}
           className={`category-pill ${activeTab === "phones" ? "active" : ""}`}
-          style={{ fontFamily: "var(--font-cairo)", padding: "5px 16px", color: "var(--text-ios)" }}
+          style={{ fontFamily: "var(--font-heading)", padding: "5px 16px", color: "var(--text-ios)" }}
         >
           📞 أرقام الخدمات
         </button>
         <button
           onClick={() => { setActiveTab("codes"); setError(""); }}
           className={`category-pill ${activeTab === "codes" ? "active" : ""}`}
-          style={{ fontFamily: "var(--font-cairo)", padding: "5px 16px", color: "var(--text-ios)" }}
+          style={{ fontFamily: "var(--font-heading)", padding: "5px 16px", color: "var(--text-ios)" }}
         >
           📱 أكواد الشركات
         </button>
@@ -425,7 +425,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         <>
           {showAddForm && (
             <div className="ios-sheet" style={{ position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease" }}>
-              <h2 style={{ fontFamily: "var(--font-cairo)", fontWeight: "600", marginBottom: "20px" }}>
+              <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: "600", marginBottom: "20px" }}>
                 {editingPhoneId ? `تعديل جهة: ${formData.name}` : "إضافة جهة جديدة"}
               </h2>
               <form onSubmit={handleAddPhone} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
@@ -684,7 +684,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#4ade80", fontFamily: "monospace", fontSize: "1.05rem" }}>
                           {item.code.split(" | ")[0]}
                           {item.code.split(" | ")[1] && (
-                            <div style={{ fontSize: "0.8rem", color: "#94a3b8", direction: "rtl", textAlign: "right", marginTop: "4px", fontFamily: "var(--font-cairo)" }}>
+                            <div style={{ fontSize: "0.8rem", color: "#94a3b8", direction: "rtl", textAlign: "right", marginTop: "4px", fontFamily: "var(--font-heading)" }}>
                               ({item.code.split(" | ")[1]})
                             </div>
                           )}
@@ -711,3 +711,4 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
     </div>
   );
 }
+

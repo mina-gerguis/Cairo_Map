@@ -1,13 +1,14 @@
-"use client";
+﻿"use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import styles from "../admin.module.css";
 import Link from "next/link";
 import AdminDirectoryPage from "../directory/page";
 import AdminDirectionsPage from "../directions/page";
+import { STATION_DETAILS } from "@/app/monorail/page";
 
 // ── Default Mock / Seed Data ──
 const DEFAULT_MONORAIL: any[] = [
@@ -364,7 +365,17 @@ const DEFAULT_MICROBUS: any[] = [
 type ServiceType = "monorail" | "lrt" | "airports" | "ports" | "bus_stations" | "microbus_stations" | "directory" | "directions";
 
 export default function AdminServicesPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-text-secondary)" }}>جاري التحميل...</div>}>
+      <AdminServicesPageInner />
+    </Suspense>
+  );
+}
+
+function AdminServicesPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
   const { user, loading: authLoading } = useAuth();
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -397,6 +408,8 @@ export default function AdminServicesPage() {
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [formData, setFormData] = useState<any>({});
   const [error, setError] = useState("");
+  const [adminActiveMonorailLine, setAdminActiveMonorailLine] = useState<"all" | "east" | "west">("all");
+  const [adminActiveLrtLine, setAdminActiveLrtLine] = useState<"all" | "trunk" | "capital" | "ramadan">("all");
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
@@ -408,6 +421,16 @@ export default function AdminServicesPage() {
       }
     }
   }, [user, authLoading]);
+
+  // Sync tab with URL search parameter "tab"
+  useEffect(() => {
+    if (tabParam) {
+      const validTabs: ServiceType[] = ["monorail", "lrt", "airports", "ports", "bus_stations", "microbus_stations", "directory", "directions"];
+      if (validTabs.includes(tabParam as ServiceType)) {
+        setActiveTab(tabParam as ServiceType);
+      }
+    }
+  }, [tabParam]);
 
   const checkAdmin = async () => {
     if (!supabase || !user) return;
@@ -463,7 +486,16 @@ export default function AdminServicesPage() {
         setData(getLocalData(type, defaultData));
         setDbStatus(prev => ({ ...prev, [type]: false }));
       } else {
-        setData(data || []);
+        const mappedData = data ? data.map(item => {
+          if (type === "monorail" && (item.landmarks === undefined || item.landmarks === null)) {
+            const staticInfo = STATION_DETAILS[item.name];
+            if (staticInfo) {
+              return { ...item, landmarks: staticInfo.landmarks };
+            }
+          }
+          return item;
+        }) : [];
+        setData(mappedData);
         setDbStatus(prev => ({ ...prev, [type]: true }));
       }
     } catch (err) {
@@ -478,7 +510,19 @@ export default function AdminServicesPage() {
     const local = localStorage.getItem(`local_${type}`);
     if (local) {
       try {
-        return JSON.parse(local);
+        const parsed = JSON.parse(local);
+        if (type === "monorail" && Array.isArray(parsed)) {
+          return parsed.map(item => {
+            if (item.landmarks === undefined || item.landmarks === null) {
+              const staticInfo = STATION_DETAILS[item.name];
+              if (staticInfo) {
+                return { ...item, landmarks: staticInfo.landmarks };
+              }
+            }
+            return item;
+          });
+        }
+        return parsed;
       } catch {
         return defaultVal;
       }
@@ -498,9 +542,9 @@ export default function AdminServicesPage() {
     setSuccess("");
     setEditingItem(null);
     if (activeTab === "monorail") {
-      setFormData({ name: "", line_type: "east", station_order: 1 });
+      setFormData({ name: "", line_type: "east", station_order: 1, landmarks: "" });
     } else if (activeTab === "lrt") {
-      setFormData({ name: "", line_type: "trunk", station_order: 1 });
+      setFormData({ name: "", line_type: "trunk", station_order: 1, landmarks: "" });
     } else if (activeTab === "airports") {
       setFormData({ name: "", code: "", city: "", type: "", terminals: "", services: "", airlines: "", phone: "", map_url: "" });
     } else if (activeTab === "ports") {
@@ -532,6 +576,11 @@ export default function AdminServicesPage() {
       setFormData({
         ...item,
         routes: Array.isArray(item.routes) ? JSON.stringify(item.routes, null, 2) : item.routes || ""
+      });
+    } else if (activeTab === "monorail" || activeTab === "lrt") {
+      setFormData({
+        ...item,
+        landmarks: Array.isArray(item.landmarks) ? item.landmarks.join(", ") : item.landmarks || ""
       });
     } else {
       setFormData({ ...item });
@@ -600,21 +649,25 @@ export default function AdminServicesPage() {
           return;
         }
       }
+    } else if (activeTab === "monorail" || activeTab === "lrt") {
+      payload.landmarks = typeof formData.landmarks === "string"
+        ? formData.landmarks.split(",").map((s: string) => s.trim()).filter(Boolean)
+        : formData.landmarks || [];
     }
 
     if (isDbConnected && supabase) {
       try {
         if (editingItem) {
           const { error: dbErr } = await supabase
-            .from(tableName)
-            .update(payload)
-            .eq("id", editingItem.id);
+             .from(tableName)
+             .update(payload)
+             .eq("id", editingItem.id);
           if (dbErr) throw dbErr;
           setSuccess("تم تعديل السجل بنجاح في قاعدة البيانات.");
         } else {
           const { error: dbErr } = await supabase
-            .from(tableName)
-            .insert(payload);
+             .from(tableName)
+             .insert(payload);
           if (dbErr) throw dbErr;
           setSuccess("تم إضافة السجل بنجاح إلى قاعدة البيانات.");
         }
@@ -624,7 +677,11 @@ export default function AdminServicesPage() {
         setShowModal(false);
       } catch (err: any) {
         console.error(err);
-        setError("فشلت العملية في قاعدة البيانات: " + err.message);
+        let errMsg = "فشلت العملية في قاعدة البيانات: " + err.message;
+        if (err.message && (err.message.includes("landmarks") || err.message.includes("column"))) {
+          errMsg += " (تنبيه: قد يكون عمود landmarks غير موجود في جدول قاعدة البيانات. يرجى تشغيل كود SQL التالي في لوحة تحكم Supabase لتحديث الجداول: ALTER TABLE public.monorail_stations ADD COLUMN IF NOT EXISTS landmarks JSONB DEFAULT '[]'::jsonb; ALTER TABLE public.lrt_stations ADD COLUMN IF NOT EXISTS landmarks JSONB DEFAULT '[]'::jsonb;)";
+        }
+        setError(errMsg);
       }
     } else {
       // LocalStorage Fallback
@@ -863,151 +920,356 @@ export default function AdminServicesPage() {
         </div>
       )}
 
-      {/* Main Table Panel */}
-      <div className={styles.tableCard} style={{ overflowX: "auto" }}>
-        <table className={styles.adminTable} style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              {activeTab === "monorail" && (
-                <>
-                  <th>اسم المحطة</th>
-                  <th>خط النيل</th>
-                  <th>الترتيب</th>
-                  <th>خيارات</th>
-                </>
-              )}
-              {activeTab === "lrt" && (
-                <>
-                  <th>اسم المحطة</th>
-                  <th>مسار التفريعة</th>
-                  <th>الترتيب</th>
-                  <th>خيارات</th>
-                </>
-              )}
-              {activeTab === "airports" && (
-                <>
-                  <th>الاسم</th>
-                  <th>الكود</th>
-                  <th>المدينة</th>
-                  <th>النوع</th>
-                  <th>الهاتف</th>
-                  <th>الصالات</th>
-                  <th>خطوط الطيران</th>
-                  <th>خيارات</th>
-                </>
-              )}
-              {activeTab === "ports" && (
-                <>
-                  <th>اسم الميناء</th>
-                  <th>المحافظة</th>
-                  <th>المسطح المائي</th>
-                  <th>النوع</th>
-                  <th>السعة الاستيعابية</th>
-                  <th>خيارات</th>
-                </>
-              )}
-              {activeTab === "microbus_stations" && (
-                <>
-                  <th>اسم الموقف</th>
-                  <th>المحافظة</th>
-                  <th>العنوان بالتفصيل</th>
-                  <th>عدد الخطوط</th>
-                  <th>خيارات</th>
-                </>
-              )}
-              {activeTab === "bus_stations" && (
-                <>
-                  <th>اسم الموقف</th>
-                  <th>المحافظة</th>
-                  <th>العنوان بالتفصيل</th>
-                  <th>الوجهات المتاحة</th>
-                  <th>خيارات</th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRows.length === 0 ? (
-              <tr>
-                <td colSpan={10} style={{ textAlign: "center", padding: "40px", color: "#94a3b8" }}>
-                  لا توجد أي سجلات متوفرة حالياً.
-                </td>
-              </tr>
-            ) : (
-              filteredRows.map((item, idx) => (
-                <tr key={item.id || idx}>
-                  {activeTab === "monorail" && (
-                    <>
-                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                      <td>{item.line_type === "east" ? "شرق النيل (العاصمة الإدارية)" : "غرب النيل (6 أكتوبر)"}</td>
-                      <td>{item.station_order}</td>
-                    </>
-                  )}
-                  {activeTab === "lrt" && (
-                    <>
-                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                      <td>
-                        {item.line_type === "trunk" && "الجذع الرئيسي (من عدلي منصور)"}
-                        {item.line_type === "capital" && "تفريعة العاصمة الإدارية"}
-                        {item.line_type === "ramadan" && "تفريعة العاشر من رمضان"}
-                      </td>
-                      <td>{item.station_order}</td>
-                    </>
-                  )}
-                  {activeTab === "airports" && (
-                    <>
-                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                      <td><span style={{ background: "rgba(255,255,255,0.05)", padding: "4px 8px", borderRadius: "6px", fontFamily: "monospace" }}>{item.code}</span></td>
-                      <td>{item.city}</td>
-                      <td>{item.type}</td>
-                      <td>{item.phone}</td>
-                      <td title={item.terminals} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.terminals}</td>
-                      <td title={item.airlines} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.airlines}</td>
-                    </>
-                  )}
-                  {activeTab === "ports" && (
-                    <>
-                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                      <td>{item.governorate}</td>
-                      <td>{item.sea}</td>
-                      <td>{item.type}</td>
-                      <td title={item.capacity} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.capacity}</td>
-                    </>
-                  )}
-                  {activeTab === "microbus_stations" && (
-                    <>
-                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                      <td>{item.governorate}</td>
-                      <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
-                      <td>{Array.isArray(item.routes) ? item.routes.length : 0} مساراً</td>
-                    </>
-                  )}
-                  {activeTab === "bus_stations" && (
-                    <>
-                      <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                      <td>{item.governorate}</td>
-                      <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
-                      <td title={Array.isArray(item.destinations) ? item.destinations.join("، ") : ""} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {Array.isArray(item.destinations) ? item.destinations.join("، ") : ""}
-                      </td>
-                    </>
-                  )}
-                  <td>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <button onClick={() => handleOpenEdit(item)} className={styles.actionBtn} style={{ color: "#34c759", border: "1px solid rgba(52, 199, 89, 0.2)", background: "rgba(52, 199, 89, 0.05)" }} title="تعديل">
-                        <i className="bx bx-edit" />
+      {/* Main Table Panel or Visual View */}
+      {(activeTab === "monorail" || activeTab === "lrt") ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginBottom: "32px" }}>
+          
+          {/* Segmented Line Control */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", padding: "12px 20px", borderRadius: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "#94a3b8" }}>عرض خط سير الرحلة:</span>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {activeTab === "monorail" ? (
+                  <>
+                    {[
+                      { id: "all", label: "جميع المحطات", color: "#818cf8" },
+                      { id: "east", label: "شرق النيل (العاصمة الإدارية)", color: "#3b82f6" },
+                      { id: "west", label: "غرب النيل (6 أكتوبر)", color: "#10b981" }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setAdminActiveMonorailLine(opt.id as any)}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: "10px",
+                          fontSize: "0.82rem",
+                          fontWeight: "800",
+                          cursor: "pointer",
+                          transition: "all 0.25s ease",
+                          border: "1px solid",
+                          borderColor: adminActiveMonorailLine === opt.id ? opt.color : "rgba(255,255,255,0.08)",
+                          background: adminActiveMonorailLine === opt.id ? `rgba(${opt.id === "west" ? "16, 185, 129" : opt.id === "east" ? "59, 130, 246" : "99, 102, 241"}, 0.15)` : "rgba(255,255,255,0.02)",
+                          color: adminActiveMonorailLine === opt.id ? opt.color : "#94a3b8"
+                        }}
+                      >
+                        {opt.label}
                       </button>
-                      <button onClick={() => handleDelete(item)} className={styles.actionBtn} style={{ color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.2)", background: "rgba(255, 59, 48, 0.05)" }} title="حذف">
-                        <i className="bx bx-trash" />
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {[
+                      { id: "all", label: "جميع المحطات", color: "#818cf8" },
+                      { id: "trunk", label: "الجذع الرئيسي (عدلي منصور)", color: "#3b82f6" },
+                      { id: "capital", label: "تفريعة العاصمة", color: "#8b5cf6" },
+                      { id: "ramadan", label: "تفريعة العاشر", color: "#ec4899" }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setAdminActiveLrtLine(opt.id as any)}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: "10px",
+                          fontSize: "0.82rem",
+                          fontWeight: "800",
+                          cursor: "pointer",
+                          transition: "all 0.25s ease",
+                          border: "1px solid",
+                          borderColor: adminActiveLrtLine === opt.id ? opt.color : "rgba(255,255,255,0.08)",
+                          background: adminActiveLrtLine === opt.id ? `rgba(${opt.id === "trunk" ? "59, 130, 246" : opt.id === "capital" ? "139, 92, 246" : opt.id === "ramadan" ? "236, 72, 153" : "99, 102, 241"}, 0.15)` : "rgba(255,255,255,0.02)",
+                          color: adminActiveLrtLine === opt.id ? opt.color : "#94a3b8"
+                        }}
+                      >
+                        {opt.label}
                       </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            </div>
+            
+            <div style={{ fontSize: "0.82rem", color: "#64748b" }}>
+              عدد المحطات المعروضة: <strong style={{ color: "#fff" }}>{filteredRows.length}</strong>
+            </div>
+          </div>
+
+          {/* Visual Timeline / List of Cards */}
+          {filteredRows.length === 0 ? (
+            <div style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.05)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "#94a3b8" }}>
+              لا توجد أي محطات مطابقة لخط البحث الحالي.
+            </div>
+          ) : (
+            <div style={{ position: "relative", paddingRight: "40px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              
+              {/* Timeline Connector Line */}
+              <div style={{
+                position: "absolute",
+                top: "20px",
+                bottom: "20px",
+                right: "19px",
+                width: "2px",
+                background: "linear-gradient(to bottom, rgba(99, 102, 241, 0.4), rgba(255,255,255,0.05))",
+                borderRadius: "4px"
+              }} />
+
+              {filteredRows.map((station, index) => {
+                const isEast = station.line_type === "east";
+                
+                // Determine line color and label
+                let lineColor = "#6366f1"; // default
+                let lineName = "";
+                if (activeTab === "monorail") {
+                  lineColor = isEast ? "#3b82f6" : "#10b981";
+                  lineName = isEast ? "شرق النيل (العاصمة)" : "غرب النيل (أكتوبر)";
+                } else {
+                  if (station.line_type === "trunk") { lineColor = "#3b82f6"; lineName = "الجذع الرئيسي"; }
+                  else if (station.line_type === "capital") { lineColor = "#8b5cf6"; lineName = "تفريعة العاصمة"; }
+                  else if (station.line_type === "ramadan") { lineColor = "#ec4899"; lineName = "تفريعة العاشر"; }
+                }
+
+                return (
+                  <div key={station.id || index} style={{ display: "flex", alignItems: "center", position: "relative" }}>
+                    
+                    {/* Visual Node */}
+                    <div style={{
+                      position: "absolute",
+                      right: "-31px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                      background: "#0b0f19",
+                      border: `4px solid ${lineColor}`,
+                      boxShadow: `0 0 10px ${lineColor}4d`,
+                      zIndex: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.75rem",
+                      fontWeight: "bold",
+                      color: "#fff"
+                    }}>
+                      {station.station_order}
                     </div>
+
+                    {/* Glass Station Card */}
+                    <div style={{
+                      flex: 1,
+                      background: "rgba(11, 15, 25, 0.65)",
+                      backdropFilter: "blur(12px)",
+                      WebkitBackdropFilter: "blur(12px)",
+                      border: "1px solid rgba(255, 255, 255, 0.06)",
+                      padding: "16px 20px",
+                      borderRadius: "14px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "20px",
+                      flexWrap: "wrap",
+                      boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+                      transition: "border-color 0.25s, transform 0.25s"
+                    }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+                        
+                        {/* Order & Name */}
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
+                            <span style={{ fontSize: "1.1rem", fontWeight: "900", color: "#fff" }}>
+                              {station.name}
+                            </span>
+                            <span style={{ fontSize: "0.72rem", background: lineColor + "15", color: lineColor, border: `1px solid ${lineColor}30`, padding: "2px 8px", borderRadius: "20px", fontWeight: "bold" }}>
+                              {lineName}
+                            </span>
+                          </div>
+
+                          {/* Landmarks list */}
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px" }}>
+                            {station.landmarks && Array.isArray(station.landmarks) && station.landmarks.length > 0 ? (
+                              (station.landmarks as string[]).map((landmark, lIdx) => (
+                                <span key={lIdx} style={{ fontSize: "0.73rem", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", padding: "3px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "4px", border: "1px solid rgba(255,255,255,0.04)" }}>
+                                  <i className="bx bx-map-pin" style={{ color: lineColor, fontSize: "0.8rem" }} />
+                                  {landmark}
+                                </span>
+                              ))
+                            ) : (
+                              <span style={{ fontSize: "0.75rem", color: "#475569", fontStyle: "italic" }}>
+                                📍 لم يتم تحديد معالم قريبة بعد
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEdit(station)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            color: "#34c759",
+                            border: "1px solid rgba(52, 199, 89, 0.2)",
+                            background: "rgba(52, 199, 89, 0.05)"
+                          }}
+                          title="تعديل المحطة"
+                        >
+                          <i className="bx bx-edit" style={{ fontSize: "1.1rem" }} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(station)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            color: "#ff3b30",
+                            border: "1px solid rgba(255, 59, 48, 0.2)",
+                            background: "rgba(255, 59, 48, 0.05)"
+                          }}
+                          title="حذف المحطة"
+                        >
+                          <i className="bx bx-trash" style={{ fontSize: "1.1rem" }} />
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                );
+              })}
+
+            </div>
+          )}
+
+        </div>
+      ) : (
+        <div className={styles.tableCard} style={{ overflowX: "auto" }}>
+          <table className={styles.adminTable} style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                {activeTab === "airports" && (
+                  <>
+                    <th>الاسم</th>
+                    <th>الكود</th>
+                    <th>المدينة</th>
+                    <th>النوع</th>
+                    <th>الهاتف</th>
+                    <th>الصالات</th>
+                    <th>خطوط الطيران</th>
+                    <th>خيارات</th>
+                  </>
+                )}
+                {activeTab === "ports" && (
+                  <>
+                    <th>اسم الميناء</th>
+                    <th>المحافظة</th>
+                    <th>المسطح المائي</th>
+                    <th>النوع</th>
+                    <th>السعة الاستيعابية</th>
+                    <th>خيارات</th>
+                  </>
+                )}
+                {activeTab === "microbus_stations" && (
+                  <>
+                    <th>اسم الموقف</th>
+                    <th>المحافظة</th>
+                    <th>العنوان بالتفصيل</th>
+                    <th>عدد الخطوط</th>
+                    <th>خيارات</th>
+                  </>
+                )}
+                {activeTab === "bus_stations" && (
+                  <>
+                    <th>اسم الموقف</th>
+                    <th>المحافظة</th>
+                    <th>العنوان بالتفصيل</th>
+                    <th>الوجهات المتاحة</th>
+                    <th>خيارات</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRows.length === 0 ? (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center", padding: "40px", color: "#94a3b8" }}>
+                    لا توجد أي سجلات متوفرة حالياً.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              ) : (
+                filteredRows.map((item, idx) => (
+                  <tr key={item.id || idx}>
+                    {activeTab === "airports" && (
+                      <>
+                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                        <td><span style={{ background: "rgba(255,255,255,0.05)", padding: "4px 8px", borderRadius: "6px", fontFamily: "monospace" }}>{item.code}</span></td>
+                        <td>{item.city}</td>
+                        <td>{item.type}</td>
+                        <td>{item.phone}</td>
+                        <td title={item.terminals} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.terminals}</td>
+                        <td title={item.airlines} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.airlines}</td>
+                      </>
+                    )}
+                    {activeTab === "ports" && (
+                      <>
+                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                        <td>{item.governorate}</td>
+                        <td>{item.sea}</td>
+                        <td>{item.type}</td>
+                        <td title={item.capacity} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.capacity}</td>
+                      </>
+                    )}
+                    {activeTab === "microbus_stations" && (
+                      <>
+                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                        <td>{item.governorate}</td>
+                        <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
+                        <td>{Array.isArray(item.routes) ? item.routes.length : 0} مساراً</td>
+                      </>
+                    )}
+                    {activeTab === "bus_stations" && (
+                      <>
+                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
+                        <td>{item.governorate}</td>
+                        <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
+                        <td title={Array.isArray(item.destinations) ? item.destinations.join("، ") : ""} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {Array.isArray(item.destinations) ? item.destinations.join("، ") : ""}
+                        </td>
+                      </>
+                    )}
+                    <td>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <button onClick={() => handleOpenEdit(item)} className={styles.actionBtn} style={{ color: "#34c759", border: "1px solid rgba(52, 199, 89, 0.2)", background: "rgba(52, 199, 89, 0.05)" }} title="تعديل">
+                          <i className="bx bx-edit" />
+                        </button>
+                        <button onClick={() => handleDelete(item)} className={styles.actionBtn} style={{ color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.2)", background: "rgba(255, 59, 48, 0.05)" }} title="حذف">
+                          <i className="bx bx-trash" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Forms Modal */}
       {showModal && (
@@ -1098,6 +1360,18 @@ export default function AdminServicesPage() {
                       min={1}
                       value={formData.station_order || 1}
                       onChange={e => setFormData({ ...formData, station_order: parseInt(e.target.value) })}
+                      className="ios-input"
+                      style={{ width: "100%" }}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
+                    <input
+                      type="text"
+                      placeholder="مثال: ستاد القاهرة الدولي, مسجد آل رشدان, نادي الزهور الرياضي"
+                      value={formData.landmarks || ""}
+                      onChange={e => setFormData({ ...formData, landmarks: e.target.value })}
                       className="ios-input"
                       style={{ width: "100%" }}
                     />
@@ -1481,3 +1755,4 @@ export default function AdminServicesPage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -968,7 +968,7 @@ export default function AdminReportsPage() {
 
                                   <textarea
                                     className="ios-input"
-                                    style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-cairo)", marginBottom: "12px" }}
+                                    style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-heading)", marginBottom: "12px" }}
                                     placeholder="اكتب رسالة الرد أو سبب الرفض/القبول للمستخدم هنا..."
                                     value={replyText}
                                     onChange={(e) => setReplyText(e.target.value)}
@@ -1297,7 +1297,7 @@ export default function AdminReportsPage() {
 
                               <textarea
                                 className="ios-input"
-                                style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-cairo)", marginBottom: "12px" }}
+                                style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-heading)", marginBottom: "12px" }}
                                 placeholder="اكتب رد الإدارة للمستخدم هنا..."
                                 value={replyText}
                                 onChange={(e) => setReplyText(e.target.value)}
@@ -1392,7 +1392,7 @@ export default function AdminReportsPage() {
                     fontSize: "0.85rem",
                     cursor: "pointer",
                     transition: "all 0.2s",
-                    fontFamily: "var(--font-cairo)",
+                    fontFamily: "var(--font-heading)",
                     whiteSpace: "nowrap"
                   }}
                 >
@@ -1520,7 +1520,7 @@ export default function AdminReportsPage() {
 
                               <textarea
                                 className="ios-input"
-                                style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-cairo)", marginBottom: "12px" }}
+                                style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-heading)", marginBottom: "12px" }}
                                 placeholder="اكتب رد الدعم الفني للمستخدم هنا ليرسل كإيميل..."
                                 value={replyText}
                                 onChange={(e) => setReplyText(e.target.value)}
@@ -1573,3 +1573,4 @@ export default function AdminReportsPage() {
     </div>
   );
 }
+

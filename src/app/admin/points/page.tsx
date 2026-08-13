@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -1291,7 +1291,7 @@ export default function AdminPointsPage() {
               >
                 <i className="bx bx-x"></i>
               </button>
-              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
                 تحديد سبب رفض العملية
               </h3>
               <div style={{ width: "38px" }}></div>
@@ -1314,7 +1314,7 @@ export default function AdminPointsPage() {
                   placeholder="مثال: إيصال التحويل غير واضح، أو لم نتوصل بالمبلغ على حساباتنا البنكية، يرجى إعادة المحاولة."
                   value={rejectNotes}
                   onChange={(e) => setRejectNotes(e.target.value)}
-                  style={{ width: "100%", padding: "12px", fontSize: "0.88rem", fontFamily: "var(--font-cairo)", resize: "none" }}
+                  style={{ width: "100%", padding: "12px", fontSize: "0.88rem", fontFamily: "var(--font-heading)", resize: "none" }}
                 />
               </div>
 
@@ -1421,3 +1421,4 @@ export default function AdminPointsPage() {
     </div>
   );
 }
+

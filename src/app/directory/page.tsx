@@ -24,10 +24,10 @@ interface TelecomCodeEntry {
 }
 
 const COMPANY_META: Record<string, { label: string; logo: string; color: string; border: string }> = {
-  vodafone: { label: "فودافون", logo: "/image/telCompany/vodafone-logo.png", color: "rgba(224, 0, 0, 0.08)", border: "rgba(224, 0, 0, 0.2)" },
-  orange: { label: "اورنج", logo: "/image/telCompany/orange-logo.png", color: "rgba(255, 102, 0, 0.08)", border: "rgba(255, 102, 0, 0.2)" },
-  etisalat: { label: "اتصالات", logo: "/image/telCompany/etisalat-logo.png", color: "rgba(0, 150, 0, 0.08)", border: "rgba(0, 150, 0, 0.2)" },
-  we: { label: "وي", logo: "/image/telCompany/we-logo.png", color: "rgba(108, 99, 255, 0.08)", border: "rgba(108, 99, 255, 0.2)" },
+  vodafone: { label: "فودافون", logo: "/images/telCompany/vodafone.png", color: "rgba(224, 0, 0, 0.08)", border: "rgba(224, 0, 0, 0.2)" },
+  orange: { label: "اورنج", logo: "/images/telCompany/orange.png", color: "rgba(255, 102, 0, 0.08)", border: "rgba(255, 102, 0, 0.2)" },
+  etisalat: { label: "اتصالات", logo: "/images/telCompany/etisalat.png", color: "rgba(0, 150, 0, 0.08)", border: "rgba(0, 150, 0, 0.2)" },
+  we: { label: "وي", logo: "/images/telCompany/we.png", color: "rgba(108, 99, 255, 0.08)", border: "rgba(108, 99, 255, 0.2)" },
 };
 
 export default function PhoneDirectoryPage() {

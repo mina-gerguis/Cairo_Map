@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -866,7 +866,7 @@ export default function AdminAdsPage() {
                     color: "#fff",
                     fontSize: "0.9rem",
                     outline: "none",
-                    fontFamily: "var(--font-cairo)",
+                    fontFamily: "var(--font-heading)",
                   }}
                 >
                   <option value="home_slider" style={{ background: "#0f172a" }}>🏠 سلايدر الصفحة الرئيسية (Home Slider)</option>
@@ -1086,3 +1086,4 @@ export default function AdminAdsPage() {
     </div>
   );
 }
+

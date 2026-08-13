@@ -2061,7 +2061,7 @@ export default function ProfilePage() {
                   <span className={styles.infoLabel}>رقم الهاتف</span>
                   <span className={styles.infoValue} dir="ltr" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                     <Image
-                      src="/image/profile/flag-egypt.png"
+                      src="/images/profile/flag-egypt.png"
                       alt="phone"
                       width={20}
                       height={20}

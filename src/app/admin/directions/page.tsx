@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -1094,3 +1094,4 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
     </div>
   );
 }
+
