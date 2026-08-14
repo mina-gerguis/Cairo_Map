@@ -47,11 +47,12 @@ export default function AdminLayout({
       setShowGlobalResults(true);
       try {
         const term = globalSearchQuery.toLowerCase();
-        
+
         // 1. Search in local page routes (Quick Navigation Link matches)
         const allAdminPages = [
           { label: "لوحة الإحصائيات الرئيسية", href: "/admin", category: "صفحة إدارية", icon: "bx bx-grid-alt" },
           { label: "إدارة الأماكن والمواقع", href: "/admin/places", category: "صفحة إدارية", icon: "bx bx-map" },
+          { label: "اقتراحات الأماكن والمواقع", href: "/admin/places/suggestions", category: "صفحة إدارية", icon: "bx bx-map-pin" },
           { label: "إدارة الإعلانات والبنرات", href: "/admin/ads", category: "صفحة إدارية", icon: "bx bx-slideshow" },
           { label: "إدارة تنبيهات الموقع", href: "/admin/alerts", category: "صفحة إدارية", icon: "bx bx-info-circle" },
           { label: "الإشعارات والرسائل الجماعية", href: "/admin/notifications", category: "صفحة إدارية", icon: "bx bx-bell" },
@@ -59,7 +60,7 @@ export default function AdminLayout({
           { label: "الرصيد والشحن المالي", href: "/admin/points?tab=users", category: "صفحة إدارية", icon: "bx bx-coin-stack" },
           { label: "طلبات الإيداع والسحب المعلقة", href: "/admin/points?tab=requests", category: "صفحة إدارية", icon: "bx bx-transfer" },
           { label: "الاشتراكات المميزة والذهبية", href: "/admin/subscriptions", category: "صفحة إدارية", icon: "bx bx-crown" },
-          { label: "إدارة المطارات", href: "/admin/services?tab=airports", category: "خدمة موقع", icon: "bx bx-plane" },
+          { label: "إدارة المطارات", href: "/admin/airports", category: "خدمة موقع", icon: "bx bx-plane" },
           { label: "إدارة الموانئ البحرية", href: "/admin/services?tab=ports", category: "خدمة موقع", icon: "bx bx-anchor" },
           { label: "إدارة شبكة المنوريل", href: "/admin/services?tab=monorail", category: "خدمة موقع", icon: "bx bx-navigation" },
           { label: "إدارة القطار الكهربائي LRT", href: "/admin/services?tab=lrt", category: "خدمة موقع", icon: "bx bx-train" },
@@ -126,8 +127,8 @@ export default function AdminLayout({
       const params = new URLSearchParams(window.location.search);
       setActiveSubTab(params.get("tab"));
     }
-    
-    if (pathname === "/admin/places" || pathname.startsWith("/admin/services")) {
+
+    if (pathname === "/admin/places" || pathname.startsWith("/admin/services") || pathname === "/admin/airports") {
       setIsServicesDropdownOpen(true);
     }
   }, [pathname]);
@@ -224,10 +225,11 @@ export default function AdminLayout({
   let pageTitle = "لوحة التحكم";
   if (pathname === "/admin") pageTitle = "لوحة الإحصائيات";
   else if (pathname === "/admin/places") pageTitle = "إدارة الأماكن";
+  else if (pathname === "/admin/places/suggestions") pageTitle = "اقتراحات الأماكن";
   else if (pathname === "/admin/ads") pageTitle = "إدارة الإعلانات";
+  else if (pathname === "/admin/airports") pageTitle = "إدارة المطارات";
   else if (pathname === "/admin/services") {
-    if (activeSubTab === "airports") pageTitle = "إدارة المطارات";
-    else if (activeSubTab === "ports") pageTitle = "إدارة الموانئ";
+    if (activeSubTab === "ports") pageTitle = "إدارة الموانئ";
     else pageTitle = "إدارة الخدمات";
   }
   else if (pathname === "/admin/notifications") pageTitle = "الإشعارات والرسائل";
@@ -255,8 +257,8 @@ export default function AdminLayout({
     <div className={`${styles.adminShell} ${theme === "light" ? "light" : ""}`}>
       {/* ── Mobile Backdrop ── */}
       {isMobile && isSidebarOpen && (
-        <div 
-          className={styles.sidebarBackdrop} 
+        <div
+          className={styles.sidebarBackdrop}
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
@@ -296,7 +298,7 @@ export default function AdminLayout({
 
             {/* ── إدارة الخدمات (مسطحة) ── */}
             <div className={styles.sidebarGroupLabel}>الخدمات والمواقع</div>
-            
+
             {/* إدارة الأماكن */}
             <Link
               href="/admin/places"
@@ -311,14 +313,25 @@ export default function AdminLayout({
               </div>
             </Link>
 
+            <Link
+              href="/admin/places/suggestions"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/places/suggestions" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-map-pin ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>اقتراحات الأماكن</span>
+              </div>
+            </Link>
+
             {/* المطارات */}
             <Link
-              href="/admin/services?tab=airports"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && activeSubTab === "airports" ? styles.sidebarNavLinkActive : ""
-              }`}
+              href="/admin/airports"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/airports" ? styles.sidebarNavLinkActive : ""}`}
               onClick={() => {
-                setActiveSubTab("airports");
+                setActiveSubTab(null);
                 if (isMobile) setIsSidebarOpen(false);
               }}
             >
@@ -331,9 +344,8 @@ export default function AdminLayout({
             {/* الموانئ */}
             <Link
               href="/admin/services?tab=ports"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && activeSubTab === "ports" ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "ports" ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("ports");
                 if (isMobile) setIsSidebarOpen(false);
@@ -348,9 +360,8 @@ export default function AdminLayout({
             {/* المنوريل */}
             <Link
               href="/admin/services?tab=monorail"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && (activeSubTab === "monorail" || !activeSubTab) ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && (activeSubTab === "monorail" || !activeSubTab) ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("monorail");
                 if (isMobile) setIsSidebarOpen(false);
@@ -365,9 +376,8 @@ export default function AdminLayout({
             {/* القطار الكهربائي LRT */}
             <Link
               href="/admin/services?tab=lrt"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && activeSubTab === "lrt" ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "lrt" ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("lrt");
                 if (isMobile) setIsSidebarOpen(false);
@@ -382,9 +392,8 @@ export default function AdminLayout({
             {/* الأتوبيسات */}
             <Link
               href="/admin/services?tab=bus_stations"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && activeSubTab === "bus_stations" ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "bus_stations" ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("bus_stations");
                 if (isMobile) setIsSidebarOpen(false);
@@ -399,9 +408,8 @@ export default function AdminLayout({
             {/* المواقف سرفيس */}
             <Link
               href="/admin/services?tab=microbus_stations"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && activeSubTab === "microbus_stations" ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "microbus_stations" ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("microbus_stations");
                 if (isMobile) setIsSidebarOpen(false);
@@ -416,9 +424,8 @@ export default function AdminLayout({
             {/* دليل الهواتف والأكواد */}
             <Link
               href="/admin/services?tab=directory"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && activeSubTab === "directory" ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "directory" ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("directory");
                 if (isMobile) setIsSidebarOpen(false);
@@ -433,9 +440,8 @@ export default function AdminLayout({
             {/* خطوط المواصلات */}
             <Link
               href="/admin/services?tab=directions"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/services" && activeSubTab === "directions" ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "directions" ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("directions");
                 if (isMobile) setIsSidebarOpen(false);
@@ -449,7 +455,7 @@ export default function AdminLayout({
 
             {/* ── إدارة المحتوى والتنبيهات ── */}
             <div className={styles.sidebarGroupLabel}>المحتوى والإعلانات</div>
-            
+
             {/* إدارة الإعلانات */}
             <Link
               href="/admin/ads"
@@ -520,9 +526,8 @@ export default function AdminLayout({
             {/* الرصيد والشحن */}
             <Link
               href="/admin/points?tab=users"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/points" && (activeSubTab === "users" || !activeSubTab) ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/points" && (activeSubTab === "users" || !activeSubTab) ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("users");
                 if (isMobile) setIsSidebarOpen(false);
@@ -537,9 +542,8 @@ export default function AdminLayout({
             {/* طلبات الإيداع والسحب */}
             <Link
               href="/admin/points?tab=requests"
-              className={`${styles.sidebarNavLink} ${
-                pathname === "/admin/points" && activeSubTab === "requests" ? styles.sidebarNavLinkActive : ""
-              }`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/points" && activeSubTab === "requests" ? styles.sidebarNavLinkActive : ""
+                }`}
               onClick={() => {
                 setActiveSubTab("requests");
                 if (isMobile) setIsSidebarOpen(false);
@@ -574,19 +578,19 @@ export default function AdminLayout({
           {/* Sidebar Footer Operations */}
           <div className={styles.sidebarFooter}>
             {/* Theme Toggle Button */}
-            <button style={{fontFamily:"var(--font-heading)"}} className={styles.sidebarFooterBtn} onClick={toggleTheme} title="تغيير المظهر">
+            <button style={{ fontFamily: "var(--font-heading)" }} className={styles.sidebarFooterBtn} onClick={toggleTheme} title="تغيير المظهر">
               <i className={`bx ${theme === "dark" ? "bx-sun" : "bx-moon"} ${styles.footerBtnIcon}`} />
               <span>{theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}</span>
             </button>
 
             {/* Back to Home site */}
-            <Link style={{fontFamily:"var(--font-heading)"}} href="/" className={styles.sidebarFooterBtn} title="زيارة الموقع">
+            <Link style={{ fontFamily: "var(--font-heading)" }} href="/" className={styles.sidebarFooterBtn} title="زيارة الموقع">
               <i className="bx bx-home-alt-2" />
               <span>العودة للموقع</span>
             </Link>
 
             {/* Logout Button */}
-            <button style={{fontFamily:"var(--font-heading)"}} className={`${styles.sidebarFooterBtn} ${styles.logoutBtn}`} onClick={handleLogout} title="تسجيل الخروج">
+            <button style={{ fontFamily: "var(--font-heading)" }} className={`${styles.sidebarFooterBtn} ${styles.logoutBtn}`} onClick={handleLogout} title="تسجيل الخروج">
               <i className="bx bx-log-out" />
               <span>تسجيل الخروج</span>
             </button>
@@ -600,8 +604,8 @@ export default function AdminLayout({
         <header className={styles.topbar}>
           <div className={styles.topbarLeft}>
             {/* Sidebar Toggle Trigger */}
-            <button 
-              className={styles.sidebarToggle} 
+            <button
+              className={styles.sidebarToggle}
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               aria-label="Toggle Sidebar"
             >
@@ -716,16 +720,16 @@ export default function AdminLayout({
                     globalSearchResults.pages.length === 0 &&
                     globalSearchResults.places.length === 0 &&
                     globalSearchResults.profiles.length === 0 && (
-                    <div className={styles.globalSearchNoResults}>
-                      <i className="bx bx-search-alt" style={{ fontSize: "2rem", opacity: 0.3 }} />
-                      <span>لا توجد نتائج لـ "{globalSearchQuery}"</span>
-                    </div>
-                  )}
+                      <div className={styles.globalSearchNoResults}>
+                        <i className="bx bx-search-alt" style={{ fontSize: "2rem", opacity: 0.3 }} />
+                        <span>لا توجد نتائج لـ "{globalSearchQuery}"</span>
+                      </div>
+                    )}
                 </div>
               )}
             </div>
             {/* Invite Button */}
-           
+
           </div>
         </header>
 

@@ -12,6 +12,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
 import AdBanner from "@/components/AdBanner";
+import LocationHelperModal from "@/components/LocationHelperModal";
 import Image from "next/image";
 // Icon
 import { MdDomain } from "react-icons/md";
@@ -179,6 +180,7 @@ function HomeContent() {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isProximityEnabled, setIsProximityEnabled] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [isLocationHelperOpen, setIsLocationHelperOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
 
@@ -384,13 +386,21 @@ function HomeContent() {
   };
 
   /* Geolocation */
+  const handleLocationSuccess = (lat: number, lng: number) => {
+    setUserLocation({ latitude: lat, longitude: lng });
+    setIsProximityEnabled(true);
+  };
+
   const handleToggleProximity = () => {
     if (isProximityEnabled) {
       setIsProximityEnabled(false);
       setUserLocation(null);
       return;
     }
-    if (!navigator.geolocation) { alert("متصفحك لا يدعم الموقع الجغرافي"); return; }
+    if (!navigator.geolocation) {
+      setIsLocationHelperOpen(true);
+      return;
+    }
     setLocationLoading(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -400,10 +410,14 @@ function HomeContent() {
       },
       (err) => {
         setLocationLoading(false);
-        switch (err.code) {
-          case err.PERMISSION_DENIED: alert("تم رفض طلب تحديد الموقع."); break;
-          case err.POSITION_UNAVAILABLE: alert("معلومات الموقع غير متوفرة."); break;
-          default: alert("حدث خطأ أثناء تحديد موقعك.");
+        if (err.code === err.PERMISSION_DENIED) {
+          setIsLocationHelperOpen(true);
+        } else {
+          switch (err.code) {
+            case err.PERMISSION_DENIED: alert("تم رفض طلب تحديد الموقع."); break;
+            case err.POSITION_UNAVAILABLE: alert("معلومات الموقع غير متوفرة."); break;
+            default: alert("حدث خطأ أثناء تحديد موقعك.");
+          }
         }
       },
       { enableHighAccuracy: true, timeout: 8000 }
@@ -809,8 +823,17 @@ function HomeContent() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
               استكشف الأماكن
             </button>
-            <button className="hero-btn-secondary" onClick={() => setIsProximityEnabled(!isProximityEnabled)} style={{ fontFamily: "Cairo" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>
+            <button
+              className="hero-btn-secondary"
+              onClick={handleToggleProximity}
+              disabled={locationLoading}
+              style={{ fontFamily: "Cairo" }}
+            >
+              {locationLoading ? (
+                <span style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite", marginLeft: "8px" }} />
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>
+              )}
               {isProximityEnabled ? "إيقاف القرب" : "بالقرب مني"}
             </button>
           </div>
@@ -1839,6 +1862,13 @@ function HomeContent() {
           placeName={selectedPlace.name}
         />
       )}
+
+      {/* ═══════════════════════════════════ LOCATION HELPER MODAL ═══════════════════════════════════ */}
+      <LocationHelperModal
+        isOpen={isLocationHelperOpen}
+        onClose={() => setIsLocationHelperOpen(false)}
+        onSuccess={handleLocationSuccess}
+      />
     </>
   );
 }

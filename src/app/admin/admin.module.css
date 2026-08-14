@@ -18,7 +18,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 0, 0, 0.5);
+  background: rgba(58, 48, 48, 0.5);
   backdrop-filter: blur(4px);
   z-index: 1000;
 }
@@ -113,7 +113,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-radius: 0.9rem;
   color: var(--text-primary) !important;
   text-decoration: none;
@@ -121,6 +121,7 @@
   font-weight: 600;
   transition: all 0.2s ease;
   border: 1px solid transparent;
+  margin: 3px 0;
 }
 
 .sidebarNavLink:hover {
@@ -389,7 +390,7 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: var(--text-primary);
 }
 
 .tableSubtitle {
@@ -479,8 +480,8 @@
 }
 
 .badgePrimary {
-  background: rgba(99, 102, 241, 0.15);
-  color: #a5b4fc;
+  background: var(--accent-ios);
+  color: #fff;
   border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
@@ -492,7 +493,7 @@
 
 .badgeWarning {
   background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
+  color: #fb246c;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
@@ -504,13 +505,13 @@
 
 .badgeInfo {
   background: rgba(14, 165, 233, 0.15);
-  color: #38bdf8;
+  color: var(--text-muted);
   border: 1px solid rgba(14, 165, 233, 0.3);
 }
 
 .badgeNeutral {
   background: rgba(255, 255, 255, 0.06);
-  color: #94a3b8;
+  color: var(--text-muted);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -559,13 +560,13 @@
 }
 
 .actionBtnDelete {
-  background: rgba(239, 68, 68, 0.12);
+  background: rgb(255, 0, 0);
   color: #f87171;
   border-color: rgba(239, 68, 68, 0.25);
 }
 
 .actionBtnDelete:hover {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgb(255, 0, 0);
   color: #ffffff;
 }
 
@@ -611,12 +612,12 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  border-radius: 10px;
+  border-radius: 25px;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  background: rgba(99, 102, 241, 0.12);
-  color: #a5b4fc;
+  background: var(--accent-ios);
+  color: #ffffff;
   border: 1px solid rgba(99, 102, 241, 0.25);
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -624,7 +625,7 @@
 }
 
 .actionMenuTrigger:hover {
-  background: rgba(99, 102, 241, 0.22);
+  background: rgba(0, 4, 255, 0.521);
   color: #fff;
   border-color: rgba(99, 102, 241, 0.5);
 }
@@ -1962,4 +1963,136 @@
 
 :global(.light) .globalSearchItemLabel {
   color: #1e293b;
+}
+
+/* =========================================================
+   Custom Airport & Transit Services Theme-Aware Styles
+   ========================================================= */
+.airportCodeBadge {
+  background: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 0.85rem;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  transition: all 0.2s ease;
+}
+
+:global(.light) .airportCodeBadge {
+  background: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.2);
+}
+
+.airportIcaoBadge {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+:global(.light) .airportIcaoBadge {
+  background: rgba(0, 0, 0, 0.04);
+  color: #64748b;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.airportTypeInt {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.2s ease;
+}
+
+:global(.light) .airportTypeInt {
+  background: rgba(37, 99, 235, 0.08);
+  color: #2563eb;
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.airportTypeDom {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+:global(.light) .airportTypeDom {
+  background: rgba(22, 163, 74, 0.08);
+  color: #16a34a;
+  border-color: rgba(22, 163, 74, 0.2);
+}
+
+.portTypeBadge {
+  background: rgba(14, 165, 233, 0.12);
+  color: #38bdf8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  transition: all 0.2s ease;
+}
+
+:global(.light) .portTypeBadge {
+  background: rgba(3, 105, 161, 0.08);
+  color: #0369a1;
+  border-color: rgba(3, 105, 161, 0.2);
+}
+
+.microbusRouteBadge {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  transition: all 0.2s ease;
+}
+
+:global(.light) .microbusRouteBadge {
+  background: rgba(217, 119, 6, 0.08);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.2);
+}
+
+.statsCounterBadge {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: bold;
+  color: #818cf8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+:global(.light) .statsCounterBadge {
+  background: rgba(79, 70, 229, 0.06);
+  border-color: rgba(79, 70, 229, 0.12);
+  color: #4f46e5;
 }

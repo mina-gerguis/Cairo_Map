@@ -87,6 +87,10 @@
   --navbar-height: 72px;
 }
 
+.text-white-100 {
+  color: #ffffffff !important;
+}
+
 /* HeroUI Light Mode */
 html.light {
   --bg-primary: #ffffff;
@@ -2141,4 +2145,4 @@ html.light .suggestion-icon {
 
 .suggestion-meta i {
   font-size: 0.95rem;
-}
+}

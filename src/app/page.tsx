@@ -478,7 +478,7 @@ export default function HomePage() {
       id: "services",
       title: "دليل مقدمي الخدمات والمهن",
       desc: "ابحث عن سباك، كهربائي، ميكانيكي، أو طبيب في منطقتك، واستعرض أعمالهم وتقييماتهم وتواصل معهم مباشرة.",
-      icon: "cairo_services.jpg",
+      icon: "cairo_services.png",
       badge: "جديد",
       link: "/services",
       color: "rgba(249, 115, 22, 0.12)",
@@ -531,12 +531,6 @@ export default function HomePage() {
     },
   ];
 
-  const stats = [
-    { label: "مكان ومحل مفصّل", value: placesCount > 0 ? `+${placesCount}` : "0", icon: "📍" },
-    { label: "شبكة مواصلات ومترو", value: `${transitCount} شبكات`, icon: "🚇" },
-    { label: "رقم تليفون وكود طوارئ", value: `+${phonesCount}`, icon: "📞" },
-    { label: "تنسيق ذكي للرحلات", value: "100% AI", icon: "🤖" },
-  ];
 
   const categoryCards = CATEGORIES_STRUCTURE;
 
@@ -978,43 +972,6 @@ export default function HomePage() {
             <AdSlider />
           </div>
 
-        </div>
-      </section>
-
-      {/* ── 2. DYNAMIC STATS STRIP ── */}
-      <section className="hide-on-mobile" style={{
-        padding: "30px 20px",
-        backgroundColor: "var(--bg-secondary)",
-        borderBottom: "1px solid var(--border-glass)"
-      }}>
-        <div style={{
-          maxWidth: "1100px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "20px",
-          textAlign: "center"
-        }}>
-          {stats.map((st, idx) => (
-            <div
-              key={idx}
-              style={{
-                padding: "16px 12px",
-                borderRadius: "var(--radius-md)",
-                backgroundColor: "var(--bg-glass-card)",
-                border: "1px solid var(--border-glass)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px"
-              }}
-            >
-              <span style={{ fontSize: "1.8rem" }}>{st.icon}</span>
-              <span style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--text-primary)" }}>{st.value}</span>
-              <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>{st.label}</span>
-            </div>
-          ))}
         </div>
       </section>
 

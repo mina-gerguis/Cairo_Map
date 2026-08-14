@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,6 +9,7 @@ import Link from "next/link";
 import AdminDirectoryPage from "../directory/page";
 import AdminDirectionsPage from "../directions/page";
 import { STATION_DETAILS } from "@/app/monorail/page";
+
 
 // ── Default Mock / Seed Data ──
 const DEFAULT_MONORAIL: any[] = [
@@ -65,86 +66,6 @@ const DEFAULT_LRT: any[] = [
   { name: "مدينة الفنون والثقافة", line_type: "capital", station_order: 4 },
   { name: "المنطقة الصناعية", line_type: "ramadan", station_order: 1 },
   { name: "مدينة المعرفة", line_type: "ramadan", station_order: 2 }
-];
-
-const DEFAULT_AIRPORTS: any[] = [
-  {
-    name: "مطار القاهرة الدولي (CAI)",
-    code: "CAI",
-    city: "القاهرة",
-    type: "مطار دولي رئيسي",
-    terminals: "مبنى الركاب 1 (القديم)، مبنى الركاب 2 (المطور)، مبنى الركاب 3 (الجديد)، الصالة الموسمية (للحج والعمرة).",
-    services: ["مواقف سيارات متعددة الطوابق", "إنترنت واي فاي مجاني", "صالات كبار الشخصيات (VIP Lounge)", "بنوك وصرافة 24 ساعة", "سوق حرة (Duty Free)", "تأجير سيارات", "فنادق ملاصقة للمطار"],
-    airlines: "مصر للطيران (المركز الرئيسي)، طيران الإمارات، الخطوط السعودية، لوفتهانزا، الخطوط البريطانية، الخطوط الفرنسية، طيران الخليج، وغيرها.",
-    phone: "19934",
-    map_url: "https://maps.google.com/?q=Cairo+International+Airport"
-  },
-  {
-    name: "مطار برج العرب الدولي (HBE)",
-    code: "HBE",
-    city: "الإسكندرية",
-    type: "مطار دولي إقليمي",
-    terminals: "مبنى ركاب رئيسي مجهز، ويجري حالياً إنشاء مبنى ركاب صديق للبيئة جديد.",
-    services: ["صالة سفر ووصول مكيفة", "مكتب صرافة وماكينات ATM", "كافيهات ومطاعم", "مواقف سيارات", "سوق حرة مبسطة"],
-    airlines: "مصر للطيران، طيران العربية، فلاي دبي، طيران النيل، الخطوط السعودية، طيران الجزيرة.",
-    phone: "03-4631000",
-    map_url: "https://maps.google.com/?q=Borg+El+Arab+International+Airport"
-  },
-  {
-    name: "مطار سفنكس الدولي (SPX)",
-    code: "SPX",
-    city: "الجيزة (الشيخ زايد / 6 أكتوبر)",
-    type: "مطار دولي جديد",
-    terminals: "مبنى ركاب رئيسي يخدم غرب القاهرة ومحافظات الدلتا ويخدم المتحف المصري الكبير والأهرامات.",
-    services: ["مواقف سيارات", "خدمات بنكية ومكينات ATM", "كافيهات وقاعة ركاب حديثة", "سوق حرة"],
-    airlines: "مصر للطيران (رحلات داخلية وخارجية)، ويز إير (Wizz Air)، طيران أديل، طيران العربية.",
-    phone: "02-35391645",
-    map_url: "https://maps.google.com/?q=Sphinx+International+Airport"
-  },
-  {
-    name: "مطار العاصمة الدولي (CCE)",
-    code: "CCE",
-    city: "العاصمة الإدارية الجديدة",
-    type: "مطار دولي جديد",
-    terminals: "مبنى ركاب رئيسي مجهز بأحدث تكنولوجيا التفتيش والخدمات يخدم العاصمة الجديدة والقناة.",
-    services: ["تكييف مركزي متطور", "خدمات بنكية وصرافة", "صالات انتظار متميزة", "منطقة مطاعم وكافيهات"],
-    airlines: "مصر للطيران، ورسميات وشارتر وسياحية خاصة وخطوط طيران إقليمية.",
-    phone: "02-38594700",
-    map_url: "https://maps.google.com/?q=Capital+International+Airport+Egypt"
-  },
-  {
-    name: "مطار الغردقة الدولي (HRG)",
-    code: "HRG",
-    city: "البحر الأحمر (الغردقة)",
-    type: "مطار دولي سياحي",
-    terminals: "مبنى الركاب 1 (الجديد والمميز بتصميمه)، مبنى الركاب 2 (القديم).",
-    services: ["صالات سفر ووصول واسعة", "إنترنت واي فاي متاح", "سوق حرة سياحية ضخمة", "مكاتب تأجير سيارات وشركات سياحة", "بنوك وصرافة"],
-    airlines: "مصر للطيران، طيران إيزي جيت، طيران كورندون، طيران التكثيف الإقليمي والرحلات الشارتر الروسية والأوروبية.",
-    phone: "065-3412000",
-    map_url: "https://maps.google.com/?q=Hurghada+International+Airport"
-  },
-  {
-    name: "مطار شرم الشيخ الدولي (SSH)",
-    code: "SSH",
-    city: "جنوب سيناء (شرم الشيخ)",
-    type: "مطار دولي سياحي",
-    terminals: "مبنى الركاب 1 (المطور والجديد)، ومبنى الركاب 2.",
-    services: ["خدمات سياحية متكاملة", "سوق حرة متنوعة", "صالات VIP مخصصة للوفود", "بنوك وصرافة 24 ساعة", "منطقة كافيهات خارجية ممتازة"],
-    airlines: "مصر للطيران، طيران الخليج، الخطوط السعودية، والعديد من شركات الطيران الأوروبية والشارتر والروسية.",
-    phone: "069-3601140",
-    map_url: "https://maps.google.com/?q=Sharm+El-Sheikh+International+Airport"
-  },
-  {
-    name: "مطار الأقصر الدولي (LXR)",
-    code: "LXR",
-    city: "الأقصر",
-    type: "مطار دولي أثري",
-    terminals: "مبنى ركاب رئيسي مصمم بطراز يتماشى مع الطابع الأثري لمدينة الأقصر.",
-    services: ["سوق حرة للهدايا والتحف", "صالات انتظار مريحة ومكيفة", "ماكينات صرف آلي وبنوك", "مواقف حافلات سياحية واسعة"],
-    airlines: "مصر للطيران، طيران النيل، وطيران مصر للطيران إكسبريس، ورحلات سياحية عارضة من أوروبا والخليج.",
-    phone: "095-2374655",
-    map_url: "https://maps.google.com/?q=Luxor+International+Airport"
-  }
 ];
 
 const DEFAULT_PORTS: any[] = [
@@ -362,7 +283,7 @@ const DEFAULT_MICROBUS: any[] = [
   }
 ];
 
-type ServiceType = "monorail" | "lrt" | "airports" | "ports" | "bus_stations" | "microbus_stations" | "directory" | "directions";
+type ServiceType = "monorail" | "lrt" | "ports" | "bus_stations" | "microbus_stations" | "directory" | "directions";
 
 export default function AdminServicesPage() {
   return (
@@ -384,7 +305,6 @@ function AdminServicesPageInner() {
   const [dbStatus, setDbStatus] = useState<Record<ServiceType, boolean>>({
     monorail: true,
     lrt: true,
-    airports: true,
     ports: true,
     bus_stations: true,
     microbus_stations: true,
@@ -395,7 +315,7 @@ function AdminServicesPageInner() {
   // Table Data States
   const [monorailData, setMonorailData] = useState<any[]>([]);
   const [lrtData, setLrtData] = useState<any[]>([]);
-  const [airportsData, setAirportsData] = useState<any[]>([]);
+
   const [portsData, setPortsData] = useState<any[]>([]);
   const [busStationsData, setBusStationsData] = useState<any[]>([]);
   const [microbusStationsData, setMicrobusStationsData] = useState<any[]>([]);
@@ -425,7 +345,7 @@ function AdminServicesPageInner() {
   // Sync tab with URL search parameter "tab"
   useEffect(() => {
     if (tabParam) {
-      const validTabs: ServiceType[] = ["monorail", "lrt", "airports", "ports", "bus_stations", "microbus_stations", "directory", "directions"];
+      const validTabs: ServiceType[] = ["monorail", "lrt", "ports", "bus_stations", "microbus_stations", "directory", "directions"];
       if (validTabs.includes(tabParam as ServiceType)) {
         setActiveTab(tabParam as ServiceType);
       }
@@ -459,7 +379,7 @@ function AdminServicesPageInner() {
     await Promise.all([
       fetchServiceData("monorail", "monorail_stations", DEFAULT_MONORAIL, setMonorailData),
       fetchServiceData("lrt", "lrt_stations", DEFAULT_LRT, setLrtData),
-      fetchServiceData("airports", "airports", DEFAULT_AIRPORTS, setAirportsData),
+
       fetchServiceData("ports", "ports", DEFAULT_PORTS, setPortsData),
       fetchServiceData("bus_stations", "bus_stations", DEFAULT_BUS_STATIONS, setBusStationsData),
       fetchServiceData("microbus_stations", "microbus_stations", DEFAULT_MICROBUS, setMicrobusStationsData)
@@ -486,7 +406,7 @@ function AdminServicesPageInner() {
         setData(getLocalData(type, defaultData));
         setDbStatus(prev => ({ ...prev, [type]: false }));
       } else {
-        const mappedData = data ? data.map(item => {
+        let mappedData = data ? data.map(item => {
           if (type === "monorail" && (item.landmarks === undefined || item.landmarks === null)) {
             const staticInfo = STATION_DETAILS[item.name];
             if (staticInfo) {
@@ -495,6 +415,9 @@ function AdminServicesPageInner() {
           }
           return item;
         }) : [];
+
+
+
         setData(mappedData);
         setDbStatus(prev => ({ ...prev, [type]: true }));
       }
@@ -504,6 +427,8 @@ function AdminServicesPageInner() {
       setDbStatus(prev => ({ ...prev, [type]: false }));
     }
   };
+
+
 
   const getLocalData = (type: ServiceType, defaultVal: any[]) => {
     if (typeof window === "undefined") return defaultVal;
@@ -522,6 +447,7 @@ function AdminServicesPageInner() {
             return item;
           });
         }
+
         return parsed;
       } catch {
         return defaultVal;
@@ -545,8 +471,7 @@ function AdminServicesPageInner() {
       setFormData({ name: "", line_type: "east", station_order: 1, landmarks: "" });
     } else if (activeTab === "lrt") {
       setFormData({ name: "", line_type: "trunk", station_order: 1, landmarks: "" });
-    } else if (activeTab === "airports") {
-      setFormData({ name: "", code: "", city: "", type: "", terminals: "", services: "", airlines: "", phone: "", map_url: "" });
+
     } else if (activeTab === "ports") {
       setFormData({ name: "", governorate: "", sea: "", type: "", capacity: "", description: "", map_url: "" });
     } else if (activeTab === "bus_stations") {
@@ -561,12 +486,7 @@ function AdminServicesPageInner() {
     setError("");
     setSuccess("");
     setEditingItem(item);
-    if (activeTab === "airports") {
-      setFormData({
-        ...item,
-        services: Array.isArray(item.services) ? item.services.join(", ") : item.services || ""
-      });
-    } else if (activeTab === "bus_stations") {
+    if (activeTab === "bus_stations") {
       setFormData({
         ...item,
         destinations: Array.isArray(item.destinations) ? item.destinations.join(", ") : item.destinations || "",
@@ -597,7 +517,6 @@ function AdminServicesPageInner() {
   const getDataSetter = (type: ServiceType) => {
     if (type === "monorail") return setMonorailData;
     if (type === "lrt") return setLrtData;
-    if (type === "airports") return setAirportsData;
     if (type === "ports") return setPortsData;
     if (type === "bus_stations") return setBusStationsData;
     return setMicrobusStationsData;
@@ -606,7 +525,6 @@ function AdminServicesPageInner() {
   const getDefaultData = (type: ServiceType) => {
     if (type === "monorail") return DEFAULT_MONORAIL;
     if (type === "lrt") return DEFAULT_LRT;
-    if (type === "airports") return DEFAULT_AIRPORTS;
     if (type === "ports") return DEFAULT_PORTS;
     if (type === "bus_stations") return DEFAULT_BUS_STATIONS;
     return DEFAULT_MICROBUS;
@@ -624,11 +542,7 @@ function AdminServicesPageInner() {
 
     // Format fields
     let payload = { ...formData };
-    if (activeTab === "airports") {
-      payload.services = typeof formData.services === "string" 
-        ? formData.services.split(",").map((s: string) => s.trim()).filter(Boolean)
-        : formData.services;
-    } else if (activeTab === "bus_stations") {
+    if (activeTab === "bus_stations") {
       payload.destinations = typeof formData.destinations === "string" 
         ? formData.destinations.split(",").map((d: string) => d.trim()).filter(Boolean)
         : formData.destinations;
@@ -657,18 +571,96 @@ function AdminServicesPageInner() {
 
     if (isDbConnected && supabase) {
       try {
-        if (editingItem) {
-          const { error: dbErr } = await supabase
+        // Separate database columns from frontend properties
+        const dbPayload = {
+          name: payload.name || "",
+          code: payload.code || "",
+          city: payload.city || "",
+          type: payload.type || "",
+          terminals: payload.terminals || payload.terminals_count || "",
+          services: payload.services || [],
+          airlines: payload.airlines || "",
+          phone: payload.phone || "",
+          map_url: payload.map_url || "",
+          
+          // Enriched migration columns
+          name_en: payload.name_en || "",
+          iata_code: payload.iata_code || "",
+          icao_code: payload.icao_code || "",
+          governorate: payload.governorate || "",
+          region: payload.region || "",
+          short_desc: payload.short_desc || "",
+          detailed_desc: payload.detailed_desc || "",
+          coordinates: payload.coordinates || "",
+          address: payload.address || "",
+          capacity: payload.capacity || "",
+          runways_count: payload.runways_count || "",
+          runways_length: payload.runways_length || "",
+          domestic_flights: payload.domestic_flights || "",
+          international_flights: payload.international_flights || "",
+          destinations: payload.destinations || "",
+          landmarks: payload.landmarks || [],
+          transit: payload.transit || [],
+          parking: payload.parking || "",
+          official_website: payload.official_website || "",
+          search_keywords: payload.search_keywords || ""
+        };
+
+        const basicPayload = {
+          name: payload.name || payload.name_ar || "",
+          code: payload.code || payload.iata_code || "",
+          city: payload.city || payload.city_ar || "",
+          type: payload.type || "",
+          terminals: payload.terminals || payload.terminals_count || "",
+          services: payload.services || [],
+          airlines: payload.airlines || "",
+          phone: payload.phone || "",
+          map_url: payload.map_url || ""
+        };
+
+        // Check if editing item is a real database record with a valid UUID
+        const isUUID = (str: any) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(str));
+        const isEditingDbRecord = editingItem && editingItem.id && isUUID(editingItem.id);
+
+        if (isEditingDbRecord) {
+          let { error: dbErr } = await supabase
              .from(tableName)
-             .update(payload)
+             .update(dbPayload)
              .eq("id", editingItem.id);
-          if (dbErr) throw dbErr;
+          
+          if (dbErr) {
+            const errorMsg = dbErr.message || "";
+            if (errorMsg.includes("Could not find the") || errorMsg.includes("column") || dbErr.code === "PGRST102") {
+              console.warn("Schema mismatch, retrying with basic columns only:", errorMsg);
+              const { error: retryErr } = await supabase
+                 .from(tableName)
+                 .update(basicPayload)
+                 .eq("id", editingItem.id);
+              if (retryErr) throw retryErr;
+            } else {
+              throw dbErr;
+            }
+          }
           setSuccess("تم تعديل السجل بنجاح في قاعدة البيانات.");
         } else {
-          const { error: dbErr } = await supabase
+          // If we are editing a local fallback record (with numeric ID like 3), it does not exist in DB yet!
+          // We pass dbPayload directly. Since it does not contain 'id', Supabase will generate a valid UUID.
+          let { error: dbErr } = await supabase
              .from(tableName)
-             .insert(payload);
-          if (dbErr) throw dbErr;
+             .insert(dbPayload);
+          
+          if (dbErr) {
+            const errorMsg = dbErr.message || "";
+            if (errorMsg.includes("Could not find the") || errorMsg.includes("column") || dbErr.code === "PGRST102") {
+              console.warn("Schema mismatch, retrying with basic columns only:", errorMsg);
+              const { error: retryErr } = await supabase
+                 .from(tableName)
+                 .insert(basicPayload);
+              if (retryErr) throw retryErr;
+            } else {
+              throw dbErr;
+            }
+          }
           setSuccess("تم إضافة السجل بنجاح إلى قاعدة البيانات.");
         }
         // Reload from DB
@@ -756,7 +748,6 @@ function AdminServicesPageInner() {
     let raw: any[] = [];
     if (activeTab === "monorail") raw = monorailData;
     else if (activeTab === "lrt") raw = lrtData;
-    else if (activeTab === "airports") raw = airportsData;
     else if (activeTab === "ports") raw = portsData;
     else if (activeTab === "bus_stations") raw = busStationsData;
     else if (activeTab === "microbus_stations") raw = microbusStationsData;
@@ -792,10 +783,10 @@ function AdminServicesPageInner() {
       {/* Upper Status/Welcome banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "#fff", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
             إدارة الخدمات والنقل
           </h1>
-          <p style={{ color: "#94a3b8", fontSize: "0.9rem", margin: 0 }}>
+          <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
             تحرير وتحديث خدمات ومحطات ومواقف ومطارات وموانئ القاهرة ومصر.
           </p>
         </div>
@@ -803,7 +794,10 @@ function AdminServicesPageInner() {
         {activeTab !== "directory" && activeTab !== "directions" && (
           <button onClick={handleOpenAdd} className="ios-btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "10px 20px" }}>
             <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
-            إضافة سجل جديد
+            {activeTab === "ports" ? "إضافة ميناء جديد" :
+             activeTab === "microbus_stations" ? "إضافة موقف سرفيس" :
+             activeTab === "bus_stations" ? "إضافة موقف أتوبيس" :
+             "إضافة سجل جديد"}
           </button>
         )}
       </div>
@@ -813,7 +807,6 @@ function AdminServicesPageInner() {
         {[
           { id: "monorail", label: "المنوريل", icon: "bx bx-navigation" },
           { id: "lrt", label: "القطار الكهربائي LRT", icon: "bx bx-train" },
-          { id: "airports", label: "المطارات", icon: "bx bx-plane" },
           { id: "ports", label: "الموانئ", icon: "bx bx-anchor" },
           { id: "microbus_stations", label: "المواقف (سرفيس)", icon: "bx bx-map-pin" },
           { id: "bus_stations", label: "الأتوبيسات (سوبرجيت)", icon: "bx bx-bus" },
@@ -897,15 +890,53 @@ function AdminServicesPageInner() {
       )}
 
       {/* Search Input bar */}
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="البحث عن محطة، مطار، موصف، أو مدينة..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="ios-input"
-          style={{ width: "100%", maxWidth: "450px", background: "rgba(255,255,255,0.03)" }}
-        />
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center", 
+        marginBottom: "20px", 
+        flexWrap: "wrap", 
+        gap: "16px" 
+      }}>
+        <div style={{ position: "relative", width: "100%", maxWidth: "450px" }}>
+          <i className="bx bx-search" style={{ 
+            position: "absolute", 
+            right: "16px", 
+            top: "50%", 
+            transform: "translateY(-50%)", 
+            color: "var(--text-muted, #94a3b8)", 
+            fontSize: "1.2rem" 
+          }} />
+          <input
+            type="text"
+            placeholder={
+              activeTab === "ports" ? "البحث عن ميناء، محافظة..." :
+              activeTab === "microbus_stations" ? "البحث عن موقف، مسار..." :
+              "البحث عن محطة، مطار، موصف، أو مدينة..."
+            }
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="ios-input"
+            style={{ 
+              width: "100%", 
+              paddingRight: "44px", 
+              borderRadius: "12px",
+              height: "46px",
+              fontSize: "0.95rem",
+              outline: "none",
+              transition: "all 0.2s"
+            }}
+          />
+        </div>
+
+        <div className={styles.statsCounterBadge}>
+          <i className="bx bx-list-ul" style={{ fontSize: "1rem" }} />
+          <span>
+            {activeTab === "ports" && `إجمالي الموانئ: ${filteredRows.length}`}
+            {activeTab === "microbus_stations" && `إجمالي المواقف: ${filteredRows.length}`}
+            {activeTab === "bus_stations" && `إجمالي المواقف: ${filteredRows.length}`}
+          </span>
+        </div>
       </div>
 
       {/* Notification Banner */}
@@ -990,14 +1021,14 @@ function AdminServicesPageInner() {
               </div>
             </div>
             
-            <div style={{ fontSize: "0.82rem", color: "#64748b" }}>
-              عدد المحطات المعروضة: <strong style={{ color: "#fff" }}>{filteredRows.length}</strong>
+            <div style={{ fontSize: "0.82rem", color: "var(--text-muted, #64748b)" }}>
+              عدد المحطات المعروضة: <strong style={{ color: "var(--text-primary, #fff)" }}>{filteredRows.length}</strong>
             </div>
           </div>
 
           {/* Visual Timeline / List of Cards */}
           {filteredRows.length === 0 ? (
-            <div style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.05)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "#94a3b8" }}>
+            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
               لا توجد أي محطات مطابقة لخط البحث الحالي.
             </div>
           ) : (
@@ -1078,7 +1109,7 @@ function AdminServicesPageInner() {
                         {/* Order & Name */}
                         <div>
                           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
-                            <span style={{ fontSize: "1.1rem", fontWeight: "900", color: "#fff" }}>
+                            <span style={{ fontSize: "1.1rem", fontWeight: "900", color: "var(--text-primary, #fff)" }}>
                               {station.name}
                             </span>
                             <span style={{ fontSize: "0.72rem", background: lineColor + "15", color: lineColor, border: `1px solid ${lineColor}30`, padding: "2px 8px", borderRadius: "20px", fontWeight: "bold" }}>
@@ -1090,7 +1121,7 @@ function AdminServicesPageInner() {
                           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "8px" }}>
                             {station.landmarks && Array.isArray(station.landmarks) && station.landmarks.length > 0 ? (
                               (station.landmarks as string[]).map((landmark, lIdx) => (
-                                <span key={lIdx} style={{ fontSize: "0.73rem", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", padding: "3px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "4px", border: "1px solid rgba(255,255,255,0.04)" }}>
+                                <span key={lIdx} style={{ fontSize: "0.73rem", background: "rgba(255,255,255,0.02)", color: "var(--text-primary, #e2e8f0)", padding: "3px 8px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "4px", border: "1px solid var(--border-glass)" }}>
                                   <i className="bx bx-map-pin" style={{ color: lineColor, fontSize: "0.8rem" }} />
                                   {landmark}
                                 </span>
@@ -1160,106 +1191,91 @@ function AdminServicesPageInner() {
         </div>
       ) : (
         <div className={styles.tableCard} style={{ overflowX: "auto" }}>
-          <table className={styles.adminTable} style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                {activeTab === "airports" && (
-                  <>
-                    <th>الاسم</th>
-                    <th>الكود</th>
-                    <th>المدينة</th>
-                    <th>النوع</th>
-                    <th>الهاتف</th>
-                    <th>الصالات</th>
-                    <th>خطوط الطيران</th>
-                    <th>خيارات</th>
-                  </>
-                )}
+          <table className={styles.adminTable} style={{ width: "100%" }}>
+            <thead className={styles.adminThead}>
+              <tr className={styles.adminTr}>
+
                 {activeTab === "ports" && (
                   <>
-                    <th>اسم الميناء</th>
-                    <th>المحافظة</th>
-                    <th>المسطح المائي</th>
-                    <th>النوع</th>
-                    <th>السعة الاستيعابية</th>
-                    <th>خيارات</th>
+                    <th className={styles.adminTh}>اسم الميناء</th>
+                    <th className={styles.adminTh}>المحافظة</th>
+                    <th className={styles.adminTh}>المسطح المائي</th>
+                    <th className={styles.adminTh}>النوع</th>
+                    <th className={styles.adminTh}>السعة الاستيعابية</th>
+                    <th className={styles.adminTh} style={{ textAlign: "center" }}>خيارات</th>
                   </>
                 )}
                 {activeTab === "microbus_stations" && (
                   <>
-                    <th>اسم الموقف</th>
-                    <th>المحافظة</th>
-                    <th>العنوان بالتفصيل</th>
-                    <th>عدد الخطوط</th>
-                    <th>خيارات</th>
+                    <th className={styles.adminTh}>اسم الموقف</th>
+                    <th className={styles.adminTh}>المحافظة</th>
+                    <th className={styles.adminTh}>العنوان بالتفصيل</th>
+                    <th className={styles.adminTh}>عدد الخطوط</th>
+                    <th className={styles.adminTh} style={{ textAlign: "center" }}>خيارات</th>
                   </>
                 )}
                 {activeTab === "bus_stations" && (
                   <>
-                    <th>اسم الموقف</th>
-                    <th>المحافظة</th>
-                    <th>العنوان بالتفصيل</th>
-                    <th>الوجهات المتاحة</th>
-                    <th>خيارات</th>
+                    <th className={styles.adminTh}>اسم الموقف</th>
+                    <th className={styles.adminTh}>المحافظة</th>
+                    <th className={styles.adminTh}>العنوان بالتفصيل</th>
+                    <th className={styles.adminTh}>الوجهات المتاحة</th>
+                    <th className={styles.adminTh} style={{ textAlign: "center" }}>خيارات</th>
                   </>
                 )}
               </tr>
             </thead>
             <tbody>
               {filteredRows.length === 0 ? (
-                <tr>
+                <tr className={styles.adminTr}>
                   <td colSpan={10} style={{ textAlign: "center", padding: "40px", color: "#94a3b8" }}>
                     لا توجد أي سجلات متوفرة حالياً.
                   </td>
                 </tr>
               ) : (
                 filteredRows.map((item, idx) => (
-                  <tr key={item.id || idx}>
-                    {activeTab === "airports" && (
-                      <>
-                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                        <td><span style={{ background: "rgba(255,255,255,0.05)", padding: "4px 8px", borderRadius: "6px", fontFamily: "monospace" }}>{item.code}</span></td>
-                        <td>{item.city}</td>
-                        <td>{item.type}</td>
-                        <td>{item.phone}</td>
-                        <td title={item.terminals} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.terminals}</td>
-                        <td title={item.airlines} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.airlines}</td>
-                      </>
-                    )}
+                  <tr key={item.id || idx} className={styles.adminTr}>
+
                     {activeTab === "ports" && (
                       <>
-                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                        <td>{item.governorate}</td>
-                        <td>{item.sea}</td>
-                        <td>{item.type}</td>
-                        <td title={item.capacity} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.capacity}</td>
+                        <td className={styles.adminTd} style={{ fontWeight: "bold" }}>{item.name}</td>
+                        <td className={styles.adminTd}>{item.governorate}</td>
+                        <td className={styles.adminTd}>{item.sea}</td>
+                        <td className={styles.adminTd}>
+                          <span className={styles.portTypeBadge}>{item.type}</span>
+                        </td>
+                        <td className={styles.adminTd} title={item.capacity} style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.capacity}</td>
                       </>
                     )}
                     {activeTab === "microbus_stations" && (
                       <>
-                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                        <td>{item.governorate}</td>
-                        <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
-                        <td>{Array.isArray(item.routes) ? item.routes.length : 0} مساراً</td>
+                        <td className={styles.adminTd} style={{ fontWeight: "bold" }}>{item.name}</td>
+                        <td className={styles.adminTd}>{item.governorate}</td>
+                        <td className={styles.adminTd} title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
+                        <td className={styles.adminTd}>
+                          <span className={styles.microbusRouteBadge}>{Array.isArray(item.routes) ? item.routes.length : 0} مساراً</span>
+                        </td>
                       </>
                     )}
                     {activeTab === "bus_stations" && (
                       <>
-                        <td style={{ fontWeight: "bold" }}>{item.name}</td>
-                        <td>{item.governorate}</td>
-                        <td title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
-                        <td title={Array.isArray(item.destinations) ? item.destinations.join("، ") : ""} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "bold" }}>{item.name}</td>
+                        <td className={styles.adminTd}>{item.governorate}</td>
+                        <td className={styles.adminTd} title={item.location} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.location}</td>
+                        <td className={styles.adminTd} title={Array.isArray(item.destinations) ? item.destinations.join("، ") : ""} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {Array.isArray(item.destinations) ? item.destinations.join("، ") : ""}
                         </td>
                       </>
                     )}
-                    <td>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button onClick={() => handleOpenEdit(item)} className={styles.actionBtn} style={{ color: "#34c759", border: "1px solid rgba(52, 199, 89, 0.2)", background: "rgba(52, 199, 89, 0.05)" }} title="تعديل">
+                    <td className={styles.adminTd}>
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                        <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل">
                           <i className="bx bx-edit" />
+                          <span>تعديل</span>
                         </button>
-                        <button onClick={() => handleDelete(item)} className={styles.actionBtn} style={{ color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.2)", background: "rgba(255, 59, 48, 0.05)" }} title="حذف">
+                        <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف">
                           <i className="bx bx-trash" />
+                          <span>حذف</span>
                         </button>
                       </div>
                     </td>
@@ -1302,7 +1318,7 @@ function AdminServicesPageInner() {
                 {editingItem ? "تعديل بيانات السجل" : "إضافة سجل جديد لـ " + (
                   activeTab === "monorail" ? "المنوريل" :
                   activeTab === "lrt" ? "القطار الكهربائي" :
-                  activeTab === "airports" ? "المطارات" :
+
                   activeTab === "ports" ? "الموانئ" :
                   activeTab === "microbus_stations" ? "مواقف الميكروباص" : "أتوبيسات السفر"
                 )}
@@ -1379,118 +1395,6 @@ function AdminServicesPageInner() {
                 </>
               )}
 
-              {/* Airports Form */}
-              {activeTab === "airports" && (
-                <>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-                    <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم المطار *</label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.name || ""}
-                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                        className="ios-input"
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-                    <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>كود المطار (IATA) *</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="مثال: CAI"
-                        value={formData.code || ""}
-                        onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                        className="ios-input"
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-                    <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المدينة *</label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.city || ""}
-                        onChange={e => setFormData({ ...formData, city: e.target.value })}
-                        className="ios-input"
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-                    <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>نوع المطار *</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="مثال: مطار دولي رئيسي"
-                        value={formData.type || ""}
-                        onChange={e => setFormData({ ...formData, type: e.target.value })}
-                        className="ios-input"
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>أرقام الهواتف أو خدمة العملاء *</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.phone || ""}
-                      onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                      className="ios-input"
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الصالات ومباني الركاب</label>
-                    <textarea
-                      value={formData.terminals || ""}
-                      onChange={e => setFormData({ ...formData, terminals: e.target.value })}
-                      className="ios-input"
-                      style={{ width: "100%", height: "70px", resize: "vertical" }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>خطوط الطيران العاملة</label>
-                    <textarea
-                      value={formData.airlines || ""}
-                      onChange={e => setFormData({ ...formData, airlines: e.target.value })}
-                      className="ios-input"
-                      style={{ width: "100%", height: "70px", resize: "vertical" }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الخدمات المتاحة (افصل بينها بفاصلة)</label>
-                    <input
-                      type="text"
-                      placeholder="سوق حرة, مواقف سيارات, صرافة..."
-                      value={formData.services || ""}
-                      onChange={e => setFormData({ ...formData, services: e.target.value })}
-                      className="ios-input"
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
-                    <input
-                      type="url"
-                      required
-                      value={formData.map_url || ""}
-                      onChange={e => setFormData({ ...formData, map_url: e.target.value })}
-                      className="ios-input"
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-                </>
-              )}
 
               {/* Ports Form */}
               {activeTab === "ports" && (
