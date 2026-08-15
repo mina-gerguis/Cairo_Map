@@ -438,7 +438,6 @@
   padding: 16px 20px;
   font-weight: 800;
   font-size: 0.82rem;
-  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -1720,11 +1719,13 @@
 
 /* ── Table Light Mode Overrides for High Contrast ── */
 :global(.light) .adminThead {
-  background: #f5ece5;
+  background: #f4edeb;
+  color: oklch(55.17% 0.0200 36.66);
 }
 
 :global(.light) .adminTh {
-  color: #5c4c44;
+  background: #f4edeb;
+  color: oklch(55.17% 0.0200 36.66);
   border-bottom-color: #ebdcd2;
 }
 

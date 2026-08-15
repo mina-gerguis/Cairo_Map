@@ -53,20 +53,7 @@ const DEFAULT_MONORAIL: any[] = [
   { name: "وادي النيل", line_type: "west", station_order: 16 }
 ];
 
-const DEFAULT_LRT: any[] = [
-  { name: "عدلي منصور", line_type: "trunk", station_order: 1 },
-  { name: "العبور", line_type: "trunk", station_order: 2 },
-  { name: "المستقبل", line_type: "trunk", station_order: 3 },
-  { name: "الشروق", line_type: "trunk", station_order: 4 },
-  { name: "هليوبوليس الجديدة", line_type: "trunk", station_order: 5 },
-  { name: "بدر", line_type: "trunk", station_order: 6 },
-  { name: "الروبيكي", line_type: "capital", station_order: 1 },
-  { name: "حدائق العاصمة", line_type: "capital", station_order: 2 },
-  { name: "مطار العاصمة", line_type: "capital", station_order: 3 },
-  { name: "مدينة الفنون والثقافة", line_type: "capital", station_order: 4 },
-  { name: "المنطقة الصناعية", line_type: "ramadan", station_order: 1 },
-  { name: "مدينة المعرفة", line_type: "ramadan", station_order: 2 }
-];
+
 
 const DEFAULT_PORTS: any[] = [
   {
@@ -283,7 +270,7 @@ const DEFAULT_MICROBUS: any[] = [
   }
 ];
 
-type ServiceType = "monorail" | "lrt" | "ports" | "bus_stations" | "microbus_stations" | "directory" | "directions";
+type ServiceType = "monorail" | "ports" | "bus_stations" | "microbus_stations" | "directory" | "directions";
 
 export default function AdminServicesPage() {
   return (
@@ -304,8 +291,7 @@ function AdminServicesPageInner() {
   const [activeTab, setActiveTab] = useState<ServiceType>("monorail");
   const [dbStatus, setDbStatus] = useState<Record<ServiceType, boolean>>({
     monorail: true,
-    lrt: true,
-    ports: true,
+        ports: true,
     bus_stations: true,
     microbus_stations: true,
     directory: true,
@@ -314,8 +300,7 @@ function AdminServicesPageInner() {
 
   // Table Data States
   const [monorailData, setMonorailData] = useState<any[]>([]);
-  const [lrtData, setLrtData] = useState<any[]>([]);
-
+  
   const [portsData, setPortsData] = useState<any[]>([]);
   const [busStationsData, setBusStationsData] = useState<any[]>([]);
   const [microbusStationsData, setMicrobusStationsData] = useState<any[]>([]);
@@ -329,8 +314,7 @@ function AdminServicesPageInner() {
   const [formData, setFormData] = useState<any>({});
   const [error, setError] = useState("");
   const [adminActiveMonorailLine, setAdminActiveMonorailLine] = useState<"all" | "east" | "west">("all");
-  const [adminActiveLrtLine, setAdminActiveLrtLine] = useState<"all" | "trunk" | "capital" | "ramadan">("all");
-  const [success, setSuccess] = useState("");
+    const [success, setSuccess] = useState("");
 
   useEffect(() => {
     if (!authLoading) {
@@ -345,7 +329,11 @@ function AdminServicesPageInner() {
   // Sync tab with URL search parameter "tab"
   useEffect(() => {
     if (tabParam) {
-      const validTabs: ServiceType[] = ["monorail", "lrt", "ports", "bus_stations", "microbus_stations", "directory", "directions"];
+      if (tabParam === "bus_stations") {
+        router.replace("/admin/bus-stations");
+        return;
+      }
+      const validTabs: ServiceType[] = ["monorail", "ports", "bus_stations", "microbus_stations", "directory", "directions"];
       if (validTabs.includes(tabParam as ServiceType)) {
         setActiveTab(tabParam as ServiceType);
       }
@@ -378,8 +366,7 @@ function AdminServicesPageInner() {
     setLoading(true);
     await Promise.all([
       fetchServiceData("monorail", "monorail_stations", DEFAULT_MONORAIL, setMonorailData),
-      fetchServiceData("lrt", "lrt_stations", DEFAULT_LRT, setLrtData),
-
+      
       fetchServiceData("ports", "ports", DEFAULT_PORTS, setPortsData),
       fetchServiceData("bus_stations", "bus_stations", DEFAULT_BUS_STATIONS, setBusStationsData),
       fetchServiceData("microbus_stations", "microbus_stations", DEFAULT_MICROBUS, setMicrobusStationsData)
@@ -407,13 +394,17 @@ function AdminServicesPageInner() {
         setDbStatus(prev => ({ ...prev, [type]: false }));
       } else {
         let mappedData = data ? data.map(item => {
-          if (type === "monorail" && (item.landmarks === undefined || item.landmarks === null)) {
-            const staticInfo = STATION_DETAILS[item.name];
-            if (staticInfo) {
-              return { ...item, landmarks: staticInfo.landmarks };
+          let updated = { ...item };
+          if (type === "monorail") {
+            if (item.landmarks === undefined || item.landmarks === null || (Array.isArray(item.landmarks) && item.landmarks.length === 0)) {
+              const staticInfo = STATION_DETAILS[item.name];
+              if (staticInfo) {
+                updated.landmarks = staticInfo.landmarks;
+              }
             }
+            updated.status = item.status || STATION_DETAILS[item.name]?.status || "تحت الإنشاء";
           }
-          return item;
+          return updated;
         }) : [];
 
 
@@ -438,13 +429,15 @@ function AdminServicesPageInner() {
         const parsed = JSON.parse(local);
         if (type === "monorail" && Array.isArray(parsed)) {
           return parsed.map(item => {
-            if (item.landmarks === undefined || item.landmarks === null) {
+            let updated = { ...item };
+            if (item.landmarks === undefined || item.landmarks === null || (Array.isArray(item.landmarks) && item.landmarks.length === 0)) {
               const staticInfo = STATION_DETAILS[item.name];
               if (staticInfo) {
-                return { ...item, landmarks: staticInfo.landmarks };
+                updated.landmarks = staticInfo.landmarks;
               }
             }
-            return item;
+            updated.status = item.status || STATION_DETAILS[item.name]?.status || "تحت الإنشاء";
+            return updated;
           });
         }
 
@@ -468,10 +461,8 @@ function AdminServicesPageInner() {
     setSuccess("");
     setEditingItem(null);
     if (activeTab === "monorail") {
-      setFormData({ name: "", line_type: "east", station_order: 1, landmarks: "" });
-    } else if (activeTab === "lrt") {
-      setFormData({ name: "", line_type: "trunk", station_order: 1, landmarks: "" });
-
+      setFormData({ name: "", line_type: "east", station_order: 1, landmarks: "", status: "تحت الإنشاء" });
+    
     } else if (activeTab === "ports") {
       setFormData({ name: "", governorate: "", sea: "", type: "", capacity: "", description: "", map_url: "" });
     } else if (activeTab === "bus_stations") {
@@ -497,10 +488,11 @@ function AdminServicesPageInner() {
         ...item,
         routes: Array.isArray(item.routes) ? JSON.stringify(item.routes, null, 2) : item.routes || ""
       });
-    } else if (activeTab === "monorail" || activeTab === "lrt") {
+    } else if (activeTab === "monorail") {
       setFormData({
         ...item,
-        landmarks: Array.isArray(item.landmarks) ? item.landmarks.join(", ") : item.landmarks || ""
+        landmarks: Array.isArray(item.landmarks) ? item.landmarks.join(", ") : item.landmarks || "",
+        status: item.status || "تحت الإنشاء"
       });
     } else {
       setFormData({ ...item });
@@ -510,13 +502,13 @@ function AdminServicesPageInner() {
 
   const getTableName = (type: ServiceType) => {
     if (type === "monorail") return "monorail_stations";
-    if (type === "lrt") return "lrt_stations";
+
     return type;
   };
 
   const getDataSetter = (type: ServiceType) => {
     if (type === "monorail") return setMonorailData;
-    if (type === "lrt") return setLrtData;
+
     if (type === "ports") return setPortsData;
     if (type === "bus_stations") return setBusStationsData;
     return setMicrobusStationsData;
@@ -524,7 +516,7 @@ function AdminServicesPageInner() {
 
   const getDefaultData = (type: ServiceType) => {
     if (type === "monorail") return DEFAULT_MONORAIL;
-    if (type === "lrt") return DEFAULT_LRT;
+
     if (type === "ports") return DEFAULT_PORTS;
     if (type === "bus_stations") return DEFAULT_BUS_STATIONS;
     return DEFAULT_MICROBUS;
@@ -563,7 +555,7 @@ function AdminServicesPageInner() {
           return;
         }
       }
-    } else if (activeTab === "monorail" || activeTab === "lrt") {
+    } else if (activeTab === "monorail") {
       payload.landmarks = typeof formData.landmarks === "string"
         ? formData.landmarks.split(",").map((s: string) => s.trim()).filter(Boolean)
         : formData.landmarks || [];
@@ -670,8 +662,8 @@ function AdminServicesPageInner() {
       } catch (err: any) {
         console.error(err);
         let errMsg = "فشلت العملية في قاعدة البيانات: " + err.message;
-        if (err.message && (err.message.includes("landmarks") || err.message.includes("column"))) {
-          errMsg += " (تنبيه: قد يكون عمود landmarks غير موجود في جدول قاعدة البيانات. يرجى تشغيل كود SQL التالي في لوحة تحكم Supabase لتحديث الجداول: ALTER TABLE public.monorail_stations ADD COLUMN IF NOT EXISTS landmarks JSONB DEFAULT '[]'::jsonb; ALTER TABLE public.lrt_stations ADD COLUMN IF NOT EXISTS landmarks JSONB DEFAULT '[]'::jsonb;)";
+        if (err.message && (err.message.includes("landmarks") || err.message.includes("status") || err.message.includes("column"))) {
+          errMsg += " (تنبيه: قد يكون عمود landmarks أو status غير موجود في جدول قاعدة البيانات. يرجى تشغيل كود SQL التالي في لوحة تحكم Supabase لتحديث الجداول: ALTER TABLE public.monorail_stations ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'تشغيل فعلي'; ALTER TABLE public.monorail_stations ADD COLUMN IF NOT EXISTS landmarks JSONB DEFAULT '[]'::jsonb;)";
         }
         setError(errMsg);
       }
@@ -747,7 +739,7 @@ function AdminServicesPageInner() {
   const getFilteredRows = () => {
     let raw: any[] = [];
     if (activeTab === "monorail") raw = monorailData;
-    else if (activeTab === "lrt") raw = lrtData;
+
     else if (activeTab === "ports") raw = portsData;
     else if (activeTab === "bus_stations") raw = busStationsData;
     else if (activeTab === "microbus_stations") raw = microbusStationsData;
@@ -819,8 +811,14 @@ function AdminServicesPageInner() {
             <button
               key={tab.id}
               onClick={() => {
-                setActiveTab(tab.id as ServiceType);
-                setSearchQuery("");
+                if (tab.id === "lrt") {
+                  router.push("/admin/lrt");
+                } else if (tab.id === "bus_stations") {
+                  router.push("/admin/bus-stations");
+                } else {
+                  setActiveTab(tab.id as ServiceType);
+                  setSearchQuery("");
+                }
               }}
               style={{
                 display: "flex",
@@ -952,7 +950,7 @@ function AdminServicesPageInner() {
       )}
 
       {/* Main Table Panel or Visual View */}
-      {(activeTab === "monorail" || activeTab === "lrt") ? (
+      {activeTab === "monorail" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginBottom: "32px" }}>
           
           {/* Segmented Line Control */}
@@ -960,7 +958,6 @@ function AdminServicesPageInner() {
             <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
               <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "#94a3b8" }}>عرض خط سير الرحلة:</span>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {activeTab === "monorail" ? (
                   <>
                     {[
                       { id: "all", label: "جميع المحطات", color: "#818cf8" },
@@ -988,36 +985,6 @@ function AdminServicesPageInner() {
                       </button>
                     ))}
                   </>
-                ) : (
-                  <>
-                    {[
-                      { id: "all", label: "جميع المحطات", color: "#818cf8" },
-                      { id: "trunk", label: "الجذع الرئيسي (عدلي منصور)", color: "#3b82f6" },
-                      { id: "capital", label: "تفريعة العاصمة", color: "#8b5cf6" },
-                      { id: "ramadan", label: "تفريعة العاشر", color: "#ec4899" }
-                    ].map(opt => (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        onClick={() => setAdminActiveLrtLine(opt.id as any)}
-                        style={{
-                          padding: "6px 14px",
-                          borderRadius: "10px",
-                          fontSize: "0.82rem",
-                          fontWeight: "800",
-                          cursor: "pointer",
-                          transition: "all 0.25s ease",
-                          border: "1px solid",
-                          borderColor: adminActiveLrtLine === opt.id ? opt.color : "rgba(255,255,255,0.08)",
-                          background: adminActiveLrtLine === opt.id ? `rgba(${opt.id === "trunk" ? "59, 130, 246" : opt.id === "capital" ? "139, 92, 246" : opt.id === "ramadan" ? "236, 72, 153" : "99, 102, 241"}, 0.15)` : "rgba(255,255,255,0.02)",
-                          color: adminActiveLrtLine === opt.id ? opt.color : "#94a3b8"
-                        }}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </>
-                )}
               </div>
             </div>
             
@@ -1049,16 +1016,8 @@ function AdminServicesPageInner() {
                 const isEast = station.line_type === "east";
                 
                 // Determine line color and label
-                let lineColor = "#6366f1"; // default
-                let lineName = "";
-                if (activeTab === "monorail") {
-                  lineColor = isEast ? "#3b82f6" : "#10b981";
-                  lineName = isEast ? "شرق النيل (العاصمة)" : "غرب النيل (أكتوبر)";
-                } else {
-                  if (station.line_type === "trunk") { lineColor = "#3b82f6"; lineName = "الجذع الرئيسي"; }
-                  else if (station.line_type === "capital") { lineColor = "#8b5cf6"; lineName = "تفريعة العاصمة"; }
-                  else if (station.line_type === "ramadan") { lineColor = "#ec4899"; lineName = "تفريعة العاشر"; }
-                }
+                let lineColor = isEast ? "#3b82f6" : "#10b981";
+                let lineName = isEast ? "شرق النيل (العاصمة)" : "غرب النيل (أكتوبر)";
 
                 return (
                   <div key={station.id || index} style={{ display: "flex", alignItems: "center", position: "relative" }}>
@@ -1114,6 +1073,17 @@ function AdminServicesPageInner() {
                             </span>
                             <span style={{ fontSize: "0.72rem", background: lineColor + "15", color: lineColor, border: `1px solid ${lineColor}30`, padding: "2px 8px", borderRadius: "20px", fontWeight: "bold" }}>
                               {lineName}
+                            </span>
+                            <span style={{
+                              fontSize: "0.72rem",
+                              background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.12)" : "rgba(16, 185, 129, 0.12)"),
+                              color: station.status === "تحت الإنشاء" ? "#ef4444" : (station.status === "تشغيل تجريبي" ? "#fbbf24" : "#10b981"),
+                              border: `1px solid ${station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.25)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.25)" : "rgba(16, 185, 129, 0.25)")}`,
+                              padding: "2px 8px",
+                              borderRadius: "20px",
+                              fontWeight: "bold"
+                            }}>
+                              {station.status || "تشغيل فعلي"}
                             </span>
                           </div>
 
@@ -1317,8 +1287,7 @@ function AdminServicesPageInner() {
               <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "#fff", margin: 0 }}>
                 {editingItem ? "تعديل بيانات السجل" : "إضافة سجل جديد لـ " + (
                   activeTab === "monorail" ? "المنوريل" :
-                  activeTab === "lrt" ? "القطار الكهربائي" :
-
+                  
                   activeTab === "ports" ? "الموانئ" :
                   activeTab === "microbus_stations" ? "مواقف الميكروباص" : "أتوبيسات السفر"
                 )}
@@ -1331,7 +1300,7 @@ function AdminServicesPageInner() {
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               
               {/* Monorail & LRT Form */}
-              {(activeTab === "monorail" || activeTab === "lrt") && (
+              {activeTab === "monorail" && (
                 <>
                   <div>
                     <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
@@ -1353,18 +1322,10 @@ function AdminServicesPageInner() {
                       className="ios-input"
                       style={{ width: "100%", background: "#1e293b" }}
                     >
-                      {activeTab === "monorail" ? (
                         <>
                           <option value="east">شرق النيل (العاصمة الإدارية)</option>
                           <option value="west">غرب النيل (6 أكتوبر)</option>
                         </>
-                      ) : (
-                        <>
-                          <option value="trunk">الجذع الرئيسي (عدلي منصور - بدر)</option>
-                          <option value="capital">تفريعة العاصمة الإدارية (بدر - الفنون)</option>
-                          <option value="ramadan">تفريعة العاشر من رمضان (بدر - المعرفة)</option>
-                        </>
-                      )}
                     </select>
                   </div>
 
@@ -1391,6 +1352,20 @@ function AdminServicesPageInner() {
                       className="ios-input"
                       style={{ width: "100%" }}
                     />
+                  </div>
+
+                  <div>
+                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
+                    <select
+                      value={formData.status || "تحت الإنشاء"}
+                      onChange={e => setFormData({ ...formData, status: e.target.value })}
+                      className="ios-input"
+                      style={{ width: "100%", background: "#1e293b" }}
+                    >
+                      <option value="تشغيل تجريبي">تشغيل تجريبي (تجريبي)</option>
+                      <option value="تحت الإنشاء">تحت الإنشاء (ليست في الخدمة)</option>
+                      <option value="تشغيل فعلي">تشغيل فعلي (في الخدمة)</option>
+                    </select>
                   </div>
                 </>
               )}

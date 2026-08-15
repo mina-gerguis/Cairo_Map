@@ -30,6 +30,8 @@ function AdminAirportsInner() {
   const [editingItem, setEditingItem] = useState<any>(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [airportToDelete, setAirportToDelete] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [formData, setFormData] = useState<any>({
     name: "",
@@ -459,8 +461,13 @@ function AdminAirportsInner() {
     }
   };
 
-  const handleDelete = async (item: any) => {
-    if (!confirm("هل أنت متأكد من حذف هذا المطار؟")) return;
+  const handleDelete = (item: any) => {
+    setAirportToDelete(item);
+  };
+
+  const confirmDelete = async () => {
+    if (!airportToDelete) return;
+    setIsDeleting(true);
     setError("");
     setSuccess("");
 
@@ -469,24 +476,29 @@ function AdminAirportsInner() {
         const { error: dbErr } = await supabase
           .from("airports")
           .delete()
-          .eq("id", item.id);
+          .eq("id", airportToDelete.id);
         if (dbErr) throw dbErr;
         setSuccess("تم حذف المطار بنجاح من قاعدة البيانات.");
         await fetchAirportsData();
+        setAirportToDelete(null);
       } catch (err: any) {
         console.error(err);
         setError("فشل الحذف في قاعدة البيانات: " + err.message);
+      } finally {
+        setIsDeleting(false);
       }
     } else {
       let currentLocal = getLocalData();
       currentLocal = currentLocal.filter((localItem: any) => {
-        if (item.id && localItem.id !== item.id) return true;
-        if (!item.id && localItem.name !== item.name) return true;
+        if (airportToDelete.id && localItem.id !== airportToDelete.id) return true;
+        if (!airportToDelete.id && localItem.name !== airportToDelete.name) return true;
         return false;
       });
       saveLocalData(currentLocal);
       setAirportsData(currentLocal);
       setSuccess("تم حذف السجل بنجاح محلياً.");
+      setAirportToDelete(null);
+      setIsDeleting(false);
     }
   };
 
@@ -788,7 +800,7 @@ function AdminAirportsInner() {
                   </h3>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الاسم العربي للمطار *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الاسم العربي للمطار *</label>
                       <input
                         type="text"
                         required
@@ -799,7 +811,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الاسم الإنجليزي للمطار *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الاسم الإنجليزي للمطار *</label>
                       <input
                         type="text"
                         required
@@ -813,7 +825,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "12px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>كود IATA (3 حروف) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كود IATA (3 حروف) *</label>
                       <input
                         type="text"
                         required
@@ -825,7 +837,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>كود ICAO (4 حروف)</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كود ICAO (4 حروف)</label>
                       <input
                         type="text"
                         placeholder="مثال: HECA"
@@ -836,7 +848,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>نوع المطار (عربي) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>نوع المطار (عربي) *</label>
                       <input
                         type="text"
                         required
@@ -851,7 +863,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>نوع المطار (إنجليزي) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>نوع المطار (إنجليزي) *</label>
                       <input
                         type="text"
                         required
@@ -863,7 +875,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>حالة المطار</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المطار</label>
                       <select
                         value={formData.status || "active"}
                         onChange={e => setFormData({ ...formData, status: e.target.value })}
@@ -891,7 +903,7 @@ function AdminAirportsInner() {
                   </h3>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المحافظة (عربي) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة (عربي) *</label>
                       <input
                         type="text"
                         required
@@ -902,7 +914,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المحافظة (إنجليزي) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة (إنجليزي) *</label>
                       <input
                         type="text"
                         required
@@ -916,7 +928,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المدينة (عربي) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدينة (عربي) *</label>
                       <input
                         type="text"
                         required
@@ -927,7 +939,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المدينة (إنجليزي) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدينة (إنجليزي) *</label>
                       <input
                         type="text"
                         required
@@ -941,7 +953,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المنطقة الجغرافية *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المنطقة الجغرافية *</label>
                       <input
                         type="text"
                         required
@@ -953,7 +965,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>العنوان التفصيلي للمطار *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>العنوان التفصيلي للمطار *</label>
                       <input
                         type="text"
                         required
@@ -968,7 +980,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>خط العرض (Latitude) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>خط العرض (Latitude) *</label>
                       <input
                         type="number"
                         step="0.000001"
@@ -981,7 +993,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>خط الطول (Longitude) *</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>خط الطول (Longitude) *</label>
                       <input
                         type="number"
                         step="0.000001"
@@ -1009,7 +1021,7 @@ function AdminAirportsInner() {
                     <span>الوصف والبيانات اللوجستية</span>
                   </h3>
                   <div style={{ marginBottom: "12px" }}>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الوصف القصير *</label>
+                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوصف القصير *</label>
                     <input
                       type="text"
                       required
@@ -1021,7 +1033,7 @@ function AdminAirportsInner() {
                     />
                   </div>
                   <div>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الوصف التفصيلي الكامل *</label>
+                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوصف التفصيلي الكامل *</label>
                     <textarea
                       required
                       placeholder="تفاصيل تاريخية، سعة ركاب، أو دور المطار استراتيجياً..."
@@ -1276,7 +1288,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div style={{ marginBottom: "12px" }}>
-                    <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الخدمات والتسهيلات المتوفرة (افصل بفاصلة) *</label>
+                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الخدمات والتسهيلات المتوفرة (افصل بفاصلة) *</label>
                     <input
                       type="text"
                       required
@@ -1290,7 +1302,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالعربي (افصل بفاصلة)</label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالعربي (افصل بفاصلة)</label>
                       <input
                         type="text"
                         placeholder="مطار القاهرة, مطار القاهرة الدولي, مطار مصر..."
@@ -1301,7 +1313,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالإنجليزي </label>
+                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالإنجليزي </label>
                       <input
                         type="text"
                         placeholder="Cairo Airport, CAI, HECA..."
@@ -1325,6 +1337,121 @@ function AdminAirportsInner() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal */}
+      {airportToDelete && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 4000,
+          background: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div style={{
+            background: "rgba(18, 24, 52, 0.95)",
+            borderRadius: "24px",
+            padding: "32px",
+            width: "100%",
+            maxWidth: "450px",
+            border: "1px solid rgba(255, 59, 48, 0.3)",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            direction: "rtl"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(255, 59, 48, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(255, 59, 48, 0.3)"
+            }}>
+              <span style={{ fontSize: "2rem" }}>⚠️</span>
+            </div>
+
+            <h3 style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.4rem",
+              color: "#fff",
+              marginBottom: "12px",
+              fontWeight: "700"
+            }}>
+              تأكيد الحذف
+            </h3>
+
+            <p style={{
+              color: "var(--text-secondary)",
+              fontSize: "1.05rem",
+              lineHeight: "1.6",
+              marginBottom: "24px"
+            }}>
+              هل أنت متأكد من حذف هذا المطار؟
+              {airportToDelete && (
+                <strong style={{ display: "block", marginTop: "10px", color: "#ff4d4d", fontSize: "1.1rem" }}>
+                  « {airportToDelete.name_ar || airportToDelete.name} »
+                </strong>
+              )}
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button
+                disabled={isDeleting}
+                onClick={confirmDelete}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "#ff3b30",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  opacity: isDeleting ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                {isDeleting ? "جاري الحذف..." : "نعم، احذف"}
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => setAirportToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s"
+                }}
+              >
+                إلغاء
+              </button>
+            </div>
           </div>
         </div>
       )}

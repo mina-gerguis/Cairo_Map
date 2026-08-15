@@ -132,6 +132,7 @@ export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [places, setPlaces] = useState<DBPlace[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
 
   // Add Place Form States
@@ -323,20 +324,6 @@ export default function AdminDashboard() {
   };
 
 
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-  const [menuPos, setMenuPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
-
-
-
-
-  // Close dropdown menu when clicking outside
-  useEffect(() => {
-    if (!openMenuId) return;
-    const handleClickOutside = () => setOpenMenuId(null);
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [openMenuId]);
-
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
@@ -453,7 +440,7 @@ export default function AdminDashboard() {
 
     try {
       // Check if place already exists manually (Duplicate check)
-      const isManualDuplicate = places.some(p => 
+      const isManualDuplicate = places.some(p =>
         p.name.trim().toLowerCase() === formData.name.trim().toLowerCase() &&
         p.category.trim().toLowerCase() === formData.category.trim().toLowerCase() &&
         (p.governorate || "").trim().toLowerCase() === formData.governorate.trim().toLowerCase() &&
@@ -513,7 +500,7 @@ export default function AdminDashboard() {
           .insert([fallbackPlace])
           .select()
           .single();
-          
+
         if (retryResult.error) {
           // @ts-ignore
           delete fallbackPlace.website_url;
@@ -522,7 +509,7 @@ export default function AdminDashboard() {
             .insert([fallbackPlace])
             .select()
             .single();
-            
+
           if (retryResult.error) {
             // @ts-ignore
             delete fallbackPlace.sub_categories;
@@ -570,7 +557,7 @@ export default function AdminDashboard() {
           let retryBranch = await supabase
             .from("branches")
             .insert([fallbackBranch]);
-            
+
           if (retryBranch.error) {
             // @ts-ignore
             delete fallbackBranch.website_url;
@@ -637,7 +624,7 @@ export default function AdminDashboard() {
         "وصف قصير", "الوصف التفصيلي", "رابط الصورة الرئيسية", "روابط المنيو",
         "موقع الويب", "الميزات", "الخدمات", "نوع المكان", "أيقونة النوع"
       ];
-      
+
       const sampleData = [
         {
           "الاسم": "مطعم البركة",
@@ -718,13 +705,13 @@ export default function AdminDashboard() {
         const mapped: any[] = [];
         for (let i = 0; i < data.length; i++) {
           const row: any = data[i];
-          
+
           const name = row["الاسم"]?.toString().trim();
           let category = row["القسم الرئيسي"]?.toString().trim();
           const city = row["المدينة / المنطقة"]?.toString().trim();
           const full_address = row["العنوان بالتفصيل"]?.toString().trim();
           const google_maps_url = row["رابط جوجل ماب"]?.toString().trim();
-          
+
           if (!name || !category || !city || !full_address || !google_maps_url) {
             setImportError(`السطر رقم ${i + 2}: يحتوي على حقول مطلوبة مفقودة (الاسم، القسم الرئيسي، المدينة / المنطقة، العنوان بالتفصيل، ورابط جوجل ماب مطلوبة جميعها).`);
             setParsedPlaces([]);
@@ -740,14 +727,14 @@ export default function AdminDashboard() {
           const governorate = row["المحافظة"]?.toString().trim() || "القاهرة";
           const sub_categories = row["الأقسام الفرعية"]
             ? row["الأقسام الفرعية"].toString().split(",").map((s: string) => {
-                const trimmed = s.trim();
-                return categoryMapByLabel[trimmed] || trimmed;
-              }).filter(Boolean)
+              const trimmed = s.trim();
+              return categoryMapByLabel[trimmed] || trimmed;
+            }).filter(Boolean)
             : [];
           const phones = row["الهواتف"]
             ? row["الهواتف"].toString().split(",").map((p: string) => p.trim()).filter(Boolean)
             : [];
-          
+
           const excel_working_hours = row["مواعيد العمل"]?.toString().trim();
           let finalWorkingHours = JSON.stringify({ type: "24/7" });
           if (excel_working_hours) {
@@ -776,7 +763,7 @@ export default function AdminDashboard() {
           const place_type_icon = row["أيقونة النوع"]?.toString().trim() || null;
 
           const key = `${name.trim().toLowerCase()}_${category.trim().toLowerCase()}_${governorate.trim().toLowerCase()}_${city.trim().toLowerCase()}`;
-          
+
           let duplicateType: "db" | "internal" | null = null;
           if (dbKeys.has(key)) {
             duplicateType = "db";
@@ -850,9 +837,18 @@ export default function AdminDashboard() {
     return dups;
   }, [places]);
 
+  const filteredPlaces = React.useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return places;
+    return places.filter(place =>
+      (place.id || "").toLowerCase().includes(q) ||
+      (place.name || "").toLowerCase().includes(q)
+    );
+  }, [places, searchQuery]);
+
   const handleCleanDbDuplicates = async () => {
     if (dbDuplicatesList.length === 0 || !supabase) return;
-    
+
     const confirmClean = window.confirm(`هل أنت متأكد من رغبتك في حذف ${dbDuplicatesList.length} مكان مكرر من قاعدة البيانات نهائياً؟ لا يمكن التراجع عن هذه الخطوة.`);
     if (!confirmClean) return;
 
@@ -954,7 +950,7 @@ export default function AdminDashboard() {
         setImportSuccess(`تم استيراد ${insertedPlaces.length} مكان بنجاح وإنشاء فروعها الرئيسية!`);
         setParsedPlaces([]);
         setDuplicates([]);
-        
+
         const fileInput = document.getElementById("excel-file-input") as HTMLInputElement;
         if (fileInput) fileInput.value = "";
       }
@@ -1245,7 +1241,7 @@ export default function AdminDashboard() {
           .eq("id", editingPlace.id)
           .select()
           .single();
-          
+
         if (retryResult.error) {
           // @ts-ignore
           delete fallbackFields.website_url;
@@ -1255,7 +1251,7 @@ export default function AdminDashboard() {
             .eq("id", editingPlace.id)
             .select()
             .single();
-            
+
           if (retryResult.error) {
             // @ts-ignore
             delete fallbackFields.sub_categories;
@@ -1303,7 +1299,7 @@ export default function AdminDashboard() {
           .update(fallbackBranchUpdate)
           .eq("place_id", editingPlace.id)
           .eq("is_main", true);
-          
+
         if (retryBranch.error) {
           // @ts-ignore
           delete fallbackBranchUpdate.website_url;
@@ -1499,22 +1495,28 @@ export default function AdminDashboard() {
 
   return (
     <div className="app-container" style={{ padding: "120px 10px", paddingTop: "60px", maxWidth: "100%", width: "100%" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "40px" }}>
+
+      <div style={{ marginBottom: "24px", gap: "16px" }}>
         <div>
-          <h1 className="title-ios">إدارة الأماكن</h1>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
+            إدارة الأماكن
+          </h1>
+          <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
+            إضافة وتعديل وحذف الأماكن وتعديل بياناتها.
+          </p>
         </div>
 
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div style={{ display: "flex", gap: "10px", maxWidth: "100%", marginTop: "30px" }}>
           {places.length === 0 && (
-            <button className="ios-btn" onClick={handleSeedData} disabled={isSubmitting} style={{ background: "rgba(255, 159, 10, 0.15)", color: "#ff9f0a", border: "1px solid rgba(255, 159, 10, 0.3)" }}>
+            <button className="ios-btn" onClick={handleSeedData} disabled={isSubmitting} style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "10px 20px" }}>
               تفعيل بيانات تجريبية
             </button>
           )}
-          <button className="ios-btn" onClick={() => { setShowExcelImport(!showExcelImport); setShowAddForm(false); }} style={{ background: "#ffffffff", color: "#050011ff", border: "1px solid #03000dff", display: "flex", alignItems: "center", gap: "6px", padding:"var(--pa-btn)", width:"max-content" }}>
-            {showExcelImport ? "إلغاء الاستيراد" : "📥 استيراد من Excel"}
+          <button className="ios-btn" onClick={() => { setShowExcelImport(!showExcelImport); setShowAddForm(false); }} style={{ background: "#97a199ff", color: "#ffffff", display: "flex", alignItems: "center", gap: "6px", padding: "var(--pa-btn)" }}>
+            {showExcelImport ? "إلغاء الاستيراد" : <><i className="bx bx-download"></i> استيراد من Excel</>}
           </button>
-          <button className="ios-btn ios-btn-primary" onClick={() => { setShowAddForm(!showAddForm); setShowExcelImport(false);}} style={{ width:"max-content", padding:"var(--pa-btn)"}}>
-            {showAddForm ? "إلغاء الإضافة" : "+ إضافة مكان جديد"}
+          <button className="ios-btn ios-btn-primary" onClick={() => { setShowAddForm(!showAddForm); setShowExcelImport(false); }} style={{ padding: "var(--pa-btn)" }}>
+            {showAddForm ? "إلغاء الإضافة" : <><i className="bx bx-plus-circle"></i> إضافة مكان جديد</>}
           </button>
         </div>
       </div>
@@ -1532,9 +1534,9 @@ export default function AdminDashboard() {
             <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
               <i className="bx bx-file" style={{ color: "#34c759", fontSize: "1.6rem" }}></i> استيراد الأماكن من ملف Excel / CSV
             </h2>
-            <button 
-              type="button" 
-              className="ios-btn" 
+            <button
+              type="button"
+              className="ios-btn"
               onClick={handleDownloadTemplate}
               style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", border: "1px solid rgba(0, 122, 255, 0.3)", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.85rem", padding: "6px 14px" }}
             >
@@ -1550,12 +1552,12 @@ export default function AdminDashboard() {
             <i className="bx bx-cloud-upload" style={{ fontSize: "3rem", color: "#34c759" }}></i>
             <span style={{ fontSize: "0.95rem", fontWeight: "600" }}>اختر ملف Excel أو اسحبه إلى هنا</span>
             <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>يدعم الملفات بصيغة .xlsx, .xls, .csv</span>
-            <input 
-              id="excel-file-input" 
-              type="file" 
-              accept=".xlsx, .xls, .csv" 
-              onChange={handleExcelUpload} 
-              style={{ display: "block", marginTop: "10px", fontSize: "0.85rem" }} 
+            <input
+              id="excel-file-input"
+              type="file"
+              accept=".xlsx, .xls, .csv"
+              onChange={handleExcelUpload}
+              style={{ display: "block", marginTop: "10px", fontSize: "0.85rem" }}
             />
           </div>
 
@@ -1578,7 +1580,7 @@ export default function AdminDashboard() {
               <h3 style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
                 🎯 معاينة البيانات المستخرجة ({parsedPlaces.length} مكان جاهز للاستيراد):
               </h3>
-              
+
               {duplicates.length > 0 && (
                 <div style={{ background: "rgba(255, 149, 0, 0.12)", border: "1px solid rgba(255, 149, 0, 0.25)", padding: "14px 18px", borderRadius: "10px", color: "#ff9500", marginBottom: "20px", fontSize: "0.9rem", display: "flex", flexDirection: "column", gap: "10px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1589,8 +1591,8 @@ export default function AdminDashboard() {
                     تم العثور على أسطر مكررة داخل ملف الإكسل نفسه أو أنها متطابقة مع أماكن مسجلة مسبقاً بالموقع (مطابقة الاسم والتصنيف والمحافظة والمدينة). يمكنك النقر على زر "حذف المتكرر" لتصفيتها تلقائياً.
                   </p>
                   <div>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="ios-btn"
                       onClick={handleRemoveDuplicates}
                       style={{ background: "#ff9500", color: "#fff", border: "none", fontSize: "0.82rem", padding: "6px 14px", fontWeight: "bold" }}
@@ -1614,12 +1616,12 @@ export default function AdminDashboard() {
                   </thead>
                   <tbody>
                     {parsedPlaces.map((p, idx) => (
-                      <tr key={idx} style={{ 
+                      <tr key={idx} style={{
                         borderBottom: "1px solid var(--border-color, rgba(255,255,255,0.05))",
-                        background: p.duplicateType === "db" 
-                          ? "rgba(255, 59, 48, 0.08)" 
-                          : p.duplicateType === "internal" 
-                            ? "rgba(255, 149, 0, 0.08)" 
+                        background: p.duplicateType === "db"
+                          ? "rgba(255, 59, 48, 0.08)"
+                          : p.duplicateType === "internal"
+                            ? "rgba(255, 149, 0, 0.08)"
                             : "transparent"
                       }}>
                         <td style={{ padding: "8px 14px", fontWeight: "600" }}>
@@ -1650,9 +1652,9 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ display: "flex", gap: "12px", margin: "10px 0" }}>
-                <button 
-                  type="button" 
-                  className="ios-btn ios-btn-primary" 
+                <button
+                  type="button"
+                  className="ios-btn ios-btn-primary"
                   disabled={importing}
                   onClick={handleImportSubmit}
                   style={{ background: "#34c759", border: "none", color: "#fff", display: "flex", alignItems: "center", gap: "8px" }}
@@ -1663,9 +1665,9 @@ export default function AdminDashboard() {
                     <>📥 حفظ الأماكن في قاعدة البيانات</>
                   )}
                 </button>
-                <button 
-                  type="button" 
-                  className="ios-btn" 
+                <button
+                  type="button"
+                  className="ios-btn"
                   style={{ background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", border: "1px solid rgba(255, 59, 48, 0.3)" }}
                   onClick={() => {
                     setParsedPlaces([]);
@@ -1683,7 +1685,7 @@ export default function AdminDashboard() {
 
       {/* Add Place Form */}
       {showAddForm && (
-        <div className="ios-sheet" style={{ position: "sticky",maxWidth:"100%", padding: "20px", height: "auto", marginBottom: "40px",borderRadius:"15px", animation: "slide-in-section 0.4s ease" }}>
+        <div className="ios-sheet" style={{ position: "sticky", maxWidth: "100%", padding: "20px", height: "auto", marginBottom: "40px", borderRadius: "15px", animation: "slide-in-section 0.4s ease" }}>
           <h2 style={{ fontFamily: "var(--font-display)", marginBottom: "20px" }}>إضافة مكان جديد</h2>
           <form onSubmit={handleAddPlace} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
             <div><label className="help-label">اسم المكان</label><input required className="ios-input" value={formData.name} onChange={e => updateForm("name", e.target.value)} /></div>
@@ -1792,7 +1794,7 @@ export default function AdminDashboard() {
                           </select>
                         </div>
                       )}
-                      
+
                       {/* If no existing types or admin chose to write a new one */}
                       {(existingTypes.length === 0 || !existingTypes.includes(formData.place_type)) && (
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
@@ -1986,7 +1988,7 @@ export default function AdminDashboard() {
             </div>
 
             <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-              <button style={{background:"#3e3f3f8c"}} type="button" className="ios-btn" onClick={() => setShowAddForm(false)}> إلغاء</button>
+              <button style={{ background: "#3e3f3f8c" }} type="button" className="ios-btn" onClick={() => setShowAddForm(false)}> إلغاء</button>
               <button type="submit" className="ios-btn ios-btn-primary" disabled={isSubmitting}>
                 {isSubmitting ? "جاري الإضافة..." : "حفظ المكان"}
               </button>
@@ -1994,19 +1996,49 @@ export default function AdminDashboard() {
           </form>
         </div>
       )}
+      {/* Search Box and Stats */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px",
+        flexWrap: "wrap",
+        gap: "16px"
+      }} >
 
+        {/* Search Box */}
+        <div  style={{ position: "relative", width: "100%", maxWidth: "450px" }}>
+          <input
+            type="text"
+            placeholder="البحث بكود المكان (ID) أو الاسم..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="ios-input"
+            style={{
+              width: "100%",
+              paddingRight: "44px",
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-secondary)"
+            }}
+          />
+          <i className="bx bx-search" style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--text-muted, #94a3b8)",
+            fontSize: "1.2rem"
+          }} />
+        </div>
+          
+          <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
+              إجمالي الأماكن: ({searchQuery.trim() ? `${filteredPlaces.length} من ${places.length}` : places.length})
+        </div>
+      </div>
       {/* Places List */}
       <div className={styles.tableCard}>
-        <div className={styles.tableHeaderBar}>
-          <div className={styles.tableTitleGroup}>
-            <div className={styles.tableIcon}>
-              <LuReplaceAll />
-            </div>
-            <div>
-              <h2 className={styles.tableTitle}>الأماكن المسجلة ({places.length})</h2>
-            </div>
-          </div>
-        </div>
 
         {dbDuplicatesList.length > 0 && (
           <div style={{ background: "rgba(255, 149, 0, 0.12)", borderBottom: "1px solid rgba(255, 149, 0, 0.25)", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
@@ -2014,8 +2046,8 @@ export default function AdminDashboard() {
               <i className="bx bx-error" style={{ fontSize: "1.2rem" }}></i>
               <span>تنبيه: تم اكتشاف <strong>{dbDuplicatesList.length}</strong> مكان مكرر مسجل في قاعدة البيانات!</span>
             </div>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="ios-btn"
               disabled={isDeletingDuplicates}
               onClick={handleCleanDbDuplicates}
@@ -2031,6 +2063,11 @@ export default function AdminDashboard() {
             <i className="bx bx-map-alt" style={{ fontSize: "3rem", marginBottom: "12px", display: "block", color: "#475569" }} />
             لا يوجد أماكن حالياً. قم بإضافة بيانات تجريبية أو أضف مكاناً جديداً.
           </div>
+        ) : filteredPlaces.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "50px 40px", color: "#94a3b8" }}>
+            <i className="bx bx-search" style={{ fontSize: "3rem", marginBottom: "12px", display: "block", color: "#475569" }} />
+            لا توجد نتائج تطابق بحثك. جرب البحث بكلمة أخرى أو كود مكان آخر.
+          </div>
         ) : (
           <div className={styles.tableResponsive}>
             <table className={styles.adminTable}>
@@ -2044,7 +2081,7 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {places.map(place => {
+                {filteredPlaces.map(place => {
                   const isDbDuplicate = dbDuplicatesList.some(d => d.duplicateId === place.id);
                   return (
                     <tr key={place.id} className={styles.adminTr} style={isDbDuplicate ? { background: "rgba(255, 149, 0, 0.04)" } : undefined}>
@@ -2056,56 +2093,83 @@ export default function AdminDashboard() {
                         )}
                       </td>
                       <td className={styles.adminTd} style={{ fontWeight: "700", color: "var(--text-primary)" }}>
-                        {place.name}
+                        <div style={{ fontSize: "0.95rem" }}>{place.name}</div>
+                        <div style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: "normal", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ color: "#64748b" }}>الكود (ID):</span>
+                          <span style={{ fontFamily: "monospace", background: "rgba(255,255,255,0.06)", padding: "1px 6px", borderRadius: "4px", userSelect: "all", fontSize: "0.7rem" }}>
+                            {place.id}
+                          </span>
+                        </div>
                         {isDbDuplicate && (
                           <span style={{ fontSize: "0.72rem", color: "#ff9500", marginRight: "8px", background: "rgba(255, 149, 0, 0.15)", padding: "2px 6px", borderRadius: "4px", display: "inline-block", fontWeight: "bold" }}>
                             ⚠️ مكرر
                           </span>
                         )}
                       </td>
-                    <td className={styles.adminTd}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                        <span className={`${styles.badge} ${styles.badgePrimary}`}>
-                          {place.category_label || CATEGORY_MAP[place.category] || place.category}
+                      <td className={styles.adminTd}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <span className={styles.badge} style={{ color: "var(--accent-ios)", fontWeight: "900" }}>
+                            {place.category_label || CATEGORY_MAP[place.category] || place.category}
+                          </span>
+                          {place.sub_categories && place.sub_categories.length > 0 && (
+                            <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                              {place.sub_categories.map(sc => (
+                                <span key={sc} className={`${styles.badge} ${styles.badgeNeutral}`} style={{ fontSize: "0.72rem", padding: "2px 8px" }}>
+                                  {CATEGORY_MAP[sc] || sc}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className={styles.adminTd}>
+                        <div style={{ color: "var(--text-primary)", fontSize: "0.88rem" }}>{place.city} / {place.governorate}</div>
+                        <span className={`${styles.badge} ${styles.badgeInfo}`} style={{ marginTop: "4px", fontSize: "0.72rem" }}>
+                          <i className="bx bx-buildings" /> {place.branches ? place.branches.length : 1} فروع
                         </span>
-                        {place.sub_categories && place.sub_categories.length > 0 && (
-                          <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
-                            {place.sub_categories.map(sc => (
-                              <span key={sc} className={`${styles.badge} ${styles.badgeNeutral}`} style={{ fontSize: "0.72rem", padding: "2px 8px" }}>
-                                {CATEGORY_MAP[sc] || sc}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className={styles.adminTd}>
-                      <div style={{ color: "var(--text-primary)", fontSize: "0.88rem" }}>{place.city} / {place.governorate}</div>
-                      <span className={`${styles.badge} ${styles.badgeInfo}`} style={{ marginTop: "4px", fontSize: "0.72rem" }}>
-                        <i className="bx bx-buildings" /> {place.branches ? place.branches.length : 1} فروع
-                      </span>
-                    </td>
-                    <td className={styles.adminTd}>
-                      <div className={styles.actionMenuWrapper}>
-                        {/* Trigger Button */}
-                        <button
-                          className={`${styles.actionMenuTrigger} ${openMenuId === place.id ? styles.actionMenuTriggerOpen : ""}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (openMenuId === place.id) {
-                              setOpenMenuId(null);
-                            } else {
-                              const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                              setMenuPos({ top: rect.bottom + 6, left: rect.left });
-                              setOpenMenuId(place.id);
-                            }
-                          }}
-                        >
-                          <span>إجراءات</span>
-                          <i className="bx bx-chevron-down chevron" style={{ fontSize: "1rem", transition: "transform 0.2s ease", transform: openMenuId === place.id ? "rotate(180deg)" : "rotate(0deg)" }} />
-                        </button>
-                      </div>
-                    </td>
+                      </td>
+                      <td className={styles.adminTd} style={{ paddingRight: "0" }}>
+                        <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
+                          <button
+                            onClick={() => handleStartEditPlace(place)}
+                            className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                            title="تعديل المكان"
+                            style={{
+                              padding: "5px 5px",
+                              borderRadius: "50%",
+                              background: "var(--bg-secondary)",
+                            }}
+                          >
+                            <i className="bx bx-edit-alt" />
+                          </button>
+                          <button
+                            onClick={() => setSelectedPlaceForBranch(place)}
+                            className={`${styles.actionBtn} ${styles.actionBtnBranch}`}
+                            title="إدارة الفروع"
+                            style={{
+                              padding: "5px 5px",
+                              borderRadius: "50%",
+                              background: "var(--bg-secondary)",
+                            }}
+                          >
+                            <i className="bx bx-buildings" />
+                          </button>
+                          <button
+                            onClick={() => handleDeletePlace(place.id)}
+                            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                            title="حذف المكان"
+                            style={{
+                              padding: "5px 5px",
+                              borderRadius: "50%",
+                              background: "#ff000025",
+                              color: "#ff0000f5",
+                              border: "#ff000025",
+                            }}
+                          >
+                            <i className="bx bx-trash" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}
@@ -2115,45 +2179,6 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* ── Floating Action Dropdown (rendered outside table to avoid overflow clipping) ── */}
-      {openMenuId && (
-        <div
-          className={styles.actionDropdown}
-          style={{ top: menuPos.top, left: menuPos.left }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {(() => {
-            const place = places.find(p => p.id === openMenuId);
-            if (!place) return null;
-            return (
-              <>
-                <button
-                  className={`${styles.dropdownItem} ${styles.dropdownItemEdit}`}
-                  onClick={() => { handleStartEditPlace(place); setOpenMenuId(null); }}
-                >
-                  <i className="bx bx-edit" style={{ fontSize: "1.1rem", color: "#4ade80" }} />
-                  تعديل المكان
-                </button>
-                <button
-                  className={`${styles.dropdownItem} ${styles.dropdownItemBranch}`}
-                  onClick={() => { setSelectedPlaceForBranch(place); setOpenMenuId(null); }}
-                >
-                  <i className="bx bx-buildings" style={{ fontSize: "1.1rem", color: "#818cf8" }} />
-                  إدارة الفروع
-                </button>
-                <div className={styles.dropdownDivider} />
-                <button
-                  className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`}
-                  onClick={() => { handleDeletePlace(place.id); setOpenMenuId(null); }}
-                >
-                  <i className="bx bx-trash" style={{ fontSize: "1.1rem", color: "#f87171" }} />
-                  حذف المكان
-                </button>
-              </>
-            );
-          })()}
-        </div>
-      )}
 
       {/* Full Comprehensive Edit Place Modal */}
       {editingPlace && (
@@ -2282,7 +2307,7 @@ export default function AdminDashboard() {
                             </select>
                           </div>
                         )}
-                        
+
                         {/* If no existing types or admin chose to write a new one */}
                         {(existingTypes.length === 0 || !existingTypes.includes(editPlaceFormData.place_type)) && (
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
@@ -2512,7 +2537,7 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", gap: "10px" }}>
                       <button
                         onClick={() => handleEditBranch(b)}
-                        style={{ fontFamily: "var(--font-heading)", fontWeight: "600", background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem" }}>  <TbCashEdit size={23}/></button>
+                        style={{ fontFamily: "var(--font-heading)", fontWeight: "600", background: "none", border: "none", color: "var(--accent-ios)", cursor: "pointer", fontSize: "0.85rem" }}>  <TbCashEdit size={23} /></button>
                       {!b.is_main && (
                         <button onClick={() => handleDeleteBranch(b.id, selectedPlaceForBranch.id, b.is_main)} style={{ background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.85rem", fontWeight: "600" }}><MdFolderDelete size={24} /> </button>
                       )}
@@ -2537,7 +2562,7 @@ export default function AdminDashboard() {
                       });
                       setBranchScheduleType("24/7");
                     }}
-                    style={{fontFamily:"var(--font-heading)", fontWeight:"600", background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.9rem" }}>
+                    style={{ fontFamily: "var(--font-heading)", fontWeight: "600", background: "none", border: "none", color: "#ff3b30", cursor: "pointer", fontSize: "0.9rem" }}>
                     إلغاء التعديل
                   </button>
                 )}
@@ -2546,7 +2571,7 @@ export default function AdminDashboard() {
                 <div><label className="help-label">اسم الفرع</label><input required className="ios-input" value={branchFormData.name} onChange={e => setBranchFormData(p => ({ ...p, name: e.target.value }))} placeholder="مثال: فرع مدينة نصر" /></div>
                 <div><label className="help-label">المحافظة</label>
                   <select
-                  required className="ios-input" value={branchFormData.governorate} onChange={e => setBranchFormData(p => ({ ...p, governorate: e.target.value, city: "" }))}>
+                    required className="ios-input" value={branchFormData.governorate} onChange={e => setBranchFormData(p => ({ ...p, governorate: e.target.value, city: "" }))}>
                     {governoratesList.map(g => <option key={g} value={g}>{g}</option>)}
                   </select>
                 </div>

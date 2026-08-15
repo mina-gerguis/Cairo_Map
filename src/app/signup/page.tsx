@@ -54,17 +54,17 @@ const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
 
   const slides = [
     {
-      imageUrl: "image/signUp/1.jpg",
+      imageUrl: "images/signUp/welcome1.jpg",
       title: "أنشئ حسابك الآن مجاناً",
       desc: "استمتع بتجربة فريدة ومخصصة لحفظ أماكنك المفضلة وملاحظاتك الشخصية.",
     },
     {
-      imageUrl: "image/signUp/2.jpg",
+      imageUrl: "images/signUp/welcome2.jpg",
       title: "اكتشف أفضل الأماكن حولك",
       desc: "ابحث عن المطاعم، الكافيهات، والوجهات التاريخية القريبة منك بكل سهولة.",
     },
     {
-      imageUrl: "image/signUp/3.jpg",
+      imageUrl: "images/signUp/welcome3.jpg",
       title: "تذكيرات وملاحظات ذكية للأماكن",
       desc: "أضف ملاحظات وتذكيرات هامة لأي مكان لتعود إليها في أي وقت.",
     },

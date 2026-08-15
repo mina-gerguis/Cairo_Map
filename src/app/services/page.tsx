@@ -34,6 +34,7 @@ export default function ServicesPage() {
   
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const [selectedGov, setSelectedGov] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
@@ -88,6 +89,20 @@ export default function ServicesPage() {
     const list = workers.map(w => w.specialty.trim()).filter(Boolean);
     return Array.from(new Set(list));
   }, [workers]);
+
+  // Search Suggestions matching search query
+  const suggestions = React.useMemo(() => {
+    const q = normalizeArabic(searchQuery.trim());
+    if (!q) return [];
+    return workers
+      .filter((w) => {
+        const name = normalizeArabic(w.profiles?.full_name || "");
+        const spec = normalizeArabic(w.specialty || "");
+        const bio = normalizeArabic(w.bio || "");
+        return name.includes(q) || spec.includes(q) || bio.includes(q);
+      })
+      .slice(0, 5);
+  }, [workers, searchQuery]);
 
   // Cities based on selected governorate
   const cities = selectedGov ? egyptLocations[selectedGov] || [] : [];
@@ -227,6 +242,13 @@ export default function ServicesPage() {
               placeholder="ابحث بالاسم، التخصص، أو مهارات معينة..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setIsFocused(false);
+                }
+              }}
               className="ios-input"
               style={{
                 width: "100%",
@@ -239,6 +261,125 @@ export default function ServicesPage() {
                 border: "1px solid var(--border-glass)"
               }}
             />
+
+            {/* Suggestions list */}
+            {isFocused && searchQuery.trim() !== "" && suggestions.length > 0 && (
+              <div 
+                className="metro-animate-fade"
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 6px)",
+                  left: 0,
+                  right: 0,
+                  zIndex: 100,
+                  backgroundColor: "var(--bg-primary)",
+                  border: "1px solid var(--border-glass)",
+                  borderRadius: "12px",
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+                  maxHeight: "320px",
+                  overflowY: "auto",
+                  padding: "6px 0",
+                  direction: "rtl",
+                }}
+              >
+                {suggestions.map((w) => (
+                  <div
+                    key={w.id}
+                    onMouseDown={() => {
+                      setSearchQuery(w.profiles?.full_name || "");
+                      setIsFocused(false);
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "10px 16px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid var(--border-glass)",
+                      transition: "background-color 0.2s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--bg-secondary)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      {w.profiles?.avatar_url ? (
+                        <img 
+                          src={w.profiles.avatar_url} 
+                          alt={w.profiles.full_name} 
+                          style={{ 
+                            width: "36px", 
+                            height: "36px", 
+                            borderRadius: "50%", 
+                            objectFit: "cover", 
+                            border: "1px solid var(--border-glass)" 
+                          }} 
+                        />
+                      ) : (
+                        <div style={{ 
+                          width: "36px", 
+                          height: "36px", 
+                          borderRadius: "50%", 
+                          background: "var(--bg-secondary)", 
+                          border: "1px solid var(--border-glass)", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center", 
+                          fontSize: "1.1rem" 
+                        }}>
+                          👨‍🔧
+                        </div>
+                      )}
+                      <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
+                        <span style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                          {w.profiles?.full_name}
+                        </span>
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                          {w.specialty}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div 
+                      style={{ display: "flex", alignItems: "center", gap: "8px" }} 
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      {w.profiles?.phone && (
+                        <>
+                          <span style={{ 
+                            fontSize: "0.8rem", 
+                            fontWeight: "800", 
+                            color: "var(--accent-success)", 
+                            background: "rgba(16, 185, 129, 0.1)", 
+                            padding: "4px 10px", 
+                            borderRadius: "12px",
+                            direction: "ltr"
+                          }}>
+                            {w.profiles.phone}
+                          </span>
+                          <a
+                            href={`tel:${w.profiles.phone}`}
+                            style={{
+                              background: "var(--accent-ios)",
+                              color: "#fff",
+                              width: "28px",
+                              height: "28px",
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "0.8rem",
+                              textDecoration: "none"
+                            }}
+                          >
+                            <i className="fa-solid fa-phone"></i>
+                          </a>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Advanced filters dropdowns */}

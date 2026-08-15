@@ -48,13 +48,13 @@ const DEFAULT_MONORAIL: any[] = [
 
 export const STATION_DETAILS: Record<string, { landmarks: string[]; type: string; timeFromStart: number; status: "تشغيل تجريبي" | "تحت الإنشاء" }> = {
   // East Line
-  "الاستاد": { landmarks: ["ستاد القاهرة الدولي", "مسجد آل رشدان", "نادي الزهور الرياضي"], type: "نهائية - تبادلية مع الخط الثالث للمترو", timeFromStart: 0, status: "تشغيل تجريبي" },
-  "هشام بركات": { landmarks: ["شارع الطيران", "سوق السيارات الجديد", "محور شينزو آبي"], type: "عادية", timeFromStart: 4, status: "تشغيل تجريبي" },
+  "الاستاد": { landmarks: ["ستاد القاهرة الدولي", "مسجد آل رشدان", "نادي الزهور الرياضي"], type: "تبادلية مع الخط الثالث للمترو", timeFromStart: 0, status: "تشغيل تجريبي" },
+  "هشام بركات": { landmarks: ["شارع الطيران", "سوق السيارات الجديد", "محور شينزو آبي"], type: "تبادلية مع الأتوبيس الترددي BRT", timeFromStart: 4, status: "تشغيل تجريبي" },
   "نوري خطاب": { landmarks: ["حي الواحة بمدينة نصر", "عمارات الفتح", "محور المشير طنطاوي"], type: "عادية", timeFromStart: 8, status: "تشغيل تجريبي" },
   "الحي السابع": { landmarks: ["المنطقة الحرة بمدينة نصر", "عمارات عثمان", "شارع مصطفى النحاس"], type: "عادية", timeFromStart: 11, status: "تشغيل تجريبي" },
   "ذاكر حسين": { landmarks: ["شارع ذاكر حسين الرئيسي", "سوق السيارات القديم", "طريق الوفاء والأمل"], type: "عادية", timeFromStart: 15, status: "تشغيل تجريبي" },
   "المنطقة الحرة": { landmarks: ["المنطقة الاستثمارية الحرة بمصر الجديدة", "محور المشير طنطاوي"], type: "عادية", timeFromStart: 18, status: "تشغيل تجريبي" },
-  "المشير طنطاوي": { landmarks: ["مركز مصر للمعارض الدولية (EIEC)", "مسجد المشير طنطاوي", "استاد الدفاع الجوي"], type: "تبادلية", timeFromStart: 22, status: "تشغيل تجريبي" },
+  "المشير طنطاوي": { landmarks: ["مركز مصر للمعارض الدولية (EIEC)", "مسجد المشير طنطاوي", "استاد الدفاع الجوي"], type: "تبادلية مع الأتوبيس الترددي BRT", timeFromStart: 22, status: "تشغيل تجريبي" },
   "وان قطامية": { landmarks: ["الطريق الدائري بمحيط المعادي", "مجمع وان قطامية الإداري", "توكيل مرسيدس"], type: "عادية", timeFromStart: 27, status: "تشغيل تجريبي" },
   "المستثمرين": { landmarks: ["منطقة المستثمرين الشمالية بالتجمع", "شارع التسعين الشمالي"], type: "عادية", timeFromStart: 32, status: "تحت الإنشاء" },
   "النسيم": { landmarks: ["محيط كمبوند ديار والتسعين الجنوبي", "المنطقة التجارية بالتجمع الخامس"], type: "عادية", timeFromStart: 36, status: "تحت الإنشاء" },
@@ -69,25 +69,25 @@ export const STATION_DETAILS: Record<string, { landmarks: string[]; type: string
   "فندق الماسة": { landmarks: ["فندق الماسة كابيتال الشهير", "منطقة السي آي دي (حي المال والأعمال)"], type: "عادية", timeFromStart: 73, status: "تحت الإنشاء" },
   "الحي الحكومي": { landmarks: ["مجلس النواب ومجلس الوزراء بالعاصمة", "الحي الوزاري", "ساحة الشعب"], type: "عادية", timeFromStart: 77, status: "تحت الإنشاء" },
   "حي السفارات": { landmarks: ["حي السفارات والبعثات الدبلوماسية", "الكاتدرائية الكبرى بالعاصمة"], type: "عادية", timeFromStart: 80, status: "تحت الإنشاء" },
-  "مدينة الفنون والثقافة": { landmarks: ["مدينة الفنون والثقافة بالعاصمة", "محطة القطار الكهربائي LRT", "النهر الأخضر الكبير"], type: "نهائية - تبادلية مع القطار الكهربائي الخفيف LRT", timeFromStart: 84, status: "تشغيل تجريبي" },
+  "مدينة الفنون والثقافة": { landmarks: ["مدينة الفنون والثقافة بالعاصمة", "محطة القطار الكهربائي LRT", "النهر الأخضر الكبير"], type: "تبادلية مع القطار الكهربائي الخفيف LRT", timeFromStart: 84, status: "تشغيل تجريبي" },
 
   // West Line
   "أكتوبر الجديدة": { landmarks: ["منطقة حدائق أكتوبر الجديدة", "أحياء أكتوبر السكنية الغربية", "المنطقة الصناعية"], type: "نهائية", timeFromStart: 0, status: "تحت الإنشاء" },
   "المنطقة الصناعية": { landmarks: ["المنطقة الصناعية الكبرى بالسادس من أكتوبر", "مجمع المصانع والمعارض"], type: "عادية", timeFromStart: 5, status: "تحت الإنشاء" },
   "السادات": { landmarks: ["محور السادات الرئيسي بأكتوبر", "محيط الأحياء السكنية (الثاني والثالث)"], type: "عادية", timeFromStart: 10, status: "تحت الإنشاء" },
   "جهاز مدينة 6 أكتوبر": { landmarks: ["مقر جهاز مدينة 6 أكتوبر", "أكتوبر سيتي سنتر", "شارع المحور المركزي"], type: "عادية", timeFromStart: 14, status: "تحت الإنشاء" },
-  "جمعية المهندسين": { landmarks: ["كمبوند جمعية المهندسين بأكتوبر", "محور جمال عبد الناصر الرئيسي"], type: "عادية", timeFromStart: 18, status: "تحت الإنشاء" },
-  "جامعة النيل": { landmarks: ["جامعة النيل الأهلية", "مول العرب الشهير", "ميدان جهينة محور 26 يوليو"], type: "تبادلية", timeFromStart: 22, status: "تحت الإنشاء" },
+  "نقابة المهندسين": { landmarks: ["كمبوند جمعية المهندسين بأكتوبر", "محور جمال عبد الناصر الرئيسي"], type: "تبادلية مع القطار الكهربائي السريع (HSR)", timeFromStart: 18, status: "تحت الإنشاء" },
+  "جامعة النيل": { landmarks: ["جامعة النيل الأهلية", "مول العرب الشهير", "ميدان جهينة محور 26 يوليو"], type: "عادية", timeFromStart: 22, status: "تحت الإنشاء" },
   "هايبر وان": { landmarks: ["هايبر وان الشيخ زايد", "المدخل الرئيسي للشيخ زايد", "جامعة القاهرة فرع زايد"], type: "عادية", timeFromStart: 26, status: "تحت الإنشاء" },
   "الصحراوي": { landmarks: ["طريق مصر إسكندرية الصحراوي", "القرية الذكية بالتجمع الغربي", "داندي مول"], type: "عادية", timeFromStart: 30, status: "تحت الإنشاء" },
   "المنصورية": { landmarks: ["طريق المنصورية الريفي والسياحي", "منطقة أبو رواش الأثرية"], type: "عادية", timeFromStart: 35, status: "تحت الإنشاء" },
   "المريوطية": { landmarks: ["ترعة المريوطية السياحية", "منطقة الهرم السياحية", "فنادق المريوطية"], type: "عادية", timeFromStart: 39, status: "تحت الإنشاء" },
-  "الطريق الدائري": { landmarks: ["الطريق الدائري الغربي حول الجيزة", "منطقة المنيب والمريوطية"], type: "عادية", timeFromStart: 43, status: "تحت الإنشاء" },
+  "الطريق الدائري": { landmarks: ["الطريق الدائري الغربي حول الجيزة", "منطقة المنيب والمريوطية"], type: "تبادلية مع الأتوبيس الترددي BRT", timeFromStart: 43, status: "تحت الإنشاء" },
   "العريش": { landmarks: ["شارع الهرم الرئيسي (تقاطع العريش)", "سينما رادوبيس والمنطقة التجارية"], type: "عادية", timeFromStart: 47, status: "تحت الإنشاء" },
   "المطبغة": { landmarks: ["شارع الملك فيصل الرئيسي (منطقة المطبغة)", "حي بولاق الدكرور الجنوبي"], type: "عادية", timeFromStart: 51, status: "تحت الإنشاء" },
   "بولاق الدكرور": { landmarks: ["شارع همفرس بولاق الدكرور", "محطة مترو بولاق الدكرور (الخط الثالث)"], type: "تبادلية", timeFromStart: 55, status: "تحت الإنشاء" },
   "جامعة الدول العربية": { landmarks: ["شارع جامعة الدول العربية بالمهندسين", "ميدان مصطفى محمود", "نادي الصيد المصري"], type: "عادية", timeFromStart: 59, status: "تحت الإنشاء" },
-  "وادي النيل": { landmarks: ["شارع وادي النيل بالمهندسين", "محطة مترو وادي النيل (الخط الثالث)", "تقاطع المهندسين والعجوزة"], type: "نهائية - تبادلية مع الخط الثالث للمترو", timeFromStart: 63, status: "تشغيل تجريبي" }
+  "وادي النيل": { landmarks: ["شارع وادي النيل بالمهندسين", "محطة مترو وادي النيل (الخط الثالث)", "تقاطع المهندسين والعجوزة"], type: "تبادلية مع الخط الثالث للمترو", timeFromStart: 63, status: "تشغيل تجريبي" }
 };
 
 function normalizeArabic(text: string) {
@@ -118,29 +118,29 @@ export default function MonorailPage() {
   const routeResult = React.useMemo(() => {
     if (!calcFrom || !calcTo) return null;
     if (calcFrom === calcTo) return null;
-    
+
     const fromStationObj = allStationsList.find(s => s.name === calcFrom);
     const toStationObj = allStationsList.find(s => s.name === calcTo);
-    
+
     if (!fromStationObj || !toStationObj) return null;
-    
+
     // Check if on the same line
     if (fromStationObj.line_type === toStationObj.line_type) {
       const lineStationsObj = allStationsList
         .filter(s => s.line_type === fromStationObj.line_type)
         .sort((a, b) => a.station_order - b.station_order);
-        
+
       const fromIndex = lineStationsObj.findIndex(s => s.name === calcFrom);
       const toIndex = lineStationsObj.findIndex(s => s.name === calcTo);
-      
+
       const count = Math.abs(fromStationObj.station_order - toStationObj.station_order);
-      
+
       // Calculate path
       const min = Math.min(fromIndex, toIndex);
       const max = Math.max(fromIndex, toIndex);
       const path = lineStationsObj.slice(min, max + 1).map(s => s.name);
       const pathOrdered = fromIndex <= toIndex ? path : [...path].reverse();
-      
+
       // Fare calculation
       // up to 5: 20 EGP, 6-10: 40 EGP, 11-15: 55 EGP, 16-22: 80 EGP
       let price = 20;
@@ -159,12 +159,12 @@ export default function MonorailPage() {
         discountPrice = 20;
         zoneName = "منطقتان (من 6 إلى 10 محطات)";
       }
-      
+
       // Calculate estimated time
       const fromDetails = STATION_DETAILS[calcFrom];
       const toDetails = STATION_DETAILS[calcTo];
       const time = (fromDetails && toDetails) ? Math.abs(fromDetails.timeFromStart - toDetails.timeFromStart) : count * 2.5;
-      
+
       return {
         sameLine: true,
         count,
@@ -179,7 +179,7 @@ export default function MonorailPage() {
       // Different lines!
       const fromConnectorName = fromStationObj.line_type === "east" ? "الاستاد" : "وادي النيل";
       const toConnectorName = toStationObj.line_type === "east" ? "الاستاد" : "وادي النيل";
-      
+
       const lineStationsFrom = allStationsList
         .filter(s => s.line_type === fromStationObj.line_type)
         .sort((a, b) => a.station_order - b.station_order);
@@ -190,22 +190,22 @@ export default function MonorailPage() {
       const max1 = Math.max(fromIndex, fromConnectorIndex);
       const path1 = lineStationsFrom.slice(min1, max1 + 1).map(s => s.name);
       const path1Ordered = fromIndex <= fromConnectorIndex ? path1 : [...path1].reverse();
-      
+
       // Leg 1 price
       let leg1Price = 20;
       let leg1Discount = 10;
       if (leg1Count > 15) { leg1Price = 80; leg1Discount = 40; }
       else if (leg1Count > 10) { leg1Price = 55; leg1Discount = 27.5; }
       else if (leg1Count > 5) { leg1Price = 40; leg1Discount = 20; }
-      
+
       const fromDetails = STATION_DETAILS[calcFrom];
       const fromConnectorDetails = STATION_DETAILS[fromConnectorName];
       const leg1Time = (fromDetails && fromConnectorDetails) ? Math.abs(fromDetails.timeFromStart - fromConnectorDetails.timeFromStart) : leg1Count * 2.5;
 
       // Leg 2: Metro Line 3 from fromConnector to toConnector
-      const metroPrice = 10; 
+      const metroPrice = 10;
       const metroTime = 30; // ~30 minutes
-      
+
       // Leg 3: toConnector to toStation
       const lineStationsTo = allStationsList
         .filter(s => s.line_type === toStationObj.line_type)
@@ -217,18 +217,18 @@ export default function MonorailPage() {
       const max3 = Math.max(toConnectorIndex, toIndex);
       const path3 = lineStationsTo.slice(min3, max3 + 1).map(s => s.name);
       const path3Ordered = toConnectorIndex <= toIndex ? path3 : [...path3].reverse();
-      
+
       // Leg 3 price
       let leg3Price = 20;
       let leg3Discount = 10;
       if (leg3Count > 15) { leg3Price = 80; leg3Discount = 40; }
       else if (leg3Count > 10) { leg3Price = 55; leg3Discount = 27.5; }
       else if (leg3Count > 5) { leg3Price = 40; leg3Discount = 20; }
-      
+
       const toConnectorDetails = STATION_DETAILS[toConnectorName];
       const toDetails = STATION_DETAILS[calcTo];
       const leg3Time = (toConnectorDetails && toDetails) ? Math.abs(toConnectorDetails.timeFromStart - toDetails.timeFromStart) : leg3Count * 2.5;
-      
+
       return {
         sameLine: false,
         leg1: {
@@ -396,47 +396,20 @@ export default function MonorailPage() {
           </div>
 
           {/* Cover Image Banner */}
-          <div className="metro-animate-slide-down" style={{
-            position: "relative",
-            width: "100%",
-            maxWidth: "800px",
-            height: "clamp(140px, 22vh, 200px)",
-            margin: "0 auto 20px",
-            borderRadius: "var(--radius-md)",
-            overflow: "hidden",
-            border: "1px solid var(--border-glass)",
-            boxShadow: "var(--shadow-card)",
-            background: "var(--bg-glass-card)",
-          }}>
-            <img
-              src="/images/metro/metro_cover.jpeg"
-              alt="Cairo Metro Cover"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-            <div style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: "linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%)",
-              pointerEvents: "none",
-            }} />
-          </div>
-
           <div className="metro-animate-slide-up metro-delay-100">
             <h1 style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
               color: "var(--text-primary)",
-              margin: "0 0 10px",
+              marginLeft: "10px",
               letterSpacing: "-0.5px",
-            }}>قطار المونوريل</h1>
+            }}>
+              <img src="/images/searchBar/Cairo_monorail.png" alt="Cairo Monorail" style={{ width: "35px" }} />
+              قطار المونوريل</h1>
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
               خريطة تفاعلية تفصيلية لشبكة المونوريل الجديدة.
             </p>
@@ -458,24 +431,14 @@ export default function MonorailPage() {
           }}>
             {/* Lock Icon */}
             <div style={{
-              fontSize: "4rem",
               marginBottom: "24px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "90px",
-              height: "90px",
-              background: "rgba(251, 191, 36, 0.08)",
-              borderRadius: "50%",
-              border: "1px solid rgba(251, 191, 36, 0.3)",
-              color: "#fbbf24",
-              animation: "pulse-gold 2s infinite"
             }}>
-              <i className="bx bxs-lock-alt"></i>
+              <img src="images/lock_cairo_map.png" alt="Lock" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
             </div>
 
-            <h2 style={{ fontSize: "1.6rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "12px", fontFamily: "var(--font-display)" }}>
-              دليل المونوريل ميزة مدفوعة 🥈
+
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
+              دليل المونوريل يتطلب اشتراك في الباقة الفضية
             </h2>
 
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
@@ -494,7 +457,7 @@ export default function MonorailPage() {
             }}>
               <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bxs-award" style={{ color: "#fbbf24", fontSize: "1.1rem" }}></i>
-                <span>ميزات الباقة الفضية (40 ج.م/شهرياً):</span>
+                <span>ميزات الباقة الفضية:</span>
               </div>
               <ul style={{
                 paddingRight: "16px",
@@ -530,7 +493,7 @@ export default function MonorailPage() {
                     display: "block"
                   }}
                 >
-                  🚀 اشترك الآن ورقّ حسابك
+                  اشترك الآن في الباقة الفضية
                 </Link>
               ) : (
                 <Link
@@ -547,7 +510,7 @@ export default function MonorailPage() {
                     display: "block"
                   }}
                 >
-                  🔑 سجل دخولك لتفعيل المزايا
+                  سجل دخولك أولاً لتفعيل الاشتراك
                 </Link>
               )}
 
@@ -930,8 +893,8 @@ export default function MonorailPage() {
         </div>
 
         {/* Ticket Calculator & Trip Planner */}
-        <div className="metro-animate-slide-up metro-delay-350" style={{ 
-          marginTop: "20px", 
+        <div className="metro-animate-slide-up metro-delay-350" style={{
+          marginTop: "20px",
           backgroundColor: "var(--bg-primary)",
           border: "1px solid var(--border-glass)",
           borderRadius: "15px",
@@ -949,7 +912,7 @@ export default function MonorailPage() {
             gap: "8px"
           }}>
             <i className="bx bx-card" style={{ color: "var(--accent-ios, #3b82f6)", fontSize: "1.3rem" }}></i>
-             حاسبة التذاكر وتخطيط الرحلة
+            حاسبة التذاكر وتخطيط الرحلة
           </h2>
 
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "16px" }}>
@@ -1063,10 +1026,10 @@ export default function MonorailPage() {
                         const isEnd = idx === (routeResult.stations?.length ?? 0) - 1;
                         return (
                           <React.Fragment key={sName}>
-                            <span style={{ 
-                              padding: "4px 10px", 
-                              borderRadius: "20px", 
-                              background: isStart || isEnd ? (routeResult.lineType === "east" ? "#3b82f6" : "#10b981") : "rgba(128, 128, 128, 0.08)", 
+                            <span style={{
+                              padding: "4px 10px",
+                              borderRadius: "20px",
+                              background: isStart || isEnd ? (routeResult.lineType === "east" ? "#3b82f6" : "#10b981") : "rgba(128, 128, 128, 0.08)",
                               color: isStart || isEnd ? "#fff" : "var(--text-primary)",
                               fontSize: "0.78rem",
                               fontWeight: isStart || isEnd ? "bold" : "normal",
@@ -1102,8 +1065,8 @@ export default function MonorailPage() {
                       <span style={{ color: "var(--text-secondary)", fontSize: "0.78rem", display: "block", marginBottom: "4px" }}>إجمالي التذاكر (مونوريل + مترو)</span>
                       <strong style={{ fontSize: "1.6rem", color: "var(--accent-ios, #3b82f6)" }}>{routeResult.totalPrice} ج.م</strong>
                     </div>
-                   
-                    <div style={{ textAlign: "right", marginRight: "auto"}}>
+
+                    <div style={{ textAlign: "right", marginRight: "auto" }}>
                       <span style={{ color: "var(--text-secondary)", fontSize: "0.78rem", display: "block", marginBottom: "4px" }}> زمن الرحلة المقدر</span>
                       <span style={{ fontSize: "0.85rem", color: "var(--text-primary)", fontWeight: "bold" }}>
                         ~ {routeResult.totalTime} دقيقة
@@ -1114,14 +1077,14 @@ export default function MonorailPage() {
                   {/* Multi-leg route details */}
                   <div style={{ marginTop: "16px", borderTop: "1px solid var(--border-glass)", paddingTop: "12px", display: "flex", flexDirection: "column", gap: "12px" }}>
                     <div style={{ fontWeight: "700", fontSize: "0.82rem", color: "var(--text-primary)" }}>خطة السفر :</div>
-                    
+
                     {/* Leg 1 */}
                     <div style={{ padding: "10px", background: "rgba(128, 128, 128, 0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <img src="images/searchBar/Cairo_monorail.png" alt="monorail" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
                           <span style={{ fontWeight: "bold", color: routeResult.leg1?.lineType === "east" ? "#3b82f6" : "#10b981" }}>
-                            الخطوة الأولى 
+                            الخطوة الأولى
                           </span>
                         </div>
                         <span style={{ color: "var(--text-secondary)" }}>{routeResult.leg1?.price} ج.م ~ {routeResult.leg1?.time} دقيقة</span>
@@ -1137,7 +1100,7 @@ export default function MonorailPage() {
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <img src="images/searchBar/cairo_metro.svg" alt="cairo_metro" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
                           <span style={{ fontWeight: "bold", color: "#007928ff" }}>
-                            الخطوة الثانية 
+                            الخطوة الثانية
                           </span>
                         </div>
                         <span style={{ color: "var(--text-secondary)" }}>{routeResult.leg2?.price} ج.م ~ {routeResult.leg2?.time} دقيقة</span>
@@ -1153,7 +1116,7 @@ export default function MonorailPage() {
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <img src="images/searchBar/Cairo_monorail.png" alt="monorail" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
                           <span style={{ fontWeight: "bold", color: routeResult.leg3?.lineType === "east" ? "#3b82f6" : "#10b981" }}>
-                            الخطوة الثالثة  
+                            الخطوة الثالثة
                           </span>
                         </div>
                         <span style={{ color: "var(--text-secondary)" }}>{routeResult.leg3?.price} ج.م ~ {routeResult.leg3?.time} دقيقة</span>
@@ -1230,19 +1193,19 @@ export default function MonorailPage() {
               {/* List */}
               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 {lineStations.map((station, index) => {
-                  const dbLandmarks = Array.isArray(station.landmarks) ? (station.landmarks as string[]) : null;
+                  const dbLandmarks = Array.isArray(station.landmarks) && station.landmarks.length > 0 ? (station.landmarks as string[]) : null;
                   const staticDetails = STATION_DETAILS[station.name];
                   const details = (staticDetails || dbLandmarks) ? {
                     landmarks: dbLandmarks || staticDetails?.landmarks || [],
                     type: staticDetails?.type || "عادية",
                     timeFromStart: staticDetails?.timeFromStart ?? 0,
-                    status: staticDetails?.status || "تحت الإنشاء"
+                    status: station.status || staticDetails?.status || "تحت الإنشاء"
                   } : null;
                   const isExpanded = expandedStation === station.name;
                   const isFirst = station.station_order === 1;
                   const isLast = station.station_order === currentStats.stationsCount;
                   const isTerminal = isFirst || isLast;
-                  const isTransfer = station.name.includes("الاستاد") || station.name.includes("الفنون") || station.name.includes("وادي النيل") || station.name.includes("الجامعة الأمريكية") || station.name.includes("المشير") || station.name.includes("جامعة النيل") || station.name.includes("بولاق");
+                  const isTransfer = station.name.includes("الاستاد") || station.name.includes("هشام بركات") || station.name.includes("مدينة الفنون والثقافة") || station.name.includes("وادي النيل") || station.name.includes("نقابة المهندسين") || station.name.includes("المشير طنطاوي") || station.name.includes("الطريق الدائري");
 
                   return (
                     <div id={`station-${station.name}`} key={station.id || index} style={{ display: "flex", flexDirection: "column", position: "relative" }}>
@@ -1257,9 +1220,9 @@ export default function MonorailPage() {
                           width: isTerminal ? "20px" : "16px",
                           height: isTerminal ? "20px" : "16px",
                           borderRadius: "50%",
-                          background: isTerminal ? "#454549ff" : (isTransfer ? "rgba(255,255,255,0.9)" : currentStats.color),
-                          border: `4.5px solid var(--bg-primary, #000)`,
-                          boxShadow: isTransfer ? "0 0 8px rgba(255,255,255,0.5)" : "none",
+                          background: details?.status === "تحت الإنشاء" ? "var(--bg-primary)" : (isTerminal ? "#454549ff" : (isTransfer ? "rgba(255,255,255,0.9)" : currentStats.color)),
+                          border: details?.status === "تحت الإنشاء" ? `3px dashed ${currentStats.color}` : `4.5px solid var(--bg-primary, #000)`,
+                          boxShadow: isTransfer && details?.status !== "تحت الإنشاء" ? "0 0 8px rgba(255,255,255,0.5)" : "none",
                           zIndex: 2,
                           transform: isTerminal ? "translateY(-3px)" : "none",
                           transition: "all 0.3s ease"
@@ -1271,7 +1234,8 @@ export default function MonorailPage() {
                         onClick={() => handleStationClick(station.name)}
                         style={{
                           backgroundColor: "var(--bg-primary)",
-                          border: isExpanded ? `1px solid ${currentStats.color}` : "1px solid var(--border-glass)",
+                          border: isExpanded ? `1px solid ${currentStats.color}` : (details?.status === "تحت الإنشاء" ? `1px dashed ${currentStats.color}50` : "1px solid var(--border-glass)"),
+                          opacity: details?.status === "تحت الإنشاء" ? 0.75 : 1,
                           borderRadius: "8px",
                           padding: "12px 16px",
                           marginRight: "10px",
@@ -1280,7 +1244,7 @@ export default function MonorailPage() {
                           flexDirection: "column",
                           gap: "10px",
                           cursor: "pointer",
-                          transition: "transform 0.2s ease, border-color 0.2s ease",
+                          transition: "transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
                         }}
                         onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
                         onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
@@ -1291,28 +1255,32 @@ export default function MonorailPage() {
                             <span style={{
                               fontSize: "1.02rem",
                               fontWeight: "700",
-                              color: "var(--text-primary)",
+                              color: details?.status === "تحت الإنشاء" ? "var(--text-secondary)" : "var(--text-primary)",
                               fontFamily: "var(--font-body)"
                             }}>
                               {station.name}
                             </span>
-                          </div>
-
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            {isTerminal && (
+                            {details?.status === "تحت الإنشاء" && (
                               <span style={{
                                 background: "rgba(239, 68, 68, 0.12)",
                                 color: "#ef4444",
                                 fontSize: "0.68rem",
                                 padding: "2px 6px",
                                 borderRadius: "4px",
-                                fontWeight: "bold"
+                                fontWeight: "bold",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "3px"
                               }}>
-                                نهائية
+                                تحت الإنشاء 🚧
                               </span>
                             )}
+                          </div>
 
-                            {isTransfer && !isTerminal && (
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+
+
+                            {isTransfer && (
                               <span style={{
                                 background: "rgba(251, 191, 36, 0.12)",
                                 color: "#fbbf24",

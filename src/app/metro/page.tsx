@@ -1,6 +1,7 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 /* ============================================================
    Cairo Metro Data — Lines 1, 2, 3 (with branch)
@@ -48,7 +49,7 @@ const LINE3_STATIONS = [
   ...LINE3_BRANCH_B.slice(1),
 ];
 
-type LineId = "line1" | "line2" | "line3";
+type LineId = "line1" | "line2" | "line3" | "line4" | "line5" | "line6";
 
 interface StationInfo {
   name: string;
@@ -60,45 +61,34 @@ const LINE_NAMES: Record<LineId, string> = {
   line1: "الخط الأول (الأحمر)",
   line2: "الخط الثاني (الأزرق)",
   line3: "الخط الثالث (الأخضر)",
+  line4: "الخط الرابع (البرتقالي)",
+  line5: "الخط الخامس (البنفسجي)",
+  line6: "الخط السادس (الوردي)",
 };
 
 const LINE_COLORS: Record<LineId, string> = {
   line1: "#ef4444", // Modern Red
   line2: "#3b82f6", // Modern Blue
   line3: "#10b981", // Modern Green
+  line4: "#f59e0b", // Orange
+  line5: "#8b5cf6", // Purple
+  line6: "#ec4899", // Pink
 };
 
-// Build a searchable station list with their lines
-const buildStationIndex = (): StationInfo[] => {
-  const map = new Map<string, Set<LineId>>();
-  LINE1_STATIONS.forEach(s => {
-    if (!map.has(s)) map.set(s, new Set());
-    map.get(s)!.add("line1");
-  });
-  LINE2_STATIONS.forEach(s => {
-    if (!map.has(s)) map.set(s, new Set());
-    map.get(s)!.add("line2");
-  });
-  LINE3_STATIONS.forEach(s => {
-    if (!map.has(s)) map.set(s, new Set());
-    map.get(s)!.add("line3");
-  });
-  const result: StationInfo[] = [];
-  map.forEach((lines, name) => {
-    result.push({ name, lines: Array.from(lines) as LineId[], isTransfer: lines.size > 1 });
-  });
-  return result.sort((a, b) => a.name.localeCompare(b.name, "ar"));
-};
+const DEFAULT_METRO_STATIONS = [
+  ...LINE1_STATIONS.map((name, idx) => ({ name, line_type: "line1" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
+  ...LINE2_STATIONS.map((name, idx) => ({ name, line_type: "line2" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
+  ...LINE3_TRUNK.map((name, idx) => ({ name, line_type: "line3" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
+  ...LINE3_BRANCH_A.slice(1).map((name, idx) => ({ name, line_type: "line3_branch_a" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
+  ...LINE3_BRANCH_B.slice(1).map((name, idx) => ({ name, line_type: "line3_branch_b" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
+];
 
-const ALL_STATIONS = buildStationIndex();
-
-// Ticket price based on station count
-const getTicketPrice = (stationCount: number): number => {
-  if (stationCount <= 9) return 10;
-  if (stationCount <= 16) return 12;
-  if (stationCount <= 23) return 15;
-  return 20;
-};
+const DEFAULT_METRO_PRICES = [
+  { tier_name: "من 1 إلى 9 محطات", max_stations: 9, price: 10 },
+  { tier_name: "من 10 إلى 16 محطة", max_stations: 16, price: 12 },
+  { tier_name: "من 17 إلى 23 محطة", max_stations: 23, price: 15 },
+  { tier_name: "أكثر من 23 محطة", max_stations: 999, price: 20 },
+];
 
 /* ============================================================
    Graph Representation and Dijkstra Algorithm
@@ -129,81 +119,30 @@ interface RouteResult {
   estimatedTime: number;
 }
 
-const buildGraph = () => {
-  const adj = new Map<string, Edge[]>();
-
-  const addEdge = (s1: string, l1: LineId, s2: string, l2: LineId, weight: number) => {
-    const key = `${s1}|${l1}`;
-    if (!adj.has(key)) adj.set(key, []);
-    adj.get(key)!.push({ toStation: s2, toLine: l2, weight });
-  };
-
-  const addLineEdges = (stations: string[], line: LineId) => {
-    for (let i = 0; i < stations.length - 1; i++) {
-      addEdge(stations[i], line, stations[i + 1], line, 1);
-      addEdge(stations[i + 1], line, stations[i], line, 1);
-    }
-  };
-
-  // Add all adjacency edges on same lines
-  addLineEdges(LINE1_STATIONS, "line1");
-  addLineEdges(LINE2_STATIONS, "line2");
-  addLineEdges(LINE3_TRUNK, "line3");
-  addLineEdges(LINE3_BRANCH_A, "line3");
-  addLineEdges(LINE3_BRANCH_B, "line3");
-
-  // Determine line mappings per station
-  const stationLines = new Map<string, Set<LineId>>();
-  LINE1_STATIONS.forEach(s => {
-    if (!stationLines.has(s)) stationLines.set(s, new Set());
-    stationLines.get(s)!.add("line1");
-  });
-  LINE2_STATIONS.forEach(s => {
-    if (!stationLines.has(s)) stationLines.set(s, new Set());
-    stationLines.get(s)!.add("line2");
-  });
-  LINE3_STATIONS.forEach(s => {
-    if (!stationLines.has(s)) stationLines.set(s, new Set());
-    stationLines.get(s)!.add("line3");
-  });
-
-  // Connect transfer edges between lines (Transfer weight = 5)
-  stationLines.forEach((lines, name) => {
-    if (lines.size > 1) {
-      const arr = Array.from(lines);
-      for (let i = 0; i < arr.length; i++) {
-        for (let j = 0; j < arr.length; j++) {
-          if (i !== j) {
-            addEdge(name, arr[i], name, arr[j], 5);
-          }
-        }
-      }
-    }
-  });
-
-  return { adj, stationLines };
-};
-
-const { adj: ADJACENCY_GRAPH, stationLines: STATION_LINES_MAP } = buildGraph();
-
-function findRoute(from: string, to: string): RouteResult {
+function findRoute(
+  from: string,
+  to: string,
+  adjacencyGraph: Map<string, Edge[]>,
+  stationLinesMap: Map<string, Set<LineId>>,
+  getTicketPrice: (count: number) => number
+): RouteResult {
   if (from === to) {
     return {
       found: true,
       path: [from],
       lines: [],
       stationCount: 1,
-      price: 10,
+      price: getTicketPrice(1),
       needsTransfer: false,
       transfers: [],
       description: "أنت في محطة الوصول بالفعل!",
-      detailedPath: [{ station: from, line: Array.from(STATION_LINES_MAP.get(from) || [])[0] || "line1", isTransferPoint: false }],
+      detailedPath: [{ station: from, line: Array.from(stationLinesMap.get(from) || [])[0] || "line1", isTransferPoint: false }],
       estimatedTime: 0,
     };
   }
 
-  const startLines = Array.from(STATION_LINES_MAP.get(from) || []);
-  const endLines = Array.from(STATION_LINES_MAP.get(to) || []);
+  const startLines = Array.from(stationLinesMap.get(from) || []);
+  const endLines = Array.from(stationLinesMap.get(to) || []);
 
   if (startLines.length === 0 || endLines.length === 0) {
     return {
@@ -256,7 +195,7 @@ function findRoute(from: string, to: string): RouteResult {
       break;
     }
 
-    const edges = ADJACENCY_GRAPH.get(currKey) || [];
+    const edges = adjacencyGraph.get(currKey) || [];
     for (const edge of edges) {
       const nextKey = `${edge.toStation}|${edge.toLine}`;
       const nextDist = curr.dist + edge.weight;
@@ -376,6 +315,10 @@ function normalizeArabic(text: string) {
 }
 
 export default function MetroPage() {
+  const [stations, setStations] = useState<any[]>([]);
+  const [ticketPrices, setTicketPrices] = useState<any[]>([]);
+  const [expandedStation, setExpandedStation] = useState<string | null>(null);
+
   const [fromQuery, setFromQuery] = useState("");
   const [toQuery, setToQuery] = useState("");
   const [selectedFrom, setSelectedFrom] = useState<string | null>(null);
@@ -392,19 +335,205 @@ export default function MetroPage() {
   const [explorerLine, setExplorerLine] = useState<LineId>("line1");
   const [line3ActiveBranch, setLine3ActiveBranch] = useState<"trunk" | "branchA" | "branchB">("trunk");
 
+  // Load stations & prices dynamically
+  useEffect(() => {
+    const loadData = async () => {
+      let loadedStations = [];
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.from("metro_stations").select("*");
+          if (!error && data && data.length > 0) {
+            loadedStations = data;
+          } else {
+            loadedStations = getLocalStations();
+          }
+        } catch {
+          loadedStations = getLocalStations();
+        }
+      } else {
+        loadedStations = getLocalStations();
+      }
+      setStations(loadedStations);
+
+      let loadedPrices = [];
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.from("metro_prices").select("*");
+          if (!error && data && data.length > 0) {
+            loadedPrices = data;
+          } else {
+            loadedPrices = getLocalPrices();
+          }
+        } catch {
+          loadedPrices = getLocalPrices();
+        }
+      } else {
+        loadedPrices = getLocalPrices();
+      }
+      setTicketPrices(loadedPrices);
+    };
+
+    loadData();
+  }, []);
+
+  const getLocalStations = () => {
+    if (typeof window === "undefined") return DEFAULT_METRO_STATIONS;
+    const local = localStorage.getItem("local_metro_stations");
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed)) {
+          return parsed.map((item: any) => {
+            let updated = { ...item };
+            updated.status = item.status || "تشغيل فعلي";
+            return updated;
+          });
+        }
+        return parsed;
+      } catch {
+        return DEFAULT_METRO_STATIONS;
+      }
+    }
+    return DEFAULT_METRO_STATIONS;
+  };
+
+  const getLocalPrices = () => {
+    if (typeof window === "undefined") return DEFAULT_METRO_PRICES;
+    const local = localStorage.getItem("local_metro_prices");
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch {
+        return DEFAULT_METRO_PRICES;
+      }
+    }
+    return DEFAULT_METRO_PRICES;
+  };
+
+  // Build Adjacency Graph and Stations Map dynamically from stations state
+  const { adjacencyGraph, stationLinesMap, allStations } = useMemo(() => {
+    const adj = new Map<string, Edge[]>();
+    const stationLines = new Map<string, Set<LineId>>();
+
+    const addEdge = (s1: string, l1: LineId, s2: string, l2: LineId, weight: number) => {
+      const key = `${s1}|${l1}`;
+      if (!adj.has(key)) adj.set(key, []);
+      adj.get(key)!.push({ toStation: s2, toLine: l2, weight });
+    };
+
+    const addLineEdges = (lineStations: any[], line: LineId) => {
+      for (let i = 0; i < lineStations.length - 1; i++) {
+        addEdge(lineStations[i].name, line, lineStations[i + 1].name, line, 1);
+        addEdge(lineStations[i + 1].name, line, lineStations[i].name, line, 1);
+      }
+    };
+
+    const l1Stats = stations.filter(s => s.line_type === "line1").sort((a, b) => a.station_order - b.station_order);
+    const l2Stats = stations.filter(s => s.line_type === "line2").sort((a, b) => a.station_order - b.station_order);
+    const l3Trunk = stations.filter(s => s.line_type === "line3").sort((a, b) => a.station_order - b.station_order);
+    const l3BranchA = stations.filter(s => s.line_type === "line3_branch_a").sort((a, b) => a.station_order - b.station_order);
+    const l3BranchB = stations.filter(s => s.line_type === "line3_branch_b").sort((a, b) => a.station_order - b.station_order);
+    const l4Stats = stations.filter(s => s.line_type === "line4").sort((a, b) => a.station_order - b.station_order);
+    const l5Stats = stations.filter(s => s.line_type === "line5").sort((a, b) => a.station_order - b.station_order);
+    const l6Stats = stations.filter(s => s.line_type === "line6").sort((a, b) => a.station_order - b.station_order);
+
+    addLineEdges(l1Stats, "line1");
+    addLineEdges(l2Stats, "line2");
+    addLineEdges(l3Trunk, "line3");
+
+    if (l3BranchA.length > 0) {
+      addEdge("الكيت كات", "line3", l3BranchA[0].name, "line3", 1);
+      addEdge(l3BranchA[0].name, "line3", "الكيت كات", "line3", 1);
+      addLineEdges(l3BranchA, "line3");
+    }
+    if (l3BranchB.length > 0) {
+      addEdge("الكيت كات", "line3", l3BranchB[0].name, "line3", 1);
+      addEdge(l3BranchB[0].name, "line3", "الكيت كات", "line3", 1);
+      addLineEdges(l3BranchB, "line3");
+    }
+
+    addLineEdges(l4Stats, "line4");
+    addLineEdges(l5Stats, "line5");
+    addLineEdges(l6Stats, "line6");
+
+    stations.forEach(s => {
+      const lt = s.line_type;
+      let resolvedLine: LineId = "line3";
+      if (lt !== "line3_branch_a" && lt !== "line3_branch_b") {
+        resolvedLine = lt as LineId;
+      }
+      if (!stationLines.has(s.name)) {
+        stationLines.set(s.name, new Set());
+      }
+      stationLines.get(s.name)!.add(resolvedLine);
+    });
+
+    if (stationLines.has("الكيت كات")) {
+      stationLines.get("الكيت كات")!.add("line3");
+    }
+
+    stationLines.forEach((lines, name) => {
+      if (lines.size > 1) {
+        const arr = Array.from(lines);
+        for (let i = 0; i < arr.length; i++) {
+          for (let j = 0; j < arr.length; j++) {
+            if (i !== j) {
+              addEdge(name, arr[i], name, arr[j], 5);
+            }
+          }
+        }
+      }
+    });
+
+    const statsMap = new Map<string, Set<LineId>>();
+    stations.forEach(s => {
+      const lt = s.line_type;
+      let l: LineId = "line3";
+      if (lt !== "line3_branch_a" && lt !== "line3_branch_b") {
+        l = lt as LineId;
+      }
+      if (!statsMap.has(s.name)) statsMap.set(s.name, new Set());
+      statsMap.get(s.name)!.add(l);
+    });
+
+    const allStats: StationInfo[] = [];
+    statsMap.forEach((lines, name) => {
+      allStats.push({ name, lines: Array.from(lines) as LineId[], isTransfer: lines.size > 1 });
+    });
+    allStats.sort((a, b) => a.name.localeCompare(b.name, "ar"));
+
+    return { adjacencyGraph: adj, stationLinesMap: stationLines, allStations: allStats };
+  }, [stations]);
+
+  const getTicketPrice = (stationCount: number): number => {
+    if (ticketPrices.length === 0) {
+      if (stationCount <= 9) return 10;
+      if (stationCount <= 16) return 12;
+      if (stationCount <= 23) return 15;
+      return 20;
+    }
+    const sorted = [...ticketPrices].sort((a, b) => a.max_stations - b.max_stations);
+    for (const tier of sorted) {
+      if (stationCount <= tier.max_stations) {
+        return tier.price;
+      }
+    }
+    return sorted[sorted.length - 1]?.price || 20;
+  };
+
   const filteredFrom = useMemo(() => {
     const q = normalizeArabic(fromQuery.trim());
-    return ALL_STATIONS.filter(s => normalizeArabic(s.name).includes(q) && q.length > 0);
-  }, [fromQuery]);
+    return allStations.filter(s => normalizeArabic(s.name).includes(q) && q.length > 0);
+  }, [fromQuery, allStations]);
 
   const filteredTo = useMemo(() => {
     const q = normalizeArabic(toQuery.trim());
-    return ALL_STATIONS.filter(s => normalizeArabic(s.name).includes(q) && q.length > 0);
-  }, [toQuery]);
+    return allStations.filter(s => normalizeArabic(s.name).includes(q) && q.length > 0);
+  }, [toQuery, allStations]);
 
   const handleFind = () => {
     if (!selectedFrom || !selectedTo) return;
-    const route = findRoute(selectedFrom, selectedTo);
+    const route = findRoute(selectedFrom, selectedTo, adjacencyGraph, stationLinesMap, getTicketPrice);
     setResult(route);
     setIsTripActive(false);
     setCurrentStepIndex(0);
@@ -444,7 +573,7 @@ export default function MetroPage() {
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
           }}>
-            <img src="/images/searchBar/Cairo_metro.svg" alt="" style={{ width: "40px", height: "40px", marginRight: "10px" }} />
+            <img src="/images/searchBar/Cairo_metro.svg" alt="" style={{ width: "40px", height: "40px", marginLeft: "5px" }} />
             مترو القاهرة
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
@@ -482,11 +611,13 @@ export default function MetroPage() {
           display: "flex",
           flexDirection: "column",
           gap: "16px",
+          position: "relative",
+          zIndex: 20,
         }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
 
             {/* FROM STATION INPUT */}
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", zIndex: showFromList ? 10 : 1 }}>
               <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
                 <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> من محطة (نقطة الانطلاق)
               </label>
@@ -501,7 +632,7 @@ export default function MetroPage() {
                   style={{
                     width: "100%",
                     direction: "rtl",
-                    fontFamily: "var(--font-cairo)",
+                    fontFamily: "var(--font-body)",
                     height: "50px",
                   }}
                 />
@@ -571,7 +702,7 @@ export default function MetroPage() {
             </div>
 
             {/* TO STATION INPUT */}
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", zIndex: showToList ? 10 : 1 }}>
               <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
                 <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> إلى محطة (الجهة المقصودة)
               </label>
@@ -586,7 +717,7 @@ export default function MetroPage() {
                   style={{
                     width: "100%",
                     direction: "rtl",
-                    fontFamily: "var(--font-cairo)",
+                    fontFamily: "var(--font-body)",
                     height: "50px"
                   }}
                 />
@@ -598,8 +729,8 @@ export default function MetroPage() {
                 <div style={{
                   position: "absolute", top: "100%", left: 0, right: 0,
                   background: "var(--bg-secondary)", border: "1px solid var(--border-glass)",
-                  borderRadius: "12px", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
-                  boxShadow: "var(--shadow-lg)", marginTop: "6px"
+                  borderRadius: "12px", overflow: "hidden", zIndex: 1000, maxHeight: "220px", overflowY: "auto",
+                  boxShadow: "var(--shadow-lg)", marginTop: "6px",
                 }}>
                   {filteredTo.map(s => (
                     <div key={s.name} onMouseDown={() => { setSelectedTo(s.name); setToQuery(s.name); setShowToList(false); }} style={{
@@ -912,6 +1043,9 @@ export default function MetroPage() {
                       const isPassed = isTripActive && idx < currentStepIndex;
                       const isCurrent = isTripActive && idx === currentStepIndex;
 
+                      const stationObj = stations.find(s => s.name === node.station);
+                      const isUnderConstruction = stationObj?.status === "تحت الإنشاء";
+
                       return (
                         <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
 
@@ -941,12 +1075,14 @@ export default function MetroPage() {
                                   width: isFirst || isLast || isTransfer ? "14px" : "8px",
                                   height: isFirst || isLast || isTransfer ? "14px" : "8px",
                                   borderRadius: "50%",
-                                  backgroundColor: isCurrent
+                                  backgroundColor: isUnderConstruction ? "transparent" : (isCurrent
                                     ? (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--accent-ios)")
-                                    : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-muted)"),
-                                  border: `2px solid ${isCurrent
-                                    ? "#ffffff"
-                                    : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "transparent")}`,
+                                    : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-muted)")),
+                                  border: isUnderConstruction
+                                    ? `2px dashed ${activeColor}`
+                                    : `2px solid ${isCurrent
+                                        ? "#ffffff"
+                                        : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "transparent")}`,
                                   boxShadow: isCurrent ? `0 0 10px ${activeColor}` : "none",
                                   zIndex: 1,
                                 }} />
@@ -959,19 +1095,35 @@ export default function MetroPage() {
                               alignItems: "center",
                               gap: "10px",
                               flexGrow: 1,
-                              opacity: isPassed ? 0.5 : 1,
+                              opacity: isPassed ? 0.5 : (isUnderConstruction ? 0.75 : 1),
                               transition: "opacity 0.3s ease"
                             }}>
                               <span style={{
                                 fontSize: isFirst || isLast ? "0.95rem" : "0.88rem",
                                 fontWeight: isFirst || isLast || isTransfer || isCurrent ? "700" : "500",
-                                color: isCurrent
-                                  ? "var(--text-primary)"
-                                  : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-primary)"),
+                                color: isUnderConstruction
+                                  ? "#ef4444"
+                                  : (isCurrent
+                                      ? "var(--text-primary)"
+                                      : (isFirst ? "var(--accent-success)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-primary)")),
                                 textDecoration: isPassed ? "line-through" : "none",
                               }}>
                                 {node.station}
                               </span>
+
+                              {isUnderConstruction && (
+                                <span style={{
+                                  fontSize: "0.68rem",
+                                  background: "rgba(239, 68, 68, 0.12)",
+                                  color: "#ef4444",
+                                  border: "1px solid rgba(239, 68, 68, 0.25)",
+                                  padding: "1px 6px",
+                                  borderRadius: "4px",
+                                  fontWeight: "bold"
+                                }}>
+                                  تحت الإنشاء 🚧
+                                </span>
+                              )}
 
                               {isFirst && <span style={{ fontSize: "0.68rem", background: "rgba(16,185,129,0.12)", color: "var(--accent-success)", padding: "1px 6px", borderRadius: "4px" }}>ركوب</span>}
                               {isLast && <span style={{ fontSize: "0.68rem", background: "rgba(239,68,68,0.12)", color: "var(--accent-red)", padding: "1px 6px", borderRadius: "4px" }}>وصول</span>}
@@ -1049,20 +1201,33 @@ export default function MetroPage() {
                   marginTop: "16px"
                 }}>
                   <i className="fa-regular fa-lightbulb" style={{ color: "var(--accent-warning)", marginLeft: "5px" }}></i>
-                  <strong>تسعير التذاكر المعتمد (مارس 2026):</strong> <br />
+                  <strong>تسعير التذاكر المعتمد:</strong> <br />
                   البيانات مبنية علي الاسعار الرسمية لأخر تحديث
-                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", marginTop: "8px", textAlign: "right", direction: "rtl" }}>
-                    • <strong style={{ color: "var(--accent-success)" }}>المسافة من 1-9 محطات:</strong> 10 جنيهات.
-                  </div>
-                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
-                    • <strong style={{ color: "var(--accent-success)" }}>المسافة من 10-19 محطة:</strong> 12 جنيهات.
-                  </div>
-                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
-                    • <strong style={{ color: "var(--accent-warning)" }}>المسافة من 20-29 محطة:</strong> 15 جنيهًا.
-                  </div>
-                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
-                    • <strong style={{ color: "var(--accent-danger)" }}>المسافة 30 محطة فأكثر:</strong> 20 جنيهًا.
-                  </div>
+                  {ticketPrices.length > 0 ? (
+                    ticketPrices.map((tier, tIdx) => {
+                      const color = tIdx === 0 || tIdx === 1 ? "var(--accent-success)" : (tIdx === 2 ? "var(--accent-warning)" : "var(--accent-danger)");
+                      return (
+                        <div key={tIdx} style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", marginTop: "4px", textAlign: "right", direction: "rtl" }}>
+                          • <strong style={{ color }}>{tier.tier_name}:</strong> {tier.price} جنيهًا.
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", marginTop: "8px", textAlign: "right", direction: "rtl" }}>
+                        • <strong style={{ color: "var(--accent-success)" }}>المسافة من 1-9 محطات:</strong> 10 جنيهات.
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+                        • <strong style={{ color: "var(--accent-success)" }}>المسافة من 10-19 محطة:</strong> 12 جنيهات.
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+                        • <strong style={{ color: "var(--accent-warning)" }}>المسافة من 20-29 محطة:</strong> 15 جنيهًا.
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+                        • <strong style={{ color: "var(--accent-danger)" }}>المسافة 30 محطة فأكثر:</strong> 20 جنيهًا.
+                      </div>
+                    </>
+                  )}
                 </div>
               </>
             )}
@@ -1085,9 +1250,16 @@ export default function MetroPage() {
 
           {/* Explorer Tab Pills - Redesigned to match Verified security cards in profile */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "16px" }}>
-            {(["line1", "line2", "line3"] as LineId[]).map(lineId => {
+            {(["line1", "line2", "line3", "line4", "line5", "line6"] as LineId[]).map(lineId => {
               const active = explorerLine === lineId;
               const color = LINE_COLORS[lineId];
+              const lineStatsCount = stations.filter(s => {
+                if (lineId === "line3") {
+                  return s.line_type === "line3" || s.line_type === "line3_branch_a" || s.line_type === "line3_branch_b";
+                }
+                return s.line_type === lineId;
+              }).length;
+
               return (
                 <button
                   key={lineId}
@@ -1112,10 +1284,14 @@ export default function MetroPage() {
                 >
                   <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: color, margin: "0 auto 6px" }} />
                   <div style={{ color: active ? "var(--text-primary)" : "var(--text-secondary)", fontWeight: "700", fontSize: "0.9rem", fontFamily: "var(--font-cairo)" }}>
-                    {lineId === "line1" ? "الخط الأول" : lineId === "line2" ? "الخط الثاني" : "الخط الثالث"}
+                    {lineId === "line1" ? "الخط الأول" :
+                     lineId === "line2" ? "الخط الثاني" :
+                     lineId === "line3" ? "الخط الثالث" :
+                     lineId === "line4" ? "الخط الرابع" :
+                     lineId === "line5" ? "الخط الخامس" : "الخط السادس"}
                   </div>
                   <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
-                    {lineId === "line1" ? "35 محطة" : lineId === "line2" ? "20 محطة" : "34 محطة"}
+                    {lineStatsCount} {lineStatsCount >= 3 && lineStatsCount <= 10 ? "محطات" : "محطة"}
                   </div>
                 </button>
               );
@@ -1140,6 +1316,9 @@ export default function MetroPage() {
                 {explorerLine === "line1" && "اتجاه الحركة الرئيسي: حلوان ↔ المرج الجديدة"}
                 {explorerLine === "line2" && "اتجاه الحركة الرئيسي: شبرا الخيمة ↔ المنيب"}
                 {explorerLine === "line3" && "الخط الذكي الجديد مع تفريعتين بالكيت كات غرباً"}
+                {explorerLine === "line4" && "يربط غرب القاهرة (6 أكتوبر) بوسط العاصمة وشرقها (تحت الإنشاء)"}
+                {explorerLine === "line5" && "خط عرضي يربط شمال العاصمة من الساحل إلى مدينة نصر (تحت الإنشاء)"}
+                {explorerLine === "line6" && "يمتد من شمال القاهرة بالخصوص إلى جنوبها بالمعادي الجديدة (تحت الإنشاء)"}
               </p>
 
               {/* Sub-tabs for Line 3 branches - iOS Style using var(--accent-ios) */}
@@ -1173,6 +1352,23 @@ export default function MetroPage() {
               )}
             </div>
 
+            {/* Instruction Banner */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "rgba(255, 255, 255, 0.02)",
+              border: "1px solid var(--border-glass)",
+              borderRadius: "8px",
+              padding: "8px 12px",
+              marginBottom: "12px",
+              fontSize: "0.78rem",
+              color: "var(--text-secondary)"
+            }}>
+              <i className="bx bx-info-circle" style={{ color: "var(--accent-ios)", fontSize: "0.95rem" }} />
+              <span>انقر على اسم أي محطة لعرض المعالم والأماكن الهامة القريبة منها.</span>
+            </div>
+
             {/* Vertically Scrollable List of Explorer Stations */}
             <div style={{
               maxHeight: "350px", overflowY: "auto", padding: "16px",
@@ -1180,22 +1376,43 @@ export default function MetroPage() {
               borderRadius: "12px"
             }}>
               {(() => {
-                let stationsList: string[] = [];
-                if (explorerLine === "line1") stationsList = LINE1_STATIONS;
-                else if (explorerLine === "line2") stationsList = LINE2_STATIONS;
-                else {
-                  if (line3ActiveBranch === "trunk") stationsList = LINE3_TRUNK;
-                  else if (line3ActiveBranch === "branchA") stationsList = LINE3_BRANCH_A;
-                  else stationsList = LINE3_BRANCH_B;
+                let stationsList: any[] = [];
+                if (explorerLine === "line1") {
+                  stationsList = stations.filter(s => s.line_type === "line1").sort((a, b) => a.station_order - b.station_order);
+                } else if (explorerLine === "line2") {
+                  stationsList = stations.filter(s => s.line_type === "line2").sort((a, b) => a.station_order - b.station_order);
+                } else if (explorerLine === "line3") {
+                  if (line3ActiveBranch === "trunk") {
+                    stationsList = stations.filter(s => s.line_type === "line3").sort((a, b) => a.station_order - b.station_order);
+                  } else if (line3ActiveBranch === "branchA") {
+                    stationsList = stations.filter(s => s.line_type === "line3_branch_a").sort((a, b) => a.station_order - b.station_order);
+                  } else {
+                    stationsList = stations.filter(s => s.line_type === "line3_branch_b").sort((a, b) => a.station_order - b.station_order);
+                  }
+                } else {
+                  stationsList = stations.filter(s => s.line_type === explorerLine).sort((a, b) => a.station_order - b.station_order);
                 }
 
-                return stationsList.map((station, idx) => {
+                if (stationsList.length === 0) {
+                  return (
+                    <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", textAlign: "center", padding: "20px" }}>
+                      لا توجد محطات مسجلة في هذا الخط حالياً.
+                    </div>
+                  );
+                }
+
+                return stationsList.map((stationObj, idx) => {
+                  const station = stationObj.name;
+                  const landmarks = stationObj.landmarks || [];
+                  const status = stationObj.status || "تشغيل فعلي";
+                  const isUnderConstruction = status === "تحت الإنشاء";
+
                   const isFirst = idx === 0;
                   const isLast = idx === stationsList.length - 1;
                   const color = LINE_COLORS[explorerLine];
 
                   // Check if station is transfer
-                  const allLinesForStation = Array.from(STATION_LINES_MAP.get(station) || []);
+                  const allLinesForStation = Array.from(stationLinesMap.get(station) || []);
                   const isTransfer = allLinesForStation.length > 1;
 
                   return (
@@ -1208,18 +1425,47 @@ export default function MetroPage() {
                             width: isTransfer ? "12px" : "8px",
                             height: isTransfer ? "12px" : "8px",
                             borderRadius: "50%",
-                            backgroundColor: isTransfer ? "var(--accent-warning)" : color,
-                            border: `2px solid ${isTransfer ? "#ffffff" : "transparent"}`,
+                            backgroundColor: isUnderConstruction ? "transparent" : (isTransfer ? "var(--accent-warning)" : color),
+                            border: isUnderConstruction ? `2px dashed ${color}` : `2px solid ${isTransfer ? "#ffffff" : "transparent"}`,
                           }} />
                         </div>
 
                         {/* Station Text & Transfer Badges */}
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexGrow: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexGrow: 1, opacity: isUnderConstruction ? 0.75 : 1 }}>
                           <span style={{
                             fontSize: "0.88rem",
                             fontWeight: isTransfer || isFirst || isLast ? "700" : "500",
-                            color: isTransfer ? "var(--accent-warning)" : "var(--text-primary)",
-                          }}>{station}</span>
+                            color: isUnderConstruction ? "#ef4444" : (isTransfer ? "var(--accent-warning)" : "var(--text-primary)"),
+                            cursor: "pointer",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "8px"
+                          }}
+                          onClick={() => setExpandedStation(expandedStation === station ? null : station)}
+                          >
+                            {station}
+                            <i 
+                              className={`bx ${expandedStation === station ? "bx-chevron-up" : "bx-chevron-down"}`} 
+                              style={{ 
+                                fontSize: "1rem", 
+                                color: expandedStation === station ? "var(--accent-ios)" : "var(--text-muted)", 
+                                transition: "all 0.2s ease" 
+                              }} 
+                            />
+                            {isUnderConstruction && (
+                              <span style={{
+                                fontSize: "0.68rem",
+                                background: "rgba(239, 68, 68, 0.12)",
+                                color: "#ef4444",
+                                border: "1px solid rgba(239, 68, 68, 0.25)",
+                                padding: "1px 6px",
+                                borderRadius: "4px",
+                                fontWeight: "bold"
+                              }}>
+                                تحت الإنشاء 🚧
+                              </span>
+                            )}
+                          </span>
 
                           {isTransfer && (
                             <div style={{ display: "flex", gap: "4px" }}>
@@ -1253,6 +1499,43 @@ export default function MetroPage() {
                           {isLast && <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>النهاية</span>}
                         </div>
                       </div>
+
+                      {/* Expanded Landmarks / Status details */}
+                      {expandedStation === station && (
+                        <div style={{
+                          margin: "4px 16px 12px 28px",
+                          padding: "10px 14px",
+                          borderRadius: "8px",
+                          background: "rgba(255,255,255,0.02)",
+                          border: isUnderConstruction ? "1px dashed rgba(239, 68, 68, 0.3)" : "1px solid var(--border-glass)",
+                          opacity: isUnderConstruction ? 0.8 : 1,
+                        }}>
+                          {isUnderConstruction && (
+                            <div style={{ color: "#ef4444", fontSize: "0.75rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+                              <span>⚠️ هذه المحطة قيد الإنشاء وليست في الخدمة الفعلية بعد.</span>
+                            </div>
+                          )}
+                          <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "4px", fontWeight: "bold" }}>📍 المعالم والأماكن القريبة:</div>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                            {landmarks.length > 0 ? (
+                              landmarks.map((landmark: string, lIdx: number) => (
+                                <span key={lIdx} style={{
+                                  fontSize: "0.7rem",
+                                  background: "rgba(255, 255, 255, 0.05)",
+                                  color: "var(--text-primary)",
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
+                                  border: "1px solid var(--border-glass)",
+                                }}>
+                                  {landmark}
+                                </span>
+                              ))
+                            ) : (
+                              <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontStyle: "italic" }}>لم يتم تحديد معالم قريبة بعد لهذه المحطة.</span>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
                       {/* Rail segment */}
                       {!isLast && (
@@ -1312,7 +1595,7 @@ export default function MetroPage() {
             width: "100%",
             backgroundColor: "rgba(0,0,0,0.05)",
           }}>
-            <a href="/image/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
+            <a href="/images/metro/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
               <img
                 src="/images/metro/cairo-metro-map.png"
                 alt="Cairo Metro Official Map"
@@ -1379,7 +1662,6 @@ export default function MetroPage() {
             تحميل الخريطة بجودة عالية
           </a>
         </div>
-
       </div>
     </div>
   );

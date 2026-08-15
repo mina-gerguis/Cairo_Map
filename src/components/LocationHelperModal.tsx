@@ -171,7 +171,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
             }}
           >
             <i className="bx bxl-apple" style={{ fontSize: "1.1rem" }}></i>
-            آيفون (iOS)
+            آيفون
           </button>
           <button
             onClick={() => setActiveTab("android")}
@@ -222,32 +222,32 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
         {/* Step-by-Step Instructions Content */}
         <div style={{ minHeight: "180px", marginBottom: "20px" }}>
           {activeTab === "ios" && (
-            <ol style={{ paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
-              <li>افتح تطبيق <strong>الإعدادات (Settings)</strong> في جهازك.</li>
-              <li>اذهب إلى <strong>الخصوصية والأمن (Privacy & Security)</strong> &larr; <strong>خدمات الموقع (Location Services)</strong> وتأكد من تفعيلها في الأعلى.</li>
-              <li>قم بالتمرير للأسفل في نفس القائمة واختر المتصفح الذي تستخدمه حالياً (مثل <strong>Safari</strong> أو <strong>Chrome</strong>).</li>
-              <li>اختر <strong>أثناء استخدام التطبيق (While Using the App)</strong>، وتأكد من تفعيل خيار <strong>الموقع الدقيق (Precise Location)</strong> ليعمل بدقة.</li>
-              <li>قم بإعادة تشغيل/تحديث هذه الصفحة لتحديث الأذونات، ثم اضغط على زر "بالقرب مني".</li>
+            <ol style={{ listStyle: "auto", paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
+              <li style={{ listStyle: "auto" }}>افتح تطبيق <strong>الإعدادات (Settings) ⚙️</strong> في جهازك.</li>
+              <li style={{ listStyle: "auto" }}>اذهب إلى <strong>الخصوصية والأمن (Privacy & Security)</strong> &larr; <strong>خدمات الموقع (Location Services)</strong> وتأكد من تفعيلها في الأعلى.</li>
+              <li style={{ listStyle: "auto" }}>قم بالتمرير للأسفل في نفس القائمة واختر المتصفح الذي تستخدمه حالياً (مثل <strong>Safari</strong> أو <strong>Chrome</strong>).</li>
+              <li style={{ listStyle: "auto" }}>اختر <strong>أثناء استخدام التطبيق (While Using the App)</strong>، وتأكد من تفعيل خيار <strong>الموقع الدقيق (Precise Location)</strong> ليعمل بدقة.</li>
+              <li style={{ listStyle: "auto" }}>قم بإعادة تشغيل/تحديث هذه الصفحة لتحديث الأذونات، ثم اضغط على زر "بالقرب مني".</li>
             </ol>
           )}
 
           {activeTab === "android" && (
             <ol style={{ paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
-              <li>اسحب لوحة التنبيهات وتأكد من تفعيل <strong>الموقع الجغرافي (Location / GPS)</strong>.</li>
-              <li>افتح <strong>إعدادات الهاتف (Settings)</strong> &larr; <strong>التطبيقات (Apps)</strong>.</li>
-              <li>اختر متصفحك الحالي من القائمة (مثل <strong>Chrome</strong> أو <strong>Samsung Internet</strong>).</li>
-              <li>اذهب إلى <strong>الأذونات (Permissions)</strong> &larr; <strong>الموقع (Location)</strong> وقم بتغييره إلى <strong>السماح فقط عند استخدام التطبيق (Allow only while using the app)</strong>.</li>
-              <li>تأكد من تفعيل خيار <strong>استخدم الموقع الدقيق (Use precise location)</strong> إذا كان متاحاً.</li>
-              <li>عد إلى هنا وقم بتحديث الصفحة ثم اضغط على "بالقرب مني".</li>
+              <li style={{ listStyle: "auto" }}>اسحب لوحة التنبيهات وتأكد من تفعيل <strong>الموقع الجغرافي (Location / GPS)</strong>.</li>
+              <li style={{ listStyle: "auto" }}>افتح <strong>إعدادات الهاتف (Settings)</strong> &larr; <strong>التطبيقات (Apps)</strong>.</li>
+              <li style={{ listStyle: "auto" }}>اختر متصفحك الحالي من القائمة (مثل <strong>Chrome</strong> أو <strong>Samsung Internet</strong>).</li>
+              <li style={{ listStyle: "auto" }}>اذهب إلى <strong>الأذونات (Permissions)</strong> &larr; <strong>الموقع (Location)</strong> وقم بتغييره إلى <strong>السماح فقط عند استخدام التطبيق (Allow only while using the app)</strong>.</li>
+              <li style={{ listStyle: "auto" }}>تأكد من تفعيل خيار <strong>استخدم الموقع الدقيق (Use precise location)</strong> إذا كان متاحاً.</li>
+              <li style={{ listStyle: "auto" }}>عد إلى هنا وقم بتحديث الصفحة ثم اضغط على "بالقرب مني".</li>
             </ol>
           )}
 
           {activeTab === "desktop" && (
-            <ol style={{ paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
-              <li>اضغط على أيقونة <strong>القفل 🔒</strong> أو <strong>الإعدادات ⚙️</strong> الموجودة بجانب رابط الموقع في شريط عنوان المتصفح (بالأعلى).</li>
-              <li>ستظهر لك قائمة أذونات الموقع، ابحث عن <strong>الموقع الجغرافي (Location)</strong> وقم بتغييره الإذن إلى <strong>سماح (Allow)</strong>.</li>
-              <li>إذا لم تجده، ادخل على <strong>إعدادات الموقع (Site Settings)</strong> وقم بالسماح للوصول للموقع.</li>
-              <li>قم بتحديث الصفحة (Reload) لحفظ وتطبيق التغييرات الجديدة.</li>
+            <ol style={{ listStyle: "auto", paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
+              <li style={{ listStyle: "auto" }}>اضغط على أيقونة <strong>القفل 🔒</strong> أو <strong>الإعدادات ⚙️</strong> الموجودة بجانب رابط الموقع في شريط عنوان المتصفح (بالأعلى).</li>
+              <li style={{ listStyle: "auto" }}>ستظهر لك قائمة أذونات الموقع، ابحث عن <strong>الموقع الجغرافي (Location)</strong> وقم بتغييره الإذن إلى <strong>سماح (Allow)</strong>.</li>
+              <li style={{ listStyle: "auto" }}>إذا لم تجده، ادخل على <strong>إعدادات الموقع (Site Settings)</strong> وقم بالسماح للوصول للموقع.</li>
+              <li style={{ listStyle: "auto" }}>قم بتحديث الصفحة (Reload) لحفظ وتطبيق التغييرات الجديدة.</li>
             </ol>
           )}
         </div>

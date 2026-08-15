@@ -35,6 +35,7 @@ export default function PhoneDirectoryPage() {
   const [codes, setCodes] = useState<TelecomCodeEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   // New Directory UI States
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
@@ -112,6 +113,18 @@ export default function PhoneDirectoryPage() {
     const specs = entries.map((e) => e.specialty?.trim()).filter(Boolean);
     return Array.from(new Set(specs));
   }, [entries]);
+
+  // Search Suggestions matching search query
+  const suggestions = React.useMemo(() => {
+    const q = normalizeArabic(searchQuery.trim());
+    if (!q) return [];
+    return entries
+      .filter((entry) => {
+        const searchable = normalizeArabic(`${entry.name} ${entry.specialty || ""} ${entry.phone_number} ${entry.description || ""}`);
+        return searchable.includes(q);
+      })
+      .slice(0, 5);
+  }, [entries, searchQuery]);
 
   // Extract Boxicon maps for specialties
   const specialtyIcons = React.useMemo(() => {
@@ -223,13 +236,20 @@ export default function PhoneDirectoryPage() {
 
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             fontFamily: "var(--font-display)",
             fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "600",
             color: "var(--text-primary)",
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
-          }}>دليل الهاتف والخدمات</h1>
+          }}>
+          <img src="images/searchBar/Cairo_directory.webp" style={{width: "35px", marginLeft: "20px"}} alt="" />
+          دليل الهاتف والخدمات
+          </h1>
+          
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
             أرقام الطوارئ، شركات الاتصالات، وخدمات العملاء في مكان واحد.
           </p>
@@ -244,7 +264,7 @@ export default function PhoneDirectoryPage() {
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
-            }}>☎️ أرقام خدمة العملاء</span>
+            }}>☎️ {loading ? "..." : entries.length} أرقام لخدمة العملاء والطوارئ</span>
             <span style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
@@ -253,7 +273,7 @@ export default function PhoneDirectoryPage() {
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
-            }}>📶 أكواد الشبكات</span>
+            }}>📶 {loading ? "..." : codes.length} أكواد للشبكات</span>
           </div>
         </div>
       </div>
@@ -283,9 +303,12 @@ export default function PhoneDirectoryPage() {
               placeholder="ابحث بالاسم، الرقم، أو التخصص..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleSaveSearch(searchQuery);
+                  setIsFocused(false);
                 }
               }}
               style={{
@@ -295,6 +318,122 @@ export default function PhoneDirectoryPage() {
                 height: "50px",
               }}
             />
+
+            {/* Suggestions list */}
+            {isFocused && searchQuery.trim() !== "" && suggestions.length > 0 && (
+              <div 
+                className="metro-animate-fade"
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 6px)",
+                  left: 0,
+                  right: 0,
+                  zIndex: 100,
+                  backgroundColor: "var(--bg-primary)",
+                  border: "1px solid var(--border-glass)",
+                  borderRadius: "15px",
+                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+                  maxHeight: "320px",
+                  overflowY: "auto",
+                  padding: "6px 0",
+                  direction: "rtl",
+                }}
+              >
+                {suggestions.map((entry) => (
+                  <div
+                    key={entry.id}
+                    onMouseDown={() => {
+                      setSearchQuery(entry.name);
+                      handleSaveSearch(entry.name);
+                      setIsFocused(false);
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "10px 16px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid var(--border-glass)",
+                      transition: "background-color 0.2s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--bg-secondary)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      {entry.logo_url ? (
+                        <img 
+                          src={entry.logo_url} 
+                          alt={entry.name} 
+                          style={{ 
+                            width: "36px", 
+                            height: "36px", 
+                            borderRadius: "8px", 
+                            objectFit: "cover", 
+                            backgroundColor: "#fff", 
+                            border: "1px solid var(--border-glass)" 
+                          }} 
+                        />
+                      ) : (
+                        <div style={{ 
+                          width: "36px", 
+                          height: "36px", 
+                          borderRadius: "8px", 
+                          background: "var(--bg-secondary)", 
+                          border: "1px solid var(--border-glass)", 
+                          display: "flex", 
+                          alignItems: "center", 
+                          justifyContent: "center", 
+                          fontSize: "1.1rem" 
+                        }}>
+                          🏢
+                        </div>
+                      )}
+                      <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
+                        <span style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                          {entry.name}
+                        </span>
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                          {entry.specialty}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div 
+                      style={{ display: "flex", alignItems: "center", gap: "8px" }} 
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      <span style={{ 
+                        fontSize: "0.8rem", 
+                        fontWeight: "800", 
+                        color: "var(--accent-success)", 
+                        background: "rgba(16, 185, 129, 0.1)", 
+                        padding: "4px 10px", 
+                        borderRadius: "12px",
+                        direction: "ltr"
+                      }}>
+                        {entry.phone_number}
+                      </span>
+                      <a
+                        href={getDialUrl(entry.phone_number)}
+                        style={{
+                          color: "var(--accent-ios)",
+                          width: "28px",
+                          height: "28px",
+                          borderRadius: "50%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "0.8rem",
+                          textDecoration: "none"
+                        }}
+                      >
+                        <i className="fa-solid fa-phone"></i>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Recent Searches Row */}

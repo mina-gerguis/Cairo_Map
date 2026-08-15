@@ -90,6 +90,9 @@
 .text-white-100 {
   color: #ffffffff !important;
 }
+.text-black-100 {
+  color: #000000 !important;
+}
 
 /* HeroUI Light Mode */
 html.light {
@@ -153,6 +156,12 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+ul,
+li{
+  text-decoration: none;
+  list-style: none;
 }
 
 .closeBut {

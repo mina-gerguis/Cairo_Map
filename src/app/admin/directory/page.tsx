@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -80,6 +80,33 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter entries based on search query
+  const filteredEntries = React.useMemo(() => {
+    if (!searchQuery.trim()) return entries;
+    const term = searchQuery.toLowerCase().trim();
+    return entries.filter(e => {
+      const name = (e.name || "").toLowerCase();
+      const specialty = (e.specialty || "").toLowerCase();
+      const description = (e.description || "").toLowerCase();
+      const phone = (e.phone_number || "").toLowerCase();
+      return name.includes(term) || specialty.includes(term) || description.includes(term) || phone.includes(term);
+    });
+  }, [entries, searchQuery]);
+
+  // Filter codes based on search query
+  const filteredCodes = React.useMemo(() => {
+    if (!searchQuery.trim()) return codes;
+    const term = searchQuery.toLowerCase().trim();
+    return codes.filter(c => {
+      const company = (COMPANY_LABELS[c.company] || "").toLowerCase();
+      const section = (c.section_name || "").toLowerCase();
+      const title = (c.title || "").toLowerCase();
+      const code = (c.code || "").toLowerCase();
+      return company.includes(term) || section.includes(term) || title.includes(term) || code.includes(term);
+    });
+  }, [codes, searchQuery]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -361,37 +388,76 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
   if (!isSubComponent && !isAdmin) return <div style={{ paddingTop: "120px", textAlign: "center", color: "#ff3b30" }}>عفواً، لا تملك صلاحية الوصول لهذه الصفحة.</div>;
 
   return (
-    <div className={isSubComponent ? "" : "app-container"} style={isSubComponent ? { paddingBottom: "40px" } : { paddingTop: "20px", paddingBottom: "60px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", marginBottom: "30px" }}>
+    <div className={isSubComponent ? "" : "app-container"} style={isSubComponent ? { paddingBottom: "40px" } : { padding: "120px 10px", paddingTop: "60px", maxWidth: "100%", width: "100%" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         {!isSubComponent ? (
           <div>
-            <h1
-              style={{ fontFamily: "var(--font-heading)", fontWeight: "600", fontSize: "26px", color: "var(--text-ios)" }}
-              className="title-ios">☎️ إدارة دليل الهاتف </h1>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
-            </div>
+            <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
+              دليل الهاتف والأكواد
+            </h1>
+            <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
+              إضافة وتعديل وحذف أرقام الهواتف الخدمية وأكواد الاتصالات وتعديل بياناتها.
+            </p>
           </div>
         ) : <div />}
 
         {activeTab === "phones" ? (
-          <button className="ios-btn ios-btn-primary" style={{ width: "auto" }} onClick={() => {
-            if (showAddForm) {
-              handleCancelPhone();
-            } else {
-              setShowAddForm(true);
-            }
-          }}>
-            {showAddForm ? "إلغاء" : "+ إضافة رقم جديد"}
+          <button
+            className="ios-btn"
+            style={{
+              background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+              color: "#fff",
+              padding: "10px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              border: "none"
+            }}
+            onClick={() => {
+              if (showAddForm) {
+                handleCancelPhone();
+              } else {
+                setShowAddForm(true);
+              }
+            }}
+          >
+            {showAddForm ? (
+              "إلغاء الإضافة"
+            ) : (
+              <>
+                <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
+                إضافة رقم جديد
+              </>
+            )}
           </button>
         ) : (
-          <button className="ios-btn ios-btn-primary" style={{ width: "auto" }} onClick={() => {
-            if (showAddCodeForm) {
-              handleCancelCode();
-            } else {
-              setShowAddCodeForm(true);
-            }
-          }}>
-            {showAddCodeForm ? "إلغاء" : "+ إضافة كود جديد"}
+          <button
+            className="ios-btn"
+            style={{
+              background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+              color: "#fff",
+              padding: "10px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              border: "none"
+            }}
+            onClick={() => {
+              if (showAddCodeForm) {
+                handleCancelCode();
+              } else {
+                setShowAddCodeForm(true);
+              }
+            }}
+          >
+            {showAddCodeForm ? (
+              "إلغاء الإضافة"
+            ) : (
+              <>
+                <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
+                إضافة كود جديد
+              </>
+            )}
           </button>
         )}
       </div>
@@ -399,19 +465,62 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
       {/* Tabs Selector */}
       <div style={{ display: "flex", gap: "12px", marginBottom: "30px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "12px" }}>
         <button
-          onClick={() => { setActiveTab("phones"); setError(""); }}
+          onClick={() => { setActiveTab("phones"); setError(""); setSearchQuery(""); }}
           className={`category-pill ${activeTab === "phones" ? "active" : ""}`}
           style={{ fontFamily: "var(--font-heading)", padding: "5px 16px", color: "var(--text-ios)" }}
         >
           📞 أرقام الخدمات
         </button>
         <button
-          onClick={() => { setActiveTab("codes"); setError(""); }}
+          onClick={() => { setActiveTab("codes"); setError(""); setSearchQuery(""); }}
           className={`category-pill ${activeTab === "codes" ? "active" : ""}`}
           style={{ fontFamily: "var(--font-heading)", padding: "5px 16px", color: "var(--text-ios)" }}
         >
           📱 أكواد الشركات
         </button>
+      </div>
+
+      {/* Search Box */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "24px",
+        flexWrap: "wrap",
+        gap: "16px"
+      }}>
+        <div style={{ position: "relative", width: "100%", maxWidth: "450px" }}>
+          <input
+            type="text"
+            placeholder={activeTab === "phones" ? "البحث عن جهة خدمية باسمها، تخصصها، أو رقمها..." : "البحث عن كود باسم الخدمة، القسم، الكود، أو الشركة..."}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="ios-input"
+            style={{
+              width: "100%",
+              paddingRight: "44px",
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-secondary)"
+            }}
+          />
+          <i className="bx bx-search" style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--text-muted, #94a3b8)",
+            fontSize: "1.2rem"
+          }} />
+        </div>
+        <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
+          {activeTab === "phones" ? (
+            <>إجمالي الجهات: {searchQuery.trim() ? `${filteredEntries.length} من ${entries.length}` : entries.length}</>
+          ) : (
+            <>إجمالي الأكواد: {searchQuery.trim() ? `${filteredCodes.length} من ${codes.length}` : codes.length}</>
+          )}
+        </div>
       </div>
 
       {error && (
@@ -491,19 +600,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
           )}
 
           <div className={styles.tableCard}>
-            <div className={styles.tableHeaderBar}>
-              <div className={styles.tableTitleGroup}>
-                <div className={styles.tableIcon}>
-                  <i className="bx bx-phone-call" />
-                </div>
-                <div>
-                  <h2 className={styles.tableTitle}>أرقام الخدمات والطوارئ ({entries.length})</h2>
-                  <p className={styles.tableSubtitle}>إدارة أرقام الطوارئ والخدمات</p>
-
-                </div>
-              </div>
-            </div>
-            <div className={styles.tableResponsive}>
+            <div className={styles.tableResponsive} style={{ width: "100%" }}>
               <table className={styles.adminTable}>
                 <thead className={styles.adminThead}>
                   <tr>
@@ -521,8 +618,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         لا توجد أرقام مسجلة حالياً
                       </td>
                     </tr>
+                  ) : filteredEntries.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className={styles.adminTd} style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>
+                        لا توجد نتائج تطابق بحثك.
+                      </td>
+                    </tr>
                   ) : (
-                    entries.map((entry) => (
+                    filteredEntries.map((entry) => (
                       <tr key={entry.id} className={styles.adminTr}>
                         <td className={styles.adminTd}>
                           {entry.logo_url ? (
@@ -534,21 +637,41 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>
                           <div>{entry.name}</div>
                           {entry.description && (
-                            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal", marginTop: "4px" }}>
+                            <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "normal", marginTop: "4px" }}>
                               {entry.description}
                             </div>
                           )}
                         </td>
-                        <td className={styles.adminTd} style={{ color: "#cbd5e1", fontWeight: "700" }}>
+                        <td className={styles.adminTd} style={{ color: "var(--text-primary)", fontWeight: "700" }}>
                           {entry.specialty}
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#38bdf8" }}>{entry.phone_number}</td>
-                        <td className={styles.adminTd} style={{ textAlign: "left" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "var(--accent-ios)",  width: "20%" }}>{entry.phone_number}</td>
+                        <td className={styles.adminTd} style={{ textAlign: "right" }}>
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                            <button onClick={() => startEditPhone(entry)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`}>
+                            <button
+                              onClick={() => startEditPhone(entry)}
+                              className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                              title="تعديل"
+                              style={{
+                                padding: "5px 5px",
+                                borderRadius: "50%",
+                                background: "var(--bg-secondary)",
+                              }}
+                            >
                               <i className="bx bx-edit-alt" />
                             </button>
-                            <button onClick={() => handleDeletePhone(entry.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
+                            <button
+                              onClick={() => handleDeletePhone(entry.id)}
+                              className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                              title="حذف"
+                              style={{
+                                padding: "5px 5px",
+                                borderRadius: "50%",
+                                background: "#ff000025",
+                                color: "#ff0000f5",
+                                border: "#ff000025",
+                              }}
+                            >
                               <i className="bx bx-trash" />
                             </button>
                           </div>
@@ -639,17 +762,6 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
           )}
 
           <div className={styles.tableCard}>
-            <div className={styles.tableHeaderBar}>
-              <div className={styles.tableTitleGroup}>
-                <div className={styles.tableIcon}>
-                  <i className="bx bx-code-alt" />
-                </div>
-                <div>
-                  <h2 className={styles.tableTitle}>أكواد خدمات الاتصالات ({codes.length})</h2>
-                  <p className={styles.tableSubtitle}>إدارة واستعراض أكواد الاتصالات </p>
-                </div>
-              </div>
-            </div>
             <div className={styles.tableResponsive}>
               <table className={styles.adminTable}>
                 <thead className={styles.adminThead}>
@@ -668,33 +780,59 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         لا توجد أكواد مسجلة حالياً
                       </td>
                     </tr>
+                  ) : filteredCodes.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className={styles.adminTd} style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>
+                        لا توجد نتائج تطابق بحثك.
+                      </td>
+                    </tr>
                   ) : (
-                    codes.map((item) => (
+                    filteredCodes.map((item) => (
                       <tr key={item.id} className={styles.adminTr}>
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>
                           <span className={`${styles.badge} ${styles.badgePrimary}`}>
                             {COMPANY_LABELS[item.company]}
                           </span>
                         </td>
-                        <td className={styles.adminTd} style={{ color: "#cbd5e1" }}>
+                        <td className={styles.adminTd} style={{ color: "var(--text-primary)", fontWeight: "700" }}>
                           {item.icon && <i className={formatBoxIcon(item.icon)} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
                           {item.section_name}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>{item.title}</td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "#4ade80", fontFamily: "monospace", fontSize: "1.05rem" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "var(--accent-ios)", fontSize: ".9rem" }}>
                           {item.code.split(" | ")[0]}
                           {item.code.split(" | ")[1] && (
-                            <div style={{ fontSize: "0.8rem", color: "#94a3b8", direction: "rtl", textAlign: "right", marginTop: "4px", fontFamily: "var(--font-heading)" }}>
+                            <div style={{ fontSize: "0.8rem", color: "#94a3b8", direction: "rtl", textAlign: "right", marginTop: "4px" }}>
                               ({item.code.split(" | ")[1]})
                             </div>
                           )}
                         </td>
-                        <td className={styles.adminTd} style={{ textAlign: "left" }}>
+                        <td className={styles.adminTd} style={{ paddingRight: "0" }}>
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                            <button onClick={() => startEditCode(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`}>
+                            <button
+                              onClick={() => startEditCode(item)}
+                              className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                              title="تعديل"
+                              style={{
+                                padding: "5px 5px",
+                                borderRadius: "50%",
+                                background: "var(--bg-secondary)",
+                              }}
+                            >
                               <i className="bx bx-edit-alt" />
                             </button>
-                            <button onClick={() => handleDeleteCode(item.id)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`}>
+                            <button
+                              onClick={() => handleDeleteCode(item.id)}
+                              className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                              title="حذف"
+                              style={{
+                                padding: "5px 5px",
+                                borderRadius: "50%",
+                                background: "#ff000025",
+                                color: "#ff0000f5",
+                                border: "#ff000025",
+                              }}
+                            >
                               <i className="bx bx-trash" />
                             </button>
                           </div>
