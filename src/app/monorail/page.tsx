@@ -528,7 +528,7 @@ export default function MonorailPage() {
                   display: "block"
                 }}
               >
-                تصفح خطوط المترو المجانية
+                العودة للصفحة الرئيسية
               </Link>
             </div>
           </div>
@@ -1082,7 +1082,19 @@ export default function MonorailPage() {
                     <div style={{ padding: "10px", background: "rgba(128, 128, 128, 0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <img src="images/searchBar/Cairo_monorail.png" alt="monorail" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
+                          <img
+                            src={
+                              routeResult.leg1?.lineType === "east"
+                                ? "/images/searchBar/Cairo_monorail_east.png"
+                                : "/images/searchBar/Cairo_monorail.png"
+                            }
+                            alt="monorail"
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              marginLeft: "5px",
+                            }}
+                          />
                           <span style={{ fontWeight: "bold", color: routeResult.leg1?.lineType === "east" ? "#3b82f6" : "#10b981" }}>
                             الخطوة الأولى
                           </span>
@@ -1098,7 +1110,7 @@ export default function MonorailPage() {
                     <div style={{ padding: "10px", background: "rgba(128, 128, 128, 0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <img src="images/searchBar/cairo_metro.svg" alt="cairo_metro" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
+                          <img src="images/searchBar/Cairo_metro.svg" alt="cairo_metro" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
                           <span style={{ fontWeight: "bold", color: "#007928ff" }}>
                             الخطوة الثانية
                           </span>
@@ -1114,7 +1126,19 @@ export default function MonorailPage() {
                     <div style={{ padding: "10px", background: "rgba(128, 128, 128, 0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <img src="images/searchBar/Cairo_monorail.png" alt="monorail" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
+                         <img
+                            src={
+                              routeResult.leg3?.lineType === "east"
+                                ? "/images/searchBar/Cairo_monorail_east.png"
+                                : "/images/searchBar/Cairo_monorail.png"
+                            }
+                            alt="monorail"
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              marginLeft: "5px",
+                            }}
+                          />
                           <span style={{ fontWeight: "bold", color: routeResult.leg3?.lineType === "east" ? "#3b82f6" : "#10b981" }}>
                             الخطوة الثالثة
                           </span>
