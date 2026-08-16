@@ -10,6 +10,11 @@ interface MicrobusRoute {
   fare: string;
   vehicleType: string;
   notes?: string;
+  via?: string;
+  type?: string;
+  lastUpdated?: string;
+  duration?: string;
+  description?: string;
 }
 
 interface MicrobusStation {
@@ -19,6 +24,17 @@ interface MicrobusStation {
   governorate: string;
   routes: MicrobusRoute[];
   map_url: string;
+}
+
+interface RouteInteraction {
+  id: string;
+  user_id: string;
+  station_name: string;
+  route_destination: string;
+  interaction_type: "like" | "dislike" | "report";
+  report_reason?: "fare" | "via" | "location" | "other";
+  comment?: string;
+  created_at?: string;
 }
 
 const DEFAULT_MICROBUS: MicrobusStation[] = [
@@ -110,164 +126,49 @@ export default function MicrobusStationsPage() {
   const [loading, setLoading] = useState(true);
   const [destinationQuery, setDestinationQuery] = useState("");
   const [selectedStation, setSelectedStation] = useState<string>("all");
+  
+  // Interactions (Likes/Dislikes/Reports) State
+  const [interactions, setInteractions] = useState<RouteInteraction[]>([]);
 
-  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin || 
-    ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
+  // Report Modal States
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportingStationName, setReportingStationName] = useState("");
+  const [reportingRouteDestination, setReportingRouteDestination] = useState("");
+  const [reportReason, setReportReason] = useState<"fare" | "via" | "location" | "other">("fare");
+  const [reportComment, setReportComment] = useState("");
+  const [submittingReport, setSubmittingReport] = useState(false);
 
-  useEffect(() => {
-    if (user && hasAccess) {
-      loadStations();
+  // Accordion expansion states
+  const [expandedStationId, setExpandedStationId] = useState<string | null>(null);
+  const [expandedRouteKey, setExpandedRouteKey] = useState<string | null>(null);
+
+  const getLocalStations = () => {
+    if (typeof window === "undefined") return DEFAULT_MICROBUS;
+    const local = localStorage.getItem("local_microbus_stations");
+    if (local) {
+      try {
+        return JSON.parse(local);
+      } catch {
+        return DEFAULT_MICROBUS;
+      }
     }
-  }, [user, hasAccess]);
+    localStorage.setItem("local_microbus_stations", JSON.stringify(DEFAULT_MICROBUS));
+    return DEFAULT_MICROBUS;
+  };
 
-  if (authLoading) {
-    return (
-      <div className="app-container" style={{ maxWidth: "800px", paddingTop: "100px", textAlign: "center" }}>
-        <div style={{
-          width: "40px",
-          height: "40px",
-          border: "4px solid rgba(255,255,255,0.1)",
-          borderTop: "4px solid var(--accent-ios, #3b82f6)",
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite",
-          margin: "0 auto 20px"
-        }} />
-        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
-      </div>
-    );
-  }
-
-  if (!user || !hasAccess) {
-    return (
-      <div className="app-container" style={{ maxWidth: "600px", paddingTop: "60px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
-        {/* Back Button */}
-        <div style={{ marginBottom: "24px" }}>
-          <Link 
-            href="/" 
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              gap: "8px", 
-              color: "var(--accent-ios, #3b82f6)", 
-              textDecoration: "none", 
-              fontWeight: "600",
-              fontSize: "0.95rem" 
-            }}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
-            <span>العودة للرئيسية</span>
-          </Link>
-        </div>
-
-        {/* Premium Lock Panel */}
-        <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(234, 179, 8, 0.2)", position: "relative", overflow: "hidden" }}>
-          <div style={{
-            position: "absolute",
-            top: "-20px",
-            left: "-20px",
-            width: "140px",
-            height: "140px",
-            background: "radial-gradient(circle, rgba(234, 179, 8, 0.1) 0%, transparent 70%)",
-            borderRadius: "50%"
-          }} />
-
-          {/* Lock Icon */}
-          <div style={{ 
-            fontSize: "4.5rem", 
-            marginBottom: "24px",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100px",
-            height: "100px",
-            background: "rgba(234, 179, 8, 0.08)",
-            borderRadius: "50%",
-            border: "1px solid rgba(234, 179, 8, 0.3)",
-            color: "#eab308",
-            animation: "pulse 2s infinite"
-          }}>
-            <i className="bx bxs-lock-alt"></i>
-          </div>
-
-          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#fff", marginBottom: "14px" }}>
-            دليل مواقف الميكروباص ميزة ذهبية 🥇
-          </h2>
-          
-          <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
-            تصفح دليل مواقف الميكروباص والسرفيس في القاهرة والجيزة والتعرفة الرسمية للخطوط متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
-          </p>
-
-          {/* Features list */}
-          <div style={{ background: "rgba(255,255,255,0.02)", padding: "18px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
-            <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية (60 ج.م/شهرياً):</div>
-            <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
-              <li>✨ مواقف السرفيس والميكروباص الرئيسية (رمسيس، المنيب، المرج، عبود، إلخ)</li>
-              <li>✨ التعرفة الرسمية التقريبية لخطوط الانتقال الداخلية والإقليمية</li>
-              <li>✨ نوع المركبات (سقف عالي، ميني باص، إلخ) والمسارات</li>
-              <li>✨ تشمل أيضاً مخطط الرحلات الذكي والمطارات والموانئ بالكامل</li>
-            </ul>
-          </div>
-
-          {/* Call to Actions */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
-            {user ? (
-              <Link
-                href="/profile"
-                style={{
-                  padding: "14px",
-                  borderRadius: "10px",
-                  background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-                  color: "#000",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  boxShadow: "0 4px 15px rgba(250, 204, 21, 0.3)",
-                  display: "block"
-                }}
-              >
-                🚀 اشترك الآن ورقّ حسابك للذهبية (60 ج.م)
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                style={{
-                  padding: "14px",
-                  borderRadius: "10px",
-                  background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
-                  display: "block"
-                }}
-              >
-                🔑 سجل دخولك أولاً لتفعيل الاشتراك
-              </Link>
-            )}
-            
-            <Link
-              href="/"
-              style={{
-                padding: "12px",
-                borderRadius: "10px",
-                background: "rgba(255, 255, 255, 0.04)",
-                color: "#94a3b8",
-                textDecoration: "none",
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
-                display: "block"
-              }}
-            >
-              الرجوع للرئيسية
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const loadInteractions = async () => {
+    if (!supabase) return;
+    try {
+      const { data, error } = await supabase
+        .from("route_interactions")
+        .select("*");
+      if (!error && data) {
+        setInteractions(data);
+      }
+    } catch (err) {
+      console.error("Failed to load route interactions:", err);
+    }
+  };
 
   const loadStations = async () => {
     setLoading(true);
@@ -288,6 +189,9 @@ export default function MicrobusStationsPage() {
       } else {
         setStations(data || []);
       }
+      
+      // Fetch user ratings/reports
+      await loadInteractions();
     } catch (err) {
       setStations(getLocalStations());
     } finally {
@@ -295,39 +199,27 @@ export default function MicrobusStationsPage() {
     }
   };
 
-  const getLocalStations = () => {
-    if (typeof window === "undefined") return DEFAULT_MICROBUS;
-    const local = localStorage.getItem("local_microbus_stations");
-    if (local) {
-      try {
-        return JSON.parse(local);
-      } catch {
-        return DEFAULT_MICROBUS;
-      }
+  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const hasAccess = profile?.is_admin || 
+    ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
+
+  useEffect(() => {
+    if (user && hasAccess) {
+      loadStations();
     }
-    localStorage.setItem("local_microbus_stations", JSON.stringify(DEFAULT_MICROBUS));
-    return DEFAULT_MICROBUS;
-  };
+  }, [user, hasAccess]);
 
-  // 1. Get unique destinations for auto-suggest
-  const allDestinations = useMemo(() => {
-    const set = new Set<string>();
-    stations.forEach(station => {
-      if (Array.isArray(station.routes)) {
-        station.routes.forEach(route => {
-          set.add(route.destination);
-        });
-      }
-    });
-    return Array.from(set);
-  }, [stations]);
+  // Reset expanded routes when filters change
+  useEffect(() => {
+    setExpandedRouteKey(null);
+  }, [destinationQuery, selectedStation]);
 
-  // 2. Filter logic: Search by destination or view by station
+  // Filter logic: Search by destination or view by station
   const filteredResults = useMemo(() => {
     let results = stations;
 
-    if (selectedStation !== "all") {
-      results = results.filter(s => s.name.includes(selectedStation));
+    if (selectedStation && selectedStation !== "all") {
+      results = results.filter(s => s.name === selectedStation);
     }
 
     if (destinationQuery.trim() !== "") {
@@ -347,211 +239,1187 @@ export default function MicrobusStationsPage() {
     return results;
   }, [destinationQuery, selectedStation, stations]);
 
-  return (
-    <div className="app-container" style={{ maxWidth: "950px", paddingTop: "40px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
-      {/* Back Button */}
-      <div style={{ marginBottom: "20px" }}>
-        <Link 
-          href="/" 
-          style={{ 
-            display: "inline-flex", 
-            alignItems: "center", 
-            gap: "8px", 
-            color: "var(--accent-ios, #3b82f6)", 
-            textDecoration: "none", 
-            fontWeight: "600",
-            fontSize: "0.95rem" 
-          }}
-        >
-          <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
-          <span>العودة للرئيسية</span>
-        </Link>
-      </div>
+  // Parse via places into individual steps
+  const parseViaStops = (via?: string) => {
+    if (!via) return [];
+    return via
+      .split(/[\-،,>]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  };
 
-      {/* Header Panel */}
-      <div className="glass-panel" style={{ padding: "40px 30px", marginBottom: "32px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-        <div style={{ 
-          position: "absolute", 
-          top: "-20px", 
-          right: "-20px", 
-          width: "120px", 
-          height: "120px", 
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)", 
-          borderRadius: "50%" 
+  // Submit dynamic Like/Dislike vote
+  const handleVote = async (stationName: string, destination: string, type: "like" | "dislike") => {
+    if (!user) {
+      alert("يرجى تسجيل الدخول أولاً للتمكن من تقييم الخطوط.");
+      return;
+    }
+    if (!supabase) return;
+
+    try {
+      // Find if the user has an existing vote for this route
+      const existingVote = interactions.find(
+        i =>
+          i.user_id === user.id &&
+          i.station_name === stationName &&
+          i.route_destination === destination &&
+          (i.interaction_type === "like" || i.interaction_type === "dislike")
+      );
+
+      if (existingVote) {
+        if (existingVote.interaction_type === type) {
+          // Toggle vote off if clicking the same button (Delete interaction)
+          const { error } = await supabase
+            .from("route_interactions")
+            .delete()
+            .eq("id", existingVote.id);
+
+          if (!error) {
+            setInteractions(prev => prev.filter(i => i.id !== existingVote.id));
+          }
+        } else {
+          // Toggle vote type if clicking the other button (Update interaction)
+          const { error } = await supabase
+            .from("route_interactions")
+            .update({ interaction_type: type })
+            .eq("id", existingVote.id);
+
+          if (!error) {
+            setInteractions(prev =>
+              prev.map(i => (i.id === existingVote.id ? { ...i, interaction_type: type } : i))
+            );
+          }
+        }
+      } else {
+        // Create new vote (Insert interaction)
+        const payload = {
+          user_id: user.id,
+          station_name: stationName,
+          route_destination: destination,
+          interaction_type: type
+        };
+
+        const { data, error } = await supabase
+          .from("route_interactions")
+          .insert([payload])
+          .select();
+
+        if (!error && data && data.length > 0) {
+          setInteractions(prev => [...prev, data[0] as RouteInteraction]);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to submit vote:", err);
+    }
+  };
+
+  // Handle report submission
+  const handleReportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      alert("يرجى تسجيل الدخول أولاً للإبلاغ عن مشكلة.");
+      return;
+    }
+    if (!supabase) return;
+
+    setSubmittingReport(true);
+    try {
+      const payload = {
+        user_id: user.id,
+        station_name: reportingStationName,
+        route_destination: reportingRouteDestination,
+        interaction_type: "report",
+        report_reason: reportReason,
+        comment: reportComment
+      };
+
+      const { data, error } = await supabase
+        .from("route_interactions")
+        .insert([payload])
+        .select();
+
+      if (error) {
+        alert("فشل إرسال البلاغ، يرجى المحاولة مرة أخرى.");
+      } else {
+        alert("شكراً لك! تم إرسال البلاغ بنجاح وجاري مراجعته من قبل الإدارة لتصحيح البيانات.");
+        if (data && data.length > 0) {
+          setInteractions(prev => [...prev, data[0] as RouteInteraction]);
+        }
+        setReportModalOpen(false);
+      }
+    } catch (err) {
+      console.error("Failed to submit report:", err);
+      alert("حدث خطأ غير متوقع.");
+    } finally {
+      setSubmittingReport(false);
+    }
+  };
+
+  // Helper to extract vote statistics for a specific route
+  const getRouteVotes = (stationName: string, destination: string) => {
+    const routeInteractions = interactions.filter(
+      i => i.station_name === stationName && i.route_destination === destination
+    );
+
+    const likes = routeInteractions.filter(i => i.interaction_type === "like").length;
+    const dislikes = routeInteractions.filter(i => i.interaction_type === "dislike").length;
+
+    const userVote = user
+      ? routeInteractions.find(i => i.user_id === user.id && (i.interaction_type === "like" || i.interaction_type === "dislike"))?.interaction_type
+      : undefined;
+
+    return { likes, dislikes, userVote };
+  };
+
+  if (authLoading) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", backgroundColor: "var(--bg-primary)" }}>
+        <div style={{
+          width: "40px",
+          height: "40px",
+          border: "4px solid var(--border-glass)",
+          borderTop: "4px solid var(--accent-ios, #3b82f6)",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          margin: "0 auto 20px"
         }} />
-        <div style={{ fontSize: "4.5rem", marginBottom: "16px" }}>🚐</div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: "2.2rem", fontWeight: "900", marginBottom: "10px", color: "var(--text-primary)" }}>
-          دليل مواقف الميكروباص والسرفيس
-        </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: "1rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
-          دليل القاهرة الكبرى الشعبي لمعرفة مواقف السرفيس والميكروباص. أدخل وجهتك لمعرفة من أي موقف يمكنك الركوب، كم تعرفة الركوب التقريبية، ونوع السيارة.
-        </p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من تفاصيل الاشتراك...</p>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        `}} />
       </div>
+    );
+  }
 
-      {/* Interactive Tool Widget */}
-      <div className="glass-panel" style={{ padding: "28px 24px", marginBottom: "32px" }}>
-        <h2 style={{ fontSize: "1.2rem", fontWeight: "800", color: "#fff", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-          <i className="bx bx-search-alt" style={{ color: "#8b5cf6" }}></i>
-          <span>أين تريد أن تذهب؟ (بحث ذكي بالوجهة)</span>
-        </h2>
-        
-        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "20px" }}>
-          <div style={{ flex: "1 1 280px", position: "relative" }}>
-            <input
-              type="text"
-              placeholder="اكتب وجهتك (مثال: 6 أكتوبر، التجمع الخامس، العبور)..."
-              value={destinationQuery}
-              onChange={e => setDestinationQuery(e.target.value)}
-              className="ios-input"
+  if (!user || !hasAccess) {
+    return (
+      <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bg-primary)" }}>
+        {/* Banner matching Metro / Monorail */}
+        <div className="metro-animate-fade" style={{
+          backgroundColor: "var(--bg-primary)",
+          padding: "24px 20px 24px",
+          textAlign: "center",
+          position: "relative",
+          borderBottom: "1px solid var(--border-glass)",
+          direction: "rtl"
+        }}>
+          {/* Back Button */}
+          <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
+            <Link
+              href="/"
               style={{
-                width: "100%",
-                padding: "12px 14px",
-                borderRadius: "10px",
-                backgroundColor: "rgba(255,255,255,0.05)",
-                color: "#fff",
-                border: "1px solid var(--border-glass)"
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                background: "var(--bg-glass-card)",
+                border: "1px solid var(--border-glass)",
+                color: "var(--text-primary)",
+                textDecoration: "none"
               }}
-            />
-            {destinationQuery && (
-              <button 
-                onClick={() => setDestinationQuery("")}
-                style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "1.2rem" }}
-              >
-                ×
-              </button>
-            )}
+            >
+              <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
+            </Link>
           </div>
 
-          <div style={{ flex: "1 1 200px" }}>
+          {/* Cover Image Banner */}
+          <div className="metro-animate-slide-up metro-delay-100">
+            <h1 style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
+              fontWeight: "600",
+              color: "var(--text-primary)",
+              letterSpacing: "-0.5px",
+            }}>
+              <img src="/images/searchBar/Cairo_microbus.png" alt="Cairo Microbus" style={{ width: "35px", marginLeft: "10px" }} />
+              مواقف الميكروباص والسرفيس</h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+              دليل القاهرة الكبرى الشعبي لمعرفة مواقف السرفيس والميكروباص.
+            </p>
+          </div>
+        </div>
+
+        {/* Lock Panel centered container */}
+        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>
+          <div className="metro-animate-slide-up metro-delay-200" style={{
+            backgroundColor: "var(--bg-primary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "15px",
+            padding: "35px 25px",
+            textAlign: "center",
+            marginTop: "32px",
+            boxShadow: "var(--shadow-card)",
+            position: "relative",
+            overflow: "hidden"
+          }}>
+            {/* Lock Icon */}
+            <div style={{
+              marginBottom: "24px",
+            }}>
+              <img src="/images/lock_cairo_map.png" alt="Lock" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
+            </div>
+
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
+              دليل مواقف الميكروباص ميزة ذهبية 🥇
+            </h2>
+
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
+              تصفح دليل مواقف الميكروباص والسرفيس في القاهرة والجيزة والتعرفة الرسمية للخطوط متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
+            </p>
+
+            {/* Perks list */}
+            <div style={{
+              background: "rgba(128, 128, 128, 0.04)",
+              padding: "18px 20px",
+              borderRadius: "12px",
+              border: "1px solid var(--border-glass)",
+              textAlign: "right",
+              margin: "0 auto 28px",
+              maxWidth: "420px"
+            }}>
+              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+                <i className="bx bxs-award" style={{ color: "#fbbf24", fontSize: "1.1rem" }}></i>
+                <span>ميزات الباقة الذهبية (60 ج.م/شهرياً):</span>
+              </div>
+              <ul style={{
+                paddingRight: "16px",
+                margin: 0,
+                fontSize: "0.85rem",
+                color: "var(--text-secondary)",
+                lineHeight: "1.6",
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+                fontFamily: "var(--font-body)"
+              }}>
+                <li>✨ مواقف السرفيس والميكروباص الرئيسية (رمسيس، المنيب، المرج، عبود، إلخ).</li>
+                <li>✨ التعرفة الرسمية التقريبية لخطوط الانتقال الداخلية والإقليمية.</li>
+                <li>✨ نوع المركبات (سقف عالي، ميني باص، إلخ) والمسارات.</li>
+                <li>✨ تشمل أيضاً مخطط الرحلات الذكي والمطارات والموانئ بالكامل.</li>
+              </ul>
+            </div>
+
+            {/* CTAs */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
+              {user ? (
+                <Link
+                  href="/profile?expand=subscription"
+                  style={{
+                    padding: "14px",
+                    borderRadius: "10px",
+                    background: "var(--bg-subscribe-button-gold)",
+                    color: "#000",
+                    textDecoration: "none",
+                    fontWeight: "bold",
+                    fontSize: "0.95rem",
+                    boxShadow: "var(--bs-subscribe-button-gold)",
+                    border: "1px solid var(--br-subscribe-button-gold)",
+                    display: "block"
+                  }}
+                >
+                  🚀 اشترك الآن ورقّ حسابك للذهبية (60 ج.م)
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  style={{
+                    padding: "14px",
+                    borderRadius: "10px",
+                    background: "var(--bg-subscribe-button-base)",
+                    color: "#fff",
+                    textDecoration: "none",
+                    fontWeight: "bold",
+                    fontSize: "0.95rem",
+                    boxShadow: "var(--bs-subscribe-button-base)",
+                    display: "block"
+                  }}
+                >
+                  🔑 سجل دخولك أولاً لتفعيل الاشتراك
+                </Link>
+              )}
+
+              <Link
+                href="/"
+                style={{
+                  padding: "12px",
+                  borderRadius: "10px",
+                  background: "rgba(255, 255, 255, 0.04)",
+                  color: "var(--text-secondary)",
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                  fontSize: "0.9rem",
+                  border: "1px solid var(--border-glass)",
+                  display: "block"
+                }}
+              >
+                الرجوع للرئيسية
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bg-primary)", direction: "rtl" }}>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+          height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.02);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      `}} />
+
+      {/* Header Banner - Matches Metro Cover Style */}
+      <div className="metro-animate-fade" style={{
+        backgroundColor: "var(--bg-primary)",
+        padding: "24px 20px 24px",
+        textAlign: "center",
+        position: "relative",
+        borderBottom: "1px solid var(--border-glass)",
+      }}>
+        {/* Back Button */}
+        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
+          <Link 
+            href="/" 
+            style={{ 
+              display: "inline-flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "var(--bg-glass-card)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
+              textDecoration: "none",
+              transition: "transform 0.2s ease"
+            }}
+            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
+            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+          >
+            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
+          </Link>
+        </div>
+
+        <div className="metro-animate-slide-up metro-delay-100">
+          <h1 style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "var(--font-body)",
+            fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
+            fontWeight: "bold",
+            color: "var(--text-primary)",
+            margin: "0 0 10px",
+            letterSpacing: "-0.5px",
+          }}>
+            <img src="/images/searchBar/Cairo_microbus.png" alt="Cairo Microbus" style={{ width: "40px", height: "40px", marginLeft: "10px", objectFit: "contain" }} />
+            دليل مواقف الميكروباص والسرفيس</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+            دليل القاهرة الكبرى الشعبي لمعرفة مواقف السرفيس والميكروباص. تصفح جميع المواقف والخطوط المتاحة، أو اختر موقفاً محدداً لبدء رحلتك.
+          </p>
+
+          {/* Badges indicators */}
+          <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "#fbbf24",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>مواقف السرفيس</span>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "#f59e0b",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>الميكروباصات</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Container */}
+      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl", textAlign: "right" }}>
+
+        {/* Search Panel Card - Styled matching profile sectionCard & Metro search card */}
+        <div className="metro-animate-slide-up metro-delay-200" style={{
+          backgroundColor: "var(--bg-primary)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "15px",
+          padding: "20px",
+          marginTop: "24px",
+          marginBottom: "24px",
+          boxShadow: "var(--shadow-card)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          position: "relative",
+          zIndex: 20,
+        }}>
+          {/* Step 1: Select Starting Station */}
+          <div>
+            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "#f59e0b", display: "block", marginBottom: "8px" }}>
+              📍 هتركب من موقف إيه؟ (اختر موقف البداية)
+            </label>
             <select
               value={selectedStation}
-              onChange={e => setSelectedStation(e.target.value)}
+              onChange={e => {
+                setSelectedStation(e.target.value);
+                setDestinationQuery(""); // Clear query on change
+                if (e.target.value && e.target.value !== "all") {
+                  setExpandedStationId(e.target.value);
+                } else {
+                  setExpandedStationId(null);
+                }
+              }}
               className="ios-input"
               style={{
                 width: "100%",
                 padding: "12px",
                 borderRadius: "10px",
-                backgroundColor: "rgba(255,255,255,0.05)",
-                color: "#fff",
-                border: "1px solid var(--border-glass)"
+                backgroundColor: "rgba(255,255,255,0.02)",
+                color: "var(--text-primary)",
+                border: "1px solid var(--border-glass)",
+                fontFamily: "var(--font-body)",
+                height: "48px"
               }}
             >
-              <option value="all" style={{ backgroundColor: "#1e293b" }}>تصفية حسب موقف محدد (الكل)</option>
+              <option value="all" style={{ backgroundColor: "var(--bg-primary)" }}>تصفية حسب موقف محدد (تصفح الكل)</option>
               {stations.map(s => (
-                <option key={s.id || s.name} value={s.name} style={{ backgroundColor: "#1e293b" }}>{s.name}</option>
+                <option key={s.id || s.name} value={s.name} style={{ backgroundColor: "var(--bg-primary)" }}>{s.name}</option>
               ))}
             </select>
           </div>
-        </div>
 
-        {/* Quick Tags for Destination */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
-          <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>وجهات شائعة:</span>
-          {["6 أكتوبر", "التجمع الخامس", "العبور", "الشيخ زايد", "الشروق", "حلوان"].map(tag => (
-            <button
-              key={tag}
-              onClick={() => setDestinationQuery(tag)}
-              style={{
-                padding: "4px 10px",
-                borderRadius: "20px",
-                background: "rgba(139, 92, 246, 0.1)",
-                color: "#8b5cf6",
-                border: "1px solid rgba(139, 92, 246, 0.2)",
-                fontSize: "0.78rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                transition: "all 0.2s ease"
-              }}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Results Section */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "40px" }}>
-            <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--accent-ios)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
-            <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري تحميل البيانات...</span>
-          </div>
-        ) : filteredResults.length > 0 ? (
-          filteredResults.map((station, sIdx) => (
-            <div key={station.id || sIdx} className="glass-panel" style={{ padding: "28px 24px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", alignItems: "flex-start", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "16px", marginBottom: "18px" }}>
-                <div>
-                  <h3 style={{ margin: "0 0 6px 0", fontSize: "1.25rem", fontWeight: "800", color: "#fff" }}>{station.name}</h3>
-                  <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                    📍 {station.location}
-                  </span>
-                </div>
-                <div>
-                  <a
-                    href={station.map_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "8px",
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.06)",
-                      color: "#8b5cf6",
-                      textDecoration: "none",
-                      fontWeight: "700",
-                      fontSize: "0.8rem",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "4px"
-                    }}
-                  >
-                    <i className="bx bx-map" style={{ fontSize: "1rem" }}></i>
-                    موقع الموقف
-                  </a>
-                </div>
-              </div>
-
-              {/* Routes Grid */}
-              <div>
-                <h4 style={{ fontSize: "0.95rem", fontWeight: "800", color: "#fff", marginBottom: "12px" }}>🚐 خطوط السير والتعرفة المتاحة بالموقف:</h4>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px" }}>
-                  {Array.isArray(station.routes) && station.routes.map((route, rIdx) => (
-                    <div 
-                      key={rIdx} 
-                      style={{ 
-                        padding: "14px", 
-                        borderRadius: "10px", 
-                        background: "rgba(255,255,255,0.02)", 
-                        border: "1px solid rgba(255,255,255,0.05)",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center"
-                      }}
-                    >
-                      <div>
-                        <span style={{ color: "#fff", fontWeight: "800", fontSize: "0.9rem", display: "block" }}>
-                          🔀 إلى: {route.destination}
-                        </span>
-                        <span style={{ color: "var(--text-muted)", fontSize: "0.75rem", display: "block", marginTop: "2px" }}>
-                          🚗 المركبة: {route.vehicleType}
-                        </span>
-                      </div>
-                      <div style={{ textAlign: "left" }}>
-                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block" }}>التعرفة المقدرة</span>
-                        <strong style={{ color: "#8b5cf6", fontSize: "1rem", fontWeight: "800" }}>{route.fare}</strong>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* Step 2: Destination Search Input (Always Visible) */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "#f59e0b", display: "block" }}>
+              🔍 عايز تروح فين؟ (اكتب وجهتك للبحث الذكي)
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
+                type="text"
+                placeholder="اكتب وجهتك (مثال: 6 أكتوبر، التجمع، حلوان)..."
+                value={destinationQuery}
+                onChange={e => setDestinationQuery(e.target.value)}
+                className="ios-input"
+                style={{
+                  width: "100%",
+                  padding: "12px 14px",
+                  borderRadius: "10px",
+                  backgroundColor: "rgba(255,255,255,0.02)",
+                  color: "var(--text-primary)",
+                  border: "1px solid var(--border-glass)",
+                  fontFamily: "var(--font-body)",
+                  height: "48px"
+                }}
+              />
+              {destinationQuery && (
+                <button 
+                  onClick={() => setDestinationQuery("")}
+                  style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "1.2rem" }}
+                >
+                  ×
+                </button>
+              )}
             </div>
-          ))
-        ) : (
-          <div className="glass-panel" style={{ padding: "45px", textAlign: "center", color: "var(--text-muted)" }}>
-            لا توجد مواقف أو خطوط ميكروباص متجهة إلى <strong>"{destinationQuery}"</strong> حالياً في دليلنا. نعمل على التحديث المستمر لإضافة المزيد.
+
+            {/* Quick Tags for Destination */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
+              <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>وجهات شائعة:</span>
+              {(selectedStation && selectedStation !== "all" 
+                ? Array.from(new Set((stations.find(s => s.name === selectedStation)?.routes || []).map(r => r.destination)))
+                : ["6 أكتوبر", "التجمع الخامس", "العبور", "الشيخ زايد", "الشروق", "حلوان"]
+              ).slice(0, 6).map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => setDestinationQuery(tag)}
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: "20px",
+                    background: "rgba(245, 158, 11, 0.1)",
+                    color: "#f59e0b",
+                    border: "1px solid rgba(245, 158, 11, 0.2)",
+                    fontSize: "0.78rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = "rgba(245, 158, 11, 0.15)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = "rgba(245, 158, 11, 0.1)";
+                  }}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* Results Section */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <div style={{ width: "30px", height: "30px", border: "3px solid var(--border-glass)", borderTopColor: "#f59e0b", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+              <span style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>جاري تحميل البيانات...</span>
+            </div>
+          ) : (() => {
+            const isSpecificStation = selectedStation && selectedStation !== "all";
+            const hasMatches = filteredResults.length > 0;
+            const currentStation = isSpecificStation ? stations.find(s => s.name === selectedStation) : null;
+
+            return (
+              <div className="metro-animate-slide-up" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                
+                {/* CASE 1: Specific station selected, but NO routes match the query */}
+                {isSpecificStation && !hasMatches && destinationQuery.trim() !== "" && currentStation && (
+                  <div style={{
+                    backgroundColor: "rgba(239, 68, 68, 0.05)",
+                    border: "1px solid rgba(239, 68, 68, 0.2)",
+                    borderRadius: "15px",
+                    padding: "20px",
+                    textAlign: "right",
+                    boxShadow: "var(--shadow-card)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                    animation: "fadeIn 0.3s ease-out forwards"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#ef4444", fontWeight: "800", fontSize: "1rem" }}>
+                      <i className="bx bx-error-circle" style={{ fontSize: "1.3rem" }}></i>
+                      <span>لا تتوفر ميكروباصات مباشرة من هذا الموقف للوجهة المطلوبة</span>
+                    </div>
+                    <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
+                      عذراً، لا تتوفر سيارات مباشرة من <strong>{selectedStation}</strong> متجهة إلى <strong>"{destinationQuery}"</strong> حالياً في دليلنا.
+                    </p>
+                    <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                      💡 تم عرض جميع الوجهات المتاحة بالأسفل من هذا الموقف كبدائل خطوط.
+                    </div>
+                  </div>
+                )}
+
+                {/* CASE 2: Specific station selected, and YES routes match the query */}
+                {isSpecificStation && hasMatches && destinationQuery.trim() !== "" && (
+                  <div style={{
+                    backgroundColor: "rgba(16, 185, 129, 0.05)",
+                    border: "1px solid rgba(16, 185, 129, 0.2)",
+                    borderRadius: "15px",
+                    padding: "16px 20px",
+                    textAlign: "right",
+                    boxShadow: "var(--shadow-card)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    color: "#10b981",
+                    fontWeight: "800",
+                    fontSize: "0.95rem",
+                    animation: "fadeIn 0.3s ease-out forwards"
+                  }}>
+                    <i className="bx bx-check-circle" style={{ fontSize: "1.3rem" }}></i>
+                    <span>متوفر خط سير مباشر إلى {destinationQuery} من هذا الموقف!</span>
+                  </div>
+                )}
+
+                {/* CASE 3: General search (All stations), but no stations match the query */}
+                {!isSpecificStation && !hasMatches && destinationQuery.trim() !== "" && (
+                  <div style={{
+                    backgroundColor: "var(--bg-primary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "15px",
+                    padding: "40px",
+                    textAlign: "center",
+                    color: "var(--text-secondary)",
+                    boxShadow: "var(--shadow-card)"
+                  }}>
+                    لا توجد مواقف أو خطوط ميكروباص متجهة إلى <strong>"{destinationQuery}"</strong> حالياً في دليلنا. نعمل على التحديث المستمر لإضافة المزيد.
+                  </div>
+                )}
+
+                {/* Render the stations list */}
+                {(() => {
+                  const stationsToRender = hasMatches 
+                    ? filteredResults 
+                    : (isSpecificStation && currentStation ? [currentStation] : []);
+
+                  return stationsToRender.map((station, sIdx) => {
+                    const isStationExpanded = expandedStationId === (station.id || station.name) || stationsToRender.length === 1;
+
+                    return (
+                      <div key={station.id || sIdx} className="metro-animate-slide-up" style={{
+                        backgroundColor: "var(--bg-primary)",
+                        border: "1px solid var(--border-glass)",
+                        borderRadius: "15px",
+                        padding: "20px",
+                        boxShadow: "var(--shadow-card)",
+                      }}>
+                        {/* Station Header - Clickable to expand/collapse routes */}
+                        <div 
+                          onClick={() => {
+                            setExpandedStationId(isStationExpanded ? null : (station.id || station.name));
+                          }}
+                          style={{ 
+                            display: "flex", 
+                            justifyContent: "space-between", 
+                            flexWrap: "wrap", 
+                            gap: "12px", 
+                            alignItems: "center", 
+                            cursor: "pointer",
+                            paddingBottom: isStationExpanded ? "16px" : "0px",
+                            borderBottom: isStationExpanded ? "1px solid var(--border-glass)" : "none",
+                            transition: "all 0.2s ease"
+                          }}
+                        >
+                          <div>
+                            <h3 style={{ 
+                              margin: "0 0 6px 0", 
+                              fontSize: "1.2rem", 
+                              fontWeight: "800", 
+                              color: "var(--text-primary)",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "6px"
+                            }}>
+                              <span>{station.name}</span>
+                              <i className={`bx bx-chevron-${isStationExpanded ? "up" : "down"}`} style={{ 
+                                fontSize: "1.5rem", 
+                                color: "#f59e0b",
+                                transition: "transform 0.2s ease"
+                              }}></i>
+                            </h3>
+                            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                              📍 {station.location}
+                            </span>
+                          </div>
+                          <div>
+                            <a
+                              href={station.map_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()} // Prevent accordion toggle
+                              style={{
+                                padding: "6px 12px",
+                                borderRadius: "8px",
+                                background: "rgba(128, 128, 128, 0.05)",
+                                border: "1px solid var(--border-glass)",
+                                color: "#f59e0b",
+                                textDecoration: "none",
+                                fontWeight: "700",
+                                fontSize: "0.8rem",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                transition: "all 0.2s ease"
+                              }}
+                              onMouseEnter={e => {
+                                e.currentTarget.style.background = "rgba(128, 128, 128, 0.08)";
+                                e.currentTarget.style.transform = "translateY(-1px)";
+                              }}
+                              onMouseLeave={e => {
+                                e.currentTarget.style.background = "rgba(128, 128, 128, 0.05)";
+                                e.currentTarget.style.transform = "none";
+                              }}
+                            >
+                              <i className="bx bx-map" style={{ fontSize: "1rem" }}></i>
+                              موقع الموقف
+                            </a>
+                          </div>
+                        </div>
+
+                        {/* Station Content: Routes List */}
+                        {isStationExpanded && (
+                          <div style={{ marginTop: "18px", opacity: 0, animation: "fadeIn 0.3s ease-out forwards" }}>
+                            <h4 style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>
+                              {destinationQuery.trim() !== "" && hasMatches 
+                                ? `🚐 خطوط السير المتاحة للوجهة المطلوبة:` 
+                                : "🚐 جميع خطوط السير والتعرفة المتاحة بالموقف:"}
+                            </h4>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                              {Array.isArray(station.routes) && station.routes.map((route: any, rIdx) => {
+                                const routeKey = `${station.name}-${route.destination}-${rIdx}`;
+                                const isRouteExpanded = expandedRouteKey === routeKey;
+                                const isOfficial = route.type !== "normal";
+
+                                return (
+                                  <div 
+                                    key={rIdx} 
+                                    style={{ 
+                                      borderRadius: "12px", 
+                                      background: "rgba(255, 255, 255, 0.01)", 
+                                      border: "1px solid var(--border-glass)",
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      overflow: "hidden",
+                                      transition: "all 0.2s ease"
+                                    }}
+                                  >
+                                    {/* Route Header */}
+                                    <div 
+                                      onClick={() => {
+                                        setExpandedRouteKey(isRouteExpanded ? null : routeKey);
+                                      }}
+                                      style={{
+                                        padding: "14px 16px",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        cursor: "pointer",
+                                        flexWrap: "wrap",
+                                        gap: "8px",
+                                        backgroundColor: isRouteExpanded ? "rgba(255, 255, 255, 0.02)" : "transparent",
+                                        transition: "background-color 0.2s ease"
+                                      }}
+                                      onMouseEnter={e => {
+                                        if (!isRouteExpanded) e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.01)";
+                                      }}
+                                      onMouseLeave={e => {
+                                        if (!isRouteExpanded) e.currentTarget.style.backgroundColor = "transparent";
+                                      }}
+                                    >
+                                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                                        <span style={{ color: "var(--text-primary)", fontWeight: "800", fontSize: "0.95rem" }}>
+                                          🔀 إلى: {route.destination}
+                                        </span>
+                                        <span style={{
+                                          fontSize: "0.7rem",
+                                          fontWeight: "700",
+                                          padding: "2px 8px",
+                                          borderRadius: "6px",
+                                          background: isOfficial ? "rgba(16, 185, 129, 0.12)" : "rgba(245, 158, 11, 0.12)",
+                                          color: isOfficial ? "#10b981" : "#f59e0b",
+                                          border: `1px solid ${isOfficial ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)"}`
+                                        }}>
+                                          {isOfficial ? "موقف رسمي" : "نقطة تحميل عادية"}
+                                        </span>
+                                      </div>
+                                      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>التعرفة المقدرة</span>
+                                          <strong style={{ color: "#f59e0b", fontSize: "1.05rem", fontWeight: "800" }}>{route.fare}</strong>
+                                        </div>
+                                        <i className={`bx bx-chevron-${isRouteExpanded ? "up" : "down"}`} style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}></i>
+                                      </div>
+                                    </div>
+
+                                    {/* Route Details */}
+                                    {isRouteExpanded && (
+                                      <div style={{ 
+                                        padding: "16px", 
+                                        borderTop: "1px solid var(--border-glass)",
+                                        display: "flex", 
+                                        flexDirection: "column", 
+                                        gap: "14px",
+                                        backgroundColor: "rgba(0, 0, 0, 0.05)",
+                                        opacity: 0,
+                                        animation: "fadeIn 0.25s ease-out forwards"
+                                      }}>
+                                        {/* Info row */}
+                                        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.82rem", color: "var(--text-secondary)", alignItems: "center" }}>
+                                          <span>🚗 المركبة: {route.vehicleType || "ميكروباص"}</span>
+                                          {route.duration && (
+                                            <span>⏱️ زمن الرحلة التقريبي: {route.duration}</span>
+                                          )}
+                                        </div>
+
+                                        {/* Interactive Likes/Dislikes & Report Action Row */}
+                                        <div style={{
+                                          display: "flex",
+                                          justifyContent: "space-between",
+                                          alignItems: "center",
+                                          padding: "8px 12px",
+                                          background: "rgba(255,255,255,0.02)",
+                                          borderRadius: "10px",
+                                          border: "1px solid var(--border-glass)",
+                                          marginTop: "4px",
+                                          flexWrap: "wrap",
+                                          gap: "8px"
+                                        }}>
+                                          {/* Like & Dislike vote triggers */}
+                                          {(() => {
+                                            const { likes, dislikes, userVote } = getRouteVotes(station.name, route.destination);
+                                            return (
+                                              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                                                {/* Like Button */}
+                                                <button
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleVote(station.name, route.destination, "like");
+                                                  }}
+                                                  style={{
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "6px",
+                                                    background: userVote === "like" ? "rgba(16, 185, 129, 0.12)" : "rgba(128,128,128,0.05)",
+                                                    border: userVote === "like" ? "1px solid #10b981" : "1px solid var(--border-glass)",
+                                                    color: userVote === "like" ? "#10b981" : "var(--text-secondary)",
+                                                    padding: "6px 12px",
+                                                    borderRadius: "8px",
+                                                    fontSize: "0.8rem",
+                                                    fontWeight: "bold",
+                                                    cursor: "pointer",
+                                                    transition: "all 0.2s ease"
+                                                  }}
+                                                >
+                                                  <i className={userVote === "like" ? "bx bxs-like" : "bx bx-like"} style={{ fontSize: "0.95rem" }}></i>
+                                                  <span>البيانات صحيحة ({likes})</span>
+                                                </button>
+
+                                                {/* Dislike Button */}
+                                                <button
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleVote(station.name, route.destination, "dislike");
+                                                  }}
+                                                  style={{
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "6px",
+                                                    background: userVote === "dislike" ? "rgba(239, 68, 68, 0.12)" : "rgba(128,128,128,0.05)",
+                                                    border: userVote === "dislike" ? "1px solid #ef4444" : "1px solid var(--border-glass)",
+                                                    color: userVote === "dislike" ? "#ef4444" : "var(--text-secondary)",
+                                                    padding: "6px 12px",
+                                                    borderRadius: "8px",
+                                                    fontSize: "0.8rem",
+                                                    fontWeight: "bold",
+                                                    cursor: "pointer",
+                                                    transition: "all 0.2s ease"
+                                                  }}
+                                                >
+                                                  <i className={userVote === "dislike" ? "bx bxs-dislike" : "bx bx-dislike"} style={{ fontSize: "0.95rem" }}></i>
+                                                  <span>البيانات خاطئة ({dislikes})</span>
+                                                </button>
+                                              </div>
+                                            );
+                                          })()}
+
+                                          {/* Report problem button */}
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              if (!user) {
+                                                alert("يرجى تسجيل الدخول أولاً للتمكن من الإبلاغ عن مشاكل البيانات.");
+                                                return;
+                                              }
+                                              setReportingStationName(station.name);
+                                              setReportingRouteDestination(route.destination);
+                                              setReportReason("fare");
+                                              setReportComment("");
+                                              setReportModalOpen(true);
+                                            }}
+                                            style={{
+                                              display: "inline-flex",
+                                              alignItems: "center",
+                                              gap: "4px",
+                                              background: "none",
+                                              border: "none",
+                                              color: "var(--text-muted)",
+                                              fontSize: "0.78rem",
+                                              fontWeight: "600",
+                                              cursor: "pointer",
+                                              transition: "color 0.2s ease"
+                                            }}
+                                            onMouseEnter={e => e.currentTarget.style.color = "#f59e0b"}
+                                            onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
+                                          >
+                                            <i className="bx bx-error-circle" style={{ fontSize: "0.95rem" }}></i>
+                                            <span>إبلاغ عن خطأ</span>
+                                          </button>
+                                        </div>
+
+                                        {/* Timeline */}
+                                        {route.via && (
+                                          <div style={{ marginTop: "6px", marginBottom: "6px" }}>
+                                            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "12px" }}>
+                                              🛣️ خط السير التفصيلي (نقاط المرور):
+                                            </span>
+                                            <div style={{ overflowX: "auto", paddingBottom: "8px", paddingTop: "8px", direction: "rtl" }} className="custom-scrollbar">
+                                              <div style={{ display: "flex", alignItems: "center", position: "relative", minWidth: "480px", padding: "0 10px" }}>
+                                                <div style={{
+                                                  position: "absolute",
+                                                  top: "11px",
+                                                  left: "30px",
+                                                  right: "30px",
+                                                  height: "2px",
+                                                  background: "rgba(255, 255, 255, 0.1)",
+                                                  zIndex: 1
+                                                }} />
+
+                                                {[
+                                                  station.name.split("(")[0].trim(),
+                                                  ...parseViaStops(route.via),
+                                                  route.destination
+                                                ].map((stop, idx, arr) => {
+                                                  const isStart = idx === 0;
+                                                  const isEnd = idx === arr.length - 1;
+                                                  const dotColor = isStart ? "#10b981" : isEnd ? "#ef4444" : "#f59e0b";
+
+                                                  return (
+                                                    <div key={idx} style={{
+                                                      flex: "1 1 0%",
+                                                      display: "flex",
+                                                      flexDirection: "column",
+                                                      alignItems: "center",
+                                                      position: "relative",
+                                                      zIndex: 2
+                                                    }}>
+                                                      <div style={{
+                                                        width: "22px",
+                                                        height: "22px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: "var(--bg-primary)",
+                                                        border: `3px solid ${dotColor}`,
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                                                        marginBottom: "6px"
+                                                      }}>
+                                                        <div style={{
+                                                          width: "6px",
+                                                          height: "6px",
+                                                          borderRadius: "50%",
+                                                          backgroundColor: dotColor
+                                                        }} />
+                                                      </div>
+
+                                                      <span style={{
+                                                        fontSize: "0.72rem",
+                                                        fontWeight: isStart || isEnd ? "bold" : "normal",
+                                                        color: isStart || isEnd ? "var(--text-primary)" : "var(--text-secondary)",
+                                                        textAlign: "center",
+                                                        width: "75px",
+                                                        whiteSpace: "normal",
+                                                        lineHeight: "1.3"
+                                                      }}>
+                                                        {stop}
+                                                      </span>
+                                                    </div>
+                                                  );
+                                                })}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        )}
+
+                                        {/* Description */}
+                                        {(route.description || route.notes) && (
+                                          <div style={{ 
+                                            fontSize: "0.8rem", 
+                                            color: "var(--text-secondary)", 
+                                            fontStyle: "italic", 
+                                            background: "rgba(255, 255, 255, 0.02)", 
+                                            padding: "8px 12px", 
+                                            borderRadius: "6px", 
+                                            borderRight: "3px solid #f59e0b",
+                                            lineHeight: "1.5"
+                                          }}>
+                                            {route.description || route.notes}
+                                          </div>
+                                        )}
+
+                                        {/* Last Updated */}
+                                        {route.lastUpdated && (
+                                          <div style={{ display: "flex", justifyContent: "flex-end", fontSize: "0.7rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                                            <span>📅 آخر تحديث: {route.lastUpdated}</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            );
+          })()}
+        </div>
       </div>
+
+      {/* Report Modal */}
+      {reportModalOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backdropFilter: "blur(5px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          padding: "20px",
+          direction: "rtl"
+        }}>
+          <div className="metro-animate-slide-up" style={{
+            backgroundColor: "var(--bg-primary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "18px",
+            width: "100%",
+            maxWidth: "460px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
+            overflow: "hidden",
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              padding: "16px 20px",
+              borderBottom: "1px solid var(--border-glass)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.01)"
+            }}>
+              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                ⚠️ إبلاغ عن مشكلة في خط السير
+              </h3>
+              <button 
+                onClick={() => setReportModalOpen(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--text-secondary)",
+                  fontSize: "1.4rem",
+                  cursor: "pointer",
+                  lineHeight: 1
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleReportSubmit} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", background: "rgba(255, 255, 255, 0.02)", padding: "10px 12px", borderRadius: "8px", borderRight: "3px solid #f59e0b" }}>
+                <div><strong>الموقف:</strong> {reportingStationName}</div>
+                <div style={{ marginTop: "4px" }}><strong>الوجهة:</strong> {reportingRouteDestination}</div>
+              </div>
+
+              {/* Problem Type Select */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
+                  نوع المشكلة الملاحظة:
+                </label>
+                <select
+                  value={reportReason}
+                  onChange={e => setReportReason(e.target.value as any)}
+                  className="ios-input"
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.02)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
+                    fontFamily: "var(--font-body)",
+                    height: "42px"
+                  }}
+                >
+                  <option value="fare" style={{ backgroundColor: "var(--bg-primary)" }}>💰 التعرفة / الأجرة غير صحيحة</option>
+                  <option value="via" style={{ backgroundColor: "var(--bg-primary)" }}>🛣️ خط السير / المناطق غير دقيقة</option>
+                  <option value="location" style={{ backgroundColor: "var(--bg-primary)" }}>📍 مكان الموقف أو نقطة التحميل غير صحيحة</option>
+                  <option value="other" style={{ backgroundColor: "var(--bg-primary)" }}>📝 مشكلة أو ملاحظة أخرى</option>
+                </select>
+              </div>
+
+              {/* Comment Input */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
+                  تفاصيل المشكلة (اختياري):
+                </label>
+                <textarea
+                  placeholder="يرجى كتابة التفاصيل هنا لمساعدتنا في تحديث البيانات (مثال: الأجرة الحقيقية هي 12 ج.م)..."
+                  value={reportComment}
+                  onChange={e => setReportComment(e.target.value)}
+                  className="ios-input"
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.02)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
+                    fontFamily: "var(--font-body)",
+                    height: "100px",
+                    resize: "none"
+                  }}
+                />
+              </div>
+
+              {/* Submit Buttons */}
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => setReportModalOpen(false)}
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    background: "rgba(255, 255, 255, 0.04)",
+                    border: "1px solid var(--border-glass)",
+                    color: "var(--text-secondary)",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: "bold"
+                  }}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingReport}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    background: "var(--bg-subscribe-button-gold)",
+                    border: "1px solid var(--br-subscribe-button-gold)",
+                    color: "#000",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: "bold",
+                    boxShadow: "var(--bs-subscribe-button-gold)"
+                  }}
+                >
+                  {submittingReport ? "جاري الإرسال..." : "إرسال البلاغ"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

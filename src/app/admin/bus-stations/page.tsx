@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import styles from "../admin.module.css";
 import Link from "next/link";
+import clsx from "clsx";
 
 const DEFAULT_BUS_STATIONS: any[] = [
   {
@@ -63,6 +64,10 @@ function AdminBusStationsInner() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Companies Visual Editor State
+  const [formCompanies, setFormCompanies] = useState<any[]>([]);
+  const [availableLogos, setAvailableLogos] = useState<string[]>([]);
+
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
@@ -72,6 +77,23 @@ function AdminBusStationsInner() {
       }
     }
   }, [user, authLoading]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      const fetchLogos = async () => {
+        try {
+          const res = await fetch("/api/bus-logos");
+          if (res.ok) {
+            const data = await res.json();
+            setAvailableLogos(data);
+          }
+        } catch (err) {
+          console.error("Failed to fetch logos:", err);
+        }
+      };
+      fetchLogos();
+    }
+  }, [isAdmin]);
 
   const checkAdmin = async () => {
     if (!supabase || !user) return;
@@ -155,6 +177,7 @@ function AdminBusStationsInner() {
       description: "",
       map_url: ""
     });
+    setFormCompanies([]);
     setShowModal(true);
   };
 
@@ -167,6 +190,17 @@ function AdminBusStationsInner() {
       destinations: Array.isArray(item.destinations) ? item.destinations.join(", ") : item.destinations || "",
       companies: Array.isArray(item.companies) ? JSON.stringify(item.companies, null, 2) : item.companies || ""
     });
+    let companiesList: any[] = [];
+    if (Array.isArray(item.companies)) {
+      companiesList = item.companies;
+    } else if (typeof item.companies === "string") {
+      try {
+        companiesList = JSON.parse(item.companies);
+      } catch {
+        companiesList = [];
+      }
+    }
+    setFormCompanies(companiesList);
     setShowModal(true);
   };
 
@@ -181,14 +215,19 @@ function AdminBusStationsInner() {
       ? formData.destinations.split(",").map((d: string) => d.trim()).filter(Boolean)
       : formData.destinations;
 
-    if (typeof formData.companies === "string") {
-      try {
-        payload.companies = JSON.parse(formData.companies);
-      } catch {
-        setError("خطأ في تنسيق JSON للشركات المشغلة. يجب أن يكون بتنسيق مصفوفة كائنات صالحة.");
+    if (formCompanies.length === 0) {
+      setError("يجب إضافة شركة واحدة مشغلة على الأعل.");
+      return;
+    }
+
+    for (const company of formCompanies) {
+      if (!company.name || !company.phone || !company.type) {
+        setError("يرجى ملء جميع الحقول الإلزامية لكل شركة (الاسم، الهاتف، والنوع).");
         return;
       }
     }
+
+    payload.companies = formCompanies;
 
     if (dbConnected && supabase) {
       try {
@@ -373,19 +412,39 @@ function AdminBusStationsInner() {
       )}
 
       {/* Search and Quick Filters */}
-      <div style={{ display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
-        <div style={{ position: "relative", flex: 1, minWidth: "260px" }}>
-          <i className="bx bx-search" style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", color: "#64748b", fontSize: "1.15rem" }} />
+     <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px",
+        flexWrap: "wrap",
+        gap: "16px"
+      }}>
+       <div style={{ position: "relative", width: "100%", maxWidth: "450px" }}>
+          <i className="bx bx-search" style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--text-muted, #94a3b8)",
+            fontSize: "1.2rem"
+          }} />
           <input
             type="text"
             placeholder="البحث عن موقف أتوبيس، وجهة، أو محافظة..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="ios-input"
-            style={{ width: "100%", paddingRight: "40px" }}
+            style={{  
+              width: "100%",
+              paddingRight: "44px",
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-secondary)" }}
           />
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#94a3b8", fontSize: "0.85rem", background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", padding: "0 16px", borderRadius: "12px" }}>
+       <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
           إجمالي المواقف: {filteredRows.length}
         </div>
       </div>
@@ -419,18 +478,31 @@ function AdminBusStationsInner() {
                     <td className={styles.adminTd} title={Array.isArray(item.destinations) ? item.destinations.join("، ") : ""} style={{ maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {Array.isArray(item.destinations) ? item.destinations.join("، ") : ""}
                     </td>
-                    <td className={styles.adminTd}>
-                      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                        <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل">
-                          <i className="bx bx-edit" />
-                          <span>تعديل</span>
-                        </button>
-                        <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف">
-                          <i className="bx bx-trash" />
-                          <span>حذف</span>
-                        </button>
-                      </div>
-                    </td>
+                   <td className={styles.adminTd}>
+                    <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                      <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
+                        style={{
+                          padding: "5px 5px",
+                          borderRadius:"50%",
+                          background: "var(--bg-secondary)",
+                         
+                        }}
+                        >
+                        <i className="bx bx-edit-alt" />
+                      </button>
+                      <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
+                        style={{
+                          padding: "5px 5px",
+                          borderRadius:"50%",
+                          background: "#ff000025",
+                          color:"#ff0000f5",
+                          border:"#ff000025",
+                        }}
+                        >
+                        <i className="bx bx-trash" />                      
+                      </button>
+                    </div>
+                  </td>
                   </tr>
                 ))
               )}
@@ -456,7 +528,7 @@ function AdminBusStationsInner() {
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                 <div>
-                  <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم الموقف *</label>
+                  <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم الموقف *</label>
                   <input
                     type="text"
                     required
@@ -467,7 +539,7 @@ function AdminBusStationsInner() {
                   />
                 </div>
                 <div>
-                  <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المحافظة *</label>
+                  <label  className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة *</label>
                   <input
                     type="text"
                     required
@@ -480,7 +552,7 @@ function AdminBusStationsInner() {
               </div>
 
               <div>
-                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>العنوان بالتفصيل *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>العنوان بالتفصيل *</label>
                 <input
                   type="text"
                   required
@@ -492,7 +564,7 @@ function AdminBusStationsInner() {
               </div>
 
               <div>
-                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الوجهات المتاحة (افصل بينها بفاصلة) *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوجهات المتاحة (افصل بينها بفاصلة) *</label>
                 <input
                   type="text"
                   required
@@ -504,20 +576,163 @@ function AdminBusStationsInner() {
                 />
               </div>
 
-              <div>
-                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الشركات المشغلة وساعات العمل (بتنسيق JSON) *</label>
-                <textarea
-                  required
-                  placeholder='[{"name": "السوبر جيت", "phone": "19142", "type": "رسمي"}]'
-                  value={formData.companies || ""}
-                  onChange={e => setFormData({ ...formData, companies: e.target.value })}
-                  className="ios-input"
-                  style={{ width: "100%", height: "100px", fontFamily: "monospace", direction: "ltr", textAlign: "left" }}
-                />
+              <div style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px", padding: "16px", background: "rgba(255,255,255,0.02)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                  <label className="color-white-100" style={{ fontWeight: "bold", fontSize: "0.95rem" }}>
+                    🏢 الشركات المشغلة وساعات العمل واللوجو *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setFormCompanies([...formCompanies, { name: "", phone: "", type: "", logo: "" }])}
+                    className="ios-btn"
+                    style={{
+                      padding: "4px 10px",
+                      fontSize: "0.8rem",
+                      background: "rgba(99, 102, 241, 0.2)",
+                      color: "#818cf8",
+                      border: "1px solid rgba(99, 102, 241, 0.3)"
+                    }}
+                  >
+                    <i className="bx bx-plus-circle" style={{ marginLeft: "4px" }} />
+                    إضافة شركة
+                  </button>
+                </div>
+
+                {formCompanies.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "20px", color: "var(--text-muted)", fontSize: "0.85rem", border: "1px dashed rgba(255,255,255,0.1)", borderRadius: "8px" }}>
+                    لم يتم إضافة أي شركات بعد. اضغط على "إضافة شركة" للبدء.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {formCompanies.map((company, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          border: "1px solid rgba(255,255,255,0.06)",
+                          borderRadius: "8px",
+                          padding: "12px",
+                          background: "rgba(0,0,0,0.2)",
+                          position: "relative"
+                        }}
+                      >
+                        {/* Delete Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...formCompanies];
+                            updated.splice(index, 1);
+                            setFormCompanies(updated);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "8px",
+                            left: "8px",
+                            background: "transparent",
+                            border: "none",
+                            color: "#ef4444",
+                            cursor: "pointer"
+                          }}
+                          title="حذف الشركة"
+                        >
+                          <i className="bx bx-trash" style={{ fontSize: "1.1rem" }} />
+                        </button>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "12px" }}>
+                          <div>
+                            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>اسم الشركة *</label>
+                            <input
+                              type="text"
+                              required
+                              value={company.name || ""}
+                              onChange={e => {
+                                const updated = [...formCompanies];
+                                updated[index].name = e.target.value;
+                                setFormCompanies(updated);
+                              }}
+                              className="ios-input"
+                              style={{ width: "100%", padding: "6px 10px", fontSize: "0.85rem" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>رقم الهاتف *</label>
+                            <input
+                              type="text"
+                              required
+                              value={company.phone || ""}
+                              onChange={e => {
+                                const updated = [...formCompanies];
+                                updated[index].phone = e.target.value;
+                                setFormCompanies(updated);
+                              }}
+                              className="ios-input"
+                              style={{ width: "100%", padding: "6px 10px", fontSize: "0.85rem" }}
+                            />
+                          </div>
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "10px" }}>
+                          <div>
+                            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>نوع الخدمة *</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="رسمي حكومي، خاص فاخر..."
+                              value={company.type || ""}
+                              onChange={e => {
+                                const updated = [...formCompanies];
+                                updated[index].type = e.target.value;
+                                setFormCompanies(updated);
+                              }}
+                              className="ios-input"
+                              style={{ width: "100%", padding: "6px 10px", fontSize: "0.85rem" }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>لوجو الشركة</label>
+                            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                              <select
+                                value={company.logo || ""}
+                                onChange={e => {
+                                  const updated = [...formCompanies];
+                                  updated[index].logo = e.target.value;
+                                  setFormCompanies(updated);
+                                }}
+                                className="ios-input"
+                                style={{ width: "100%", padding: "6px 10px", fontSize: "0.85rem", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)" }}
+                              >
+                                <option value="">بدون لوجو</option>
+                                {availableLogos.map((logo) => (
+                                  <option key={logo} value={logo}>{logo}</option>
+                                ))}
+                              </select>
+                              {company.logo && (
+                                <img
+                                  src={`/images/busStations/${company.logo}`}
+                                  alt={company.name}
+                                  style={{
+                                    width: "28px",
+                                    height: "28px",
+                                    objectFit: "contain",
+                                    borderRadius: "4px",
+                                    background: "white",
+                                    padding: "2px"
+                                  }}
+                                  onError={(e) => {
+                                    (e.target as HTMLElement).style.display = "none";
+                                  }}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div>
-                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>الوصف وملاحظات السفر</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوصف وملاحظات السفر</label>
                 <textarea
                   value={formData.description || ""}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
@@ -527,7 +742,7 @@ function AdminBusStationsInner() {
               </div>
 
               <div>
-                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
                 <input
                   type="url"
                   required

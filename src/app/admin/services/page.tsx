@@ -333,6 +333,10 @@ function AdminServicesPageInner() {
         router.replace("/admin/bus-stations");
         return;
       }
+      if (tabParam === "microbus_stations") {
+        router.replace("/admin/microbus-stations");
+        return;
+      }
       const validTabs: ServiceType[] = ["monorail", "ports", "bus_stations", "microbus_stations", "directory", "directions"];
       if (validTabs.includes(tabParam as ServiceType)) {
         setActiveTab(tabParam as ServiceType);
@@ -815,6 +819,8 @@ function AdminServicesPageInner() {
                   router.push("/admin/lrt");
                 } else if (tab.id === "bus_stations") {
                   router.push("/admin/bus-stations");
+                } else if (tab.id === "microbus_stations") {
+                  router.push("/admin/microbus-stations");
                 } else {
                   setActiveTab(tab.id as ServiceType);
                   setSearchQuery("");
@@ -1237,18 +1243,31 @@ function AdminServicesPageInner() {
                         </td>
                       </>
                     )}
-                    <td className={styles.adminTd}>
-                      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                        <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل">
-                          <i className="bx bx-edit" />
-                          <span>تعديل</span>
-                        </button>
-                        <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف">
-                          <i className="bx bx-trash" />
-                          <span>حذف</span>
-                        </button>
-                      </div>
-                    </td>
+                   <td className={styles.adminTd}>
+                    <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                      <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
+                        style={{
+                          padding: "5px 5px",
+                          borderRadius:"50%",
+                          background: "var(--bg-secondary)",
+                         
+                        }}
+                        >
+                        <i className="bx bx-edit-alt" />
+                      </button>
+                      <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
+                        style={{
+                          padding: "5px 5px",
+                          borderRadius:"50%",
+                          background: "#ff000025",
+                          color:"#ff0000f5",
+                          border:"#ff000025",
+                        }}
+                        >
+                        <i className="bx bx-trash" />                      
+                      </button>
+                    </div>
+                  </td>
                   </tr>
                 ))
               )}

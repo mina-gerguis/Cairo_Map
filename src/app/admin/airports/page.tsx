@@ -721,23 +721,23 @@ function AdminAirportsInner() {
                       <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
                         style={{
                           padding: "5px 5px",
-                          borderRadius:"50%",
+                          borderRadius: "50%",
                           background: "var(--bg-secondary)",
-                         
+
                         }}
-                        >
+                      >
                         <i className="bx bx-edit-alt" />
                       </button>
                       <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
                         style={{
                           padding: "5px 5px",
-                          borderRadius:"50%",
+                          borderRadius: "50%",
                           background: "#ff000025",
-                          color:"#ff0000f5",
-                          border:"#ff000025",
+                          color: "#ff0000f5",
+                          border: "#ff000025",
                         }}
-                        >
-                        <i className="bx bx-trash" />                      
+                      >
+                        <i className="bx bx-trash" />
                       </button>
                     </div>
                   </td>
@@ -800,7 +800,7 @@ function AdminAirportsInner() {
                   </h3>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الاسم العربي للمطار *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الاسم العربي للمطار *</label>
                       <input
                         type="text"
                         required
@@ -811,7 +811,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الاسم الإنجليزي للمطار *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الاسم الإنجليزي للمطار *</label>
                       <input
                         type="text"
                         required
@@ -825,7 +825,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كود IATA (3 حروف) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>كود IATA (3 حروف) *</label>
                       <input
                         type="text"
                         required
@@ -837,7 +837,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كود ICAO (4 حروف)</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>كود ICAO (4 حروف)</label>
                       <input
                         type="text"
                         placeholder="مثال: HECA"
@@ -848,7 +848,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>نوع المطار (عربي) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>نوع المطار (عربي) *</label>
                       <input
                         type="text"
                         required
@@ -863,7 +863,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>نوع المطار (إنجليزي) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>نوع المطار (إنجليزي) *</label>
                       <input
                         type="text"
                         required
@@ -875,7 +875,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المطار</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المطار</label>
                       <select
                         value={formData.status || "active"}
                         onChange={e => setFormData({ ...formData, status: e.target.value })}
@@ -903,7 +903,7 @@ function AdminAirportsInner() {
                   </h3>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة (عربي) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة (عربي) *</label>
                       <input
                         type="text"
                         required
@@ -914,7 +914,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة (إنجليزي) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة (إنجليزي) *</label>
                       <input
                         type="text"
                         required
@@ -928,7 +928,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدينة (عربي) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدينة (عربي) *</label>
                       <input
                         type="text"
                         required
@@ -939,7 +939,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدينة (إنجليزي) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدينة (إنجليزي) *</label>
                       <input
                         type="text"
                         required
@@ -953,7 +953,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المنطقة الجغرافية *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المنطقة الجغرافية *</label>
                       <input
                         type="text"
                         required
@@ -965,7 +965,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>العنوان التفصيلي للمطار *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>العنوان التفصيلي للمطار *</label>
                       <input
                         type="text"
                         required
@@ -980,7 +980,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>خط العرض (Latitude) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>خط العرض (Latitude) *</label>
                       <input
                         type="number"
                         step="0.000001"
@@ -993,7 +993,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>خط الطول (Longitude) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>خط الطول (Longitude) *</label>
                       <input
                         type="number"
                         step="0.000001"
@@ -1021,7 +1021,7 @@ function AdminAirportsInner() {
                     <span>الوصف والبيانات اللوجستية</span>
                   </h3>
                   <div style={{ marginBottom: "12px" }}>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوصف القصير *</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوصف القصير *</label>
                     <input
                       type="text"
                       required
@@ -1033,7 +1033,7 @@ function AdminAirportsInner() {
                     />
                   </div>
                   <div>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوصف التفصيلي الكامل *</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الوصف التفصيلي الكامل *</label>
                     <textarea
                       required
                       placeholder="تفاصيل تاريخية، سعة ركاب، أو دور المطار استراتيجياً..."
@@ -1059,7 +1059,7 @@ function AdminAirportsInner() {
                   </h3>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px", color: "#ffffffff" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px",color: "#ffffffff" }}>عدد مباني الركاب (العدد الكلي) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px", color: "#ffffffff" }}>عدد مباني الركاب (العدد الكلي) *</label>
                       <input
                         type="text"
                         required
@@ -1071,7 +1071,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الطاقة الاستيعابية السنوية *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الطاقة الاستيعابية السنوية *</label>
                       <input
                         type="text"
                         required
@@ -1086,7 +1086,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>عدد مدارج الهبوط والإقلاع *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>عدد مدارج الهبوط والإقلاع *</label>
                       <input
                         type="text"
                         required
@@ -1098,7 +1098,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>طول المدارج *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>طول المدارج *</label>
                       <input
                         type="text"
                         required
@@ -1112,7 +1112,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>تفاصيل مباني الركاب والصالات</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>تفاصيل مباني الركاب والصالات</label>
                     <textarea
                       placeholder="تفصيل بأسماء صالة 1 وصالة 2 والصالة الموسمية..."
                       value={formData.terminals || ""}
@@ -1137,7 +1137,7 @@ function AdminAirportsInner() {
                   </h3>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>حركة الرحلات الداخلية *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حركة الرحلات الداخلية *</label>
                       <input
                         type="text"
                         required
@@ -1149,7 +1149,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>حركة الرحلات الدولية *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حركة الرحلات الدولية *</label>
                       <input
                         type="text"
                         required
@@ -1163,7 +1163,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div style={{ marginBottom: "12px" }}>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>شركات الطيران العاملة بالمطار</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>شركات الطيران العاملة بالمطار</label>
                     <textarea
                       placeholder="مصر للطيران، طيران الإمارات، فلاي دبي..."
                       value={formData.airlines || ""}
@@ -1174,7 +1174,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div style={{ marginBottom: "12px" }}>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>أبرز الوجهات والخطوط</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>أبرز الوجهات والخطوط</label>
                     <input
                       type="text"
                       placeholder="جدة، دبي، لندن، باريس..."
@@ -1186,7 +1186,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدن المرتبطة بالمطار (افصل بفاصلة)</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المدن المرتبطة بالمطار (افصل بفاصلة)</label>
                     <input
                       type="text"
                       placeholder="شرم الشيخ, الغردقة, القاهرة..."
@@ -1212,7 +1212,7 @@ function AdminAirportsInner() {
                   </h3>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>هواتف الاستعلامات الرسمية *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>هواتف الاستعلامات الرسمية *</label>
                       <input
                         type="text"
                         required
@@ -1224,7 +1224,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الموقع الإلكتروني الرسمي</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الموقع الإلكتروني الرسمي</label>
                       <input
                         type="url"
                         placeholder="https://..."
@@ -1238,7 +1238,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "12px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>مواقف السيارات وتفاصيلها *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>مواقف السيارات وتفاصيلها *</label>
                       <input
                         type="text"
                         required
@@ -1250,7 +1250,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>رابط موقع جوجل مابز (Map URL) *</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>رابط موقع جوجل مابز (Map URL) *</label>
                       <input
                         type="url"
                         required
@@ -1263,7 +1263,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div style={{ marginBottom: "12px" }}>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>وسائل النقل والمواصلات المتاحة (افصل بفاصلة) *</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>وسائل النقل والمواصلات المتاحة (افصل بفاصلة) *</label>
                     <input
                       type="text"
                       required
@@ -1276,7 +1276,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div style={{ marginBottom: "12px" }}>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>أقرب معالم سياحية أو جغرافية (افصل بفاصلة)</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>أقرب معالم سياحية أو جغرافية (افصل بفاصلة)</label>
                     <input
                       type="text"
                       placeholder="قصر البارون, سيتي ستارز, مصر الجديدة..."
@@ -1288,7 +1288,7 @@ function AdminAirportsInner() {
                   </div>
 
                   <div style={{ marginBottom: "12px" }}>
-                    <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الخدمات والتسهيلات المتوفرة (افصل بفاصلة) *</label>
+                    <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الخدمات والتسهيلات المتوفرة (افصل بفاصلة) *</label>
                     <input
                       type="text"
                       required
@@ -1302,7 +1302,7 @@ function AdminAirportsInner() {
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالعربي (افصل بفاصلة)</label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالعربي (افصل بفاصلة)</label>
                       <input
                         type="text"
                         placeholder="مطار القاهرة, مطار القاهرة الدولي, مطار مصر..."
@@ -1313,7 +1313,7 @@ function AdminAirportsInner() {
                       />
                     </div>
                     <div>
-                      <label className={clsx("help-label","text-white-100")} style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالإنجليزي </label>
+                      <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>كلمات البحث الدلالية بالإنجليزي </label>
                       <input
                         type="text"
                         placeholder="Cairo Airport, CAI, HECA..."

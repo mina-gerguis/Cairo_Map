@@ -275,10 +275,10 @@ function AdminMonorailInner() {
         });
         setSuccess("تم تعديل السجل بنجاح محلياً (LocalStorage).");
       } else {
-        const newRecord = { 
-          id: Math.random().toString(36).substr(2, 9), 
+        const newRecord = {
+          id: Math.random().toString(36).substr(2, 9),
           ...payload,
-          created_at: new Date().toISOString() 
+          created_at: new Date().toISOString()
         };
         currentLocal = [newRecord, ...currentLocal];
         setSuccess("تم إضافة السجل بنجاح محلياً (LocalStorage).");
@@ -360,7 +360,7 @@ function AdminMonorailInner() {
 
   return (
     <div className={styles.adminShell} style={{ direction: "rtl", textAlign: "right" }}>
-      
+
       {/* Upper Status/Welcome banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
@@ -402,22 +402,22 @@ function AdminMonorailInner() {
       )}
 
       {/* Search Input bar */}
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center", 
-        marginBottom: "20px", 
-        flexWrap: "wrap", 
-        gap: "16px" 
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px",
+        flexWrap: "wrap",
+        gap: "16px"
       }}>
         <div style={{ position: "relative", width: "100%", maxWidth: "450px" }}>
-          <i className="bx bx-search" style={{ 
-            position: "absolute", 
-            right: "16px", 
-            top: "50%", 
-            transform: "translateY(-50%)", 
-            color: "var(--text-muted, #94a3b8)", 
-            fontSize: "1.2rem" 
+          <i className="bx bx-search" style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--text-muted, #94a3b8)",
+            fontSize: "1.2rem"
           }} />
           <input
             type="text"
@@ -425,9 +425,9 @@ function AdminMonorailInner() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="ios-input"
-            style={{ 
-              width: "100%", 
-              paddingRight: "44px", 
+            style={{
+              width: "100%",
+              paddingRight: "44px",
               borderRadius: "12px",
               height: "46px",
               fontSize: "0.95rem",
@@ -457,7 +457,7 @@ function AdminMonorailInner() {
 
       {/* Segmented Line Control & Visual View */}
       <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginBottom: "32px" }}>
-        
+
         {/* Segmented Line Control */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", background: "var(--bg-glass)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(10px)", padding: "12px 20px", borderRadius: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
@@ -477,7 +477,7 @@ function AdminMonorailInner() {
                     borderRadius: "10px",
                     fontSize: "0.82rem",
                     fontWeight: "800",
-                    fontFamily:"var(--font-body)",
+                    fontFamily: "var(--font-body)",
                     cursor: "pointer",
                     transition: "all 0.25s ease",
                     border: "1px solid",
@@ -573,7 +573,7 @@ function AdminMonorailInner() {
                           )}
                         </div>
                       </td>
-                      <td className={styles.adminTd} style={{ width:"10%" }}>
+                      <td className={styles.adminTd} style={{ width: "10%" }}>
                         <span style={{
                           fontSize: "0.75rem",
                           background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.12)" : "rgba(16, 185, 129, 0.12)"),
@@ -654,7 +654,7 @@ function AdminMonorailInner() {
             boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
             overflow: "hidden"
           }}>
-            
+
             <div style={{
               display: "flex",
               justifyContent: "space-between",
@@ -684,9 +684,9 @@ function AdminMonorailInner() {
             </div>
 
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
-              
+
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
                 <input
                   type="text"
                   required
@@ -698,7 +698,7 @@ function AdminMonorailInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المسار / الخط *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المسار / الخط *</label>
                 <select
                   value={formData.line_type || "east"}
                   onChange={e => setFormData({ ...formData, line_type: e.target.value })}
@@ -711,7 +711,7 @@ function AdminMonorailInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في المسار *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في المسار *</label>
                 <input
                   type="number"
                   required
@@ -724,7 +724,7 @@ function AdminMonorailInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
                 <input
                   type="text"
                   placeholder="مثال: ستاد القاهرة الدولي, مسجد آل رشدان, نادي الزهور الرياضي"
@@ -736,7 +736,7 @@ function AdminMonorailInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
                 <select
                   value={formData.status || "تحت الإنشاء"}
                   onChange={e => setFormData({ ...formData, status: e.target.value })}

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -40,7 +40,7 @@ export default function AdminReportsPage() {
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
 
   // App Suggestions & Bugs State
-  const [activeReportTab, setActiveReportTab] = useState<"places" | "app" | "contacts">("places");
+  const [activeReportTab, setActiveReportTab] = useState<"places" | "app" | "contacts" | "microbus">("places");
   const [appFeedbacks, setAppFeedbacks] = useState<any[]>([]);
   const [loadingAppFeedbacks, setLoadingAppFeedbacks] = useState(true);
   const [appStatusFilter, setAppStatusFilter] = useState<string>("all");
@@ -51,6 +51,10 @@ export default function AdminReportsPage() {
   const [contactMessages, setContactMessages] = useState<any[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [contactStatusFilter, setContactStatusFilter] = useState<string>("all");
+
+  // Microbus Reports State
+  const [microbusReports, setMicrobusReports] = useState<any[]>([]);
+  const [loadingMicrobus, setLoadingMicrobus] = useState(true);
 
   // Admin Reply Inputs
   const [replyText, setReplyText] = useState("");
@@ -89,6 +93,7 @@ export default function AdminReportsPage() {
           fetchReports();
           fetchAppFeedbacks();
           fetchContactMessages();
+          fetchMicrobusReports();
         }
       } catch (error) {
         setIsAdmin(false);
@@ -289,6 +294,70 @@ export default function AdminReportsPage() {
       setActionStatus(`خطأ: ${err.message}`);
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const fetchMicrobusReports = async () => {
+    if (!supabase) return;
+    setLoadingMicrobus(true);
+    try {
+      const { data, error } = await supabase
+        .from("route_interactions")
+        .select("*")
+        .eq("interaction_type", "report")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Resolve user profiles
+        const userIds = Array.from(new Set(data.map(r => r.user_id).filter(Boolean)));
+        let profilesMap = new Map();
+        if (userIds.length > 0) {
+          const { data: profilesData } = await supabase
+            .from("profiles")
+            .select("id, full_name, email, phone, username")
+            .in("id", userIds);
+          if (profilesData) {
+            profilesMap = new Map(profilesData.map(p => [p.id, p]));
+          }
+        }
+
+        const mapped = data.map(item => ({
+          ...item,
+          user_profile: profilesMap.get(item.user_id) || null
+        }));
+
+        setMicrobusReports(mapped);
+      } else {
+        setMicrobusReports([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch microbus reports:", err);
+    } finally {
+      setLoadingMicrobus(false);
+    }
+  };
+
+  const handleDeleteMicrobusReport = async (reportId: string) => {
+    if (!supabase) return;
+    if (!window.confirm("هل أنت متأكد من رغبتك في حذف هذا البلاغ؟")) return;
+
+    try {
+      const { error } = await supabase
+        .from("route_interactions")
+        .delete()
+        .eq("id", reportId);
+
+      if (error) {
+        alert("فشل حذف البلاغ.");
+      } else {
+        alert("تم حذف البلاغ بنجاح.");
+        setMicrobusReports(prev => prev.filter(r => r.id !== reportId));
+      }
+    } catch (err) {
+      console.error("Failed to delete microbus report:", err);
+      alert("حدث خطأ غير متوقع.");
     }
   };
 
@@ -583,6 +652,29 @@ export default function AdminReportsPage() {
           }}
         >
           التواصل ({contactMessages.length})
+        </button>
+        <button
+          onClick={() => {
+            setActiveReportTab("microbus");
+            setActiveReportId(null);
+            setReplyText("");
+            setActionStatus("");
+          }}
+          style={{
+            flex: 1,
+            padding: "10px 16px",
+            borderRadius: "10px",
+            border: "none",
+            background: activeReportTab === "microbus" ? "var(--accent-primary)" : "transparent",
+            color: activeReportTab === "microbus" ? "#fff" : "var(--text-secondary)",
+            fontWeight: "bold",
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            transition: "all 0.2s",
+            fontFamily: "var(--font-body)"
+          }}
+        >
+          مواقف السرفيس ({microbusReports.length})
         </button>
       </div>
 
@@ -1569,6 +1661,172 @@ export default function AdminReportsPage() {
             </div>
           )}
         </>
+      )}
+
+      {activeReportTab === "microbus" && (
+        <div style={{ animation: "fadeIn 0.3s ease-out" }}>
+          {loadingMicrobus ? (
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <div style={{ width: "30px", height: "30px", border: "3px solid var(--border-glass)", borderTopColor: "var(--accent-primary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+              <span>جاري تحميل بلاغات السرفيس...</span>
+            </div>
+          ) : microbusReports.length > 0 ? (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px" }}>
+              {microbusReports.map((report) => {
+                const isExpanded = activeReportId === report.id;
+                let reasonLabel = "غير محدد";
+                if (report.report_reason === "fare") reasonLabel = "💰 الأجرة / التعرفة غير صحيحة";
+                else if (report.report_reason === "via") reasonLabel = "🛣️ خط السير / المناطق غير دقيقة";
+                else if (report.report_reason === "location") reasonLabel = "📍 مكان الموقف غير صحيح";
+                else if (report.report_reason === "other") reasonLabel = "📝 أخرى";
+
+                return (
+                  <div key={report.id} style={{
+                    background: "rgba(255, 255, 255, 0.02)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "12px",
+                    padding: "16px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                    transition: "all 0.2s"
+                  }}>
+                    {/* Header: Station & Route */}
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", alignItems: "flex-start" }}>
+                      <div>
+                        <h4 style={{ margin: "0 0 4px 0", color: "var(--text-primary)", fontSize: "1rem", fontWeight: "bold" }}>
+                          🚌 {report.station_name}
+                        </h4>
+                        <span style={{ fontSize: "0.85rem", color: "var(--accent-primary)", fontWeight: "bold" }}>
+                          🔀 الخط المتجه إلى: {report.route_destination}
+                        </span>
+                      </div>
+                      <span style={{
+                        fontSize: "0.75rem",
+                        padding: "4px 10px",
+                        borderRadius: "20px",
+                        background: "rgba(245, 158, 11, 0.1)",
+                        color: "#f59e0b",
+                        border: "1px solid rgba(245, 158, 11, 0.2)",
+                        fontWeight: "bold"
+                      }}>
+                        {reasonLabel}
+                      </span>
+                    </div>
+
+                    {/* Report Comments */}
+                    {report.comment && (
+                      <div style={{
+                        background: "rgba(255, 255, 255, 0.01)",
+                        borderRight: "3px solid #f59e0b",
+                        padding: "8px 12px",
+                        borderRadius: "4px",
+                        fontSize: "0.85rem",
+                        color: "var(--text-secondary)",
+                        lineHeight: "1.5"
+                      }}>
+                        <strong>تعليق العضو:</strong> {report.comment}
+                      </div>
+                    )}
+
+                    {/* Reporter Info (Click to toggle) */}
+                    <div>
+                      <button
+                        onClick={() => setActiveReportId(isExpanded ? null : report.id)}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "var(--accent-primary)",
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          fontWeight: "bold",
+                          padding: 0
+                        }}
+                      >
+                        <i className={`bx bx-chevron-${isExpanded ? "up" : "down"}`}></i>
+                        <span>{isExpanded ? "إخفاء بيانات صاحب البلاغ" : "عرض بيانات صاحب البلاغ"}</span>
+                      </button>
+
+                      {isExpanded && (
+                        <div style={{
+                          marginTop: "8px",
+                          background: "rgba(255, 255, 255, 0.01)",
+                          border: "1px solid var(--border-glass)",
+                          borderRadius: "8px",
+                          padding: "10px 12px",
+                          fontSize: "0.8rem",
+                          color: "var(--text-secondary)",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "4px",
+                          animation: "fadeIn 0.2s ease-out"
+                        }}>
+                          <div>👤 <strong>الاسم الكامل:</strong> {report.user_profile?.full_name || "غير متوفر"}</div>
+                          <div>📧 <strong>البريد الإلكتروني:</strong> {report.user_profile?.email || "غير متوفر"}</div>
+                          <div>📞 <strong>رقم الهاتف:</strong> {report.user_profile?.phone || "غير متوفر"}</div>
+                          <div>📅 <strong>تاريخ البلاغ:</strong> {new Date(report.created_at).toLocaleString("ar-EG")}</div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", borderTop: "1px solid var(--border-glass)", paddingTop: "12px", marginTop: "4px" }}>
+                      <button
+                        onClick={() => handleDeleteMicrobusReport(report.id)}
+                        style={{
+                          padding: "6px 12px",
+                          borderRadius: "8px",
+                          background: "rgba(239, 68, 68, 0.1)",
+                          border: "1px solid rgba(239, 68, 68, 0.2)",
+                          color: "#ef4444",
+                          fontSize: "0.8rem",
+                          fontWeight: "bold",
+                          cursor: "pointer",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        🗑️ حذف البلاغ
+                      </button>
+                      <Link
+                        href="/microbus-stations"
+                        target="_blank"
+                        style={{
+                          padding: "6px 12px",
+                          borderRadius: "8px",
+                          background: "rgba(255, 255, 255, 0.04)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
+                          fontSize: "0.8rem",
+                          fontWeight: "bold",
+                          textDecoration: "none",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px"
+                        }}
+                      >
+                        🔗 معاينة الصفحة
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{
+              backgroundColor: "rgba(255, 255, 255, 0.02)",
+              border: "1px solid var(--border-glass)",
+              borderRadius: "12px",
+              padding: "40px",
+              textAlign: "center",
+              color: "var(--text-secondary)"
+            }}>
+              لا توجد بلاغات معلقة بخصوص مواقف السرفيس.
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

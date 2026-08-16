@@ -21,70 +21,70 @@ const DEFAULT_LRT: any[] = [
 ];
 
 export const STATION_DETAILS: Record<string, { landmarks: string[]; type: string; status: "تشغيل فعلي" | "تحت الإنشاء" }> = {
-  "عدلي منصور": { 
-    landmarks: ["محطة عدلي منصور التبادلية", "موقف سوبر جيت", "طريق مصر الإسماعيلية الصحراوي", "الخط الثالث للمترو"], 
-    type: "تبادلية مع الخط الثالث للمترو ومحطة السكك الحديدية و الاتوبيس الترددي 🚇", 
-    status: "تشغيل فعلي" 
+  "عدلي منصور": {
+    landmarks: ["محطة عدلي منصور التبادلية", "موقف سوبر جيت", "طريق مصر الإسماعيلية الصحراوي", "الخط الثالث للمترو"],
+    type: "تبادلية مع الخط الثالث للمترو ومحطة السكك الحديدية و الاتوبيس الترددي 🚇",
+    status: "تشغيل فعلي"
   },
-  "العبور": { 
-    landmarks: ["مدينة العبور الجولف", "جامعة بنها فرع العبور", "طريق مصر الإسماعيلية", "سوق العبور"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "العبور": {
+    landmarks: ["مدينة العبور الجولف", "جامعة بنها فرع العبور", "طريق مصر الإسماعيلية", "سوق العبور"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "المستقبل": { 
-    landmarks: ["مدينة المستقبل السكنية", "طريق الإسماعيلية الصحراوي"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "المستقبل": {
+    landmarks: ["مدينة المستقبل السكنية", "طريق الإسماعيلية الصحراوي"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "الشروق": { 
-    landmarks: ["المدخل الرئيسي لمدينة الشروق", "الجامعة البريطانية في مصر (BUE)", "أكاديمية الشروق", "نادي هليوبوليس الرياضي"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "الشروق": {
+    landmarks: ["المدخل الرئيسي لمدينة الشروق", "الجامعة البريطانية في مصر (BUE)", "أكاديمية الشروق", "نادي هليوبوليس الرياضي"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "هليوبوليس الجديدة": { 
-    landmarks: ["مدينة هليوبوليس الجديدة", "طريق السويس الصحراوي"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "هليوبوليس الجديدة": {
+    landmarks: ["مدينة هليوبوليس الجديدة", "طريق السويس الصحراوي"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "بدر": { 
-    landmarks: ["محطة بدر التبادلية", "مدينة بدر السكنية", "طريق الروبيكي", "منطقة الصناعات المتوسطة"], 
-    type: "محطة تفريعة المسارين 🔀", 
-    status: "تشغيل فعلي" 
+  "بدر": {
+    landmarks: ["محطة بدر التبادلية", "مدينة بدر السكنية", "طريق الروبيكي", "منطقة الصناعات المتوسطة"],
+    type: "محطة تفريعة المسارين 🔀",
+    status: "تشغيل فعلي"
   },
-  "الروبيكي": { 
-    landmarks: ["مدينة الروبيكي للجلود", "المنطقة الصناعية بالروبيكي"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "الروبيكي": {
+    landmarks: ["مدينة الروبيكي للجلود", "المنطقة الصناعية بالروبيكي"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "حدائق العاصمة": { 
-    landmarks: ["مدينة حدائق العاصمة السكنية", "سكن لكل المصريين"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "حدائق العاصمة": {
+    landmarks: ["مدينة حدائق العاصمة السكنية", "سكن لكل المصريين"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "مطار العاصمة": { 
-    landmarks: ["مطار العاصمة الإدارية الدولي", "منطقة المطار الإدارية"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "مطار العاصمة": {
+    landmarks: ["مطار العاصمة الإدارية الدولي", "منطقة المطار الإدارية"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "مدينة الفنون والثقافة": { 
-    landmarks: ["مدينة الفنون والثقافة بالعاصمة", "النهر الأخضر", "دار الأوبرا الجديدة", "فندق الماسة", "محطة المونوريل"], 
-    type: "تبادلية مع المونوريل 🚄", 
-    status: "تشغيل فعلي" 
+  "مدينة الفنون والثقافة": {
+    landmarks: ["مدينة الفنون والثقافة بالعاصمة", "النهر الأخضر", "دار الأوبرا الجديدة", "فندق الماسة", "محطة المونوريل"],
+    type: "تبادلية مع المونوريل 🚄",
+    status: "تشغيل فعلي"
   },
-  "المنطقة الصناعية": { 
-    landmarks: ["المنطقة الصناعية بالعاشر من رمضان", "طريق بلبيس العاشر"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "المنطقة الصناعية": {
+    landmarks: ["المنطقة الصناعية بالعاشر من رمضان", "طريق بلبيس العاشر"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "مدينة المعرفة": { 
-    landmarks: ["مدينة المعرفة بالعاشر من رمضان", "جامعة سنجور", "مراكز البحوث والابتكار", "المعهد التكنولوجي العالي"], 
-    type: "عادية", 
-    status: "تشغيل فعلي" 
+  "مدينة المعرفة": {
+    landmarks: ["مدينة المعرفة بالعاشر من رمضان", "جامعة سنجور", "مراكز البحوث والابتكار", "المعهد التكنولوجي العالي"],
+    type: "عادية",
+    status: "تشغيل فعلي"
   },
-  "العاصمة المركزية": { 
-    landmarks: ["العاصمة المركزية"], 
-    type: "محطة تبادلية مخططة مع القطار الكهربائي السريع (العين السخنة–مطروح) 🚄", 
-    status: "تشغيل فعلي" 
+  "العاصمة المركزية": {
+    landmarks: ["العاصمة المركزية"],
+    type: "محطة تبادلية مخططة مع القطار الكهربائي السريع (العين السخنة–مطروح) 🚄",
+    status: "تشغيل فعلي"
   }
 };
 
@@ -123,7 +123,7 @@ export default function LrtPage() {
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin || 
+  const hasAccess = profile?.is_admin ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   useEffect(() => {
@@ -193,8 +193,8 @@ export default function LrtPage() {
   };
 
   const initializeSelectors = (stationList: any[]) => {
-    const main = stationList.filter(s => s.line_type === "trunk").sort((a,b) => a.station_order - b.station_order);
-    const cap = stationList.filter(s => s.line_type === "capital").sort((a,b) => a.station_order - b.station_order);
+    const main = stationList.filter(s => s.line_type === "trunk").sort((a, b) => a.station_order - b.station_order);
+    const cap = stationList.filter(s => s.line_type === "capital").sort((a, b) => a.station_order - b.station_order);
     if (main.length > 0) {
       setSelectedFrom(main[0].name);
       setFromQuery(main[0].name);
@@ -336,7 +336,7 @@ export default function LrtPage() {
       const maxTrunk = Math.max(pFrom.trunkIdx, LRT_MAIN_TRUNK.length - 1);
       const trunkPart = LRT_MAIN_TRUNK.slice(minTrunk, maxTrunk + 1);
       if (pFrom.trunkIdx > LRT_MAIN_TRUNK.length - 1) trunkPart.reverse();
-      
+
       const branchPart = branchList.slice(0, pTo.branchIdx + 1);
       stationsPath = [...trunkPart.slice(0, -1), "بدر", ...branchPart];
     }
@@ -394,7 +394,7 @@ export default function LrtPage() {
           animation: "spin 1s linear infinite",
           margin: "0 auto 24px"
         }} />
-        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من تفاصيل الاشتراك الفضي...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -445,13 +445,12 @@ export default function LrtPage() {
               fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
               color: "var(--text-primary)",
-              marginLeft: "10px",
               letterSpacing: "-0.5px",
             }}>
-              <span style={{ fontSize: "2rem", marginLeft: "10px" }}>🚄</span>
-              القطار الكهربائي LRT
+              <img src="/images/searchBar/Cairo_lrt.png" alt="Cairo Lrt" style={{ width: "35px", marginLeft: "10px" }} />
+              القطار الكهربائي
             </h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "10px auto", lineHeight: "1.6" }}>
               خريطة تفاعلية تفصيلية لشبكة القطار الكهربائي الخفيف الجديدة.
             </p>
           </div>
@@ -476,7 +475,7 @@ export default function LrtPage() {
             </div>
 
             <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
-              دليل القطار الكهربائي يتطلب الباقة الفضية
+              دليل القطار الكهربائي يتطلب أشتراك في الباقة الفضية
             </h2>
 
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
@@ -493,7 +492,7 @@ export default function LrtPage() {
               margin: "0 auto 32px",
               maxWidth: "440px"
             }}>
-              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية (40 ج.م/شهرياً):</div>
+              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية</div>
               <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ تصفح جميع محطات LRT (التفريعة الرئيسية وتفريعات العاصمة ورمضان)</li>
                 <li>✨ حساب أسعار التذاكر بناء على عدد المحطات تلقائياً</li>
@@ -506,20 +505,21 @@ export default function LrtPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
               {user ? (
                 <Link
-                  href="/profile"
+                  href="/profile?expand=subscription"
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
-                    color: "#fff",
+                    background: "var(--bg-subscribe-button-seliver)",
+                    color: "#000",
                     textDecoration: "none",
                     fontWeight: "bold",
-                    fontSize: "1.02rem",
-                    boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)",
+                    fontSize: "0.95rem",
+                    boxShadow: "var(--bs-subscribe-button-seliver)",
+                    border: "1px solid var(--br-subscribe-button-seliver)",
                     display: "block"
                   }}
                 >
-                  🚀 اشترك الآن ورقّ حسابك للفضية (40 ج.م)
+                  اشترك الآن في الباقة الفضية
                 </Link>
               ) : (
                 <Link
@@ -527,19 +527,19 @@ export default function LrtPage() {
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                    background: "var(--bg-subscribe-button-base)",
                     color: "#fff",
                     textDecoration: "none",
                     fontWeight: "bold",
-                    fontSize: "1.02rem",
-                    boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
+                    fontSize: "0.95rem",
+                    boxShadow: "var(--bs-subscribe-button-base)",
                     display: "block"
                   }}
                 >
-                  🔑 سجل دخولك أولاً لتفعيل الاشتراك
+                  سجل دخولك أولاً لتفعيل الاشتراك
                 </Link>
               )}
-              
+
               <Link
                 href="/"
                 style={{
@@ -557,7 +557,6 @@ export default function LrtPage() {
                 الرجوع للرئيسية
               </Link>
             </div>
-
           </div>
         </div>
       </div>
@@ -599,30 +598,6 @@ export default function LrtPage() {
         borderBottom: "1px solid var(--border-glass)",
         direction: "rtl"
       }}>
-        {/* Back Button */}
-        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-          <Link 
-            href="/" 
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              background: "var(--bg-glass-card)",
-              border: "1px solid var(--border-glass)",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-              transition: "transform 0.2s ease" 
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-          </Link>
-        </div>
-
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 style={{
             display: "flex",
@@ -652,7 +627,7 @@ export default function LrtPage() {
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
-            }}>الجذع الرئيسي (عدلي منصور - بدر)</span>
+            }}>عدلي منصور - بدر</span>
             <span style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
@@ -982,10 +957,6 @@ export default function LrtPage() {
             {/* Grid Summary Cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "10px", marginBottom: "20px" }}>
               <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
-                <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--accent-ios)" }}>{result.count}</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>محطات المرور</div>
-              </div>
-              <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
                 <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--accent-success)" }}>{result.price} ج.م</div>
                 <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>سعر التذكرة</div>
               </div>
@@ -1142,10 +1113,10 @@ export default function LrtPage() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", background: "var(--bg-secondary)", padding: "14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
               {result.stations.map((s: string, idx: number) => (
                 <React.Fragment key={s}>
-                  <span style={{ 
-                    padding: "6px 12px", 
-                    borderRadius: "20px", 
-                    background: idx === 0 || idx === result.stations.length - 1 ? "#06b6d4" : "var(--bg-primary)", 
+                  <span style={{
+                    padding: "6px 12px",
+                    borderRadius: "20px",
+                    background: idx === 0 || idx === result.stations.length - 1 ? "#06b6d4" : "var(--bg-primary)",
                     color: idx === 0 || idx === result.stations.length - 1 ? "#000" : "var(--text-primary)",
                     fontSize: "0.85rem",
                     fontWeight: "700",
@@ -1178,9 +1149,9 @@ export default function LrtPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px", marginBottom: "16px" }}>
             {[
               { id: "all", label: "الكل", color: "#818cf8" },
-              { id: "trunk", label: "الجذع الرئيسي", color: "#06b6d4" },
-              { id: "capital", label: "تفريعة العاصمة", color: "#a855f7" },
-              { id: "ramadan", label: "تفريعة العاشر", color: "#10b981" }
+              { id: "trunk", label: "الرئيسي", color: "#06b6d4" },
+              { id: "capital", label: "العاصمة", color: "#a855f7" },
+              { id: "ramadan", label: "العاشر", color: "#10b981" }
             ].map(tab => {
               const active = activeLine === tab.id;
               return (
@@ -1204,7 +1175,6 @@ export default function LrtPage() {
                   onMouseEnter={e => { if (!active) e.currentTarget.style.background = "var(--bg-glass-hover)"; }}
                   onMouseLeave={e => { if (!active) e.currentTarget.style.background = "var(--bg-primary)"; }}
                 >
-                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: tab.color, margin: "0 auto 6px" }} />
                   <div style={{ color: active ? "var(--text-primary)" : "var(--text-secondary)", fontWeight: "700", fontSize: "0.8rem", fontFamily: "var(--font-cairo)" }}>
                     {tab.label}
                   </div>
@@ -1235,32 +1205,31 @@ export default function LrtPage() {
 
             {/* Scrollable station timeline list */}
             <div style={{
-              maxHeight: "550px", overflowY: "auto", padding: "16px 16px 16px 36px",
-              background: "transparent", border: "1px solid var(--border-glass)",
-              borderRadius: "12px"
+              maxHeight: "550px", overflowY: "auto", padding: "16px 0px",
+              background: "transparent"
             }}>
               {(() => {
                 let stationsList: any[] = [];
                 const raw = stations.length > 0 ? stations : DEFAULT_LRT;
                 if (activeLine === "trunk") {
-                  stationsList = raw.filter(s => s.line_type === "trunk").sort((a,b) => a.station_order - b.station_order);
+                  stationsList = raw.filter(s => s.line_type === "trunk").sort((a, b) => a.station_order - b.station_order);
                 } else if (activeLine === "capital") {
-                  stationsList = raw.filter(s => s.line_type === "capital").sort((a,b) => a.station_order - b.station_order);
+                  stationsList = raw.filter(s => s.line_type === "capital").sort((a, b) => a.station_order - b.station_order);
                 } else if (activeLine === "ramadan") {
-                  stationsList = raw.filter(s => s.line_type === "ramadan").sort((a,b) => a.station_order - b.station_order);
+                  stationsList = raw.filter(s => s.line_type === "ramadan").sort((a, b) => a.station_order - b.station_order);
                 } else {
                   stationsList = [
-                    ...raw.filter(s => s.line_type === "trunk").sort((a,b) => a.station_order - b.station_order),
-                    ...raw.filter(s => s.line_type === "capital").sort((a,b) => a.station_order - b.station_order),
-                    ...raw.filter(s => s.line_type === "ramadan").sort((a,b) => a.station_order - b.station_order),
+                    ...raw.filter(s => s.line_type === "trunk").sort((a, b) => a.station_order - b.station_order),
+                    ...raw.filter(s => s.line_type === "capital").sort((a, b) => a.station_order - b.station_order),
+                    ...raw.filter(s => s.line_type === "ramadan").sort((a, b) => a.station_order - b.station_order),
                   ];
                 }
 
                 return stationsList.map((station, idx) => {
                   const isFirst = idx === 0;
                   const isLast = idx === stationsList.length - 1;
-                  
-                  let color = "#06b6d4"; 
+
+                  let color = "#06b6d4";
                   if (station.line_type === "capital") color = "#a855f7";
                   else if (station.line_type === "ramadan") color = "#10b981";
 
@@ -1276,7 +1245,7 @@ export default function LrtPage() {
 
                   return (
                     <div id={`station-${station.name}`} key={idx} style={{ display: "flex", flexDirection: "column", position: "relative" }}>
-                      
+
                       {/* Circle Node on the timeline */}
                       <div
                         style={{
@@ -1302,8 +1271,7 @@ export default function LrtPage() {
                           border: isExpanded ? `1px solid ${color}` : (details?.status === "تحت الإنشاء" ? `1px dashed ${color}50` : "1px solid var(--border-glass)"),
                           opacity: details?.status === "تحت الإنشاء" ? 0.75 : 1,
                           borderRadius: "8px",
-                          padding: "12px 16px",
-                          marginRight: "10px",
+                          padding: "12px 6px",
                           boxShadow: "var(--shadow-card)",
                           display: "flex",
                           flexDirection: "column",
@@ -1425,7 +1393,6 @@ export default function LrtPage() {
                           <div style={{ height: "14px" }} />
                         </div>
                       )}
-
                     </div>
                   );
                 });
@@ -1461,7 +1428,6 @@ export default function LrtPage() {
             • <strong style={{ color: "var(--accent-danger)" }}>13 محطة فأكثر:</strong> 25 جنيهاً.
           </div>
         </div>
-
       </div>
     </div>
   );

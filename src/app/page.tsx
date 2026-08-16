@@ -175,7 +175,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطار المونوريل",
     subtitle: "محطات وأسعار تذاكر المونوريل",
     href: "/monorail",
-    icon: "Cairo_monorail.png",
+    icon: "Cairo_monorail_east.png",
     badge: "قطار معلق",
     keywords: ["منورايل", "المنورايل", "قطار العاصمة", "العاصمة الادارية", "اكتوبر", "monorail"]
   },
@@ -419,10 +419,24 @@ export default function HomePage() {
 
   const hasResults = matchedServices.length > 0 || matchedPlaces.length > 0 || matchedCategories.length > 0;
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: React.FormEvent, forceFullSearch: boolean = false) => {
     e.preventDefault();
     setIsDropdownOpen(false);
     if (searchQuery.trim()) {
+      if (!forceFullSearch) {
+        if (matchedServices && matchedServices.length > 0) {
+          router.push(matchedServices[0].href);
+          return;
+        }
+        if (matchedPlaces && matchedPlaces.length > 0) {
+          router.push(`/places/${matchedPlaces[0].id}`);
+          return;
+        }
+        if (matchedCategories && matchedCategories.length > 0) {
+          router.push(`/places?category=${encodeURIComponent(matchedCategories[0].name)}`);
+          return;
+        }
+      }
       router.push(`/places?q=${encodeURIComponent(searchQuery.trim())}`);
     } else {
       router.push("/places");
@@ -592,7 +606,7 @@ export default function HomePage() {
             margin: "0 auto 28px auto",
             position: "relative"
           }}>
-            <form onSubmit={handleSearchSubmit}>
+            <form onSubmit={(e) => handleSearchSubmit(e, false)}>
               <div style={{
                 display: "flex",
                 alignItems: "center",
@@ -625,11 +639,7 @@ export default function HomePage() {
                   }}
                 />
                 <button
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setIsDropdownOpen(false);
-                  }}
+                  type="submit"
                   style={{
                     backgroundColor: "var(--accent-primary)",
                     color: "#fff",
@@ -849,7 +859,7 @@ export default function HomePage() {
                 {/* 4. FULL SEARCH BUTTON AT BOTTOM */}
                 <button
                   type="button"
-                  onClick={(e) => handleSearchSubmit(e)}
+                  onClick={(e) => handleSearchSubmit(e, true)}
                   style={{
                     width: "100%",
                     marginTop: "8px",

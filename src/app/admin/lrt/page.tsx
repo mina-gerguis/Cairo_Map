@@ -332,7 +332,7 @@ function AdminLrtInner() {
 
   return (
     <div className={styles.adminShell} style={{ direction: "rtl", textAlign: "right" }}>
-      
+
       {/* Top Banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
@@ -373,22 +373,22 @@ function AdminLrtInner() {
       )}
 
       {/* Search Input bar */}
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center", 
-        marginBottom: "20px", 
-        flexWrap: "wrap", 
-        gap: "16px" 
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px",
+        flexWrap: "wrap",
+        gap: "16px"
       }}>
         <div style={{ position: "relative", width: "100%", maxWidth: "450px" }}>
-          <i className="bx bx-search" style={{ 
-            position: "absolute", 
-            right: "16px", 
-            top: "50%", 
-            transform: "translateY(-50%)", 
-            color: "var(--text-muted, #94a3b8)", 
-            fontSize: "1.2rem" 
+          <i className="bx bx-search" style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--text-muted, #94a3b8)",
+            fontSize: "1.2rem"
           }} />
           <input
             type="text"
@@ -396,9 +396,9 @@ function AdminLrtInner() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="ios-input"
-            style={{ 
-              width: "100%", 
-              paddingRight: "44px", 
+            style={{
+              width: "100%",
+              paddingRight: "44px",
               borderRadius: "12px",
               height: "46px",
               fontSize: "0.95rem",
@@ -409,7 +409,7 @@ function AdminLrtInner() {
         </div>
 
         <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
-            إجمالي المحطات: {filteredRows.length}
+          إجمالي المحطات: {filteredRows.length}
         </div>
       </div>
 
@@ -427,7 +427,7 @@ function AdminLrtInner() {
 
       {/* Segmented Line Control & Visual View */}
       <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginBottom: "32px" }}>
-        
+
         {/* Segmented Line Control */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", backdropFilter: "blur(10px)", padding: "12px 20px", borderRadius: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
@@ -546,7 +546,7 @@ function AdminLrtInner() {
                           )}
                         </div>
                       </td>
-                      <td className={styles.adminTd} style={{ width:"10%" }}>
+                      <td className={styles.adminTd} style={{ width: "10%" }}>
                         <span style={{
                           fontSize: "0.75rem",
                           background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : "rgba(16, 185, 129, 0.12)",
@@ -627,7 +627,7 @@ function AdminLrtInner() {
             boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
             overflow: "hidden"
           }}>
-            
+
             <div style={{
               display: "flex",
               justifyContent: "space-between",
@@ -657,9 +657,9 @@ function AdminLrtInner() {
             </div>
 
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
-              
+
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
                 <input
                   type="text"
                   required
@@ -671,12 +671,12 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المسار / الخط *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المسار / الخط *</label>
                 <select
                   value={formData.line_type || "trunk"}
                   onChange={e => setFormData({ ...formData, line_type: e.target.value })}
                   className="ios-input"
-                  
+
                 >
                   <option value="trunk">الجذع الرئيسي (عدلي منصور - بدر)</option>
                   <option value="capital">تفريعة العاصمة (بدر - الفنون)</option>
@@ -685,8 +685,8 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في المسار *</label>
-                <input  
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في المسار *</label>
+                <input
                   type="number"
                   required
                   min={1}
@@ -698,8 +698,8 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
-                <input  
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
+                <input
                   type="text"
                   placeholder="مثال: مدينة المعرفة، جامعة السويدي"
                   value={formData.landmarks || ""}
@@ -710,7 +710,7 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
                 <select
                   value={formData.status || "تشغيل فعلي"}
                   onChange={e => setFormData({ ...formData, status: e.target.value })}

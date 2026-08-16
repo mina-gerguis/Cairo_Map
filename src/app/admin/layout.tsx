@@ -66,7 +66,7 @@ export default function AdminLayout({
           { label: "إدارة القطار الكهربائي LRT", href: "/admin/lrt", category: "خدمة موقع", icon: "bx bx-train" },
           { label: "إدارة مترو الأنفاق", href: "/admin/metro", category: "خدمة موقع", icon: "bx bxs-train" },
           { label: "إدارة سكك حديد مصر", href: "/admin/railways", category: "خدمة موقع", icon: "bx bx-train" },
-          { label: "إدارة مواقف السرفيس", href: "/admin/services?tab=microbus_stations", category: "خدمة موقع", icon: "bx bx-map-pin" },
+          { label: "إدارة مواقف السرفيس", href: "/admin/microbus-stations", category: "خدمة موقع", icon: "bx bx-map-pin" },
           { label: "إدارة الأتوبيسات وسوبرجيت", href: "/admin/bus-stations", category: "خدمة موقع", icon: "bx bx-bus" },
           { label: "إدارة دليل الهواتف والأكواد", href: "/admin/directory", category: "خدمة موقع", icon: "bx bx-phone-call" },
           { label: "إدارة خطوط المواصلات والاتجاهات", href: "/admin/services?tab=directions", category: "خدمة موقع", icon: "bx bx-git-compare" }
@@ -130,7 +130,7 @@ export default function AdminLayout({
       setActiveSubTab(params.get("tab"));
     }
 
-    if (pathname === "/admin/places" || pathname.startsWith("/admin/services") || pathname === "/admin/airports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations") {
+    if (pathname === "/admin/places" || pathname.startsWith("/admin/services") || pathname === "/admin/airports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations") {
       setIsServicesDropdownOpen(true);
     }
   }, [pathname]);
@@ -235,6 +235,7 @@ export default function AdminLayout({
   else if (pathname === "/admin/metro") pageTitle = "إدارة مترو الأنفاق";
   else if (pathname === "/admin/railways") pageTitle = "إدارة سكك حديد مصر";
   else if (pathname === "/admin/bus-stations") pageTitle = "إدارة الأتوبيسات (سوبرجيت)";
+  else if (pathname === "/admin/microbus-stations") pageTitle = "إدارة مواقف السرفيس";
   else if (pathname === "/admin/services") {
     if (activeSubTab === "ports") pageTitle = "إدارة الموانئ";
     else pageTitle = "إدارة الخدمات";
@@ -442,11 +443,10 @@ export default function AdminLayout({
 
             {/* المواقف سرفيس */}
             <Link
-              href="/admin/services?tab=microbus_stations"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "microbus_stations" ? styles.sidebarNavLinkActive : ""
-                }`}
+              href="/admin/microbus-stations"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/microbus-stations" ? styles.sidebarNavLinkActive : ""}`}
               onClick={() => {
-                setActiveSubTab("microbus_stations");
+                setActiveSubTab(null);
                 if (isMobile) setIsSidebarOpen(false);
               }}
             >

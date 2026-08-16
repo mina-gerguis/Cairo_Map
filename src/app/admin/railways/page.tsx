@@ -576,9 +576,9 @@ function AdminRailwaysInner() {
     return <div style={{ padding: "2rem", color: "var(--text-secondary)", textAlign: "center" }}>جاري تحميل البيانات...</div>;
   }
 
-  const filteredLines = routes.filter(r => 
-    r.name.includes(searchQuery) || 
-    r.from.includes(searchQuery) || 
+  const filteredLines = routes.filter(r =>
+    r.name.includes(searchQuery) ||
+    r.from.includes(searchQuery) ||
     r.to.includes(searchQuery)
   );
 
@@ -623,7 +623,7 @@ function AdminRailwaysInner() {
             direction: "ltr",
             textAlign: "left"
           }}>
-{`CREATE TABLE IF NOT EXISTS public.railway_routes (
+            {`CREATE TABLE IF NOT EXISTS public.railway_routes (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     from_location TEXT NOT NULL,
@@ -934,7 +934,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
 
             <form onSubmit={handleSaveLine} style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
               <div>
-                <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>كود معرف الخط (مثال: cairo-suez) *</label>
+                <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>كود معرف الخط (مثال: cairo-suez) *</label>
                 <input
                   type="text"
                   required
@@ -947,7 +947,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               </div>
 
               <div>
-                <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>اسم الخط الكامل *</label>
+                <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>اسم الخط الكامل *</label>
                 <input
                   type="text"
                   required
@@ -961,7 +961,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
-                  <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>محطة القيام *</label>
+                  <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>محطة القيام *</label>
                   <input
                     type="text"
                     required
@@ -972,7 +972,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                   />
                 </div>
                 <div>
-                  <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>محطة النهاية *</label>
+                  <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>محطة النهاية *</label>
                   <input
                     type="text"
                     required
@@ -985,7 +985,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               </div>
 
               <div>
-                <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>متوسط زمن الرحلة *</label>
+                <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>متوسط زمن الرحلة *</label>
                 <input
                   type="text"
                   required
@@ -998,7 +998,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               </div>
 
               <div>
-                <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>نصيحة الموقع لمستخدمي الخط</label>
+                <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>نصيحة الموقع لمستخدمي الخط</label>
                 <textarea
                   value={lineForm.tips}
                   onChange={e => setLineForm({ ...lineForm, tips: e.target.value })}
@@ -1053,7 +1053,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
 
             <form onSubmit={handleSaveStation} style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
               <div>
-                <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>اسم محطة التوقف *</label>
+                <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>اسم محطة التوقف *</label>
                 <input
                   type="text"
                   required
@@ -1065,7 +1065,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               </div>
 
               <div>
-                <label className="help-label text-white-100" style={{ display: "block", marginBottom: "6px" }}>حالة المحطة والتشغيل *</label>
+                <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>حالة المحطة والتشغيل *</label>
                 <select
                   value={stationForm.status}
                   onChange={e => setStationForm({ ...stationForm, status: e.target.value as "تشغيل فعلي" | "تحت الإنشاء" })}

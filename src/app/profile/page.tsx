@@ -481,6 +481,32 @@ export default function ProfilePage() {
     }
   }, [user, authLoading]);
 
+  // Check on mount and on location change to show subscription modal
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const checkSubscriptionParam = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("expand") === "subscription" || window.location.hash === "#subscription") {
+        setShowSubModal(true);
+      }
+    };
+
+    // Run immediately
+    checkSubscriptionParam();
+
+    // Also run after a short delay to account for hydration / client-side router delay
+    const timer = setTimeout(checkSubscriptionParam, 300);
+
+    // Listen for hash changes
+    window.addEventListener("hashchange", checkSubscriptionParam);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("hashchange", checkSubscriptionParam);
+    };
+  }, []);
+
   const fetchFAQs = async () => {
     if (!supabase) return;
     const { data, error } = await supabase

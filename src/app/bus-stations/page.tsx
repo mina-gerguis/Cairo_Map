@@ -9,6 +9,7 @@ interface BusCompany {
   name: string;
   phone: string;
   type: string;
+  logo?: string;
 }
 
 interface BusStation {
@@ -177,7 +178,7 @@ export default function BusStationsPage() {
           animation: "spin 1s linear infinite",
           margin: "0 auto 24px"
         }} />
-        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من تفاصيل الاشتراك الذهبي...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -199,7 +200,7 @@ export default function BusStationsPage() {
           direction: "rtl"
         }}>
           {/* Back Button */}
-          <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
+          <div style={{ position: "absolute", top: "20px", right: "8px", zIndex: 10 }}>
             <Link
               href="/"
               style={{
@@ -231,10 +232,10 @@ export default function BusStationsPage() {
               marginLeft: "10px",
               letterSpacing: "-0.5px",
             }}>
-              <img src="/images/searchBar/Cairo_bus.webp" alt="Cairo Bus" style={{ width: "35px", marginLeft: "10px" }} />
-              مواقف الأتوبيسات وشركات السفر
+              <img src="/images/searchBar/Cairo_bus.png" alt="Cairo Bus" style={{ width: "45px", marginLeft: "10px" }} />
+              مواقف الأتوبيسات
             </h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
               دليلك لمعرفة مواقف السفر البري الإقليمي في القاهرة الكبرى.
             </p>
           </div>
@@ -259,7 +260,7 @@ export default function BusStationsPage() {
             </div>
 
             <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
-              دليل مواقف الأتوبيسات ميزة ذهبية 🥇
+               مواقف الأتوبيسات يتطلب اشتراك في الباقة الذهبية
             </h2>
 
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
@@ -276,7 +277,7 @@ export default function BusStationsPage() {
               margin: "0 auto 32px",
               maxWidth: "440px"
             }}>
-              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية (60 ج.م/شهرياً):</div>
+              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
               <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ تفاصيل مواقف الأتوبيسات الرئيسية (ألماظة، الترجمان، المنيب، عبود، إلخ)</li>
                 <li>✨ دليل الشركات المتاحة (السوبر جيت، جو باص، غرب ووسط الدلتا، إلخ)</li>
@@ -289,20 +290,20 @@ export default function BusStationsPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
               {user ? (
                 <Link
-                  href="/profile"
+                  href="/profile?expand=subscription"
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+                    background: "var(--bg-subscribe-button-gold)",
                     color: "#000",
                     textDecoration: "none",
                     fontWeight: "bold",
                     fontSize: "1rem",
-                    boxShadow: "0 4px 15px rgba(250, 204, 21, 0.3)",
+                    boxShadow: "var(--bs-subscribe-button-gold)",
                     display: "block"
                   }}
                 >
-                  🚀 اشترك الآن ورقّ حسابك للذهبية (60 ج.م)
+                  اشترك في الباقة الذهبية
                 </Link>
               ) : (
                 <Link
@@ -310,16 +311,16 @@ export default function BusStationsPage() {
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-                    color: "#fff",
+                    background: "var(--bg-subscribe-button-base)",
+                    color: "#000",
                     textDecoration: "none",
                     fontWeight: "bold",
                     fontSize: "1rem",
-                    boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
+                    boxShadow: "var(--bs-subscribe-button-base)",
                     display: "block"
                   }}
                 >
-                  🔑 سجل دخولك أولاً لتفعيل الاشتراك
+                  سجل دخولك أولاً لتفعيل الاشتراك
                 </Link>
               )}
               
@@ -357,27 +358,6 @@ export default function BusStationsPage() {
         borderBottom: "1px solid var(--border-glass)",
         direction: "rtl"
       }}>
-        {/* Back Button */}
-        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-          <Link 
-            href="/" 
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              justifyContent: "center", 
-              width: "40px", 
-              height: "40px", 
-              borderRadius: "50%", 
-              background: "var(--bg-glass-card)", 
-              border: "1px solid var(--border-glass)", 
-              color: "var(--text-primary)", 
-              textDecoration: "none" 
-            }}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-          </Link>
-        </div>
-
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 style={{
             display: "flex",
@@ -387,13 +367,12 @@ export default function BusStationsPage() {
             fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "600",
             color: "var(--text-primary)",
-            marginLeft: "10px",
             letterSpacing: "-0.5px",
           }}>
-            <img src="/images/searchBar/Cairo_bus.webp" alt="Cairo Bus" style={{ width: "35px", marginLeft: "10px" }} />
-            مواقف الأتوبيسات وشركات السفر
+            <img src="/images/searchBar/Cairo_bus.png" alt="Cairo Bus" style={{ width: "40px", marginLeft: "10px" }} />
+            مواقف الأتوبيسات 
           </h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
             دليلك لمعرفة مواقف السفر البري الإقليمي في القاهرة الكبرى.
           </p>
         </div>
@@ -419,7 +398,7 @@ export default function BusStationsPage() {
           <div style={{ position: "relative" }}>
             <input
               type="text"
-              placeholder="ابحث باسم الموقف، الوجهة (مثال: الإسكندرية، سوهاج)..."
+              placeholder="ابحث باسم الموقف، أو الوجهة ..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="ios-input"
@@ -450,18 +429,6 @@ export default function BusStationsPage() {
 
         {/* Bus Stations Explorer Section - Metro style */}
         <div className="metro-animate-slide-up metro-delay-300" style={{ marginTop: "24px" }}>
-          <h2 style={{
-            fontFamily: "var(--font-heading)",
-            fontSize: "1.3rem",
-            fontWeight: "800",
-            color: "var(--text-primary)",
-            marginBottom: "6px",
-            textAlign: "center"
-          }}>🚌 دليل مواقف الأتوبيسات وشركات السفر</h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", textAlign: "center", marginBottom: "20px" }}>
-            اضغط على الموقف لاستكشاف الشركات المتواجدة والوجهات المتاحة والموقع الجغرافي.
-          </p>
-
           <div style={{
             backgroundColor: "var(--bg-primary)",
             border: "1px solid var(--border-glass)",
@@ -528,7 +495,7 @@ export default function BusStationsPage() {
                             width: "36px",
                             height: "36px",
                             borderRadius: "50%",
-                            background: "rgba(59, 130, 246, 0.12)",
+                            background: "transparent",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -542,16 +509,16 @@ export default function BusStationsPage() {
                               {station.name}
                             </h3>
                             <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginTop: "2px" }}>
-                              📍 {station.location}
+                              <i className="bx bxs-location-plus" style={{ color: "var(--color-red-600)" }}></i> {station.location}
                             </span>
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <span style={{
                             fontSize: "0.75rem",
-                            background: "rgba(245, 158, 11, 0.12)",
-                            color: "#f59e0b",
-                            border: "1px solid rgba(245, 158, 11, 0.25)",
+                            background: "var(--color-blue-600)",
+                            color: "var(--color-white-50)",
+                            border: "1px solid var(--border-glass)",
                             padding: "4px 10px",
                             borderRadius: "20px",
                             fontWeight: "700"
@@ -574,7 +541,7 @@ export default function BusStationsPage() {
                         <div style={{
                           padding: "20px",
                           borderTop: "1px solid var(--border-glass)",
-                          background: "rgba(0, 0, 0, 0.08)",
+                          background: "var(--bg-secondary)",
                           display: "flex",
                           flexDirection: "column",
                           gap: "16px",
@@ -591,9 +558,9 @@ export default function BusStationsPage() {
                           {Array.isArray(station.companies) && station.companies.length > 0 && (
                             <div>
                               <strong style={{ color: "var(--text-primary)", fontSize: "0.9rem", display: "block", marginBottom: "8px" }}>
-                                🎫 شركات السفر والحجز المتاحة بالداخل:
+                                <i className="bx bxs-bus" style={{ color: "var(--accent-ios)" }}></i> شركات السفر والحجز المتاحة بالداخل:
                               </strong>
-                              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px" }}>
+                              <div style={{ display: "flex", flexDirection: "column", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
                                 {station.companies.map((company, cIdx) => (
                                   <div
                                     key={cIdx}
@@ -607,13 +574,42 @@ export default function BusStationsPage() {
                                       alignItems: "center"
                                     }}
                                   >
-                                    <div style={{ textAlign: "right" }}>
-                                      <span style={{ color: "var(--text-primary)", fontWeight: "700", fontSize: "0.85rem", display: "block" }}>
-                                        {company.name}
-                                      </span>
-                                      <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>
-                                        {company.type}
-                                      </span>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "10px", textAlign: "right" }}>
+                                      {company.logo && (
+                                        <div style={{
+                                          width: "50px",
+                                          height: "45px",
+                                          borderRadius: "8px",
+                                          background: "none",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          padding: "4px",
+                                          border: "none",
+                                          flexShrink: 0
+                                        }}>
+                                          <img
+                                            src={`/images/busStations/${company.logo}`}
+                                            alt={company.name}
+                                            style={{
+                                              width: "100%",
+                                              height: "100%",
+                                              objectFit: "contain"
+                                            }}
+                                            onError={(e) => {
+                                              (e.target as HTMLElement).parentElement!.style.display = "none";
+                                            }}
+                                          />
+                                        </div>
+                                      )}
+                                      <div>
+                                        <span style={{ color: "var(--text-primary)", fontWeight: "700", fontSize: "0.85rem", display: "block" }}>
+                                          {company.name}
+                                        </span>
+                                        <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>
+                                          {company.type}
+                                        </span>
+                                      </div>
                                     </div>
                                     <a
                                       href={`tel:${company.phone}`}

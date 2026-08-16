@@ -132,7 +132,7 @@ function AdminMetroInner() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [dbStatus, setDbStatus] = useState<boolean>(true);
-  
+
   // Section Navigation: stations or pricing
   const [activeSection, setActiveSection] = useState<"stations" | "pricing">("stations");
 
@@ -505,8 +505,8 @@ function AdminMetroInner() {
   }
   if (searchQuery.trim().length > 0) {
     const q = searchQuery.toLowerCase();
-    filteredRows = filteredRows.filter(s => 
-      s.name.toLowerCase().includes(q) || 
+    filteredRows = filteredRows.filter(s =>
+      s.name.toLowerCase().includes(q) ||
       (s.landmarks && Array.isArray(s.landmarks) && s.landmarks.some((l: string) => l.toLowerCase().includes(q)))
     );
   }
@@ -529,8 +529,8 @@ function AdminMetroInner() {
     switch (line) {
       case "line1": return "#ef4444";
       case "line2": return "#3b82f6";
-      case "line3": 
-      case "line3_branch_a": 
+      case "line3":
+      case "line3_branch_a":
       case "line3_branch_b": return "#10b981";
       case "line4": return "#f59e0b";
       case "line5": return "#8b5cf6";
@@ -541,7 +541,7 @@ function AdminMetroInner() {
 
   return (
     <div style={{ padding: "0 10px 40px 10px" }}>
-      
+
       {/* Upper Navigation Tabs */}
       <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "16px", marginBottom: "24px" }}>
         <button
@@ -627,7 +627,7 @@ function AdminMetroInner() {
 
           {/* Filtering Controls */}
           <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
-            
+
             {/* Search Input bar */}
             <div style={{ position: "relative", width: "100%" }}>
               <i className="bx bx-search" style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontSize: "1.2rem" }} />
@@ -760,7 +760,7 @@ function AdminMetroInner() {
                             )}
                           </div>
                         </td>
-                        <td className={styles.adminTd} style={{width:"10%"}}>
+                        <td className={styles.adminTd} style={{ width: "10%" }}>
                           <span style={{
                             fontSize: "0.75rem",
                             background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.12)" : "rgba(16, 185, 129, 0.12)"),
@@ -789,7 +789,7 @@ function AdminMetroInner() {
                               onClick={() => handleStationDelete(station)}
                               className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                               title="حذف"
-                              style={{ padding: "5px 5px", borderRadius: "50%", background: "#ff000031",color:"#ff0000" }}
+                              style={{ padding: "5px 5px", borderRadius: "50%", background: "#ff000031", color: "#ff0000" }}
                             >
                               <i className="bx bx-trash" />
                             </button>
@@ -926,9 +926,9 @@ function AdminMetroInner() {
             </div>
 
             <form onSubmit={handleStationSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
-              
+
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
                 <input
                   type="text"
                   required
@@ -940,7 +940,7 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>الخط المترو *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الخط المترو *</label>
                 <select
                   value={stationForm.line_type || "line1"}
                   onChange={e => setStationForm({ ...stationForm, line_type: e.target.value })}
@@ -959,8 +959,8 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في الخط *</label>
-                <input  
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في الخط *</label>
+                <input
                   type="number"
                   required
                   min={1}
@@ -972,8 +972,8 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
-                <input  
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
+                <input
                   type="text"
                   placeholder="مثال: جامعة القاهرة، حديقة الأورمان"
                   value={stationForm.landmarks || ""}
@@ -984,7 +984,7 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "text-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
                 <select
                   value={stationForm.status || "تشغيل فعلي"}
                   onChange={e => setStationForm({ ...stationForm, status: e.target.value })}

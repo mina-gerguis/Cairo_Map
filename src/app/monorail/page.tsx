@@ -352,7 +352,7 @@ export default function MonorailPage() {
           animation: "spin 1s linear infinite",
           margin: "0 auto 24px"
         }} />
-        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من تفاصيل الاشتراك الفضي...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -405,10 +405,9 @@ export default function MonorailPage() {
               fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
               color: "var(--text-primary)",
-              marginLeft: "10px",
               letterSpacing: "-0.5px",
             }}>
-              <img src="/images/searchBar/Cairo_monorail.png" alt="Cairo Monorail" style={{ width: "35px" }} />
+              <img src="/images/searchBar/Cairo_monorail_east.png" alt="Cairo Monorail" style={{ width: "35px",  marginLeft: "10px" }} />
               قطار المونوريل</h1>
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
               خريطة تفاعلية تفصيلية لشبكة المونوريل الجديدة.
@@ -480,16 +479,17 @@ export default function MonorailPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
               {user ? (
                 <Link
-                  href="/profile"
+                  href="/profile?expand=subscription"
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
+                    background: "var(--bg-subscribe-button-seliver)",
                     color: "#000",
                     textDecoration: "none",
                     fontWeight: "bold",
                     fontSize: "0.95rem",
-                    boxShadow: "0 4px 15px rgba(250, 204, 21, 0.2)",
+                    boxShadow: "var(--bs-subscribe-button-seliver)",
+                    border: "1px solid var(--br-subscribe-button-seliver)",
                     display: "block"
                   }}
                 >
@@ -501,12 +501,12 @@ export default function MonorailPage() {
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                    background: "var(--bg-subscribe-button-base)",
                     color: "#fff",
                     textDecoration: "none",
                     fontWeight: "bold",
                     fontSize: "0.95rem",
-                    boxShadow: "0 4px 15px rgba(59, 130, 246, 0.2)",
+                    boxShadow: "var(--bs-subscribe-button-base)",
                     display: "block"
                   }}
                 >
@@ -658,7 +658,7 @@ export default function MonorailPage() {
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
           }}>
-            <img src="/images/searchBar/Cairo_monorail.png" alt="" style={{ width: "40px", height: "40px", marginLeft: "10px" }} />
+            <img src="/images/searchBar/Cairo_monorail_east.png" alt="" style={{ width: "40px", height: "40px", marginLeft: "10px" }} />
             دليل قطار المونوريل</h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
             استكشف المحطات والاتجاهات والمعالم الهامة لخطوط شرق وغرب النيل.
@@ -1086,7 +1086,7 @@ export default function MonorailPage() {
                             src={
                               routeResult.leg1?.lineType === "east"
                                 ? "/images/searchBar/Cairo_monorail_east.png"
-                                : "/images/searchBar/Cairo_monorail.png"
+                                : "/images/searchBar/Cairo_monorail_west.png"
                             }
                             alt="monorail"
                             style={{
@@ -1130,7 +1130,7 @@ export default function MonorailPage() {
                             src={
                               routeResult.leg3?.lineType === "east"
                                 ? "/images/searchBar/Cairo_monorail_east.png"
-                                : "/images/searchBar/Cairo_monorail.png"
+                                : "/images/searchBar/Cairo_monorail_west.png"
                             }
                             alt="monorail"
                             style={{
