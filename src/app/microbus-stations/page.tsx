@@ -866,7 +866,7 @@ export default function MicrobusStationsPage() {
                         backgroundColor: "var(--bg-primary)",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "15px",
-                        padding: "20px 8px",
+                        padding: "20px 10px",
                         boxShadow: "var(--shadow-card)",
                       }}>
                         {/* Station Header - Clickable to expand/collapse routes */}
@@ -896,42 +896,23 @@ export default function MicrobusStationsPage() {
                               alignItems: "center",
                               gap: "6px"
                             }}>
-                              <span>{station.name}</span>
+                              <span>موقف {station.name}</span>
                               <i className={`bx bx-chevron-${isStationExpanded ? "up" : "down"}`} style={{
                                 fontSize: "1.5rem",
                                 color: "var(--color-blue-700)",
                                 transition: "transform 0.2s ease"
                               }}></i>
                             </h3>
-                            
+
                           </div>
-                          <div>
-                            <a
-                              href={station.map_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()} // Prevent accordion toggle
-                              style={{
-                                padding: "6px",
-                                borderRadius: "6px",
-                                background: "var(--color-blue-700)",
-                                border: "1px solid var(--border-glass)",
-                                color: "var(--color-white-100)",
-                                textDecoration: "none",
-                                fontWeight: "700",
-                                fontSize: "0.8rem",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "4px",
-                                transition: "all 0.2s ease"
-                              }}
-                            > 
-                              <i className="bx bx-map" style={{ fontSize: "0.95rem" }}></i>  
-                            </a>
-                          </div>
-                          <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                              <i className="bx bx-map" style={{ color: "var(--color-blue-700)" }}></i> {station.location}
-                            </span>
+                          <a
+                            href={station.map_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                            <i className="bx bx-map" style={{ color: "var(--accent-ios)" }}></i> يقع موقف <span style={{ color: "var(--accent-ios)" }}>{station.name}</span> في {station.location}
+                          </a>
                         </div>
 
                         {/* Station Content: Routes List */}
@@ -939,8 +920,8 @@ export default function MicrobusStationsPage() {
                           <div style={{ marginTop: "18px", opacity: 0, animation: "fadeIn 0.3s ease-out forwards" }}>
                             <h4 style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>
                               {destinationQuery.trim() !== "" && hasMatches
-                                ? <><i className="bx bx-bus" style={{ color: "var(--color-blue-700)", marginRight: "6px" }}></i> خطوط السير المتاحة للوجهة المطلوبة:</>
-                                : <><i className="bx bx-bus" style={{ color: "var(--color-blue-700)", marginRight: "6px" }}></i> جميع خطوط السير المتاحة بالموقف:</>}
+                                ? <><i className="bx bx-bus" style={{ color: "var(--accent-ios)", marginRight: "6px" }}></i> خطوط السير المتاحة للوجهة المطلوبة:</>
+                                : <><i className="bx bx-bus" style={{ color: "var(--accent-ios)", marginRight: "6px" }}></i> جميع خطوط السير المتاحة بالموقف:</>}
                             </h4>
                             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                               {Array.isArray(station.routes) && station.routes.map((route: any, rIdx) => {
@@ -967,7 +948,7 @@ export default function MicrobusStationsPage() {
                                         setExpandedRouteKey(isRouteExpanded ? null : routeKey);
                                       }}
                                       style={{
-                                        padding: "14px 10px",
+                                        padding: "14px 8px",
                                         display: "flex",
                                         justifyContent: "space-between",
                                         alignItems: "center",
@@ -986,7 +967,7 @@ export default function MicrobusStationsPage() {
                                     >
                                       <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                                         <span style={{ color: "var(--text-primary)", fontWeight: "800", fontSize: "0.8rem" }}>
-                                          <i className="bx bx-map-pin" style={{ color: "var(--color-blue-700)", marginLeft: "6px" }}></i>
+                                          <i className="bx bx-map-pin" style={{ color: "var(--accent-ios)", marginLeft: "6px" }}></i>
                                           من {station.name} إلي {isOfficial ? "موقف" : "نقطة"} {route.destination}
                                         </span>
                                       </div>
@@ -1070,7 +1051,7 @@ export default function MicrobusStationsPage() {
                                             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                                               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>زمن الرحلة</span>
                                               <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-primary)" }}>
-                                                {route.duration || "لا يوجد سجل حاليا"} دقيقة
+                                                {(route.duration && route.duration + " " + "دقيقة") || "غير معروف"}
                                               </span>
                                             </div>
                                           </div>
@@ -1093,7 +1074,7 @@ export default function MicrobusStationsPage() {
                                               display: "flex",
                                               alignItems: "center",
                                               justifyContent: "center",
-                                              color: "var(--color-blue-700)",
+                                              color: "var(--accent-ios)",
                                               fontSize: "1.2rem",
                                               flexShrink: 0
                                             }}>
@@ -1101,7 +1082,7 @@ export default function MicrobusStationsPage() {
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                                               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>التعريفة / الأجرة المقدرة</span>
-                                              <span style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--color-blue-700)", }}>
+                                              <span style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--accent-ios)", }}>
                                                 {route.fare} جنية
                                               </span>
                                             </div>
@@ -1125,57 +1106,62 @@ export default function MicrobusStationsPage() {
                                           {(() => {
                                             const { likes, dislikes, userVote } = getRouteVotes(station.name, route.destination);
                                             return (
-                                              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                                                {/* Like Button */}
-                                                <button
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleVote(station.name, route.destination, "like");
-                                                  }}
-                                                  style={{
-                                                    display: "inline-flex",
-                                                    alignItems: "center",
-                                                    gap: "6px",
-                                                    background: userVote === "like" ? "rgba(16, 185, 129, 0.12)" : "rgba(128,128,128,0.05)",
-                                                    border: userVote === "like" ? "1px solid #10b981" : "1px solid var(--border-glass)",
-                                                    color: userVote === "like" ? "#10b981" : "var(--text-secondary)",
-                                                    padding: "6px 12px",
-                                                    borderRadius: "8px",
-                                                    fontSize: "0.8rem",
-                                                    fontWeight: "bold",
-                                                    cursor: "pointer",
-                                                    transition: "all 0.2s ease"
-                                                  }}
-                                                >
-                                                  <i className={userVote === "like" ? "fa-solid fa-check" : ""} style={{ fontSize: "0.95rem" }}></i>
-                                                  <span>البيانات صحيحة ({likes})</span>
-                                                </button>
+                                              <>
+                                                <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: "var(--text-primary)", display: "block" }}>
+                                                  هل الطريق صحيح وجميع معلوماتة صحيحة؟
+                                                </span>
+                                                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                                                  {/* Like Button */}
+                                                  <button
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      handleVote(station.name, route.destination, "like");
+                                                    }}
+                                                    style={{
+                                                      display: "inline-flex",
+                                                      alignItems: "center",
+                                                      gap: "6px",
+                                                      background: userVote === "like" ? "rgba(16, 185, 129, 0.12)" : "rgba(128,128,128,0.05)",
+                                                      border: userVote === "like" ? "1px solid #10b981" : "1px solid var(--border-glass)",
+                                                      color: userVote === "like" ? "#10b981" : "var(--text-secondary)",
+                                                      padding: "6px 12px",
+                                                      borderRadius: "8px",
+                                                      fontSize: "0.8rem",
+                                                      fontWeight: "bold",
+                                                      cursor: "pointer",
+                                                      transition: "all 0.2s ease"
+                                                    }}
+                                                  >
+                                                    <i className={userVote === "like" ? "fa-solid fa-check" : "fa-solid fa-check"} style={{ fontSize: "0.95rem" }}></i>
+                                                    <span> ({likes})</span>
+                                                  </button>
 
-                                                {/* Dislike Button */}
-                                                <button
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleVote(station.name, route.destination, "dislike");
-                                                  }}
-                                                  style={{
-                                                    display: "inline-flex",
-                                                    alignItems: "center",
-                                                    gap: "6px",
-                                                    background: userVote === "dislike" ? "rgba(239, 68, 68, 0.12)" : "rgba(128,128,128,0.05)",
-                                                    border: userVote === "dislike" ? "1px solid #ef4444" : "1px solid var(--border-glass)",
-                                                    color: userVote === "dislike" ? "#ef4444" : "var(--text-secondary)",
-                                                    padding: "6px 12px",
-                                                    borderRadius: "8px",
-                                                    fontSize: "0.8rem",
-                                                    fontWeight: "bold",
-                                                    cursor: "pointer",
-                                                    transition: "all 0.2s ease"
-                                                  }}
-                                                >
-                                                  <i className={userVote === "dislike" ? "fa-solid fa-xmark" : ""} style={{ fontSize: "0.95rem" }}></i>
-                                                  <span>البيانات خاطئة ({dislikes})</span>
-                                                </button>
-                                              </div>
+                                                  {/* Dislike Button */}
+                                                  <button
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      handleVote(station.name, route.destination, "dislike");
+                                                    }}
+                                                    style={{
+                                                      display: "inline-flex",
+                                                      alignItems: "center",
+                                                      gap: "6px",
+                                                      background: userVote === "dislike" ? "rgba(239, 68, 68, 0.12)" : "rgba(128,128,128,0.05)",
+                                                      border: userVote === "dislike" ? "1px solid #ef4444" : "1px solid var(--border-glass)",
+                                                      color: userVote === "dislike" ? "#ef4444" : "var(--text-secondary)",
+                                                      padding: "6px 12px",
+                                                      borderRadius: "8px",
+                                                      fontSize: "0.8rem",
+                                                      fontWeight: "bold",
+                                                      cursor: "pointer",
+                                                      transition: "all 0.2s ease"
+                                                    }}
+                                                  >
+                                                    <i className={userVote === "dislike" ? "fa-solid fa-xmark" : "fa-solid fa-xmark"} style={{ fontSize: "0.95rem" }}></i>
+                                                    <span>({dislikes})</span>
+                                                  </button>
+                                                </div>
+                                              </>
                                             );
                                           })()}
 
@@ -1197,13 +1183,15 @@ export default function MicrobusStationsPage() {
                                               display: "inline-flex",
                                               alignItems: "center",
                                               gap: "4px",
-                                              background: "none",
-                                              border: "none",
+                                              background: "rgba(128,128,128,0.05)",
+                                              border: "1px solid var(--border-glass)",
                                               color: "var(--text-muted)",
-                                              fontSize: "0.78rem",
-                                              fontWeight: "600",
+                                              padding: "6px 12px",
+                                              borderRadius: "8px",
+                                              fontSize: "0.8rem",
+                                              fontWeight: "bold",
                                               cursor: "pointer",
-                                              transition: "color 0.2s ease"
+                                              transition: "all 0.2s ease"
                                             }}
                                             onMouseEnter={e => e.currentTarget.style.color = "#f59e0b"}
                                             onMouseLeave={e => e.currentTarget.style.color = "var(--text-muted)"}
