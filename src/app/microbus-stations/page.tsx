@@ -896,6 +896,7 @@ export default function MicrobusStationsPage() {
                               alignItems: "center",
                               gap: "6px"
                             }}>
+                              <i className="bx bx-bus" style={{ color: "var(--color-blue-700)" }}></i>
                               <span>موقف {station.name}</span>
                               <i className={`bx bx-chevron-${isStationExpanded ? "up" : "down"}`} style={{
                                 fontSize: "1.5rem",
@@ -905,15 +906,15 @@ export default function MicrobusStationsPage() {
                             </h3>
 
                           </div>
+                        </div>
                           <a
                             href={station.map_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                            style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "inline-block", alignItems: "center", gap: "6px", }}>
                             <i className="bx bx-map" style={{ color: "var(--accent-ios)" }}></i> يقع موقف <span style={{ color: "var(--accent-ios)" }}>{station.name}</span> في {station.location}
                           </a>
-                        </div>
 
                         {/* Station Content: Routes List */}
                         {isStationExpanded && (
@@ -1081,15 +1082,89 @@ export default function MicrobusStationsPage() {
                                               <i className="bx bx-money" />
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                                              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>التعريفة / الأجرة المقدرة</span>
+                                              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>الأجرة المقدرة</span>
                                               <span style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--accent-ios)", }}>
                                                 {route.fare} جنية
                                               </span>
                                             </div>
                                           </div>
                                         </div>
+                                        {/* Timeline */}
+                                        {route.via && (
+                                          <div style={{ marginTop: "6px", marginBottom: "6px" }}>
+                                            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "12px" }}>
+                                              <i className="fa-solid fa-route" style={{ fontSize: "0.95rem", marginLeft: "6px" }}></i> خط السير التفصيلي (نقاط المرور)
+                                            </span>
+                                            <div style={{ overflowX: "auto", paddingBottom: "8px", paddingTop: "8px", direction: "rtl" }} className="custom-scrollbar">
+                                              <div style={{ display: "flex", alignItems: "center", position: "relative", minWidth: "480px", padding: "0 10px" }}>
+                                                <div style={{
+                                                  position: "absolute",
+                                                  top: "13px",
+                                                  left: "30px",
+                                                  right: "30px",
+                                                  height: "2px",
+                                                  background: "rgba(88, 88, 88, 0.04)",
+                                                  zIndex: 1
+                                                }} />
 
-                                        {/* Interactive Likes/Dislikes & Report Action Row */}
+                                                {[
+                                                  station.name.split("(")[0].trim(),
+                                                  ...parseViaStops(route.via),
+                                                  route.destination
+                                                ].map((stop, idx, arr) => {
+                                                  const isStart = idx === 0;
+                                                  const isEnd = idx === arr.length - 1;
+                                                  const dotColor = isStart ? "#10b981" : isEnd ? "#ef4444" : "#f59e0b";
+
+                                                  return (
+                                                    <div key={idx} style={{
+                                                      flex: "1 1 0%",
+                                                      display: "flex",
+                                                      flexDirection: "column",
+                                                      alignItems: "center",
+                                                      position: "relative",
+                                                      zIndex: 2
+                                                    }}>
+                                                      <div style={{
+                                                        width: "22px",
+                                                        height: "22px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: "var(--bg-primary)",
+                                                        border: `3px solid ${dotColor}`,
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                                                        marginBottom: "6px"
+                                                      }}>
+                                                        <div style={{
+                                                          width: "6px",
+                                                          height: "6px",
+                                                          borderRadius: "50%",
+                                                          backgroundColor: dotColor
+                                                        }} />
+                                                      </div>
+
+                                                      <span style={{
+                                                        fontSize: "0.72rem",
+                                                        fontWeight: isStart || isEnd ? "bold" : "normal",
+                                                        color: isStart || isEnd ? "var(--text-primary)" : "var(--text-secondary)",
+                                                        textAlign: "center",
+                                                        width: "75px",
+                                                        whiteSpace: "normal",
+                                                        lineHeight: "1.3"
+                                                      }}>
+                                                        {stop}
+                                                      </span>
+                                                    </div>
+                                                  );
+                                                })}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        )}
+
+                                         {/* Interactive Likes/Dislikes & Report Action Row */}
                                         <div style={{
                                           display: "flex",
                                           justifyContent: "space-between",
@@ -1200,81 +1275,6 @@ export default function MicrobusStationsPage() {
                                             <span>إبلاغ عن خطأ</span>
                                           </button>
                                         </div>
-
-                                        {/* Timeline */}
-                                        {route.via && (
-                                          <div style={{ marginTop: "6px", marginBottom: "6px" }}>
-                                            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "12px" }}>
-                                              <i className="fa-solid fa-route" style={{ fontSize: "0.95rem", marginLeft: "6px" }}></i> خط السير التفصيلي (نقاط المرور)
-                                            </span>
-                                            <div style={{ overflowX: "auto", paddingBottom: "8px", paddingTop: "8px", direction: "rtl" }} className="custom-scrollbar">
-                                              <div style={{ display: "flex", alignItems: "center", position: "relative", minWidth: "480px", padding: "0 10px" }}>
-                                                <div style={{
-                                                  position: "absolute",
-                                                  top: "13px",
-                                                  left: "30px",
-                                                  right: "30px",
-                                                  height: "2px",
-                                                  background: "rgba(88, 88, 88, 0.04)",
-                                                  zIndex: 1
-                                                }} />
-
-                                                {[
-                                                  station.name.split("(")[0].trim(),
-                                                  ...parseViaStops(route.via),
-                                                  route.destination
-                                                ].map((stop, idx, arr) => {
-                                                  const isStart = idx === 0;
-                                                  const isEnd = idx === arr.length - 1;
-                                                  const dotColor = isStart ? "#10b981" : isEnd ? "#ef4444" : "#f59e0b";
-
-                                                  return (
-                                                    <div key={idx} style={{
-                                                      flex: "1 1 0%",
-                                                      display: "flex",
-                                                      flexDirection: "column",
-                                                      alignItems: "center",
-                                                      position: "relative",
-                                                      zIndex: 2
-                                                    }}>
-                                                      <div style={{
-                                                        width: "22px",
-                                                        height: "22px",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: "var(--bg-primary)",
-                                                        border: `3px solid ${dotColor}`,
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
-                                                        marginBottom: "6px"
-                                                      }}>
-                                                        <div style={{
-                                                          width: "6px",
-                                                          height: "6px",
-                                                          borderRadius: "50%",
-                                                          backgroundColor: dotColor
-                                                        }} />
-                                                      </div>
-
-                                                      <span style={{
-                                                        fontSize: "0.72rem",
-                                                        fontWeight: isStart || isEnd ? "bold" : "normal",
-                                                        color: isStart || isEnd ? "var(--text-primary)" : "var(--text-secondary)",
-                                                        textAlign: "center",
-                                                        width: "75px",
-                                                        whiteSpace: "normal",
-                                                        lineHeight: "1.3"
-                                                      }}>
-                                                        {stop}
-                                                      </span>
-                                                    </div>
-                                                  );
-                                                })}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        )}
 
                                         {/* Description */}
                                         {(route.description || route.notes) && (

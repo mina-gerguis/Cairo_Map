@@ -569,9 +569,6 @@ export default function BusStationsPage() {
                                       borderRadius: "10px",
                                       background: "var(--bg-primary)",
                                       border: "1px solid var(--border-glass)",
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      alignItems: "center"
                                     }}
                                   >
                                     <div style={{ display: "flex", alignItems: "center", gap: "10px", textAlign: "right" }}>
@@ -621,9 +618,13 @@ export default function BusStationsPage() {
                                         fontSize: "0.8rem",
                                         fontWeight: "700",
                                         textDecoration: "none",
-                                        display: "inline-flex",
+                                        display: "flex",
+                                        justifyContent: "center",
                                         alignItems: "center",
-                                        gap: "4px"
+                                        gap: "4px",
+                                        width: "80%",
+                                        textAlign: "center",
+                                        margin:"auto"
                                       }}
                                     >
                                       <i className="bx bx-phone" style={{ fontSize: "0.95rem" }}></i>
