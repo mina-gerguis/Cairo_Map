@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const payicon = [
-  { name: "vodafone cash", title: "فودافون كاش", icon: "/images/telCompany/vodafone-logo.png" },
+  { name: "vodafone cash", title: "فودافون كاش", icon: "/images/telCompany/vodafone.png" },
   { name: "instapay", title: "انستاباي", icon: "/images/payment/instapay.png" },
   { name: "meeza", title: "ميزة", icon: "/images/payment/meeza.png" },
   { name: "fawry", title: "فوري", icon: "/images/payment/fawry.png" },
