@@ -37,6 +37,12 @@ interface RouteInteraction {
   created_at?: string;
 }
 
+const glassCard: React.CSSProperties = {
+  background: "rgba(255,255,255,0.35)",
+  backdropFilter: "blur(24px)",
+  borderRadius: "18px",
+};
+
 const DEFAULT_MICROBUS: MicrobusStation[] = [
   {
     name: "موقف رمسيس (موقف أحمد حلمي / رمسيس الكبرى)",
@@ -126,7 +132,7 @@ export default function MicrobusStationsPage() {
   const [loading, setLoading] = useState(true);
   const [destinationQuery, setDestinationQuery] = useState("");
   const [selectedStation, setSelectedStation] = useState<string>("all");
-  
+
   // Interactions (Likes/Dislikes/Reports) State
   const [interactions, setInteractions] = useState<RouteInteraction[]>([]);
 
@@ -189,7 +195,7 @@ export default function MicrobusStationsPage() {
       } else {
         setStations(data || []);
       }
-      
+
       // Fetch user ratings/reports
       await loadInteractions();
     } catch (err) {
@@ -200,7 +206,7 @@ export default function MicrobusStationsPage() {
   };
 
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin || 
+  const hasAccess = profile?.is_admin ||
     ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   useEffect(() => {
@@ -213,6 +219,17 @@ export default function MicrobusStationsPage() {
   useEffect(() => {
     setExpandedRouteKey(null);
   }, [destinationQuery, selectedStation]);
+
+  // Calculate total route lines across all loaded stations
+  const lines = useMemo(() => {
+    const allRoutes: MicrobusRoute[] = [];
+    stations.forEach(s => {
+      if (s.routes && Array.isArray(s.routes)) {
+        allRoutes.push(...s.routes);
+      }
+    });
+    return allRoutes;
+  }, [stations]);
 
   // Filter logic: Search by destination or view by station
   const filteredResults = useMemo(() => {
@@ -383,7 +400,7 @@ export default function MicrobusStationsPage() {
           animation: "spin 1s linear infinite",
           margin: "0 auto 20px"
         }} />
-        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من تفاصيل الاشتراك...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -437,9 +454,9 @@ export default function MicrobusStationsPage() {
               color: "var(--text-primary)",
               letterSpacing: "-0.5px",
             }}>
-              <img src="/images/searchBar/Cairo_microbus.png" alt="Cairo Microbus" style={{ width: "35px", marginLeft: "10px" }} />
-              مواقف الميكروباص والسرفيس</h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+              <img src="/images/searchBar/Cairo_microbus.png" alt="Cairo Microbus" style={{ width: "75px", marginLeft: "10px" }} />
+              مواقف الميكروباص</h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
               دليل القاهرة الكبرى الشعبي لمعرفة مواقف السرفيس والميكروباص.
             </p>
           </div>
@@ -466,7 +483,7 @@ export default function MicrobusStationsPage() {
             </div>
 
             <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
-              دليل مواقف الميكروباص ميزة ذهبية 🥇
+              دليل مواقف الميكروباص يتطلب الأشتراك في الباقة الذهبية
             </h2>
 
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
@@ -485,7 +502,7 @@ export default function MicrobusStationsPage() {
             }}>
               <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bxs-award" style={{ color: "#fbbf24", fontSize: "1.1rem" }}></i>
-                <span>ميزات الباقة الذهبية (60 ج.م/شهرياً):</span>
+                <span>ميزات الباقة الذهبية :</span>
               </div>
               <ul style={{
                 paddingRight: "16px",
@@ -523,7 +540,7 @@ export default function MicrobusStationsPage() {
                     display: "block"
                   }}
                 >
-                  🚀 اشترك الآن ورقّ حسابك للذهبية (60 ج.م)
+                  اشترك الآن في الباقة للذهبية
                 </Link>
               ) : (
                 <Link
@@ -540,7 +557,7 @@ export default function MicrobusStationsPage() {
                     display: "block"
                   }}
                 >
-                  🔑 سجل دخولك أولاً لتفعيل الاشتراك
+                  سجل دخولك أولاً لتفعيل الاشتراك
                 </Link>
               )}
 
@@ -598,29 +615,6 @@ export default function MicrobusStationsPage() {
         position: "relative",
         borderBottom: "1px solid var(--border-glass)",
       }}>
-        {/* Back Button */}
-        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-          <Link 
-            href="/" 
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              background: "var(--bg-glass-card)",
-              border: "1px solid var(--border-glass)",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-              transition: "transform 0.2s ease"
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-          </Link>
-        </div>
 
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 style={{
@@ -634,9 +628,9 @@ export default function MicrobusStationsPage() {
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
           }}>
-            <img src="/images/searchBar/Cairo_microbus.png" alt="Cairo Microbus" style={{ width: "40px", height: "40px", marginLeft: "10px", objectFit: "contain" }} />
-            دليل مواقف الميكروباص والسرفيس</h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+            <img src="/images/searchBar/Cairo_microbus.png" alt="Cairo Microbus" style={{ width: "75px", marginLeft: "10px", objectFit: "contain" }} />
+            دليل مواقف الميكروباص</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto 20px", lineHeight: "1.6" }}>
             دليل القاهرة الكبرى الشعبي لمعرفة مواقف السرفيس والميكروباص. تصفح جميع المواقف والخطوط المتاحة، أو اختر موقفاً محدداً لبدء رحلتك.
           </p>
 
@@ -645,21 +639,21 @@ export default function MicrobusStationsPage() {
             <span style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
-              color: "#fbbf24",
+              color: "var(--color-blue-500)",
               borderRadius: "10px",
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
-            }}>مواقف السرفيس</span>
+            }}>{stations.length} موقف سرفيس</span>
             <span style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
-              color: "#f59e0b",
+              color: "var(--color-gold-500)",
               borderRadius: "10px",
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
-            }}>الميكروباصات</span>
+            }}>{lines.length} خط سير</span>
           </div>
         </div>
       </div>
@@ -684,8 +678,8 @@ export default function MicrobusStationsPage() {
         }}>
           {/* Step 1: Select Starting Station */}
           <div>
-            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "#f59e0b", display: "block", marginBottom: "8px" }}>
-              📍 هتركب من موقف إيه؟ (اختر موقف البداية)
+            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--text-primary)", display: "block", marginBottom: "8px" }}>
+              <i className="bx bx-map"></i> هتركب من موقف إيه؟
             </label>
             <select
               value={selectedStation}
@@ -710,17 +704,17 @@ export default function MicrobusStationsPage() {
                 height: "48px"
               }}
             >
-              <option value="all" style={{ backgroundColor: "var(--bg-primary)" }}>تصفية حسب موقف محدد (تصفح الكل)</option>
+              <option value="all" style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>اختر موقف هتركب منه ؟</option>
               {stations.map(s => (
-                <option key={s.id || s.name} value={s.name} style={{ backgroundColor: "var(--bg-primary)" }}>{s.name}</option>
+                <option key={s.id || s.name} value={s.name} style={{ backgroundColor: "var(--bg-primary)", color: "var(--text-primary)" }}>{s.name}</option>
               ))}
             </select>
           </div>
 
           {/* Step 2: Destination Search Input (Always Visible) */}
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "#f59e0b", display: "block" }}>
-              🔍 عايز تروح فين؟ (اكتب وجهتك للبحث الذكي)
+            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--text-primary)", display: "block" }}>
+              <i className="bx bx-map"></i> عايز تروح فين؟
             </label>
             <div style={{ position: "relative" }}>
               <input
@@ -741,7 +735,7 @@ export default function MicrobusStationsPage() {
                 }}
               />
               {destinationQuery && (
-                <button 
+                <button
                   onClick={() => setDestinationQuery("")}
                   style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "1.2rem" }}
                 >
@@ -753,7 +747,7 @@ export default function MicrobusStationsPage() {
             {/* Quick Tags for Destination */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
               <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>وجهات شائعة:</span>
-              {(selectedStation && selectedStation !== "all" 
+              {(selectedStation && selectedStation !== "all"
                 ? Array.from(new Set((stations.find(s => s.name === selectedStation)?.routes || []).map(r => r.destination)))
                 : ["6 أكتوبر", "التجمع الخامس", "العبور", "الشيخ زايد", "الشروق", "حلوان"]
               ).slice(0, 6).map(tag => (
@@ -763,19 +757,13 @@ export default function MicrobusStationsPage() {
                   style={{
                     padding: "4px 10px",
                     borderRadius: "20px",
-                    background: "rgba(245, 158, 11, 0.1)",
-                    color: "#f59e0b",
-                    border: "1px solid rgba(245, 158, 11, 0.2)",
+                    background: "var(--color-blue-700)",
+                    color: "var(--color-white-100)",
+                    border: "1px solid var(--color-blue-700)",
                     fontSize: "0.78rem",
                     fontWeight: "700",
                     cursor: "pointer",
                     transition: "all 0.2s ease"
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = "rgba(245, 158, 11, 0.15)";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = "rgba(245, 158, 11, 0.1)";
                   }}
                 >
                   {tag}
@@ -799,7 +787,7 @@ export default function MicrobusStationsPage() {
 
             return (
               <div className="metro-animate-slide-up" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                
+
                 {/* CASE 1: Specific station selected, but NO routes match the query */}
                 {isSpecificStation && !hasMatches && destinationQuery.trim() !== "" && currentStation && (
                   <div style={{
@@ -866,8 +854,8 @@ export default function MicrobusStationsPage() {
 
                 {/* Render the stations list */}
                 {(() => {
-                  const stationsToRender = hasMatches 
-                    ? filteredResults 
+                  const stationsToRender = hasMatches
+                    ? filteredResults
                     : (isSpecificStation && currentStation ? [currentStation] : []);
 
                   return stationsToRender.map((station, sIdx) => {
@@ -882,16 +870,16 @@ export default function MicrobusStationsPage() {
                         boxShadow: "var(--shadow-card)",
                       }}>
                         {/* Station Header - Clickable to expand/collapse routes */}
-                        <div 
+                        <div
                           onClick={() => {
                             setExpandedStationId(isStationExpanded ? null : (station.id || station.name));
                           }}
-                          style={{ 
-                            display: "flex", 
-                            justifyContent: "space-between", 
-                            flexWrap: "wrap", 
-                            gap: "12px", 
-                            alignItems: "center", 
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            flexWrap: "wrap",
+                            gap: "12px",
+                            alignItems: "center",
                             cursor: "pointer",
                             paddingBottom: isStationExpanded ? "16px" : "0px",
                             borderBottom: isStationExpanded ? "1px solid var(--border-glass)" : "none",
@@ -899,24 +887,24 @@ export default function MicrobusStationsPage() {
                           }}
                         >
                           <div>
-                            <h3 style={{ 
-                              margin: "0 0 6px 0", 
-                              fontSize: "1.2rem", 
-                              fontWeight: "800", 
+                            <h3 style={{
+                              margin: "0 0 6px 0",
+                              fontSize: "1.2rem",
+                              fontWeight: "800",
                               color: "var(--text-primary)",
                               display: "flex",
                               alignItems: "center",
                               gap: "6px"
                             }}>
                               <span>{station.name}</span>
-                              <i className={`bx bx-chevron-${isStationExpanded ? "up" : "down"}`} style={{ 
-                                fontSize: "1.5rem", 
-                                color: "#f59e0b",
+                              <i className={`bx bx-chevron-${isStationExpanded ? "up" : "down"}`} style={{
+                                fontSize: "1.5rem",
+                                color: "var(--color-blue-700)",
                                 transition: "transform 0.2s ease"
                               }}></i>
                             </h3>
                             <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                              📍 {station.location}
+                              <i className="bx bx-map" style={{ color: "var(--color-blue-700)" }}></i> {station.location}
                             </span>
                           </div>
                           <div>
@@ -928,9 +916,9 @@ export default function MicrobusStationsPage() {
                               style={{
                                 padding: "6px 12px",
                                 borderRadius: "8px",
-                                background: "rgba(128, 128, 128, 0.05)",
+                                background: "var(--color-blue-700)",
                                 border: "1px solid var(--border-glass)",
-                                color: "#f59e0b",
+                                color: "var(--color-white-100)",
                                 textDecoration: "none",
                                 fontWeight: "700",
                                 fontSize: "0.8rem",
@@ -939,17 +927,8 @@ export default function MicrobusStationsPage() {
                                 gap: "4px",
                                 transition: "all 0.2s ease"
                               }}
-                              onMouseEnter={e => {
-                                e.currentTarget.style.background = "rgba(128, 128, 128, 0.08)";
-                                e.currentTarget.style.transform = "translateY(-1px)";
-                              }}
-                              onMouseLeave={e => {
-                                e.currentTarget.style.background = "rgba(128, 128, 128, 0.05)";
-                                e.currentTarget.style.transform = "none";
-                              }}
                             >
-                              <i className="bx bx-map" style={{ fontSize: "1rem" }}></i>
-                              موقع الموقف
+                              لوكيشن الموقف
                             </a>
                           </div>
                         </div>
@@ -958,9 +937,9 @@ export default function MicrobusStationsPage() {
                         {isStationExpanded && (
                           <div style={{ marginTop: "18px", opacity: 0, animation: "fadeIn 0.3s ease-out forwards" }}>
                             <h4 style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>
-                              {destinationQuery.trim() !== "" && hasMatches 
-                                ? `🚐 خطوط السير المتاحة للوجهة المطلوبة:` 
-                                : "🚐 جميع خطوط السير والتعرفة المتاحة بالموقف:"}
+                              {destinationQuery.trim() !== "" && hasMatches
+                                ? <><i className="bx bx-bus" style={{ color: "var(--color-blue-700)", marginRight: "6px" }}></i> خطوط السير المتاحة للوجهة المطلوبة:</>
+                                : <><i className="bx bx-bus" style={{ color: "var(--color-blue-700)", marginRight: "6px" }}></i> جميع خطوط السير والتعرفة المتاحة بالموقف:</>}
                             </h4>
                             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                               {Array.isArray(station.routes) && station.routes.map((route: any, rIdx) => {
@@ -969,11 +948,11 @@ export default function MicrobusStationsPage() {
                                 const isOfficial = route.type !== "normal";
 
                                 return (
-                                  <div 
-                                    key={rIdx} 
-                                    style={{ 
-                                      borderRadius: "12px", 
-                                      background: "rgba(255, 255, 255, 0.01)", 
+                                  <div
+                                    key={rIdx}
+                                    style={{
+                                      borderRadius: "12px",
+                                      background: "rgba(255, 255, 255, 0.01)",
                                       border: "1px solid var(--border-glass)",
                                       display: "flex",
                                       flexDirection: "column",
@@ -982,7 +961,7 @@ export default function MicrobusStationsPage() {
                                     }}
                                   >
                                     {/* Route Header */}
-                                    <div 
+                                    <div
                                       onClick={() => {
                                         setExpandedRouteKey(isRouteExpanded ? null : routeKey);
                                       }}
@@ -1006,47 +985,126 @@ export default function MicrobusStationsPage() {
                                     >
                                       <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                                         <span style={{ color: "var(--text-primary)", fontWeight: "800", fontSize: "0.95rem" }}>
-                                          🔀 إلى: {route.destination}
-                                        </span>
-                                        <span style={{
-                                          fontSize: "0.7rem",
-                                          fontWeight: "700",
-                                          padding: "2px 8px",
-                                          borderRadius: "6px",
-                                          background: isOfficial ? "rgba(16, 185, 129, 0.12)" : "rgba(245, 158, 11, 0.12)",
-                                          color: isOfficial ? "#10b981" : "#f59e0b",
-                                          border: `1px solid ${isOfficial ? "rgba(16, 185, 129, 0.2)" : "rgba(245, 158, 11, 0.2)"}`
-                                        }}>
-                                          {isOfficial ? "موقف رسمي" : "نقطة تحميل عادية"}
+                                          <i className="bx bx-map-pin" style={{ color: "var(--color-blue-700)", marginLeft: "6px" }}></i>
+                                          من {station.name} إلي {isOfficial ? "موقف" : "نقطة"} {route.destination}
                                         </span>
                                       </div>
                                       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                                          <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>التعرفة المقدرة</span>
-                                          <strong style={{ color: "#f59e0b", fontSize: "1.05rem", fontWeight: "800" }}>{route.fare}</strong>
-                                        </div>
+
                                         <i className={`bx bx-chevron-${isRouteExpanded ? "up" : "down"}`} style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}></i>
                                       </div>
                                     </div>
 
                                     {/* Route Details */}
                                     {isRouteExpanded && (
-                                      <div style={{ 
-                                        padding: "16px", 
+                                      <div style={{
+                                        padding: "16px",
                                         borderTop: "1px solid var(--border-glass)",
-                                        display: "flex", 
-                                        flexDirection: "column", 
+                                        display: "flex",
+                                        flexDirection: "column",
                                         gap: "14px",
                                         backgroundColor: "rgba(0, 0, 0, 0.05)",
                                         opacity: 0,
                                         animation: "fadeIn 0.25s ease-out forwards"
                                       }}>
-                                        {/* Info row */}
-                                        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.82rem", color: "var(--text-secondary)", alignItems: "center" }}>
-                                          <span>🚗 المركبة: {route.vehicleType || "ميكروباص"}</span>
-                                          {route.duration && (
-                                            <span>⏱️ زمن الرحلة التقريبي: {route.duration}</span>
-                                          )}
+                                        {/* Info cards grid */}
+                                        <div style={{
+                                          display: "grid",
+                                          gridTemplateColumns: "1fr 1fr",
+                                          gap: "12px",
+                                          width: "100%"
+                                        }}>
+                                          {/* Vehicle Card */}
+                                          <div style={{
+                                            background: "var(--bg-glass-card, rgba(24, 24, 27, 0.7))",
+                                            border: "1px solid var(--border-glass)",
+                                            borderRadius: "14px",
+                                            padding: "12px 14px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                          }}>
+                                            <div style={{
+                                              width: "36px",
+                                              height: "36px",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                              color: "#3b82f6",
+                                              fontSize: "1.2rem",
+                                              flexShrink: 0
+                                            }}>
+                                              <i className="bx bx-bus" />
+                                            </div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>نوع المركبة</span>
+                                              <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-primary)" }}>
+                                                {route.vehicleType || "ميكروباص"}
+                                              </span>
+                                            </div>
+                                          </div>
+
+                                          {/* Duration Card */}
+                                          <div style={{
+                                            background: "var(--bg-glass-card, rgba(24, 24, 27, 0.7))",
+                                            border: "1px solid var(--border-glass)",
+                                            borderRadius: "14px",
+                                            padding: "12px 14px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                          }}>
+                                            <div style={{
+                                              width: "36px",
+                                              height: "36px",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                              color: "#10b981",
+                                              fontSize: "1.2rem",
+                                              flexShrink: 0
+                                            }}>
+                                              <i className="bx bx-time" />
+                                            </div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>زمن الرحلة</span>
+                                              <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-primary)" }}>
+                                                {route.duration || "لا يوجد سجل حاليا"} دقيقة
+                                              </span>
+                                            </div>
+                                          </div>
+
+                                          {/* Fare Card - spans both columns */}
+                                          <div style={{
+                                            gridColumn: "span 2",
+                                            background: "var(--bg-glass-card, rgba(24, 24, 27, 0.7))",
+                                            border: "1px solid var(--border-glass)",
+                                            borderRadius: "14px",
+                                            padding: "12px 14px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                          }}>
+                                            <div style={{
+                                              width: "36px",
+                                              height: "36px",
+                                              borderRadius: "10px",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                              color: "var(--color-blue-700)",
+                                              fontSize: "1.2rem",
+                                              flexShrink: 0
+                                            }}>
+                                              <i className="bx bx-money" />
+                                            </div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>التعريفة / الأجرة المقدرة</span>
+                                              <span style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--color-blue-700)", }}>
+                                                {route.fare} جنية
+                                              </span>
+                                            </div>
+                                          </div>
                                         </div>
 
                                         {/* Interactive Likes/Dislikes & Report Action Row */}
@@ -1055,9 +1113,9 @@ export default function MicrobusStationsPage() {
                                           justifyContent: "space-between",
                                           alignItems: "center",
                                           padding: "8px 12px",
-                                          background: "rgba(255,255,255,0.02)",
+                                          background: "transparent",
                                           borderRadius: "10px",
-                                          border: "1px solid var(--border-glass)",
+                                          border: "none",
                                           marginTop: "4px",
                                           flexWrap: "wrap",
                                           gap: "8px"
@@ -1088,7 +1146,7 @@ export default function MicrobusStationsPage() {
                                                     transition: "all 0.2s ease"
                                                   }}
                                                 >
-                                                  <i className={userVote === "like" ? "bx bxs-like" : "bx bx-like"} style={{ fontSize: "0.95rem" }}></i>
+                                                  <i className={userVote === "like" ? "fa-solid fa-check" : ""} style={{ fontSize: "0.95rem" }}></i>
                                                   <span>البيانات صحيحة ({likes})</span>
                                                 </button>
 
@@ -1113,7 +1171,7 @@ export default function MicrobusStationsPage() {
                                                     transition: "all 0.2s ease"
                                                   }}
                                                 >
-                                                  <i className={userVote === "dislike" ? "bx bxs-dislike" : "bx bx-dislike"} style={{ fontSize: "0.95rem" }}></i>
+                                                  <i className={userVote === "dislike" ? "fa-solid fa-xmark" : ""} style={{ fontSize: "0.95rem" }}></i>
                                                   <span>البيانات خاطئة ({dislikes})</span>
                                                 </button>
                                               </div>
@@ -1158,17 +1216,17 @@ export default function MicrobusStationsPage() {
                                         {route.via && (
                                           <div style={{ marginTop: "6px", marginBottom: "6px" }}>
                                             <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "block", marginBottom: "12px" }}>
-                                              🛣️ خط السير التفصيلي (نقاط المرور):
+                                              <i className="fa-solid fa-route" style={{ fontSize: "0.95rem", marginLeft: "6px" }}></i> خط السير التفصيلي (نقاط المرور)
                                             </span>
                                             <div style={{ overflowX: "auto", paddingBottom: "8px", paddingTop: "8px", direction: "rtl" }} className="custom-scrollbar">
                                               <div style={{ display: "flex", alignItems: "center", position: "relative", minWidth: "480px", padding: "0 10px" }}>
                                                 <div style={{
                                                   position: "absolute",
-                                                  top: "11px",
+                                                  top: "13px",
                                                   left: "30px",
                                                   right: "30px",
                                                   height: "2px",
-                                                  background: "rgba(255, 255, 255, 0.1)",
+                                                  background: "rgba(88, 88, 88, 0.04)",
                                                   zIndex: 1
                                                 }} />
 
@@ -1231,13 +1289,13 @@ export default function MicrobusStationsPage() {
 
                                         {/* Description */}
                                         {(route.description || route.notes) && (
-                                          <div style={{ 
-                                            fontSize: "0.8rem", 
-                                            color: "var(--text-secondary)", 
-                                            fontStyle: "italic", 
-                                            background: "rgba(255, 255, 255, 0.02)", 
-                                            padding: "8px 12px", 
-                                            borderRadius: "6px", 
+                                          <div style={{
+                                            fontSize: "0.8rem",
+                                            color: "var(--text-secondary)",
+                                            fontStyle: "italic",
+                                            background: "rgba(255, 255, 255, 0.02)",
+                                            padding: "8px 12px",
+                                            borderRadius: "6px",
                                             borderRight: "3px solid #f59e0b",
                                             lineHeight: "1.5"
                                           }}>
@@ -1305,26 +1363,19 @@ export default function MicrobusStationsPage() {
               backgroundColor: "rgba(255, 255, 255, 0.01)"
             }}>
               <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
-                ⚠️ إبلاغ عن مشكلة في خط السير
+                إبلاغ عن مشكلة في خط السير {reportingRouteDestination}
               </h3>
-              <button 
+              <button
                 onClick={() => setReportModalOpen(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "var(--text-secondary)",
-                  fontSize: "1.4rem",
-                  cursor: "pointer",
-                  lineHeight: 1
-                }}
+                className="closeBut"
               >
-                ×
+                <i className="bx bx-x"></i>
               </button>
             </div>
 
             {/* Modal Form */}
             <form onSubmit={handleReportSubmit} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", background: "rgba(255, 255, 255, 0.02)", padding: "10px 12px", borderRadius: "8px", borderRight: "3px solid #f59e0b" }}>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", background: "rgba(255, 255, 255, 0.02)", padding: "10px 12px", }}>
                 <div><strong>الموقف:</strong> {reportingStationName}</div>
                 <div style={{ marginTop: "4px" }}><strong>الوجهة:</strong> {reportingRouteDestination}</div>
               </div>
@@ -1388,9 +1439,9 @@ export default function MicrobusStationsPage() {
                   style={{
                     padding: "10px 16px",
                     borderRadius: "8px",
-                    background: "rgba(255, 255, 255, 0.04)",
+                    background: "rgba(255, 0, 0, 0.16)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-secondary)",
+                    color: "var(--text-primary)",
                     cursor: "pointer",
                     fontSize: "0.85rem",
                     fontWeight: "bold"
@@ -1404,13 +1455,12 @@ export default function MicrobusStationsPage() {
                   style={{
                     padding: "10px 20px",
                     borderRadius: "8px",
-                    background: "var(--bg-subscribe-button-gold)",
-                    border: "1px solid var(--br-subscribe-button-gold)",
-                    color: "#000",
+                    background: "var(--color-blue-700)",
+                    border: "1px solid var(--color-blue-700)",
+                    color: "var(--color-white-100)",
                     cursor: "pointer",
                     fontSize: "0.85rem",
                     fontWeight: "bold",
-                    boxShadow: "var(--bs-subscribe-button-gold)"
                   }}
                 >
                   {submittingReport ? "جاري الإرسال..." : "إرسال البلاغ"}

@@ -6,6 +6,9 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import styles from "../admin.module.css";
 import Link from "next/link";
+import clsx from "clsx";
+import CancelButton from "@/components/ui/button/CancelButton";
+import SubmitButton from "@/components/ui/button/SubmitButton";
 
 const EGYPT_DESTINATIONS = [
   "6 أكتوبر",
@@ -155,6 +158,10 @@ function AdminMicrobusStationsInner() {
   const [visualRoutes, setVisualRoutes] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Delete Confirmation States
+  const [itemToDelete, setItemToDelete] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!authLoading) {
@@ -308,7 +315,7 @@ function AdminMicrobusStationsInner() {
       }
     }
 
-    let payload = { 
+    let payload = {
       ...formData,
       routes: visualRoutes
     };
@@ -378,8 +385,14 @@ function AdminMicrobusStationsInner() {
     }
   };
 
-  const handleDelete = async (item: any) => {
-    if (!confirm("هل أنت متأكد من حذف هذا السجل؟")) return;
+  const handleDelete = (item: any) => {
+    setItemToDelete(item);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+    const item = itemToDelete;
+    setIsDeleting(true);
     setError("");
     setSuccess("");
 
@@ -391,13 +404,16 @@ function AdminMicrobusStationsInner() {
           .eq("id", item.id);
         if (dbErr) throw dbErr;
         setSuccess("تم حذف السجل بنجاح من قاعدة البيانات.");
-        
+
         // Reload
         const { data } = await supabase.from("microbus_stations").select("*");
         setMicrobusStations(data || []);
       } catch (err: any) {
         console.error(err);
         setError("فشل الحذف في قاعدة البيانات: " + err.message);
+      } finally {
+        setIsDeleting(false);
+        setItemToDelete(null);
       }
     } else {
       let currentLocal = getLocalData();
@@ -409,6 +425,8 @@ function AdminMicrobusStationsInner() {
       saveLocalData(currentLocal);
       setMicrobusStations(currentLocal);
       setSuccess("تم حذف السجل بنجاح محلياً (LocalStorage).");
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -555,23 +573,23 @@ function AdminMicrobusStationsInner() {
                       <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
                         style={{
                           padding: "5px 5px",
-                          borderRadius:"50%",
+                          borderRadius: "50%",
                           background: "var(--bg-secondary)",
-                         
+
                         }}
-                        >
+                      >
                         <i className="bx bx-edit-alt" />
                       </button>
                       <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
                         style={{
                           padding: "5px 5px",
-                          borderRadius:"50%",
+                          borderRadius: "50%",
                           background: "#ff000025",
-                          color:"#ff0000f5",
-                          border:"#ff000025",
+                          color: "#ff0000f5",
+                          border: "#ff000025",
                         }}
-                        >
-                        <i className="bx bx-trash" />                      
+                      >
+                        <i className="bx bx-trash" />
                       </button>
                     </div>
                   </td>
@@ -620,7 +638,7 @@ function AdminMicrobusStationsInner() {
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                 <div>
-                  <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم الموقف *</label>
+                  <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم الموقف *</label>
                   <input
                     type="text"
                     required
@@ -631,7 +649,7 @@ function AdminMicrobusStationsInner() {
                   />
                 </div>
                 <div>
-                  <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المحافظة *</label>
+                  <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المحافظة *</label>
                   <input
                     type="text"
                     required
@@ -644,7 +662,7 @@ function AdminMicrobusStationsInner() {
               </div>
 
               <div>
-                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>العنوان بالتفصيل *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>العنوان بالتفصيل *</label>
                 <input
                   type="text"
                   required
@@ -656,7 +674,7 @@ function AdminMicrobusStationsInner() {
               </div>
 
               <div>
-                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
+                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>رابط خريطة جوجل *</label>
                 <input
                   type="url"
                   required
@@ -707,7 +725,7 @@ function AdminMicrobusStationsInner() {
 
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>الوجهة (المدينة/المحافظة) *</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>الوجهة (المدينة/المحافظة) *</label>
                           <input
                             type="text"
                             required
@@ -724,7 +742,7 @@ function AdminMicrobusStationsInner() {
                           />
                         </div>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>التعريفة / الأجرة *</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>التعريفة / الأجرة *</label>
                           <input
                             type="text"
                             required
@@ -743,7 +761,7 @@ function AdminMicrobusStationsInner() {
 
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>نوع المركبة</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>نوع المركبة</label>
                           <select
                             value={route.vehicleType}
                             onChange={e => {
@@ -752,7 +770,7 @@ function AdminMicrobusStationsInner() {
                               setVisualRoutes(updated);
                             }}
                             className="ios-input"
-                            style={{ width: "100%"}}
+                            style={{ width: "100%" }}
                           >
                             <option value="ميكروباص">ميكروباص</option>
                             <option value="ميكروباص سقف عالي">ميكروباص سقف عالي</option>
@@ -762,7 +780,7 @@ function AdminMicrobusStationsInner() {
                           </select>
                         </div>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>نوع الموقف</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>نوع الموقف</label>
                           <select
                             value={route.type}
                             onChange={e => {
@@ -771,7 +789,7 @@ function AdminMicrobusStationsInner() {
                               setVisualRoutes(updated);
                             }}
                             className="ios-input"
-                            style={{ width: "100%"}}
+                            style={{ width: "100%" }}
                           >
                             <option value="official">موقف رسمي</option>
                             <option value="normal">نقطة تحميل عادية</option>
@@ -781,7 +799,7 @@ function AdminMicrobusStationsInner() {
 
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>زمن الرحلة</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>زمن الرحلة</label>
                           <input
                             type="text"
                             value={route.duration}
@@ -796,7 +814,7 @@ function AdminMicrobusStationsInner() {
                           />
                         </div>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>تاريخ آخر تحديث</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>تاريخ آخر تحديث</label>
                           <input
                             type="date"
                             value={route.lastUpdated}
@@ -806,14 +824,14 @@ function AdminMicrobusStationsInner() {
                               setVisualRoutes(updated);
                             }}
                             className="ios-input"
-                            style={{ width: "100%"}}
+                            style={{ width: "100%" }}
                           />
                         </div>
                       </div>
 
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>وصف الخط (ملاحظات)</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>وصف الخط (ملاحظات)</label>
                           <input
                             type="text"
                             value={route.description}
@@ -828,7 +846,7 @@ function AdminMicrobusStationsInner() {
                           />
                         </div>
                         <div>
-                          <label className="help-label" style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>يمر عبر (via)</label>
+                          <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "4px", fontSize: "0.78rem" }}>يمر عبر (via)</label>
                           <input
                             type="text"
                             value={route.via}
@@ -867,6 +885,7 @@ function AdminMicrobusStationsInner() {
                     color: "#818cf8",
                     borderRadius: "10px",
                     cursor: "pointer",
+                    fontFamily: "var(--font-heading)",
                     fontSize: "0.85rem",
                     fontWeight: "bold",
                     marginTop: "8px"
@@ -877,14 +896,140 @@ function AdminMicrobusStationsInner() {
               </div>
 
               <div style={{ display: "flex", gap: "10px", marginTop: "14px", justifyContent: "flex-end" }}>
-                <button type="button" onClick={() => setShowModal(false)} className={styles.backToSiteBtn} style={{ margin: 0 }}>
+                <CancelButton onClick={() => setShowModal(false)}
+                  style={{
+                    width: "50%",
+                    padding: "12px 30px",
+                    margin: 10
+                  }}>
                   إلغاء
-                </button>
-                <button type="submit" className="ios-btn" style={{ margin: 0, background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "#fff", padding: "10px 24px" }}>
-                  {editingItem ? "حفظ التغييرات" : "إضافة الموقف"}
-                </button>
+                </CancelButton>
+
+                <SubmitButton
+                  editingItem={editingItem}
+                  style={{
+                    margin: 10,
+                    padding: "12px 30px",
+                    width: "50%",
+                  }}
+                />
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal */}
+      {itemToDelete && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 4000,
+          background: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div style={{
+            background: "rgba(18, 24, 52, 0.95)",
+            borderRadius: "24px",
+            padding: "32px",
+            width: "100%",
+            maxWidth: "450px",
+            border: "1px solid rgba(255, 59, 48, 0.3)",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            direction: "rtl"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(255, 59, 48, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(255, 59, 48, 0.3)"
+            }}>
+              <span style={{ fontSize: "2rem" }}>⚠️</span>
+            </div>
+
+            <h3 style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: "1.4rem",
+              color: "#fff",
+              marginBottom: "12px",
+              fontWeight: "700"
+            }}>
+              تأكيد الحذف
+            </h3>
+
+            <p style={{
+              color: "var(--text-secondary)",
+              fontSize: "1.05rem",
+              lineHeight: "1.6",
+              marginBottom: "24px"
+            }}>
+              هل أنت متأكد من حذف هذا السجل؟
+              {itemToDelete && (
+                <strong style={{ display: "block", marginTop: "10px", color: "#ff4d4d", fontSize: "1.1rem" }}>
+                  « {itemToDelete.name} »
+                </strong>
+              )}
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button
+                disabled={isDeleting}
+                onClick={handleConfirmDelete}
+                style={{
+                  flex: 1,
+                  padding: "12px 20px",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "#ff3b30",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  opacity: isDeleting ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                {isDeleting ? "جاري الحذف..." : "نعم، احذف"}
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => setItemToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: "12px 20px",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s"
+                }}
+              >
+                إلغاء
+              </button>
+            </div>
           </div>
         </div>
       )}
