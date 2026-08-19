@@ -76,6 +76,7 @@ export default function ServicesDashboard() {
   const [editBio, setEditBio] = useState("");
   const [editAvailable, setEditAvailable] = useState(true);
   const [updatingProfile, setUpdatingProfile] = useState(false);
+  const [deletingWorkerProfile, setDeletingWorkerProfile] = useState(false);
 
   // New portfolio upload state
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -102,7 +103,13 @@ export default function ServicesDashboard() {
   const [upgrading, setUpgrading] = useState(false);
 
   useEffect(() => {
-    if (!user) {
+    if (typeof window !== "undefined") {
+      const active = localStorage.getItem("services_auth_active");
+      if (active === "false" || !user) {
+        router.push("/services/auth/login");
+        return;
+      }
+    } else if (!user) {
       router.push("/services/auth/login");
       return;
     }
@@ -225,6 +232,48 @@ export default function ServicesDashboard() {
     } finally {
       setUpdatingProfile(false);
     }
+  };
+
+  const handleDeleteWorkerProfile = async () => {
+    if (!supabase || !user) return;
+
+    const confirmed = window.confirm(
+      "هل أنت متأكد من رغبتك في حذف حسابك من سجلات مقدمي الخدمات؟\n\nلن يظهر اسمك أو تخصصك في دليل الخدمات بعد الآن ولن تتلقى طلبات عمل جديدة."
+    );
+    if (!confirmed) return;
+
+    setDeletingWorkerProfile(true);
+    try {
+      // 1. Delete portfolio items
+      await supabase.from("worker_portfolio").delete().eq("worker_id", user.id);
+
+      // 2. Delete worker profile from service_workers
+      const { error } = await supabase
+        .from("service_workers")
+        .delete()
+        .eq("id", user.id);
+
+      if (error) {
+        alert("فشل حذف الحساب: " + error.message);
+      } else {
+        alert("تم حذف حسابك من سجلات مقدمي الخدمات بنجاح.");
+        setIsWorker(false);
+        setWorkerProfile(null);
+        window.location.reload();
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert("حدث خطأ أثناء الحذف.");
+    } finally {
+      setDeletingWorkerProfile(false);
+    }
+  };
+
+  const handleServicesLogout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("services_auth_active", "false");
+    }
+    router.push("/services/auth/login?logged_out=true");
   };
 
   const handleAddPortfolioImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -463,21 +512,42 @@ export default function ServicesDashboard() {
               مرحباً بك، {profile?.full_name || "مستخدم ماب"} | حساب {isWorker ? "مقدم خدمة (فني)" : "عميل"}
             </p>
           </div>
-          <Link href="/services" style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            background: "var(--bg-secondary)",
-            border: "1px solid var(--border-glass)",
-            color: "var(--text-primary)",
-            padding: "8px 16px",
-            borderRadius: "20px",
-            fontSize: "0.85rem",
-            textDecoration: "none",
-            fontWeight: "700"
-          }}>
-            🔍 تصفح دليل الخدمات
-          </Link>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <Link href="/services" style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
+              padding: "8px 16px",
+              borderRadius: "20px",
+              fontSize: "0.85rem",
+              textDecoration: "none",
+              fontWeight: "700"
+            }}>
+              🔍 تصفح دليل الخدمات
+            </Link>
+            <button
+              onClick={handleServicesLogout}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.25)",
+                color: "var(--accent-danger, #ef4444)",
+                padding: "8px 16px",
+                borderRadius: "20px",
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                fontWeight: "700",
+                fontFamily: "var(--font-almarai)"
+              }}
+            >
+              🚪 تسجيل الخروج
+            </button>
+          </div>
         </div>
 
         {/* WORKER DASHBOARD */}
@@ -588,6 +658,39 @@ export default function ServicesDashboard() {
                     }}
                   >
                     {updatingProfile ? "جاري التحديث..." : "حفظ التعديلات"}
+                  </button>
+
+                  <hr style={{ border: "none", height: "1px", background: "var(--border-glass)", margin: "12px 0 6px" }} />
+
+                  <button
+                    type="button"
+                    onClick={handleDeleteWorkerProfile}
+                    disabled={deletingWorkerProfile}
+                    style={{
+                      height: "36px",
+                      borderRadius: "8px",
+                      background: "rgba(239, 68, 68, 0.1)",
+                      border: "1px solid rgba(239, 68, 68, 0.3)",
+                      color: "var(--accent-danger, #ef4444)",
+                      fontWeight: "700",
+                      fontSize: "0.82rem",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "var(--accent-danger, #ef4444)";
+                      e.currentTarget.style.color = "#ffffff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                      e.currentTarget.style.color = "var(--accent-danger, #ef4444)";
+                    }}
+                  >
+                    {deletingWorkerProfile ? "جاري الحذف..." : "🗑️ إلغاء التفعيل وحذف الحساب من سجل مقدمي الخدمات"}
                   </button>
                 </form>
               </div>

@@ -39,9 +39,9 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import styles from "../admin.module.css";
 import { useAuth } from "@/context/AuthContext";
-import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES, FEATURES_LIST, CATEGORIES_STRUCTURE, formatBoxIcon } from "@/data/places";
+import { PlaceCategory, initialPlaces, CategoryItem, DEFAULT_CATEGORIES, FEATURES_LIST, CATEGORIES_STRUCTURE, formatBoxIcon, normalizePlaceCategory } from "@/data/places";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
-import { ScheduleDay, WorkingHoursData, DAYS_OF_WEEK, generateTimeOptions } from "@/lib/workingHours";
+import { ScheduleDay, WorkingHoursData, DAYS_OF_WEEK, generateTimeOptions, getTodayWorkingHoursText } from "@/lib/workingHours";
 import { MultiSelectSearch } from "@/components/ui/MultiSelectSearch";
 import { SERVICES_LIST } from "@/data/services";
 import * as XLSX from "xlsx";
@@ -615,27 +615,259 @@ export default function AdminDashboard() {
     }
   };
 
+  // Helper functions for parsing variable working hours from Excel
+  const parseExcelTimePart = (rawPart: string, defaultPeriod: "ص" | "م"): { time: string; period: "ص" | "م" } => {
+    let period: "ص" | "م" = defaultPeriod;
+    const lower = rawPart.toLowerCase();
+
+    if (lower.includes("م") || lower.includes("مساء") || lower.includes("pm")) {
+      period = "م";
+    } else if (lower.includes("ص") || lower.includes("صباح") || lower.includes("am")) {
+      period = "ص";
+    }
+
+    const match = rawPart.match(/(\d{1,2})(?:[:.](\d{2}))?/);
+    if (!match) {
+      return { time: defaultPeriod === "ص" ? "09:00" : "11:00", period };
+    }
+
+    let hour = parseInt(match[1], 10);
+    let minStr = match[2] || "00";
+
+    if (hour > 12) {
+      hour = hour - 12;
+      period = "م";
+    } else if (hour === 0) {
+      hour = 12;
+      period = "ص";
+    }
+
+    const hourStr = hour.toString().padStart(2, "0");
+    return { time: `${hourStr}:${minStr}`, period };
+  };
+
+  const parseExcelSingleDayTime = (dayName: string, str: string): ScheduleDay => {
+    const defaultOpen: ScheduleDay = {
+      day: dayName,
+      isWorking: true,
+      openTime: "09:00",
+      openPeriod: "ص",
+      closeTime: "11:00",
+      closePeriod: "م"
+    };
+
+    if (!str || !str.trim()) return defaultOpen;
+    const s = str.trim().toLowerCase();
+
+    if (s.includes("مغلق") || s.includes("إجازة") || s.includes("اجازة") || s.includes("عطلة") || s.includes("closed") || s.includes("off")) {
+      return { day: dayName, isWorking: false, openTime: "09:00", openPeriod: "ص", closeTime: "11:00", closePeriod: "م" };
+    }
+
+    if (s.includes("24/7") || s.includes("24 ساعة") || s.includes("24ساعة") || s.includes("مفتوح 24")) {
+      return { day: dayName, isWorking: true, openTime: "12:00", openPeriod: "ص", closeTime: "11:59", closePeriod: "م" };
+    }
+
+    const parts = str.split(/[-–—|/|الى|إلى|حتى|حتي|to]+/i).map(p => p.trim()).filter(Boolean);
+
+    if (parts.length >= 2) {
+      const openParsed = parseExcelTimePart(parts[0], "ص");
+      const closeParsed = parseExcelTimePart(parts[1], "م");
+      return {
+        day: dayName,
+        isWorking: true,
+        openTime: openParsed.time,
+        openPeriod: openParsed.period,
+        closeTime: closeParsed.time,
+        closePeriod: closeParsed.period
+      };
+    } else if (parts.length === 1) {
+      const timeParsed = parseExcelTimePart(parts[0], "ص");
+      return {
+        day: dayName,
+        isWorking: true,
+        openTime: timeParsed.time,
+        openPeriod: timeParsed.period,
+        closeTime: "11:00",
+        closePeriod: "م"
+      };
+    }
+
+    return defaultOpen;
+  };
+
+  const resolveExcelDaysFromText = (daysStr: string): string[] => {
+    const norm = daysStr.trim().toLowerCase();
+    if (norm.includes("يوميا") || norm.includes("يومياً") || norm.includes("كل يوم") || norm.includes("جميع الايام") || norm.includes("جميع الأيام")) {
+      return DAYS_OF_WEEK;
+    }
+
+    const rangeMatch = daysStr.split(/[-–—|الى|إلى|حتى|حتي|to]/).map(d => d.trim()).filter(Boolean);
+    if (rangeMatch.length === 2) {
+      const normalizeDay = (raw: string): string | null => {
+        const s = raw.trim().toLowerCase();
+        if (s.includes("احد") || s.includes("أحد") || s.includes("sun")) return "الأحد";
+        if (s.includes("اتنين") || s.includes("إثنين") || s.includes("اثنين") || s.includes("mon")) return "الإثنين";
+        if (s.includes("ثلاثاء") || s.includes("تلات") || s.includes("tue")) return "الثلاثاء";
+        if (s.includes("اربعاء") || s.includes("أربعاء") || s.includes("wed")) return "الأربعاء";
+        if (s.includes("خميس") || s.includes("thu")) return "الخميس";
+        if (s.includes("جمعة") || s.includes("جمعه") || s.includes("fri")) return "الجمعة";
+        if (s.includes("سبت") || s.includes("sat")) return "السبت";
+        return null;
+      };
+
+      const startDay = normalizeDay(rangeMatch[0]);
+      const endDay = normalizeDay(rangeMatch[1]);
+      if (startDay && endDay) {
+        const WEEK_ORDER = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+        const sIdx = WEEK_ORDER.indexOf(startDay);
+        const eIdx = WEEK_ORDER.indexOf(endDay);
+        if (sIdx !== -1 && eIdx !== -1) {
+          const result: string[] = [];
+          let curr = sIdx;
+          while (curr !== eIdx) {
+            result.push(WEEK_ORDER[curr]);
+            curr = (curr + 1) % 7;
+          }
+          result.push(WEEK_ORDER[eIdx]);
+          return result;
+        }
+      }
+    }
+
+    const matchedDays: string[] = [];
+    DAYS_OF_WEEK.forEach(day => {
+      if (daysStr.includes(day) || daysStr.includes(day.replace("أ", "ا").replace("إ", "ا"))) {
+        matchedDays.push(day);
+      }
+    });
+
+    return matchedDays.length > 0 ? matchedDays : DAYS_OF_WEEK;
+  };
+
+  const parseExcelWorkingHours = (row: any): string => {
+    const dayColumnNames: Record<string, string[]> = {
+      "الأحد": ["مواعيد الأحد", "الأحد", "يوم الأحد", "Sunday"],
+      "الإثنين": ["مواعيد الإثنين", "مواعيد الاثنين", "الإثنين", "الاثنين", "Monday"],
+      "الثلاثاء": ["مواعيد الثلاثاء", "الثلاثاء", "Tuesday"],
+      "الأربعاء": ["مواعيد الأربعاء", "مواعيد الاربعاء", "الأربعاء", "الاربعاء", "Wednesday"],
+      "الخميس": ["مواعيد الخميس", "الخميس", "Thursday"],
+      "الجمعة": ["مواعيد الجمعة", "مواعيد الجمعه", "الجمعة", "الجمعه", "Friday"],
+      "السبت": ["مواعيد السبت", "السبت", "Saturday"]
+    };
+
+    let hasPerDayCols = false;
+    for (const day of DAYS_OF_WEEK) {
+      const colKeys = dayColumnNames[day];
+      if (colKeys.some(k => row[k] !== undefined && row[k] !== null && row[k].toString().trim() !== "")) {
+        hasPerDayCols = true;
+        break;
+      }
+    }
+
+    if (hasPerDayCols) {
+      const schedule: ScheduleDay[] = DAYS_OF_WEEK.map(day => {
+        const colKeys = dayColumnNames[day];
+        let val = "";
+        for (const k of colKeys) {
+          if (row[k] !== undefined && row[k] !== null && row[k].toString().trim() !== "") {
+            val = row[k].toString().trim();
+            break;
+          }
+        }
+        return parseExcelSingleDayTime(day, val);
+      });
+      return JSON.stringify({ type: "custom", schedule });
+    }
+
+    const rawWH = row["مواعيد العمل"]?.toString().trim() || "";
+    if (!rawWH) {
+      return JSON.stringify({ type: "24/7" });
+    }
+
+    const lowerWH = rawWH.toLowerCase();
+    if (lowerWH === "24/7" || lowerWH === "مفتوح 24 ساعة" || lowerWH === "24 ساعة" || lowerWH === "24/7 🟢") {
+      return JSON.stringify({ type: "24/7" });
+    }
+
+    const scheduleMap: Record<string, ScheduleDay> = {};
+    DAYS_OF_WEEK.forEach(day => {
+      scheduleMap[day] = {
+        day,
+        isWorking: true,
+        openTime: "09:00",
+        openPeriod: "ص",
+        closeTime: "11:00",
+        closePeriod: "م"
+      };
+    });
+
+    const segments = rawWH.split(/[|\n\r;]/).map((s: string) => s.trim()).filter(Boolean);
+    let parsedAnySegment = false;
+
+    for (const seg of segments) {
+      if (seg.includes(":")) {
+        const colonIdx = seg.indexOf(":");
+        const daysPart = seg.substring(0, colonIdx);
+        const timePart = seg.substring(colonIdx + 1);
+
+        const targetDays = resolveExcelDaysFromText(daysPart);
+        if (targetDays.length > 0) {
+          targetDays.forEach(day => {
+            scheduleMap[day] = parseExcelSingleDayTime(day, timePart);
+          });
+          parsedAnySegment = true;
+        }
+      }
+    }
+
+    if (parsedAnySegment) {
+      const schedule = DAYS_OF_WEEK.map(day => scheduleMap[day]);
+      return JSON.stringify({ type: "custom", schedule });
+    }
+
+    const singleParsed = parseExcelSingleDayTime("يومي", rawWH);
+    if (singleParsed.isWorking) {
+      const schedule = DAYS_OF_WEEK.map(day => ({
+        ...singleParsed,
+        day
+      }));
+      return JSON.stringify({ type: "custom", schedule });
+    }
+
+    return rawWH;
+  };
+
   const handleDownloadTemplate = () => {
     if (typeof window === "undefined") return;
     try {
       const headers = [
-        "الاسم", "القسم الرئيسي", "المدينة / المنطقة", "العنوان بالتفصيل", "رابط جوجل ماب",
-        "المحافظة", "الأقسام الفرعية", "الهواتف", "مواعيد العمل", "خط العرض", "خط الطول",
-        "وصف قصير", "الوصف التفصيلي", "رابط الصورة الرئيسية", "روابط المنيو",
-        "موقع الويب", "الميزات", "الخدمات", "نوع المكان", "أيقونة النوع"
+        "الاسم", "القسم الرئيسي", "الأقسام الفرعية", "المدينة / المنطقة", "العنوان بالتفصيل", "رابط جوجل ماب", "المحافظة", "الهواتف",
+        "مواعيد الأحد", "مواعيد الإثنين", "مواعيد الثلاثاء", "مواعيد الأربعاء", "مواعيد الخميس", "مواعيد الجمعة", "مواعيد السبت",
+        "مواعيد العمل",
+        "معلومات مفيدة (المميزات)",
+        "خط العرض", "خط الطول", "وصف قصير", "الوصف التفصيلي", "رابط الصورة الرئيسية", "روابط المنيو",
+        "موقع الويب", "الخدمات", "نوع المكان", "أيقونة النوع"
       ];
 
       const sampleData = [
         {
           "الاسم": "مطعم البركة",
           "القسم الرئيسي": "أكل ومشروبات",
+          "الأقسام الفرعية": "مطاعم, فاست فود",
           "المدينة / المنطقة": "مصر الجديدة",
           "العنوان بالتفصيل": "15 شارع الثورة، بجوار مسجد جمال",
           "رابط جوجل ماب": "https://maps.google.com/?q=30.0815,31.3256",
           "المحافظة": "القاهرة",
-          "الأقسام الفرعية": "مشويات, بيتزا",
           "الهواتف": "01012345678, 0224150000",
-          "مواعيد العمل": "يومياً من 09:00 ص حتى 11:00 م",
+          "مواعيد الأحد": "09:00 ص - 11:00 م",
+          "مواعيد الإثنين": "09:00 ص - 11:00 م",
+          "مواعيد الثلاثاء": "09:00 ص - 11:00 م",
+          "مواعيد الأربعاء": "09:00 ص - 11:00 م",
+          "مواعيد الخميس": "09:00 ص - 12:00 م",
+          "مواعيد الجمعة": "02:00 م - 12:00 م",
+          "مواعيد السبت": "09:00 ص - 11:00 م",
+          "مواعيد العمل": "",
+          "معلومات مفيدة (المميزات)": "خيارات نباتية متوفرة, شبكة واي فاي مجانية, يقبل الدفع بالبطاقات الائتمانية, مناسب للمجموعات والعائلات",
           "خط العرض": 30.0815,
           "خط الطول": 31.3256,
           "وصف قصير": "أفضل مطعم مشويات في مصر الجديدة",
@@ -643,16 +875,102 @@ export default function AdminDashboard() {
           "رابط الصورة الرئيسية": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5",
           "روابط المنيو": "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae",
           "موقع الويب": "https://albaraka-restaurant.com",
-          "الميزات": "تكييف, واي فاي, منطقة ألعاب",
           "الخدمات": "توصيل طلبات, دفع بالفيزا, ساحة انتظار",
           "نوع المكان": "مطعم مشويات",
           "أيقونة النوع": "bx-utensils"
+        },
+        {
+          "الاسم": "كافيه تريانون",
+          "القسم الرئيسي": "أكل ومشروبات",
+          "الأقسام الفرعية": "كافيهات, عصائر",
+          "المدينة / المنطقة": "وسط البلد",
+          "العنوان بالتفصيل": "ميدان طلعت حرب",
+          "رابط جوجل ماب": "https://maps.google.com/?q=30.0444,31.2357",
+          "المحافظة": "القاهرة",
+          "الهواتف": "01234567890",
+          "مواعيد الأحد": "08:00 ص - 11:00 م",
+          "مواعيد الإثنين": "08:00 ص - 11:00 م",
+          "مواعيد الثلاثاء": "08:00 ص - 11:00 م",
+          "مواعيد الأربعاء": "08:00 ص - 11:00 م",
+          "مواعيد الخميس": "08:00 ص - 12:00 م",
+          "مواعيد الجمعة": "إجازة",
+          "مواعيد السبت": "09:00 ص - 11:00 م",
+          "مواعيد العمل": "",
+          "معلومات مفيدة (المميزات)": "أماكن عائلية وكابلز, شبكة واي فاي مجانية, أماكن هادئة",
+          "خط العرض": 30.0444,
+          "خط الطول": 31.2357,
+          "وصف قصير": "مقهى ومشروبات طازجة",
+          "الوصف التفصيلي": "جلسات متميزة ومشروبات ساخنة وباردة يومياً.",
+          "رابط الصورة الرئيسية": "",
+          "روابط المنيو": "",
+          "موقع الويب": "",
+          "الخدمات": "دفع بالفيزا",
+          "نوع المكان": "كافيه",
+          "أيقونة النوع": "bx-coffee"
+        },
+        {
+          "الاسم": "صيدلية مصر",
+          "القسم الرئيسي": "صحة",
+          "الأقسام الفرعية": "صيدليات",
+          "المدينة / المنطقة": "مدينة نصر",
+          "العنوان بالتفصيل": "شارع عباس العقاد",
+          "رابط جوجل ماب": "https://maps.google.com/?q=30.0560,31.3300",
+          "المحافظة": "القاهرة",
+          "الهواتف": "19999",
+          "مواعيد الأحد": "24/7",
+          "مواعيد الإثنين": "24/7",
+          "مواعيد الثلاثاء": "24/7",
+          "مواعيد الأربعاء": "24/7",
+          "مواعيد الخميس": "24/7",
+          "مواعيد الجمعة": "24/7",
+          "مواعيد السبت": "24/7",
+          "مواعيد العمل": "",
+          "معلومات مفيدة (المميزات)": "مداخل سهلة للكراسي المتحركة, مرافق مريحة للزوار, مناسب لجميع الأعمار",
+          "خط العرض": 30.0560,
+          "خط الطول": 31.3300,
+          "وصف قصير": "صيدلية خدمة 24 ساعة",
+          "الوصف التفصيلي": "جميع الأدوية والمستلزمات الطبية والتوصيل للمنازل.",
+          "رابط الصورة الرئيسية": "",
+          "روابط المنيو": "",
+          "موقع الويب": "",
+          "الخدمات": "صيدلية",
+          "نوع المكان": "صيدلية",
+          "أيقونة النوع": "bx-first-aid"
         }
       ];
 
+      const guideHeaders = ["القسم الرئيسي", "التصنيفات الفرعية المتاحة (يفصل بينها بفصلة)"];
+      const guideData = CATEGORIES_STRUCTURE.map(main => ({
+        "القسم الرئيسي": main.label,
+        "التصنيفات الفرعية المتاحة (يفصل بينها بفصلة)": main.subCategories.map(s => s.label).join(" ، ")
+      }));
+
+      const whGuideHeaders = ["اسم عمود اليوم في Excel", "مثال التوقيت المدخل في الخلية", "شرح النتيجة"];
+      const whGuideData = [
+        { "اسم عمود اليوم في Excel": "مواعيد الأحد (أو الأحد)", "مثال التوقيت المدخل في الخلية": "09:00 ص - 11:00 م", "شرح النتيجة": "يفتح الساعة 9 صباحاً ويغلق 11 مساءً يوم الأحد" },
+        { "اسم عمود اليوم في Excel": "مواعيد الخميس (أو الخميس)", "مثال التوقيت المدخل في الخلية": "09:00 ص - 12:00 م", "شرح النتيجة": "يفتح الساعة 9 صباحاً ويغلق 12 منتصف الليل يوم الخميس" },
+        { "اسم عمود اليوم في Excel": "مواعيد الجمعة (أو الجمعة)", "مثال التوقيت المدخل في الخلية": "إجازة (أو مغلق)", "شرح النتيجة": "يوم الجمعة عطلة رسمية للمكان" },
+        { "اسم عمود اليوم في Excel": "مواعيد الأحد إلى السبت", "مثال التوقيت المدخل في الخلية": "24/7", "شرح النتيجة": "المكان يعمل 24 ساعة طوال اليوم" }
+      ];
+
+      const featGuideHeaders = ["الأيقونة", "معلومات مفيدة / الميزة", "طريقة الكتابة في Excel (يمكن اختيار أكثر من ميزة بفصلة)"];
+      const featGuideData = FEATURES_LIST.map(f => ({
+        "الأيقونة": f.icon,
+        "معلومات مفيدة / الميزة": f.label,
+        "طريقة الكتابة في Excel (يمكن اختيار أكثر من ميزة بفصلة)": `${f.label} (أو ${f.key})`
+      }));
+
       const worksheet = XLSX.utils.json_to_sheet(sampleData, { header: headers });
+      const guideWorksheet = XLSX.utils.json_to_sheet(guideData, { header: guideHeaders });
+      const whGuideWorksheet = XLSX.utils.json_to_sheet(whGuideData, { header: whGuideHeaders });
+      const featGuideWorksheet = XLSX.utils.json_to_sheet(featGuideData, { header: featGuideHeaders });
+
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "الأماكن");
+      XLSX.utils.book_append_sheet(workbook, guideWorksheet, "دليل التصنيفات الفرعية");
+      XLSX.utils.book_append_sheet(workbook, whGuideWorksheet, "دليل مواعيد العمل اليومية");
+      XLSX.utils.book_append_sheet(workbook, featGuideWorksheet, "دليل المميزات والمعلومات");
+
       XLSX.writeFile(workbook, "places_template.xlsx");
     } catch (err: any) {
       alert("حدث خطأ أثناء تحميل الملف: " + err.message);
@@ -682,12 +1000,14 @@ export default function AdminDashboard() {
           return;
         }
 
-        // Map categories from labels to keys
+        // Map categories from labels and names to internal keys
         const categoryMapByLabel: Record<string, string> = {};
         CATEGORIES_STRUCTURE.forEach(main => {
-          categoryMapByLabel[main.label.trim()] = main.name;
+          categoryMapByLabel[main.label.trim().toLowerCase()] = main.name;
+          categoryMapByLabel[main.name.trim().toLowerCase()] = main.name;
           main.subCategories.forEach(sub => {
-            categoryMapByLabel[sub.label.trim()] = sub.name;
+            categoryMapByLabel[sub.label.trim().toLowerCase()] = sub.name;
+            categoryMapByLabel[sub.name.trim().toLowerCase()] = sub.name;
           });
         });
 
@@ -719,30 +1039,29 @@ export default function AdminDashboard() {
             return;
           }
 
-          // Convert label to key if needed
-          if (categoryMapByLabel[category]) {
-            category = categoryMapByLabel[category];
-          }
-
-          const governorate = row["المحافظة"]?.toString().trim() || "القاهرة";
-          const sub_categories = row["الأقسام الفرعية"]
-            ? row["الأقسام الفرعية"].toString().split(",").map((s: string) => {
+          // Support multi-separator splitting for subcategories: English comma, Arabic comma, slash, semicolon, pipe, newlines
+          const rawSubCats = row["الأقسام الفرعية"]?.toString() || "";
+          const parsedSubCats = rawSubCats
+            ? rawSubCats.split(/[,\u060C\n\r\/;|]+/).map((s: string) => {
               const trimmed = s.trim();
-              return categoryMapByLabel[trimmed] || trimmed;
+              if (!trimmed) return "";
+              const lower = trimmed.toLowerCase();
+              return categoryMapByLabel[lower] || trimmed;
             }).filter(Boolean)
             : [];
+
+          const governorate = row["المحافظة"]?.toString().trim() || "القاهرة";
+
+          // Use normalizePlaceCategory to resolve main category & subcategories cleanly
+          const normalizedCat = normalizePlaceCategory(category, parsedSubCats);
+          category = normalizedCat.category;
+          const category_label = CATEGORY_MAP[category] || normalizedCat.categoryLabel;
+          const sub_categories = Array.from(new Set(normalizedCat.subCategories));
           const phones = row["الهواتف"]
             ? row["الهواتف"].toString().split(",").map((p: string) => p.trim()).filter(Boolean)
             : [];
 
-          const excel_working_hours = row["مواعيد العمل"]?.toString().trim();
-          let finalWorkingHours = JSON.stringify({ type: "24/7" });
-          if (excel_working_hours) {
-            const lowerWH = excel_working_hours.toLowerCase();
-            if (lowerWH !== "24/7" && lowerWH !== "مفتوح 24 ساعة" && lowerWH !== "24 ساعة") {
-              finalWorkingHours = excel_working_hours;
-            }
-          }
+          const finalWorkingHours = parseExcelWorkingHours(row);
 
           const latitude = parseFloat(row["خط العرض"]) || null;
           const longitude = parseFloat(row["خط الظول"]) || parseFloat(row["خط الطول"]) || null;
@@ -753,9 +1072,60 @@ export default function AdminDashboard() {
             ? row["روابط المنيو"].toString().split(",").map((m: string) => m.trim()).filter(Boolean)
             : [];
           const website_url = row["موقع الويب"]?.toString().trim() || null;
-          const features = row["الميزات"]
-            ? row["الميزات"].toString().split(",").map((f: string) => f.trim()).filter(Boolean)
-            : [];
+          const rawFeatsStr = (
+            row["معلومات مفيدة (المميزات)"] ||
+            row["الميزات"] ||
+            row["معلومات مفيدة"] ||
+            row["المميزات"] ||
+            row["المميزات والخدمات"] ||
+            row["الميزات والخدمات"] ||
+            ""
+          ).toString();
+
+          const parsedFeats: string[] = [];
+
+          if (rawFeatsStr) {
+            const items = rawFeatsStr.split(/[,\u060C\n\r\/;|]+/).map((s: string) => s.trim()).filter(Boolean);
+            items.forEach((item: string) => {
+              const cleanItem = item.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2600-\u27FF]/g, "").trim().toLowerCase();
+              const foundFeat = FEATURES_LIST.find(f =>
+                f.key.toLowerCase() === item.toLowerCase() ||
+                f.label.trim().toLowerCase() === item.trim().toLowerCase() ||
+                (cleanItem && f.label.trim().toLowerCase().includes(cleanItem)) ||
+                item.includes(f.label)
+              );
+
+              if (foundFeat) {
+                if (!parsedFeats.includes(foundFeat.key)) parsedFeats.push(foundFeat.key);
+              } else {
+                if (cleanItem.includes("نباتي") || cleanItem.includes("نباتيه")) {
+                  if (!parsedFeats.includes("vegetarian_options")) parsedFeats.push("vegetarian_options");
+                } else if (cleanItem.includes("مجموعات") || cleanItem.includes("جروب")) {
+                  if (!parsedFeats.includes("suitable_for_groups")) parsedFeats.push("suitable_for_groups");
+                } else if (cleanItem.includes("بطاق") || cleanItem.includes("فيزا") || cleanItem.includes("ائتمان") || cleanItem.includes("كارت")) {
+                  if (!parsedFeats.includes("accepts_credit_cards")) parsedFeats.push("accepts_credit_cards");
+                } else if (cleanItem.includes("واي فاي") || cleanItem.includes("نت") || cleanItem.includes("wifi")) {
+                  if (!parsedFeats.includes("free_wifi")) parsedFeats.push("free_wifi");
+                } else if (cleanItem.includes("مرافق") || cleanItem.includes("مريحة")) {
+                  if (!parsedFeats.includes("comfortable_facilities")) parsedFeats.push("comfortable_facilities");
+                } else if (cleanItem.includes("كراسي") || cleanItem.includes("متحرك") || cleanItem.includes("ذوي")) {
+                  if (!parsedFeats.includes("wheelchair_accessible")) parsedFeats.push("wheelchair_accessible");
+                } else if (cleanItem.includes("جميع الاعمار") || cleanItem.includes("جميع الأعمار")) {
+                  if (!parsedFeats.includes("suitable_for_all_ages")) parsedFeats.push("suitable_for_all_ages");
+                } else if (cleanItem.includes("هادئ") || cleanItem.includes("هادئه") || cleanItem.includes("هدوء")) {
+                  if (!parsedFeats.includes("quiet_place")) parsedFeats.push("quiet_place");
+                } else if (cleanItem.includes("اطفال") || cleanItem.includes("أطفال") || cleanItem.includes("العاب")) {
+                  if (!parsedFeats.includes("kids_friendly")) parsedFeats.push("kids_friendly");
+                } else if (cleanItem.includes("عائل") || cleanItem.includes("كابلز") || cleanItem.includes("عائلات")) {
+                  if (!parsedFeats.includes("family_friendly")) parsedFeats.push("family_friendly");
+                } else if (item.trim()) {
+                  if (!parsedFeats.includes(item.trim())) parsedFeats.push(item.trim());
+                }
+              }
+            });
+          }
+
+          const features = parsedFeats;
           const services = row["الخدمات"]
             ? row["الخدمات"].toString().split(",").map((s: string) => s.trim()).filter(Boolean)
             : [];
@@ -1385,7 +1755,7 @@ export default function AdminDashboard() {
         </div>
         {/* ── نافذة إضافة تصنيف جديد وتحديد الأيقونة من Boxicons ── */}
         {showAddCategoryModal && (
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 3000, background: "rgba(0, 0, 0, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.3s ease" }}>
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, background: "rgba(0, 0, 0, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", animation: "fade-in 0.3s ease" }}>
             <div style={{ background: "rgba(18, 24, 52, 0.95)", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "520px", border: "1px solid rgba(108, 99, 255, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)", maxHeight: "90vh", overflowY: "auto" }}>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -1529,11 +1899,15 @@ export default function AdminDashboard() {
 
       {/* Excel Import Panel */}
       {showExcelImport && (
-        <div className="ios-sheet" style={{ maxWidth: "100%", padding: "18px 24px", marginBottom: "40px", borderRadius: "15px", border: "1px solid rgba(52, 199, 89, 0.3)", animation: "slide-in-section 0.4s ease" }}>
+        <div className="ios-sheet" style={{ maxWidth: "100%", padding: "18px 24px", marginBottom: "40px", borderRadius: "15px", border: "1px solid rgba(52, 199, 89, 0.3)", animation: "slide-in-section 0.4s ease", overflow: "auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "15px" }}>
             <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
               <i className="bx bx-file" style={{ color: "#34c759", fontSize: "1.6rem" }}></i> استيراد الأماكن من ملف Excel / CSV
             </h2>
+          </div>
+
+          <details style={{ background: "rgba(255, 255, 255, 0.03)", borderRadius: "12px", border: "1px solid var(--border-glass)", padding: "12px 16px", marginBottom: "20px" }}>
+
             <button
               type="button"
               className="ios-btn"
@@ -1542,11 +1916,36 @@ export default function AdminDashboard() {
             >
               <i className="bx bx-download"></i> تحميل نموذج Excel التجريبي
             </button>
-          </div>
 
-          <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: "1.6", marginBottom: "24px" }}>
-            يرجى تعبئة ملف الـ Excel بالبيانات المطلوبة مع الالتزام بأسماء الأعمدة الموضحة في النموذج لتفادي أخطاء الاستيراد.
-          </p>
+            <summary style={{ cursor: "pointer", fontWeight: "700", fontSize: "0.92rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <i className="bx bx-help-circle" style={{ color: "#007aff", fontSize: "1.2rem" }}></i>
+              دليل أسماء التصنيفات الفرعية وطرق كتابة مواعيد العمل (اضغط للعرض)
+            </summary>
+            <div style={{ marginTop: "14px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <h4 style={{ fontSize: "0.88rem", color: "var(--accent-primary)", marginBottom: "8px", fontWeight: "700" }}>⏰ طرق إدخال مواعيد العمل المتغيرة في Excel:</h4>
+                <ul style={{ paddingRight: "20px", margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: "1.6" }}>
+                  <li><strong>خيار 1 (24/7):</strong> اكتب <code>24/7</code> في عمود <i>مواعيد العمل</i>.</li>
+                  <li><strong>خيار 2 (مواعيد متغيرة لكل يوم في عمود واحد):</strong> اكتب <code>السبت - الأربعاء: 09:00 ص - 11:00 م | الخميس: 09:00 ص - 12:00 م | الجمعة: إجازة</code></li>
+                  <li><strong>خيار 3 (أعمدة يومية مستقلة في الشيت):</strong> أضف أعمدة باسم <code>مواعيد الأحد</code>، <code>مواعيد الإثنين</code>، ... <code>مواعيد الجمعة</code> واكتب الوقت (مثال: <code>09:00 ص - 11:00 م</code> أو <code>إجازة</code>).</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 style={{ fontSize: "0.88rem", color: "var(--accent-primary)", marginBottom: "8px", fontWeight: "700" }}>📂 أسماء التصنيفات الفرعية المتاحة لكل قسم رئيسي:</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px", fontSize: "0.85rem" }}>
+                  {CATEGORIES_STRUCTURE.map(main => (
+                    <div key={main.name} style={{ background: "rgba(255,255,255,0.02)", padding: "10px 12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
+                      <div style={{ fontWeight: "700", color: "var(--accent-primary)", marginBottom: "6px" }}>{main.emoji} {main.label}</div>
+                      <div style={{ color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                        {main.subCategories.map(s => s.label).join(" • ")}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </details>
 
           <div style={{ border: "2px dashed rgba(52, 199, 89, 0.25)", borderRadius: "12px", padding: "30px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "rgba(52, 199, 89, 0.02)", marginBottom: "20px", cursor: "pointer", transition: "all 0.2s" }}>
             <i className="bx bx-cloud-upload" style={{ fontSize: "3rem", color: "#34c759" }}></i>
@@ -1603,15 +2002,16 @@ export default function AdminDashboard() {
                 </div>
               )}
 
-              <div style={{ overflowX: "auto", borderRadius: "8px", border: "1px solid var(--border-color, rgba(255,255,255,0.1))", maxHeight: "300px" }}>
+              <div style={{ overflowX: "scroll", borderRadius: "8px", border: "1px solid var(--border-color, rgba(255,255,255,0.1))", maxHeight: "600px", overflowY: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "right" }}>
                   <thead>
                     <tr style={{ background: "var(--bg-secondary, rgba(255,255,255,0.05))", borderBottom: "1px solid var(--border-color, rgba(255,255,255,0.1))" }}>
                       <th style={{ padding: "10px 14px" }}>الاسم</th>
-                      <th style={{ padding: "10px 14px" }}>القسم</th>
+                      <th style={{ padding: "10px 14px" }}>القسم الرئيسي</th>
+                      <th style={{ padding: "10px 14px" }}>الأقسام الفرعية</th>
+                      <th style={{ padding: "10px 14px" }}>مواعيد العمل</th>
                       <th style={{ padding: "10px 14px" }}>المدينة</th>
                       <th style={{ padding: "10px 14px" }}>الهواتف</th>
-                      <th style={{ padding: "10px 14px" }}>رابط الخريطة</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1624,27 +2024,38 @@ export default function AdminDashboard() {
                             ? "rgba(255, 149, 0, 0.08)"
                             : "transparent"
                       }}>
-                        <td style={{ padding: "8px 14px", fontWeight: "600" }}>
+                        <td style={{ padding: "8px 14px", fontWeight: "600", width:"15%" }}>
                           {p.name}
                           {p.duplicateType === "db" && (
-                            <span style={{ fontSize: "0.75rem", color: "#ff3b30", marginRight: "8px", background: "rgba(255, 59, 48, 0.15)", padding: "2px 6px", borderRadius: "4px" }}>
-                              ⚠️ موجود مسبقاً بالموقع
+                            <span style={{ fontSize: "0.6rem", color: "#ff3b30", marginRight: "4px", background: "rgba(255, 59, 48, 0.15)", padding: "2px 4px", borderRadius: "4px" }}>
+                              ⚠️ موجود
                             </span>
                           )}
                           {p.duplicateType === "internal" && (
-                            <span style={{ fontSize: "0.75rem", color: "#ff9500", marginRight: "8px", background: "rgba(255, 149, 0, 0.15)", padding: "2px 6px", borderRadius: "4px" }}>
+                            <span style={{ fontSize: "0.7rem", color: "#ff9500", marginRight: "4px", background: "rgba(255, 149, 0, 0.15)", padding: "2px 4px", borderRadius: "4px" }}>
                               ⚠️ مكرر بالملف (السطر {p.rowNum})
                             </span>
                           )}
                         </td>
                         <td style={{ padding: "8px 14px" }}><span className="badge-ios" style={{ background: "rgba(108, 99, 255, 0.15)", color: "var(--accent-primary)" }}>{p.category_label}</span></td>
+                        <td style={{ padding: "8px 14px" }}>
+                          {p.sub_categories && p.sub_categories.length > 0 ? (
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                              {p.sub_categories.map((sc: string, scIdx: number) => (
+                                <span key={scIdx} className="badge-ios" style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", fontSize: "0.75rem" }}>
+                                  {CATEGORY_MAP[sc] || sc}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span style={{ color: "var(--text-secondary)", fontSize: "0.8rem" }}>-</span>
+                          )}
+                        </td>
+                        <td style={{ padding: "8px 14px", fontSize: "0.8rem", color: "var(--text-secondary)", whiteSpace: "nowrap" }}>
+                          {getTodayWorkingHoursText(p.working_hours)}
+                        </td>
                         <td style={{ padding: "8px 14px" }}>{p.city}</td>
                         <td style={{ padding: "8px 14px" }}>{p.phones.join(", ") || "-"}</td>
-                        <td style={{ padding: "8px 14px", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "200px" }}>
-                          <a href={p.google_maps_url} target="_blank" rel="noopener noreferrer" style={{ color: "#007aff", textDecoration: "underline" }}>
-                            عرض الرابط
-                          </a>
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -2511,7 +2922,7 @@ export default function AdminDashboard() {
       {/* Branches Modal */}
       {selectedPlaceForBranch && (
         <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000,
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999,
           background: "var(--bg-glass-card, #000000ff)",
           display: "flex", alignItems: "center", justifyContent: "center", padding: "20px"
         }}>
@@ -2669,7 +3080,7 @@ export default function AdminDashboard() {
           left: 0,
           right: 0,
           bottom: 0,
-          zIndex: 4000,
+          zIndex: 9999,
           background: "rgba(0, 0, 0, 0.7)",
           backdropFilter: "blur(8px)",
           display: "flex",

@@ -144,6 +144,18 @@ export default function MicrobusStationsPage() {
   const [reportComment, setReportComment] = useState("");
   const [submittingReport, setSubmittingReport] = useState(false);
 
+  // Missing Route Report Modal States
+  const [missingRouteModalOpen, setMissingRouteModalOpen] = useState(false);
+  const [missingStationName, setMissingStationName] = useState("");
+  const [missingDestination, setMissingDestination] = useState("");
+  const [missingFare, setMissingFare] = useState("");
+  const [missingNotes, setMissingNotes] = useState("");
+  const [submittingMissingRoute, setSubmittingMissingRoute] = useState(false);
+
+  // Success Card Modal State
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
   // Accordion expansion states
   const [expandedStationId, setExpandedStationId] = useState<string | null>(null);
   const [expandedRouteKey, setExpandedRouteKey] = useState<string | null>(null);
@@ -358,17 +370,69 @@ export default function MicrobusStationsPage() {
       if (error) {
         alert("فشل إرسال البلاغ، يرجى المحاولة مرة أخرى.");
       } else {
-        alert("شكراً لك! تم إرسال البلاغ بنجاح وجاري مراجعته من قبل الإدارة لتصحيح البيانات.");
         if (data && data.length > 0) {
           setInteractions(prev => [...prev, data[0] as RouteInteraction]);
         }
         setReportModalOpen(false);
+        setSuccessMessage("شكراً لك! تم إرسال البلاغ بنجاح وجاري مراجعته من قبل الإدارة لتصحيح البيانات.");
+        setSuccessModalOpen(true);
       }
     } catch (err) {
       console.error("Failed to submit report:", err);
       alert("حدث خطأ غير متوقع.");
     } finally {
       setSubmittingReport(false);
+    }
+  };
+
+  // Handle missing route submission
+  const handleMissingRouteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      alert("يرجى تسجيل الدخول أولاً للإبلاغ عن خط غير موجود.");
+      return;
+    }
+    if (!missingStationName.trim() || !missingDestination.trim()) {
+      alert("يرجى إدخال اسم الموقف والوجهة المطلوبة.");
+      return;
+    }
+    if (!supabase) return;
+
+    setSubmittingMissingRoute(true);
+    try {
+      const payload = {
+        user_id: user.id,
+        station_name: missingStationName.trim(),
+        route_destination: missingDestination.trim(),
+        interaction_type: "report",
+        report_reason: "other",
+        comment: `[خط غير موجود في الدليل] الأجرة المقترحة: ${missingFare.trim() || "غير محددة"} | التفاصيل/الملاحظات: ${missingNotes.trim() || "لا يوجد"}`
+      };
+
+      const { data, error } = await supabase
+        .from("route_interactions")
+        .insert([payload])
+        .select();
+
+      if (error) {
+        alert("فشل إرسال البلاغ، يرجى المحاولة مرة أخرى.");
+      } else {
+        if (data && data.length > 0) {
+          setInteractions(prev => [...prev, data[0] as RouteInteraction]);
+        }
+        setMissingRouteModalOpen(false);
+        setMissingStationName("");
+        setMissingDestination("");
+        setMissingFare("");
+        setMissingNotes("");
+        setSuccessMessage("شكراً لك! تم إرسال معلومات الخط بنجاح للإدارة وجاري مراجعته وإضافته للدليل.");
+        setSuccessModalOpen(true);
+      }
+    } catch (err) {
+      console.error("Failed to submit missing route report:", err);
+      alert("حدث خطأ غير متوقع.");
+    } finally {
+      setSubmittingMissingRoute(false);
     }
   };
 
@@ -1314,6 +1378,79 @@ export default function MicrobusStationsPage() {
             );
           })()}
         </div>
+
+        {/* Missing Route Callout Section at the bottom */}
+        <div className="metro-animate-slide-up" style={{
+          backgroundColor: "var(--bg-primary)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "15px",
+          padding: "24px 20px",
+          marginTop: "30px",
+          textAlign: "center",
+          boxShadow: "var(--shadow-card)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "14px",
+          position: "relative",
+          overflow: "hidden"
+        }}>
+          <div style={{
+            width: "48px",
+            height: "48px",
+            borderRadius: "50%",
+            background: "rgba(59, 130, 246, 0.1)",
+            border: "1px solid rgba(59, 130, 246, 0.2)",
+            color: "#3b82f6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "1.5rem"
+          }}>
+            <i className="bx bx-bulb"></i>
+          </div>
+
+          <div>
+            <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              عارف خط موجود في موقف بتركب منه ومش موجود في الدليل؟
+            </h3>
+            <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6", maxWidth: "500px" }}>
+              برجاء إخبار الإدارة! ساعدنا في تحسين وتغطية جميع خطوط القاهرة والجيزة لخدمة بقية الركاب. سنقوم بمراجعة بيانات الخط وإضافتها فوراً.
+            </p>
+          </div>
+
+          <button
+            onClick={() => {
+              if (!user) {
+                alert("يرجى تسجيل الدخول أولاً للإبلاغ عن خط غير مدرج.");
+                return;
+              }
+              setMissingStationName(selectedStation && selectedStation !== "all" ? selectedStation : "");
+              setMissingDestination("");
+              setMissingFare("");
+              setMissingNotes("");
+              setMissingRouteModalOpen(true);
+            }}
+            style={{
+              padding: "10px 22px",
+              borderRadius: "10px",
+              background: "var(--color-blue-700)",
+              border: "1px solid var(--color-blue-700)",
+              color: "var(--color-white-100)",
+              fontWeight: "bold",
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.25)",
+              transition: "all 0.2s ease"
+            }}
+          >
+            <i className="bx bx-paper-plane" style={{ fontSize: "1.1rem" }}></i>
+            <span>إبلاغ الإدارة بخط جديد / غير مدرج</span>
+          </button>
+        </div>
       </div>
 
       {/* Report Modal */}
@@ -1456,6 +1593,290 @@ export default function MicrobusStationsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Missing Route Modal */}
+      {missingRouteModalOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backdropFilter: "blur(5px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          padding: "20px",
+          direction: "rtl"
+        }}>
+          <div className="metro-animate-slide-up" style={{
+            backgroundColor: "var(--bg-primary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "18px",
+            width: "100%",
+            maxWidth: "480px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
+            overflow: "hidden",
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              padding: "16px 20px",
+              borderBottom: "1px solid var(--border-glass)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.01)"
+            }}>
+              <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                <i className="bx bx-plus-circle" style={{ color: "#3b82f6" }}></i>
+                إخبار الإدارة بخط ميكروباص غير مدرج
+              </h3>
+              <button
+                onClick={() => setMissingRouteModalOpen(false)}
+                className="closeBut"
+              >
+                <i className="bx bx-x"></i>
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleMissingRouteSubmit} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                أدخل تفاصيل الخط الموجود في الموقف الذي تركب منه لمساعدة الإدارة في مراجعته وإضافته للدليل.
+              </p>
+
+              {/* Station Name */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
+                  اسم الموقف: <span style={{ color: "#ef4444" }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="مثال: موقف رمسيس، موقف المنيب، موقف العاشر..."
+                  value={missingStationName}
+                  onChange={e => setMissingStationName(e.target.value)}
+                  className="ios-input"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.02)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
+                    fontFamily: "var(--font-body)",
+                    height: "42px"
+                  }}
+                />
+              </div>
+
+              {/* Destination */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
+                  وجهة / خط الميكروباص (إلى فين؟): <span style={{ color: "#ef4444" }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="مثال: 6 أكتوبر، العاصمة الإدارية، التجمع الخامس..."
+                  value={missingDestination}
+                  onChange={e => setMissingDestination(e.target.value)}
+                  className="ios-input"
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.02)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
+                    fontFamily: "var(--font-body)",
+                    height: "42px"
+                  }}
+                />
+              </div>
+
+              {/* Fare */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
+                  الأجرة التقديرية (اختياري):
+                </label>
+                <input
+                  type="text"
+                  placeholder="مثال: 15 ج.م"
+                  value={missingFare}
+                  onChange={e => setMissingFare(e.target.value)}
+                  className="ios-input"
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.02)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
+                    fontFamily: "var(--font-body)",
+                    height: "42px"
+                  }}
+                />
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
+                  ملاحظات أو نقاط السير (اختياري):
+                </label>
+                <textarea
+                  placeholder="أي تفاصيل أخرى مثل: بيمشي من المحور، أو السقف العالي فقط..."
+                  value={missingNotes}
+                  onChange={e => setMissingNotes(e.target.value)}
+                  className="ios-input"
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.02)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
+                    fontFamily: "var(--font-body)",
+                    height: "80px",
+                    resize: "none"
+                  }}
+                />
+              </div>
+
+              {/* Action buttons */}
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => setMissingRouteModalOpen(false)}
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    background: "rgba(255, 0, 0, 0.16)",
+                    border: "1px solid var(--border-glass)",
+                    color: "var(--text-primary)",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: "bold"
+                  }}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingMissingRoute}
+                  style={{
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    background: "var(--color-blue-700)",
+                    border: "1px solid var(--color-blue-700)",
+                    color: "var(--color-white-100)",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {submittingMissingRoute ? "جاري الإرسال..." : "إرسال للإدارة"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Success Card Modal Centered */}
+      {successModalOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1100,
+          padding: "20px",
+          direction: "rtl"
+        }}>
+          <div className="metro-animate-slide-up" style={{
+            backgroundColor: "var(--bg-primary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "24px",
+            width: "100%",
+            maxWidth: "420px",
+            padding: "32px 24px",
+            textAlign: "center",
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(16, 185, 129, 0.2)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            position: "relative"
+          }}>
+            {/* Success Icon */}
+            <div style={{
+              width: "68px",
+              height: "68px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(16, 185, 129, 0.15)",
+              border: "2px solid #10b981",
+              color: "#10b981",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "2.2rem",
+              marginBottom: "18px",
+              boxShadow: "0 0 20px rgba(16, 185, 129, 0.35)"
+            }}>
+              <i className="bx bx-check"></i>
+            </div>
+
+            {/* Title */}
+            <h3 style={{
+              margin: "0 0 10px 0",
+              fontSize: "1.3rem",
+              fontWeight: "800",
+              color: "var(--text-primary)"
+            }}>
+              تم الإرسال بنجاح! 🎉
+            </h3>
+
+            {/* Message */}
+            <p style={{
+              margin: "0 0 24px 0",
+              fontSize: "0.95rem",
+              color: "var(--text-secondary)",
+              lineHeight: "1.6",
+              fontFamily: "var(--font-body)"
+            }}>
+              {successMessage}
+            </p>
+
+            {/* Action Button */}
+            <button
+              onClick={() => setSuccessModalOpen(false)}
+              style={{
+                width: "100%",
+                padding: "12px 24px",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, #10b981, #059669)",
+                border: "none",
+                color: "#ffffff",
+                fontSize: "0.95rem",
+                fontWeight: "bold",
+                cursor: "pointer",
+                boxShadow: "0 4px 14px rgba(16, 185, 129, 0.4)",
+                transition: "transform 0.2s ease"
+              }}
+            >
+              ممتاز، تم 👍
+            </button>
           </div>
         </div>
       )}

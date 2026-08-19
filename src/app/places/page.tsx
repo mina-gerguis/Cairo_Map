@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import ReviewSection from "@/components/ReviewSection";
 import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyOpen } from "@/lib/workingHours";
-import { Place, PlaceCategory, initialPlaces, FEATURES_LIST, CATEGORIES_STRUCTURE, formatBoxIcon } from "@/data/places";
+import { Place, PlaceCategory, initialPlaces, FEATURES_LIST, CATEGORIES_STRUCTURE, formatBoxIcon, normalizePlaceCategory } from "@/data/places";
 import { Pagination } from "@/components/ui/Pagination";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
@@ -49,7 +49,7 @@ function normalizeArabic(text: string) {
 function cleanArabicWord(word: string): string {
   let w = word.trim();
   if (w.length <= 3) return w;
-  
+
   if (w.startsWith("وال") && w.length > 4) {
     w = w.substring(3);
   } else if (w.startsWith("ال") && w.length > 3) {
@@ -59,7 +59,7 @@ function cleanArabicWord(word: string): string {
   } else if (w.startsWith("لل") && w.length > 3) {
     w = w.substring(2);
   }
-  
+
   return w;
 }
 
@@ -67,7 +67,7 @@ function cleanArabicWord(word: string): string {
 function getSearchWords(text: string): string[] {
   const normalized = normalizeArabic(text).toLowerCase();
   const stopWords = ["في", "من", "ب", "بـ", "بمنطقة", "بمحافظة", "مدينة", "حي", "علي", "الي", "التي", "الذي", "مع"];
-  
+
   return normalized
     .split(/\s+/)
     .map(w => w.trim())
@@ -207,52 +207,8 @@ function HomeContent() {
         if (data) {
           const mappedPlaces: Place[] = data.map(dbPlace => {
             const rawCategory = dbPlace.category;
-            let finalCategory = rawCategory;
-            let finalSubCategories = Array.isArray(dbPlace.sub_categories) ? dbPlace.sub_categories : [];
-
-            // Backward compatibility: map old flat categories to new main categories & add to subCategories
-            if (rawCategory === 'restaurant' || rawCategory === 'cafe') {
-              finalCategory = 'food_drinks';
-              if (!finalSubCategories.includes(rawCategory)) finalSubCategories.push(rawCategory);
-            } else if (rawCategory === 'garden' || rawCategory === 'outings') {
-              finalCategory = 'public_places';
-              const mappedSub = rawCategory === 'garden' ? 'park' : 'park';
-              if (!finalSubCategories.includes(mappedSub)) finalSubCategories.push(mappedSub);
-            } else if (rawCategory === 'medicalCenter' || rawCategory === 'hospital' || rawCategory === 'pharmacy') {
-              finalCategory = 'health';
-              const mappedSub = rawCategory === 'medicalCenter' ? 'clinic' : rawCategory;
-              if (!finalSubCategories.includes(mappedSub)) finalSubCategories.push(mappedSub);
-            } else if (rawCategory === 'health_beauty') {
-              finalCategory = 'services';
-              if (!finalSubCategories.includes('beauty_salon')) finalSubCategories.push('beauty_salon');
-            } else if (rawCategory === 'family') {
-              finalCategory = 'entertainment';
-              if (!finalSubCategories.includes('event_venue')) finalSubCategories.push('event_venue');
-            } else if (rawCategory === 'quiet_places') {
-              finalCategory = 'public_places';
-              if (!finalSubCategories.includes('park')) finalSubCategories.push('park');
-            } else if (rawCategory === 'kids') {
-              finalCategory = 'entertainment';
-              if (!finalSubCategories.includes('amusement_park')) finalSubCategories.push('amusement_park');
-            } else if (rawCategory === 'amusement_aqua') {
-              finalCategory = 'entertainment';
-              if (!finalSubCategories.includes('water_park')) finalSubCategories.push('water_park');
-            } else if (rawCategory === 'work') {
-              finalCategory = 'business';
-              if (!finalSubCategories.includes('office')) finalSubCategories.push('office');
-            } else if (rawCategory === 'courses_study') {
-              finalCategory = 'education';
-              if (!finalSubCategories.includes('training_center')) finalSubCategories.push('training_center');
-            } else if (rawCategory === 'hotel') {
-              finalCategory = 'tourism';
-              if (!finalSubCategories.includes('hotel')) finalSubCategories.push('hotel');
-            } else if (rawCategory === 'cinema') {
-              finalCategory = 'entertainment';
-              if (!finalSubCategories.includes('cinema')) finalSubCategories.push('cinema');
-            } else if (rawCategory === 'mall') {
-              finalCategory = 'shopping';
-              if (!finalSubCategories.includes('mall')) finalSubCategories.push('mall');
-            }
+            const initialSubCats = Array.isArray(dbPlace.sub_categories) ? [...dbPlace.sub_categories] : [];
+            const { category: finalCategory, categoryLabel: defaultLabel, subCategories: finalSubCategories } = normalizePlaceCategory(rawCategory, initialSubCats);
 
             return {
               id: dbPlace.id,
@@ -519,9 +475,14 @@ function HomeContent() {
 
     return enrichedPlaces.filter((p) => {
       // 1. Main Category filter
+      const mainCat = CATEGORIES_STRUCTURE.find(m => m.name === selectedCategory);
+      const subCatNames = mainCat ? new Set(mainCat.subCategories.map(s => s.name)) : new Set();
+
       const matchCat =
         selectedCategory === "all" ||
-        p.category === selectedCategory;
+        p.category === selectedCategory ||
+        p.categoryLabel === selectedCategory ||
+        (mainCat && (p.category === mainCat.name || subCatNames.has(p.category) || p.subCategories?.some(sub => subCatNames.has(sub))));
 
       // 2. Subcategory filter
       const matchSub =
@@ -744,7 +705,7 @@ function HomeContent() {
                   const isActive = index === activeSuggestionIndex;
                   const categoryColor = getCategoryColor(place.category);
                   const iconClass = CATEGORY_ICONS[place.category] || "bx-map-pin";
-                  
+
                   return (
                     <div
                       key={place.id}
@@ -804,7 +765,7 @@ function HomeContent() {
                           </span>
                         </div>
                       </div>
-                      
+
                       {place.rating !== undefined && place.rating > 0 && (
                         <div className="suggestion-meta" style={{ display: "flex", alignItems: "center", gap: "5px", fontSize: "0.85rem", fontWeight: 700, color: "#ff9f0a", flexShrink: 0, direction: "ltr" }}>
                           <span>{Number(place.rating).toFixed(1)}</span>
@@ -818,7 +779,7 @@ function HomeContent() {
             )}
           </div>
 
-          <div className="hero-actions" style={{zIndex:"10"}}>
+          <div className="hero-actions" style={{ zIndex: "10" }}>
             <button className="hero-btn-primary" onClick={() => document.getElementById('places-section')?.scrollIntoView({ behavior: 'smooth' })} style={{ fontFamily: "Cairo" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
               استكشف الأماكن
@@ -1065,8 +1026,18 @@ function HomeContent() {
                 emptyMessage="فعّل الموقع للعثور على أماكن قريبة منك 📍"
               />
             )}
-
-            {/* Section 2: Top Rated */}
+            {/* Section 2: All Places */}
+            <PaginatedSection
+              title="🗂️ جميع الأماكن"
+              places={enrichedPlaces}
+              setSelectedPlace={setSelectedPlace}
+              getCategoryColor={getCategoryColor}
+              toggleFavorite={toggleFavorite}
+              favoriteIds={favoriteIds}
+              itemsPerPage={6}
+              forceThreeColumns={true}
+            />
+            {/* Section 3: Top Rated */}
             <PaginatedSection
               title="⭐ الأكثر زيارة"
               places={topRatedPlaces}
@@ -1081,7 +1052,7 @@ function HomeContent() {
             {/* Ad Space Banner (Middle) */}
             <AdBanner placement="places_middle" />
 
-            {/* Section 3: Family */}
+            {/* Section 4: Family */}
             <PaginatedSection
               title="👨‍👩‍👧‍👦 أماكن عائلية"
               places={familyPlaces}
@@ -1091,7 +1062,7 @@ function HomeContent() {
               favoriteIds={favoriteIds}
             />
 
-            {/* Section 4: Entertainment */}
+            {/* Section 5: Entertainment */}
             <PaginatedSection
               title="🎭 أماكن ترفيهية"
               places={entertainmentPlaces}
@@ -1103,18 +1074,6 @@ function HomeContent() {
 
             {/* Ad Space Banner (Bottom) */}
             <AdBanner placement="places_bottom" />
-
-            {/* Section 5: All Places */}
-            <PaginatedSection
-              title="🗂️ جميع الأماكن"
-              places={enrichedPlaces}
-              setSelectedPlace={setSelectedPlace}
-              getCategoryColor={getCategoryColor}
-              toggleFavorite={toggleFavorite}
-              favoriteIds={favoriteIds}
-              itemsPerPage={6}
-              forceThreeColumns={true}
-            />
           </>
         ) : (
           /* ═══════════════════════════════════ SEARCH / FILTER MODE ═══════════════════════════════════ */

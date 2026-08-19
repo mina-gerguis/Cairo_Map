@@ -124,6 +124,9 @@ function AdminRailwaysInner() {
 
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [lineToDelete, setLineToDelete] = useState<any | null>(null);
+  const [stationToDeleteIndex, setStationToDeleteIndex] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!authLoading) {
@@ -370,31 +373,43 @@ function AdminRailwaysInner() {
     }
   };
 
-  const handleDeleteLine = async (id: string) => {
-    if (confirm("هل أنت متأكد من حذف هذا الخط بالكامل بكل محطاته؟")) {
-      if (dbStatus && supabase) {
-        try {
-          const { error: dbErr } = await supabase
-            .from("railway_routes")
-            .delete()
-            .eq("id", id);
+  const handleDeleteLine = (item: any) => {
+    setLineToDelete(item);
+  };
 
-          if (dbErr) throw dbErr;
+  const confirmDeleteLine = async () => {
+    if (!lineToDelete) return;
+    setIsDeleting(true);
+    setError("");
+    setSuccess("");
 
-          setSuccess("تم حذف الخط بنجاح من قاعدة البيانات.");
-          await loadRoutes();
-        } catch (err: any) {
-          console.error(err);
-          setError("فشل حذف الخط من قاعدة البيانات: " + err.message);
-        }
-      } else {
-        const updated = routes.filter(r => r.id !== id);
-        saveRoutesData(updated);
-        setSuccess("تم حذف الخط بنجاح محلياً.");
-        if (selectedRouteId === id && updated.length > 0) {
-          setSelectedRouteId(updated[0].id);
-        }
+    if (dbStatus && supabase) {
+      try {
+        const { error: dbErr } = await supabase
+          .from("railway_routes")
+          .delete()
+          .eq("id", lineToDelete.id);
+
+        if (dbErr) throw dbErr;
+
+        setSuccess("تم حذف الخط بنجاح من قاعدة البيانات.");
+        await loadRoutes();
+        setLineToDelete(null);
+      } catch (err: any) {
+        console.error(err);
+        setError("فشل حذف الخط من قاعدة البيانات: " + err.message);
+      } finally {
+        setIsDeleting(false);
       }
+    } else {
+      const updated = routes.filter(r => r.id !== lineToDelete.id);
+      saveRoutesData(updated);
+      setSuccess("تم حذف الخط بنجاح محلياً.");
+      if (selectedRouteId === lineToDelete.id && updated.length > 0) {
+        setSelectedRouteId(updated[0].id);
+      }
+      setLineToDelete(null);
+      setIsDeleting(false);
     }
   };
 
@@ -488,35 +503,47 @@ function AdminRailwaysInner() {
     }
   };
 
-  const handleDeleteStation = async (index: number) => {
-    if (confirm("هل أنت متأكد من حذف هذه المحطة من الخط؟")) {
-      const stopToDelete = activeRoute.stops[index];
-      if (dbStatus && supabase && stopToDelete.id) {
-        try {
-          const { error: dbErr } = await supabase
-            .from("railway_stations")
-            .delete()
-            .eq("id", stopToDelete.id);
+  const handleDeleteStation = (index: number) => {
+    setStationToDeleteIndex(index);
+  };
 
-          if (dbErr) throw dbErr;
+  const confirmDeleteStation = async () => {
+    if (stationToDeleteIndex === null) return;
+    setIsDeleting(true);
+    setError("");
+    setSuccess("");
 
-          setSuccess("تم حذف المحطة بنجاح من قاعدة البيانات.");
-          await loadRoutes();
-        } catch (err: any) {
-          console.error(err);
-          setError("فشل حذف المحطة من قاعدة البيانات: " + err.message);
-        }
-      } else {
-        const updatedRoutes = routes.map(r => {
-          if (r.id === selectedRouteId) {
-            const updatedStops = r.stops.filter((_, i) => i !== index);
-            return { ...r, stops: updatedStops };
-          }
-          return r;
-        });
-        saveRoutesData(updatedRoutes);
-        setSuccess("تم حذف المحطة بنجاح محلياً.");
+    const stopToDelete = activeRoute.stops[stationToDeleteIndex];
+    if (dbStatus && supabase && stopToDelete.id) {
+      try {
+        const { error: dbErr } = await supabase
+          .from("railway_stations")
+          .delete()
+          .eq("id", stopToDelete.id);
+
+        if (dbErr) throw dbErr;
+
+        setSuccess("تم حذف المحطة بنجاح من قاعدة البيانات.");
+        await loadRoutes();
+        setStationToDeleteIndex(null);
+      } catch (err: any) {
+        console.error(err);
+        setError("فشل حذف المحطة من قاعدة البيانات: " + err.message);
+      } finally {
+        setIsDeleting(false);
       }
+    } else {
+      const updatedRoutes = routes.map(r => {
+        if (r.id === selectedRouteId) {
+          const updatedStops = r.stops.filter((_, i) => i !== stationToDeleteIndex);
+          return { ...r, stops: updatedStops };
+        }
+        return r;
+      });
+      saveRoutesData(updatedRoutes);
+      setSuccess("تم حذف المحطة بنجاح محلياً.");
+      setStationToDeleteIndex(null);
+      setIsDeleting(false);
     }
   };
 
@@ -709,8 +736,8 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                 style={{ width: "100%", paddingRight: "36px", height: "40px" }}
               />
             </div>
-            <button onClick={handleOpenAddLine} className="ios-btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "8px 16px", borderRadius: "8px", fontWeight: "bold" }}>
-              ➕ إضافة خط قطار جديد
+            <button onClick={handleOpenAddLine} className="ios-btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "8px 16px", borderRadius: "8px", fontWeight: "bold", width: "70%" }}>
+              <i className="bx bx-plus-medical"></i> إضافة خط قطار جديد
             </button>
           </div>
 
@@ -737,18 +764,32 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                     <td className={styles.adminTd}>{line.duration}</td>
                     <td className={styles.adminTd}>{line.stops.length} محطات</td>
                     <td className={styles.adminTd} style={{ textAlign: "center" }}>
-                      <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                         <button
+                          type="button"
                           onClick={() => handleOpenEditLine(line)}
                           className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
                           title="تعديل"
+                          style={{
+                            padding: "5px 5px",
+                            borderRadius: "50%",
+                            background: "var(--bg-secondary)",
+                          }}
                         >
-                          <i className="bx bx-edit" />
+                          <i className="bx bx-edit-alt" />
                         </button>
                         <button
-                          onClick={() => handleDeleteLine(line.id)}
+                          type="button"
+                          onClick={() => handleDeleteLine(line)}
                           className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                           title="حذف"
+                          style={{
+                            padding: "5px 5px",
+                            borderRadius: "50%",
+                            background: "#ff000025",
+                            color: "#ff0000f5",
+                            border: "#ff000025",
+                          }}
                         >
                           <i className="bx bx-trash" />
                         </button>
@@ -778,7 +819,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               value={selectedRouteId}
               onChange={e => { setSelectedRouteId(e.target.value); setError(""); setSuccess(""); }}
               className="ios-input"
-              style={{ width: "100%", maxWidth: "400px", height: "45px" }}
+              style={{ width: "100%", minWidth: "300px", maxWidth: "300px" }}
             >
               {routes.map(r => (
                 <option key={r.id} value={r.id}>{r.name}</option>
@@ -789,11 +830,11 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
           {activeRoute && (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)", width: "50%" }}>
                   محطات التوقف لخط: <span style={{ color: "#34d399" }}>{activeRoute.name}</span>
                 </h3>
                 <button onClick={handleOpenAddStation} className="ios-btn" style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "#fff", padding: "8px 16px", borderRadius: "8px", fontWeight: "bold" }}>
-                  ➕ إضافة محطة جديدة للخط
+                  <i className="bx bx-plus-medical"></i> إضافة محطة جديدة للخط
                 </button>
               </div>
 
@@ -839,41 +880,57 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                                 className="ios-btn"
                                 style={{
                                   padding: "4px 8px",
+                                  background: "var(--bg-secondary)",
                                   fontSize: "0.8rem",
                                   opacity: isFirst ? 0.3 : 1,
                                   cursor: isFirst ? "not-allowed" : "pointer"
                                 }}
                               >
-                                🔼 لأعلى
+                                <i className="bx bx-up-arrow-alt"></i>
                               </button>
                               <button
                                 onClick={() => handleMoveStation(index, "down")}
                                 disabled={isLast}
                                 className="ios-btn"
                                 style={{
+                                  background: "var(--bg-secondary)",
                                   padding: "4px 8px",
                                   fontSize: "0.8rem",
                                   opacity: isLast ? 0.3 : 1,
                                   cursor: isLast ? "not-allowed" : "pointer"
                                 }}
                               >
-                                🔽 لأسفل
+                                <i className="bx bx-down-arrow-alt"></i>
                               </button>
                             </div>
                           </td>
                           <td className={styles.adminTd} style={{ textAlign: "center" }}>
-                            <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
+                            <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                               <button
+                                type="button"
                                 onClick={() => handleOpenEditStation(index, stop)}
                                 className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
                                 title="تعديل"
+                                style={{
+                                  padding: "5px 5px",
+                                  borderRadius: "50%",
+                                  background: "var(--bg-secondary)",
+                                }}
                               >
-                                <i className="bx bx-edit" />
+                                <i className="bx bx-edit-alt" />
                               </button>
                               <button
+                                type="button"
                                 onClick={() => handleDeleteStation(index)}
                                 className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                                 title="حذف"
+                                style={{
+                                  padding: "5px 5px",
+                                  borderRadius: "50%",
+                                  background: "#ff000025",
+                                  color: "#ff0000f5",
+                                  border: "#ff000025",
+                                }}
                               >
                                 <i className="bx bx-trash" />
                               </button>
@@ -1008,7 +1065,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowLineModal(false)} className="ios-btn" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)" }}>إلغاء</button>
+                <button type="button" onClick={() => setShowLineModal(false)} className="ios-btn" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)", color: "var(--color-white-100)" }}>إلغاء</button>
                 <button type="submit" className="ios-btn" style={{ padding: "8px 20px", background: "#6366f1", color: "#fff" }}>حفظ الخط</button>
               </div>
             </form>
@@ -1070,7 +1127,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                   value={stationForm.status}
                   onChange={e => setStationForm({ ...stationForm, status: e.target.value as "تشغيل فعلي" | "تحت الإنشاء" })}
                   className="ios-input"
-                  style={{ width: "100%", height: "45px" }}
+                  style={{ width: "100%"}}
                 >
                   <option value="تشغيل فعلي">تشغيل فعلي (تعمل)</option>
                   <option value="تحت الإنشاء">تحت الإنشاء 🚧</option>
@@ -1078,10 +1135,236 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowStationModal(false)} className="ios-btn" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)" }}>إلغاء</button>
+                <button type="button" onClick={() => setShowStationModal(false)} className="ios-btn" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)", color: "var(--color-white-100)" }}>إلغاء</button>
                 <button type="submit" className="ios-btn" style={{ padding: "8px 20px", background: "#10b981", color: "#fff" }}>حفظ المحطة</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal for Lines */}
+      {lineToDelete && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 4000,
+          background: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div style={{
+            background: "rgba(18, 24, 52, 0.95)",
+            borderRadius: "24px",
+            padding: "32px",
+            width: "100%",
+            maxWidth: "450px",
+            border: "1px solid rgba(255, 59, 48, 0.3)",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            direction: "rtl"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(255, 59, 48, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(255, 59, 48, 0.3)"
+            }}>
+              <span style={{ fontSize: "2rem" }}>⚠️</span>
+            </div>
+
+            <h3 style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.4rem",
+              color: "#fff",
+              marginBottom: "12px",
+              fontWeight: "700"
+            }}>
+              تأكيد الحذف
+            </h3>
+
+            <p style={{
+              color: "var(--text-secondary)",
+              fontSize: "1.05rem",
+              lineHeight: "1.6",
+              marginBottom: "24px"
+            }}>
+              هل أنت متأكد من حذف هذا الخط بالكامل بكل محطاته؟
+              <strong style={{ display: "block", marginTop: "10px", color: "#ff4d4d", fontSize: "1.1rem" }}>
+                « {lineToDelete.name} »
+              </strong>
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button
+                disabled={isDeleting}
+                onClick={confirmDeleteLine}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "#ff3b30",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  opacity: isDeleting ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                {isDeleting ? "جاري الحذف..." : "نعم، احذف"}
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => setLineToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s"
+                }}
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal for Stations */}
+      {stationToDeleteIndex !== null && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 4000,
+          background: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div style={{
+            background: "rgba(18, 24, 52, 0.95)",
+            borderRadius: "24px",
+            padding: "32px",
+            width: "100%",
+            maxWidth: "450px",
+            border: "1px solid rgba(255, 59, 48, 0.3)",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            direction: "rtl"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(255, 59, 48, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(255, 59, 48, 0.3)"
+            }}>
+              <span style={{ fontSize: "2rem" }}>⚠️</span>
+            </div>
+
+            <h3 style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.4rem",
+              color: "#fff",
+              marginBottom: "12px",
+              fontWeight: "700"
+            }}>
+              تأكيد الحذف
+            </h3>
+
+            <p style={{
+              color: "var(--text-secondary)",
+              fontSize: "1.05rem",
+              lineHeight: "1.6",
+              marginBottom: "24px"
+            }}>
+              هل أنت متأكد من حذف هذه المحطة من الخط؟
+              <strong style={{ display: "block", marginTop: "10px", color: "#ff4d4d", fontSize: "1.1rem" }}>
+                « {activeRoute?.stops[stationToDeleteIndex]?.name} »
+              </strong>
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button
+                disabled={isDeleting}
+                onClick={confirmDeleteStation}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "#ff3b30",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  opacity: isDeleting ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                {isDeleting ? "جاري الحذف..." : "نعم، احذف"}
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => setStationToDeleteIndex(null)}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s"
+                }}
+              >
+                إلغاء
+              </button>
+            </div>
           </div>
         </div>
       )}

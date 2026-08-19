@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -9,19 +9,46 @@ import { useAuth } from "@/context/AuthContext";
 export default function ServicesLoginPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const [loginRole, setLoginRole] = useState<"worker" | "client">("worker");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [logoutMessage, setLogoutMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  // Redirect if already logged in
-  React.useEffect(() => {
-    if (user) {
-      router.push("/services");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("logged_out") === "true") {
+        setLogoutMessage(true);
+      }
+      if (urlParams.get("role") === "client") {
+        setLoginRole("client");
+      }
     }
-  }, [user, router]);
+  }, []);
+
+  // Redirect if already logged in and services session active
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const active = localStorage.getItem("services_auth_active");
+      const urlParams = new URLSearchParams(window.location.search);
+      const isLoggedOutUrl = urlParams.get("logged_out") === "true";
+      
+      if (user && active !== "false" && !isLoggedOutUrl) {
+        router.push(loginRole === "worker" ? "/services/dashboard" : "/services");
+      }
+    }
+  }, [user, router, loginRole]);
+
+  const handleContinueWithMainUser = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("services_auth_active", "true");
+    }
+    router.push(loginRole === "worker" ? "/services/dashboard" : "/services");
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +71,10 @@ export default function ServicesLoginPage() {
     }
 
     if (data.user) {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("services_auth_active", "true");
+      }
+
       // Check if user is a worker
       const { data: workerData } = await supabase
         .from("service_workers")
@@ -51,7 +82,7 @@ export default function ServicesLoginPage() {
         .eq("id", data.user.id)
         .maybeSingle();
 
-      if (workerData) {
+      if (loginRole === "worker") {
         router.push("/services/dashboard");
       } else {
         router.push("/services");
@@ -102,20 +133,96 @@ export default function ServicesLoginPage() {
           padding: "32px",
           boxShadow: "var(--shadow-card)",
         }}>
-          {error && (
+          {logoutMessage && (
             <div style={{
-              background: "rgba(239, 68, 68, 0.1)",
-              border: "1px solid rgba(239, 68, 68, 0.2)",
+              background: "rgba(16, 185, 129, 0.1)",
+              border: "1px solid rgba(16, 185, 129, 0.25)",
               borderRadius: "10px",
               padding: "10px 14px",
-              color: "var(--accent-danger, #ef4444)",
+              color: "var(--accent-success, #10b981)",
               marginBottom: "20px",
-              fontSize: "0.85rem",
+              fontSize: "0.88rem",
+              fontWeight: "700",
               textAlign: "center",
             }}>
-              ⚠️ {error}
+              ✅ تم تسجيل الخروج من دليل الخدمات بنجاح.
             </div>
           )}
+
+          {user && (
+            <div style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              borderRadius: "12px",
+              padding: "16px",
+              marginBottom: "20px",
+              textAlign: "center"
+            }}>
+              <p style={{ fontSize: "0.88rem", margin: "0 0 10px", color: "var(--text-primary)", fontWeight: "700" }}>
+                👋 أنت مسجّل دخول بالموقع الرئيسي بـ: <span style={{ color: "var(--accent-ios, #3b82f6)" }}>{user.email}</span>
+              </p>
+              <button
+                type="button"
+                onClick={handleContinueWithMainUser}
+                style={{
+                  width: "100%",
+                  height: "40px",
+                  borderRadius: "8px",
+                  background: "var(--accent-ios, #3b82f6)",
+                  color: "#ffffff",
+                  border: "none",
+                  fontWeight: "700",
+                  fontSize: "0.88rem",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-almarai)"
+                }}
+              >
+                🚀 تفعيل الجلسة ودخول بوابة الخدمات بهذه العضوية
+              </button>
+            </div>
+          )}
+
+          {/* Role Toggle Tabs */}
+          <div style={{ display: "flex", gap: "10px", marginBottom: "24px" }}>
+            <button
+              type="button"
+              onClick={() => setLoginRole("worker")}
+              style={{
+                flex: 1,
+                padding: "10px 8px",
+                borderRadius: "10px",
+                border: loginRole === "worker" ? "2px solid var(--accent-ios, #3b82f6)" : "1px solid var(--border-glass)",
+                background: loginRole === "worker" ? "rgba(59, 130, 246, 0.1)" : "var(--bg-secondary)",
+                color: loginRole === "worker" ? "var(--accent-ios, #3b82f6)" : "var(--text-secondary)",
+                fontWeight: "700",
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                fontFamily: "var(--font-almarai)",
+                transition: "all 0.2s"
+              }}
+            >
+              🛠️ مقدم خدمة (فني)
+            </button>
+            <button
+              type="button"
+              onClick={() => setLoginRole("client")}
+              style={{
+                flex: 1,
+                padding: "10px 8px",
+                borderRadius: "10px",
+                border: loginRole === "client" ? "2px solid var(--accent-ios, #3b82f6)" : "1px solid var(--border-glass)",
+                background: loginRole === "client" ? "rgba(59, 130, 246, 0.1)" : "var(--bg-secondary)",
+                color: loginRole === "client" ? "var(--accent-ios, #3b82f6)" : "var(--text-secondary)",
+                fontWeight: "700",
+                fontSize: "0.85rem",
+                cursor: "pointer",
+                fontFamily: "var(--font-almarai)",
+                transition: "all 0.2s"
+              }}
+            >
+              👤 عميل مستفيد
+            </button>
+          </div>
 
           <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             {/* Email */}

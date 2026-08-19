@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -605,7 +605,7 @@ export default function AdminSubscriptionsPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1100,
+            zIndex: 9999,
             padding: "20px",
             direction: "rtl",
           }}
@@ -770,7 +770,7 @@ export default function AdminSubscriptionsPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 1100,
+            zIndex: 9999,
             padding: "20px",
             direction: "rtl",
           }}

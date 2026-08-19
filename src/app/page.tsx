@@ -16,7 +16,7 @@ import {
   FaChevronLeft
 } from "react-icons/fa";
 import { supabase } from "@/lib/supabase";
-import { initialPlaces, CATEGORIES_STRUCTURE, Place } from "@/data/places";
+import { initialPlaces, CATEGORIES_STRUCTURE, Place, normalizePlaceCategory } from "@/data/places";
 import AdSlider from "@/components/AdSlider";
 import TextLoop from "@/components/ui/TextLoop";
 
@@ -76,35 +76,8 @@ function getSearchCleanedText(text: string): string {
 // ── 2. دالة تحويل وتوحيد بيانات المكان من Supabase لضمان التطابق مع دليل الأماكن ──
 function mapDbPlaceToPlace(dbPlace: any): Place {
   const rawCategory = dbPlace.category;
-  let finalCategory = rawCategory;
-  let finalSubCategories = Array.isArray(dbPlace.sub_categories) ? [...dbPlace.sub_categories] : [];
-
-  if (rawCategory === 'restaurant' || rawCategory === 'cafe') {
-    finalCategory = 'food_drinks';
-    if (!finalSubCategories.includes(rawCategory)) finalSubCategories.push(rawCategory);
-  } else if (rawCategory === 'garden' || rawCategory === 'outings') {
-    finalCategory = 'public_places';
-    if (!finalSubCategories.includes('park')) finalSubCategories.push('park');
-  } else if (rawCategory === 'medicalCenter' || rawCategory === 'hospital' || rawCategory === 'pharmacy') {
-    finalCategory = 'health';
-    const mappedSub = rawCategory === 'medicalCenter' ? 'clinic' : rawCategory;
-    if (!finalSubCategories.includes(mappedSub)) finalSubCategories.push(mappedSub);
-  } else if (rawCategory === 'health_beauty') {
-    finalCategory = 'services';
-    if (!finalSubCategories.includes('beauty_salon')) finalSubCategories.push('beauty_salon');
-  } else if (rawCategory === 'family' || rawCategory === 'kids' || rawCategory === 'amusement_aqua' || rawCategory === 'cinema') {
-    finalCategory = 'entertainment';
-  } else if (rawCategory === 'quiet_places') {
-    finalCategory = 'public_places';
-  } else if (rawCategory === 'work') {
-    finalCategory = 'business';
-  } else if (rawCategory === 'courses_study') {
-    finalCategory = 'education';
-  } else if (rawCategory === 'hotel') {
-    finalCategory = 'tourism';
-  } else if (rawCategory === 'mall') {
-    finalCategory = 'shopping';
-  }
+  const initialSubCats = Array.isArray(dbPlace.sub_categories) ? [...dbPlace.sub_categories] : [];
+  const { category: finalCategory, categoryLabel: defaultLabel, subCategories: finalSubCategories } = normalizePlaceCategory(rawCategory, initialSubCats);
 
   return {
     id: dbPlace.id,

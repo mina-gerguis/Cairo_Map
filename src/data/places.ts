@@ -269,6 +269,71 @@ export const DEFAULT_CATEGORIES: CategoryItem[] = CATEGORIES_STRUCTURE.reduce((a
   return acc;
 }, [] as CategoryItem[]);
 
+export function normalizePlaceCategory(rawCategory: string, existingSubCats: string[] = []): { category: string; categoryLabel: string; subCategories: string[] } {
+  if (!rawCategory) return { category: 'food_drinks', categoryLabel: 'أكل ومشروبات', subCategories: existingSubCats };
+
+  const trimmed = rawCategory.trim();
+  const lower = trimmed.toLowerCase();
+  let finalSubCategories = [...existingSubCats];
+
+  // 1. Check if rawCategory is already a main category key
+  const isMainKey = CATEGORIES_STRUCTURE.find(m => m.name.toLowerCase() === lower);
+  if (isMainKey) {
+    return { category: isMainKey.name, categoryLabel: isMainKey.label, subCategories: finalSubCategories };
+  }
+
+  // 2. Check if rawCategory matches a main category label in Arabic
+  const mainByLabel = CATEGORIES_STRUCTURE.find(m => m.label.trim().toLowerCase() === lower);
+  if (mainByLabel) {
+    return { category: mainByLabel.name, categoryLabel: mainByLabel.label, subCategories: finalSubCategories };
+  }
+
+  // 3. Check if rawCategory is a subcategory key or subcategory label
+  for (const main of CATEGORIES_STRUCTURE) {
+    const subMatch = main.subCategories.find(s =>
+      s.name.toLowerCase() === lower ||
+      s.label.trim().toLowerCase() === lower
+    );
+    if (subMatch) {
+      if (!finalSubCategories.includes(subMatch.name)) {
+        finalSubCategories.push(subMatch.name);
+      }
+      return { category: main.name, categoryLabel: main.label, subCategories: finalSubCategories };
+    }
+  }
+
+  // 4. Backward compatibility for legacy categories
+  if (lower === 'restaurant' || lower === 'cafe') {
+    if (!finalSubCategories.includes(lower)) finalSubCategories.push(lower);
+    return { category: 'food_drinks', categoryLabel: 'أكل ومشروبات', subCategories: finalSubCategories };
+  } else if (lower === 'garden' || lower === 'outings') {
+    if (!finalSubCategories.includes('park')) finalSubCategories.push('park');
+    return { category: 'public_places', categoryLabel: 'أماكن عامة', subCategories: finalSubCategories };
+  } else if (lower === 'medicalcenter' || lower === 'hospital' || lower === 'pharmacy') {
+    const sub = lower === 'medicalcenter' ? 'clinic' : lower;
+    if (!finalSubCategories.includes(sub)) finalSubCategories.push(sub);
+    return { category: 'health', categoryLabel: 'صحة', subCategories: finalSubCategories };
+  } else if (lower === 'health_beauty') {
+    if (!finalSubCategories.includes('beauty_salon')) finalSubCategories.push('beauty_salon');
+    return { category: 'services', categoryLabel: 'خدمات', subCategories: finalSubCategories };
+  } else if (lower === 'family' || lower === 'kids' || lower === 'amusement_aqua' || lower === 'cinema') {
+    return { category: 'entertainment', categoryLabel: 'ترفيه', subCategories: finalSubCategories };
+  } else if (lower === 'quiet_places') {
+    return { category: 'public_places', categoryLabel: 'أماكن عامة', subCategories: finalSubCategories };
+  } else if (lower === 'work') {
+    return { category: 'business', categoryLabel: 'أعمال', subCategories: finalSubCategories };
+  } else if (lower === 'courses_study') {
+    return { category: 'education', categoryLabel: 'تعليم', subCategories: finalSubCategories };
+  } else if (lower === 'hotel') {
+    return { category: 'tourism', categoryLabel: 'إقامة وسياحة', subCategories: finalSubCategories };
+  } else if (lower === 'mall') {
+    if (!finalSubCategories.includes('mall')) finalSubCategories.push('mall');
+    return { category: 'shopping', categoryLabel: 'تسوق', subCategories: finalSubCategories };
+  }
+
+  return { category: rawCategory, categoryLabel: rawCategory, subCategories: finalSubCategories };
+}
+
 export interface Branch {
   id: string;
   place_id: string;

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -6,6 +6,14 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import styles from "../admin.module.css";
+
+interface RouteLeg {
+  title: string;
+  vehicleType?: string;
+  cost?: number;
+  duration?: string;
+  steps: string[];
+}
 
 interface RouteEntry {
   id: string;
@@ -17,6 +25,7 @@ interface RouteEntry {
   cost: number;
   duration: string;
   steps: string[];
+  legs?: RouteLeg[];
   tips?: string;
   from_aliases?: string;
   to_aliases?: string;
@@ -33,12 +42,21 @@ interface DbTransitRoute {
   cost: number;
   duration: string;
   steps: string[] | string;
+  legs?: RouteLeg[] | string;
   tips?: string | null;
   from_aliases?: string | null;
   to_aliases?: string | null;
   map_link?: string | null;
   created_at?: string;
   updated_at?: string;
+}
+
+interface FormLeg {
+  title: string;
+  vehicleType: string;
+  cost: string;
+  duration: string;
+  steps: string[];
 }
 
 interface FormOption {
@@ -49,6 +67,7 @@ interface FormOption {
   duration: string;
   durationMinutes: number | "";
   steps: string[];
+  legs: FormLeg[];
   tips: string;
   map_link: string;
 }
@@ -66,6 +85,7 @@ interface GroupedRoute {
     cost: number;
     duration: string;
     steps: string[];
+    legs?: RouteLeg[];
     tips?: string;
     map_link?: string;
   }>;
@@ -91,15 +111,15 @@ function formatMinutesToArabic(mins: number): string {
   if (mins <= 0) return "0 دقيقة";
   if (mins === 1) return "دقيقة واحدة";
   if (mins === 2) return "دقيقتان";
-  
+
   if (mins < 60) {
     if (mins >= 3 && mins <= 10) return `${mins} دقائق`;
     return `${mins} دقيقة`;
   }
-  
+
   const hours = Math.floor(mins / 60);
   const remaining = mins % 60;
-  
+
   let hoursText = "";
   if (hours === 1) {
     hoursText = "ساعة";
@@ -110,11 +130,11 @@ function formatMinutesToArabic(mins: number): string {
   } else {
     hoursText = `${hours} ساعة`;
   }
-  
+
   if (remaining === 0) {
     return hoursText;
   }
-  
+
   let remainingText = "";
   if (remaining === 1) {
     remainingText = "ودقيقة";
@@ -125,23 +145,23 @@ function formatMinutesToArabic(mins: number): string {
   } else {
     remainingText = `و ${remaining} دقيقة`;
   }
-  
+
   return `${hoursText} ${remainingText}`;
 }
 
 function parseMinutesFromArabic(text: string): number | null {
   if (!text) return null;
   const normalized = text.trim();
-  
+
   if (normalized === "ساعة") return 60;
   if (normalized === "ساعتان" || normalized === "ساعتين") return 120;
-  
+
   const hourMatch = normalized.match(/(\d+)\s+ساع/);
   const minMatch = normalized.match(/(\d+)\s+دقيق/);
-  
+
   let totalMins = 0;
   let found = false;
-  
+
   if (hourMatch) {
     totalMins += parseInt(hourMatch[1]) * 60;
     found = true;
@@ -152,7 +172,7 @@ function parseMinutesFromArabic(text: string): number | null {
     totalMins += 120;
     found = true;
   }
-  
+
   if (minMatch) {
     totalMins += parseInt(minMatch[1]);
     found = true;
@@ -163,7 +183,7 @@ function parseMinutesFromArabic(text: string): number | null {
     totalMins += 2;
     found = true;
   }
-  
+
   if (!hourMatch && !normalized.includes("ساعة") && !normalized.includes("ساعه") && !normalized.includes("ساعتين") && !normalized.includes("ساعتان")) {
     const rawNumberMatch = normalized.match(/^(\d+)/);
     if (rawNumberMatch) {
@@ -195,6 +215,14 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
   const [fromAliases, setFromAliases] = useState("");
   const [toAliases, setToAliases] = useState("");
 
+  const defaultLeg = (num: number = 1): FormLeg => ({
+    title: `المرحلة ${num === 1 ? "الأولى" : num === 2 ? "الثانية" : num === 3 ? "الثالثة" : `${num}`}: تفاصيل المرحلة`,
+    vehicleType: "ميكروباص",
+    cost: "",
+    duration: "",
+    steps: ["اركب...", "اوصل...", "انزل..."]
+  });
+
   const defaultOption = (): FormOption => ({
     type: "microbus",
     type_name: "ميكروباص مباشر",
@@ -203,6 +231,7 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
     duration: "",
     durationMinutes: "",
     steps: [""],
+    legs: [defaultLeg(1)],
     tips: "",
     map_link: ""
   });
@@ -274,6 +303,18 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
               stepsArr = [item.steps];
             }
           }
+
+          let legsArr: RouteLeg[] | undefined = undefined;
+          if (Array.isArray(item.legs)) {
+            legsArr = item.legs;
+          } else if (typeof item.legs === "string") {
+            try {
+              legsArr = JSON.parse(item.legs);
+            } catch {
+              legsArr = undefined;
+            }
+          }
+
           return {
             id: item.id,
             from_location: item.from_location,
@@ -283,7 +324,8 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
             icon: item.icon,
             cost: item.cost,
             duration: item.duration,
-            steps: stepsArr,
+            steps: Array.isArray(stepsArr) ? stepsArr : [],
+            legs: Array.isArray(legsArr) ? legsArr : undefined,
             tips: item.tips || undefined,
             from_aliases: item.from_aliases || undefined,
             to_aliases: item.to_aliases || undefined,
@@ -333,8 +375,8 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
   // Group routes list for UI display
   const groupedRoutesList = useMemo(() => {
     const grouped: Record<string, GroupedRoute> = {};
-    routes.forEach(r => {
-      const key = `${r.from_location.trim()}|||${r.to_location.trim()}`;
+    (routes || []).forEach(r => {
+      const key = `${(r.from_location || "").trim()}|||${(r.to_location || "").trim()}`;
       if (!grouped[key]) {
         grouped[key] = {
           from_location: r.from_location,
@@ -351,7 +393,8 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
         icon: r.icon,
         cost: r.cost,
         duration: r.duration,
-        steps: r.steps,
+        steps: Array.isArray(r.steps) ? r.steps : [],
+        legs: Array.isArray(r.legs) ? r.legs : undefined,
         tips: r.tips,
         map_link: r.map_link
       });
@@ -376,27 +419,6 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
     });
   };
 
-  const updateOptionStep = (optionIdx: number, stepIdx: number, val: string) => {
-    const updated = [...options];
-    const stepsCopy = [...updated[optionIdx].steps];
-    stepsCopy[stepIdx] = val;
-    updated[optionIdx].steps = stepsCopy;
-    setOptions(updated);
-  };
-
-  const addOptionStepField = (optionIdx: number) => {
-    const updated = [...options];
-    updated[optionIdx].steps = [...updated[optionIdx].steps, ""];
-    setOptions(updated);
-  };
-
-  const removeOptionStepField = (optionIdx: number, stepIdx: number) => {
-    const updated = [...options];
-    if (updated[optionIdx].steps.length === 1) return;
-    updated[optionIdx].steps = updated[optionIdx].steps.filter((_, idx) => idx !== stepIdx);
-    setOptions(updated);
-  };
-
   const addOptionField = () => {
     setOptions([...options, defaultOption()]);
   };
@@ -406,6 +428,63 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
     setOptions(options.filter((_, idx) => idx !== index));
   };
 
+  // Leg Management Helpers
+  const addLegToOption = (optIdx: number) => {
+    const updated = [...options];
+    const newLegNum = (updated[optIdx]?.legs || []).length + 1;
+    updated[optIdx].legs.push(defaultLeg(newLegNum));
+    setOptions(updated);
+  };
+
+  const removeLegFromOption = (optIdx: number, legIdx: number) => {
+    const updated = [...options];
+    if ((updated[optIdx]?.legs || []).length === 1) return;
+    updated[optIdx].legs = updated[optIdx].legs.filter((_, idx) => idx !== legIdx);
+    setOptions(updated);
+  };
+
+  const updateLegField = (optIdx: number, legIdx: number, field: keyof FormLeg, val: string) => {
+    const updated = [...options];
+    const legsCopy = [...(updated[optIdx]?.legs || [])];
+    if (legsCopy[legIdx]) {
+      legsCopy[legIdx] = { ...legsCopy[legIdx], [field]: val };
+      updated[optIdx].legs = legsCopy;
+      setOptions(updated);
+    }
+  };
+
+  const updateLegStep = (optIdx: number, legIdx: number, stepIdx: number, val: string) => {
+    const updated = [...options];
+    const legsCopy = [...(updated[optIdx]?.legs || [])];
+    if (legsCopy[legIdx]) {
+      const stepsCopy = [...(legsCopy[legIdx].steps || [])];
+      stepsCopy[stepIdx] = val;
+      legsCopy[legIdx].steps = stepsCopy;
+      updated[optIdx].legs = legsCopy;
+      setOptions(updated);
+    }
+  };
+
+  const addLegStep = (optIdx: number, legIdx: number) => {
+    const updated = [...options];
+    const legsCopy = [...(updated[optIdx]?.legs || [])];
+    if (legsCopy[legIdx]) {
+      legsCopy[legIdx].steps = [...(legsCopy[legIdx].steps || []), ""];
+      updated[optIdx].legs = legsCopy;
+      setOptions(updated);
+    }
+  };
+
+  const removeLegStep = (optIdx: number, legIdx: number, stepIdx: number) => {
+    const updated = [...options];
+    const legsCopy = [...(updated[optIdx]?.legs || [])];
+    if (legsCopy[legIdx] && (legsCopy[legIdx].steps || []).length > 1) {
+      legsCopy[legIdx].steps = legsCopy[legIdx].steps.filter((_, idx) => idx !== stepIdx);
+      updated[optIdx].legs = legsCopy;
+      setOptions(updated);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fromLocation.trim() || !toLocation.trim()) {
@@ -413,17 +492,24 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
       return;
     }
 
-    // Validate all options
-    for (let i = 0; i < options.length; i++) {
+    // Validate all options & legs
+    for (let i = 0; i < (options || []).length; i++) {
       const opt = options[i];
       if (!opt.type_name.trim() || !opt.duration.trim()) {
         setError(`يرجى إكمال بيانات وسيلة المواصلات رقم ${i + 1}`);
         return;
       }
-      const filteredSteps = opt.steps.map(s => s.trim()).filter(Boolean);
-      if (filteredSteps.length === 0) {
-        setError(`يجب إضافة خطوة سفر واحدة على الأقل لوسيلة المواصلات رقم ${i + 1}`);
+      if (!opt.legs || opt.legs.length === 0) {
+        setError(`يجب إضافة مرحلة سفر واحدة على الأقل لوسيلة المواصلات رقم ${i + 1}`);
         return;
+      }
+      for (let j = 0; j < opt.legs.length; j++) {
+        const leg = opt.legs[j];
+        const filteredLegSteps = (leg.steps || []).map(s => s.trim()).filter(Boolean);
+        if (filteredLegSteps.length === 0) {
+          setError(`يجب إضافة خطوة واحدة على الأقل للمرحلة رقم ${j + 1} في الوسيلة ${i + 1}`);
+          return;
+        }
       }
     }
 
@@ -432,30 +518,47 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
     setSuccess("");
 
     // Prepare payloads
-    const payloads = options.map(opt => ({
-      from_location: fromLocation.trim(),
-      to_location: toLocation.trim(),
-      type: opt.type,
-      type_name: opt.type_name.trim(),
-      icon: opt.icon.trim() || "bx bx-bus",
-      cost: parseInt(opt.cost) || 0,
-      duration: opt.duration.trim(),
-      steps: opt.steps.map(s => s.trim()).filter(Boolean),
-      tips: opt.tips.trim() || undefined,
-      from_aliases: fromAliases.trim() || undefined,
-      to_aliases: toAliases.trim() || undefined,
-      map_link: opt.map_link.trim() || undefined
-    }));
+    const payloads = (options || []).map(opt => {
+      const formattedLegs = (opt.legs || []).map((leg, lIdx) => ({
+        title: leg.title.trim() || `المرحلة ${lIdx + 1}`,
+        vehicleType: leg.vehicleType.trim() || undefined,
+        cost: leg.cost.trim() ? parseInt(leg.cost.trim()) : undefined,
+        duration: leg.duration.trim() || undefined,
+        steps: (leg.steps || []).map(s => s.trim()).filter(Boolean)
+      }));
+
+      // Flatten all leg steps for backward compatibility in flat `steps`
+      const allFlatSteps: string[] = [];
+      formattedLegs.forEach(leg => {
+        (leg.steps || []).forEach(s => allFlatSteps.push(s));
+      });
+
+      return {
+        from_location: fromLocation.trim(),
+        to_location: toLocation.trim(),
+        type: opt.type,
+        type_name: opt.type_name.trim(),
+        icon: opt.icon.trim() || "bx bx-bus",
+        cost: parseInt(opt.cost) || 0,
+        duration: opt.duration.trim(),
+        steps: allFlatSteps,
+        legs: formattedLegs,
+        tips: opt.tips.trim() || undefined,
+        from_aliases: fromAliases.trim() || undefined,
+        to_aliases: toAliases.trim() || undefined,
+        map_link: opt.map_link.trim() || undefined
+      };
+    });
 
     try {
       if (dbMissing) {
         // LocalStorage Mode
         let updatedRoutes = [...routes];
-        
+
         // If editing, delete old connection first
         if (editingConnection) {
           updatedRoutes = updatedRoutes.filter(
-            r => !(r.from_location.trim().toLowerCase() === editingConnection.from_location.trim().toLowerCase() && 
+            r => !(r.from_location.trim().toLowerCase() === editingConnection.from_location.trim().toLowerCase() &&
                    r.to_location.trim().toLowerCase() === editingConnection.to_location.trim().toLowerCase())
           );
         }
@@ -487,13 +590,32 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
         }
 
         // Insert new payloads
-        const { error: insertError } = await supabase
+        let { error: insertError } = await supabase
           .from("transit_routes")
           .insert(payloads);
 
+        // Auto fallback if legs column does not exist in Supabase schema cache
+        if (insertError && (
+          insertError.message?.includes("legs") ||
+          insertError.message?.includes("schema cache")
+        )) {
+          console.warn("legs column missing in Supabase, retrying insert without legs payload field...");
+          const fallbackPayloads = payloads.map(p => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { legs, ...rest } = p;
+            return rest;
+          });
+          const retryRes = await supabase
+            .from("transit_routes")
+            .insert(fallbackPayloads);
+
+          insertError = retryRes.error;
+          setDbMissing(true);
+        }
+
         if (insertError) throw insertError;
-        
-        setSuccess(editingConnection ? "تم تحديث الطريق وجميع وسائله بنجاح!" : "تم إضافة الطريق بجميع وسائله بنجاح!");
+
+        setSuccess(editingConnection ? "تم تحديث الطريق بجميع وسائله ومراخله بنجاح!" : "تم إضافة الطريق بجميع وسائله ومراخله بنجاح!");
         await fetchRoutes();
         resetForm();
         setShowAddForm(false);
@@ -513,10 +635,32 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
     setToLocation(conn.to_location);
     setFromAliases(conn.from_aliases || "");
     setToAliases(conn.to_aliases || "");
-    
+
     // Map options to form structure
-    const mapped: FormOption[] = conn.options.map(opt => {
+    const mapped: FormOption[] = (conn.options || []).map(opt => {
       const parsedMins = parseMinutesFromArabic(opt.duration);
+
+      let formLegs: FormLeg[] = [];
+      if (opt.legs && Array.isArray(opt.legs) && opt.legs.length > 0) {
+        formLegs = opt.legs.map(leg => ({
+          title: leg.title || "المرحلة",
+          vehicleType: leg.vehicleType || "ميكروباص",
+          cost: leg.cost !== undefined ? leg.cost.toString() : "",
+          duration: leg.duration || "",
+          steps: leg.steps && Array.isArray(leg.steps) && leg.steps.length > 0 ? leg.steps : [""]
+        }));
+      } else {
+        formLegs = [
+          {
+            title: "المرحلة الأولى: خطوات المسار",
+            vehicleType: "ميكروباص",
+            cost: opt.cost.toString(),
+            duration: opt.duration,
+            steps: opt.steps && Array.isArray(opt.steps) && opt.steps.length > 0 ? opt.steps : ["اركب...", "اوصل...", "انزل..."]
+          }
+        ];
+      }
+
       return {
         type: opt.type,
         type_name: opt.type_name,
@@ -524,13 +668,14 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
         cost: opt.cost.toString(),
         duration: opt.duration,
         durationMinutes: parsedMins !== null ? parsedMins : "",
-        steps: opt.steps.length > 0 ? opt.steps : [""],
+        steps: Array.isArray(opt.steps) ? opt.steps : [""],
+        legs: formLegs,
         tips: opt.tips || "",
         map_link: opt.map_link || ""
       };
     });
     setOptions(mapped);
-    
+
     setShowAddForm(true);
     setError("");
     setSuccess("");
@@ -545,8 +690,8 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
 
     try {
       if (dbMissing) {
-        const updated = routes.filter(
-          r => !(r.from_location.trim().toLowerCase() === fromVal.trim().toLowerCase() && 
+        const updated = (routes || []).filter(
+          r => !(r.from_location.trim().toLowerCase() === fromVal.trim().toLowerCase() &&
                  r.to_location.trim().toLowerCase() === toVal.trim().toLowerCase())
         );
         saveToLocalStorage(updated);
@@ -593,21 +738,21 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
 
   return (
     <div style={isSubComponent ? { padding: 0 } : { maxWidth: "1000px", margin: "0 auto", padding: "10px" }}>
-      
+
       {/* Title Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
         {!isSubComponent ? (
           <div>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: "900", margin: 0, color: "var(--text-primary)" }}>
-              إدارة خطوط ومسارات المواصلات
+              إدارة خطوط ومسارات المواصلات والمراحل
             </h1>
             <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 0" }}>
-              إضافة وتعديل خطوط مواصلات السفر والانتقال بين المدن لخدمة {"\"ازاي اروح ؟\""}.
+              إضافة وتعديل خطوط مواصلات السفر والانتقال بين المدن مع تقسيم المراحل والأجرة والخطوات التفصيلية لخدمة {"\"ازاي اروح ؟\""}.
             </p>
           </div>
         ) : <div />}
-        <button 
-          className="ios-btn ios-btn-primary" 
+        <button
+          className="ios-btn ios-btn-primary"
           style={{ width: "auto" }}
           onClick={() => {
             if (showAddForm) {
@@ -626,35 +771,13 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
       {dbMissing && (
         <div className="glass-panel" style={{ padding: "20px", borderRight: "4px solid var(--accent-warning)", marginBottom: "24px", background: "rgba(245, 158, 11, 0.05)" }}>
           <h4 style={{ color: "var(--accent-warning)", margin: "0 0 8px", fontSize: "1.05rem", fontWeight: "800" }}>
-            ⚠️ تنبيه: جدول قاعدة البيانات غير منشأ
+            ⚠️ تنبيه: جدول قاعدة البيانات غير منشأ أو ينقصه العمود `legs`
           </h4>
           <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", margin: 0 }}>
-            لم يتم العثور على جدول `transit_routes` في قاعدة بيانات Supabase. الصفحة تعمل حالياً في **وضع الحفظ المحلي المؤقت (LocalStorage)**. لتفعيل الحفظ الدائم لجميع المستخدمين، يرجى تشغيل كود الـ SQL التالي في محرِّر الاستعلامات الخاص بـ Supabase (SQL Editor):
+            لتفعيل تقسيم المراحل وتخفيضات التذاكر الدائمة لجميع المستخدمين، يرجى إضافة عمود `legs` أو إنشاء الجدول في Supabase عبر الكود التالي:
           </p>
           <pre style={{ background: "rgba(0,0,0,0.3)", padding: "12px", borderRadius: "10px", fontSize: "0.75rem", overflowX: "auto", marginTop: "12px", direction: "ltr", textAlign: "left", color: "#a7f3d0" }}>
-{`CREATE TABLE IF NOT EXISTS public.transit_routes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    from_location TEXT NOT NULL,
-    to_location TEXT NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('microbus', 'train', 'bus', 'multi')),
-    type_name TEXT NOT NULL,
-    icon TEXT NOT NULL DEFAULT 'bx bx-bus',
-    cost INTEGER NOT NULL DEFAULT 0,
-    duration TEXT NOT NULL,
-    steps JSONB NOT NULL DEFAULT '[]'::jsonb,
-    tips TEXT,
-    from_aliases TEXT,
-    to_aliases TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-ALTER TABLE public.transit_routes ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Anyone can view transit routes" ON public.transit_routes FOR SELECT USING (true);
-CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR ALL USING (
-    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND is_admin = true)
-);`}
+{`ALTER TABLE public.transit_routes ADD COLUMN IF NOT EXISTS legs JSONB DEFAULT '[]'::jsonb;`}
           </pre>
         </div>
       )}
@@ -667,30 +790,30 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
       {showAddForm && (
         <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: "30px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
           <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
-            {editingConnection ? "تعديل بيانات الطريق" : "إضافة طريق ومسارات مواصلات جديدة"}
+            {editingConnection ? "تعديل بيانات الطريق ومراحل المسار" : "إضافة طريق ومسارات مواصلات ومراحل جديدة"}
           </h2>
 
           {/* From & To inputs */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
             <div>
               <label className="help-label">من (نقطة البداية) *</label>
-              <input 
-                type="text" 
-                required 
-                className="ios-input" 
-                placeholder="مثال: الزقازيق" 
+              <input
+                type="text"
+                required
+                className="ios-input"
+                placeholder="مثال: الزقازيق"
                 value={fromLocation}
                 onChange={e => setFromLocation(e.target.value)}
               />
             </div>
-            
+
             <div>
               <label className="help-label">إلى (الوجهة النهائية) *</label>
-              <input 
-                type="text" 
-                required 
-                className="ios-input" 
-                placeholder="مثال: أرض المعارض" 
+              <input
+                type="text"
+                required
+                className="ios-input"
+                placeholder="مثال: أرض المعارض"
                 value={toLocation}
                 onChange={e => setToLocation(e.target.value)}
               />
@@ -701,21 +824,21 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
             <div>
               <label className="help-label">الأسماء والكلمات البديلة لنقطة البداية (مفصولة بفاصلة)</label>
-              <input 
-                type="text" 
-                className="ios-input" 
-                placeholder="مثال: موقف الأحرار، الاحرار، جامعة الزقازيق" 
+              <input
+                type="text"
+                className="ios-input"
+                placeholder="مثال: موقف الأحرار، الاحرار، جامعة الزقازيق"
                 value={fromAliases}
                 onChange={e => setFromAliases(e.target.value)}
               />
             </div>
-            
+
             <div>
               <label className="help-label">الأسماء والكلمات البديلة للوجهة (مفصولة بفاصلة)</label>
-              <input 
-                type="text" 
-                className="ios-input" 
-                placeholder="مثال: معرض الكتاب، ارض المعارض، مركز المعارض" 
+              <input
+                type="text"
+                className="ios-input"
+                placeholder="مثال: معرض الكتاب، ارض المعارض، مركز المعارض"
                 value={toAliases}
                 onChange={e => setToAliases(e.target.value)}
               />
@@ -725,9 +848,9 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
           {/* Options Sublist */}
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
             <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)", borderBottom: "1px solid var(--border-glass)", paddingBottom: "10px", margin: "10px 0 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>وسائل المواصلات المتاحة لهذا الطريق ({options.length})</span>
-              <button 
-                type="button" 
+              <span>وسائل المواصلات المتاحة لهذا الطريق ({(options || []).length})</span>
+              <button
+                type="button"
                 className="ios-btn"
                 onClick={addOptionField}
                 style={{ padding: "6px 16px", height: "auto", fontSize: "0.85rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}
@@ -736,17 +859,17 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
               </button>
             </h3>
 
-            {options.map((opt, optIdx) => (
+            {(options || []).map((opt, optIdx) => (
               <div key={optIdx} className="glass-panel" style={{ padding: "20px", borderRight: "4px solid #3b82f6", display: "flex", flexDirection: "column", gap: "16px", background: "rgba(255,255,255,0.01)" }}>
-                
+
                 {/* Option Header */}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontWeight: "800", color: "var(--text-secondary)", fontSize: "0.95rem" }}>
                     🤖 وسيلة المواصلات رقم {optIdx + 1}
                   </span>
-                  {options.length > 1 && (
-                    <button 
-                      type="button" 
+                  {(options || []).length > 1 && (
+                    <button
+                      type="button"
                       className="ios-btn"
                       onClick={() => removeOptionField(optIdx)}
                       style={{ padding: "4px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}
@@ -762,8 +885,8 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
                   <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
                     <div style={{ flex: 1 }}>
                       <label className="help-label">نوع وسيلة المواصلات *</label>
-                      <select 
-                        className="ios-input" 
+                      <select
+                        className="ios-input"
                         value={opt.type}
                         onChange={e => {
                           const newType = e.target.value as FormOption["type"];
@@ -823,11 +946,11 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
 
                   <div>
                     <label className="help-label">اسم وسيلة المواصلات المخصص *</label>
-                    <input 
-                      type="text" 
-                      required 
-                      className="ios-input" 
-                      placeholder="مثال: ميكروباص مباشر" 
+                    <input
+                      type="text"
+                      required
+                      className="ios-input"
+                      placeholder="مثال: ميكروباص مباشر"
                       value={opt.type_name}
                       onChange={e => updateOption(optIdx, "type_name", e.target.value)}
                     />
@@ -835,11 +958,11 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
 
                   <div>
                     <label className="help-label">رمز الأيقونة (Boxicon) *</label>
-                    <input 
-                      type="text" 
-                      required 
-                      className="ios-input" 
-                      placeholder="bx bx-bus" 
+                    <input
+                      type="text"
+                      required
+                      className="ios-input"
+                      placeholder="bx bx-bus"
                       value={opt.icon}
                       onChange={e => updateOption(optIdx, "icon", e.target.value)}
                     />
@@ -849,13 +972,13 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
                 {/* Cost & Duration Grid */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
                   <div>
-                    <label className="help-label">التكلفة المتوقعة (ج.م) *</label>
-                    <input 
-                      type="number" 
-                      required 
+                    <label className="help-label">التكلفة الإجمالية المتوقعة (ج.م) *</label>
+                    <input
+                      type="number"
+                      required
                       min="0"
-                      className="ios-input" 
-                      placeholder="20" 
+                      className="ios-input"
+                      placeholder="20"
                       value={opt.cost}
                       onChange={e => updateOption(optIdx, "cost", e.target.value)}
                     />
@@ -864,11 +987,11 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "10px" }}>
                     <div>
                       <label className="help-label">الزمن (دقائق)</label>
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         min="1"
-                        className="ios-input" 
-                        placeholder="90" 
+                        className="ios-input"
+                        placeholder="90"
                         value={opt.durationMinutes}
                         onChange={e => {
                           const val = e.target.value;
@@ -882,11 +1005,11 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
                     </div>
                     <div>
                       <label className="help-label">النص النهائي لزمن الرحلة *</label>
-                      <input 
-                        type="text" 
-                        required 
-                        className="ios-input" 
-                        placeholder="ساعة و 30 دقيقة" 
+                      <input
+                        type="text"
+                        required
+                        className="ios-input"
+                        placeholder="ساعة و 30 دقيقة"
                         value={opt.duration}
                         onChange={e => updateOption(optIdx, "duration", e.target.value)}
                       />
@@ -904,53 +1027,130 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
                       </span>
                     )}
                   </label>
-                  <input 
-                    type="text" 
-                    className="ios-input" 
-                    placeholder="https://www.google.com/maps/dir/..." 
+                  <input
+                    type="text"
+                    className="ios-input"
+                    placeholder="https://www.google.com/maps/dir/..."
                     value={opt.map_link}
                     onChange={e => updateOption(optIdx, "map_link", e.target.value)}
                   />
                 </div>
 
-                {/* Steps Array */}
-                <div>
-                  <label className="help-label" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <span>خطوات الانتقال والتبديل بالتفصيل *</span>
-                    <button 
-                      type="button" 
-                      className="ios-btn" 
-                      onClick={() => addOptionStepField(optIdx)} 
-                      style={{ padding: "2px 10px", height: "auto", fontSize: "0.75rem", background: "rgba(59,130,246,0.1)", color: "#3b82f6" }}
+                {/* Stages / Legs Breakdown Editor */}
+                <div style={{ background: "rgba(0,0,0,0.15)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--accent-ios)", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <i className="bx bx-git-repo-forked" />
+                      <span>مراحل الرحلة والخطوات التفصيلية (المرحلة الأولى، الثانية...)</span>
+                    </h4>
+                    <button
+                      type="button"
+                      className="ios-btn"
+                      onClick={() => addLegToOption(optIdx)}
+                      style={{ padding: "4px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" }}
                     >
-                      + إضافة خطوة
+                      + إضافة مرحلة جديدة
                     </button>
-                  </label>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                    {opt.steps.map((step, stepIdx) => (
-                      <div key={stepIdx} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                        <span style={{ color: "var(--text-muted)", fontSize: "0.85rem", fontWeight: "700", minWidth: "16px" }}>{stepIdx + 1}.</span>
-                        <input
-                          type="text"
-                          required
-                          className="ios-input"
-                          placeholder="مثال: اركب من الموقف..."
-                          value={step}
-                          onChange={e => updateOptionStep(optIdx, stepIdx, e.target.value)}
-                          style={{ flex: 1 }}
-                        />
-                        <button
-                          type="button"
-                          className="ios-btn"
-                          onClick={() => removeOptionStepField(optIdx, stepIdx)}
-                          style={{ padding: "0", width: "32px", height: "32px", background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
-                          disabled={opt.steps.length === 1}
-                        >
-                          <i className="bx bx-trash" />
-                        </button>
-                      </div>
-                    ))}
                   </div>
+
+                  {(opt.legs || []).map((leg, legIdx) => (
+                    <div key={legIdx} style={{ background: "var(--bg-glass-card)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
+                        <span style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                          📍 المرحلة {legIdx + 1}
+                        </span>
+                        {(opt.legs || []).length > 1 && (
+                          <button
+                            type="button"
+                            className="ios-btn"
+                            onClick={() => removeLegFromOption(optIdx, legIdx)}
+                            style={{ padding: "2px 8px", height: "auto", fontSize: "0.75rem", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}
+                          >
+                            حذف هذه المرحلة
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Leg Title, Cost, Duration */}
+                      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "10px" }}>
+                        <div>
+                          <label className="help-label">عنوان المرحلة *</label>
+                          <input
+                            type="text"
+                            required
+                            className="ios-input"
+                            placeholder="مثال: المرحلة الأولى: ميكروباص من الزقازيق للسلام"
+                            value={leg.title}
+                            onChange={e => updateLegField(optIdx, legIdx, "title", e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <label className="help-label">أجرة هذه المرحلة (ج.م)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            className="ios-input"
+                            placeholder="20"
+                            value={leg.cost}
+                            onChange={e => updateLegField(optIdx, legIdx, "cost", e.target.value)}
+                          />
+                        </div>
+                        <div>
+                          <label className="help-label">وقت هذه المرحلة</label>
+                          <input
+                            type="text"
+                            className="ios-input"
+                            placeholder="50 دقيقة"
+                            value={leg.duration}
+                            onChange={e => updateLegField(optIdx, legIdx, "duration", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Leg Sub-Steps */}
+                      <div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                          <label className="help-label" style={{ margin: 0 }}>خطوات هذه المرحلة بالتفصيل *</label>
+                          <button
+                            type="button"
+                            className="ios-btn"
+                            onClick={() => addLegStep(optIdx, legIdx)}
+                            style={{ padding: "2px 8px", height: "auto", fontSize: "0.75rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}
+                          >
+                            + إضافة خطوة للمرحلة
+                          </button>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                          {(leg.steps || []).map((stepVal, stepIdx) => (
+                            <div key={stepIdx} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                              <span style={{ color: "var(--text-muted)", fontSize: "0.85rem", fontWeight: "700", minWidth: "20px" }}>
+                                {stepIdx + 1}.
+                              </span>
+                              <input
+                                type="text"
+                                required
+                                className="ios-input"
+                                placeholder="اكتب تفاصيل هذه الخطوة..."
+                                value={stepVal}
+                                onChange={e => updateLegStep(optIdx, legIdx, stepIdx, e.target.value)}
+                                style={{ flex: 1 }}
+                              />
+                              <button
+                                type="button"
+                                className="ios-btn"
+                                onClick={() => removeLegStep(optIdx, legIdx, stepIdx)}
+                                style={{ padding: "0", width: "30px", height: "30px", background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+                                disabled={(leg.steps || []).length === 1}
+                              >
+                                <i className="bx bx-trash" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Tips */}
@@ -971,9 +1171,9 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
 
           {/* Form Actions */}
           <div style={{ display: "flex", gap: "12px", alignSelf: "flex-end", marginTop: "10px" }}>
-            <button 
-              type="button" 
-              className="ios-btn" 
+            <button
+              type="button"
+              className="ios-btn"
               onClick={() => {
                 resetForm();
                 setShowAddForm(false);
@@ -981,13 +1181,13 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
             >
               إلغاء
             </button>
-            <button 
-              type="submit" 
-              className="ios-btn ios-btn-primary" 
+            <button
+              type="submit"
+              className="ios-btn ios-btn-primary"
               disabled={isSubmitting}
               style={{ padding: "0 28px" }}
             >
-              {isSubmitting ? "جاري الحفظ..." : "حفظ الطريق بالكامل"}
+              {isSubmitting ? "جاري الحفظ..." : "حفظ الطريق والخطوات بالكامل"}
             </button>
           </div>
         </form>
@@ -996,17 +1196,17 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
       {/* Routes List */}
       <div className="glass-panel" style={{ padding: "24px" }}>
         <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 16px" }}>
-          الطرق والمسارات المسجلة حالياً ({groupedRoutesList.length})
+          الطرق والمسارات المسجلة حالياً ({(groupedRoutesList || []).length})
         </h3>
 
-        {groupedRoutesList.length === 0 ? (
+        {(groupedRoutesList || []).length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text-muted)" }}>
             <i className="bx bx-compass" style={{ fontSize: "2.5rem", marginBottom: "8px", display: "block" }} />
             لا يوجد مسارات مضافة حالياً.
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {groupedRoutesList.map((route, idx) => (
+            {(groupedRoutesList || []).map((route, idx) => (
               <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "20px", borderRadius: "14px", border: "1px solid var(--border-glass)", background: "rgba(255,255,255,0.01)", flexWrap: "wrap", gap: "16px" }}>
                 <div style={{ display: "flex", flex: 1, gap: "14px", minWidth: "280px", flexDirection: "column" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1029,56 +1229,77 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
                   {/* Transit Options */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
                     <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--text-secondary)" }}>وسائل المواصلات المتاحة:</span>
-                    {route.options.map((opt, optIdx) => (
-                      <div key={optIdx} style={{ display: "flex", gap: "10px", padding: "12px", borderRadius: "10px", background: "rgba(255,255,255,0.01)", border: "1px solid var(--border-glass)" }}>
-                        <i className={opt.icon} style={{ fontSize: "1.2rem", color: "#3b82f6", marginTop: "2px" }} />
-                        <div style={{ flex: 1 }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-                            <span style={{ fontWeight: "700", fontSize: "0.92rem", color: "var(--text-primary)" }}>{opt.type_name}</span>
-                            <div style={{ display: "flex", gap: "6px" }}>
-                              <span style={{ fontSize: "0.75rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", padding: "2px 6px", borderRadius: "4px" }}>{opt.cost} ج.م</span>
-                              <span style={{ fontSize: "0.75rem", background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6", padding: "2px 6px", borderRadius: "4px" }}>{opt.duration}</span>
-                            </div>
+                    {(route.options || []).map((opt, optIdx) => (
+                      <div key={optIdx} style={{ display: "flex", gap: "10px", padding: "14px", borderRadius: "10px", background: "rgba(255,255,255,0.01)", border: "1px solid var(--border-glass)", flexDirection: "column" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <i className={opt.icon} style={{ fontSize: "1.2rem", color: "#3b82f6" }} />
+                            <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "var(--text-primary)" }}>{opt.type_name}</span>
                           </div>
-                          
-                          {/* Steps */}
+                          <div style={{ display: "flex", gap: "6px" }}>
+                            <span style={{ fontSize: "0.75rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", padding: "2px 6px", borderRadius: "4px" }}>الإجمالي {opt.cost} ج.م</span>
+                            <span style={{ fontSize: "0.75rem", background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6", padding: "2px 6px", borderRadius: "4px" }}>{opt.duration}</span>
+                          </div>
+                        </div>
+
+                        {/* Display Stages/Legs */}
+                        {opt.legs && Array.isArray(opt.legs) && opt.legs.length > 0 ? (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "6px" }}>
+                            {(opt.legs || []).map((leg, lIdx) => (
+                              <div key={lIdx} style={{ background: "rgba(255,255,255,0.02)", padding: "10px 12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.04)" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
+                                  <span>📍 {leg.title}</span>
+                                  <div style={{ display: "flex", gap: "6px" }}>
+                                    {leg.cost !== undefined && <span style={{ color: "#10b981" }}>{leg.cost} ج.م</span>}
+                                    {leg.duration && <span style={{ color: "#3b82f6" }}>{leg.duration}</span>}
+                                  </div>
+                                </div>
+                                <ol style={{ paddingRight: "16px", margin: "4px 0 0", fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.4" }}>
+                                  {(leg.steps || []).map((step, sIdx) => (
+                                    <li key={sIdx}>{step}</li>
+                                  ))}
+                                </ol>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
                           <ol style={{ paddingRight: "16px", margin: "6px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.4" }}>
-                            {opt.steps.map((step, stepIdx) => (
+                            {(opt.steps || []).map((step, stepIdx) => (
                               <li key={stepIdx}>{step}</li>
                             ))}
                           </ol>
+                        )}
 
-                          {/* Tip */}
-                          {opt.tips && (
-                            <div style={{ fontSize: "0.75rem", color: "var(--accent-warning)", marginTop: "4px", display: "flex", gap: "4px" }}>
-                              <span>💡</span>
-                              <span>{opt.tips}</span>
-                            </div>
-                          )}
+                        {/* Tip */}
+                        {opt.tips && (
+                          <div style={{ fontSize: "0.75rem", color: "var(--accent-warning)", marginTop: "4px", display: "flex", gap: "4px" }}>
+                            <span>💡</span>
+                            <span>{opt.tips}</span>
+                          </div>
+                        )}
 
-                          {/* Map Link */}
-                          {opt.map_link && (
-                            <div style={{ fontSize: "0.75rem", color: "var(--accent-success)", marginTop: "4px", display: "flex", gap: "4px" }}>
-                              <span>📍</span>
-                              <span><strong>مسار بدء الرحلة:</strong> <a href={opt.map_link} target="_blank" rel="noopener noreferrer" style={{ color: "#10b981", textDecoration: "underline", fontWeight: "700" }}>فتح خرائط Google</a></span>
-                            </div>
-                          )}
-                        </div>
+                        {/* Map Link */}
+                        {opt.map_link && (
+                          <div style={{ fontSize: "0.75rem", color: "var(--accent-success)", marginTop: "4px", display: "flex", gap: "4px" }}>
+                            <span>📍</span>
+                            <span><strong>مسار بدء الرحلة:</strong> <a href={opt.map_link} target="_blank" rel="noopener noreferrer" style={{ color: "#10b981", textDecoration: "underline", fontWeight: "700" }}>فتح خرائط Google</a></span>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                  <button 
-                    className="ios-btn" 
+                  <button
+                    className="ios-btn"
                     onClick={() => handleEdit(route)}
                     style={{ padding: "6px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6" }}
                   >
                     تعديل الطريق بالكامل
                   </button>
-                  <button 
-                    className="ios-btn" 
+                  <button
+                    className="ios-btn"
                     onClick={() => handleDelete(route.from_location, route.to_location)}
                     style={{ padding: "6px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}
                   >
@@ -1094,4 +1315,3 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes FOR AL
     </div>
   );
 }
-

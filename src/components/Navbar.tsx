@@ -74,7 +74,7 @@ export default function Navbar() {
         { href: "/directory", label: "دليل الهاتف", icon: "bx bx-phone" },
         { href: "/services", label: "دليل الحرفيين والمهن", icon: "bx bx-wrench" },
         { href: "/metro", label: "خريطة المترو", icon: "bx bx-train" },
-        { href: "/monorail", label: "خريطة المنورايل", icon: "bx bx-navigation" },
+        { href: "/monorail", label: "خريطة المنورايل", icon: "fa-solid fa-train-subway" },
         { href: "/lrt", label: "القطار الكهربائي LRT", icon: "bx bx-train" },
         { href: "/railways", label: "سكك حديد مصر", icon: "fa-solid fa-train-subway" },
         { href: "/airports", label: "المطارات", icon: "fa-solid fa-plane-departure" },

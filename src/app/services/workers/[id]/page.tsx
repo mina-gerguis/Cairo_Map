@@ -58,78 +58,136 @@ export default function WorkerDetailsPage() {
   const [reviews, setReviews] = useState<WorkerReview[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [servicesAuthActive, setServicesAuthActive] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const active = localStorage.getItem("services_auth_active");
+      setServicesAuthActive(active !== "false");
+    }
+  }, []);
+
+  const isServicesUserLoggedIn = !!user && servicesAuthActive;
+
   // Modals & Forms State
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [requestDescription, setRequestDescription] = useState("");
   const [submittingRequest, setSubmittingRequest] = useState(false);
   const [requestSuccess, setRequestSuccess] = useState(false);
 
+  // Add Review Modal State
+  const [showAddReviewModal, setShowAddReviewModal] = useState(false);
+  const [newRatingQuality, setNewRatingQuality] = useState(5);
+  const [newRatingTime, setNewRatingTime] = useState(5);
+  const [newRatingPrice, setNewRatingPrice] = useState(5);
+  const [newReviewComment, setNewReviewComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+
   // Lightbox Image
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchAllDetails = React.useCallback(async () => {
     if (!workerId) return;
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+    try {
+      // 1. Fetch worker profile
+      const { data: workerData, error: workerErr } = await supabase
+        .from("service_workers")
+        .select(`
+          *,
+          profiles:id (
+            full_name,
+            avatar_url,
+            phone,
+            email,
+            governorate,
+            city
+          )
+        `)
+        .eq("id", workerId)
+        .maybeSingle();
 
-    async function fetchAllDetails() {
-      if (!supabase) {
-        setLoading(false);
-        return;
-      }
-      try {
-        // 1. Fetch worker profile
-        const { data: workerData, error: workerErr } = await supabase
-          .from("service_workers")
-          .select(`
-            *,
-            profiles:id (
-              full_name,
-              avatar_url,
-              phone,
-              email,
-              governorate,
-              city
-            )
-          `)
-          .eq("id", workerId)
-          .maybeSingle();
+      if (workerErr) console.error("Error fetching worker profile:", workerErr);
+      if (workerData) setWorker(workerData as any);
 
-        if (workerErr) console.error("Error fetching worker profile:", workerErr);
-        if (workerData) setWorker(workerData as any);
+      // 2. Fetch portfolio
+      const { data: portfolioData, error: portErr } = await supabase
+        .from("worker_portfolio")
+        .select("*")
+        .eq("worker_id", workerId);
 
-        // 2. Fetch portfolio
-        const { data: portfolioData, error: portErr } = await supabase
-          .from("worker_portfolio")
-          .select("*")
-          .eq("worker_id", workerId);
+      if (portErr) console.error("Error fetching portfolio:", portErr);
+      if (portfolioData) setPortfolio(portfolioData);
 
-        if (portErr) console.error("Error fetching portfolio:", portErr);
-        if (portfolioData) setPortfolio(portfolioData);
+      // 3. Fetch reviews on worker
+      const { data: reviewsData, error: revErr } = await supabase
+        .from("worker_reviews")
+        .select(`
+          *,
+          profiles:client_id (
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq("worker_id", workerId)
+        .order("created_at", { ascending: false });
 
-        // 3. Fetch reviews on worker
-        const { data: reviewsData, error: revErr } = await supabase
-          .from("worker_reviews")
-          .select(`
-            *,
-            profiles:client_id (
-              full_name,
-              avatar_url
-            )
-          `)
-          .eq("worker_id", workerId)
-          .order("created_at", { ascending: false });
+      if (revErr) console.error("Error fetching reviews:", revErr);
+      if (reviewsData) setReviews(reviewsData as any[]);
 
-        if (revErr) console.error("Error fetching reviews:", revErr);
-        if (reviewsData) setReviews(reviewsData as any[]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [workerId]);
 
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+  useEffect(() => {
+    fetchAllDetails();
+  }, [fetchAllDetails]);
+
+  const handleAddReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase || !user || !workerId) return;
+
+    if (user.id === workerId) {
+      alert("لا يمكنك تقييم حسابك المهني الخاص!");
+      return;
     }
 
-    fetchAllDetails();
-  }, [workerId]);
+    setSubmittingReview(true);
+    try {
+      const { error } = await supabase
+        .from("worker_reviews")
+        .insert({
+          worker_id: workerId,
+          client_id: user.id,
+          rating_quality: newRatingQuality,
+          rating_time: newRatingTime,
+          rating_price: newRatingPrice,
+          comment: newReviewComment.trim()
+        });
+
+      if (error) {
+        alert("فشل تقديم التقييم: " + error.message);
+      } else {
+        alert("تم إرسال تقييمك بنجاح! شكراً لك.");
+        setShowAddReviewModal(false);
+        setNewReviewComment("");
+        setNewRatingQuality(5);
+        setNewRatingTime(5);
+        setNewRatingPrice(5);
+        fetchAllDetails();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   const handleSendRequest = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -286,7 +344,7 @@ export default function WorkerDetailsPage() {
                 {worker.is_available ? "متاح للعمل" : "مشغول حالياً"}
               </div>
 
-              {user ? (
+              {isServicesUserLoggedIn ? (
                 user.id !== worker.id ? (
                   <button
                     onClick={() => setShowRequestModal(true)}
@@ -455,7 +513,50 @@ export default function WorkerDetailsPage() {
           padding: "32px",
           boxShadow: "var(--shadow-card)"
         }}>
-          <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "16px" }}>⭐ آراء وتقييمات العملاء</h3>
+          <div id="reviews" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", margin: 0 }}>⭐ آراء وتقييمات العملاء</h3>
+            {isServicesUserLoggedIn ? (
+              user.id !== worker.id ? (
+                <button
+                  onClick={() => setShowAddReviewModal(true)}
+                  style={{
+                    background: "var(--accent-ios, #3b82f6)",
+                    color: "#ffffff",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 16px",
+                    fontWeight: "700",
+                    fontSize: "0.85rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    transition: "opacity 0.2s"
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.opacity = "0.9"}
+                  onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
+                >
+                  ⭐ أضف تقييمك لمقدم الخدمة
+                </button>
+              ) : null
+            ) : (
+              <Link
+                href="/services/auth/login"
+                style={{
+                  background: "var(--bg-secondary)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--accent-ios, #3b82f6)",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  fontWeight: "700",
+                  fontSize: "0.82rem",
+                  textDecoration: "none"
+                }}
+              >
+                🔑 سجل الدخول لإضافة تقييم
+              </Link>
+            )}
+          </div>
           
           {/* Detailed rating stats */}
           {reviews.length > 0 && (
@@ -655,6 +756,160 @@ export default function WorkerDetailsPage() {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Add Review & Rating Modal */}
+      {showAddReviewModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          padding: "20px"
+        }}>
+          <div style={{
+            background: "var(--bg-primary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "16px",
+            width: "100%",
+            maxWidth: "480px",
+            padding: "24px",
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.15)",
+            position: "relative"
+          }}>
+            <button
+              onClick={() => setShowAddReviewModal(false)}
+              style={{ position: "absolute", top: "16px", left: "16px", background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "var(--text-secondary)" }}
+            >
+              ✖️
+            </button>
+
+            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "16px", color: "var(--text-primary)" }}>
+              ⭐ تقييم مقدم الخدمة ({worker.profiles?.full_name})
+            </h3>
+
+            <form onSubmit={handleAddReview} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              
+              {/* Star Rating Grid */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                
+                {/* Score 1: Quality */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                    🛠️ جودة العمل المنجز
+                  </span>
+                  <div style={{ display: "flex", gap: "6px" }}>
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setNewRatingQuality(star)}
+                        style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: star <= newRatingQuality ? "#facc15" : "var(--text-secondary)" }}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Score 2: Time */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                    ⏰ الالتزام بالوقت والمواعيد
+                  </span>
+                  <div style={{ display: "flex", gap: "6px" }}>
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setNewRatingTime(star)}
+                        style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: star <= newRatingTime ? "#facc15" : "var(--text-secondary)" }}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Score 3: Price */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                    💰 مناسَبـة السعر
+                  </span>
+                  <div style={{ display: "flex", gap: "6px" }}>
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setNewRatingPrice(star)}
+                        style={{ background: "none", border: "none", fontSize: "1.4rem", cursor: "pointer", color: star <= newRatingPrice ? "#facc15" : "var(--text-secondary)" }}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Comment text area */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)" }}>رأيك وتعليقك (اختياري)</label>
+                <textarea
+                  value={newReviewComment}
+                  onChange={(e) => setNewReviewComment(e.target.value)}
+                  placeholder="اكتب هنا تفاصيل تجربتك ورأيك لمساعدة الآخرين..."
+                  style={{
+                    height: "80px",
+                    padding: "10px",
+                    fontSize: "0.85rem",
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "8px",
+                    fontFamily: "var(--font-almarai)",
+                    color: "var(--text-primary)",
+                    resize: "none",
+                    outline: "none"
+                  }}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAddReviewModal(false)}
+                  style={{ height: "36px", padding: "0 16px", borderRadius: "8px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", color: "var(--text-primary)", cursor: "pointer" }}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  style={{
+                    height: "36px",
+                    padding: "0 20px",
+                    borderRadius: "8px",
+                    background: "var(--accent-ios, #3b82f6)",
+                    color: "#ffffff",
+                    border: "none",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px"
+                  }}
+                >
+                  {submittingReview ? "جاري الحفظ..." : "إرسال التقييم"}
+                </button>
+              </div>
+
+            </form>
           </div>
         </div>
       )}

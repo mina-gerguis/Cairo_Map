@@ -1111,22 +1111,85 @@ export default function LrtPage() {
 
             {/* Station sequence timeline */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", background: "var(--bg-secondary)", padding: "14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-              {result.stations.map((s: string, idx: number) => (
-                <React.Fragment key={s}>
-                  <span style={{
-                    padding: "6px 12px",
-                    borderRadius: "20px",
-                    background: idx === 0 || idx === result.stations.length - 1 ? "#06b6d4" : "var(--bg-primary)",
-                    color: idx === 0 || idx === result.stations.length - 1 ? "#000" : "var(--text-primary)",
-                    fontSize: "0.85rem",
-                    fontWeight: "700",
-                    border: idx === 0 || idx === result.stations.length - 1 ? "none" : "1px solid var(--border-glass)"
-                  }}>
-                    {s}
-                  </span>
-                  {idx < result.stations.length - 1 && <span style={{ color: "#06b6d4", fontWeight: "bold" }}>←</span>}
-                </React.Fragment>
-              ))}
+              {result.stations.map((s: string, idx: number) => {
+                const isFirst = idx === 0;
+                const isLast = idx === result.stations.length - 1;
+                const isPassed = isTripActive && idx < currentStepIndex;
+                const isCurrent = isTripActive && idx === currentStepIndex;
+
+                let bg = "var(--bg-primary)";
+                let color = "var(--text-primary)";
+                let border = "1px solid var(--border-glass)";
+                let boxShadow = "none";
+                let icon = null;
+
+                if (isTripActive) {
+                  if (isPassed) {
+                    bg = "rgba(16, 185, 129, 0.15)";
+                    color = "#10b981";
+                    border = "1px solid rgba(16, 185, 129, 0.4)";
+                    icon = "✓";
+                  } else if (isCurrent) {
+                    bg = "#06b6d4";
+                    color = "#ffffff";
+                    border = "2px solid #06b6d4";
+                    boxShadow = "0 0 10px rgba(6, 182, 212, 0.5)";
+                    icon = "📍";
+                  } else if (isLast) {
+                    bg = "rgba(168, 85, 247, 0.2)";
+                    color = "#a855f7";
+                    border = "1px solid rgba(168, 85, 247, 0.5)";
+                    icon = "🎯";
+                  } else {
+                    bg = "var(--bg-primary)";
+                    color = "var(--text-primary)";
+                    border = "1px solid var(--border-glass)";
+                  }
+                } else {
+                  if (isFirst) {
+                    bg = "#06b6d4";
+                    color = "#ffffff";
+                    border = "none";
+                    icon = "🚩";
+                  } else if (isLast) {
+                    bg = "#a855f7";
+                    color = "#ffffff";
+                    border = "none";
+                    icon = "🎯";
+                  }
+                }
+
+                return (
+                  <React.Fragment key={s}>
+                    <span style={{
+                      padding: "6px 12px",
+                      borderRadius: "20px",
+                      background: bg,
+                      color: color,
+                      fontSize: "0.85rem",
+                      fontWeight: "700",
+                      border: border,
+                      boxShadow: boxShadow,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      transition: "all 0.3s ease"
+                    }}>
+                      {icon && <span style={{ fontSize: "0.8rem" }}>{icon}</span>}
+                      {s}
+                    </span>
+                    {idx < result.stations.length - 1 && (
+                      <span style={{
+                        color: isTripActive && idx < currentStepIndex ? "#10b981" : "#06b6d4",
+                        fontWeight: "bold",
+                        transition: "color 0.3s ease"
+                      }}>
+                        ←
+                      </span>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </div>
           </div>
         )}

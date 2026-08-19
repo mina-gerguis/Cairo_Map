@@ -620,20 +620,6 @@ function ProposePlaceContent() {
                     placeholder="ابحث عن خدمات مثل: قاعة أفراح، شركة شحن، كهربائي سيارات..."
                   />
                 </div>
-
-                {/* Price Range */}
-                <div>
-                  <label className="help-label">فئة الأسعار</label>
-                  <select
-                    className="ios-input help-select"
-                    value={formData.price_range}
-                    onChange={(e) => setFormData({ ...formData, price_range: e.target.value })}
-                  >
-                    <option value="اقتصادي">اقتصادي (💰)</option>
-                    <option value="متوسط">متوسط (💰💰)</option>
-                    <option value="مرتفع">مرتفع / فاخر (💰💰💰)</option>
-                  </select>
-                </div>
               </div>
             </div>
 

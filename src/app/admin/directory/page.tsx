@@ -81,6 +81,9 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [phoneToDelete, setPhoneToDelete] = useState<PhoneEntry | null>(null);
+  const [codeToDelete, setCodeToDelete] = useState<TelecomCodeEntry | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Filter entries based on search query
   const filteredEntries = React.useMemo(() => {
@@ -257,16 +260,23 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
     }
   };
 
-  const handleDeletePhone = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذا الرقم؟")) return;
-    if (!supabase) return;
+  const handleDeletePhone = (item: PhoneEntry) => {
+    setPhoneToDelete(item);
+  };
+
+  const confirmDeletePhone = async () => {
+    if (!phoneToDelete || !supabase) return;
+    setIsDeleting(true);
 
     try {
-      const { error } = await supabase.from("phone_directory").delete().eq("id", id);
+      const { error } = await supabase.from("phone_directory").delete().eq("id", phoneToDelete.id);
       if (error) throw error;
-      setEntries(entries.filter(e => e.id !== id));
+      setEntries(entries.filter(e => e.id !== phoneToDelete.id));
+      setPhoneToDelete(null);
     } catch (err: any) {
       alert("فشل الحذف: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -371,16 +381,23 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
     }
   };
 
-  const handleDeleteCode = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذا الكود؟")) return;
-    if (!supabase) return;
+  const handleDeleteCode = (item: TelecomCodeEntry) => {
+    setCodeToDelete(item);
+  };
+
+  const confirmDeleteCode = async () => {
+    if (!codeToDelete || !supabase) return;
+    setIsDeleting(true);
 
     try {
-      const { error } = await supabase.from("telecom_codes").delete().eq("id", id);
+      const { error } = await supabase.from("telecom_codes").delete().eq("id", codeToDelete.id);
       if (error) throw error;
-      setCodes(codes.filter(c => c.id !== id));
+      setCodes(codes.filter(c => c.id !== codeToDelete.id));
+      setCodeToDelete(null);
     } catch (err: any) {
       alert("فشل الحذف: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -661,7 +678,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                               <i className="bx bx-edit-alt" />
                             </button>
                             <button
-                              onClick={() => handleDeletePhone(entry.id)}
+                              onClick={() => handleDeletePhone(entry)}
                               className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                               title="حذف"
                               style={{
@@ -822,7 +839,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                               <i className="bx bx-edit-alt" />
                             </button>
                             <button
-                              onClick={() => handleDeleteCode(item.id)}
+                              onClick={() => handleDeleteCode(item)}
                               className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                               title="حذف"
                               style={{
@@ -845,6 +862,232 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
             </div>
           </div>
         </>
+      )}
+
+      {/* Custom Delete Confirmation Modal for Phones */}
+      {phoneToDelete && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          background: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div style={{
+            background: "rgba(18, 24, 52, 0.95)",
+            borderRadius: "24px",
+            padding: "32px",
+            width: "100%",
+            maxWidth: "450px",
+            border: "1px solid rgba(255, 59, 48, 0.3)",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            direction: "rtl"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(255, 59, 48, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(255, 59, 48, 0.3)"
+            }}>
+              <span style={{ fontSize: "2rem" }}>⚠️</span>
+            </div>
+
+            <h3 style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.4rem",
+              color: "#fff",
+              marginBottom: "12px",
+              fontWeight: "700"
+            }}>
+              تأكيد الحذف
+            </h3>
+
+            <p style={{
+              color: "var(--text-secondary)",
+              fontSize: "1.05rem",
+              lineHeight: "1.6",
+              marginBottom: "24px"
+            }}>
+              هل أنت متأكد من حذف هذا الرقم؟
+              <strong style={{ display: "block", marginTop: "10px", color: "#ff4d4d", fontSize: "1.1rem" }}>
+                « {phoneToDelete.name} »
+              </strong>
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button
+                disabled={isDeleting}
+                onClick={confirmDeletePhone}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "#ff3b30",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  opacity: isDeleting ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                {isDeleting ? "جاري الحذف..." : "نعم، احذف"}
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => setPhoneToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s"
+                }}
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal for Codes */}
+      {codeToDelete && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          background: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div style={{
+            background: "rgba(18, 24, 52, 0.95)",
+            borderRadius: "24px",
+            padding: "32px",
+            width: "100%",
+            maxWidth: "450px",
+            border: "1px solid rgba(255, 59, 48, 0.3)",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            direction: "rtl"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(255, 59, 48, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(255, 59, 48, 0.3)"
+            }}>
+              <span style={{ fontSize: "2rem" }}>⚠️</span>
+            </div>
+
+            <h3 style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.4rem",
+              color: "#fff",
+              marginBottom: "12px",
+              fontWeight: "700"
+            }}>
+              تأكيد الحذف
+            </h3>
+
+            <p style={{
+              color: "var(--text-secondary)",
+              fontSize: "1.05rem",
+              lineHeight: "1.6",
+              marginBottom: "24px"
+            }}>
+              هل أنت متأكد من حذف هذا الكود؟
+              <strong style={{ display: "block", marginTop: "10px", color: "#ff4d4d", fontSize: "1.1rem" }}>
+                « {codeToDelete.title} »
+              </strong>
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button
+                disabled={isDeleting}
+                onClick={confirmDeleteCode}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "#ff3b30",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  opacity: isDeleting ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                {isDeleting ? "جاري الحذف..." : "نعم، احذف"}
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => setCodeToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s"
+                }}
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

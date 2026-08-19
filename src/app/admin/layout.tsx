@@ -61,7 +61,7 @@ export default function AdminLayout({
           { label: "طلبات الإيداع والسحب المعلقة", href: "/admin/points?tab=requests", category: "صفحة إدارية", icon: "bx bx-transfer" },
           { label: "الاشتراكات المميزة والذهبية", href: "/admin/subscriptions", category: "صفحة إدارية", icon: "bx bx-crown" },
           { label: "إدارة المطارات", href: "/admin/airports", category: "خدمة موقع", icon: "bx bx-plane" },
-          { label: "إدارة الموانئ البحرية", href: "/admin/services?tab=ports", category: "خدمة موقع", icon: "bx bx-anchor" },
+          { label: "إدارة الموانئ البحرية", href: "/admin/ports", category: "خدمة موقع", icon: "bx bx-anchor" },
           { label: "إدارة شبكة المنوريل", href: "/admin/monorail", category: "خدمة موقع", icon: "bx bx-navigation" },
           { label: "إدارة القطار الكهربائي LRT", href: "/admin/lrt", category: "خدمة موقع", icon: "bx bx-train" },
           { label: "إدارة مترو الأنفاق", href: "/admin/metro", category: "خدمة موقع", icon: "bx bxs-train" },
@@ -69,7 +69,7 @@ export default function AdminLayout({
           { label: "إدارة مواقف السرفيس", href: "/admin/microbus-stations", category: "خدمة موقع", icon: "bx bx-map-pin" },
           { label: "إدارة الأتوبيسات وسوبرجيت", href: "/admin/bus-stations", category: "خدمة موقع", icon: "bx bx-bus" },
           { label: "إدارة دليل الهواتف والأكواد", href: "/admin/directory", category: "خدمة موقع", icon: "bx bx-phone-call" },
-          { label: "إدارة خطوط المواصلات والاتجاهات", href: "/admin/services?tab=directions", category: "خدمة موقع", icon: "bx bx-git-compare" }
+          { label: "إدارة خطوط المواصلات والاتجاهات (ازاي اروح)", href: "/admin/directions", category: "خدمة موقع", icon: "bx bx-compass" }
         ];
 
         const matchedPages = allAdminPages.filter(p => p.label.includes(term));
@@ -130,7 +130,7 @@ export default function AdminLayout({
       setActiveSubTab(params.get("tab"));
     }
 
-    if (pathname === "/admin/places" || pathname.startsWith("/admin/services") || pathname === "/admin/airports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations") {
+    if (pathname === "/admin/places" || pathname.startsWith("/admin/services") || pathname === "/admin/airports" || pathname === "/admin/ports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations") {
       setIsServicesDropdownOpen(true);
     }
   }, [pathname]);
@@ -230,16 +230,14 @@ export default function AdminLayout({
   else if (pathname === "/admin/places/suggestions") pageTitle = "اقتراحات الأماكن";
   else if (pathname === "/admin/ads") pageTitle = "إدارة الإعلانات";
   else if (pathname === "/admin/airports") pageTitle = "إدارة المطارات";
+  else if (pathname === "/admin/ports") pageTitle = "إدارة الموانئ البحرية";
   else if (pathname === "/admin/monorail") pageTitle = "إدارة شبكة المنوريل";
   else if (pathname === "/admin/lrt") pageTitle = "إدارة القطار الكهربائي LRT";
   else if (pathname === "/admin/metro") pageTitle = "إدارة مترو الأنفاق";
   else if (pathname === "/admin/railways") pageTitle = "إدارة سكك حديد مصر";
   else if (pathname === "/admin/bus-stations") pageTitle = "إدارة الأتوبيسات (سوبرجيت)";
   else if (pathname === "/admin/microbus-stations") pageTitle = "إدارة مواقف السرفيس";
-  else if (pathname === "/admin/services") {
-    if (activeSubTab === "ports") pageTitle = "إدارة الموانئ";
-    else pageTitle = "إدارة الخدمات";
-  }
+  else if (pathname === "/admin/directions" || pathname === "/admin/services") pageTitle = "إدارة ازاي اروح (خطوط المواصلات)";
   else if (pathname === "/admin/directory") pageTitle = "دليل الهواتف والأكواد";
   else if (pathname === "/admin/notifications") pageTitle = "الإشعارات والرسائل";
   else if (pathname === "/admin/alerts") pageTitle = "تنبيهات الموقع";
@@ -352,11 +350,10 @@ export default function AdminLayout({
 
             {/* الموانئ */}
             <Link
-              href="/admin/services?tab=ports"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "ports" ? styles.sidebarNavLinkActive : ""
-                }`}
+              href="/admin/ports"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/ports" ? styles.sidebarNavLinkActive : ""}`}
               onClick={() => {
-                setActiveSubTab("ports");
+                setActiveSubTab(null);
                 if (isMobile) setIsSidebarOpen(false);
               }}
             >
@@ -470,19 +467,17 @@ export default function AdminLayout({
               </div>
             </Link>
 
-            {/* خطوط المواصلات */}
+            {/* إدارة ازاي اروح (خطوط المواصلات) */}
             <Link
-              href="/admin/services?tab=directions"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/services" && activeSubTab === "directions" ? styles.sidebarNavLinkActive : ""
-                }`}
+              href="/admin/directions"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/directions" || pathname === "/admin/services" ? styles.sidebarNavLinkActive : ""}`}
               onClick={() => {
-                setActiveSubTab("directions");
                 if (isMobile) setIsSidebarOpen(false);
               }}
             >
               <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-git-compare ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>خطوط المواصلات</span>
+                <i className={`bx bx-compass ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة ازاي اروح</span>
               </div>
             </Link>
 

@@ -155,6 +155,8 @@ function AdminMetroInner() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [stationToDelete, setStationToDelete] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!authLoading) {
@@ -402,8 +404,13 @@ function AdminMetroInner() {
     }
   };
 
-  const handleStationDelete = async (item: any) => {
-    if (!confirm(`هل أنت متأكد من حذف محطة "${item.name}"؟`)) return;
+  const handleStationDelete = (item: any) => {
+    setStationToDelete(item);
+  };
+
+  const confirmDeleteStation = async () => {
+    if (!stationToDelete) return;
+    setIsDeleting(true);
     setError("");
     setSuccess("");
 
@@ -412,27 +419,32 @@ function AdminMetroInner() {
         const { error: dbErr } = await supabase
           .from("metro_stations")
           .delete()
-          .eq("id", item.id);
+          .eq("id", stationToDelete.id);
 
         if (dbErr) throw dbErr;
 
         setSuccess("تم حذف المحطة بنجاح من قاعدة البيانات.");
         await fetchStationsData();
+        setStationToDelete(null);
       } catch (err: any) {
         console.error(err);
         setError("فشلت عملية الحذف: " + err.message);
+      } finally {
+        setIsDeleting(false);
       }
     } else {
       // Local Storage delete
       let currentLocal = getLocalStations();
       currentLocal = currentLocal.filter((s: any) => {
-        if (item.id && s.id === item.id) return false;
-        if (!item.id && s.name === item.name && s.line_type === item.line_type) return false;
+        if (stationToDelete.id && s.id === stationToDelete.id) return false;
+        if (!stationToDelete.id && s.name === stationToDelete.name && s.line_type === stationToDelete.line_type) return false;
         return true;
       });
       saveLocalStations(currentLocal);
       setMetroStations(currentLocal);
       setSuccess("تم حذف المحطة بنجاح محلياً.");
+      setStationToDelete(null);
+      setIsDeleting(false);
     }
   };
 
@@ -811,7 +823,7 @@ function AdminMetroInner() {
       {activeSection === "pricing" && (
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ marginBottom: "24px" }}>
-            <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "#fff" }}>إدارة أسعار تذاكر المترو</h2>
+            <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--text-primary)" }}>إدارة أسعار تذاكر المترو</h2>
             <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
               تعديل شرائح أسعار التذاكر بناءً على عدد محطات الرحلة التي يقطعها العميل.
             </p>
@@ -881,7 +893,7 @@ function AdminMetroInner() {
           bottom: 0,
           backgroundColor: "rgba(0,0,0,0.6)",
           backdropFilter: "blur(8px)",
-          zIndex: 999,
+          zIndex: 9999,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1027,6 +1039,118 @@ function AdminMetroInner() {
         </div>
       )}
 
+      {/* Custom Delete Confirmation Modal */}
+      {stationToDelete && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          background: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px",
+          animation: "fade-in 0.2s ease"
+        }}>
+          <div style={{
+            background: "rgba(18, 24, 52, 0.95)",
+            borderRadius: "24px",
+            padding: "32px",
+            width: "100%",
+            maxWidth: "450px",
+            border: "1px solid rgba(255, 59, 48, 0.3)",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+            textAlign: "center",
+            direction: "rtl"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(255, 59, 48, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(255, 59, 48, 0.3)"
+            }}>
+              <span style={{ fontSize: "2rem" }}>⚠️</span>
+            </div>
+
+            <h3 style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "1.4rem",
+              color: "#fff",
+              marginBottom: "12px",
+              fontWeight: "700"
+            }}>
+              تأكيد الحذف
+            </h3>
+
+            <p style={{
+              color: "var(--text-secondary)",
+              fontSize: "1.05rem",
+              lineHeight: "1.6",
+              marginBottom: "24px"
+            }}>
+              هل أنت متأكد من حذف هذه المحطة؟
+              <strong style={{ display: "block", marginTop: "10px", color: "#ff4d4d", fontSize: "1.1rem" }}>
+                « {stationToDelete.name} »
+              </strong>
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button
+                disabled={isDeleting}
+                onClick={confirmDeleteStation}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "#ff3b30",
+                  color: "#fff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  opacity: isDeleting ? 0.7 : 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                {isDeleting ? "جاري الحذف..." : "نعم، احذف"}
+              </button>
+              <button
+                disabled={isDeleting}
+                onClick={() => setStationToDelete(null)}
+                style={{
+                  flex: 1,
+                  padding: "var(--pa-btn)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background: "transparent",
+                  color: "#ffffff",
+                  fontSize: "1rem",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background 0.2s"
+                }}
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

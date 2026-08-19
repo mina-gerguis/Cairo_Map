@@ -124,6 +124,57 @@ const RAILWAY_ROUTES: RailwayRoute[] = [
   }
 ];
 
+const ROUTE_COLORS: Record<string, string> = {
+  "cairo-alex": "#ef4444",
+  "cairo-aswan": "#f59e0b",
+  "cairo-portsaid": "#3b82f6",
+  "cairo-mansoura": "#10b981",
+};
+
+const COLOR_PALETTE = [
+  "#ef4444",
+  "#f59e0b",
+  "#3b82f6",
+  "#10b981",
+  "#8b5cf6",
+  "#ec4899",
+  "#06b6d4",
+  "#f97316",
+  "#14b8a6",
+  "#6366f1",
+];
+
+function getRouteColor(routeId: string, index: number): string {
+  if (ROUTE_COLORS[routeId]) {
+    return ROUTE_COLORS[routeId];
+  }
+  return COLOR_PALETTE[index % COLOR_PALETTE.length];
+}
+
+function getRouteShortName(route: RailwayRoute): string {
+  if (route.id === "cairo-alex") return "خط الإسكندرية";
+  if (route.id === "cairo-aswan") return "خط الصعيد";
+  if (route.id === "cairo-portsaid") return "خط القناة";
+  if (route.id === "cairo-mansoura") return "خط الدلتا";
+
+  const match = route.name.match(/\((خط [^)]+)\)/);
+  if (match) {
+    return match[1];
+  }
+
+  if (route.name.includes("⇆")) {
+    const parts = route.name.split("⇆");
+    return `خط ${parts[1].trim()}`;
+  }
+
+  if (route.name.includes("-")) {
+    const parts = route.name.split("-");
+    return `خط ${parts[parts.length - 1].trim()}`;
+  }
+
+  return route.name;
+}
+
 export default function RailwaysPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const [selectedRouteId, setSelectedRouteId] = useState<string>("cairo-alex");
@@ -176,6 +227,7 @@ export default function RailwaysPage() {
 
         if (combined.length > 0) {
           setRoutes(combined);
+          setSelectedRouteId(prev => (combined.some(r => r.id === prev) ? prev : combined[0].id));
         } else {
           loadLocalRoutes();
         }
@@ -205,6 +257,9 @@ export default function RailwaysPage() {
               return route;
             });
             setRoutes(mapped);
+            if (mapped.length > 0) {
+              setSelectedRouteId(prev => (mapped.some((r: any) => r.id === prev) ? prev : mapped[0].id));
+            }
           } catch {
             setRoutes(RAILWAY_ROUTES);
           }
@@ -220,7 +275,8 @@ export default function RailwaysPage() {
     fetchRoutes();
   }, []);
 
-  const currentRoute = routes.find(r => r.id === selectedRouteId) || routes[0] || RAILWAY_ROUTES[0];
+  const activeRoutesList = routes.length > 0 ? routes : RAILWAY_ROUTES;
+  const currentRoute = activeRoutesList.find(r => r.id === selectedRouteId) || activeRoutesList[0];
 
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin || 
@@ -323,7 +379,7 @@ export default function RailwaysPage() {
             </div>
 
             <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
-              دليل سكك حديد مصر ميزة فضية 🥈
+              دليل سكك حديد مصر ميزة فضية
             </h2>
 
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
@@ -342,7 +398,7 @@ export default function RailwaysPage() {
             }}>
               <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bxs-award" style={{ color: "#fbbf24", fontSize: "1.1rem" }}></i>
-                <span>ميزات الباقة الفضية (40 ج.م/شهرياً):</span>
+                <span>ميزات الباقة الفضية :</span>
               </div>
               <ul style={{
                 paddingRight: "16px",
@@ -366,20 +422,20 @@ export default function RailwaysPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
               {user ? (
                 <Link
-                  href="/profile"
+                  href="/profile?expand=subscription"
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #fbbf24 0%, #d97706 100%)",
-                    color: "#000",
+                    background: "var(--bg-subscribe-button-seliver)",
+                    color: "var(--color-white-50)",
                     textDecoration: "none",
                     fontWeight: "bold",
                     fontSize: "1rem",
-                    boxShadow: "0 4px 15px rgba(251, 191, 36, 0.3)",
+                    boxShadow: "var(--bs-subscribe-button-seliver)",
                     display: "block"
                   }}
                 >
-                  🚀 اشترك الآن ورقّ حسابك للفضية (40 ج.م)
+                  اشترك الآن في الباقة الفضية
                 </Link>
               ) : (
                 <Link
@@ -387,7 +443,7 @@ export default function RailwaysPage() {
                   style={{
                     padding: "14px",
                     borderRadius: "10px",
-                    background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                    background: "var(--bg-subscribe-button-base)",
                     color: "#fff",
                     textDecoration: "none",
                     fontWeight: "bold",
@@ -396,7 +452,7 @@ export default function RailwaysPage() {
                     display: "block"
                   }}
                 >
-                  🔑 سجل دخولك أولاً لتفعيل الاشتراك
+                  سجل دخولك أولاً لتفعيل الاشتراك
                 </Link>
               )}
 
@@ -423,9 +479,8 @@ export default function RailwaysPage() {
     );
   }
 
-  const color = selectedRouteId === "cairo-alex" ? "#ef4444" : 
-                selectedRouteId === "cairo-aswan" ? "#f59e0b" : 
-                selectedRouteId === "cairo-portsaid" ? "#3b82f6" : "#10b981";
+  const activeIndex = activeRoutesList.findIndex(r => r.id === selectedRouteId);
+  const color = getRouteColor(selectedRouteId, activeIndex >= 0 ? activeIndex : 0);
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bg-primary)", direction: "rtl" }}>
@@ -444,30 +499,6 @@ export default function RailwaysPage() {
         position: "relative",
         borderBottom: "1px solid var(--border-glass)",
       }}>
-        {/* Back Button */}
-        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-          <Link 
-            href="/" 
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              background: "var(--bg-glass-card)",
-              border: "1px solid var(--border-glass)",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-              transition: "transform 0.2s ease"
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-          </Link>
-        </div>
-
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 style={{
             display: "flex",
@@ -488,42 +519,26 @@ export default function RailwaysPage() {
 
           {/* Badges indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
-            <span style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              color: "#ef4444",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>خط بحري (الإسكندرية)</span>
-            <span style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              color: "#f59e0b",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>خط قبلي (الصعيد)</span>
-            <span style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              color: "#3b82f6",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>خط القناة (بورسعيد)</span>
-            <span style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              color: "#10b981",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>خط الدلتا (المنصورة)</span>
+            {activeRoutesList.map((route, idx) => {
+              const routeColor = getRouteColor(route.id, idx);
+              const shortName = getRouteShortName(route);
+              return (
+                <span
+                  key={route.id}
+                  style={{
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    color: routeColor,
+                    borderRadius: "10px",
+                    padding: "4px 14px",
+                    fontSize: "0.78rem",
+                    fontWeight: "700",
+                  }}
+                >
+                  {shortName}
+                </span>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -534,16 +549,15 @@ export default function RailwaysPage() {
         {/* Route Selector Tabs Grid */}
         <div className="metro-animate-slide-up metro-delay-200" style={{
           display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
+          gridTemplateColumns: activeRoutesList.length > 4 ? "repeat(auto-fill, minmax(130px, 1fr))" : "repeat(2, 1fr)",
           gap: "12px",
           marginTop: "24px",
           marginBottom: "24px"
         }}>
-          {RAILWAY_ROUTES.map(route => {
+          {activeRoutesList.map((route, idx) => {
             const active = selectedRouteId === route.id;
-            const routeColor = route.id === "cairo-alex" ? "#ef4444" : 
-                              route.id === "cairo-aswan" ? "#f59e0b" : 
-                              route.id === "cairo-portsaid" ? "#3b82f6" : "#10b981";
+            const routeColor = getRouteColor(route.id, idx);
+            const shortName = getRouteShortName(route);
 
             return (
               <button
@@ -569,12 +583,10 @@ export default function RailwaysPage() {
               >
                 <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: routeColor, margin: "0 auto 6px" }} />
                 <div style={{ color: active ? "var(--text-primary)" : "var(--text-secondary)", fontWeight: "700", fontSize: "0.88rem" }}>
-                  {route.id === "cairo-alex" ? "خط الإسكندرية" :
-                   route.id === "cairo-aswan" ? "خط الصعيد" :
-                   route.id === "cairo-portsaid" ? "خط القناة" : "خط الدلتا"}
+                  {shortName}
                 </div>
                 <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
-                  {route.stops.length} محطات رئيسية
+                  {route.stops ? route.stops.length : 0} محطات رئيسية
                 </div>
               </button>
             );
@@ -600,26 +612,26 @@ export default function RailwaysPage() {
             color: "var(--text-primary)",
             margin: "0"
           }}>
-            📍 تفاصيل الخط: {currentRoute.name}
+            📍 تفاصيل الخط: {currentRoute?.name || ""}
           </h2>
 
           {/* Details Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
             <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {currentRoute.stops[0]?.name.replace(" (رمسيس)", "")?.replace(" (محطة رمسيس)", "") || "القاهرة"}
+                {currentRoute?.stops?.[0]?.name?.replace(" (رمسيس)", "")?.replace(" (محطة رمسيس)", "") || currentRoute?.from || "القاهرة"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>القيام</div>
             </div>
             <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {currentRoute.stops[currentRoute.stops.length - 1]?.name.replace(" (محطة سيدي جابر / مصر)", "") || "الوصول"}
+                {currentRoute?.stops?.[currentRoute.stops.length - 1]?.name?.replace(" (محطة سيدي جابر / مصر)", "") || currentRoute?.to || "الوصول"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>الوصول</div>
             </div>
             <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {currentRoute.duration.split(" ")[0]} {currentRoute.duration.split(" ")[1] || ""}
+                {currentRoute?.duration || "غير معددة"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>المدة المقدرة</div>
             </div>
@@ -637,70 +649,76 @@ export default function RailwaysPage() {
             </h3>
             
             <div style={{ display: "flex", flexDirection: "column" }}>
-              {currentRoute.stops.map((stop, idx) => {
-                const isFirst = idx === 0;
-                const isLast = idx === currentRoute.stops.length - 1;
-                const isUnderConstruction = stop.status === "تحت الإنشاء";
-                return (
-                  <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "32px" }}>
-                      {/* Dot */}
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
-                        <div style={{
-                          width: isFirst || isLast ? "12px" : "8px",
-                          height: isFirst || isLast ? "12px" : "8px",
-                          borderRadius: "50%",
-                          backgroundColor: isUnderConstruction ? "transparent" : color,
-                          border: isUnderConstruction ? `2px dashed #ef4444` : (isFirst || isLast ? `2px solid var(--bg-primary)` : "none"),
-                          boxShadow: isUnderConstruction ? "none" : (isFirst || isLast ? `0 0 0 2px ${color}` : "none")
-                        }} />
-                      </div>
-
-                      {/* Text */}
-                      <span style={{
-                        fontSize: "0.88rem",
-                        fontWeight: isFirst || isLast ? "700" : "500",
-                        color: isUnderConstruction ? "#ef4444" : (isFirst || isLast ? "var(--text-primary)" : "var(--text-secondary)"),
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "8px"
-                      }}>
-                        {stop.name}
-                        {isUnderConstruction && (
-                          <span style={{
-                            fontSize: "0.68rem",
-                            background: "rgba(239, 68, 68, 0.12)",
-                            color: "#ef4444",
-                            border: "1px solid rgba(239, 68, 68, 0.25)",
-                            padding: "1px 6px",
-                            borderRadius: "4px",
-                            fontWeight: "bold"
-                          }}>
-                            تحت الإنشاء 🚧
-                          </span>
-                        )}
-                        {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة القيام)</span>}
-                        {isLast && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة الوصول)</span>}
-                      </span>
-                    </div>
-
-                    {/* Connective Line */}
-                    {!isLast && (
-                      <div style={{ display: "flex", gap: "12px", minHeight: "14px" }}>
-                        <div style={{ width: "16px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
+              {currentRoute?.stops && currentRoute.stops.length > 0 ? (
+                currentRoute.stops.map((stop, idx) => {
+                  const isFirst = idx === 0;
+                  const isLast = idx === currentRoute.stops.length - 1;
+                  const isUnderConstruction = stop.status === "تحت الإنشاء";
+                  return (
+                    <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "32px" }}>
+                        {/* Dot */}
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
                           <div style={{
-                            width: "2px",
-                            backgroundColor: color,
-                            minHeight: "14px",
-                            opacity: 0.4,
+                            width: isFirst || isLast ? "12px" : "8px",
+                            height: isFirst || isLast ? "12px" : "8px",
+                            borderRadius: "50%",
+                            backgroundColor: isUnderConstruction ? "transparent" : color,
+                            border: isUnderConstruction ? `2px dashed #ef4444` : (isFirst || isLast ? `2px solid var(--bg-primary)` : "none"),
+                            boxShadow: isUnderConstruction ? "none" : (isFirst || isLast ? `0 0 0 2px ${color}` : "none")
                           }} />
                         </div>
-                        <div style={{ flexGrow: 1 }} />
+
+                        {/* Text */}
+                        <span style={{
+                          fontSize: "0.88rem",
+                          fontWeight: isFirst || isLast ? "700" : "500",
+                          color: isUnderConstruction ? "#ef4444" : (isFirst || isLast ? "var(--text-primary)" : "var(--text-secondary)"),
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "8px"
+                        }}>
+                          {stop.name}
+                          {isUnderConstruction && (
+                            <span style={{
+                              fontSize: "0.68rem",
+                              background: "rgba(239, 68, 68, 0.12)",
+                              color: "#ef4444",
+                              border: "1px solid rgba(239, 68, 68, 0.25)",
+                              padding: "1px 6px",
+                              borderRadius: "4px",
+                              fontWeight: "bold"
+                            }}>
+                              تحت الإنشاء 🚧
+                            </span>
+                          )}
+                          {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة القيام)</span>}
+                          {isLast && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة الوصول)</span>}
+                        </span>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
+
+                      {/* Connective Line */}
+                      {!isLast && (
+                        <div style={{ display: "flex", gap: "12px", minHeight: "14px" }}>
+                          <div style={{ width: "16px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
+                            <div style={{
+                              width: "2px",
+                              backgroundColor: color,
+                              minHeight: "14px",
+                              opacity: 0.4,
+                            }} />
+                          </div>
+                          <div style={{ flexGrow: 1 }} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
+                  لا توجد محطات مضافة لهذا الخط بعد.
+                </div>
+              )}
             </div>
           </div>
 
@@ -710,29 +728,35 @@ export default function RailwaysPage() {
               💵 أسعار وميزات قطارات هذا الخط:
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              {currentRoute.classes.map((cls, idx) => (
-                <div 
-                  key={idx} 
-                  style={{ 
-                    padding: "16px", 
-                    borderRadius: "12px", 
-                    background: "rgba(128, 128, 128, 0.02)", 
-                    border: "1px solid var(--border-glass)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                    transition: "border 0.2s ease"
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.border = `1px solid ${color}40`}
-                  onMouseLeave={e => e.currentTarget.style.border = "1px solid var(--border-glass)"}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
-                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)" }}>{cls.name}</h4>
-                    <span style={{ color: color, fontWeight: "800", fontSize: "0.85rem" }}>{cls.price}</span>
+              {currentRoute?.classes && currentRoute.classes.length > 0 ? (
+                currentRoute.classes.map((cls, idx) => (
+                  <div 
+                    key={idx} 
+                    style={{ 
+                      padding: "16px", 
+                      borderRadius: "12px", 
+                      background: "rgba(128, 128, 128, 0.02)", 
+                      border: "1px solid var(--border-glass)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                      transition: "border 0.2s ease"
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.border = `1px solid ${color}40`}
+                    onMouseLeave={e => e.currentTarget.style.border = "1px solid var(--border-glass)"}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
+                      <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)" }}>{cls.name}</h4>
+                      <span style={{ color: color, fontWeight: "800", fontSize: "0.85rem" }}>{cls.price}</span>
+                    </div>
+                    <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>{cls.features}</p>
                   </div>
-                  <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>{cls.features}</p>
+                ))
+              ) : (
+                <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
+                  لم يتم إضافة أسعار وفئات القطارات لهذا الخط بعد.
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -751,6 +775,164 @@ export default function RailwaysPage() {
             </p>
           </div>
 
+        </div>
+
+        {/* Train Types & Features Section */}
+        <div className="metro-animate-slide-up metro-delay-350" style={{
+          backgroundColor: "var(--bg-primary)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "15px",
+          padding: "20px",
+          boxShadow: "var(--shadow-card)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          marginBottom: "24px"
+        }}>
+          <h2 style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: "1.25rem",
+            fontWeight: "800",
+            color: "var(--text-primary)",
+            margin: "0 0 4px",
+            display: "flex",
+            alignItems: "center"
+          }}>
+            <i className="bx bx-train" style={{ marginLeft: "8px", color: color, fontSize: "1.4rem" }}></i>
+            أنواع قطارات سكك حديد مصر والمميزات
+          </h2>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0" }}>
+            تتنوع قطارات مصر لتناسب جميع الفئات والاحتياجات، إليك تفاصيل أنواع القطارات ومميزات كل نوع:
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            {[
+              {
+                name: "قطار تالجو (Talgo) الفاخر",
+                badge: "الأحدث والأسرع 🚄",
+                badgeBg: "rgba(239, 68, 68, 0.12)",
+                badgeColor: "#ef4444",
+                desc: "أحدث وأفخم قطارات شبكة سكك حديد مصر المصنعة من شركة تالجو الإسبانية وتعتمد على تكنولوجيا فاخرة خفيفة الوزن ونظام تعليق هوائي يقلل الاهتزازات لراحة فائقة.",
+                features: [
+                  "شاشات عرض تفاعلية لكل مقعد في الدرجة الأولى",
+                  "خدمة واي فاي وعربة بوفيه فاخرة للمشروبات والمأكولات",
+                  "تكييف هوائي متطور ونظام عزل صوت يعطي هدوء تام",
+                  "دورات مياه حديثة مجهزة ومخصصة لذوي الهمم"
+                ]
+              },
+              {
+                name: "قطارات VIP السريعة",
+                badge: "درجة أولى ممتازة 🎖️",
+                badgeBg: "rgba(245, 158, 11, 0.12)",
+                badgeColor: "#f59e0b",
+                desc: "قطارات مكيفة بالكامل مخصصة للمسافات الطويلة بين المحافظات الرئيسية وتتميز بالسرعة وقلة محطات التوقف.",
+                features: [
+                  "مقاعد جلدية فاخرة قابلة للتعديل والميل للراحة",
+                  "منافذ شاحن كهربائي لكل مقعد وكاميرات مراقبة أمان",
+                  "عربة بوفيه متكاملة تقدم وجبات خفيفة ومشروبات",
+                  "تكييف ممتاز وخدمة نظافة دورية طوال الرحلة"
+                ]
+              },
+              {
+                name: "قطارات النوم الفاخرة (Wagon-Lits)",
+                badge: "للرحلات الطويلة 🌙",
+                badgeBg: "rgba(139, 92, 246, 0.12)",
+                badgeColor: "#8b5cf6",
+                desc: "قطارات مخصصة لرحلات النوم الليلية إلى محافظات الصعيد (الأقصر وأسوان) وتوفر راحة فندقية أثناء السفر.",
+                features: [
+                  "كابينات نوم مغلقة بها سريرين ومغسلة خاصة",
+                  "وجبة عشاء وإفطار ساخنة مجانية شاملة التذكرة",
+                  "عربة نادي وبوفيه مخصصة للسمر وتناول المشروبات",
+                  "ملاحظ كابينة مخصص لخدمة الركاب طوال فترة السفر"
+                ]
+              },
+              {
+                name: "قطارات إسباني / فرنسي مطور",
+                badge: "درجة أولى وثانية مكيفة ❄️",
+                badgeBg: "rgba(59, 130, 246, 0.12)",
+                badgeColor: "#3b82f6",
+                desc: "القطارات المكيفة الكلاسيكية الشهيرة التي تم تجديدها بالكامل لتقديم رحلات مريحة بأسعار مناسبة.",
+                features: [
+                  "تكييف مريح ومقاعد مجددة بالكامل",
+                  "أسعار اقتصادية ومناسبة للسفر اليومي والدراسي",
+                  "عربة بوفيه لتقديم المشروبات والسندويشات",
+                  "تغطي كافة المحافظات والمراكز الكبرى"
+                ]
+              },
+              {
+                name: "قطارات روسي مكيفة (الدرجة الثالثة المكيفة)",
+                badge: "اقتصادي ومكيف ❄️🚌",
+                badgeBg: "rgba(16, 185, 129, 0.12)",
+                badgeColor: "#10b981",
+                desc: "عربات جديدة دخلت الخدمة حديثاً لتوفير خدمة مكيفة بسعر اقتصادي يناسب كافة فئات المجتمع.",
+                features: [
+                  "عربات حديثة ومريحة بتكييف كامل",
+                  "شاشات إلكترونية داخل العربات لإرشادات السفر",
+                  "سعر تذكرة اقتصادي جداً وموحد",
+                  "متوفرة بكثرة على خطوط الصعيد والدلتا والوجه البحري"
+                ]
+              },
+              {
+                name: "قطارات تحيا مصر (الدرجة العادية / تهوية ديناميكية)",
+                badge: "درجة شعبية اقتصادية 🚂",
+                badgeBg: "rgba(156, 163, 175, 0.12)",
+                badgeColor: "var(--text-secondary)",
+                desc: "القطارات الاقتصادية التي تربط بين القرى والمراكز وتتوقف في كافة المحطات الفرعية على مستوى الجمهورية.",
+                features: [
+                  "تكلفتها منخفضة جداً وتناسب التنقل اليومي",
+                  "شبابيك تهوية طبيعية وعربات حديثة مطورة",
+                  "تربط كافة القرى والمراكز بالمحافظات",
+                  "رحلات متكررة على مدار اليوم"
+                ]
+              }
+            ].map((train, idx) => (
+              <div 
+                key={idx}
+                style={{
+                  padding: "16px",
+                  borderRadius: "12px",
+                  background: "rgba(128, 128, 128, 0.02)",
+                  border: "1px solid var(--border-glass)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px"
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+                  <h3 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)" }}>{train.name}</h3>
+                  <span style={{
+                    background: train.badgeBg,
+                    color: train.badgeColor,
+                    border: `1px solid ${train.badgeColor}30`,
+                    borderRadius: "6px",
+                    padding: "2px 8px",
+                    fontSize: "0.75rem",
+                    fontWeight: "bold"
+                  }}>
+                    {train.badge}
+                  </span>
+                </div>
+
+                <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                  {train.desc}
+                </p>
+
+                <div style={{
+                  background: "rgba(0,0,0,0.02)",
+                  padding: "10px 12px",
+                  borderRadius: "8px",
+                  borderRight: `3px solid ${train.badgeColor}`
+                }}>
+                  <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>✨ أهم المميزات:</div>
+                  <ul style={{ margin: 0, paddingRight: "16px", fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+                    {train.features.map((feat, fIdx) => (
+                      <li key={fIdx}>{feat}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* How to book section */}

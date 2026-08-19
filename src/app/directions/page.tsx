@@ -6,6 +6,14 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import styles from "./page.module.css";
 
+interface RouteLeg {
+  title: string;
+  vehicleType?: string;
+  cost?: number;
+  duration?: string;
+  steps: string[];
+}
+
 interface RouteOption {
   type: "microbus" | "bus" | "car" | "train" | "monorail" | "metro" | "plane" | "ship" | "multi";
   typeName: string;
@@ -13,6 +21,7 @@ interface RouteOption {
   cost: number;
   duration: string;
   steps: string[];
+  legs?: RouteLeg[];
   tips?: string;
   map_link?: string;
 }
@@ -35,6 +44,7 @@ interface DbTransitRoute {
   cost: number;
   duration: string;
   steps: string[] | string;
+  legs?: RouteLeg[] | string;
   tips?: string | null;
   from_aliases?: string | null;
   to_aliases?: string | null;
@@ -90,9 +100,24 @@ const routesDataset: RouteData[] = [
         cost: 20,
         duration: "50 دقيقة",
         steps: [
-          "التوجه إلى موقف الأحرار الجديد بالزقازيق.",
-          "الركوب من ممر (الزقازيق - العاشر من رمضان) ميكروباص مباشر.",
-          "الوصول إلى موقف الأردنية بالعاشر من رمضان."
+          "الركوب من ممر (الزقازيق - العاشر) بموقف الأحرار الجديد بالزقازيق.",
+          "الوصول عبر طريق بلبيس - العاشر الصحراوي.",
+          "النزول في موقف الأردنية بالعاشر من رمضان.",
+          "التحويل لمواصلة داخلية أو سرفيس لوجهتك النهائية."
+        ],
+        legs: [
+          {
+            title: "المرحلة الأولى: ميكروباص مباشر من الزقازيق إلى العاشر",
+            vehicleType: "ميكروباص",
+            cost: 20,
+            duration: "50 دقيقة",
+            steps: [
+              "اركب ميكروباص من موقف الأحرار الجديد بالزقازيق (ممر العاشر من رمضان).",
+              "السير عبر طريق بلبيس - العاشر الصحراوي.",
+              "النزول في موقف الأردنية بالعاشر من رمضان.",
+              "مواصلة سفرك بسرفيس داخلي للوصول لوجهتك."
+            ]
+          }
         ],
         tips: "الميكروباصات متوفرة طوال اليوم. يفضل السفر مبكراً في الصباح لتفادي الازدحام."
       },
@@ -103,9 +128,24 @@ const routesDataset: RouteData[] = [
         cost: 30,
         duration: "45 دقيقة",
         steps: [
-          "الذهاب إلى موقف الأحرار (قسم السيارات الـ 7 راكب).",
-          "الركوب مباشرة متوجهاً إلى العاشر من رمضان.",
-          "الوصول إلى صيدناوي أو الأردنية."
+          "الذهاب إلى موقف الأحرار قسم سيارات البيجو 7 راكب.",
+          "الركوب مباشر إلى العاشر بدون توقفات.",
+          "النزول في صيدناوي أو موقف الأردنية.",
+          "التحويل لوجهتك الفرعية."
+        ],
+        legs: [
+          {
+            title: "المرحلة الأولى: سيارة بيجو 7 راكب (الزقازيق ➔ العاشر)",
+            vehicleType: "سيارة بيجو",
+            cost: 30,
+            duration: "45 دقيقة",
+            steps: [
+              "الذهاب لموقف الأحرار بالزقازيق وركوب سيارة بيجو 7 راكب.",
+              "الانطلاق مباشرة عبر الطريق السريع بدون توقفات.",
+              "النزول عند صيدناوي أو موقف الأردنية بالعاشر.",
+              "التوجه لوجهتك الفرعية داخل المدينة."
+            ]
+          }
         ],
         tips: "أسرع من الميكروباص ولكن تكلفتها أعلى قليلاً وتنتظر حتى يكتمل عدد الركاب (7 أفراد)."
       }
@@ -119,15 +159,36 @@ const routesDataset: RouteData[] = [
     options: [
       {
         type: "multi",
-        typeName: "ميكروباص ومترو",
+        typeName: "ميكروباص ومترو الأنفاق",
         icon: "bx bx-transfer",
         cost: 28,
         duration: "70 دقيقة",
-        steps: [
-          "اركب ميكروباص (الزقازيق - السلام) من موقف الأحرار بالزقازيق (20 ج.م).",
-          "انزل في محطة عدلي منصور التبادلية.",
-          "اركب المترو (الخط الثالث) متوجهاً باتجاه الكيت كات / جامعة القاهرة.",
-          "انزل في محطة (أرض المعارض) مباشرة (8 ج.م)."
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: ميكروباص (الزقازيق ➔ موقف السلام / عدلي منصور)",
+            vehicleType: "ميكروباص",
+            cost: 20,
+            duration: "50 دقيقة",
+            steps: [
+              "اركب ميكروباص (الزقازيق - السلام) من موقف الأحرار بالزقازيق (20 ج.م).",
+              "السير عبر طريق بلبيس الصحراوي مباشرة.",
+              "النزول في محطة عدلي منصور التبادلية.",
+              "التوجه للممر المباشر لرصيف مترو الأنفاق."
+            ]
+          },
+          {
+            title: "المرحلة الثانية: مترو الأنفاق (عدلي منصور ➔ أرض المعارض)",
+            vehicleType: "مترو الأنفاق",
+            cost: 8,
+            duration: "20 دقيقة",
+            steps: [
+              "ركوب المترو (الخط الثالث - الأخضر) باتجاه الكيت كات / جامعة القاهرة (8 ج.م).",
+              "المرور بمحطات النزهة، ألف مسكن، وهليوبوليس.",
+              "النزول في محطة (أرض المعارض) مباشرة.",
+              "الخروج من المحطة والتوجه لبوابة المعرض."
+            ]
+          }
         ],
         tips: "المترو هو أسرع وسيلة للوصول لأرض المعارض دون الدخول في زحام الطرق العادية."
       }
@@ -141,14 +202,36 @@ const routesDataset: RouteData[] = [
     options: [
       {
         type: "multi",
-        typeName: "ميكروباص ومترو",
+        typeName: "ميكروباص ومترو الأنفاق",
         icon: "bx bx-transfer",
         cost: 23,
         duration: "60 دقيقة",
-        steps: [
-          "اركب ميكروباص من موقف الأردنية بالعاشر إلى موقف السلام/عدلي منصور (15 ج.م).",
-          "من محطة عدلي منصور، اركب المترو (الخط الثالث) باتجاه الكيت كات.",
-          "انزل في محطة (أرض المعارض) مباشرة (8 ج.م)."
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: ميكروباص (العاشر ➔ عدلي منصور / موقف السلام)",
+            vehicleType: "ميكروباص",
+            cost: 15,
+            duration: "40 دقيقة",
+            steps: [
+              "ركوب ميكروباص من موقف الأردنية بالعاشر إلى موقف السلام / عدلي منصور (15 ج.م).",
+              "السير عبر طريق الإسماعيلية الصحراوي.",
+              "النزول عند محطة عدلي منصور التبادلية.",
+              "التوجه لرصيف المترو داخل المحطة."
+            ]
+          },
+          {
+            title: "المرحلة الثانية: مترو الأنفاق (عدلي منصور ➔ أرض المعارض)",
+            vehicleType: "مترو الأنفاق",
+            cost: 8,
+            duration: "20 دقيقة",
+            steps: [
+              "ركوب المترو (الخط الثالث - الأخضر) متوجهاً باتجاه الكيت كات (8 ج.م).",
+              "الوصول حتى محطة أرض المعارض.",
+              "النزول في محطة أرض المعارض مباشرة.",
+              "التوجه لقاعات المعرض."
+            ]
+          }
         ]
       }
     ]
@@ -164,24 +247,56 @@ const routesDataset: RouteData[] = [
         typeName: "القطار المباشر",
         icon: "bx bx-train",
         cost: 25,
-        duration: "ساعة و45 دقيقة",
-        steps: [
-          "التوجه إلى محطة قطارات الزقازيق بميدان المحطة.",
-          "حجز تذكرة قطار (الزقازيق - رمسيس) خط الشرق.",
-          "النزول في المحطة الأخيرة (محطة مصر برمسيس)."
+        duration: "105 دقيقة",
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: القطار المباشر (الزقازيق ➔ رمسيس)",
+            vehicleType: "قطار",
+            cost: 25,
+            duration: "ساعة و45 دقيقة",
+            steps: [
+              "ركوب القطار من محطة قطارات الزقازيق بميدان المحطة (خط الشرق).",
+              "الانطلاق عبر الخط المباشر لقطارات الشرق.",
+              "النزول في المحطة الأخيرة (محطة مصر برمسيس).",
+              "التوجه لميدان رمسيس أو خطوط المترو."
+            ]
+          }
         ],
         tips: "القطار وسيلة مريحة وغير مكلفة. يمكنك مراجعة جدول المواعيد بانتظام، أشهرها قطارات الساعة 7:00 ص و 3:00 م."
       },
       {
         type: "multi",
-        typeName: "ميكروباص ومترو",
+        typeName: "ميكروباص ومترو الأنفاق",
         icon: "bx bx-transfer",
         cost: 33,
-        duration: "ساعة و30 دقيقة",
-        steps: [
-          "من موقف الأحرار بالزقازيق، اركب ميكروباص متوجهاً إلى موقف عبود بالقاهرة (25 ج.م).",
-          "من موقف عبود، خذ تاكسي أو تمشية قصيرة لمحطة مترو المظلات (الخط الثاني).",
-          "اركب المترو باتجاه الجيزة وانزل في محطة الشهداء (رمسيس) (8 ج.م)."
+        duration: "90 دقيقة",
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: ميكروباص (الزقازيق ➔ موقف عبود بالقاهرة)",
+            vehicleType: "ميكروباص",
+            cost: 25,
+            duration: "75 دقيقة",
+            steps: [
+              "ركوب ميكروباص من موقف الأحرار بالزقازيق إلى موقف عبود (25 ج.م).",
+              "السير عبر طريق القاهرة - الإسماعيلية / الزراعي.",
+              "النزول في موقف عبود بالقاهرة.",
+              "التوجه مشياً أو بتاكسي إلى محطة مترو المظلات."
+            ]
+          },
+          {
+            title: "المرحلة الثانية: مترو الأنفاق (المظلات ➔ الشهداء/رمسيس)",
+            vehicleType: "مترو الأنفاق",
+            cost: 8,
+            duration: "15 دقيقة",
+            steps: [
+              "ركوب المترو (الخط الثاني - الأزرق) باتجاه المنيب (8 ج.م).",
+              "المرور بمحطات مسرة والسراي.",
+              "النزول في محطة الشهداء (ميدان رمسيس).",
+              "التوجه لمخرج المحطة الرئيسي."
+            ]
+          }
         ],
         tips: "طريق سريع ومناسب في أوقات فراغ الطرق السريعة (الزراعي)."
       }
@@ -199,10 +314,20 @@ const routesDataset: RouteData[] = [
         icon: "bx bx-bus",
         cost: 20,
         duration: "60 دقيقة",
-        steps: [
-          "التوجه إلى موقف الأحرار بالزقازيق.",
-          "الركوب من ممر (الزقازيق - السلام) ميكروباص مباشر.",
-          "الوصول إلى موقف السلام الجديد أو محطة عدلي منصور التبادلية."
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: ميكروباص مباشر (الزقازيق ➔ السلام)",
+            vehicleType: "ميكروباص",
+            cost: 20,
+            duration: "60 دقيقة",
+            steps: [
+              "ركوب ميكروباص (الزقازيق - السلام) من موقف الأحرار (20 ج.م).",
+              "السير عبر طريق بلبيس الصحراوي.",
+              "النزول في موقف السلام الجديد أو محطة عدلي منصور التبادلية.",
+              "التوجه إلى المترو أو القطار الكهربائي LRT أو السوبرجيت."
+            ]
+          }
         ],
         tips: "طريق بلبيس الصحراوي سريع جداً ومتوفر على مدار 24 ساعة."
       }
@@ -216,28 +341,38 @@ const routesDataset: RouteData[] = [
     options: [
       {
         type: "multi",
-        typeName: "ميكروباص السلام مع النزول على الطريق",
+        typeName: "ميكروباص وسرفيس داخلي",
         icon: "bx bx-transfer",
         cost: 20,
         duration: "45 دقيقة",
-        steps: [
-          "اركب ميكروباص (الزقازيق - السلام) من موقف الأحرار.",
-          "اطلب من السائق النزول على طريق الإسماعيلية الصحراوي عند (بوابة الشروق 1).",
-          "من أمام البوابة، اركب ميكروباص داخلي متوجهاً لوسط مدينة الشروق."
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: ميكروباص الزقازيق ➔ طريق الإسماعيلية (بوابة الشروق 1)",
+            vehicleType: "ميكروباص",
+            cost: 15,
+            duration: "35 دقيقة",
+            steps: [
+              "ركوب ميكروباص (الزقازيق - السلام) من موقف الأحرار.",
+              "السير على طريق الإسماعيلية الصحراوي.",
+              "النزول عند بوابة الشروق 1 على الطريق الصحراوي.",
+              "التوجه لموقف السرفيس الداخلي أمام البوابة."
+            ]
+          },
+          {
+            title: "المرحلة الثانية: سرفيس داخلي لوسط مدينة الشروق",
+            vehicleType: "سرفيس داخلي",
+            cost: 5,
+            duration: "10 دقائق",
+            steps: [
+              "ركوب ميكروباص/سرفيس داخلي من أمام البوابة.",
+              "الوصول لوسط المدينة أو الجامعة البريطانية.",
+              "النزول في وجهتك المحددة داخل الشروق.",
+              "التوجه لوجهتك النهائية."
+            ]
+          }
         ],
         tips: "أسرع وأسهل طريقة للوصول للشروق من الزقازيق."
-      },
-      {
-        type: "multi",
-        typeName: "عبر العاشر من رمضان",
-        icon: "bx bx-transfer",
-        cost: 28,
-        duration: "70 دقيقة",
-        steps: [
-          "اركب ميكروباص من الزقازيق إلى العاشر من رمضان (20 ج.م).",
-          "من موقف الأردنية بالعاشر، اركب ميكروباص متوجهاً إلى مدينة الشروق (8 ج.م).",
-          "الدخول لمدينة الشروق عبر بوابة 2."
-        ]
       }
     ]
   },
@@ -253,25 +388,22 @@ const routesDataset: RouteData[] = [
         icon: "bx bx-bus",
         cost: 15,
         duration: "40 دقيقة",
-        steps: [
-          "التوجه إلى موقف الأردنية بالعاشر من رمضان.",
-          "الركوب من ممر (العاشر - السلام) ميكروباص مباشر.",
-          "الوصول لموقف السلام ومحطة عدلي منصور التبادلية."
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: ميكروباص مباشر (العاشر ➔ السلام)",
+            vehicleType: "ميكروباص",
+            cost: 15,
+            duration: "40 دقيقة",
+            steps: [
+              "ركوب ميكروباص من موقف الأردنية بالعاشر من رمضان.",
+              "السير عبر طريق الإسماعيلية الصحراوي.",
+              "النزول في موقف السلام الجديد أو محطة عدلي منصور التبادلية.",
+              "الانتقال لمترو الأنفاق الخط الثالث أو الأتوبيسات."
+            ]
+          }
         ],
         tips: "المواصلة متوفرة بغزارة شديدة على مدار الساعة."
-      },
-      {
-        type: "bus",
-        typeName: "أتوبيس النقل العام / شرق الدلتا",
-        icon: "bx bx-bus",
-        cost: 20,
-        duration: "45 دقيقة",
-        steps: [
-          "الانتظار في صيدناوي أو موقف الأردنية.",
-          "ركوب أتوبيس هيئة النقل العام المتجه للسلام.",
-          "النزول في محطة عدلي منصور."
-        ],
-        tips: "مريح ومكيف ولكنه ينطلق بمواعيد متفاوتة."
       }
     ]
   },
@@ -287,24 +419,22 @@ const routesDataset: RouteData[] = [
         icon: "bx bx-train",
         cost: 45,
         duration: "ساعتان ونصف",
-        steps: [
-          "التوجه إلى محطة قطارات المنصورة.",
-          "حجز قطار مباشر متوجه إلى محطة مصر برمسيس (خط المنصورة - طنطا - القاهرة).",
-          "الوصول لمحطة رمسيس."
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: القطار التوربيني / المكيف (المنصورة ➔ رمسيس)",
+            vehicleType: "قطار",
+            cost: 45,
+            duration: "ساعتان ونصف",
+            steps: [
+              "ركوب القطار المباشر من محطة قطارات المنصورة.",
+              "السير عبر خط طنطا - القاهرة.",
+              "النزول في محطة مصر بميدان رمسيس.",
+              "التوجه لمترو الشهداء أو المواصلات العامة."
+            ]
+          }
         ],
         tips: "القطار التوربيني أو الروسي المكيف هو الخيار الأفضل والأكثر أماناً ومواعيده ثابتة."
-      },
-      {
-        type: "microbus",
-        typeName: "ميكروباص مباشر",
-        icon: "bx bx-bus",
-        cost: 45,
-        duration: "ساعتان ونصف",
-        steps: [
-          "التوجه لموقف المنصورة الجديد (الشرقية أو طلخا).",
-          "الركوب متوجهاً إلى موقف عبود بالقاهرة.",
-          "من موقف عبود، خذ المترو لرمسيس."
-        ]
       }
     ]
   },
@@ -320,24 +450,22 @@ const routesDataset: RouteData[] = [
         icon: "bx bx-train",
         cost: 30,
         duration: "ساعة و15 دقيقة",
-        steps: [
-          "الذهاب لمحطة قطار طنطا.",
-          "ركوب أي قطار متجه إلى القاهرة (خط الإسكندرية - القاهرة السريع).",
-          "النزول في محطة رمسيس."
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: القطار السريع (طنطا ➔ رمسيس)",
+            vehicleType: "قطار",
+            cost: 30,
+            duration: "ساعة و15 دقيقة",
+            steps: [
+              "ركوب القطار السريع من محطة قطار طنطا.",
+              "السير عبر الخط السريع لقطارات الإسكندرية - القاهرة.",
+              "النزول في محطة رمسيس بالقاهرة.",
+              "التوجه لمخرج المحطة أو المترو."
+            ]
+          }
         ],
         tips: "القطارات متوفرة تقريباً كل نصف ساعة نظراً لوقوع طنطا على الخط الرئيسي."
-      },
-      {
-        type: "microbus",
-        typeName: "ميكروباص عبود",
-        icon: "bx bx-bus",
-        cost: 30,
-        duration: "ساعة و30 دقيقة",
-        steps: [
-          "التوجه إلى موقف طنطا العمومي (موقف الجلاء أو المعرض).",
-          "ركوب ميكروباص مباشر إلى موقف عبود بالقاهرة.",
-          "من عبود خذ تاكسي أو مترو لوجهتك."
-        ]
       }
     ]
   },
@@ -352,29 +480,210 @@ const routesDataset: RouteData[] = [
         typeName: "قطار تالجو / مكيف مباشر",
         icon: "bx bx-train",
         cost: 70,
-        duration: "ساعتان إلى ساعتين ونصف",
-        steps: [
-          "الذهاب إلى محطة قطار سيدي جابر أو محطة مصر بالإسكندرية.",
-          "حجز قطار (سريع أو تالجو) مباشر إلى رمسيس.",
-          "الوصول إلى رمسيس."
+        duration: "ساعتان و15 دقيقة",
+        steps: [],
+        legs: [
+          {
+            title: "المرحلة الأولى: قطار تالجو / المكيف (الإسكندرية ➔ رمسيس)",
+            vehicleType: "قطار",
+            cost: 70,
+            duration: "ساعتان و15 دقيقة",
+            steps: [
+              "ركوب قطار تالجو المباشر من محطة سيدي جابر أو محطة مصر بالإسكندرية.",
+              "السير عبر الطريق السريع المباشر.",
+              "النزول في محطة مصر برمسيس بالقاهرة.",
+              "التوجه لوسط البلد أو خطوط المترو."
+            ]
+          }
         ],
         tips: "قطارات تالجو الجديدة سريعة ومريحة جداً وتقدم خدمات ممتازة."
-      },
-      {
-        type: "bus",
-        typeName: "أتوبيس سوبر جيت / غرب الدلتا",
-        icon: "bx bx-bus",
-        cost: 90,
-        duration: "3 ساعات",
-        steps: [
-          "الذهاب لمحطة السوبر جيت بمحرم بك.",
-          "حجز تذكرة أتوبيس متوجه إلى موقف الترجمان أو الماظة بالقاهرة.",
-          "الوصول للقاهرة."
-        ]
       }
     ]
   }
 ];
+
+function getOptionCategoryLabel(type: string): string {
+  switch (type) {
+    case "microbus":
+      return "موقف ميكروباص";
+    case "bus":
+      return "أتوبيس النقل العام / السوبرجيت";
+    case "car":
+      return "سيارة خاصة / بيجو";
+    case "train":
+      return "محطة السكك الحديدية";
+    case "monorail":
+      return "قطار المونوريل";
+    case "metro":
+      return "مترو الأنفاق";
+    case "plane":
+      return "طيران / رحلات جوية";
+    case "ship":
+      return "عبارة / سفينة بحرية";
+    default:
+      return "وسائل مواصلات متعددة";
+  }
+}
+
+function formatMinutesToArabic(mins: number): string {
+  if (mins <= 0) return "0 دقيقة";
+  if (mins === 1) return "دقيقة واحدة";
+  if (mins === 2) return "دقيقتان";
+
+  if (mins < 60) {
+    if (mins >= 3 && mins <= 10) return `${mins} دقائق`;
+    return `${mins} دقيقة`;
+  }
+
+  const hours = Math.floor(mins / 60);
+  const remaining = mins % 60;
+
+  let hoursText = "";
+  if (hours === 1) {
+    hoursText = "ساعة";
+  } else if (hours === 2) {
+    hoursText = "ساعتان";
+  } else if (hours >= 3 && hours <= 10) {
+    hoursText = `${hours} ساعات`;
+  } else {
+    hoursText = `${hours} ساعة`;
+  }
+
+  if (remaining === 0) {
+    return hoursText;
+  }
+
+  let remainingText = "";
+  if (remaining === 1) {
+    remainingText = "ودقيقة";
+  } else if (remaining === 2) {
+    remainingText = "ودقيقتان";
+  } else if (remaining >= 3 && remaining <= 10) {
+    remainingText = `و ${remaining} دقائق`;
+  } else {
+    remainingText = `و ${remaining} دقيقة`;
+  }
+
+  return `${hoursText} ${remainingText}`;
+}
+
+function parseMinutesFromArabic(text: string): number | null {
+  if (!text) return null;
+  const normalized = text.trim();
+
+  if (normalized === "ساعة") return 60;
+  if (normalized === "ساعتان" || normalized === "ساعتين") return 120;
+
+  const hourMatch = normalized.match(/(\d+)\s+ساع/);
+  const minMatch = normalized.match(/(\d+)\s+دقيق/);
+
+  let totalMins = 0;
+  let found = false;
+
+  if (hourMatch) {
+    totalMins += parseInt(hourMatch[1]) * 60;
+    found = true;
+  } else if (normalized.includes("ساعة") || normalized.includes("ساعه")) {
+    totalMins += 60;
+    found = true;
+  } else if (normalized.includes("ساعتان") || normalized.includes("ساعتين")) {
+    totalMins += 120;
+    found = true;
+  }
+
+  if (minMatch) {
+    totalMins += parseInt(minMatch[1]);
+    found = true;
+  } else if (normalized.includes("ودقيقة") || normalized.includes("ودقيقه")) {
+    totalMins += 1;
+    found = true;
+  } else if (normalized.includes("ودقيقتان") || normalized.includes("ودقيقتين")) {
+    totalMins += 2;
+    found = true;
+  }
+
+  if (!hourMatch && !normalized.includes("ساعة") && !normalized.includes("ساعه") && !normalized.includes("ساعتين") && !normalized.includes("ساعتان")) {
+    const rawNumberMatch = normalized.match(/^(\d+)/);
+    if (rawNumberMatch) {
+      return parseInt(rawNumberMatch[1]);
+    }
+  }
+
+  return found ? totalMins : null;
+}
+
+function computeTotalTripSummary(option: RouteOption, legs: RouteLeg[]) {
+  let totalCost = 0;
+  let hasLegCost = false;
+
+  (legs || []).forEach(leg => {
+    if (typeof leg.cost === "number" && !isNaN(leg.cost) && leg.cost > 0) {
+      totalCost += leg.cost;
+      hasLegCost = true;
+    }
+  });
+
+  const finalCost = hasLegCost ? totalCost : option.cost;
+
+  let totalMinutes = 0;
+  let hasLegDuration = false;
+
+  (legs || []).forEach(leg => {
+    if (leg.duration) {
+      const mins = parseMinutesFromArabic(leg.duration);
+      if (mins !== null && mins > 0) {
+        totalMinutes += mins;
+        hasLegDuration = true;
+      }
+    }
+  });
+
+  let finalDuration = option.duration;
+  if (hasLegDuration && totalMinutes > 0) {
+    finalDuration = formatMinutesToArabic(totalMinutes);
+  }
+
+  return {
+    totalCost: finalCost,
+    totalDuration: finalDuration
+  };
+}
+
+// Safe helper to construct structured legs if not explicitly provided
+function buildLegsFromOption(option: RouteOption): RouteLeg[] {
+  if (!option) return [];
+
+  if (option.legs && Array.isArray(option.legs) && option.legs.length > 0) {
+    return option.legs.map((leg, idx) => ({
+      title: leg?.title || `المرحلة ${idx + 1}`,
+      vehicleType: leg?.vehicleType,
+      cost: leg?.cost,
+      duration: leg?.duration,
+      steps: Array.isArray(leg?.steps) ? leg.steps : (typeof leg?.steps === "string" ? [leg.steps] : [])
+    }));
+  }
+
+  const steps = Array.isArray(option.steps) ? option.steps : [];
+  if (steps.length === 0) {
+    return [
+      {
+        title: "المرحلة الأولى: المسار المباشر",
+        cost: option.cost,
+        duration: option.duration,
+        steps: ["توجه لموقع الانطلاق الموضح.", "انتقل عبر الطريق المباشر.", "الوصول في المحطة المقصودة."]
+      }
+    ];
+  }
+
+  return [
+    {
+      title: "المرحلة الأولى: خطوات المسار التفصيلية",
+      cost: option.cost,
+      duration: option.duration,
+      steps: steps
+    }
+  ];
+}
 
 export default function DirectionsPage() {
   const { user, profile, loading } = useAuth();
@@ -420,7 +729,7 @@ export default function DirectionsPage() {
                 to_aliases: item.to_aliases || ""
               };
             }
-            
+
             let stepsArr: string[] = [];
             if (Array.isArray(item.steps)) {
               stepsArr = item.steps;
@@ -432,6 +741,17 @@ export default function DirectionsPage() {
               }
             }
 
+            let legsArr: RouteLeg[] | undefined = undefined;
+            if (Array.isArray(item.legs)) {
+              legsArr = item.legs;
+            } else if (typeof item.legs === "string") {
+              try {
+                legsArr = JSON.parse(item.legs);
+              } catch {
+                legsArr = undefined;
+              }
+            }
+
             grouped[key].push({
               type: item.type,
               typeName: item.type_name,
@@ -439,25 +759,26 @@ export default function DirectionsPage() {
               cost: item.cost,
               duration: item.duration,
               steps: stepsArr,
+              legs: legsArr,
               tips: item.tips || undefined,
               map_link: item.map_link || undefined
             });
           });
 
-          const formatted: RouteData[] = Object.keys(grouped).map(key => {
+          const formatted: RouteData[] = Object.keys(grouped || {}).map(key => {
             const [from, to] = key.split("|||");
             return {
               from,
               to,
-              from_aliases: groupMeta[key].from_aliases || undefined,
-              to_aliases: groupMeta[key].to_aliases || undefined,
-              options: grouped[key]
+              from_aliases: groupMeta[key]?.from_aliases || undefined,
+              to_aliases: groupMeta[key]?.to_aliases || undefined,
+              options: grouped[key] || []
             };
           });
 
           // Merge with static dataset
           const merged = [...formatted];
-          routesDataset.forEach(staticRoute => {
+          (routesDataset || []).forEach(staticRoute => {
             const exists = merged.some(
               r => r.from.toLowerCase() === staticRoute.from.toLowerCase() &&
                    r.to.toLowerCase() === staticRoute.to.toLowerCase()
@@ -480,11 +801,11 @@ export default function DirectionsPage() {
   // List of all unique cities with their aliases for autocomplete
   const uniqueCitiesList = useMemo(() => {
     const list: Array<{ name: string; searchNames: string[] }> = [];
-    routes.forEach(r => {
+    (routes || []).forEach(r => {
       // For 'from'
       const fromAliasesArr = r.from_aliases ? r.from_aliases.split(",").map(a => a.trim()).filter(Boolean) : [];
       // Include global static aliases if matching
-      Object.keys(locationAliasesMap).forEach(aliasKey => {
+      Object.keys(locationAliasesMap || {}).forEach(aliasKey => {
         if (locationAliasesMap[aliasKey] === r.from && !fromAliasesArr.includes(aliasKey)) {
           fromAliasesArr.push(aliasKey);
         }
@@ -502,7 +823,7 @@ export default function DirectionsPage() {
       // For 'to'
       const toAliasesArr = r.to_aliases ? r.to_aliases.split(",").map(a => a.trim()).filter(Boolean) : [];
       // Include global static aliases if matching
-      Object.keys(locationAliasesMap).forEach(aliasKey => {
+      Object.keys(locationAliasesMap || {}).forEach(aliasKey => {
         if (locationAliasesMap[aliasKey] === r.to && !toAliasesArr.includes(aliasKey)) {
           toAliasesArr.push(aliasKey);
         }
@@ -520,17 +841,21 @@ export default function DirectionsPage() {
     return list;
   }, [routes]);
 
-  const filteredFromCities = uniqueCitiesList.filter(item => {
-    const normInput = normalizeArabic(fromInput);
-    if (!normInput) return false;
-    return item.searchNames.some(name => normalizeArabic(name).includes(normInput)) && item.name !== fromInput;
-  });
+  const filteredFromCities = useMemo(() => {
+    return (uniqueCitiesList || []).filter(item => {
+      const normInput = normalizeArabic(fromInput);
+      if (!normInput) return false;
+      return (item.searchNames || []).some(name => normalizeArabic(name).includes(normInput)) && item.name !== fromInput;
+    });
+  }, [fromInput, uniqueCitiesList]);
 
-  const filteredToCities = uniqueCitiesList.filter(item => {
-    const normInput = normalizeArabic(toInput);
-    if (!normInput) return false;
-    return item.searchNames.some(name => normalizeArabic(name).includes(normInput)) && item.name !== toInput;
-  });
+  const filteredToCities = useMemo(() => {
+    return (uniqueCitiesList || []).filter(item => {
+      const normInput = normalizeArabic(toInput);
+      if (!normInput) return false;
+      return (item.searchNames || []).some(name => normalizeArabic(name).includes(normInput)) && item.name !== toInput;
+    });
+  }, [toInput, uniqueCitiesList]);
 
   // Smart Search logic incorporating Arabic Normalization and Aliases resolution
   const handleSearch = (fromVal = fromInput, toVal = toInput) => {
@@ -543,7 +868,7 @@ export default function DirectionsPage() {
     const normFromInput = normalizeArabic(searchFrom);
     const normToInput = normalizeArabic(searchTo);
 
-    Object.keys(locationAliasesMap).forEach(aliasKey => {
+    Object.keys(locationAliasesMap || {}).forEach(aliasKey => {
       if (normalizeArabic(aliasKey) === normFromInput) {
         searchFrom = locationAliasesMap[aliasKey];
       }
@@ -560,7 +885,7 @@ export default function DirectionsPage() {
     let resolvedFrom = "";
     let resolvedTo = "";
 
-    for (const route of routes) {
+    for (const route of (routes || [])) {
       // Match From Location
       const routeFromNorm = normalizeArabic(route.from);
       const isFromDirectMatch = routeFromNorm === normFromResolved || routeFromNorm.includes(normFromResolved) || normFromResolved.includes(routeFromNorm);
@@ -652,15 +977,15 @@ export default function DirectionsPage() {
 
   if (loading) {
     return (
-      <div className="app-container" style={{ maxWidth: "800px", paddingTop: "100px", textAlign: "center" }}>
+      <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-primary)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
         <div style={{
           width: "40px",
           height: "40px",
-          border: "4px solid rgba(255,255,255,0.1)",
+          border: "4px solid var(--border-glass)",
           borderTop: "4px solid var(--accent-ios, #3b82f6)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
-          margin: "0 auto 20px"
+          marginBottom: "20px"
         }} />
         <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
       </div>
@@ -669,134 +994,170 @@ export default function DirectionsPage() {
 
   // Paywall / Lock screen if user doesn't have Gold access
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin || 
+  const hasAccess = profile?.is_admin ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   if (!user || !hasAccess) {
     return (
-      <div className="app-container" style={{ maxWidth: "600px", paddingTop: "60px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
-        {/* Back Button */}
-        <div style={{ marginBottom: "24px" }}>
-          <Link 
-            href="/" 
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              gap: "8px", 
-              color: "var(--accent-ios, #3b82f6)", 
-              textDecoration: "none", 
+      <div style={{ minHeight: "100vh", paddingBottom: "40px", backgroundColor: "var(--bg-primary)", direction: "rtl" }}>
+        {/* Header Banner matching Metro / Monorail / LRT standard */}
+        <div className="metro-animate-fade" style={{
+          backgroundColor: "var(--bg-primary)",
+          padding: "24px 20px 24px",
+          textAlign: "center",
+          position: "relative",
+          borderBottom: "1px solid var(--border-glass)",
+        }}>
+          <div className="metro-animate-slide-up metro-delay-100">
+            <h1 style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
-              fontSize: "0.95rem" 
-            }}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
-            <span>العودة للرئيسية</span>
-          </Link>
+              color: "var(--text-primary)",
+              margin: "0 0 10px",
+              letterSpacing: "-0.5px",
+            }}>
+              <img src="/images/searchBar/Cairo_directions.svg" alt="" style={{ width: "40px", height: "40px", marginLeft: "8px" }} />
+              ازاي اروح؟
+            </h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+              دليل السفر والانتقال الذكي لمختلف وسائل المواصلات والطرق المختصرة.
+            </p>
+          </div>
         </div>
 
-        {/* Premium Lock Panel */}
-        <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(99, 102, 241, 0.2)", position: "relative", overflow: "hidden" }}>
-          <div style={{
-            position: "absolute",
-            top: "-20px",
-            left: "-20px",
-            width: "140px",
-            height: "140px",
-            background: "radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)",
-            borderRadius: "50%"
-          }} />
-
-          {/* Lock Icon */}
-          <div style={{ 
-            fontSize: "4.5rem", 
-            marginBottom: "24px",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100px",
-            height: "100px",
-            background: "rgba(99, 102, 241, 0.08)",
-            borderRadius: "50%",
-            border: "1px solid rgba(99, 102, 241, 0.3)",
-            color: "#6366f1",
-            animation: "pulse 2s infinite"
-          }}>
-            <i className="bx bxs-lock-alt"></i>
-          </div>
-
-          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "#fff", marginBottom: "14px" }}>
-            دليل &quot;ازاي اروح&quot; ميزة فضية 🥈
-          </h2>
-          
-          <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
-            محرك البحث المتقدم عن خطوط المواصلات والطرق المختصرة (ميكروباص، أتوبيسات، مترو، ومونوريل) متاح حصرياً للمشتركين في الباقة الفضية أو الذهبية أو المشوار.
-          </p>
-
-          {/* Features list */}
-          <div style={{ background: "rgba(255,255,255,0.02)", padding: "18px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
-            <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية (40 ج.م/شهرياً):</div>
-            <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
-              <li>✨ البحث عن مسارات مواصلات بين أي منطقتين بالتفصيل</li>
-              <li>✨ حساب تكلفة الرحلة والمدة المتوقعة بدقة</li>
-              <li>✨ خيارات متعددة للتنقل (مباشر، مترو + ميكروباص، إلخ)</li>
-              <li>✨ تشمل أيضاً خريطة المونوريل التفاعلية بالكامل</li>
-            </ul>
-          </div>
-
-          {/* Call to Actions */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
-            {user ? (
-              <Link
-                href="/profile"
-                style={{
-                  padding: "14px",
-                  borderRadius: "10px",
-                  background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)",
-                  display: "block"
-                }}
-              >
-                🚀 اشترك الآن ورقّ حسابك للفضية (40 ج.م)
-              </Link>
-            ) : (
-              <Link
-                href="/login"
-                style={{
-                  padding: "14px",
-                  borderRadius: "10px",
-                  background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-                  color: "#fff",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)",
-                  display: "block"
-                }}
-              >
-                🔑 سجل دخولك أولاً لتفعيل الاشتراك
-              </Link>
-            )}
-            
+        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
+          {/* Back Button */}
+          <div style={{ margin: "20px 0 0" }}>
             <Link
               href="/"
               style={{
-                padding: "12px",
-                borderRadius: "10px",
-                background: "rgba(255, 255, 255, 0.04)",
-                color: "#94a3b8",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "var(--accent-ios, #3b82f6)",
                 textDecoration: "none",
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
-                display: "block"
+                fontWeight: "600",
+                fontSize: "0.95rem"
               }}
             >
-              العودة لتصفح مترو القاهرة المجاني
+              <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
+              <span>العودة للرئيسية</span>
             </Link>
+          </div>
+
+          {/* Lock Screen Card matching Metro / Monorail theme */}
+          <div style={{
+            backgroundColor: "var(--bg-primary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "15px",
+            padding: "36px 24px",
+            marginTop: "20px",
+            boxShadow: "var(--shadow-card)",
+            textAlign: "center",
+            position: "relative",
+            overflow: "hidden"
+          }}>
+            <div style={{
+              fontSize: "3.5rem",
+              marginBottom: "16px",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "80px",
+              height: "80px",
+              background: "rgba(59, 130, 246, 0.08)",
+              borderRadius: "50%",
+              border: "1px solid rgba(59, 130, 246, 0.2)",
+              color: "var(--accent-ios)"
+            }}>
+              <i className="bx bxs-lock-alt"></i>
+            </div>
+
+            <h2 style={{ fontSize: "1.5rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "10px" }}>
+              دليل &quot;ازاي اروح&quot; ميزة فضية 🥈
+            </h2>
+
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.6", maxWidth: "460px", margin: "0 auto 24px" }}>
+              محرك البحث المتقدم عن خطوط المواصلات والطرق المختصرة (ميكروباص، أتوبيسات، مترو، ومونوريل) متاح حصرياً للمشتركين في الباقة الفضية أو الذهبية أو المشوار.
+            </p>
+
+            <div style={{
+              background: "var(--bg-secondary)",
+              padding: "16px 20px",
+              borderRadius: "12px",
+              border: "1px solid var(--border-glass)",
+              textAlign: "right",
+              margin: "0 auto 24px",
+              maxWidth: "420px"
+            }}>
+              <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "8px" }}>ميزات الباقة الفضية (40 ج.م/شهرياً):</div>
+              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+                <li>✨ البحث عن مسارات مواصلات بين أي منطقتين بالتفصيل</li>
+                <li>✨ حساب تكلفة الرحلة والمدة المتوقعة بدقة لكل مرحلة</li>
+                <li>✨ خيارات متعددة للتنقل (مباشر، مترو + ميكروباص، إلخ)</li>
+                <li>✨ تشمل أيضاً خريطة المونوريل والقطار الكهربائي بالتفصيل</li>
+              </ul>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "340px", margin: "0 auto" }}>
+              {user ? (
+                <Link
+                  href="/profile"
+                  style={{
+                    padding: "12px",
+                    borderRadius: "12px",
+                    background: "var(--accent-ios)",
+                    color: "#ffffff",
+                    textDecoration: "none",
+                    fontWeight: "700",
+                    fontSize: "0.95rem",
+                    display: "block",
+                    textAlign: "center"
+                  }}
+                >
+                  🚀 اشترك الآن ورقّ حسابك للفضية (40 ج.م)
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  style={{
+                    padding: "12px",
+                    borderRadius: "12px",
+                    background: "var(--accent-ios)",
+                    color: "#ffffff",
+                    textDecoration: "none",
+                    fontWeight: "700",
+                    fontSize: "0.95rem",
+                    display: "block",
+                    textAlign: "center"
+                  }}
+                >
+                  🔑 سجل دخولك أولاً لتفعيل الاشتراك
+                </Link>
+              )}
+
+              <Link
+                href="/"
+                style={{
+                  padding: "10px",
+                  borderRadius: "12px",
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-secondary)",
+                  textDecoration: "none",
+                  fontWeight: "600",
+                  fontSize: "0.88rem",
+                  border: "1px solid var(--border-glass)",
+                  display: "block",
+                  textAlign: "center"
+                }}
+              >
+                العودة لتصفح مترو القاهرة المجاني
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -804,329 +1165,677 @@ export default function DirectionsPage() {
   }
 
   return (
-    <div className="app-container" style={{ maxWidth: "800px", paddingTop: "30px", paddingBottom: "60px" }}>
-      {/* Back Button */}
-      <div style={{ marginBottom: "20px" }}>
-        <Link 
-          href="/" 
-          style={{ 
-            display: "inline-flex", 
-            alignItems: "center", 
-            gap: "8px", 
-            color: "var(--accent-ios)", 
-            textDecoration: "none", 
+    <div style={{ minHeight: "100vh", paddingBottom: "40px", backgroundColor: "var(--bg-primary)", direction: "rtl" }}>
+      {/* Header Banner - Standardized matching Metro / Monorail / LRT */}
+      <div className="metro-animate-fade" style={{
+        backgroundColor: "var(--bg-primary)",
+        padding: "24px 20px 24px",
+        textAlign: "center",
+        position: "relative",
+        borderBottom: "1px solid var(--border-glass)",
+      }}>
+        <div className="metro-animate-slide-up metro-delay-100">
+          <h1 style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "600",
-            fontSize: "0.95rem" 
-          }}
-        >
-          <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.4rem" }}></i>
-          <span>العودة للرئيسية</span>
-        </Link>
+            color: "var(--text-primary)",
+            margin: "0 0 10px",
+            letterSpacing: "-0.5px",
+          }}>
+            <img src="/images/searchBar/Cairo_directions.svg" alt="" style={{ width: "40px", height: "40px", marginLeft: "8px" }} />
+            ازاي اروح؟
+          </h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+            دليل السفر والانتقال الذكي. ابحث بأي اسم (مثل: رمسيس، معرض الكتاب، موقف الأحرار، العاشر) وسنقوم بتوجيهك للطريق الأنسب تلقائياً.
+          </p>
+
+          {/* Badges */}
+          <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--accent-ios, #3b82f6)",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>ميكروباصات</span>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "#10b981",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>أتوبيسات</span>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "#f59e0b",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>مترو الأنفاق</span>
+            <span style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              color: "#8b5cf6",
+              borderRadius: "10px",
+              padding: "4px 14px",
+              fontSize: "0.78rem",
+              fontWeight: "700",
+            }}>مونوريل وقطارات</span>
+          </div>
+        </div>
       </div>
 
-      {/* Header */}
-      <div className="glass-panel" style={{ padding: "40px 30px", marginBottom: "24px", textAlign: "center" }}>
-        <div style={{ fontSize: "4rem", marginBottom: "12px" }}>🧭</div>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: "2.2rem", fontWeight: "900", marginBottom: "8px", color: "var(--text-primary)" }}>
-          ازاي اروح ؟
-        </h1>
-        <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
-          دليل السفر والانتقال الذكي. ابحث بأي اسم (مثل: رمسيس، معرض الكتاب، موقف الأحرار، العاشر) وسنقوم بتوجيهك للطريق الأنسب تلقائياً.
-        </p>
-      </div>
+      {/* Main Container */}
+      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
 
-      {/* Inputs Panel */}
-      <div className="glass-panel" style={{ padding: "30px", marginBottom: "24px" }}>
-        <div className={styles.searchRow}>
-          
-          {/* Start Point */}
-          <div style={{ flex: 1, position: "relative" }}>
-            <label className="help-label" style={{ marginBottom: "8px", display: "block" }}>منين ؟ (نقطة البداية)</label>
-            <div className={styles.inputWrapper}>
-              <i className="bx bx-map-pin" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontSize: "1.2rem" }} />
-              <input
-                type="text"
-                className="ios-input"
-                style={{ paddingRight: "40px", width: "100%" }}
-                placeholder="مثال: موقف الأحرار أو الزقازيق"
-                value={fromInput}
-                onChange={(e) => {
-                  setFromInput(e.target.value);
-                  setShowFromSuggestions(true);
-                }}
-                onFocus={() => setShowFromSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowFromSuggestions(false), 200)}
-              />
-            </div>
-            
-            {showFromSuggestions && filteredFromCities.length > 0 && (
-              <div className={styles.suggestionsDropdown}>
-                {filteredFromCities.map((item, idx) => {
-                  const matchedAlias = item.searchNames.find(
-                    name => name.toLowerCase() !== item.name.toLowerCase() && 
-                            normalizeArabic(name).includes(normalizeArabic(fromInput))
-                  );
-                  return (
-                    <button
-                      key={idx}
-                      className={styles.suggestionItem}
-                      onClick={() => {
-                        setFromInput(item.name);
-                        setShowFromSuggestions(false);
-                      }}
-                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                    >
-                      <span style={{ fontWeight: "600" }}>{item.name}</span>
-                      {matchedAlias && (
-                        <span className={styles.matchedAliasText}>({matchedAlias})</span>
-                      )}
-                    </button>
-                  );
-                })}
+        {/* Search Panel Card */}
+        <div className="metro-animate-slide-up metro-delay-200" style={{
+          backgroundColor: "var(--bg-primary)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "15px",
+          padding: "20px",
+          marginTop: "24px",
+          boxShadow: "var(--shadow-card)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          position: "relative",
+          zIndex: 20,
+        }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
+
+            {/* FROM INPUT */}
+            <div style={{ position: "relative", zIndex: showFromSuggestions ? 10 : 1 }}>
+              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
+                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> منين ؟ (نقطة الانطلاق)
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  className="ios-input"
+                  placeholder="اكتب اسم مكان الانطلاق... (مثال: موقف الأحرار أو الزقازيق)"
+                  value={fromInput}
+                  onChange={(e) => {
+                    setFromInput(e.target.value);
+                    setShowFromSuggestions(true);
+                    setSearchTriggered(false);
+                  }}
+                  onFocus={() => setShowFromSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowFromSuggestions(false), 250)}
+                  style={{
+                    width: "100%",
+                    direction: "rtl",
+                    fontFamily: "var(--font-body)",
+                    height: "50px",
+                  }}
+                />
+                {fromInput.trim() && (
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--accent-ios)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الإدخال</span>
+                )}
               </div>
-            )}
+              {showFromSuggestions && (filteredFromCities || []).length > 0 && (
+                <div style={{
+                  position: "absolute", top: "100%", left: 0, right: 0,
+                  background: "var(--bg-secondary)", border: "1px solid var(--border-glass)",
+                  borderRadius: "12px", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
+                  boxShadow: "var(--shadow-lg)", marginTop: "6px"
+                }}>
+                  {(filteredFromCities || []).map((item, idx) => {
+                    const matchedAlias = (item.searchNames || []).find(
+                      name => name.toLowerCase() !== item.name.toLowerCase() &&
+                              normalizeArabic(name).includes(normalizeArabic(fromInput))
+                    );
+                    return (
+                      <div
+                        key={idx}
+                        onMouseDown={() => {
+                          setFromInput(item.name);
+                          setShowFromSuggestions(false);
+                        }}
+                        style={{
+                          padding: "12px 16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          borderBottom: "1px solid rgba(255,255,255,0.03)",
+                          transition: "background 0.2s",
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--bg-glass-hover)")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--text-primary)" }}>{item.name}</span>
+                        {matchedAlias && (
+                          <span style={{ fontSize: "0.75rem", background: "var(--border-glass)", color: "var(--text-secondary)", padding: "2px 6px", borderRadius: "4px" }}>
+                            {matchedAlias}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* SWAP BUTTON */}
+            <div style={{ display: "flex", justifyContent: "center", margin: "-6px 0" }}>
+              <button onClick={handleSwap} style={{
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "50%",
+                width: "40px",
+                height: "40px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--text-secondary)",
+                fontSize: "1.2rem",
+                transition: "all 0.2s ease",
+                marginTop: "4px",
+              }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = "rotate(180deg)";
+                  e.currentTarget.style.background = "var(--bg-glass-hover)";
+                  e.currentTarget.style.color = "var(--accent-ios)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = "rotate(0deg)";
+                  e.currentTarget.style.background = "var(--bg-secondary)";
+                  e.currentTarget.style.color = "var(--text-secondary)";
+                }}
+              >
+                ⇅
+              </button>
+            </div>
+
+            {/* TO INPUT */}
+            <div style={{ position: "relative", zIndex: showToSuggestions ? 10 : 1 }}>
+              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
+                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> لفين ؟ (الجهة المقصودة)
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  className="ios-input"
+                  placeholder="اكتب اسم الوجهة... (مثال: معرض الكتاب أو أرض المعارض)"
+                  value={toInput}
+                  onChange={(e) => {
+                    setToInput(e.target.value);
+                    setShowToSuggestions(true);
+                    setSearchTriggered(false);
+                  }}
+                  onFocus={() => setShowToSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowToSuggestions(false), 250)}
+                  style={{
+                    width: "100%",
+                    direction: "rtl",
+                    fontFamily: "var(--font-body)",
+                    height: "50px",
+                  }}
+                />
+                {toInput.trim() && (
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--accent-ios)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الإدخال</span>
+                )}
+              </div>
+              {showToSuggestions && (filteredToCities || []).length > 0 && (
+                <div style={{
+                  position: "absolute", top: "100%", left: 0, right: 0,
+                  background: "var(--bg-secondary)", border: "1px solid var(--border-glass)",
+                  borderRadius: "12px", overflow: "hidden", zIndex: 1000, maxHeight: "220px", overflowY: "auto",
+                  boxShadow: "var(--shadow-lg)", marginTop: "6px"
+                }}>
+                  {(filteredToCities || []).map((item, idx) => {
+                    const matchedAlias = (item.searchNames || []).find(
+                      name => name.toLowerCase() !== item.name.toLowerCase() &&
+                              normalizeArabic(name).includes(normalizeArabic(toInput))
+                    );
+                    return (
+                      <div
+                        key={idx}
+                        onMouseDown={() => {
+                          setToInput(item.name);
+                          setShowToSuggestions(false);
+                        }}
+                        style={{
+                          padding: "12px 16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          borderBottom: "1px solid rgba(255,255,255,0.03)",
+                          transition: "background 0.2s",
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--bg-glass-hover)")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--text-primary)" }}>{item.name}</span>
+                        {matchedAlias && (
+                          <span style={{ fontSize: "0.75rem", background: "var(--border-glass)", color: "var(--text-secondary)", padding: "2px 6px", borderRadius: "4px" }}>
+                            {matchedAlias}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
           </div>
 
-          {/* Swap Button */}
-          <button 
-            type="button" 
-            className={styles.swapBtn} 
-            onClick={handleSwap} 
-            title="تبديل الاتجاه"
+          {/* SEARCH BUTTON */}
+          <button
+            onClick={() => handleSearch()}
+            disabled={!fromInput.trim() || !toInput.trim()}
+            style={{
+              width: "100%",
+              marginTop: "8px",
+              padding: "12px 14px",
+              borderRadius: "12px",
+              background: (!fromInput.trim() || !toInput.trim()) ? "rgba(255,255,255,0.05)" : "var(--accent-ios)",
+              color: (!fromInput.trim() || !toInput.trim()) ? "var(--text-muted)" : "#ffffff",
+              fontSize: "0.95rem",
+              fontWeight: "700",
+              border: "1px solid var(--border-glass)",
+              cursor: (!fromInput.trim() || !toInput.trim()) ? "not-allowed" : "pointer",
+              transition: "all 0.2s ease",
+              fontFamily: "var(--font-cairo)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+            onMouseEnter={e => {
+              if (fromInput.trim() && toInput.trim()) {
+                e.currentTarget.style.opacity = "0.9";
+              }
+            }}
+            onMouseLeave={e => {
+              if (fromInput.trim() && toInput.trim()) {
+                e.currentTarget.style.opacity = "1";
+              }
+            }}
           >
-            <i className="bx bx-transfer-alt" />
+            <i className="bx bx-search-alt" style={{ fontSize: "1.2rem" }} />
+            ابحث عن مواصلات
           </button>
 
-          {/* Destination Point */}
-          <div style={{ flex: 1, position: "relative" }}>
-            <label className="help-label" style={{ marginBottom: "8px", display: "block" }}>لفين ؟ (الوجهة)</label>
-            <div className={styles.inputWrapper}>
-              <i className="bx bxs-map" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontSize: "1.2rem" }} />
-              <input
-                type="text"
-                className="ios-input"
-                style={{ paddingRight: "40px", width: "100%" }}
-                placeholder="مثال: معرض الكتاب أو أرض المعارض"
-                value={toInput}
-                onChange={(e) => {
-                  setToInput(e.target.value);
-                  setShowToSuggestions(true);
-                }}
-                onFocus={() => setShowToSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowToSuggestions(false), 200)}
-              />
-            </div>
+          {/* Preset Suggestions Quick Links */}
+          <div style={{ marginTop: "12px", display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>بحث سريع:</span>
+            <button className={styles.presetTag} onClick={() => handlePresetSearch("الزقازيق", "العاشر من رمضان")}>الزقازيق ➔ العاشر</button>
+            <button className={styles.presetTag} onClick={() => handlePresetSearch("موقف الأحرار", "معرض الكتاب")}>موقف الأحرار ➔ معرض الكتاب</button>
+            <button className={styles.presetTag} onClick={() => handlePresetSearch("المنصورة", "محطة مصر")}>المنصورة ➔ محطة مصر</button>
+            <button className={styles.presetTag} onClick={() => handlePresetSearch("العاشر من رمضان", "معرض الكتاب")}>العاشر ➔ معرض الكتاب</button>
+          </div>
+        </div>
 
-            {showToSuggestions && filteredToCities.length > 0 && (
-              <div className={styles.suggestionsDropdown}>
-                {filteredToCities.map((item, idx) => {
-                  const matchedAlias = item.searchNames.find(
-                    name => name.toLowerCase() !== item.name.toLowerCase() && 
-                            normalizeArabic(name).includes(normalizeArabic(toInput))
-                  );
+        {/* RESULTS SECTION */}
+        {searchTriggered && (
+          <div style={{ marginTop: "24px" }}>
+            {matchedRoute ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+
+                {/* Summary Header */}
+                <div style={{
+                  backgroundColor: "var(--bg-primary)",
+                  border: "1px solid var(--border-glass)",
+                  borderRadius: "15px",
+                  padding: "16px 20px",
+                  boxShadow: "var(--shadow-card)",
+                }}>
+                  <h2 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0, flexWrap: "wrap" }}>
+                    <span>المسارات المتاحة من</span>
+                    <span style={{ color: "var(--accent-ios)" }}>{resolvedFromLabel}</span>
+                    <span>إلى</span>
+                    <span style={{ color: "var(--accent-ios)" }}>{resolvedToLabel}</span>
+                  </h2>
+                  {((fromInput.trim() !== resolvedFromLabel) || (toInput.trim() !== resolvedToLabel)) && (
+                    <p style={{ margin: "6px 0 0", fontSize: "0.82rem", color: "var(--accent-ios)", display: "flex", alignItems: "center", gap: "4px" }}>
+                      <i className="bx bx-info-circle" />
+                      <span>تم توجيه بحثك تلقائياً بناءً على الأسماء الدلالية للمواقع.</span>
+                    </p>
+                  )}
+                </div>
+
+                {/* Route Options List */}
+                {(matchedRoute?.options || []).map((option, idx) => {
+                  const legs = buildLegsFromOption(option);
+                  const summary = computeTotalTripSummary(option, legs);
                   return (
-                    <button
-                      key={idx}
-                      className={styles.suggestionItem}
-                      onClick={() => {
-                        setToInput(item.name);
-                        setShowToSuggestions(false);
-                      }}
-                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                    >
-                      <span style={{ fontWeight: "600" }}>{item.name}</span>
-                      {matchedAlias && (
-                        <span className={styles.matchedAliasText}>({matchedAlias})</span>
+                    <div key={idx} style={{
+                      backgroundColor: "var(--bg-primary)",
+                      border: "1px solid var(--border-glass)",
+                      borderRadius: "15px",
+                      padding: "20px",
+                      boxShadow: "var(--shadow-card)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "20px",
+                    }}>
+                      {/* Option Top Header */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          <div className={styles.optionIconBg}>
+                            <i className={option.icon} style={{ fontSize: "1.4rem", color: "var(--accent-ios)" }} />
+                          </div>
+                          <div>
+                            <h3 style={{ margin: 0, fontSize: "1.08rem", fontWeight: "700", color: "var(--text-primary)" }}>{option.typeName}</h3>
+                            <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+                              {getOptionCategoryLabel(option.type)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <span style={{
+                            background: "rgba(16, 185, 129, 0.1)",
+                            border: "1px solid rgba(16, 185, 129, 0.2)",
+                            color: "#10b981",
+                            padding: "4px 12px",
+                            borderRadius: "8px",
+                            fontSize: "0.85rem",
+                            fontWeight: "700"
+                          }}>
+                            💵 الإجمالي {summary.totalCost} ج.م
+                          </span>
+                          <span style={{
+                            background: "rgba(59, 130, 246, 0.1)",
+                            border: "1px solid rgba(59, 130, 246, 0.2)",
+                            color: "var(--accent-ios)",
+                            padding: "4px 12px",
+                            borderRadius: "8px",
+                            fontSize: "0.85rem",
+                            fontWeight: "700"
+                          }}>
+                            ⏱️ {summary.totalDuration}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Detailed Multi-Stage Breakdown Section */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                        <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <i className="bx bx-git-repo-forked" style={{ color: "var(--accent-ios)" }} />
+                          <span>خطوات المسار بالتفصيل (مرحلة بمرحلة):</span>
+                        </h4>
+
+                        {(legs || []).map((leg, legIdx) => (
+                          <div key={legIdx} style={{
+                            background: "var(--bg-secondary)",
+                            border: "1px solid var(--border-glass)",
+                            borderRadius: "14px",
+                            padding: "16px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "14px",
+                          }}>
+                            {/* Stage Header with Time & Price for THIS specific Stage */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "10px" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <span style={{
+                                  background: "var(--accent-ios)",
+                                  color: "#ffffff",
+                                  width: "24px",
+                                  height: "24px",
+                                  borderRadius: "50%",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  fontSize: "0.78rem",
+                                  fontWeight: "700",
+                                  flexShrink: 0
+                                }}>
+                                  {legIdx + 1}
+                                </span>
+                                <h5 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                                  {leg.title}
+                                </h5>
+                              </div>
+
+                              {/* Stage Duration & Price Badges */}
+                              <div style={{ display: "flex", gap: "6px" }}>
+                                {leg.cost !== undefined && (
+                                  <span style={{
+                                    background: "rgba(16, 185, 129, 0.12)",
+                                    border: "1px solid rgba(16, 185, 129, 0.25)",
+                                    color: "#10b981",
+                                    padding: "3px 8px",
+                                    borderRadius: "6px",
+                                    fontSize: "0.78rem",
+                                    fontWeight: "700"
+                                  }}>
+                                    💵 {leg.cost} ج.م
+                                  </span>
+                                )}
+                                {leg.duration && (
+                                  <span style={{
+                                    background: "rgba(59, 130, 246, 0.12)",
+                                    border: "1px solid rgba(59, 130, 246, 0.25)",
+                                    color: "var(--accent-ios)",
+                                    padding: "3px 8px",
+                                    borderRadius: "6px",
+                                    fontSize: "0.78rem",
+                                    fontWeight: "700"
+                                  }}>
+                                    ⏱️ {leg.duration}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Sub-steps inside Stage (Clean Step List) */}
+                            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                              {(leg?.steps || []).map((stepText, sIdx) => (
+                                <div key={sIdx} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                                  <div style={{
+                                    width: "22px",
+                                    height: "22px",
+                                    borderRadius: "50%",
+                                    background: "rgba(59, 130, 246, 0.12)",
+                                    border: "1px solid rgba(59, 130, 246, 0.3)",
+                                    color: "var(--accent-ios)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "0.75rem",
+                                    fontWeight: "700",
+                                    flexShrink: 0,
+                                    marginTop: "2px"
+                                  }}>
+                                    {sIdx + 1}
+                                  </div>
+                                  <div style={{ fontSize: "0.9rem", color: "var(--text-primary)", lineHeight: "1.5" }}>
+                                    {stepText}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Overall Trip Summary Box */}
+                      <div style={{
+                        background: "linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)",
+                        border: "1px solid var(--border-glass)",
+                        borderRadius: "14px",
+                        padding: "14px 18px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: "12px"
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <span style={{ fontSize: "1.4rem" }}>📊</span>
+                          <div>
+                            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}>إجمالي ملخص الرحلة</div>
+                            <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>مجموع الوقت والتعريفة لكافة المراحل</div>
+                          </div>
+                        </div>
+
+                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                          <div style={{ background: "var(--bg-primary)", padding: "6px 12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
+                            <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)", display: "block" }}>الأجرة الإجمالية</span>
+                            <span style={{ fontSize: "0.98rem", fontWeight: "800", color: "#10b981" }}>💵 {summary.totalCost} ج.م</span>
+                          </div>
+                          <div style={{ background: "var(--bg-primary)", padding: "6px 12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
+                            <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)", display: "block" }}>الوقت الإجمالي</span>
+                            <span style={{ fontSize: "0.98rem", fontWeight: "800", color: "var(--accent-ios)" }}>⏱️ {summary.totalDuration}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Tip */}
+                      {option.tips && (
+                        <div style={{
+                          display: "flex",
+                          gap: "10px",
+                          background: "rgba(245, 158, 11, 0.08)",
+                          border: "1px solid rgba(245, 158, 11, 0.2)",
+                          padding: "12px 14px",
+                          borderRadius: "12px",
+                          alignItems: "flex-start"
+                        }}>
+                          <span style={{ fontSize: "1.1rem" }}>💡</span>
+                          <p style={{ margin: 0, fontSize: "0.85rem", color: "rgba(245, 158, 11, 0.95)", lineHeight: "1.5", fontWeight: "500" }}>{option.tips}</p>
+                        </div>
                       )}
-                    </button>
+
+                      {/* Google Maps Route Navigation Button */}
+                      {option.map_link && (
+                        <a
+                          href={option.map_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px",
+                            textDecoration: "none",
+                            height: "44px",
+                            fontWeight: "700",
+                            fontSize: "0.9rem",
+                            borderRadius: "12px",
+                            color: "#ffffff",
+                            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.2)",
+                            transition: "all 0.2s ease"
+                          }}
+                        >
+                          <i className="bx bx-navigation" style={{ fontSize: "1.2rem" }} />
+                          <span>فتح المسار على خريطة Google</span>
+                        </a>
+                      )}
+                    </div>
                   );
                 })}
               </div>
-            )}
-          </div>
-
-        </div>
-
-        <button 
-          className="ios-btn ios-btn-primary" 
-          style={{ width: "100%", height: "48px", fontSize: "1.05rem", fontWeight: "700", marginTop: "24px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-          onClick={() => handleSearch()}
-          disabled={!fromInput.trim() || !toInput.trim()}
-        >
-          <i className="bx bx-search-alt" style={{ fontSize: "1.3rem" }} />
-          ابحث عن مواصلات
-        </button>
-
-        {/* Preset Suggestions Quick Links */}
-        <div style={{ marginTop: "20px", display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>كلمات دلالية شائعة للبحث السريع:</span>
-          <button className={styles.presetTag} onClick={() => handlePresetSearch("الزقازيق", "العاشر من رمضان")}>الزقازيق ➔ العاشر</button>
-          <button className={styles.presetTag} onClick={() => handlePresetSearch("موقف الأحرار", "معرض الكتاب")}>موقف الأحرار ➔ معرض الكتاب</button>
-          <button className={styles.presetTag} onClick={() => handlePresetSearch("المنصورة", "محطة مصر")}>المنصورة ➔ محطة مصر</button>
-          <button className={styles.presetTag} onClick={() => handlePresetSearch("العاشر من رمضان", "معرض الكتاب")}>العاشر ➔ معرض الكتاب</button>
-        </div>
-      </div>
-
-      {/* Results Section */}
-      {searchTriggered && (
-        <div style={{ animation: "fade-in 0.3s ease" }}>
-          {matchedRoute ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-                  <span>الطرق المتاحة من</span>
-                  <span style={{ color: "#3b82f6" }}>{resolvedFromLabel}</span>
-                  <span>إلى</span>
-                  <span style={{ color: "#3b82f6" }}>{resolvedToLabel}</span>
-                </h2>
-                
-                {/* Search redirection notice */}
-                {((fromInput.trim() !== resolvedFromLabel) || (toInput.trim() !== resolvedToLabel)) && (
-                  <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--accent-ios)", display: "flex", alignItems: "center", gap: "4px" }}>
-                    <i className="bx bx-info-circle" />
-                    <span>تم توجيه بحثك تلقائياً بناءً على الأسماء الدلالية والبديلة للمواقع.</span>
+            ) : (
+              // No Direct Route Found Card
+              <div style={{
+                backgroundColor: "var(--bg-primary)",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "15px",
+                padding: "24px",
+                boxShadow: "var(--shadow-card)",
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px"
+              }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "center" }}>
+                  <span style={{ fontSize: "2.5rem" }}>📭</span>
+                  <h3 style={{ fontSize: "1.2rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>لا يوجد مسار مباشر مسجل</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", maxWidth: "480px", margin: "0 auto", lineHeight: "1.6" }}>
+                    عذراً، لم نقم بعد بإضافة المسار المباشر من <strong style={{ color: "var(--text-primary)" }}>{fromInput}</strong> إلى <strong style={{ color: "var(--text-primary)" }}>{toInput}</strong>.
                   </p>
-                )}
-              </div>
+                </div>
 
-              {matchedRoute.options.map((option, idx) => (
-                <div key={idx} className="glass-panel" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px", borderRight: "4px solid #3b82f6" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <div className={styles.optionIconBg}>
-                        <i className={option.icon} style={{ fontSize: "1.4rem", color: "#3b82f6" }} />
-                      </div>
-                      <div>
-                        <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>{option.typeName}</h3>
-                        <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                          {option.type === "microbus" ? "موقف ميكروباص" : 
-                           option.type === "bus" ? "أتوبيس النقل العام" : 
-                           option.type === "car" ? "سيارة خاصة" : 
-                           option.type === "train" ? "محطة قطار" : 
-                           option.type === "monorail" ? "قطار المونوريل" : 
-                           option.type === "metro" ? "مترو الأنفاق" : 
-                           option.type === "plane" ? "طيران / طائرة" : 
-                           option.type === "ship" ? "عبارة / سفينة" : 
-                           "وسائل مواصلات متعددة"}
-                        </span>
-                      </div>
+                {/* Suggest Route Form */}
+                <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "20px", textAlign: "right" }}>
+                  <h4 style={{ fontSize: "1rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>هل تعرف كيف تذهب؟ ساعدنا في إضافته!</h4>
+                  <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "14px" }}>
+                    اكتب خطوات الذهاب ومحطات الركوب والتكلفة المتوقعة لنقوم بمراجعتها وإضافتها فوراً لخدمة الجميع.
+                  </p>
+
+                  {user ? (
+                    <form onSubmit={handleSuggestRoute} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <textarea
+                        className="ios-input"
+                        style={{ width: "100%", minHeight: "90px", padding: "12px", fontFamily: "inherit" }}
+                        placeholder="مثال: من موقف الأحرار اركب عربيات العاشر وانزل عند الأردنية، الأجرة 20 جنيه والمشوار بياخد ساعة..."
+                        value={suggestContent}
+                        onChange={(e) => setSuggestContent(e.target.value)}
+                        required
+                      />
+
+                      {suggestError && (
+                        <div style={{ color: "#ef4444", fontSize: "0.85rem" }}>⚠️ {suggestError}</div>
+                      )}
+
+                      {suggestSuccess && (
+                        <div style={{ color: "#10b981", fontSize: "0.85rem", fontWeight: "700" }}>✓ تم إرسال اقتراحك بنجاح! شكراً لمساهمتك القيمة.</div>
+                      )}
+
+                      <button
+                        type="submit"
+                        style={{
+                          alignSelf: "flex-end",
+                          height: "40px",
+                          padding: "0 20px",
+                          borderRadius: "10px",
+                          background: "var(--accent-ios)",
+                          color: "#ffffff",
+                          fontSize: "0.88rem",
+                          fontWeight: "700",
+                          border: "none",
+                          cursor: suggestLoading || !suggestContent.trim() ? "not-allowed" : "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px"
+                        }}
+                        disabled={suggestLoading || !suggestContent.trim()}
+                      >
+                        {suggestLoading ? "جاري الإرسال..." : "إرسال الاقتراح"}
+                      </button>
+                    </form>
+                  ) : (
+                    <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", textAlign: "center" }}>
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "10px" }}>سجل دخولك لتتمكن من اقتراح هذا الطريق وكسب نقاط مكافأة!</p>
+                      <Link href="/login" style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        padding: "8px 20px",
+                        fontSize: "0.88rem",
+                        borderRadius: "10px",
+                        background: "var(--accent-ios)",
+                        color: "#ffffff",
+                        fontWeight: "700",
+                        textDecoration: "none"
+                      }}>
+                        تسجيل الدخول
+                      </Link>
                     </div>
-
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <span className={styles.infoBadge} style={{ background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", color: "#10b981" }}>
-                        💵 {option.cost} ج.م
-                      </span>
-                      <span className={styles.infoBadge} style={{ background: "rgba(59, 130, 246, 0.1)", border: "1px solid rgba(59, 130, 246, 0.2)", color: "#3b82f6" }}>
-                        ⏱️ {option.duration}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Steps */}
-                  <div className={styles.stepsWrapper}>
-                    <h4 style={{ margin: "0 0 10px", fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>خطوات الانتقال بالتفصيل:</h4>
-                    <ol style={{ paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "8px", color: "var(--text-secondary)", fontSize: "0.93rem" }}>
-                      {option.steps.map((step, sIdx) => (
-                        <li key={sIdx} style={{ lineHeight: "1.6" }}>{step}</li>
-                      ))}
-                    </ol>
-                  </div>
-
-                  {/* Tip */}
-                  {option.tips && (
-                    <div style={{ display: "flex", gap: "10px", background: "rgba(245, 158, 11, 0.05)", border: "1px solid rgba(245, 158, 11, 0.15)", padding: "12px 16px", borderRadius: "12px" }}>
-                      <span style={{ fontSize: "1.2rem" }}>💡</span>
-                      <p style={{ margin: 0, fontSize: "0.88rem", color: "rgba(245, 158, 11, 0.9)", lineHeight: "1.5" }}>{option.tips}</p>
-                    </div>
-                  )}
-
-                  {/* Google Maps Route Navigation Button */}
-                  {option.map_link && (
-                    <a 
-                      href={option.map_link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="ios-btn ios-btn-primary" 
-                      style={{ 
-                        display: "inline-flex", 
-                        alignItems: "center", 
-                        justifyContent: "center", 
-                        gap: "8px", 
-                        textDecoration: "none", 
-                        height: "44px", 
-                        fontWeight: "700", 
-                        fontSize: "0.95rem",
-                        marginTop: "4px",
-                        background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                        boxShadow: "0 4px 12px rgba(16, 185, 129, 0.2)"
-                      }}
-                    >
-                      <i className="bx bx-navigation" style={{ fontSize: "1.2rem" }} />
-                      <span>بدء الرحلة (خرائط Google)</span>
-                    </a>
                   )}
                 </div>
-              ))}
-            </div>
-          ) : (
-            // No direct route found
-            <div className="glass-panel" style={{ padding: "32px", textAlign: "center", display: "flex", flexDirection: "column", gap: "24px" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "center" }}>
-                <span style={{ fontSize: "3rem" }}>📭</span>
-                <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>لا يوجد مسار مباشر مسجل</h3>
-                <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "500px", margin: "0 auto", lineHeight: "1.6" }}>
-                  عذراً، لم نقم بعد بإضافة المسار المباشر من <strong style={{ color: "var(--text-primary)" }}>{fromInput}</strong> إلى <strong style={{ color: "var(--text-primary)" }}>{toInput}</strong>.
-                </p>
               </div>
+            )}
+          </div>
+        )}
 
-              {/* Propose / Suggest Route Form */}
-              <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "24px", textAlign: "right" }}>
-                <h4 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "8px" }}>هل تعرف كيف تذهب؟ ساعدنا في إضافته!</h4>
-                <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "16px" }}>
-                  اكتب خطوات الذهاب ومحطات الركوب والتكلفة المتوقعة لنقوم بمراجعتها وإضافتها فوراً لخدمة جميع المستخدمين.
-                </p>
-
-                {user ? (
-                  <form onSubmit={handleSuggestRoute} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    <textarea
-                      className="ios-input"
-                      style={{ width: "100%", minHeight: "100px", padding: "12px", fontFamily: "inherit" }}
-                      placeholder="مثال: من موقف الأحرار اركب عربيات العاشر وانزل عند الأردنية، الأجرة 20 جنيه والمشوار بياخد ساعة..."
-                      value={suggestContent}
-                      onChange={(e) => setSuggestContent(e.target.value)}
-                      required
-                    />
-
-                    {suggestError && (
-                      <div style={{ color: "#ef4444", fontSize: "0.88rem" }}>⚠️ {suggestError}</div>
-                    )}
-
-                    {suggestSuccess && (
-                      <div style={{ color: "#10b981", fontSize: "0.88rem", fontWeight: "700" }}>✓ تم إرسال اقتراحك بنجاح! شكراً لمساهمتك القيمة.</div>
-                    )}
-
-                    <button
-                      type="submit"
-                      className="ios-btn ios-btn-primary"
-                      style={{ alignSelf: "flex-end", height: "40px", padding: "0 24px", display: "flex", alignItems: "center", gap: "6px" }}
-                      disabled={suggestLoading || !suggestContent.trim()}
-                    >
-                      {suggestLoading ? "جاري الإرسال..." : "إرسال الاقتراح"}
-                    </button>
-                  </form>
-                ) : (
-                  <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px", textAlign: "center" }}>
-                    <p style={{ fontSize: "0.9rem", color: "var(--text-muted)", marginBottom: "12px" }}>سجل دخولك لتتمكن من اقتراح هذا الطريق وكسب نقاط مكافأة!</p>
-                    <Link href="/login" className="ios-btn ios-btn-primary" style={{ display: "inline-flex", textDecoration: "none", alignItems: "center", padding: "8px 24px", fontSize: "0.9rem", height: "auto" }}>
-                      تسجيل الدخول
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      </div>
     </div>
   );
 }

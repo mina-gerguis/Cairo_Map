@@ -344,20 +344,24 @@ export default function AdminReportsPage() {
     if (!window.confirm("هل أنت متأكد من رغبتك في حذف هذا البلاغ؟")) return;
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("route_interactions")
         .delete()
-        .eq("id", reportId);
+        .eq("id", reportId)
+        .select();
 
       if (error) {
-        alert("فشل حذف البلاغ.");
+        alert("فشل حذف البلاغ: " + error.message);
+      } else if (!data || data.length === 0) {
+        // RLS blocked delete because auth user is admin and policy was missing
+        alert("تعذر حذف البلاغ من قاعدة البيانات (قد يكون بسب سياسة الحماية RLS). يرجى تشغيل ملف SQL الخاص بصلاحية أدمن في Supabase.");
       } else {
-        alert("تم حذف البلاغ بنجاح.");
+        alert("تم حذف البلاغ بنجاح من قاعدة البيانات.");
         setMicrobusReports(prev => prev.filter(r => r.id !== reportId));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to delete microbus report:", err);
-      alert("حدث خطأ غير متوقع.");
+      alert("حدث خطأ غير متوقع: " + (err?.message || err));
     }
   };
 
@@ -576,7 +580,7 @@ export default function AdminReportsPage() {
             else fetchContactMessages();
           }}
           className="ios-btn"
-          style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 5px" }}
+          style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 5px", width: "20%" }}
         >
           <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }}></i> تحديث
         </button>
@@ -674,7 +678,7 @@ export default function AdminReportsPage() {
             fontFamily: "var(--font-body)"
           }}
         >
-          مواقف السرفيس ({microbusReports.length})
+          السرفيس ({microbusReports.length})
         </button>
       </div>
 
@@ -1674,16 +1678,19 @@ export default function AdminReportsPage() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px" }}>
               {microbusReports.map((report) => {
                 const isExpanded = activeReportId === report.id;
+                const isMissingRoute = report.comment?.includes("[خط غير موجود في الدليل]");
+
                 let reasonLabel = "غير محدد";
-                if (report.report_reason === "fare") reasonLabel = "💰 الأجرة / التعرفة غير صحيحة";
+                if (isMissingRoute) reasonLabel = "🆕 🚌 خط غير موجود (طلب إضافة خط)";
+                else if (report.report_reason === "fare") reasonLabel = "💰 الأجرة / التعرفة غير صحيحة";
                 else if (report.report_reason === "via") reasonLabel = "🛣️ خط السير / المناطق غير دقيقة";
                 else if (report.report_reason === "location") reasonLabel = "📍 مكان الموقف غير صحيح";
                 else if (report.report_reason === "other") reasonLabel = "📝 أخرى";
 
                 return (
                   <div key={report.id} style={{
-                    background: "rgba(255, 255, 255, 0.02)",
-                    border: "1px solid var(--border-glass)",
+                    background: isMissingRoute ? "rgba(16, 185, 129, 0.03)" : "rgba(255, 255, 255, 0.02)",
+                    border: isMissingRoute ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid var(--border-glass)",
                     borderRadius: "12px",
                     padding: "16px",
                     display: "flex",
@@ -1705,9 +1712,9 @@ export default function AdminReportsPage() {
                         fontSize: "0.75rem",
                         padding: "4px 10px",
                         borderRadius: "20px",
-                        background: "rgba(245, 158, 11, 0.1)",
-                        color: "#f59e0b",
-                        border: "1px solid rgba(245, 158, 11, 0.2)",
+                        background: isMissingRoute ? "rgba(16, 185, 129, 0.12)" : "rgba(245, 158, 11, 0.1)",
+                        color: isMissingRoute ? "#10b981" : "#f59e0b",
+                        border: isMissingRoute ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid rgba(245, 158, 11, 0.2)",
                         fontWeight: "bold"
                       }}>
                         {reasonLabel}
@@ -1718,14 +1725,14 @@ export default function AdminReportsPage() {
                     {report.comment && (
                       <div style={{
                         background: "rgba(255, 255, 255, 0.01)",
-                        borderRight: "3px solid #f59e0b",
+                        borderRight: isMissingRoute ? "3px solid #10b981" : "3px solid #f59e0b",
                         padding: "8px 12px",
                         borderRadius: "4px",
                         fontSize: "0.85rem",
                         color: "var(--text-secondary)",
                         lineHeight: "1.5"
                       }}>
-                        <strong>تعليق العضو:</strong> {report.comment}
+                        <strong>تفاصيل الإبلاغ:</strong> {report.comment}
                       </div>
                     )}
 

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
@@ -28,9 +29,29 @@ interface WorkerEntry {
 }
 
 export default function ServicesPage() {
-  const { user, logout } = useAuth();
+  const router = useRouter();
+  const { user } = useAuth();
   const [workers, setWorkers] = useState<WorkerEntry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [servicesAuthActive, setServicesAuthActive] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const active = localStorage.getItem("services_auth_active");
+      setServicesAuthActive(active !== "false");
+    }
+  }, []);
+
+  const handleServicesLogout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("services_auth_active", "false");
+    }
+    setServicesAuthActive(false);
+    router.push("/services/auth/login?logged_out=true");
+  };
+
+  const isServicesLoggedIn = !!user && servicesAuthActive;
   
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -180,7 +201,7 @@ export default function ServicesPage() {
 
         {/* Action Header Buttons */}
         <div style={{ display: "flex", gap: "10px", marginTop: "10px", flexWrap: "wrap", justifyContent: "center" }}>
-          {user ? (
+          {isServicesLoggedIn ? (
             <>
               <Link href="/services/dashboard" style={{
                 background: "#ffffff", color: "var(--accent-ios, #3b82f6)",
@@ -189,12 +210,12 @@ export default function ServicesPage() {
               }}>
                 💻 لوحة التحكم الخاصة بك
               </Link>
-              <button onClick={() => logout()} style={{
+              <button onClick={handleServicesLogout} style={{
                 background: "rgba(255,255,255,0.18)", color: "#ffffff",
                 padding: "8px 20px", borderRadius: "30px", border: "1px solid rgba(255,255,255,0.3)",
                 fontWeight: "700", fontSize: "0.85rem", cursor: "pointer"
               }}>
-                تسجيل الخروج
+                🚪 تسجيل الخروج
               </button>
             </>
           ) : (
@@ -618,33 +639,59 @@ export default function ServicesPage() {
                     </div>
                   </div>
 
-                  <Link href={`/services/workers/${worker.id}`} style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "38px",
-                    borderRadius: "8px",
-                    background: "var(--bg-secondary)",
-                    border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
-                    fontWeight: "700",
-                    fontSize: "0.85rem",
-                    textDecoration: "none",
-                    transition: "all 0.2s"
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.background = "var(--accent-ios, #3b82f6)";
-                    e.currentTarget.style.color = "#ffffff";
-                    e.currentTarget.style.borderColor = "var(--accent-ios, #3b82f6)";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.background = "var(--bg-secondary)";
-                    e.currentTarget.style.color = "var(--text-primary)";
-                    e.currentTarget.style.borderColor = "var(--border-glass)";
-                  }}
-                  >
-                    🔍 عرض الملف الكامل
-                  </Link>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                    <Link href={`/services/workers/${worker.id}`} style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "38px",
+                      borderRadius: "8px",
+                      background: "var(--bg-secondary)",
+                      border: "1px solid var(--border-glass)",
+                      color: "var(--text-primary)",
+                      fontWeight: "700",
+                      fontSize: "0.82rem",
+                      textDecoration: "none",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = "var(--bg-primary)";
+                      e.currentTarget.style.borderColor = "var(--accent-ios, #3b82f6)";
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = "var(--bg-secondary)";
+                      e.currentTarget.style.borderColor = "var(--border-glass)";
+                    }}
+                    >
+                      🔍 الملف الكامل
+                    </Link>
+
+                    <Link href={`/services/workers/${worker.id}#reviews`} style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "38px",
+                      borderRadius: "8px",
+                      background: "rgba(59, 130, 246, 0.1)",
+                      border: "1px solid rgba(59, 130, 246, 0.3)",
+                      color: "var(--accent-ios, #3b82f6)",
+                      fontWeight: "700",
+                      fontSize: "0.82rem",
+                      textDecoration: "none",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = "var(--accent-ios, #3b82f6)";
+                      e.currentTarget.style.color = "#ffffff";
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = "rgba(59, 130, 246, 0.1)";
+                      e.currentTarget.style.color = "var(--accent-ios, #3b82f6)";
+                    }}
+                    >
+                      ⭐ أضف تقييم
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}

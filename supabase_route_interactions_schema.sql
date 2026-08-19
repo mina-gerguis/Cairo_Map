@@ -34,3 +34,12 @@ ON public.route_interactions FOR UPDATE USING (auth.uid() = user_id);
 DROP POLICY IF EXISTS "Users can delete their own interactions" ON public.route_interactions;
 CREATE POLICY "Users can delete their own interactions" 
 ON public.route_interactions FOR DELETE USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Admins can delete any route interaction" ON public.route_interactions;
+CREATE POLICY "Admins can delete any route interaction" 
+ON public.route_interactions FOR DELETE USING (
+    EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE id = auth.uid() AND is_admin = true
+    )
+);
