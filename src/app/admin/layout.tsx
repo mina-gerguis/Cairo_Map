@@ -130,7 +130,7 @@ export default function AdminLayout({
       setActiveSubTab(params.get("tab"));
     }
 
-    if (pathname === "/admin/places" || pathname.startsWith("/admin/services") || pathname === "/admin/airports" || pathname === "/admin/ports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations") {
+    if (pathname === "/admin/places" || pathname === "/admin/airports" || pathname === "/admin/ports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations") {
       setIsServicesDropdownOpen(true);
     }
   }, [pathname]);
@@ -237,7 +237,7 @@ export default function AdminLayout({
   else if (pathname === "/admin/railways") pageTitle = "إدارة سكك حديد مصر";
   else if (pathname === "/admin/bus-stations") pageTitle = "إدارة الأتوبيسات (سوبرجيت)";
   else if (pathname === "/admin/microbus-stations") pageTitle = "إدارة مواقف السرفيس";
-  else if (pathname === "/admin/directions" || pathname === "/admin/services") pageTitle = "إدارة ازاي اروح (خطوط المواصلات)";
+  else if (pathname === "/admin/directions") pageTitle = "إدارة ازاي اروح (خطوط المواصلات)";
   else if (pathname === "/admin/directory") pageTitle = "دليل الهواتف والأكواد";
   else if (pathname === "/admin/notifications") pageTitle = "الإشعارات والرسائل";
   else if (pathname === "/admin/alerts") pageTitle = "تنبيهات الموقع";
@@ -470,7 +470,7 @@ export default function AdminLayout({
             {/* إدارة ازاي اروح (خطوط المواصلات) */}
             <Link
               href="/admin/directions"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/directions" || pathname === "/admin/services" ? styles.sidebarNavLinkActive : ""}`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/directions" ? styles.sidebarNavLinkActive : ""}`}
               onClick={() => {
                 if (isMobile) setIsSidebarOpen(false);
               }}

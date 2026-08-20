@@ -180,15 +180,6 @@ const SITE_SERVICES: SiteServiceItem[] = [
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
   {
-    id: "services",
-    label: "دليل الحرفيين والمهن",
-    subtitle: "أرقام وتقييمات الفنيين والمهن",
-    href: "/services",
-    icon: "cairo_services.jpg",
-    badge: "دليل الخدمات",
-    keywords: ["سباك", "كهربائي", "ميكانيكي", "طبيب", "نجار", "نقاش", "صيانة", "خدمات", "حرفيين", "عمال", "صنايعي"]
-  },
-  {
     id: "directions",
     label: "ازاي اروح؟",
     subtitle: "دليل الوصول لأي مكان في مصر",
@@ -423,7 +414,6 @@ export default function HomePage() {
     { label: "مولات وتسوق", category: "shopping", icon: "🛍️" },
     { label: "خريطة المترو", route: "/metro", icon: "🚇" },
     { label: "دليل الهواتف", route: "/directory", icon: "📞" },
-    { label: "دليل الحرفيين والمهن", route: "/services", icon: "🛠️" },
     { label: "ازاي اروح؟", route: "/directions", icon: "🧭" },
   ];
 
@@ -460,17 +450,6 @@ export default function HomePage() {
       color: "rgba(16, 185, 129, 0.12)",
       borderColor: "rgba(16, 185, 129, 0.3)",
       iconBg: "rgba(16, 185, 129, 0.15)",
-    },
-    {
-      id: "services",
-      title: "دليل مقدمي الخدمات والمهن",
-      desc: "ابحث عن سباك، كهربائي، ميكانيكي، أو طبيب في منطقتك، واستعرض أعمالهم وتقييماتهم وتواصل معهم مباشرة.",
-      icon: "cairo_services.png",
-      badge: "جديد",
-      link: "/services",
-      color: "rgba(249, 115, 22, 0.12)",
-      borderColor: "rgba(249, 115, 22, 0.3)",
-      iconBg: "rgba(249, 115, 22, 0.15)",
     },
     {
       id: "transit",

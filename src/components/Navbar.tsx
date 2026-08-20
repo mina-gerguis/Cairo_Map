@@ -72,7 +72,6 @@ export default function Navbar() {
       subItems: [
         { href: "/places", label: "دليل الأماكن", icon: "bx bx-map" },
         { href: "/directory", label: "دليل الهاتف", icon: "bx bx-phone" },
-        { href: "/services", label: "دليل الحرفيين والمهن", icon: "bx bx-wrench" },
         { href: "/metro", label: "خريطة المترو", icon: "bx bx-train" },
         { href: "/monorail", label: "خريطة المنورايل", icon: "fa-solid fa-train-subway" },
         { href: "/lrt", label: "القطار الكهربائي LRT", icon: "bx bx-train" },

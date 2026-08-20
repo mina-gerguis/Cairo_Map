@@ -57,14 +57,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } : data;
 
         setProfile(profileData);
-        // Sync email if it doesn't match
+        // Sync email and any missing profile fields from user_metadata
         const activeUser = currentUser || user;
+        const meta = activeUser?.user_metadata;
+        const updates: Record<string, any> = {};
+
         if (activeUser?.email && data.email !== activeUser.email) {
+          updates.email = activeUser.email;
+        }
+        if (meta) {
+          if ((!data.phone || data.phone === "") && meta.phone) updates.phone = meta.phone;
+          if ((!data.gender || data.gender === "") && meta.gender) updates.gender = meta.gender;
+          if ((!data.governorate || data.governorate === "") && meta.governorate) updates.governorate = meta.governorate;
+          if ((!data.city || data.city === "") && meta.city) updates.city = meta.city;
+          if ((!data.avatar_url || data.avatar_url === "") && meta.avatar_url) updates.avatar_url = meta.avatar_url;
+          if ((!data.dob || data.dob === "") && meta.dob) updates.dob = meta.dob;
+          if ((!data.full_name || data.full_name === "") && meta.full_name) updates.full_name = meta.full_name;
+          if ((!data.username || data.username === "") && meta.username) updates.username = meta.username;
+        }
+
+        if (Object.keys(updates).length > 0) {
           await supabase
             .from("profiles")
-            .update({ email: activeUser.email })
+            .update(updates)
             .eq("id", userId);
-          setProfile({ ...profileData, email: activeUser.email });
+          setProfile({ ...profileData, ...updates });
         }
       }
     } catch (e) {

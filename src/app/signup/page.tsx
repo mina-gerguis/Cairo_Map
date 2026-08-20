@@ -464,7 +464,9 @@ export default function SignupPage() {
     setLoading(true); setError("");
 
     const fullNameCombined = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
-    const { error: signUpError } = await supabase.auth.signUp({
+    const formattedPhone = `+20${formData.phone.replace(/^0+/, '')}`;
+
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: formData.email, password: formData.password,
       options: {
         data: {
@@ -472,7 +474,7 @@ export default function SignupPage() {
           first_name: formData.firstName.trim(),
           last_name: formData.lastName.trim(),
           username: formData.username,
-          phone: `+20${formData.phone}`,
+          phone: formattedPhone,
           gender: formData.gender,
           governorate: formData.governorate,
           city: formData.city,
@@ -493,7 +495,31 @@ export default function SignupPage() {
       setError(msg);
       setLoading(false);
     }
-    else { setSuccess(true); setLoading(false); setTimeout(() => router.push("/"), 2500); }
+    else {
+      // Save/Update full user profile details into public.profiles table
+      if (signUpData?.user) {
+        try {
+          await supabase.from("profiles").upsert({
+            id: signUpData.user.id,
+            full_name: fullNameCombined,
+            username: formData.username,
+            email: formData.email,
+            phone: formattedPhone,
+            gender: formData.gender,
+            governorate: formData.governorate,
+            city: formData.city,
+            avatar_url: formData.avatarUrl,
+            dob: formData.dob,
+            updated_at: new Date().toISOString()
+          }, { onConflict: "id" });
+        } catch (profileErr) {
+          console.error("Error updating profile fields on signup:", profileErr);
+        }
+      }
+      setSuccess(true);
+      setLoading(false);
+      setTimeout(() => router.push("/"), 2500);
+    }
   };
 
   if (step === 0) return <OnboardingSlider onStartSignup={() => setStep(1)} />;
