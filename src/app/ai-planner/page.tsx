@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { initialPlaces, Place, FEATURES_LIST } from "@/data/places";
+import { initialPlaces, Place, FEATURES_LIST, normalizePlaceCategory, CATEGORIES_STRUCTURE } from "@/data/places";
 import { egyptLocations } from "@/data/egypt_locations";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";
 import "./planner.css";
 
 // ── TYPES & INTERFACES ──
@@ -31,6 +32,74 @@ interface SavedTrip {
   stopsCount: number;
   totalCost: number;
   places: string[]; // place IDs
+}
+
+function normalizeArabic(text: string): string {
+  if (!text) return "";
+  return text
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/ـ/g, "");
+}
+
+// Helper to filter out utility / non-leisure places (health, gas stations, government, banks, etc.)
+const NON_OUTING_CATEGORIES = ["health", "automotive", "government", "finance", "services"];
+const NON_OUTING_SUBCATS = [
+  "hospital", "clinic", "pharmacy", "dental_clinic", "eye_center", "lab", "radiology", "ambulance",
+  "gas_station", "car_service", "car_dealer", "tire_shop", "car_wash", "parking",
+  "government_office", "police_station", "fire_station", "court", "post_office", "registry_office",
+  "bank", "atm", "exchange",
+  "laundry", "locksmith", "plumber", "electrician", "ac_service", "shipping", "moving_service"
+];
+
+export function isOutingPlace(place: Place): boolean {
+  if (!place) return false;
+  if (NON_OUTING_CATEGORIES.includes(place.category)) return false;
+  if (place.subCategories?.some(sub => NON_OUTING_SUBCATS.includes(sub))) return false;
+  return true;
+}
+
+interface StartingZone {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+}
+
+const STARTING_ZONES: StartingZone[] = [
+  { id: "center", name: "وسط البلد / القاهرة", lat: 30.0444, lng: 31.2357 },
+  { id: "tagamoa", name: "التجمع الخامس / القاهرة الجديدة", lat: 30.0298, lng: 31.4082 },
+  { id: "heliopolis", name: "مصر الجديدة / الكوربة", lat: 30.0911, lng: 31.3235 },
+  { id: "maadi", name: "المعادي", lat: 29.9602, lng: 31.2618 },
+  { id: "zayed", name: "الشيخ زايد / 6 أكتوبر", lat: 30.0458, lng: 30.9782 },
+  { id: "zamalek", name: "الزمالك", lat: 30.0571, lng: 31.2223 },
+  { id: "nasrcity", name: "مدينة نصر", lat: 30.0566, lng: 31.3301 },
+  { id: "dokki", name: "الدقي / المهندسين", lat: 30.0406, lng: 31.2069 },
+  { id: "shorouk", name: "الشروق / الرحاب", lat: 30.1189, lng: 31.6045 },
+  { id: "embaba", name: "إمبابة / الجيزة", lat: 30.0762, lng: 31.2081 },
+];
+
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function isPlaceWithinZone(place: Place, startLat: number, startLng: number, maxDriveMins: number): boolean {
+  if (!place) return false;
+  const pLat = typeof place.latitude === "number" && !isNaN(place.latitude) && place.latitude !== 0 ? place.latitude : 30.0444;
+  const pLng = typeof place.longitude === "number" && !isNaN(place.longitude) && place.longitude !== 0 ? place.longitude : 31.2357;
+
+  const distKm = haversineDistance(startLat, startLng, pLat, pLng);
+  // Average city driving speed ~30 km/h -> 0.5 km per min (~2 mins per km)
+  const estDriveMins = Math.round(distKm * 2);
+  return estDriveMins <= maxDriveMins;
 }
 
 // Preset outing options
@@ -63,12 +132,1133 @@ const TRANSIT_MODES = [
 
 export default function PlannerPage() {
   const { user, profile, loading: authLoading } = useAuth();
+  
+  // ── DYNAMIC PLACES STATE FROM DATABASE ──
+  const [allPlaces, setAllPlaces] = useState<Place[]>(initialPlaces);
+  const [isLiveConnected, setIsLiveConnected] = useState<boolean>(false);
+  const [manualSearchTerm, setManualSearchTerm] = useState<string>("");
+
+  // ── START LOCATION & DRIVE TIME ZONE STATES (MANDATORY GPS) ──
+  const [selectedStartZone, setSelectedStartZone] = useState<string>("gps");
+  const [customGpsLocation, setCustomGpsLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
+  const [maxDriveMinutes, setMaxDriveMinutes] = useState<number>(60); // Default max 60 mins drive (~30 km radius)
+  const [gpsLoading, setGpsLoading] = useState<boolean>(false);
+  const [gpsError, setGpsError] = useState<string | null>(null);
+  const [showGpsModal, setShowGpsModal] = useState<boolean>(false);
+
+  // ── ADVANCED SEARCH FILTERS STATE ──
+  const [searchCategoryFilter, setSearchCategoryFilter] = useState<string>("all");
+  const [searchRatingFilter, setSearchRatingFilter] = useState<number>(0);
+  const [searchZoneOnly, setSearchZoneOnly] = useState<boolean>(true);
+
+  // ── REAL GROUP SESSION & VOTING STATES ──
+  const [sessionId, setSessionId] = useState<string>("");
+  const [voterName, setVoterName] = useState<string>("");
+  const [isGroupMode, setIsGroupMode] = useState<boolean>(false);
+  const [showVoterModal, setShowVoterModal] = useState<boolean>(false);
+
+  const getPlacesCountInActiveZone = (driveMins: number = maxDriveMinutes): number => {
+    const activeStart = getActiveStartLocation();
+    return allPlaces
+      .filter(isOutingPlace)
+      .filter(p => isPlaceWithinZone(p, activeStart.lat, activeStart.lng, driveMins)).length;
+  };
+
+  const getActiveStartLocation = (): { lat: number; lng: number; name: string } => {
+    if (customGpsLocation) {
+      return customGpsLocation;
+    }
+    const found = STARTING_ZONES.find(z => z.id === selectedStartZone);
+    if (found) return { lat: found.lat, lng: found.lng, name: found.name };
+    return { lat: STARTING_ZONES[0].lat, lng: STARTING_ZONES[0].lng, name: STARTING_ZONES[0].name };
+  };
+
+  const handleGetGpsLocation = (showSuccessAlert = true) => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      setGpsError("خاصية تحديد الموقع غير مدعومة في جهازك أو متصفحك.");
+      if (showSuccessAlert) triggerAlert("⚠️ خاصية تحديد الموقع غير مدعومة في متصفحك.");
+      return;
+    }
+
+    setGpsLoading(true);
+    setGpsError(null);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setCustomGpsLocation({
+          lat: latitude,
+          lng: longitude,
+          name: "موقعي الحالي المباشر (GPS)"
+        });
+        setSelectedStartZone("gps");
+        setGpsLoading(false);
+        setShowGpsModal(false);
+        if (showSuccessAlert) {
+          triggerAlert("📍 تم تحديد موقعك الحالي المباشر (GPS) بنجاح ورسم الرحلة حوله!");
+        }
+      },
+      (error) => {
+        console.error("GPS location error:", error);
+        setGpsLoading(false);
+        setGpsError("يرجى السماح بالحصول على موقعك (GPS) من إعدادات المتصفح للاستمرار.");
+        if (showSuccessAlert) {
+          triggerAlert("🔴 يلزم تفعيل موقع الـ GPS لتخطيط الرحلة حول مكانك المباشر.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 12000 }
+    );
+  };
+
+  // Auto-request GPS on page load
+  useEffect(() => {
+    handleGetGpsLocation(false);
+  }, []);
+
   // ── STATES ──
   const [nlpInput, setNlpInput] = useState("");
+  const [selectedPreset, setSelectedPreset] = useState<string>("");
+  const [budget, setBudget] = useState<number>(1000);
+  const [transitMode, setTransitMode] = useState<string>("car");
+  const [startTime, setStartTime] = useState<string>("14:00");
+  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]);
+  const [optimized, setOptimized] = useState(false);
+  const [showNotification, setShowNotification] = useState<string | null>(null);
+
+  interface GroupVoteItem {
+    up: number;
+    down: number;
+    userVote: "up" | "down" | null;
+    voters?: { name: string; vote: "up" | "down"; color?: string }[];
+  }
+
+  // Group collaboration simulator states
+  const [groupVoting, setGroupVoting] = useState<Record<string, GroupVoteItem>>({});
+  const [groupMembers] = useState([
+    { name: "أحمد", color: "#FF9500", initials: "أ" },
+    { name: "منى", color: "#34C759", initials: "م" },
+    { name: "سليم", color: "#007AFF", initials: "س" },
+    { name: "يوسف", color: "#AF52DE", initials: "ي" }
+  ]);
+
+  // Personalization settings state
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [userPrefs, setUserPrefs] = useState({
+    foodType: "شرقي",
+    transit: "car",
+    maxWalk: 800,
+    outingTime: "15:00",
+    categories: ["restaurant", "cafe", "park"]
+  });
+
+  // Saved trips from localStorage
+  const [savedTrips, setSavedTrips] = useState<SavedTrip[]>([]);
+
+  // Canvas map ref
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Auto notification helper
+  const triggerAlert = (message: string) => {
+    setShowNotification(message);
+    setTimeout(() => setShowNotification(null), 5000);
+  };
 
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin || 
     ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
+
+  // ── 1. FETCH LIVE PLACES FROM SUPABASE ON MOUNT ──
+  useEffect(() => {
+    const fetchLivePlaces = async () => {
+      if (!supabase) return;
+      try {
+        const { data, error } = await supabase
+          .from("places")
+          .select("*, branches(*)")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error fetching places for AI planner:", error);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          const mappedPlaces: Place[] = data.map((dbPlace: any) => {
+            const rawCategory = dbPlace.category;
+            const initialSubCats = Array.isArray(dbPlace.sub_categories) ? [...dbPlace.sub_categories] : [];
+            const { category: finalCategory, categoryLabel: defaultLabel, subCategories: finalSubCategories } = normalizePlaceCategory(rawCategory, initialSubCats);
+
+            let briefLoc = dbPlace.brief_location || "";
+            if (!briefLoc) {
+              if (dbPlace.governorate && dbPlace.city) {
+                briefLoc = `${dbPlace.city} / ${dbPlace.governorate}`;
+              } else if (dbPlace.city) {
+                briefLoc = dbPlace.city;
+              } else if (dbPlace.governorate) {
+                briefLoc = dbPlace.governorate;
+              } else if (dbPlace.full_address) {
+                briefLoc = dbPlace.full_address;
+              }
+            }
+
+            return {
+              id: dbPlace.id,
+              name: dbPlace.name,
+              category: finalCategory,
+              categoryLabel: dbPlace.category_label || defaultLabel || finalCategory,
+              subCategories: finalSubCategories,
+              place_type: dbPlace.place_type || "",
+              place_type_icon: dbPlace.place_type_icon || "",
+              governorate: dbPlace.governorate,
+              city: dbPlace.city,
+              briefLocation: briefLoc,
+              shortDescription: dbPlace.short_description || "",
+              fullAddress: dbPlace.full_address || "",
+              phones: Array.isArray(dbPlace.phones) ? dbPlace.phones : (dbPlace.phones ? [dbPlace.phones] : []),
+              googleMapsUrl: dbPlace.google_maps_url || "",
+              images: Array.isArray(dbPlace.images) ? dbPlace.images : (dbPlace.images ? [dbPlace.images] : []),
+              menuImages: Array.isArray(dbPlace.menu_images) ? dbPlace.menu_images : [],
+              workingHours: dbPlace.working_hours || "",
+              rating: typeof dbPlace.rating === "number" ? dbPlace.rating : 4.5,
+              reviewsCount: dbPlace.reviews_count || 0,
+              description: dbPlace.description || dbPlace.short_description || "",
+              latitude: typeof dbPlace.latitude === "number" && !isNaN(dbPlace.latitude) ? dbPlace.latitude : 30.0444,
+              longitude: typeof dbPlace.longitude === "number" && !isNaN(dbPlace.longitude) ? dbPlace.longitude : 31.2357,
+              features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
+              services: Array.isArray(dbPlace.services) ? dbPlace.services : [],
+              branches: Array.isArray(dbPlace.branches) ? dbPlace.branches : []
+            };
+          });
+
+          // Merge DB places with initialPlaces (without duplication)
+          const existingIds = new Set(mappedPlaces.map(p => p.id));
+          const existingNames = new Set(mappedPlaces.map(p => normalizeArabic(p.name).trim().toLowerCase()));
+          const combined = [...mappedPlaces];
+
+          initialPlaces.forEach(p => {
+            if (!existingIds.has(p.id) && !existingNames.has(normalizeArabic(p.name).trim().toLowerCase())) {
+              combined.push(p);
+            }
+          });
+
+          setAllPlaces(combined);
+          setIsLiveConnected(true);
+        }
+      } catch (err) {
+        console.error("Failed to load live admin places for planner:", err);
+      }
+    };
+
+    fetchLivePlaces();
+  }, []);
+
+  // ── 2. LOAD SAVED TRIPS & SHARED LINKS ON MOUNT / DATA CHANGE ──
+  useEffect(() => {
+    // Read saved trips & prefs from localStorage
+    const saved = localStorage.getItem("cairo_saved_trips");
+    if (saved) {
+      try { setSavedTrips(JSON.parse(saved)); } catch (e) { console.error(e); }
+    }
+    const savedPrefs = localStorage.getItem("cairo_user_prefs");
+    if (savedPrefs) {
+      try { setUserPrefs(JSON.parse(savedPrefs)); } catch (e) { console.error(e); }
+    }
+
+    // Read query parameters
+    const params = new URLSearchParams(window.location.search);
+    const placeIdsParam = params.get("places");
+    const sessionParam = params.get("session");
+    const groupParam = params.get("group");
+    const vdataParam = params.get("vdata");
+
+    let initialVotes: Record<string, GroupVoteItem> = {};
+
+    // Decode vdata Base64 from URL if present
+    if (vdataParam) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(atob(vdataParam)));
+        if (decoded && typeof decoded === "object") {
+          initialVotes = decoded;
+          setGroupVoting(decoded);
+        }
+      } catch (e) {
+        console.error("Error decoding vdata:", e);
+      }
+    }
+
+    if (sessionParam) {
+      setSessionId(sessionParam);
+      setIsGroupMode(true);
+      const savedVotes = localStorage.getItem(`cairo_group_votes_${sessionParam}`);
+      if (savedVotes) {
+        try {
+          const parsed = JSON.parse(savedVotes);
+          initialVotes = { ...parsed, ...initialVotes };
+          setGroupVoting(initialVotes);
+        } catch (e) { console.error(e); }
+      }
+    }
+
+    if (groupParam === "1" || sessionParam) {
+      setIsGroupMode(true);
+      setShowVoterModal(true);
+    }
+
+    if (placeIdsParam) {
+      const ids = placeIdsParam.split(",");
+      const loadedPlaces = ids
+        .map(id => allPlaces.find(p => p.id === id))
+        .filter((p): p is Place => p !== undefined);
+      if (loadedPlaces.length > 0) {
+        setSelectedPlaces(loadedPlaces);
+        const mode = params.get("transit") || "car";
+        setTransitMode(mode);
+        const time = params.get("start") || "14:00";
+        setStartTime(time);
+        const budgetParam = params.get("budget");
+        if (budgetParam) setBudget(parseInt(budgetParam) || 1000);
+        triggerAlert("تم تحميل الرحلة الجماعية والتصويت بنجاح! 🎉");
+        return;
+      }
+    }
+
+    // Default preset plan
+    if (selectedPlaces.length === 0) {
+      handlePresetSelect("family", allPlaces);
+    }
+  }, [allPlaces]);
+
+  // ── 3. REAL-TIME CLOUD VOTE SYNC FROM SUPABASE ──
+  useEffect(() => {
+    if (!sessionId || !supabase) return;
+
+    const syncCloudVotes = async () => {
+      if (!supabase) return;
+      try {
+        const { data, error } = await supabase
+          .from("app_feedback")
+          .select("message")
+          .eq("type", "group_vote")
+          .order("created_at", { ascending: true });
+
+        if (error || !data) return;
+
+        let remoteVotes: Record<string, GroupVoteItem> = {};
+        data.forEach((row: any) => {
+          try {
+            const parsed = JSON.parse(row.message);
+            if (parsed.session_id === sessionId && parsed.group_voting) {
+              remoteVotes = { ...remoteVotes, ...parsed.group_voting };
+            }
+          } catch (e) {}
+        });
+
+        if (Object.keys(remoteVotes).length > 0) {
+          setGroupVoting(prev => ({ ...prev, ...remoteVotes }));
+        }
+      } catch (err) {
+        console.error("Error syncing cloud votes:", err);
+      }
+    };
+
+    syncCloudVotes();
+    const interval = setInterval(syncCloudVotes, 6000);
+    return () => clearInterval(interval);
+  }, [sessionId]);
+
+  // Update URL for sharing
+  const getShareLink = () => {
+    if (selectedPlaces.length === 0) return "";
+    const ids = selectedPlaces.map(p => p.id).join(",");
+    const url = new URL(window.location.href);
+    url.searchParams.set("places", ids);
+    url.searchParams.set("transit", transitMode);
+    url.searchParams.set("start", startTime);
+    url.searchParams.set("budget", budget.toString());
+    return url.toString();
+  };
+
+  const handleCopyLink = () => {
+    const link = getShareLink();
+    if (!link) return;
+    navigator.clipboard.writeText(link);
+    triggerAlert("تم نسخ رابط الرحلة! شاركه مع أصدقائك 🔗");
+  };
+
+  // Save Trip to localStorage
+  const handleSaveTrip = () => {
+    if (selectedPlaces.length === 0) {
+      triggerAlert("يرجى إضافة أماكن للرحلة أولاً ⚠️");
+      return;
+    }
+    const newTrip: SavedTrip = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: `رحلة يوم ${new Date().toLocaleDateString("ar-EG")}`,
+      date: new Date().toLocaleDateString("ar-EG"),
+      stopsCount: selectedPlaces.length,
+      totalCost: totalCostEst,
+      places: selectedPlaces.map(p => p.id)
+    };
+
+    const updated = [newTrip, ...savedTrips];
+    setSavedTrips(updated);
+    localStorage.setItem("cairo_saved_trips", JSON.stringify(updated));
+    triggerAlert("تم حفظ الرحلة بنجاح في ملفك! 💾");
+  };
+
+  const handleDeleteSavedTrip = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = savedTrips.filter(t => t.id !== id);
+    setSavedTrips(updated);
+    localStorage.setItem("cairo_saved_trips", JSON.stringify(updated));
+    triggerAlert("تم حذف الرحلة المحفوظة.");
+  };
+
+  const handleLoadSavedTrip = (trip: SavedTrip) => {
+    const loadedPlaces = trip.places
+      .map(id => allPlaces.find(p => p.id === id))
+      .filter((p): p is Place => p !== undefined);
+    if (loadedPlaces.length > 0) {
+      setSelectedPlaces(loadedPlaces);
+      triggerAlert(`تم تحميل: ${trip.title}`);
+    } else {
+      triggerAlert("⚠️ بعض الأماكن في هذه الرحلة لم تعد متوفرة.");
+    }
+  };
+
+  // ── DYNAMIC PRESETS GENERATOR BASED ON ALL PLACES & ZONE CONSTRAINT ──
+  const handlePresetSelect = (presetId: string, placesSource: Place[] = allPlaces) => {
+    if (!customGpsLocation && selectedStartZone === "gps") {
+      setShowGpsModal(true);
+      handleGetGpsLocation(true);
+      return;
+    }
+    setSelectedPreset(presetId);
+    const rawPool = placesSource.length > 0 ? placesSource : initialPlaces;
+    const activeStart = getActiveStartLocation();
+
+    // 1. Strict filter for genuine leisure places
+    // 2. Filter within maximum drive time zone (e.g. <= 60 mins drive)
+    let pool = rawPool
+      .filter(isOutingPlace)
+      .filter(p => isPlaceWithinZone(p, activeStart.lat, activeStart.lng, maxDriveMinutes));
+
+    // Fallback: If strict drive limit yields empty pool, expand zone up to 60 mins
+    if (pool.length < 2) {
+      pool = rawPool
+        .filter(isOutingPlace)
+        .filter(p => isPlaceWithinZone(p, activeStart.lat, activeStart.lng, 60));
+    }
+
+    if (pool.length === 0) pool = rawPool.filter(isOutingPlace);
+
+    let result: Place[] = [];
+
+    const quietPlaces = pool.filter(p => p.features?.includes("quiet_place") || p.subCategories?.includes("cafe") || p.subCategories?.includes("park"));
+    const familyPlaces = pool.filter(p => p.features?.includes("family_friendly") || p.category === "public_places" || p.category === "shopping" || p.category === "entertainment");
+    const kidsPlaces = pool.filter(p => p.features?.includes("kids_friendly") || p.category === "entertainment" || p.subCategories?.includes("park") || p.subCategories?.includes("toy_store"));
+    const shoppingPlaces = pool.filter(p => p.category === "shopping" || p.subCategories?.includes("mall"));
+    const foodPlaces = pool.filter(p => p.category === "food_drinks" || p.subCategories?.includes("restaurant"));
+    const studyPlaces = pool.filter(p => p.features?.includes("free_wifi") || p.features?.includes("quiet_place") || p.subCategories?.includes("cafe"));
+    const tourismPlaces = pool.filter(p => p.category === "tourism" || p.category === "religion" || p.subCategories?.includes("museum"));
+    const luxuryPlaces = pool.filter(p => (p.rating || 0) >= 4.5 || p.category === "tourism" || p.category === "shopping");
+    const budgetPlaces = pool.filter(p => (p.rating || 0) >= 4.0);
+
+    if (presetId === "romantic") {
+      result = quietPlaces.length >= 2 ? quietPlaces.slice(0, 2) : [foodPlaces[0], quietPlaces[0]].filter((p): p is Place => p !== undefined);
+    } else if (presetId === "family") {
+      const mainAttraction = familyPlaces.find(p => p.category === "public_places" || p.category === "shopping" || p.category === "entertainment") || familyPlaces[0] || pool[0];
+      const food = foodPlaces.find(p => p.id !== mainAttraction?.id) || pool.find(p => p.id !== mainAttraction?.id) || pool[0];
+      const cafe = quietPlaces.find(p => p.id !== mainAttraction?.id && p.id !== food?.id) || pool.find(p => p.id !== mainAttraction?.id && p.id !== food?.id) || pool[1];
+      result = [mainAttraction, food, cafe].filter((p): p is Place => p !== undefined);
+    } else if (presetId === "kids") {
+      result = kidsPlaces.length >= 2 ? kidsPlaces.slice(0, 2) : [familyPlaces[0], foodPlaces[0]].filter((p): p is Place => p !== undefined);
+    } else if (presetId === "shopping") {
+      const mall = shoppingPlaces[0] || pool[0];
+      const cafe = quietPlaces.find(p => p.id !== mall?.id) || pool.find(p => p.id !== mall?.id) || pool[1];
+      result = [mall, cafe].filter((p): p is Place => p !== undefined);
+    } else if (presetId === "food") {
+      const rest = foodPlaces[0] || pool[0];
+      const dessertOrCafe = foodPlaces.find(p => p.id !== rest?.id && (p.subCategories?.includes("bakery") || p.subCategories?.includes("cafe"))) || foodPlaces.find(p => p.id !== rest?.id) || pool[1];
+      result = [rest, dessertOrCafe].filter((p): p is Place => p !== undefined);
+    } else if (presetId === "study" || presetId === "business") {
+      result = studyPlaces.length >= 2 ? studyPlaces.slice(0, 2) : [quietPlaces[0], foodPlaces[0]].filter((p): p is Place => p !== undefined);
+    } else if (presetId === "tourism" || presetId === "history") {
+      const site = tourismPlaces[0] || pool[0];
+      const food = foodPlaces.find(p => p.id !== site?.id) || pool.find(p => p.id !== site?.id) || pool[1];
+      result = [site, food].filter((p): p is Place => p !== undefined);
+    } else if (presetId === "luxury") {
+      result = luxuryPlaces.slice(0, 3);
+    } else if (presetId === "budget") {
+      result = budgetPlaces.slice(0, 3);
+    } else {
+      result = pool.slice(0, 3);
+    }
+
+    const uniqueResult = Array.from(new Set(result));
+    if (uniqueResult.length < 2) {
+      const remaining = pool.filter(p => !uniqueResult.some(r => r.id === p.id));
+      result = [...uniqueResult, ...remaining.slice(0, 3 - uniqueResult.length)];
+    } else {
+      result = uniqueResult;
+    }
+
+    setSelectedPlaces(result);
+    setOptimized(false);
+    triggerAlert(`📍 تم تحميل خطة "${PLAN_PRESETS.find(p => p.id === presetId)?.label || presetId}" في زون ${activeStart.name} (حتى ${maxDriveMinutes} دقيقة قيادة)!`);
+  };
+
+  // ── DYNAMIC NLP GENERATION LOGIC ──
+  const handleNlpSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nlpInput.trim()) return;
+
+    if (!customGpsLocation && selectedStartZone === "gps") {
+      setShowGpsModal(true);
+      handleGetGpsLocation(true);
+      return;
+    }
+
+    const normInput = normalizeArabic(nlpInput).toLowerCase();
+    let detectedPreset = "";
+    let detectedLocation = "";
+
+    // Preset classification
+    if (normInput.includes("رومانس") || normInput.includes("كابلز") || normInput.includes("هدوء")) {
+      detectedPreset = "romantic";
+    } else if (normInput.includes("عائل") || normInput.includes("عيله") || normInput.includes("اهل") || normInput.includes("بيت")) {
+      detectedPreset = "family";
+    } else if (normInput.includes("طفل") || normInput.includes("اطفال") || normInput.includes("العاب") || normInput.includes("ملاهي")) {
+      detectedPreset = "kids";
+    } else if (normInput.includes("مذاكر") || normInput.includes("دراسه") || normInput.includes("واي فاي") || normInput.includes("شغل") || normInput.includes("عمل")) {
+      detectedPreset = "study";
+    } else if (normInput.includes("تسوق") || normInput.includes("شوبينج") || normInput.includes("مول") || normInput.includes("شراء")) {
+      detectedPreset = "shopping";
+    } else if (normInput.includes("تاريخ") || normInput.includes("اسلامي") || normInput.includes("مسجد") || normInput.includes("اثر") || normInput.includes("متحف") || normInput.includes("سياح")) {
+      detectedPreset = "history";
+    } else if (normInput.includes("اكل") || normInput.includes("مطعم") || normInput.includes("مشويات") || normInput.includes("وجبه")) {
+      detectedPreset = "food";
+    }
+
+    // Known Cairo locations
+    const knownLocations = [
+      "التجمع", "مصر الجديدة", "الزمالك", "المعادي", "الشيخ زايد", "اكتوبر", "إمبابة", "امبابه", 
+      "الإسكندرية", "اسكندرية", "وسط البلد", "الدقي", "المهندسين", "مدينة نصر", "الهرم", "شبرا", "المقطم", "الرحاب", "الشروق"
+    ];
+
+    for (const loc of knownLocations) {
+      if (normInput.includes(normalizeArabic(loc).toLowerCase())) {
+        detectedLocation = loc;
+        break;
+      }
+    }
+
+    // Budget parsing
+    const budgetMatch = nlpInput.match(/\b(\d{3,5})\b/);
+    if (budgetMatch) {
+      const parsedBudget = parseInt(budgetMatch[1]);
+      if (parsedBudget >= 100 && parsedBudget <= 20000) {
+        setBudget(parsedBudget);
+      }
+    }
+
+    const activeStart = getActiveStartLocation();
+    let pool = allPlaces
+      .filter(isOutingPlace)
+      .filter(p => isPlaceWithinZone(p, activeStart.lat, activeStart.lng, maxDriveMinutes));
+
+    if (pool.length < 2) {
+      pool = allPlaces
+        .filter(isOutingPlace)
+        .filter(p => isPlaceWithinZone(p, activeStart.lat, activeStart.lng, 60));
+    }
+
+    // Filter pool by location if detected
+    if (detectedLocation) {
+      const normLoc = normalizeArabic(detectedLocation).toLowerCase();
+      const locationFiltered = pool.filter(p => {
+        const fullLocText = normalizeArabic(`${p.governorate || ''} ${p.city || ''} ${p.briefLocation || ''} ${p.fullAddress || ''}`).toLowerCase();
+        return fullLocText.includes(normLoc);
+      });
+      if (locationFiltered.length > 0) {
+        pool = locationFiltered;
+      }
+    }
+
+    // Select places matching intent or preset
+    let selected: Place[] = [];
+
+    if (detectedPreset === "romantic") {
+      selected = pool.filter(p => p.features?.includes("quiet_place") || p.subCategories?.includes("cafe") || p.subCategories?.includes("restaurant")).slice(0, 3);
+    } else if (detectedPreset === "family" || detectedPreset === "kids") {
+      selected = pool.filter(p => p.features?.includes("family_friendly") || p.features?.includes("kids_friendly") || p.category === "public_places" || p.category === "entertainment").slice(0, 3);
+    } else if (detectedPreset === "study") {
+      selected = pool.filter(p => p.features?.includes("free_wifi") || p.features?.includes("quiet_place") || p.subCategories?.includes("cafe")).slice(0, 2);
+    } else if (detectedPreset === "shopping") {
+      selected = pool.filter(p => p.category === "shopping" || p.subCategories?.includes("mall")).slice(0, 3);
+    } else if (detectedPreset === "food") {
+      selected = pool.filter(p => p.category === "food_drinks" || p.subCategories?.includes("restaurant")).slice(0, 3);
+    } else {
+      const mainPlace = pool.find(p => p.category === "public_places" || p.category === "shopping" || p.category === "tourism") || pool[0];
+      const foodPlace = pool.find(p => p.id !== mainPlace?.id && (p.category === "food_drinks" || p.subCategories?.includes("restaurant"))) || pool[1];
+      const cafePlace = pool.find(p => p.id !== mainPlace?.id && p.id !== foodPlace?.id && p.subCategories?.includes("cafe")) || pool[2];
+
+      selected = [mainPlace, foodPlace, cafePlace].filter((p): p is Place => p !== undefined);
+    }
+
+    if (selected.length === 0) {
+      selected = pool.slice(0, 3);
+    }
+
+    setSelectedPlaces(selected);
+    setOptimized(false);
+    setSelectedPreset(detectedPreset || "family");
+
+    triggerAlert(`📍 تم توليد رحلة ذكية في زون (${activeStart.name}) - كحد أقصى ${maxDriveMinutes} دقيقة بالسيارة! 🤖`);
+  };
+
+  // ── ROUTE OPTIMIZATION ALGORITHM ──
+  const optimizeRoute = () => {
+    if (selectedPlaces.length <= 1) return;
+
+    const places = [...selectedPlaces];
+    const optimizedList: Place[] = [];
+    
+    let current = places.shift()!;
+    optimizedList.push(current);
+
+    const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    };
+
+    while (places.length > 0) {
+      let nearestIdx = 0;
+      let minDistance = Infinity;
+
+      for (let i = 0; i < places.length; i++) {
+        const dist = getDistance(
+          current.latitude || 30.0444, current.longitude || 31.2357,
+          places[i].latitude || 30.0444, places[i].longitude || 31.2357
+        );
+        if (dist < minDistance) {
+          minDistance = dist;
+          nearestIdx = i;
+        }
+      }
+
+      current = places.splice(nearestIdx, 1)[0];
+      optimizedList.push(current);
+    }
+
+    setSelectedPlaces(optimizedList);
+    setOptimized(true);
+    triggerAlert("تم إعادة ترتيب مسار الرحلة ذكياً لتقليل وقت ومسافة التنقل! 🗺️⚡");
+  };
+
+  // ── RECALCULATE DYNAMIC TIMELINE & TRANSIT ──
+  const calculateTimelineAndTransit = (): { timeline: ItineraryStop[]; transitLegs: TransitLeg[] } => {
+    const timeline: ItineraryStop[] = [];
+    const transitLegs: TransitLeg[] = [];
+
+    if (selectedPlaces.length === 0) return { timeline, transitLegs };
+
+    let currentTime = startTime; // "HH:MM"
+    
+    const addMinutes = (timeStr: string, mins: number): string => {
+      const [h, m] = timeStr.split(":").map(Number);
+      let totalMins = (h || 0) * 60 + (m || 0) + mins;
+      const endH = Math.floor(totalMins / 60) % 24;
+      const endM = totalMins % 60;
+      return `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+    };
+
+    const getDistanceBetweenStops = (p1: Place, p2: Place): number => {
+      const lat1 = p1.latitude || 30.04, lon1 = p1.longitude || 31.23;
+      const lat2 = p2.latitude || 30.04, lon2 = p2.longitude || 31.23;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    };
+
+    const activeMode = TRANSIT_MODES.find(m => m.id === transitMode) || TRANSIT_MODES[0];
+
+    selectedPlaces.forEach((place, index) => {
+      let spentTime = 120; // Default 2 hours
+      if (place.subCategories?.includes("cafe")) spentTime = 90;
+      if (place.subCategories?.includes("pharmacy") || place.subCategories?.includes("supermarket")) spentTime = 20;
+      if (place.category === "shopping") spentTime = 150;
+      if (place.subCategories?.includes("cinema")) spentTime = 180;
+
+      let stopCost = 0;
+      if (place.category === "food_drinks") stopCost = 150;
+      if (place.subCategories?.includes("restaurant")) stopCost = 250;
+      if (place.subCategories?.includes("cafe")) stopCost = 90;
+      if (place.subCategories?.includes("cinema")) stopCost = 180;
+      if (place.subCategories?.includes("museum")) stopCost = 80;
+
+      const arrival = currentTime;
+      const departure = addMinutes(currentTime, spentTime);
+      
+      timeline.push({
+        place,
+        duration: spentTime,
+        arrivalTime: arrival,
+        departureTime: departure,
+        costEstimate: stopCost
+      });
+
+      if (index < selectedPlaces.length - 1) {
+        const nextPlace = selectedPlaces[index + 1];
+        const distKm = getDistanceBetweenStops(place, nextPlace);
+        
+        const legDuration = Math.round((distKm / activeMode.speedKmH) * 60) + 5;
+        const legCost = Math.round(activeMode.baseCost + distKm * activeMode.costFactor * 10);
+        const legWalk = activeMode.id === "walking" ? Math.round(distKm * 1000) : Math.round(distKm * 80);
+        const transfers = activeMode.id === "metro" && distKm > 10 ? 1 : 0;
+
+        transitLegs.push({
+          mode: activeMode.label,
+          duration: legDuration,
+          cost: legCost,
+          walkingDistance: legWalk,
+          transfers
+        });
+
+        currentTime = addMinutes(departure, legDuration);
+      }
+    });
+
+    return { timeline, transitLegs };
+  };
+
+  const { timeline, transitLegs } = calculateTimelineAndTransit();
+
+  const totalTransitCost = transitLegs.reduce((sum, leg) => sum + leg.cost, 0);
+  const totalPlacesCost = timeline.reduce((sum, stop) => sum + stop.costEstimate, 0);
+  const totalCostEst = totalTransitCost + totalPlacesCost;
+  const remainingBudget = budget - totalCostEst;
+
+  // ── DYNAMIC MAP CANVAS DRAWING BASED ON REAL GEOGRAPHIC COORDINATES ──
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const width = canvas.offsetWidth;
+    const height = canvas.offsetHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    // Dark Map Aesthetic
+    ctx.fillStyle = "#18181c";
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw Grid Lines (Subtle coordinate grid)
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+    ctx.lineWidth = 1;
+    for (let x = 0; x < width; x += 35) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+    for (let y = 0; y < height; y += 35) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    if (selectedPlaces.length === 0) {
+      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.font = "14px Tajawal, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("📍 اختر أو ولد رحلة لعرض النقاط الحقيقية على الخريطة", width / 2, height / 2);
+      return;
+    }
+
+    // Extract valid lat/lng for selected places (defaulting to Cairo Center if missing)
+    const validPlaces = selectedPlaces.map(p => ({
+      ...p,
+      lat: typeof p.latitude === "number" && !isNaN(p.latitude) && p.latitude !== 0 ? p.latitude : 30.0444,
+      lng: typeof p.longitude === "number" && !isNaN(p.longitude) && p.longitude !== 0 ? p.longitude : 31.2357
+    }));
+
+    const lats = validPlaces.map(p => p.lat);
+    const lngs = validPlaces.map(p => p.lng);
+
+    let minLat = Math.min(...lats);
+    let maxLat = Math.max(...lats);
+    let minLng = Math.min(...lngs);
+    let maxLng = Math.max(...lngs);
+
+    // Ensure minimum bounding box size (~4 km margin minimum) so single/close points fit nicely
+    const minSpan = 0.04;
+    if (maxLat - minLat < minSpan) {
+      const midLat = (maxLat + minLat) / 2;
+      minLat = midLat - minSpan / 2;
+      maxLat = midLat + minSpan / 2;
+    }
+    if (maxLng - minLng < minSpan) {
+      const midLng = (maxLng + minLng) / 2;
+      minLng = midLng - minSpan / 2;
+      maxLng = midLng + minSpan / 2;
+    }
+
+    // Add 15% padding margin to bounding box
+    const latPadding = (maxLat - minLat) * 0.15;
+    const lngPadding = (maxLng - minLng) * 0.15;
+
+    const paddedMinLat = minLat - latPadding;
+    const paddedMaxLat = maxLat + latPadding;
+    const paddedMinLng = minLng - lngPadding;
+    const paddedMaxLng = maxLng + lngPadding;
+
+    const padding = 50; // Canvas pixel margin from edges
+
+    // Project real geographic coordinates (Lat/Lng) to Canvas (X/Y)
+    const mapCoords = validPlaces.map((place, idx) => {
+      // Longitude (West to East) -> X axis (Left to Right)
+      const x = padding + ((place.lng - paddedMinLng) / (paddedMaxLng - paddedMinLng)) * (width - 2 * padding);
+      // Latitude (South to North) -> Y axis (Bottom to Top, inverted for canvas Y)
+      const y = (height - padding) - ((place.lat - paddedMinLat) / (paddedMaxLat - paddedMinLat)) * (height - 2 * padding);
+
+      return {
+        x,
+        y,
+        lat: place.lat,
+        lng: place.lng,
+        label: place.name,
+        briefLoc: place.briefLocation || place.governorate || "",
+        categoryLabel: place.categoryLabel,
+        index: idx + 1,
+        place
+      };
+    });
+
+    // Draw Nile River ribbon if longitude range covers Cairo (approx 31.23° E)
+    const nileLng = 31.23;
+    if (nileLng >= paddedMinLng && nileLng <= paddedMaxLng) {
+      const nileX = padding + ((nileLng - paddedMinLng) / (paddedMaxLng - paddedMinLng)) * (width - 2 * padding);
+      ctx.strokeStyle = "rgba(0, 111, 238, 0.25)";
+      ctx.lineWidth = 18;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(nileX, 0);
+      ctx.bezierCurveTo(nileX - 15, height * 0.35, nileX + 20, height * 0.65, nileX - 10, height);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(0, 150, 255, 0.4)";
+      ctx.font = "10px Alexandria, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("نهر النيل", nileX, 24);
+    }
+
+    // Draw Compass & Coordinates Scale Bar
+    ctx.fillStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.font = "bold 10px Tajawal, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("🧭 N (الشمال)", 14, 20);
+
+    // Latitude / Longitude boundary indicators
+    ctx.font = "9px Tajawal, monospace";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+    ctx.fillText(`${paddedMaxLat.toFixed(3)}° N`, 14, 34);
+    ctx.fillText(`${paddedMinLat.toFixed(3)}° N`, 14, height - 12);
+    ctx.textAlign = "right";
+    ctx.fillText(`${paddedMaxLng.toFixed(3)}° E`, width - 14, height - 12);
+
+    // Draw Route Path Lines between points
+    if (mapCoords.length > 1) {
+      ctx.strokeStyle = "#3b82f6";
+      ctx.lineWidth = 3;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      mapCoords.forEach((coord, idx) => {
+        if (idx === 0) ctx.moveTo(coord.x, coord.y);
+        else ctx.lineTo(coord.x, coord.y);
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Draw Point Markers with Exact Coordinates & Labels
+    mapCoords.forEach((coord) => {
+      // Glow Outer Circle
+      const grad = ctx.createRadialGradient(coord.x, coord.y, 2, coord.x, coord.y, 18);
+      grad.addColorStop(0, "rgba(59, 130, 246, 0.7)");
+      grad.addColorStop(1, "rgba(59, 130, 246, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(coord.x, coord.y, 18, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Core Marker Pin
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2.5;
+      ctx.fillStyle = "#3b82f6";
+      ctx.beginPath();
+      ctx.arc(coord.x, coord.y, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Number inside Marker
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 10px Tajawal, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(coord.index.toString(), coord.x, coord.y);
+
+      // Label Box above Marker
+      ctx.font = "bold 11px Tajawal, sans-serif";
+      const nameText = coord.label.split(" - ")[0];
+      const coordsText = `${coord.lat.toFixed(4)}°, ${coord.lng.toFixed(4)}°`;
+      
+      const boxWidth = Math.max(ctx.measureText(nameText).width, ctx.measureText(coordsText).width) + 16;
+      const boxHeight = 32;
+      const boxX = Math.max(8, Math.min(width - boxWidth - 8, coord.x - boxWidth / 2));
+      const boxY = coord.y - 44;
+
+      // Card Background
+      ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.4)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // Text Title
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      ctx.fillText(nameText, boxX + boxWidth / 2, boxY + 4);
+
+      // Coordinates Subtitle
+      ctx.fillStyle = "#60a5fa";
+      ctx.font = "9px Tajawal, monospace";
+      ctx.fillText(`📍 ${coordsText}`, boxX + boxWidth / 2, boxY + 18);
+    });
+
+  }, [selectedPlaces, optimized]);
+
+  // ── SMART ALTERNATIVES SWAPPER USING DATABASE PLACES ──
+  const swapWithAlternative = (indexToSwap: number) => {
+    const targetPlace = selectedPlaces[indexToSwap];
+    
+    const usedIds = selectedPlaces.map(p => p.id);
+    const alternatives = allPlaces.filter(
+      p => isOutingPlace(p) && (p.category === targetPlace.category || p.subCategories?.some(sub => targetPlace.subCategories?.includes(sub))) && !usedIds.includes(p.id)
+    );
+
+    if (alternatives.length > 0) {
+      // Select a random alternative from matched list
+      const randomAlt = alternatives[Math.floor(Math.random() * alternatives.length)];
+      const updated = [...selectedPlaces];
+      updated[indexToSwap] = randomAlt;
+      setSelectedPlaces(updated);
+      triggerAlert(`🔄 تم استبدال "${targetPlace.name}" بـ البديل الذكي "${randomAlt.name}" من قاعدة البيانات!`);
+    } else {
+      triggerAlert("⚠️ عذراً، لا تتوفر أماكن بديلة في نفس الفئة حالياً في الداتا بيز.");
+    }
+  };
+
+  // Add Place Manual Selector handler
+  const handleAddManualPlace = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const placeId = e.target.value;
+    if (!placeId) return;
+
+    const place = allPlaces.find(p => p.id === placeId);
+    if (place) {
+      if (selectedPlaces.some(p => p.id === placeId)) {
+        triggerAlert("المكان مضاف بالفعل للرحلة! ⚠️");
+        return;
+      }
+      setSelectedPlaces([...selectedPlaces, place]);
+      setOptimized(false);
+      triggerAlert(`تمت إضافة "${place.name}" للرحلة 📍`);
+    }
+    e.target.value = "";
+  };
+
+  // Remove Stop from Itinerary
+  const handleRemoveStop = (index: number) => {
+    const updated = selectedPlaces.filter((_, i) => i !== index);
+    setSelectedPlaces(updated);
+    setOptimized(false);
+    triggerAlert("تمت إزالة الوجهة من جدول الرحلة.");
+  };
+
+  const VOTER_COLORS = ["#FF9500", "#34C759", "#007AFF", "#AF52DE", "#FF2D55", "#5856D6"];
+
+  const getGroupShareUrl = (): string => {
+    if (typeof window === "undefined" || selectedPlaces.length === 0) return "";
+    const activeSession = sessionId || `grp_${Math.random().toString(36).substr(2, 7)}`;
+    if (!sessionId) setSessionId(activeSession);
+
+    const ids = selectedPlaces.map(p => p.id).join(",");
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set("places", ids);
+    url.searchParams.set("start", startTime);
+    url.searchParams.set("transit", transitMode);
+    url.searchParams.set("budget", budget.toString());
+    url.searchParams.set("session", activeSession);
+    url.searchParams.set("group", "1");
+
+    try {
+      const vdataEncoded = btoa(encodeURIComponent(JSON.stringify(groupVoting)));
+      url.searchParams.set("vdata", vdataEncoded);
+    } catch (e) {
+      console.error("Error encoding vdata:", e);
+    }
+
+    return url.toString();
+  };
+
+  const handleCopyGroupLink = () => {
+    const link = getGroupShareUrl();
+    if (!link) return;
+    navigator.clipboard.writeText(link);
+    triggerAlert("📋 تم نسخ رابط الجلسة الجماعية! شاركه مع أصدقائك الآن 🔗");
+  };
+
+  const handleShareWhatsApp = () => {
+    const link = getGroupShareUrl();
+    if (!link) return;
+
+    const placeNames = selectedPlaces.map(p => p.name).join(" ⬅️ ");
+    const message = `🚀 تعال اختار معايا وتوقّع مكان خروجتنا في القاهرة!
+صوّت على الأماكن في رحلتنا الجماعية:
+
+📍 الأماكن المقترحة:
+${placeNames}
+
+🔗 اضغط على الرابط للتصويت واختيار المكان المفضل لديك:
+${link}`;
+
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
+  // Real Persistent Group Vote handler
+  const handleVote = (stopId: string, type: "up" | "down") => {
+    const activeName = voterName.trim() || profile?.full_name || "صديق القاهرة";
+    const activeSession = sessionId || `grp_${Math.random().toString(36).substr(2, 7)}`;
+    if (!sessionId) setSessionId(activeSession);
+
+    setGroupVoting((prev: any) => {
+      const current = prev[stopId] || { up: 1, down: 0, userVote: null, voters: [] };
+      
+      let upDiff = 0;
+      let downDiff = 0;
+      let newVote: "up" | "down" | null = type;
+
+      const existingVoters = Array.isArray(current.voters) ? [...current.voters] : [];
+      const filteredVoters = existingVoters.filter((v: any) => v.name !== activeName);
+
+      if (current.userVote === type) {
+        if (type === "up") upDiff = -1;
+        if (type === "down") downDiff = -1;
+        newVote = null;
+      } else {
+        if (current.userVote === "up") upDiff = -1;
+        if (current.userVote === "down") downDiff = -1;
+        
+        if (type === "up") upDiff += 1;
+        if (type === "down") downDiff += 1;
+
+        const color = VOTER_COLORS[Math.abs(activeName.charCodeAt(0) || 0) % VOTER_COLORS.length];
+        filteredVoters.push({ name: activeName, vote: type, color });
+      }
+
+      const updatedMap = {
+        ...prev,
+        [stopId]: {
+          up: Math.max(0, current.up + upDiff),
+          down: Math.max(0, current.down + downDiff),
+          userVote: newVote,
+          voters: filteredVoters
+        }
+      };
+
+      if (activeSession && typeof window !== "undefined") {
+        try {
+          localStorage.setItem(`cairo_group_votes_${activeSession}`, JSON.stringify(updatedMap));
+        } catch (e) { console.error(e); }
+      }
+
+      if (supabase && activeSession) {
+        supabase.from("app_feedback").insert([{
+          type: "group_vote",
+          message: JSON.stringify({
+            session_id: activeSession,
+            stop_id: stopId,
+            voter_name: activeName,
+            vote_type: type,
+            group_voting: updatedMap
+          }),
+          status: "group_vote"
+        }]).then(({ error }) => {
+          if (error) console.log("Supabase vote sync:", error.message);
+        });
+      }
+
+      return updatedMap;
+    });
+
+    if (typeof window !== "undefined" && navigator.vibrate) navigator.vibrate(8);
+  };
+
+  // Save Preferences
+  const handleSavePrefs = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem("cairo_user_prefs", JSON.stringify(userPrefs));
+    setShowProfileModal(false);
+    
+    setTransitMode(userPrefs.transit);
+    setStartTime(userPrefs.outingTime);
+    triggerAlert("تم حفظ وتخصيص تفضيلاتك بنجاح! 👤💾");
+  };
+
+  // Advanced Filter places for manual dropdown & search list
+  const filteredManualPlaces = allPlaces.filter(p => {
+    if (!isOutingPlace(p)) return false;
+
+    // Filter within selected drive zone if active
+    if (searchZoneOnly) {
+      const startLoc = getActiveStartLocation();
+      if (!isPlaceWithinZone(p, startLoc.lat, startLoc.lng, maxDriveMinutes)) return false;
+    }
+
+    // Filter by Category
+    if (searchCategoryFilter !== "all" && p.category !== searchCategoryFilter) return false;
+
+    // Filter by Minimum Rating
+    if (searchRatingFilter > 0 && (p.rating || 0) < searchRatingFilter) return false;
+
+    // Filter by Text Term
+    if (!manualSearchTerm.trim()) return true;
+    const term = normalizeArabic(manualSearchTerm).toLowerCase();
+    const nameNorm = normalizeArabic(p.name).toLowerCase();
+    const catNorm = normalizeArabic(p.categoryLabel || "").toLowerCase();
+    const locNorm = normalizeArabic(`${p.governorate || ''} ${p.city || ''} ${p.briefLocation || ''} ${p.fullAddress || ''}`).toLowerCase();
+    const descNorm = normalizeArabic(p.shortDescription || p.description || "").toLowerCase();
+
+    return nameNorm.includes(term) || catNorm.includes(term) || locNorm.includes(term) || descNorm.includes(term);
+  });
 
   if (authLoading) {
     return (
@@ -90,7 +1280,6 @@ export default function PlannerPage() {
   if (!user || !hasAccess) {
     return (
       <div className="app-container" style={{ maxWidth: "600px", paddingTop: "60px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
-        {/* Back Button */}
         <div style={{ marginBottom: "24px" }}>
           <Link 
             href="/" 
@@ -109,7 +1298,6 @@ export default function PlannerPage() {
           </Link>
         </div>
 
-        {/* Premium Lock Panel */}
         <div className="glass-panel" style={{ padding: "48px 32px", textAlign: "center", border: "1px solid rgba(234, 179, 8, 0.2)", position: "relative", overflow: "hidden" }}>
           <div style={{
             position: "absolute",
@@ -121,7 +1309,6 @@ export default function PlannerPage() {
             borderRadius: "50%"
           }} />
 
-          {/* Lock Icon */}
           <div style={{ 
             fontSize: "4.5rem", 
             marginBottom: "24px",
@@ -147,18 +1334,16 @@ export default function PlannerPage() {
             استخدم الذكاء الاصطناعي لتخطيط رحلاتك وجولاتك الترفيهية وحساب التكلفة والمسارات بدقة. هذه الميزة متاحة حصرياً لمشتركي الباقة الذهبية.
           </p>
 
-          {/* Features list */}
           <div style={{ background: "rgba(255,255,255,0.02)", padding: "18px 24px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
             <div style={{ fontWeight: "bold", color: "#fff", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية (60 ج.م/شهرياً):</div>
             <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
               <li>✨ توليد خطط رحلات متكاملة بناءً على الميزانية واهتماماتك</li>
+              <li>✨ ربط حي ومباشر بكافة الأماكن المضافة من الإدارة في الموقع</li>
               <li>✨ تصدير وحفظ الرحلات وحساب تكلفة المواصلات والتنقل والوقت بدقة</li>
               <li>✨ تصويت جماعي ومشاركة الخطط مع أصدقائك في نفس الوقت</li>
-              <li>✨ تشمل أيضاً دليل المطارات والموانئ ومواقف السفر والميكروباص بالكامل</li>
             </ul>
           </div>
 
-          {/* Call to Actions */}
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
             {user ? (
               <Link
@@ -217,812 +1402,6 @@ export default function PlannerPage() {
       </div>
     );
   }
-  const [selectedPreset, setSelectedPreset] = useState<string>("");
-  const [budget, setBudget] = useState<number>(1000);
-  const [transitMode, setTransitMode] = useState<string>("car");
-  const [startTime, setStartTime] = useState<string>("14:00");
-  const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([]);
-  const [optimized, setOptimized] = useState(false);
-  const [showNotification, setShowNotification] = useState<string | null>(null);
-
-  // Group collaboration simulator states
-  const [groupVoting, setGroupVoting] = useState<Record<string, { up: number; down: number; userVote: "up" | "down" | null }>>({});
-  const [groupMembers] = useState([
-    { name: "أحمد", color: "#FF9500", initials: "أ" },
-    { name: "منى", color: "#34C759", initials: "م" },
-    { name: "سليم", color: "#007AFF", initials: "س" },
-    { name: "يوسف", color: "#AF52DE", initials: "ي" }
-  ]);
-
-  // Personalization settings state
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [userPrefs, setUserPrefs] = useState({
-    foodType: "شرقي",
-    transit: "car",
-    maxWalk: 800,
-    outingTime: "15:00",
-    categories: ["restaurant", "cafe", "park"]
-  });
-
-  // Saved trips from localStorage
-  const [savedTrips, setSavedTrips] = useState<SavedTrip[]>([]);
-
-  // Canvas map ref
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // Auto notification helper
-  const triggerAlert = (message: string) => {
-    setShowNotification(message);
-    setTimeout(() => setShowNotification(null), 5000);
-  };
-
-  // Load saved trips & query parameters on mount
-  useEffect(() => {
-    // 1. Get from localStorage
-    const saved = localStorage.getItem("cairo_saved_trips");
-    if (saved) {
-      try { setSavedTrips(JSON.parse(saved)); } catch (e) { console.error(e); }
-    }
-    const savedPrefs = localStorage.getItem("cairo_user_prefs");
-    if (savedPrefs) {
-      try { setUserPrefs(JSON.parse(savedPrefs)); } catch (e) { console.error(e); }
-    }
-
-    // 2. Read query string to support shared links!
-    const params = new URLSearchParams(window.location.search);
-    const placeIdsParam = params.get("places");
-    if (placeIdsParam) {
-      const ids = placeIdsParam.split(",");
-      const loadedPlaces = ids
-        .map(id => initialPlaces.find(p => p.id === id))
-        .filter((p): p is Place => p !== undefined);
-      if (loadedPlaces.length > 0) {
-        setSelectedPlaces(loadedPlaces);
-        const mode = params.get("transit") || "car";
-        setTransitMode(mode);
-        const time = params.get("start") || "14:00";
-        setStartTime(time);
-        const budgetParam = params.get("budget");
-        if (budgetParam) setBudget(parseInt(budgetParam) || 1000);
-        triggerAlert("تم تحميل الرحلة المشتركة بنجاح! 🎉");
-      }
-    } else {
-      // Load preset default plan to show something cool on first load
-      handlePresetSelect("family");
-    }
-  }, []);
-
-  // Update URL for sharing
-  const getShareLink = () => {
-    if (selectedPlaces.length === 0) return "";
-    const ids = selectedPlaces.map(p => p.id).join(",");
-    const url = new URL(window.location.href);
-    url.searchParams.set("places", ids);
-    url.searchParams.set("transit", transitMode);
-    url.searchParams.set("start", startTime);
-    url.searchParams.set("budget", budget.toString());
-    return url.toString();
-  };
-
-  const handleCopyLink = () => {
-    const link = getShareLink();
-    if (!link) return;
-    navigator.clipboard.writeText(link);
-    triggerAlert("تم نسخ رابط الرحلة! شاركه مع أصدقائك 🔗");
-  };
-
-  // Save Trip to localStorage
-  const handleSaveTrip = () => {
-    if (selectedPlaces.length === 0) {
-      triggerAlert("يرجى إضافة أماكن للرحلة أولاً ⚠️");
-      return;
-    }
-    const newTrip: SavedTrip = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: `رحلة يوم ${new Date().toLocaleDateString("ar-EG")}`,
-      date: new Date().toLocaleDateString("ar-EG"),
-      stopsCount: selectedPlaces.length,
-      totalCost: totalCostEst,
-      places: selectedPlaces.map(p => p.id)
-    };
-
-    const updated = [newTrip, ...savedTrips];
-    setSavedTrips(updated);
-    localStorage.setItem("cairo_saved_trips", JSON.stringify(updated));
-    triggerAlert("تم حفظ الرحلة بنجاح في ملفك! 💾");
-  };
-
-  const handleDeleteSavedTrip = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const updated = savedTrips.filter(t => t.id !== id);
-    setSavedTrips(updated);
-    localStorage.setItem("cairo_saved_trips", JSON.stringify(updated));
-    triggerAlert("تم حذف الرحلة المحفوظة.");
-  };
-
-  const handleLoadSavedTrip = (trip: SavedTrip) => {
-    const loadedPlaces = trip.places
-      .map(id => initialPlaces.find(p => p.id === id))
-      .filter((p): p is Place => p !== undefined);
-    setSelectedPlaces(loadedPlaces);
-    triggerAlert(`تم تحميل: ${trip.title}`);
-  };
-
-  // ── NLP GENERATION LOGIC ──
-  const handleNlpSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nlpInput.trim()) return;
-
-    const inputLower = nlpInput.toLowerCase();
-    let detectedPreset = "";
-    let detectedLocation = "";
-
-    // Preset classification
-    if (inputLower.includes("رومانس") || inputLower.includes("كابلز") || inputLower.includes("رومانسيه") || inputLower.includes("رومانسية")) {
-      detectedPreset = "romantic";
-    } else if (inputLower.includes("عائل") || inputLower.includes("عيله") || inputLower.includes("عيلة") || inputLower.includes("بيت") || inputLower.includes("اهل")) {
-      detectedPreset = "family";
-    } else if (inputLower.includes("طفل") || inputLower.includes("أطفال") || inputLower.includes("اطفال") || inputLower.includes("العاب") || inputLower.includes("ملاهي")) {
-      detectedPreset = "kids";
-    } else if (inputLower.includes("مذاكر") || inputLower.includes("دراسه") || inputLower.includes("دراسة") || inputLower.includes("واي فاي") || inputLower.includes("هدوء")) {
-      detectedPreset = "study";
-    } else if (inputLower.includes("تسوق") || inputLower.includes("شوبينج") || inputLower.includes("مول") || inputLower.includes("شراء")) {
-      detectedPreset = "shopping";
-    } else if (inputLower.includes("تاريخ") || inputLower.includes("اسلامي") || inputLower.includes("مسجد") || inputLower.includes("أثر")) {
-      detectedPreset = "history";
-    } else if (inputLower.includes("سياح") || inputLower.includes("متحف")) {
-      detectedPreset = "tourism";
-    }
-
-    // Location parsing
-    if (inputLower.includes("التجمع") || inputLower.includes("الخامس")) {
-      detectedLocation = "التجمع الخامس";
-    } else if (inputLower.includes("مصر الجديده") || inputLower.includes("مصر الجديدة") || inputLower.includes("الكوربة")) {
-      detectedLocation = "مصر الجديدة";
-    } else if (inputLower.includes("إمبابة") || inputLower.includes("امبابه")) {
-      detectedLocation = "إمبابة";
-    } else if (inputLower.includes("الزمالك")) {
-      detectedLocation = "الزمالك";
-    } else if (inputLower.includes("المعادي") || inputLower.includes("معادي")) {
-      detectedLocation = "المعادي";
-    } else if (inputLower.includes("زايد") || inputLower.includes("أكتوبر") || inputLower.includes("اكتوبر")) {
-      detectedLocation = "الشيخ زايد";
-    } else if (inputLower.includes("إسكندرية") || inputLower.includes("اسكندرية") || inputLower.includes("الاسكندرية")) {
-      detectedLocation = "الإسكندرية";
-    }
-
-    // Budget parsing
-    const budgetMatch = inputLower.match(/\b(\d{3,4})\b/);
-    if (budgetMatch) {
-      const parsedBudget = parseInt(budgetMatch[1]);
-      if (parsedBudget >= 100 && parsedBudget <= 10000) {
-        setBudget(parsedBudget);
-      }
-    }
-
-    // Smart generator
-    let pool = [...initialPlaces];
-    
-    // Add extra mock locations if database is small to yield rich variations
-    const extraMocks: Place[] = [
-      {
-        id: "mock-1",
-        name: "ووترواي مول - التجمع الخامس",
-        category: "shopping",
-        categoryLabel: "تسوق",
-        subCategories: ["mall", "cafe"],
-        briefLocation: "التجمع الخامس / القاهرة",
-        fullAddress: "محور محمد نجيب، التجمع الخامس",
-        phones: ["01012345678"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "09:00 ص - 01:00 ص",
-        rating: 4.5,
-        description: "مجمع تجاري مفتوح يضم مطاعم وكافيهات راقية ممتازة للمشي والتسوق.",
-        latitude: 30.0335, longitude: 31.4811,
-        features: ["suitable_for_groups", "family_friendly", "wheelchair_accessible"]
-      },
-      {
-        id: "mock-2",
-        name: "متحف الحضارة المصرية (NMEC)",
-        category: "entertainment",
-        categoryLabel: "ترفيه",
-        subCategories: ["museum"],
-        briefLocation: "الفسطاط / القاهرة",
-        fullAddress: "عين الصيرة، الفسطاط، القاهرة",
-        phones: ["19800"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "09:00 ص - 05:00 م",
-        rating: 4.8,
-        description: "متحف عملاق يعرض الحضارة المصرية عبر العصور ويحتوي على قاعة المومياوات الملكية.",
-        latitude: 30.0076, longitude: 31.2512,
-        features: ["suitable_for_all_ages", "wheelchair_accessible"]
-      },
-      {
-        id: "mock-3",
-        name: "حديقة الأسرة (Family Park)",
-        category: "public_places",
-        categoryLabel: "أماكن عامة",
-        subCategories: ["park"],
-        briefLocation: "طريق السويس / القاهرة",
-        fullAddress: "الكيلو 26 طريق القاهرة السويس الصحراوي",
-        phones: ["0224119999"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "09:00 ص - 10:00 م",
-        rating: 4.6,
-        description: "حديقة عملاقة للأطفال تحتوي على ملاهي ونهر سحري وسينما 3D ومساحات خضراء شاسعة.",
-        latitude: 30.1583, longitude: 31.6214,
-        features: ["kids_friendly", "family_friendly"]
-      },
-      {
-        id: "mock-4",
-        name: "بين باج كافيه - المعادي",
-        category: "food_drinks",
-        categoryLabel: "أكل ومشروبات",
-        subCategories: ["cafe"],
-        briefLocation: "المعادي / القاهرة",
-        fullAddress: "شارع 9، المعادي",
-        phones: ["01112223334"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1541167760496-1628856ab772?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "08:00 ص - 02:00 ص",
-        rating: 4.4,
-        description: "كافيه مريح للغاية يوفر جلسات بين باجز وWi-Fi سريع ومناسب للدراسة والعمل الجماعي.",
-        latitude: 29.9602, longitude: 31.2618,
-        features: ["free_wifi", "quiet_place", "accepts_credit_cards"]
-      },
-      {
-        id: "mock-5",
-        name: "مول كايرو فيستيفال سيتي",
-        category: "shopping",
-        categoryLabel: "تسوق",
-        subCategories: ["mall"],
-        briefLocation: "التجمع الخامس / القاهرة",
-        fullAddress: "الطريق الدائري، التجمع الخامس",
-        phones: ["16367"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "10:00 ص - 12:00 ص",
-        rating: 4.7,
-        description: "أكبر مولات القاهرة الجديدة، يتميز بالنافورة الراقصة ومجموعة ضخمة من المتاجر والمطاعم والسينمات.",
-        latitude: 30.0298, longitude: 31.4082,
-        features: ["suitable_for_groups", "family_friendly", "wheelchair_accessible"]
-      }
-    ];
-
-    pool = [...pool, ...extraMocks];
-
-    // Filter by detected location if present
-    if (detectedLocation) {
-      pool = pool.filter(p => p.briefLocation?.includes(detectedLocation) || p.fullAddress?.includes(detectedLocation));
-    }
-
-    // Filter by preset preferences
-    let selected: Place[] = [];
-    if (detectedPreset === "romantic") {
-      selected = pool.filter(p => p.features?.includes("quiet_place") || p.features?.includes("family_friendly")).slice(0, 3);
-    } else if (detectedPreset === "family" || detectedPreset === "kids") {
-      selected = pool.filter(p => p.features?.includes("family_friendly") || p.features?.includes("kids_friendly") || p.features?.includes("suitable_for_all_ages")).slice(0, 3);
-    } else if (detectedPreset === "study") {
-      selected = pool.filter(p => p.features?.includes("free_wifi") || p.features?.includes("quiet_place")).slice(0, 2);
-    } else if (detectedPreset === "shopping") {
-      selected = pool.filter(p => p.category === "shopping" || p.subCategories?.includes("mall")).slice(0, 3);
-    } else {
-      // Default smart mix of restaurant, cafe, and public park/mall
-      const restaurant = pool.find(p => p.subCategories?.includes("restaurant"));
-      const cafe = pool.find(p => p.subCategories?.includes("cafe"));
-      const park = pool.find(p => p.category === "public_places" || p.category === "shopping");
-      if (park) selected.push(park);
-      if (restaurant) selected.push(restaurant);
-      if (cafe) selected.push(cafe);
-    }
-
-    // If still empty, grab any 3 random places
-    if (selected.length === 0) {
-      selected = pool.slice(0, 3);
-    }
-
-    setSelectedPlaces(selected);
-    setOptimized(false);
-    setSelectedPreset(detectedPreset || "family");
-    
-    // Give AI feedback
-    triggerAlert(`تم تخطيط يومك بنجاح بناءً على ذكاء ماب القاهرة! 🤖 (${detectedLocation || "القاهرة الكبرى"})`);
-  };
-
-  // Handle Preset Select
-  const handlePresetSelect = (presetId: string) => {
-    setSelectedPreset(presetId);
-    
-    // Filter and pick 3 matching preset places
-    let pool = [...initialPlaces];
-    const extraMocks: Place[] = [
-      {
-        id: "mock-1",
-        name: "ووترواي مول - التجمع الخامس",
-        category: "shopping",
-        categoryLabel: "تسوق",
-        subCategories: ["mall", "cafe"],
-        briefLocation: "التجمع الخامس / القاهرة",
-        fullAddress: "محور محمد نجيب، التجمع الخامس",
-        phones: ["01012345678"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "09:00 ص - 01:00 ص",
-        rating: 4.5,
-        description: "مجمع تجاري مفتوح يضم مطاعم وكافيهات راقية ممتازة للمشي والتسوق.",
-        latitude: 30.0335, longitude: 31.4811,
-        features: ["suitable_for_groups", "family_friendly", "wheelchair_accessible"]
-      },
-      {
-        id: "mock-2",
-        name: "متحف الحضارة المصرية (NMEC)",
-        category: "entertainment",
-        categoryLabel: "ترفيه",
-        subCategories: ["museum"],
-        briefLocation: "الفسطاط / القاهرة",
-        fullAddress: "عين الصيرة، الفسطاط، القاهرة",
-        phones: ["19800"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "09:00 ص - 05:00 م",
-        rating: 4.8,
-        description: "متحف عملاق يعرض الحضارة المصرية عبر العصور ويحتوي على قاعة المومياوات الملكية.",
-        latitude: 30.0076, longitude: 31.2512,
-        features: ["suitable_for_all_ages", "wheelchair_accessible"]
-      },
-      {
-        id: "mock-3",
-        name: "حديقة الأسرة (Family Park)",
-        category: "public_places",
-        categoryLabel: "أماكن عامة",
-        subCategories: ["park"],
-        briefLocation: "طريق السويس / القاهرة",
-        fullAddress: "الكيلو 26 طريق القاهرة السويس الصحراوي",
-        phones: ["0224119999"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "09:00 ص - 10:00 م",
-        rating: 4.6,
-        description: "حديقة عملاقة للأطفال تحتوي على ملاهي ونهر سحري وسينما 3D ومساحات خضراء شاسعة.",
-        latitude: 30.1583, longitude: 31.6214,
-        features: ["kids_friendly", "family_friendly"]
-      },
-      {
-        id: "mock-4",
-        name: "بين باج كافيه - المعادي",
-        category: "food_drinks",
-        categoryLabel: "أكل ومشروبات",
-        subCategories: ["cafe"],
-        briefLocation: "المعادي / القاهرة",
-        fullAddress: "شارع 9، المعادي",
-        phones: ["01112223334"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1541167760496-1628856ab772?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "08:00 ص - 02:00 ص",
-        rating: 4.4,
-        description: "كافيه مريح للغاية يوفر جلسات بين باجز وWi-Fi سريع ومناسب للدراسة والعمل الجماعي.",
-        latitude: 29.9602, longitude: 31.2618,
-        features: ["free_wifi", "quiet_place", "accepts_credit_cards"]
-      },
-      {
-        id: "mock-5",
-        name: "مول كايرو فيستيفال سيتي",
-        category: "shopping",
-        categoryLabel: "تسوق",
-        subCategories: ["mall"],
-        briefLocation: "التجمع الخامس / القاهرة",
-        fullAddress: "الطريق الدائري، التجمع الخامس",
-        phones: ["16367"],
-        googleMapsUrl: "#",
-        images: ["https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=800&auto=format&fit=crop&q=80"],
-        workingHours: "10:00 ص - 12:00 ص",
-        rating: 4.7,
-        description: "أكبر مولات القاهرة الجديدة، يتميز بالنافورة الراقصة ومجموعة ضخمة من المتاجر والمطاعم والسينمات.",
-        latitude: 30.0298, longitude: 31.4082,
-        features: ["suitable_for_groups", "family_friendly", "wheelchair_accessible"]
-      }
-    ];
-    pool = [...pool, ...extraMocks];
-
-    let result: Place[] = [];
-    if (presetId === "romantic") {
-      result = [pool[1], pool[3]]; // Cilantro (Quiet cafe) & Bean bag cafe
-    } else if (presetId === "family") {
-      result = [pool[4], pool[0], pool[2]]; // Mall -> El Prince -> Azhar Park
-    } else if (presetId === "kids") {
-      result = [pool[2], pool[0]]; // Family Park -> El Prince
-    } else if (presetId === "shopping") {
-      result = [pool[4], pool[0]]; // CFC Mall -> Cilantro Cafe
-    } else if (presetId === "study") {
-      result = [pool[1], pool[3]]; // Cilantro & Bean bag cafe
-    } else if (presetId === "tourism" || presetId === "history") {
-      result = [pool[2], pool[4]]; // NMEC (Museum) -> Al Azhar Park
-    } else {
-      result = [pool[0], pool[1], pool[4]]; // El Prince -> Cilantro -> Mall
-    }
-
-    setSelectedPlaces(result);
-    setOptimized(false);
-    triggerAlert(`تم تحميل خطة "${PLAN_PRESETS.find(p => p.id === presetId)?.label}" 🚀`);
-  };
-
-  // ── ROUTE OPTIMIZATION ALGORITHM ──
-  // Reorders places to minimize total route distance
-  const optimizeRoute = () => {
-    if (selectedPlaces.length <= 1) return;
-
-    // Nearest Neighbor TSP heuristic based on Lat/Lng
-    const places = [...selectedPlaces];
-    const optimizedList: Place[] = [];
-    
-    // Start with the first place in the original list
-    let current = places.shift()!;
-    optimizedList.push(current);
-
-    const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-      // Haversine formula
-      const R = 6371; // km
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-        Math.sin(dLon/2) * Math.sin(dLon/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c;
-    };
-
-    while (places.length > 0) {
-      let nearestIdx = 0;
-      let minDistance = Infinity;
-
-      for (let i = 0; i < places.length; i++) {
-        const dist = getDistance(
-          current.latitude || 30.0444, current.longitude || 31.2357,
-          places[i].latitude || 30.0444, places[i].longitude || 31.2357
-        );
-        if (dist < minDistance) {
-          minDistance = dist;
-          nearestIdx = i;
-        }
-      }
-
-      current = places.splice(nearestIdx, 1)[0];
-      optimizedList.push(current);
-    }
-
-    setSelectedPlaces(optimizedList);
-    setOptimized(true);
-    triggerAlert("تم إعادة ترتيب مسار الرحلة ذكياً لتقليل وقت ومسافة التنقل! 🗺️⚡");
-  };
-
-  // ── RECALCULATE DYNAMIC TIMELINE & TRANSIT ──
-  const calculateTimelineAndTransit = (): { timeline: ItineraryStop[]; transitLegs: TransitLeg[] } => {
-    const timeline: ItineraryStop[] = [];
-    const transitLegs: TransitLeg[] = [];
-
-    if (selectedPlaces.length === 0) return { timeline, transitLegs };
-
-    let currentTime = startTime; // "HH:MM"
-    
-    const addMinutes = (timeStr: string, mins: number): string => {
-      const [h, m] = timeStr.split(":").map(Number);
-      let totalMins = h * 60 + m + mins;
-      const endH = Math.floor(totalMins / 60) % 24;
-      const endM = totalMins % 60;
-      return `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-    };
-
-    const getDistanceBetweenStops = (p1: Place, p2: Place): number => {
-      const lat1 = p1.latitude || 30.04, lon1 = p1.longitude || 31.23;
-      const lat2 = p2.latitude || 30.04, lon2 = p2.longitude || 31.23;
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-        Math.sin(dLon/2) * Math.sin(dLon/2);
-      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    };
-
-    const activeMode = TRANSIT_MODES.find(m => m.id === transitMode) || TRANSIT_MODES[0];
-
-    selectedPlaces.forEach((place, index) => {
-      // 1. Calculate duration spent based on place category
-      let spentTime = 120; // Default 2 hours
-      if (place.subCategories?.includes("cafe")) spentTime = 90;
-      if (place.subCategories?.includes("pharmacy") || place.subCategories?.includes("supermarket")) spentTime = 20;
-      if (place.category === "shopping") spentTime = 150;
-      if (place.subCategories?.includes("cinema")) spentTime = 180;
-
-      // 2. Base entry/outings costs
-      let stopCost = 0;
-      if (place.category === "food_drinks") stopCost = 150;
-      if (place.subCategories?.includes("restaurant")) stopCost = 250;
-      if (place.subCategories?.includes("cafe")) stopCost = 90;
-      if (place.subCategories?.includes("cinema")) stopCost = 180;
-      if (place.subCategories?.includes("museum")) stopCost = 80;
-
-      const arrival = currentTime;
-      const departure = addMinutes(currentTime, spentTime);
-      
-      timeline.push({
-        place,
-        duration: spentTime,
-        arrivalTime: arrival,
-        departureTime: departure,
-        costEstimate: stopCost
-      });
-
-      // 3. Calculate Transit Leg to the next stop if not last
-      if (index < selectedPlaces.length - 1) {
-        const nextPlace = selectedPlaces[index + 1];
-        const distKm = getDistanceBetweenStops(place, nextPlace);
-        
-        const legDuration = Math.round((distKm / activeMode.speedKmH) * 60) + 5; // adding 5 mins margin
-        const legCost = Math.round(activeMode.baseCost + distKm * activeMode.costFactor * 10);
-        const legWalk = activeMode.id === "walking" ? Math.round(distKm * 1000) : Math.round(distKm * 80); // meters to stations
-        const transfers = activeMode.id === "metro" && distKm > 10 ? 1 : 0;
-
-        transitLegs.push({
-          mode: activeMode.label,
-          duration: legDuration,
-          cost: legCost,
-          walkingDistance: legWalk,
-          transfers
-        });
-
-        // Set current time for the next place arrival (departure + transit time)
-        currentTime = addMinutes(departure, legDuration);
-      }
-    });
-
-    return { timeline, transitLegs };
-  };
-
-  const { timeline, transitLegs } = calculateTimelineAndTransit();
-
-  // Total Cost Calculation
-  const totalTransitCost = transitLegs.reduce((sum, leg) => sum + leg.cost, 0);
-  const totalPlacesCost = timeline.reduce((sum, stop) => sum + stop.costEstimate, 0);
-  const totalCostEst = totalTransitCost + totalPlacesCost;
-  const remainingBudget = budget - totalCostEst;
-
-  // ── MOCK INTERACTIVE MAP CANVAS DRAWING ──
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Reset Canvas dimension for crisp rendering on high-DPI displays
-    const width = canvas.offsetWidth;
-    const height = canvas.offsetHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-    // Clear background (Cairo-themed map aesthetic)
-    ctx.fillStyle = "#1e1e24";
-    ctx.fillRect(0, 0, width, height);
-
-    // Draw grid lines
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
-    ctx.lineWidth = 1;
-    for (let x = 0; x < width; x += 40) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-    for (let y = 0; y < height; y += 40) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-
-    // Draw Nile River (Stylized Blue Ribbon across Cairo)
-    ctx.strokeStyle = "rgba(0, 111, 238, 0.25)";
-    ctx.lineWidth = 26;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.beginPath();
-    ctx.moveTo(width * 0.45, 0);
-    ctx.bezierCurveTo(width * 0.4, height * 0.3, width * 0.5, height * 0.6, width * 0.4, height);
-    ctx.stroke();
-
-    // Draw main bridges
-    ctx.strokeStyle = "rgba(131, 131, 131, 0.2)";
-    ctx.lineWidth = 6;
-    // 6th October Bridge
-    ctx.beginPath();
-    ctx.moveTo(width * 0.1, height * 0.4);
-    ctx.lineTo(width * 0.9, height * 0.45);
-    ctx.stroke();
-
-    // Zamalek Island Label
-    ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
-    ctx.font = "bold 11px Alexandria";
-    ctx.fillText("جزيرة الزمالك", width * 0.36, height * 0.36);
-    ctx.fillText("نهر النيل", width * 0.48, height * 0.15);
-
-    // If no places, show central marker
-    if (selectedPlaces.length === 0) {
-      ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
-      ctx.font = "14px Tajawal";
-      ctx.textAlign = "center";
-      ctx.fillText("حدد الأماكن لعرض مسار الرحلة على الخريطة", width / 2, height / 2);
-      return;
-    }
-
-    // Map place coordinates onto canvas coordinates
-    // We map real Cairo latitudes (29.9 to 30.2) and longitudes (31.1 to 31.5) to canvas coordinates
-    const mapCoords = selectedPlaces.map((place, idx) => {
-      const lat = place.latitude || 30.0444;
-      const lng = place.longitude || 31.2357;
-
-      // Projection mapping (very simple bounding box representation)
-      // Min/Max Cairo bounding box
-      const minLat = 29.95;
-      const maxLat = 30.16;
-      const minLng = 31.18;
-      const maxLng = 31.5;
-
-      const x = width - ((lng - minLng) / (maxLng - minLng)) * width; // Flip X because of RTL/projection
-      const y = height - ((lat - minLat) / (maxLat - minLat)) * height;
-
-      return { x, y, label: place.name, index: idx + 1 };
-    });
-
-    // Draw route path between markers
-    ctx.strokeStyle = "var(--accent-primary)";
-    ctx.lineWidth = 4;
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    mapCoords.forEach((coord, idx) => {
-      if (idx === 0) ctx.moveTo(coord.x, coord.y);
-      else ctx.lineTo(coord.x, coord.y);
-    });
-    ctx.stroke();
-    ctx.setLineDash([]); // reset
-
-    // Draw markers
-    mapCoords.forEach((coord) => {
-      // Glow effect
-      const grad = ctx.createRadialGradient(coord.x, coord.y, 2, coord.x, coord.y, 16);
-      grad.addColorStop(0, "rgba(0, 111, 238, 0.8)");
-      grad.addColorStop(1, "rgba(0, 111, 238, 0)");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(coord.x, coord.y, 16, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Outer ring
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 2.5;
-      ctx.fillStyle = "var(--accent-primary)";
-      ctx.beginPath();
-      ctx.arc(coord.x, coord.y, 8, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Draw index number
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 9px Tajawal";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(coord.index.toString(), coord.x, coord.y);
-
-      // Label text
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 10px Tajawal";
-      ctx.shadowColor = "black";
-      ctx.shadowBlur = 4;
-      ctx.fillText(coord.label.split(" - ")[0], coord.x, coord.y - 14);
-      ctx.shadowBlur = 0; // reset
-    });
-
-  }, [selectedPlaces, optimized]);
-
-  // ── SMART ALTERNATIVES SWAPPER ──
-  const swapWithAlternative = (indexToSwap: number) => {
-    const targetPlace = selectedPlaces[indexToSwap];
-    
-    // Find alternatives in initialPlaces that match the category but are not already in the list
-    const usedIds = selectedPlaces.map(p => p.id);
-    const alternatives = initialPlaces.filter(
-      p => p.category === targetPlace.category && !usedIds.includes(p.id)
-    );
-
-    if (alternatives.length > 0) {
-      // Select the first alternative and swap it
-      const updated = [...selectedPlaces];
-      const selectedAlt = alternatives[0];
-      updated[indexToSwap] = selectedAlt;
-      setSelectedPlaces(updated);
-      triggerAlert(`🔄 تم استبدال "${targetPlace.name}" بـ البديل الذكي "${selectedAlt.name}"!`);
-    } else {
-      triggerAlert("⚠️ عذراً، لا تتوفر أماكن بديلة في نفس الفئة حالياً.");
-    }
-  };
-
-  // Add Place Manual Selector handler
-  const handleAddManualPlace = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const placeId = e.target.value;
-    if (!placeId) return;
-
-    const place = initialPlaces.find(p => p.id === placeId);
-    if (place) {
-      if (selectedPlaces.some(p => p.id === placeId)) {
-        triggerAlert("المكان مضاف بالفعل للرحلة! ⚠️");
-        return;
-      }
-      setSelectedPlaces([...selectedPlaces, place]);
-      setOptimized(false);
-      triggerAlert(`تمت إضافة "${place.name}" للرحلة 📍`);
-    }
-    e.target.value = ""; // Reset
-  };
-
-  // Remove Stop from Itinerary
-  const handleRemoveStop = (index: number) => {
-    const updated = selectedPlaces.filter((_, i) => i !== index);
-    setSelectedPlaces(updated);
-    setOptimized(false);
-    triggerAlert("تمت إزالة الوجهة من جدول الرحلة.");
-  };
-
-  // Simulate group voting interaction
-  const handleVote = (stopId: string, type: "up" | "down") => {
-    setGroupVoting(prev => {
-      const current = prev[stopId] || { up: Math.floor(Math.random() * 4), down: Math.floor(Math.random() * 2), userVote: null };
-      
-      let upDiff = 0;
-      let downDiff = 0;
-      let newVote: "up" | "down" | null = type;
-
-      if (current.userVote === type) {
-        // Undo vote
-        if (type === "up") upDiff = -1;
-        if (type === "down") downDiff = -1;
-        newVote = null;
-      } else {
-        // Shift vote or new vote
-        if (current.userVote === "up") upDiff = -1;
-        if (current.userVote === "down") downDiff = -1;
-        
-        if (type === "up") upDiff += 1;
-        if (type === "down") downDiff += 1;
-      }
-
-      return {
-        ...prev,
-        [stopId]: {
-          up: current.up + upDiff,
-          down: current.down + downDiff,
-          userVote: newVote
-        }
-      };
-    });
-
-    if (navigator.vibrate) navigator.vibrate(8);
-  };
-
-  // Save Preferences
-  const handleSavePrefs = (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem("cairo_user_prefs", JSON.stringify(userPrefs));
-    setShowProfileModal(false);
-    
-    // Apply preferences dynamic values
-    setTransitMode(userPrefs.transit);
-    setStartTime(userPrefs.outingTime);
-    triggerAlert("تم حفظ وتخصيص تفضيلاتك بنجاح! 👤💾");
-  };
 
   return (
     <div className="planner-container">
@@ -1058,6 +1437,34 @@ export default function PlannerPage() {
         <p className="planner-subtitle">
           حوّل بحثك إلى تجربة متكاملة. خطط ليوم خروج كامل بنفسك أو دع مساعدنا الذكي ينظم لك المسار الأمثل والأوقات والميزانية بلمسة واحدة.
         </p>
+
+        {/* Database Connectivity Status Badge */}
+        <div style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+          background: isLiveConnected ? "rgba(16, 185, 129, 0.1)" : "rgba(234, 179, 8, 0.1)",
+          border: `1px solid ${isLiveConnected ? "rgba(16, 185, 129, 0.3)" : "rgba(234, 179, 8, 0.3)"}`,
+          color: isLiveConnected ? "#10b981" : "#eab308",
+          padding: "6px 14px",
+          borderRadius: "20px",
+          fontSize: "0.82rem",
+          fontWeight: "700",
+          marginTop: "12px"
+        }}>
+          <span style={{
+            width: "8px",
+            height: "8px",
+            borderRadius: "50%",
+            background: isLiveConnected ? "#10b981" : "#eab308",
+            boxShadow: `0 0 8px ${isLiveConnected ? "#10b981" : "#eab308"}`
+          }} />
+          <span>
+            {isLiveConnected
+              ? `مربوط حياً بقاعدة بيانات القاهرة (${allPlaces.length} مكان متاح من الإدارة)`
+              : `الأماكن الافتراضية (${allPlaces.length} مكان)`}
+          </span>
+        </div>
       </header>
 
       {/* MAIN LAYOUT GRID */}
@@ -1066,6 +1473,135 @@ export default function PlannerPage() {
         {/* LEFT COLUMN: SETTINGS & CONTROLS */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           
+          {/* Starting Location & Drive Zone Card */}
+          <div className="glass-panel-luxury" style={{ border: "1px solid rgba(59, 130, 246, 0.35)" }}>
+            <h2 className="card-section-title" style={{ color: "var(--accent-ios, #3b82f6)" }}>
+              <i className="bx bx-map-pin" />
+              نقطة الانطلاق ونطاق الزون 📍
+            </h2>
+
+            {/* Start Location Dropdown + GPS button */}
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
+                📍 موقع الانطلاق (نقطة البداية)
+              </label>
+
+              <div style={{ display: "flex", gap: "8px" }}>
+                <select 
+                  className="ios-input" 
+                  value={selectedStartZone} 
+                  onChange={(e) => setSelectedStartZone(e.target.value)}
+                  style={{ flex: 1, height: "42px", padding: "0 10px" }}
+                >
+                  {customGpsLocation && (
+                    <option value="gps">📍 موقعي الحالي (GPS)</option>
+                  )}
+                  {STARTING_ZONES.map(z => (
+                    <option key={z.id} value={z.id}>{z.name}</option>
+                  ))}
+                </select>
+
+                <button 
+                  type="button" 
+                  onClick={() => handleGetGpsLocation(true)} 
+                  className="ios-btn"
+                  disabled={gpsLoading}
+                  style={{ height: "42px", padding: "0 14px", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.82rem", background: "rgba(59, 130, 246, 0.12)", borderColor: "rgba(59, 130, 246, 0.3)", color: "var(--accent-primary)" }}
+                  title="تحديد موقعك الحالي عبر الـ GPS"
+                >
+                  <i className={`bx ${gpsLoading ? "bx-loader-alt bx-spin" : "bx-target-lock"}`} style={{ fontSize: "1.1rem" }} />
+                  <span>{gpsLoading ? "جاري..." : "GPS"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Max Drive Time Range Slider (15 mins to 60 mins max) */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "6px" }}>
+                <span style={{ color: "var(--text-secondary)" }}>أقصى وقت قيادة بالسيارة</span>
+                <span style={{ fontWeight: "800", color: "var(--accent-primary)" }}>{maxDriveMinutes} دقيقة (~{Math.round(maxDriveMinutes * 0.5)} كم)</span>
+              </div>
+
+              <input
+                type="range"
+                min="15"
+                max="60"
+                step="15"
+                value={maxDriveMinutes}
+                onChange={(e) => setMaxDriveMinutes(parseInt(e.target.value))}
+                style={{ width: "100%", accentColor: "var(--accent-primary)" }}
+              />
+
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "4px" }}>
+                <span>15 دقيقة</span>
+                <span>30 دقيقة</span>
+                <span>45 دقيقة</span>
+                <span>60 دقيقة (ساعة)</span>
+              </div>
+            </div>
+
+            {/* Active Zone Information Badge */}
+            <div style={{
+              marginTop: "14px",
+              padding: "10px 12px",
+              borderRadius: "10px",
+              background: "rgba(59, 130, 246, 0.08)",
+              border: "1px solid rgba(59, 130, 246, 0.2)",
+              fontSize: "0.78rem",
+              color: "var(--text-primary)",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}>
+              <i className="bx bx-radar" style={{ color: "var(--accent-primary)", fontSize: "1.2rem" }} />
+              <span>
+                محيط الرحلة: محصورة في زون لا يتعدى <strong>{maxDriveMinutes} دقيقة قيادة</strong> من <strong>{getActiveStartLocation().name}</strong> ({getPlacesCountInActiveZone()} مكان ترفيهي متوفر).
+              </span>
+            </div>
+
+            {/* EMPTY / LOW PLACES IN ZONE WARNING BANNER */}
+            {getPlacesCountInActiveZone() < 2 && (
+              <div style={{
+                marginTop: "12px",
+                padding: "12px 14px",
+                borderRadius: "12px",
+                background: "rgba(245, 158, 11, 0.12)",
+                border: "1px solid rgba(245, 158, 11, 0.35)",
+                color: "var(--text-primary)",
+                fontSize: "0.82rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--accent-orange)", fontWeight: "800" }}>
+                  <i className="bx bx-error-circle" style={{ fontSize: "1.3rem" }} />
+                  <span>⚠️ لا توجد أماكن كافية في نطاق {maxDriveMinutes} دقيقة!</span>
+                </div>
+                <p style={{ color: "var(--text-secondary)", fontSize: "0.8rem", lineHeight: "1.5" }}>
+                  المسافة المختارة صغيرة جداً بالنسبة لموقع الانطلاق. يرجى زيادة وقت القيادة أو اختيار مسافة أكبر (مثلاً 45 أو 60 دقيقة) لتوسيع نطاق البحث وإتاحة خيارات أفضل.
+                </p>
+                <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setMaxDriveMinutes(45)}
+                    className="ios-btn"
+                    style={{ flex: 1, height: "34px", fontSize: "0.78rem", background: "rgba(245, 158, 11, 0.18)", borderColor: "rgba(245, 158, 11, 0.4)", color: "var(--accent-orange)", fontWeight: "bold" }}
+                  >
+                    45 دقيقة
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMaxDriveMinutes(60)}
+                    className="ios-btn"
+                    style={{ flex: 1, height: "34px", fontSize: "0.78rem", background: "var(--accent-primary)", color: "#fff", border: "none", fontWeight: "bold" }}
+                  >
+                    60 دقيقة (ساعة)
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* AI Generation Box */}
           <div className="glass-panel-luxury">
             <h2 className="card-section-title">
@@ -1078,7 +1614,7 @@ export default function PlannerPage() {
                 placeholder="اكتب ما تريده بلغة طبيعية، مثل:
 - أريد خروجة رومانسية في التجمع الخامس بميزانية 1000 جنيه.
 - مكان هادئ للمذاكرة في مصر الجديدة فيه واي فاي.
-- خروجة عائلية مع الأطفال نهاراً."
+- خروجة عائلية مع الأطفال نهاراً في المعادي."
                 value={nlpInput}
                 onChange={(e) => setNlpInput(e.target.value)}
               />
@@ -1087,7 +1623,7 @@ export default function PlannerPage() {
                 className="ios-btn ios-btn-primary" 
                 style={{ width: "100%", marginTop: "12px", background: "var(--accent-primary)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
               >
-                <i className="bx bx-sparkles" /> خطط ليومي بالكامل
+                <i className="bx bx-sparkles" /> خطط ليومي بالكامل من الداتا بيز
               </button>
             </form>
           </div>
@@ -1120,13 +1656,68 @@ export default function PlannerPage() {
               تفضيلات الرحلة
             </h2>
 
-            {/* Manual Place Selector */}
+            {/* Advanced Search & Manual Place Selector */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>📍 إضافة أماكن يدوياً</label>
+              <label style={{ fontSize: "0.82rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "700" }}>
+                🔍 بحث وتصفية متقدمة للأماكن
+              </label>
+
+              {/* Text Search Input */}
+              <input 
+                type="text"
+                placeholder="🔍 ابحث بالاسم، الوصف، الكاتيجوري، أو المنطقة..."
+                value={manualSearchTerm}
+                onChange={(e) => setManualSearchTerm(e.target.value)}
+                className="ios-input"
+                style={{ width: "100%", height: "38px", padding: "0 12px", fontSize: "0.85rem", marginBottom: "8px" }}
+              />
+
+              {/* Multi-filter row: Category & Rating */}
+              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "8px", marginBottom: "8px" }}>
+                <select
+                  className="ios-input"
+                  value={searchCategoryFilter}
+                  onChange={(e) => setSearchCategoryFilter(e.target.value)}
+                  style={{ height: "36px", padding: "0 8px", fontSize: "0.78rem" }}
+                >
+                  <option value="all">كل الفئات والتصنيفات</option>
+                  <option value="food_drinks">مطاعم وكافيهات 🍽️</option>
+                  <option value="shopping">مولات وتسوق 🛍️</option>
+                  <option value="entertainment">ملاهي وترفيه 🎡</option>
+                  <option value="public_places">متنزهات وحدائق 🌿</option>
+                  <option value="tourism">متاحف وسياحة 🏛️</option>
+                </select>
+
+                <select
+                  className="ios-input"
+                  value={searchRatingFilter}
+                  onChange={(e) => setSearchRatingFilter(parseFloat(e.target.value))}
+                  style={{ height: "36px", padding: "0 8px", fontSize: "0.78rem" }}
+                >
+                  <option value={0}>كل التقييمات</option>
+                  <option value={4.5}>⭐ 4.5+ الممتازة</option>
+                  <option value={4.0}>⭐ 4.0+ الجيدة جداً</option>
+                </select>
+              </div>
+
+              {/* Zone Filter Checkbox Toggle */}
+              <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.76rem", color: "var(--text-secondary)", marginBottom: "8px", cursor: "pointer" }}>
+                <input 
+                  type="checkbox" 
+                  checked={searchZoneOnly} 
+                  onChange={(e) => setSearchZoneOnly(e.target.checked)} 
+                  style={{ accentColor: "var(--accent-primary)" }}
+                />
+                <span>📍 تقييد نتائج البحث بأماكن زون ({maxDriveMinutes} دقيقة) فقط</span>
+              </label>
+
+              {/* Results Dropdown Selector */}
               <select className="ios-input" onChange={handleAddManualPlace} style={{ width: "100%", height: "42px", padding: "0 10px" }}>
-                <option value="">-- اختر مكان للإضافة --</option>
-                {initialPlaces.map(p => (
-                  <option key={p.id} value={p.id}>{p.name} ({p.categoryLabel})</option>
+                <option value="">-- اختر مكان للإضافة ({filteredManualPlaces.length} مكان مطابق) --</option>
+                {filteredManualPlaces.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} {p.briefLocation ? `(${p.briefLocation})` : `(${p.categoryLabel})`} - ⭐ {p.rating || "4.5"}
+                  </option>
                 ))}
               </select>
             </div>
@@ -1273,7 +1864,7 @@ export default function PlannerPage() {
               <div className="recommendation-banner">
                 <span className="recommendation-icon">🌤️</span>
                 <div className="recommendation-content">
-                  <strong>تنبيه الطقس اليوم:</strong> درجة الحرارة اليوم مرتفعة وتصل لـ 38 درجة مئوية. ننصح بزيارة الأماكن المغلقة (مثل المول) أولاً ثم الأماكن المفتوحة والحدائق (مثل حديقة الأزهر) مساءً للاستمتاع بالهواء الجميل.
+                  <strong>تنبيه الطقس اليوم:</strong> درجة الحرارة اليوم مناسبة للخروج. ننصح بتصفح مواعيد العمل والعناوين الرسمية المدونة في كروت الأماكن بالأسفل.
                 </div>
               </div>
 
@@ -1282,7 +1873,7 @@ export default function PlannerPage() {
                 <div className="recommendation-banner" style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid rgba(239, 68, 68, 0.2)" }}>
                   <span className="recommendation-icon" style={{ color: "var(--accent-danger)" }}>🚗</span>
                   <div className="recommendation-content">
-                    <strong>تنبيه الزحام:</strong> هناك ازدحام شديد على كوبري أكتوبر وطريق صلاح سالم حالياً. ننصح باستخدام <strong>مترو الأنفاق</strong> لأنه سيوفر لك حوالي 25 دقيقة من وقت التنقل.
+                    <strong>تنبيه الزحام:</strong> هناك ازدحام متوقع في أوقات الذروة. ينصح باستخدام <strong>مترو الأنفاق</strong> أو التخطيط المسبق لتوفير الوقت.
                   </div>
                 </div>
               )}
@@ -1386,9 +1977,9 @@ export default function PlannerPage() {
 
                 {/* STOPS LOOP */}
                 {timeline.map((stop, idx) => (
-                  <React.Fragment key={stop.place.id}>
+                  <React.Fragment key={`${stop.place.id}-${idx}`}>
                     
-                    {/* Transit Connector before this stop (except first transition from home which we keep basic) */}
+                    {/* Transit Connector before this stop */}
                     {idx > 0 && transitLegs[idx - 1] && (
                       <div className="transit-connector">
                         <div className="transit-line" />
@@ -1411,14 +2002,17 @@ export default function PlannerPage() {
                       
                       <div className="timeline-card">
                         <div className="timeline-card-content">
-                          <div className="timeline-card-title">
-                            <span>{stop.place.name}</span>
+                          <div className="timeline-card-title" style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                            <Link href={`/places/${stop.place.id}`} target="_blank" style={{ color: "var(--text-primary)", textDecoration: "none", fontWeight: "bold" }}>
+                              {stop.place.name}
+                            </Link>
                             <span className="meta-pill meta-pill-accent">{stop.place.categoryLabel}</span>
                           </div>
-                          <p className="timeline-card-desc">{stop.place.description}</p>
+
+                          <p className="timeline-card-desc">{stop.place.description || stop.place.shortDescription}</p>
                           
                           <div className="timeline-card-meta">
-                            <span className="meta-pill">📍 {stop.place.briefLocation}</span>
+                            <span className="meta-pill">📍 {stop.place.briefLocation || stop.place.fullAddress}</span>
                             <span className="meta-pill">⭐ {stop.place.rating || "4.5"}</span>
                             <span className="meta-pill">⏱️ البقاء: {stop.duration} دقيقة</span>
                             <span className="meta-pill">💵 التكلفة المقدرة: {stop.costEstimate} ج.م</span>
@@ -1486,50 +2080,91 @@ export default function PlannerPage() {
           {/* GROUP TRIP / COLLABORATION PANEL */}
           {selectedPlaces.length > 0 && (
             <div className="group-collaboration">
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "10px", color: "#af52de", marginBottom: "12px" }}>
-                <i className="bx bx-group" /> رحلة جماعية (التعاون والتعليق) 👥
-              </h3>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.5", marginBottom: "16px" }}>
-                شارك هذه الرحلة مع أصدقائك. يمكن للجميع التصويت على الأماكن المقترحة لإعداد الخطة النهائية معاً.
-              </p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "12px" }}>
+                <div>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.15rem", fontWeight: "800", display: "flex", alignItems: "center", gap: "10px", color: "#af52de", marginBottom: "6px" }}>
+                    <i className="bx bx-group" /> رحلة جماعية (التصويت والتعاون) 👥
+                  </h3>
+                  <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                    أنشئ رابط مخصص وابعته لأصحابك في الشات للتصويت على الأماكن المحددة وتقييم الخطة معاً في الوقت الفعلي!
+                  </p>
+                </div>
 
-              {/* Members mock */}
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>المشاركون حالياً:</span>
-                <div className="group-member-list">
-                  {groupMembers.map((m, idx) => (
-                    <div key={idx} className="group-member-avatar" style={{ backgroundColor: m.color, color: "#fff" }} title={m.name}>
-                      {m.initials}
-                    </div>
-                  ))}
-                  <div className="group-member-avatar" style={{ border: "1px dashed var(--border-glass)", color: "var(--text-secondary)" }} title="دعوة صديق">
-                    +
-                  </div>
+                {/* Real Group Share Action Buttons */}
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <button
+                    onClick={handleShareWhatsApp}
+                    className="ios-btn"
+                    style={{ background: "#25D366", color: "#fff", border: "none", fontWeight: "bold", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: "6px", height: "38px" }}
+                  >
+                    <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }} /> مشاركة عبر واتساب
+                  </button>
+
+                  <button
+                    onClick={handleCopyGroupLink}
+                    className="ios-btn"
+                    style={{ background: "rgba(175, 82, 222, 0.15)", borderColor: "rgba(175, 82, 222, 0.4)", color: "#af52de", fontWeight: "bold", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: "6px", height: "38px" }}
+                  >
+                    <i className="bx bx-link" /> نسخ رابط التصويت
+                  </button>
                 </div>
               </div>
 
-              {/* Voting Mockup for each place */}
+              {/* Voter Name Input Box */}
+              <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 14px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)" }}>👤 اسمك للتصويت:</span>
+                <input
+                  type="text"
+                  placeholder="أدخل اسمك (مثلاً: أحمد، منى، كريم)..."
+                  value={voterName}
+                  onChange={(e) => setVoterName(e.target.value)}
+                  className="ios-input"
+                  style={{ flex: 1, minWidth: "180px", height: "36px", padding: "0 10px", fontSize: "0.82rem" }}
+                />
+                <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                  (سيظهر اسمك بجانب التصويت على الأماكن)
+                </span>
+              </div>
+
+              {/* Voting Items List */}
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {selectedPlaces.map((place) => {
-                  const voteState = groupVoting[place.id] || { up: Math.floor(Math.random() * 3) + 1, down: 0, userVote: null };
+                  const voteState = groupVoting[place.id] || { up: 1, down: 0, userVote: null, voters: [] };
+                  const votersList = Array.isArray(voteState.voters) ? voteState.voters : [];
+
                   return (
-                    <div key={place.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px" }}>
-                      <span style={{ fontSize: "0.85rem", fontWeight: "700" }}>{place.name.split(" - ")[0]}</span>
-                      
-                      <div className="group-votes-row">
-                        <button 
-                          className={`vote-btn ${voteState.userVote === "up" ? "upvoted" : ""}`}
-                          onClick={() => handleVote(place.id, "up")}
-                        >
-                          👍 {voteState.up}
-                        </button>
-                        <button 
-                          className={`vote-btn ${voteState.userVote === "down" ? "downvoted" : ""}`}
-                          onClick={() => handleVote(place.id, "down")}
-                        >
-                          👎 {voteState.down}
-                        </button>
+                    <div key={place.id} style={{ padding: "12px 16px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "14px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                        <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}>{place.name}</span>
+                        
+                        <div className="group-votes-row">
+                          <button 
+                            className={`vote-btn ${voteState.userVote === "up" ? "upvoted" : ""}`}
+                            onClick={() => handleVote(place.id, "up")}
+                          >
+                            👍 موافق ({voteState.up})
+                          </button>
+                          <button 
+                            className={`vote-btn ${voteState.userVote === "down" ? "downvoted" : ""}`}
+                            onClick={() => handleVote(place.id, "down")}
+                          >
+                            👎 نغيره ({voteState.down})
+                          </button>
+                        </div>
                       </div>
+
+                      {/* Display Voter Avatars & Names */}
+                      {votersList.length > 0 && (
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", paddingTop: "6px", borderTop: "1px dashed rgba(255,255,255,0.08)" }}>
+                          <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)" }}>المصوتين:</span>
+                          {votersList.map((v: any, i: number) => (
+                            <span key={i} style={{ padding: "2px 8px", borderRadius: "12px", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border-glass)", fontSize: "0.72rem", color: "var(--text-primary)", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                              <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: v.color || "#007AFF" }} />
+                              <strong>{v.name}</strong> {v.vote === "up" ? "👍" : "👎"}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -1627,6 +2262,177 @@ export default function PlannerPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MANDATORY GPS ACTIVATION MODAL */}
+      {showGpsModal && !customGpsLocation && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0, 0, 0, 0.75)",
+          backdropFilter: "blur(12px)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px"
+        }}>
+          <div className="glass-panel-luxury" style={{
+            maxWidth: "480px",
+            width: "100%",
+            textAlign: "center",
+            border: "1px solid rgba(59, 130, 246, 0.4)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
+          }}>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "rgba(59, 130, 246, 0.15)",
+              border: "2px solid var(--accent-primary)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 16px",
+              fontSize: "2rem",
+              color: "var(--accent-primary)"
+            }}>
+              <i className={`bx ${gpsLoading ? "bx-loader-alt bx-spin" : "bx-current-location"}`} />
+            </div>
+
+            <h2 style={{ fontSize: "1.35rem", fontWeight: "800", marginBottom: "10px", color: "var(--text-primary)" }}>
+              تفعيل موقع الـ GPS إجباري 📍
+            </h2>
+
+            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "20px" }}>
+              لتخطيط رحلة دقيقة ومحصورة في زون قيادة لا يتعدى ساعة من مكانك الفعلي، يرجى السماح بالوصول لموقعك المباشر.
+            </p>
+
+            {gpsError && (
+              <div style={{
+                padding: "10px 14px",
+                borderRadius: "10px",
+                background: "rgba(239, 68, 68, 0.12)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+                color: "var(--accent-red)",
+                fontSize: "0.82rem",
+                marginBottom: "18px"
+              }}>
+                ⚠️ {gpsError}
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <button 
+                onClick={() => handleGetGpsLocation(true)}
+                className="ios-btn ios-btn-primary"
+                disabled={gpsLoading}
+                style={{
+                  width: "100%",
+                  height: "46px",
+                  background: "var(--accent-primary)",
+                  color: "#fff",
+                  fontWeight: "800",
+                  fontSize: "0.95rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                <i className={`bx ${gpsLoading ? "bx-loader-alt bx-spin" : "bx-target-lock"}`} />
+                {gpsLoading ? "جاري تحديد الموقع..." : "📍 تفعيل ومشاركة موقعي الآن (GPS)"}
+              </button>
+
+              <button 
+                onClick={() => setShowGpsModal(false)}
+                className="ios-btn"
+                style={{ width: "100%", height: "40px", fontSize: "0.85rem", color: "var(--text-secondary)" }}
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* GROUP VOTER WELCOME MODAL */}
+      {showVoterModal && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0, 0, 0, 0.75)",
+          backdropFilter: "blur(12px)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px"
+        }}>
+          <div className="glass-panel-luxury" style={{
+            maxWidth: "460px",
+            width: "100%",
+            textAlign: "center",
+            border: "1px solid rgba(175, 82, 222, 0.4)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
+          }}>
+            <div style={{
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+              background: "rgba(175, 82, 222, 0.15)",
+              border: "2px solid #af52de",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 14px",
+              fontSize: "1.8rem",
+              color: "#af52de"
+            }}>
+              <i className="bx bx-group" />
+            </div>
+
+            <h2 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "8px", color: "var(--text-primary)" }}>
+              أهلاً بك في رحلة الأصدقاء الجماعية! 👥
+            </h2>
+
+            <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "18px" }}>
+              تمت دعوتك للتصويت واختيار أماكن الخروجة مع أصدقائك في القاهرة. أدخل اسمك للبدء بالتصويت:
+            </p>
+
+            <input
+              type="text"
+              placeholder="اكتب اسمك (مثلاً: أحمد، منى، كريم)..."
+              value={voterName}
+              onChange={(e) => setVoterName(e.target.value)}
+              className="ios-input"
+              style={{ width: "100%", height: "42px", padding: "0 12px", fontSize: "0.9rem", marginBottom: "16px" }}
+            />
+
+            <button 
+              onClick={() => {
+                if (!voterName.trim()) setVoterName("صديق القاهرة");
+                setShowVoterModal(false);
+                triggerAlert(`مرحباً بك ${voterName || "صديق القاهرة"}! يمكنك الآن التصويت 👍 👎 على الأماكن.`);
+              }}
+              className="ios-btn ios-btn-primary"
+              style={{
+                width: "100%",
+                height: "44px",
+                background: "linear-gradient(135deg, #af52de, #006FEE)",
+                color: "#fff",
+                fontWeight: "800",
+                fontSize: "0.92rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px"
+              }}
+            >
+              <i className="bx bx-check-circle" /> صوّت واشترك معنا في الجلسة
+            </button>
           </div>
         </div>
       )}

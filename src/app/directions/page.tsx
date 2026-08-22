@@ -96,7 +96,7 @@ const routesDataset: RouteData[] = [
       {
         type: "microbus",
         typeName: "ميكروباص مباشر",
-        icon: "bx bx-bus",
+        icon: "bx",
         cost: 20,
         duration: "50 دقيقة",
         steps: [
@@ -311,7 +311,7 @@ const routesDataset: RouteData[] = [
       {
         type: "microbus",
         typeName: "ميكروباص مباشر",
-        icon: "bx bx-bus",
+        icon: "bx",
         cost: 20,
         duration: "60 دقيقة",
         steps: [],
@@ -385,7 +385,7 @@ const routesDataset: RouteData[] = [
       {
         type: "microbus",
         typeName: "ميكروباص مباشر",
-        icon: "bx bx-bus",
+        icon: "bx",
         cost: 15,
         duration: "40 دقيقة",
         steps: [],
@@ -687,7 +687,7 @@ function buildLegsFromOption(option: RouteOption): RouteLeg[] {
 
 export default function DirectionsPage() {
   const { user, profile, loading } = useAuth();
-  const [routes, setRoutes] = useState<RouteData[]>(routesDataset);
+  const [routes, setRoutes] = useState<RouteData[]>([]);
   const [fromInput, setFromInput] = useState("");
   const [toInput, setToInput] = useState("");
   const [showFromSuggestions, setShowFromSuggestions] = useState(false);
@@ -724,10 +724,20 @@ export default function DirectionsPage() {
             const key = `${item.from_location}|||${item.to_location}`;
             if (!grouped[key]) {
               grouped[key] = [];
-              groupMeta[key] = {
-                from_aliases: item.from_aliases || "",
-                to_aliases: item.to_aliases || ""
-              };
+              groupMeta[key] = { from_aliases: "", to_aliases: "" };
+            }
+
+            if (item.from_aliases) {
+              const existing = groupMeta[key].from_aliases ? groupMeta[key].from_aliases.split(",") : [];
+              const newAliases = item.from_aliases.split(",");
+              const combined = Array.from(new Set([...existing, ...newAliases].map(a => a.trim()).filter(Boolean))).join(", ");
+              groupMeta[key].from_aliases = combined;
+            }
+            if (item.to_aliases) {
+              const existing = groupMeta[key].to_aliases ? groupMeta[key].to_aliases.split(",") : [];
+              const newAliases = item.to_aliases.split(",");
+              const combined = Array.from(new Set([...existing, ...newAliases].map(a => a.trim()).filter(Boolean))).join(", ");
+              groupMeta[key].to_aliases = combined;
             }
 
             let stepsArr: string[] = [];
@@ -776,22 +786,13 @@ export default function DirectionsPage() {
             };
           });
 
-          // Merge with static dataset
-          const merged = [...formatted];
-          (routesDataset || []).forEach(staticRoute => {
-            const exists = merged.some(
-              r => r.from.toLowerCase() === staticRoute.from.toLowerCase() &&
-                   r.to.toLowerCase() === staticRoute.to.toLowerCase()
-            );
-            if (!exists) {
-              merged.push(staticRoute);
-            }
-          });
-
-          setRoutes(merged);
+          setRoutes(formatted);
+        } else {
+          setRoutes(routesDataset);
         }
       } catch (err) {
         console.warn("Failed to fetch routes from Supabase, using local static dataset:", err);
+        setRoutes(routesDataset);
       }
     };
 
@@ -842,20 +843,41 @@ export default function DirectionsPage() {
   }, [routes]);
 
   const filteredFromCities = useMemo(() => {
+    const rawInput = fromInput.trim().toLowerCase();
+    const normInput = normalizeArabic(fromInput);
+
+    if (!rawInput) return uniqueCitiesList;
+
     return (uniqueCitiesList || []).filter(item => {
-      const normInput = normalizeArabic(fromInput);
-      if (!normInput) return false;
-      return (item.searchNames || []).some(name => normalizeArabic(name).includes(normInput)) && item.name !== fromInput;
+      if (item.name.toLowerCase() === rawInput) return false;
+      return (item.searchNames || []).some(name => {
+        const rawName = name.toLowerCase();
+        const normName = normalizeArabic(name);
+        return rawName.includes(rawInput) || (normInput !== "" && normName.includes(normInput));
+      });
     });
   }, [fromInput, uniqueCitiesList]);
 
   const filteredToCities = useMemo(() => {
+    const rawInput = toInput.trim().toLowerCase();
+    const normInput = normalizeArabic(toInput);
+
+    if (!rawInput) return uniqueCitiesList;
+
     return (uniqueCitiesList || []).filter(item => {
-      const normInput = normalizeArabic(toInput);
-      if (!normInput) return false;
-      return (item.searchNames || []).some(name => normalizeArabic(name).includes(normInput)) && item.name !== toInput;
+      if (item.name.toLowerCase() === rawInput) return false;
+      return (item.searchNames || []).some(name => {
+        const rawName = name.toLowerCase();
+        const normName = normalizeArabic(name);
+        return rawName.includes(rawInput) || (normInput !== "" && normName.includes(normInput));
+      });
     });
   }, [toInput, uniqueCitiesList]);
+
+  const totalRoutesCount = useMemo(() => (routes || []).length, [routes]);
+  const totalOptionsCount = useMemo(() => {
+    return (routes || []).reduce((acc, r) => acc + (r.options?.length || 0), 0);
+  }, [routes]);
 
   // Smart Search logic incorporating Arabic Normalization and Aliases resolution
   const handleSearch = (fromVal = fromInput, toVal = toInput) => {
@@ -987,7 +1009,7 @@ export default function DirectionsPage() {
           animation: "spin 1s linear infinite",
           marginBottom: "20px"
         }} />
-        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من التفاصيل ...</p>
       </div>
     );
   }
@@ -1020,7 +1042,7 @@ export default function DirectionsPage() {
               margin: "0 0 10px",
               letterSpacing: "-0.5px",
             }}>
-              <img src="/images/searchBar/Cairo_directions.svg" alt="" style={{ width: "40px", height: "40px", marginLeft: "8px" }} />
+              <img src="/images/searchBar/Cairo_directions.svg" alt="" style={{ width: "40px", marginLeft: "10px" }} />
               ازاي اروح؟
             </h1>
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
@@ -1062,23 +1084,12 @@ export default function DirectionsPage() {
             overflow: "hidden"
           }}>
             <div style={{
-              fontSize: "3.5rem",
-              marginBottom: "16px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "80px",
-              height: "80px",
-              background: "rgba(59, 130, 246, 0.08)",
-              borderRadius: "50%",
-              border: "1px solid rgba(59, 130, 246, 0.2)",
-              color: "var(--accent-ios)"
+              marginBottom: "24px",
             }}>
-              <i className="bx bxs-lock-alt"></i>
+              <img src="images/lock_cairo_map.png" alt="Lock" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
             </div>
-
-            <h2 style={{ fontSize: "1.5rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "10px" }}>
-              دليل &quot;ازاي اروح&quot; ميزة فضية 🥈
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
+              ميزة البحث عن خطوط المواصلات تتطلب اشتراك في الباقة الفضية
             </h2>
 
             <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.6", maxWidth: "460px", margin: "0 auto 24px" }}>
@@ -1094,7 +1105,7 @@ export default function DirectionsPage() {
               margin: "0 auto 24px",
               maxWidth: "420px"
             }}>
-              <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "8px" }}>ميزات الباقة الفضية (40 ج.م/شهرياً):</div>
+              <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "8px" }}>ميزات الباقة الفضية:</div>
               <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ البحث عن مسارات مواصلات بين أي منطقتين بالتفصيل</li>
                 <li>✨ حساب تكلفة الرحلة والمدة المتوقعة بدقة لكل مرحلة</li>
@@ -1103,59 +1114,59 @@ export default function DirectionsPage() {
               </ul>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "340px", margin: "0 auto" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
               {user ? (
                 <Link
-                  href="/profile"
+                  href="/profile?expand=subscription"
                   style={{
-                    padding: "12px",
-                    borderRadius: "12px",
-                    background: "var(--accent-ios)",
-                    color: "#ffffff",
+                    padding: "14px",
+                    borderRadius: "10px",
+                    background: "var(--bg-subscribe-button-seliver)",
+                    color: "#000",
                     textDecoration: "none",
-                    fontWeight: "700",
+                    fontWeight: "bold",
                     fontSize: "0.95rem",
-                    display: "block",
-                    textAlign: "center"
+                    boxShadow: "var(--bs-subscribe-button-seliver)",
+                    border: "1px solid var(--br-subscribe-button-seliver)",
+                    display: "block"
                   }}
                 >
-                  🚀 اشترك الآن ورقّ حسابك للفضية (40 ج.م)
+                  اشترك الآن في الباقة الفضية
                 </Link>
               ) : (
                 <Link
                   href="/login"
                   style={{
-                    padding: "12px",
-                    borderRadius: "12px",
-                    background: "var(--accent-ios)",
-                    color: "#ffffff",
+                    padding: "14px",
+                    borderRadius: "10px",
+                    background: "var(--bg-subscribe-button-base)",
+                    color: "#fff",
                     textDecoration: "none",
-                    fontWeight: "700",
+                    fontWeight: "bold",
                     fontSize: "0.95rem",
-                    display: "block",
-                    textAlign: "center"
+                    boxShadow: "var(--bs-subscribe-button-base)",
+                    display: "block"
                   }}
                 >
-                  🔑 سجل دخولك أولاً لتفعيل الاشتراك
+                  سجل دخولك أولاً لتفعيل الاشتراك
                 </Link>
               )}
 
               <Link
                 href="/"
                 style={{
-                  padding: "10px",
-                  borderRadius: "12px",
-                  background: "var(--bg-secondary)",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  background: "rgba(128, 128, 128, 0.05)",
                   color: "var(--text-secondary)",
                   textDecoration: "none",
-                  fontWeight: "600",
-                  fontSize: "0.88rem",
+                  fontWeight: "bold",
+                  fontSize: "0.9rem",
                   border: "1px solid var(--border-glass)",
-                  display: "block",
-                  textAlign: "center"
+                  display: "block"
                 }}
               >
-                العودة لتصفح مترو القاهرة المجاني
+                العودة للصفحة الرئيسية
               </Link>
             </div>
           </div>
@@ -1186,7 +1197,7 @@ export default function DirectionsPage() {
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
           }}>
-            <img src="/images/searchBar/Cairo_directions.svg" alt="" style={{ width: "40px", height: "40px", marginLeft: "8px" }} />
+            <img src="/images/searchBar/Cairo_directions.svg" alt="" style={{ width: "40px", marginLeft: "10px" }} />
             ازاي اروح؟
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
@@ -1203,7 +1214,9 @@ export default function DirectionsPage() {
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
-            }}>ميكروباصات</span>
+            }}>
+              عدد الطرق والوجهات: {totalRoutesCount}
+            </span>
             <span style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
@@ -1212,25 +1225,9 @@ export default function DirectionsPage() {
               padding: "4px 14px",
               fontSize: "0.78rem",
               fontWeight: "700",
-            }}>أتوبيسات</span>
-            <span style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              color: "#f59e0b",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>مترو الأنفاق</span>
-            <span style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              color: "#8b5cf6",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>مونوريل وقطارات</span>
+            }}>
+              عدد المسارات المتاحة: {totalOptionsCount}
+            </span>
           </div>
         </div>
       </div>
@@ -1290,10 +1287,11 @@ export default function DirectionsPage() {
                   boxShadow: "var(--shadow-lg)", marginTop: "6px"
                 }}>
                   {(filteredFromCities || []).map((item, idx) => {
-                    const matchedAlias = (item.searchNames || []).find(
+                    const matchedAlias = fromInput.trim() ? (item.searchNames || []).find(
                       name => name.toLowerCase() !== item.name.toLowerCase() &&
-                              normalizeArabic(name).includes(normalizeArabic(fromInput))
-                    );
+                        (name.toLowerCase().includes(fromInput.trim().toLowerCase()) ||
+                          (normalizeArabic(fromInput) !== "" && normalizeArabic(name).includes(normalizeArabic(fromInput))))
+                    ) : null;
                     return (
                       <div
                         key={idx}
@@ -1394,10 +1392,11 @@ export default function DirectionsPage() {
                   boxShadow: "var(--shadow-lg)", marginTop: "6px"
                 }}>
                   {(filteredToCities || []).map((item, idx) => {
-                    const matchedAlias = (item.searchNames || []).find(
+                    const matchedAlias = toInput.trim() ? (item.searchNames || []).find(
                       name => name.toLowerCase() !== item.name.toLowerCase() &&
-                              normalizeArabic(name).includes(normalizeArabic(toInput))
-                    );
+                        (name.toLowerCase().includes(toInput.trim().toLowerCase()) ||
+                          (normalizeArabic(toInput) !== "" && normalizeArabic(name).includes(normalizeArabic(toInput))))
+                    ) : null;
                     return (
                       <div
                         key={idx}
@@ -1494,7 +1493,7 @@ export default function DirectionsPage() {
                   boxShadow: "var(--shadow-card)",
                 }}>
                   <h2 style={{ fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0, flexWrap: "wrap" }}>
-                    <span>المسارات المتاحة من</span>
+                    <span>المسارات من</span>
                     <span style={{ color: "var(--accent-ios)" }}>{resolvedFromLabel}</span>
                     <span>إلى</span>
                     <span style={{ color: "var(--accent-ios)" }}>{resolvedToLabel}</span>
@@ -1525,14 +1524,14 @@ export default function DirectionsPage() {
                       {/* Option Top Header */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <div className={styles.optionIconBg}>
-                            <i className={option.icon} style={{ fontSize: "1.4rem", color: "var(--accent-ios)" }} />
-                          </div>
-                          <div>
-                            <h3 style={{ margin: 0, fontSize: "1.08rem", fontWeight: "700", color: "var(--text-primary)" }}>{option.typeName}</h3>
-                            <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
-                              {getOptionCategoryLabel(option.type)}
-                            </span>
+                          {/* 💡 تم التعديل: وضعنا الأيقونة داخل div مستقل */}
+                          <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                          }}>
+                            <img src={`/images/directions/${option.icon}.png`} style={{ width: "45px", height: "auto" }} alt="" />
+                            <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "var(--text-primary)", fontFamily: "Hagrid" }}>{option.typeName}</h3>
                           </div>
                         </div>
 
@@ -1566,7 +1565,7 @@ export default function DirectionsPage() {
                       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                         <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                           <i className="bx bx-git-repo-forked" style={{ color: "var(--accent-ios)" }} />
-                          <span>خطوات المسار بالتفصيل (مرحلة بمرحلة):</span>
+                          <span>خطوات المسار:</span>
                         </h4>
 
                         {(legs || []).map((leg, legIdx) => (
@@ -1597,13 +1596,13 @@ export default function DirectionsPage() {
                                 }}>
                                   {legIdx + 1}
                                 </span>
-                                <h5 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                                <h5 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-main)" }}>
                                   {leg.title}
                                 </h5>
                               </div>
 
                               {/* Stage Duration & Price Badges */}
-                              <div style={{ display: "flex", gap: "6px" }}>
+                              <div style={{ display: "flex", gap: "6px", margin: "10px 0 0 0" }}>
                                 {leg.cost !== undefined && (
                                   <span style={{
                                     background: "rgba(16, 185, 129, 0.12)",
@@ -1614,7 +1613,7 @@ export default function DirectionsPage() {
                                     fontSize: "0.78rem",
                                     fontWeight: "700"
                                   }}>
-                                    💵 {leg.cost} ج.م
+                                    الأجرة :  {leg.cost} ج.م
                                   </span>
                                 )}
                                 {leg.duration && (
@@ -1627,7 +1626,7 @@ export default function DirectionsPage() {
                                     fontSize: "0.78rem",
                                     fontWeight: "700"
                                   }}>
-                                    ⏱️ {leg.duration}
+                                    الوقت :  {leg.duration}
                                   </span>
                                 )}
                               </div>
@@ -1650,7 +1649,7 @@ export default function DirectionsPage() {
                                     fontSize: "0.75rem",
                                     fontWeight: "700",
                                     flexShrink: 0,
-                                    marginTop: "2px"
+                                    marginTop: "0px"
                                   }}>
                                     {sIdx + 1}
                                   </div>
@@ -1677,20 +1676,19 @@ export default function DirectionsPage() {
                         gap: "12px"
                       }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <span style={{ fontSize: "1.4rem" }}>📊</span>
                           <div>
-                            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}>إجمالي ملخص الرحلة</div>
-                            <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>مجموع الوقت والتعريفة لكافة المراحل</div>
+                            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}><i className="bx bx-git-repo-forked" style={{ color: "var(--accent-ios)" }} /> ملخص الرحلة</div>
+                            <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>مجموع الوقت والأجرة لكافة المراحل</div>
                           </div>
                         </div>
 
-                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                          <div style={{ background: "var(--bg-primary)", padding: "6px 12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
-                            <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)", display: "block" }}>الأجرة الإجمالية</span>
-                            <span style={{ fontSize: "0.98rem", fontWeight: "800", color: "#10b981" }}>💵 {summary.totalCost} ج.م</span>
+                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center", alignItems: "center", flexDirection: "column", width: "100%" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "space-between", background: "var(--bg-primary)", padding: "6px 12px", borderRadius: "10px", border: "1px solid var(--border-glass)", width: "100%" }}>
+                            <span style={{ fontSize: "0.72rem", fontWeight: "800", color: "var(--text-secondary)", fontFamily: "'Hagrid', sans-serif" }}>هتصرف أجرة بقيمة :</span>
+                            <span style={{ fontSize: "0.98rem", fontWeight: "800", color: "#10b981", }}>💵 {summary.totalCost} ج.م</span>
                           </div>
-                          <div style={{ background: "var(--bg-primary)", padding: "6px 12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
-                            <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)", display: "block" }}>الوقت الإجمالي</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "space-between", background: "var(--bg-primary)", padding: "6px 12px", borderRadius: "10px", border: "1px solid var(--border-glass)", width: "100%" }}>
+                            <span style={{ fontSize: "0.72rem", fontWeight: "800", color: "var(--text-secondary)", fontFamily: "'Hagrid', sans-serif" }}> وقت الوصول المقدر :</span>
                             <span style={{ fontSize: "0.98rem", fontWeight: "800", color: "var(--accent-ios)" }}>⏱️ {summary.totalDuration}</span>
                           </div>
                         </div>

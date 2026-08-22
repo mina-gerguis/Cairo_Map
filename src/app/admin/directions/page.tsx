@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
-import styles from "../admin.module.css";
+import styles from "./directions.module.css";
 
 interface RouteLeg {
   title: string;
@@ -202,6 +202,14 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
   const [loading, setLoading] = useState(isSubComponent ? false : true);
   const [routes, setRoutes] = useState<RouteEntry[]>([]);
   const [dbMissing, setDbMissing] = useState(false);
+
+  // Search & Filter & Tab States
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
+  const [selectedOrigin, setSelectedOrigin] = useState<string>("all");
+
+  // Accordion State: Track which routes are expanded (key: from|||to)
+  const [expandedRouteKeys, setExpandedRouteKeys] = useState<Record<string, boolean>>({});
 
   // Form States
   const [showAddForm, setShowAddForm] = useState(false);
@@ -401,6 +409,70 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
     });
     return Object.values(grouped);
   }, [routes]);
+
+  // Compute Unique Origin Locations Tabs Dynamically
+  const uniqueOrigins = useMemo(() => {
+    const originsMap: Record<string, number> = {};
+    (groupedRoutesList || []).forEach(r => {
+      const origin = (r.from_location || "").trim();
+      if (origin) {
+        originsMap[origin] = (originsMap[origin] || 0) + 1;
+      }
+    });
+    return Object.entries(originsMap).map(([name, count]) => ({ name, count }));
+  }, [groupedRoutesList]);
+
+  // Filtered Grouped Routes (Filter by Search, Vehicle Type, AND Origin Location Tab)
+  const filteredGroupedRoutes = useMemo(() => {
+    const term = searchQuery.trim().toLowerCase();
+    return groupedRoutesList.filter(group => {
+      // 1. Origin Location Tab Filter
+      if (selectedOrigin !== "all" && group.from_location.trim().toLowerCase() !== selectedOrigin.trim().toLowerCase()) {
+        return false;
+      }
+
+      // 2. Search Query
+      const matchesSearch = !term || (
+        group.from_location.toLowerCase().includes(term) ||
+        group.to_location.toLowerCase().includes(term) ||
+        (group.from_aliases && group.from_aliases.toLowerCase().includes(term)) ||
+        (group.to_aliases && group.to_aliases.toLowerCase().includes(term)) ||
+        group.options.some(opt => opt.type_name.toLowerCase().includes(term))
+      );
+
+      // 3. Type Filter
+      const matchesType = filterType === "all" || group.options.some(opt => opt.type === filterType);
+
+      return matchesSearch && matchesType;
+    });
+  }, [groupedRoutesList, searchQuery, filterType, selectedOrigin]);
+
+  // Key Statistics
+  const totalConnectionsCount = groupedRoutesList.length;
+  const totalOptionsCount = routes.length;
+  const totalMultiLegCount = routes.filter(r => r.type === "multi" || (r.legs && r.legs.length > 1)).length;
+  const avgCost = routes.length > 0 ? Math.round(routes.reduce((acc, r) => acc + (r.cost || 0), 0) / routes.length) : 0;
+
+  // Accordion Toggle Helpers
+  const toggleRouteExpand = (key: string) => {
+    setExpandedRouteKeys(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const expandAllRoutes = () => {
+    const allKeys: Record<string, boolean> = {};
+    filteredGroupedRoutes.forEach(r => {
+      const key = `${r.from_location.trim()}|||${r.to_location.trim()}`;
+      allKeys[key] = true;
+    });
+    setExpandedRouteKeys(allKeys);
+  };
+
+  const collapseAllRoutes = () => {
+    setExpandedRouteKeys({});
+  };
 
   // Options Helper Functions
   const updateOption = (index: number, field: keyof FormOption, value: FormOption[keyof FormOption]) => {
@@ -615,7 +687,7 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
 
         if (insertError) throw insertError;
 
-        setSuccess(editingConnection ? "تم تحديث الطريق بجميع وسائله ومراخله بنجاح!" : "تم إضافة الطريق بجميع وسائله ومراخله بنجاح!");
+        setSuccess(editingConnection ? "تم تحديث الطريق بجميع وسائله ومراحله بنجاح!" : "تم إضافة الطريق بجميع وسائله ومراحله بنجاح!");
         await fetchRoutes();
         resetForm();
         setShowAddForm(false);
@@ -719,9 +791,9 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
 
   if (!isSubComponent && (loading || authLoading)) {
     return (
-      <div className={styles.loadingContainer}>
-        <span className={styles.loadingSpinner} />
-        <p>جاري تحميل لوحة إدارة المسارات...</p>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "400px", gap: "16px" }}>
+        <i className="bx bx-loader-alt" style={{ fontSize: "2.5rem", color: "#3b82f6", animation: "spin 1s linear infinite" }} />
+        <p style={{ color: "#94a3b8", fontWeight: "600" }}>جاري تحميل لوحة إدارة المسارات والطرق...</p>
       </div>
     );
   }
@@ -729,31 +801,34 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
   if (!isSubComponent && !isAdmin) {
     return (
       <div style={{ textAlign: "center", padding: "100px 20px" }}>
-        <h2 style={{ marginTop: "16px" }}>غير مصرح بالدخول</h2>
-        <p style={{ color: "var(--text-secondary)" }}>عذراً، هذه الصفحة مخصصة لمديري النظام فقط.</p>
-        <Link href="/" className="ios-btn ios-btn-primary" style={{ display: "inline-block", marginTop: "20px", textDecoration: "none" }}>العودة للرئيسية</Link>
+        <h2 style={{ marginTop: "16px", color: "#f8fafc" }}>غير مصرح بالدخول</h2>
+        <p style={{ color: "#94a3b8" }}>عذراً، هذه الصفحة مخصصة لمديري النظام فقط.</p>
+        <Link href="/" className={styles.primaryActionBtn} style={{ display: "inline-flex", marginTop: "20px", textDecoration: "none" }}>
+          العودة للرئيسية
+        </Link>
       </div>
     );
   }
 
   return (
-    <div style={isSubComponent ? { padding: 0 } : { maxWidth: "1000px", margin: "0 auto", padding: "10px" }}>
+    <div className={styles.directionsContainer}>
 
-      {/* Title Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
-        {!isSubComponent ? (
-          <div>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.8rem", fontWeight: "900", margin: 0, color: "var(--text-primary)" }}>
-              إدارة خطوط ومسارات المواصلات والمراحل
-            </h1>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 0" }}>
-              إضافة وتعديل خطوط مواصلات السفر والانتقال بين المدن مع تقسيم المراحل والأجرة والخطوات التفصيلية لخدمة {"\"ازاي اروح ؟\""}.
-            </p>
+      {/* ── Page Header ── */}
+      <div className={styles.pageHeader}>
+        <div className={styles.headerInfo}>
+          <div className={styles.headerTitleGroup}>
+            <div className={styles.headerIcon}>
+              <i className="bx bx-compass" />
+            </div>
+            <div>
+              <h1 className={styles.pageTitle}>إدارة خطوط ومسارات المواصلات (ازاي اروح)</h1>
+              <p className={styles.pageSubtitle}>إضافة وتعديل خطوط مواصلات الانتقال بين المدن، المراحل، والأجرة والخطوات التفصيلية.</p>
+            </div>
           </div>
-        ) : <div />}
+        </div>
+
         <button
-          className="ios-btn ios-btn-primary"
-          style={{ width: "auto" }}
+          className={showAddForm ? styles.secondaryActionBtn : styles.primaryActionBtn}
           onClick={() => {
             if (showAddForm) {
               resetForm();
@@ -763,56 +838,119 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
             }
           }}
         >
-          {showAddForm ? "إلغاء الإضافة" : "+ إضافة طريق جديد"}
+          <i className={`bx ${showAddForm ? "bx-x" : "bx-plus-circle"}`} style={{ fontSize: "1.2rem" }} />
+          <span>{showAddForm ? "إلغاء الإضافة" : "+ إضافة طريق جديد"}</span>
         </button>
       </div>
 
-      {/* SQL Setup Banner */}
+      {/* ── Statistics Summary Bar ── */}
+      <div className={styles.statsGrid}>
+        <div className={styles.statCard}>
+          <div className={styles.statIconWrapper} style={{ background: "rgba(59, 130, 246, 0.15)", color: "#60a5fa" }}>
+            <i className="bx bx-map-pin" />
+          </div>
+          <div className={styles.statContent}>
+            <span className={styles.statValue}>{totalConnectionsCount}</span>
+            <span className={styles.statLabel}>إجمالي الوصلات والطرق</span>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.statIconWrapper} style={{ background: "rgba(16, 185, 129, 0.15)", color: "#34d399" }}>
+            <i className="bx bx-bus" />
+          </div>
+          <div className={styles.statContent}>
+            <span className={styles.statValue}>{totalOptionsCount}</span>
+            <span className={styles.statLabel}>وسائل المواصلات المسجلة</span>
+          </div>
+        </div>
+
+        <div className={styles.statCard}>
+          <div className={styles.statIconWrapper} style={{ background: "rgba(168, 85, 247, 0.15)", color: "#c084fc" }}>
+            <i className="bx bx-git-repo-forked" />
+          </div>
+          <div className={styles.statContent}>
+            <span className={styles.statValue}>{totalMultiLegCount}</span>
+            <span className={styles.statLabel}>مسارات متعددة المراحل</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── SQL Setup Banner (If column/table missing) ── */}
       {dbMissing && (
-        <div className="glass-panel" style={{ padding: "20px", borderRight: "4px solid var(--accent-warning)", marginBottom: "24px", background: "rgba(245, 158, 11, 0.05)" }}>
-          <h4 style={{ color: "var(--accent-warning)", margin: "0 0 8px", fontSize: "1.05rem", fontWeight: "800" }}>
-            ⚠️ تنبيه: جدول قاعدة البيانات غير منشأ أو ينقصه العمود `legs`
+        <div style={{ background: "rgba(245, 158, 11, 0.08)", border: "1px solid rgba(245, 158, 11, 0.3)", borderRadius: "14px", padding: "18px 22px" }}>
+          <h4 style={{ color: "#fbbf24", margin: "0 0 8px", fontSize: "1.05rem", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
+            <i className="bx bx-error" style={{ fontSize: "1.3rem" }} />
+            <span>⚠️ تنبيه: جدول قاعدة البيانات غير منشأ أو ينقصه العمود `legs`</span>
           </h4>
-          <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", margin: 0 }}>
-            لتفعيل تقسيم المراحل وتخفيضات التذاكر الدائمة لجميع المستخدمين، يرجى إضافة عمود `legs` أو إنشاء الجدول في Supabase عبر الكود التالي:
+          <p style={{ fontSize: "0.86rem", color: "#cbd5e1", lineHeight: "1.6", margin: 0 }}>
+            لتفعيل تقسيم المراحل وتخفيضات التذاكر الدائمة لجميع المستخدمين، يرجى إضافة عمود `legs` أو إنشاء الجدول في Supabase عبر الأمر التالية:
           </p>
-          <pre style={{ background: "rgba(0,0,0,0.3)", padding: "12px", borderRadius: "10px", fontSize: "0.75rem", overflowX: "auto", marginTop: "12px", direction: "ltr", textAlign: "left", color: "#a7f3d0" }}>
+          <pre style={{ background: "rgba(0,0,0,0.4)", padding: "12px", borderRadius: "10px", fontSize: "0.78rem", overflowX: "auto", marginTop: "10px", direction: "ltr", textAlign: "left", color: "#a7f3d0", border: "1px solid rgba(255,255,255,0.06)" }}>
 {`ALTER TABLE public.transit_routes ADD COLUMN IF NOT EXISTS legs JSONB DEFAULT '[]'::jsonb;`}
           </pre>
         </div>
       )}
 
-      {/* Notifications */}
-      {error && <div className={styles.adminError} style={{ marginBottom: "20px" }}>⚠️ {error}</div>}
-      {success && <div className={styles.adminSuccess} style={{ marginBottom: "20px" }}>✓ {success}</div>}
+      {/* ── Notifications ── */}
+      {error && (
+        <div style={{ background: "rgba(239, 68, 68, 0.12)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#f87171", padding: "14px 18px", borderRadius: "12px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+          <i className="bx bx-error-circle" style={{ fontSize: "1.2rem" }} />
+          <span>{error}</span>
+        </div>
+      )}
+      {success && (
+        <div style={{ background: "rgba(16, 185, 129, 0.12)", border: "1px solid rgba(16, 185, 129, 0.3)", color: "#34d399", padding: "14px 18px", borderRadius: "12px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+          <i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }} />
+          <span>{success}</span>
+        </div>
+      )}
 
-      {/* Form Section */}
+      {/* ── Add / Edit Form Modal/Drawer ── */}
       {showAddForm && (
-        <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: "30px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
-          <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
-            {editingConnection ? "تعديل بيانات الطريق ومراحل المسار" : "إضافة طريق ومسارات مواصلات ومراحل جديدة"}
-          </h2>
+        <form onSubmit={handleSubmit} className={styles.formCard}>
+          <div className={styles.formHeader}>
+            <h2 className={styles.formTitle}>
+              <i className={`bx ${editingConnection ? "bx-edit-alt" : "bx-plus-circle"}`} style={{ color: "#3b82f6" }} />
+              <span>{editingConnection ? "تعديل بيانات الطريق ومراحل المسار" : "إضافة طريق ومسارات مواصلات ومراحل جديدة"}</span>
+            </h2>
+            <button
+              type="button"
+              className={styles.secondaryActionBtn}
+              onClick={() => {
+                resetForm();
+                setShowAddForm(false);
+              }}
+              style={{ padding: "6px 14px", fontSize: "0.82rem" }}
+            >
+              إلغاء
+            </button>
+          </div>
 
           {/* From & To inputs */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-            <div>
-              <label className="help-label">من (نقطة البداية) *</label>
+          <div className={styles.formGrid}>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>
+                <span>من (نقطة البداية) *</span>
+              </label>
               <input
                 type="text"
                 required
-                className="ios-input"
+                className={styles.input}
                 placeholder="مثال: الزقازيق"
                 value={fromLocation}
                 onChange={e => setFromLocation(e.target.value)}
               />
             </div>
 
-            <div>
-              <label className="help-label">إلى (الوجهة النهائية) *</label>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>
+                <span>إلى (الوجهة النهائية) *</span>
+              </label>
               <input
                 type="text"
                 required
-                className="ios-input"
+                className={styles.input}
                 placeholder="مثال: أرض المعارض"
                 value={toLocation}
                 onChange={e => setToLocation(e.target.value)}
@@ -821,23 +959,27 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
           </div>
 
           {/* Aliases Inputs */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-            <div>
-              <label className="help-label">الأسماء والكلمات البديلة لنقطة البداية (مفصولة بفاصلة)</label>
+          <div className={styles.formGrid}>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>
+                <span>الأسماء والكلمات البديلة لنقطة البداية (مفصولة بفاصلة)</span>
+              </label>
               <input
                 type="text"
-                className="ios-input"
+                className={styles.input}
                 placeholder="مثال: موقف الأحرار، الاحرار، جامعة الزقازيق"
                 value={fromAliases}
                 onChange={e => setFromAliases(e.target.value)}
               />
             </div>
 
-            <div>
-              <label className="help-label">الأسماء والكلمات البديلة للوجهة (مفصولة بفاصلة)</label>
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>
+                <span>الأسماء والكلمات البديلة للوجهة (مفصولة بفاصلة)</span>
+              </label>
               <input
                 type="text"
-                className="ios-input"
+                className={styles.input}
                 placeholder="مثال: معرض الكتاب، ارض المعارض، مركز المعارض"
                 value={toAliases}
                 onChange={e => setToAliases(e.target.value)}
@@ -846,78 +988,78 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
           </div>
 
           {/* Options Sublist */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)", borderBottom: "1px solid var(--border-glass)", paddingBottom: "10px", margin: "10px 0 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>وسائل المواصلات المتاحة لهذا الطريق ({(options || []).length})</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "12px" }}>
+              <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "#f8fafc", margin: 0 }}>
+                وسائل المواصلات المتاحة لهذا الطريق ({(options || []).length})
+              </h3>
               <button
                 type="button"
-                className="ios-btn"
+                className={styles.addOptionBtn}
                 onClick={addOptionField}
-                style={{ padding: "6px 16px", height: "auto", fontSize: "0.85rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}
               >
-                + إضافة وسيلة مواصلات أخرى
+                <i className="bx bx-plus" />
+                <span>إضافة وسيلة مواصلات أخرى</span>
               </button>
-            </h3>
+            </div>
 
             {(options || []).map((opt, optIdx) => (
-              <div key={optIdx} className="glass-panel" style={{ padding: "20px", borderRight: "4px solid #3b82f6", display: "flex", flexDirection: "column", gap: "16px", background: "rgba(255,255,255,0.01)" }}>
-
-                {/* Option Header */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: "800", color: "var(--text-secondary)", fontSize: "0.95rem" }}>
-                    🤖 وسيلة المواصلات رقم {optIdx + 1}
+              <div key={optIdx} className={styles.optionBox}>
+                <div className={styles.optionHeader}>
+                  <span className={styles.optionTag}>
+                    <i className="bx bx-bus" />
+                    <span>وسيلة المواصلات رقم {optIdx + 1}</span>
                   </span>
                   {(options || []).length > 1 && (
                     <button
                       type="button"
-                      className="ios-btn"
+                      className={styles.removeBtn}
                       onClick={() => removeOptionField(optIdx)}
-                      style={{ padding: "4px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}
                     >
                       <i className="bx bx-trash" style={{ marginLeft: "4px" }} />
-                      حذف هذه الوسيلة
+                      حذف الوسيلة
                     </button>
                   )}
                 </div>
 
                 {/* Type, Name, Icon Grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
-                  <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
-                    <div style={{ flex: 1 }}>
-                      <label className="help-label">نوع وسيلة المواصلات *</label>
+                <div className={styles.formGrid}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>نوع وسيلة المواصلات *</label>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                       <select
-                        className="ios-input"
+                        className={styles.input}
                         value={opt.type}
                         onChange={e => {
                           const newType = e.target.value as FormOption["type"];
                           let defaultName = opt.type_name;
                           let defaultIcon = opt.icon;
                           if (newType === "microbus") {
-                            defaultIcon = "bx bx-bus";
-                            defaultName = "ميكروباص مباشر";
+                            defaultIcon = "microbus";
+                            defaultName = "ميكروباص";
                           } else if (newType === "bus") {
-                            defaultIcon = "bx bx-bus-school";
+                            defaultIcon = "bus";
                             defaultName = "أتوبيس النقل العام";
                           } else if (newType === "car") {
-                            defaultIcon = "bx bx-car";
+                            defaultIcon = "car";
                             defaultName = "سيارة خاصة";
                           } else if (newType === "train") {
-                            defaultIcon = "bx bx-train";
+                            defaultIcon = "train";
                             defaultName = "القطار المباشر";
                           } else if (newType === "monorail") {
-                            defaultIcon = "bx bx-train";
+                            defaultIcon = "monorail";
                             defaultName = "قطار المونوريل";
                           } else if (newType === "metro") {
-                            defaultIcon = "bx bx-subway";
+                            defaultIcon = "metro";
                             defaultName = "مترو الأنفاق";
                           } else if (newType === "plane") {
-                            defaultIcon = "bx bx-plane";
+                            defaultIcon = "plane";
                             defaultName = "طائرة / طيران";
                           } else if (newType === "ship") {
-                            defaultIcon = "bx bx-ship";
+                            defaultIcon = "ship";
                             defaultName = "سفينة / عبارة";
                           } else if (newType === "multi") {
-                            defaultIcon = "bx bx-transfer";
+                            defaultIcon = "transfer";
                             defaultName = "مواصلات متعددة";
                           }
                           updateOptionFields(optIdx, {
@@ -926,7 +1068,7 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
                             icon: defaultIcon
                           });
                         }}
-                        style={{ background: "var(--bg-glass-card)" }}
+                        style={{ flex: 1 }}
                       >
                         <option value="microbus">ميكروباص</option>
                         <option value="bus">أتوبيس</option>
@@ -938,98 +1080,33 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
                         <option value="ship">سفينة</option>
                         <option value="multi">مواصلات متعددة</option>
                       </select>
-                    </div>
-                    <div style={{ width: "42px", height: "42px", borderRadius: "10px", background: "rgba(255,255,255,0.05)", border: "1px solid var(--border-glass)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", color: "var(--accent-ios)" }}>
-                      <i className={opt.icon} />
+                      <div className={styles.vehicleIcon}>
+                        <img src={`/images/directions/${opt.icon}.png`} alt="" style={{ width: "80%", height: "auto" }} />
+                      </div>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="help-label">اسم وسيلة المواصلات المخصص *</label>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>اسم وسيلة المواصلات المخصص *</label>
                     <input
                       type="text"
                       required
-                      className="ios-input"
+                      className={styles.input}
                       placeholder="مثال: ميكروباص مباشر"
                       value={opt.type_name}
                       onChange={e => updateOption(optIdx, "type_name", e.target.value)}
                     />
                   </div>
-
-                  <div>
-                    <label className="help-label">رمز الأيقونة (Boxicon) *</label>
-                    <input
-                      type="text"
-                      required
-                      className="ios-input"
-                      placeholder="bx bx-bus"
-                      value={opt.icon}
-                      onChange={e => updateOption(optIdx, "icon", e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                {/* Cost & Duration Grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-                  <div>
-                    <label className="help-label">التكلفة الإجمالية المتوقعة (ج.م) *</label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      className="ios-input"
-                      placeholder="20"
-                      value={opt.cost}
-                      onChange={e => updateOption(optIdx, "cost", e.target.value)}
-                    />
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "10px" }}>
-                    <div>
-                      <label className="help-label">الزمن (دقائق)</label>
-                      <input
-                        type="number"
-                        min="1"
-                        className="ios-input"
-                        placeholder="90"
-                        value={opt.durationMinutes}
-                        onChange={e => {
-                          const val = e.target.value;
-                          const mins = val ? parseInt(val) : "";
-                          updateOptionFields(optIdx, {
-                            durationMinutes: mins,
-                            duration: mins ? formatMinutesToArabic(mins) : ""
-                          });
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label className="help-label">النص النهائي لزمن الرحلة *</label>
-                      <input
-                        type="text"
-                        required
-                        className="ios-input"
-                        placeholder="ساعة و 30 دقيقة"
-                        value={opt.duration}
-                        onChange={e => updateOption(optIdx, "duration", e.target.value)}
-                      />
-                    </div>
-                  </div>
                 </div>
 
                 {/* Map Link / Google Maps URL */}
-                <div>
-                  <label className="help-label" style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                    <span>رابط بدء الرحلة ومسار خريطة Google (اختياري)</span>
-                    {opt.type === "car" && (
-                      <span style={{ fontSize: "0.75rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", padding: "2px 6px", borderRadius: "4px" }}>
-                        يوصى به لـ {"\"عربية خاص\""}
-                      </span>
-                    )}
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>
+                    <span>رابط بدء الرحلة ومسار خريطة Google </span>
                   </label>
                   <input
                     type="text"
-                    className="ios-input"
+                    className={styles.input}
                     placeholder="https://www.google.com/maps/dir/..."
                     value={opt.map_link}
                     onChange={e => updateOption(optIdx, "map_link", e.target.value)}
@@ -1037,69 +1114,70 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
                 </div>
 
                 {/* Stages / Legs Breakdown Editor */}
-                <div style={{ background: "rgba(0,0,0,0.15)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div className={styles.legsSection}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--accent-ios)", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px" }}>
                       <i className="bx bx-git-repo-forked" />
                       <span>مراحل الرحلة والخطوات التفصيلية (المرحلة الأولى، الثانية...)</span>
                     </h4>
                     <button
                       type="button"
-                      className="ios-btn"
+                      className={styles.secondaryActionBtn}
                       onClick={() => addLegToOption(optIdx)}
-                      style={{ padding: "4px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" }}
+                      style={{ padding: "4px 12px", fontSize: "0.8rem", fontFamily:"var(--font-heading)" }}
                     >
                       + إضافة مرحلة جديدة
                     </button>
                   </div>
 
                   {(opt.legs || []).map((leg, legIdx) => (
-                    <div key={legIdx} style={{ background: "var(--bg-glass-card)", padding: "16px", borderRadius: "10px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "12px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
-                        <span style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--text-primary)" }}>
-                          📍 المرحلة {legIdx + 1}
+                    <div key={legIdx} className={styles.legBox}>
+                      <div className={styles.legHeader}>
+                        <span className={styles.legTitle}>
+                          <i className="bx bx-current-location" />
+                          <span>المرحلة رقم {legIdx + 1}</span>
                         </span>
                         {(opt.legs || []).length > 1 && (
                           <button
                             type="button"
-                            className="ios-btn"
+                            className={styles.removeBtn}
                             onClick={() => removeLegFromOption(optIdx, legIdx)}
-                            style={{ padding: "2px 8px", height: "auto", fontSize: "0.75rem", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}
+                            style={{ padding: "3px 10px", fontSize: "0.75rem", fontFamily:"var(--font-heading)" }}
                           >
-                            حذف هذه المرحلة
+                           <i className="bx bx-trash" />
                           </button>
                         )}
                       </div>
 
                       {/* Leg Title, Cost, Duration */}
-                      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "10px" }}>
-                        <div>
-                          <label className="help-label">عنوان المرحلة *</label>
+                      <div className={styles.formGrid}>
+                        <div className={styles.inputGroup}>
+                          <label className={styles.label}>عنوان المرحلة *</label>
                           <input
                             type="text"
                             required
-                            className="ios-input"
+                            className={styles.input}
                             placeholder="مثال: المرحلة الأولى: ميكروباص من الزقازيق للسلام"
                             value={leg.title}
                             onChange={e => updateLegField(optIdx, legIdx, "title", e.target.value)}
                           />
                         </div>
-                        <div>
-                          <label className="help-label">أجرة هذه المرحلة (ج.م)</label>
+                        <div className={styles.inputGroup}>
+                          <label className={styles.label}>أجرة هذه المرحلة (ج.م)</label>
                           <input
                             type="number"
                             min="0"
-                            className="ios-input"
+                            className={styles.input}
                             placeholder="20"
                             value={leg.cost}
                             onChange={e => updateLegField(optIdx, legIdx, "cost", e.target.value)}
                           />
                         </div>
-                        <div>
-                          <label className="help-label">وقت هذه المرحلة</label>
+                        <div className={styles.inputGroup}>
+                          <label className={styles.label}>وقت هذه المرحلة</label>
                           <input
                             type="text"
-                            className="ios-input"
+                            className={styles.input}
                             placeholder="50 دقيقة"
                             value={leg.duration}
                             onChange={e => updateLegField(optIdx, legIdx, "duration", e.target.value)}
@@ -1108,29 +1186,29 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
                       </div>
 
                       {/* Leg Sub-Steps */}
-                      <div>
+                      <div className={styles.inputGroup}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                          <label className="help-label" style={{ margin: 0 }}>خطوات هذه المرحلة بالتفصيل *</label>
+                          <label className={styles.label}>خطوات هذه المرحلة بالتفصيل *</label>
                           <button
                             type="button"
-                            className="ios-btn"
+                            className={styles.secondaryActionBtn}
                             onClick={() => addLegStep(optIdx, legIdx)}
-                            style={{ padding: "2px 8px", height: "auto", fontSize: "0.75rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}
+                            style={{ padding: "2px 10px", fontSize: "0.75rem" }}
                           >
-                            + إضافة خطوة للمرحلة
+                            + إضافة خطوة
                           </button>
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                           {(leg.steps || []).map((stepVal, stepIdx) => (
                             <div key={stepIdx} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                              <span style={{ color: "var(--text-muted)", fontSize: "0.85rem", fontWeight: "700", minWidth: "20px" }}>
+                              <span style={{ color: "#64748b", fontSize: "0.85rem", fontWeight: "700", minWidth: "22px", textAlign: "center" }}>
                                 {stepIdx + 1}.
                               </span>
                               <input
                                 type="text"
                                 required
-                                className="ios-input"
+                                className={styles.input}
                                 placeholder="اكتب تفاصيل هذه الخطوة..."
                                 value={stepVal}
                                 onChange={e => updateLegStep(optIdx, legIdx, stepIdx, e.target.value)}
@@ -1138,9 +1216,9 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
                               />
                               <button
                                 type="button"
-                                className="ios-btn"
+                                className={styles.removeBtn}
                                 onClick={() => removeLegStep(optIdx, legIdx, stepIdx)}
-                                style={{ padding: "0", width: "30px", height: "30px", background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+                                style={{ padding: "8px 12px" }}
                                 disabled={(leg.steps || []).length === 1}
                               >
                                 <i className="bx bx-trash" />
@@ -1154,11 +1232,10 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
                 </div>
 
                 {/* Tips */}
-                <div>
-                  <label className="help-label">نصيحة ذهبية للمسافرين (اختياري)</label>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>نصيحة ذهبية للمسافرين (اختياري)</label>
                   <textarea
-                    className="ios-input"
-                    style={{ width: "100%", minHeight: "60px", padding: "10px", fontFamily: "inherit" }}
+                    className={styles.textarea}
                     placeholder="اكتب أي نصيحة إضافية..."
                     value={opt.tips}
                     onChange={e => updateOption(optIdx, "tips", e.target.value)}
@@ -1170,10 +1247,10 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
           </div>
 
           {/* Form Actions */}
-          <div style={{ display: "flex", gap: "12px", alignSelf: "flex-end", marginTop: "10px" }}>
+          <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "10px" }}>
             <button
               type="button"
-              className="ios-btn"
+              className={styles.secondaryActionBtn}
               onClick={() => {
                 resetForm();
                 setShowAddForm(false);
@@ -1183,9 +1260,9 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
             </button>
             <button
               type="submit"
-              className="ios-btn ios-btn-primary"
+              className={styles.primaryActionBtn}
               disabled={isSubmitting}
-              style={{ padding: "0 28px" }}
+              style={{ padding: "12px 32px" }}
             >
               {isSubmitting ? "جاري الحفظ..." : "حفظ الطريق والخطوات بالكامل"}
             </button>
@@ -1193,122 +1270,273 @@ export default function AdminDirectionsPage({ isSubComponent = false }: { isSubC
         </form>
       )}
 
-      {/* Routes List */}
-      <div className="glass-panel" style={{ padding: "24px" }}>
-        <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 16px" }}>
-          الطرق والمسارات المسجلة حالياً ({(groupedRoutesList || []).length})
-        </h3>
+      {/* ── Search & Filter Bar ── */}
+      <div className={styles.filterCard}>
+        <div className={styles.searchWrapper}>
+          <i className={`bx bx-search ${styles.searchIcon}`} />
+          <input
+            type="text"
+            className={styles.searchInput}
+            placeholder="ابحث بالنقطة، الوجهة، أو الكلمات البديلة..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </div>
 
-        {(groupedRoutesList || []).length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text-muted)" }}>
-            <i className="bx bx-compass" style={{ fontSize: "2.5rem", marginBottom: "8px", display: "block" }} />
-            لا يوجد مسارات مضافة حالياً.
+        <select
+          className={styles.filterSelect}
+          value={filterType}
+          onChange={e => setFilterType(e.target.value)}
+        >
+          <option value="all">كل وسائل المواصلات</option>
+          <option value="microbus">ميكروباص</option>
+          <option value="bus">أتوبيس</option>
+          <option value="metro">مترو</option>
+          <option value="train">قطار</option>
+          <option value="monorail">مونوريل</option>
+          <option value="multi">مواصلات متعددة</option>
+          <option value="car">عربية خاص</option>
+        </select>
+      </div>
+
+      {/* ── Origin Locations Dynamic Tabs ── */}
+      <div className={styles.originTabsContainer}>
+        <button
+          type="button"
+          className={`${styles.originTab} ${selectedOrigin === "all" ? styles.originTabActive : ""}`}
+          onClick={() => setSelectedOrigin("all")}
+        >
+          <i className="bx bx-grid-alt" />
+          <span>كل مناطق الانطلاق</span>
+          <span className={styles.tabBadge}>{groupedRoutesList.length}</span>
+        </button>
+
+        {uniqueOrigins.map((orig, i) => (
+          <button
+            key={i}
+            type="button"
+            className={`${styles.originTab} ${selectedOrigin === orig.name ? styles.originTabActive : ""}`}
+            onClick={() => setSelectedOrigin(orig.name)}
+          >
+            <i className="bx bx-map-pin" />
+            <span>منطقة {orig.name}</span>
+            <span className={styles.tabBadge}>{orig.count}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* ── List Actions Toolbar (Expand All / Collapse All) ── */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 4px" }}>
+        <span style={{ fontSize: "0.9rem", fontWeight: "800", color: "#64748b" }}>
+          الطرق والمسارات ({(filteredGroupedRoutes || []).length})
+        </span>
+
+        {filteredGroupedRoutes.length > 0 && (
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              type="button"
+              className={styles.secondaryActionBtn}
+              onClick={expandAllRoutes}
+              style={{ padding: "5px 12px", fontSize: "0.78rem" }}
+            >
+              <i className="bx bx-expand-vertical" />
+              <span>فتح الكل</span>
+            </button>
+            <button
+              type="button"
+              className={styles.secondaryActionBtn}
+              onClick={collapseAllRoutes}
+              style={{ padding: "5px 12px", fontSize: "0.78rem" }}
+            >
+              <i className="bx bx-collapse-vertical" />
+              <span>إغلاق الكل</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ── Routes & Paths Collapsible Accordion List ── */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {filteredGroupedRoutes.length === 0 ? (
+          <div className={styles.emptyState}>
+            <i className={`bx bx-compass ${styles.emptyIcon}`} />
+            <h3 style={{ margin: "0", color: "#f8fafc", fontWeight: "800" }}>لا توجد مسارات مطابقة</h3>
+            <p style={{ margin: "4px 0 0", fontSize: "0.9rem" }}>جرّب تغيير تبويب نقطة الانطلاق، كلمات البحث، أو أضف مساراً جديداً.</p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {(groupedRoutesList || []).map((route, idx) => (
-              <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "20px", borderRadius: "14px", border: "1px solid var(--border-glass)", background: "rgba(255,255,255,0.01)", flexWrap: "wrap", gap: "16px" }}>
-                <div style={{ display: "flex", flex: 1, gap: "14px", minWidth: "280px", flexDirection: "column" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "rgba(59, 130, 246, 0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <i className="bx bx-compass" style={{ fontSize: "1.2rem", color: "#3b82f6" }} />
+          filteredGroupedRoutes.map((route, idx) => {
+            const routeKey = `${route.from_location.trim()}|||${route.to_location.trim()}`;
+            const isExpanded = !!expandedRouteKeys[routeKey];
+
+            // Summary calculations for collapsed view
+            const optionCosts = (route.options || []).map(o => o.cost).filter(c => typeof c === "number");
+            const minCost = optionCosts.length > 0 ? Math.min(...optionCosts) : 0;
+            const maxCost = optionCosts.length > 0 ? Math.max(...optionCosts) : 0;
+            const costSummary = minCost === maxCost ? `${minCost} ج.م` : `${minCost} - ${maxCost} ج.م`;
+
+            return (
+              <div key={idx} className={styles.routeCard}>
+
+                {/* Route Card Clickable Accordion Header */}
+                <div
+                  className={`${styles.accordionHeader} ${!isExpanded ? styles.accordionHeaderCollapsed : ""}`}
+                  onClick={() => toggleRouteExpand(routeKey)}
+                >
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px", flex: 1, minWidth: "260px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                      <h3 className={styles.routeTitle}>
+                        <span>من</span>
+                        <span className={styles.locationBadge}>{route.from_location}</span>
+                        <i className="bx bx-left-arrow-alt" style={{ color: "#3b82f6" }} />
+                        <span>إلى</span>
+                        <span className={styles.locationBadge}>{route.to_location}</span>
+                      </h3>
+
+                      {/* Chevron Indicator */}
+                      <div className={`${styles.chevronIcon} ${isExpanded ? styles.chevronRotated : ""}`}>
+                        <i className="bx bx-chevron-down" />
+                      </div>
                     </div>
-                    <h4 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "900", color: "var(--text-primary)" }}>
-                      <span>من</span> <span style={{ color: "#3b82f6" }}>{route.from_location}</span> <span>إلى</span> <span style={{ color: "#3b82f6" }}>{route.to_location}</span>
-                    </h4>
+
+                    {/* Summary Info Pill Bar */}
+                    <div className={styles.collapsedSummaryBar}>
+                      <span className={styles.summaryPill}>
+                        <i className="bx bx-bus" style={{ color: "#3b82f6" }} />
+                        <span>{route.options.length} وسائل مواصلات</span>
+                      </span>
+
+                      <span className={styles.summaryPill}>
+                        <i className="bx bx-wallet" style={{ color: "#10b981" }} />
+                        <span>الأجرة {costSummary}</span>
+                      </span>
+
+                      {(route.from_aliases || route.to_aliases) && (
+                        <span className={styles.summaryPill} style={{ opacity: 0.8 }}>
+                          <i className="bx bx-tag-alt" />
+                          <span>يتضمن كلمات بديلة للبحث</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Expanded Aliases Preview */}
+                    {isExpanded && (route.from_aliases || route.to_aliases) && (
+                      <div className={styles.aliasesBar} style={{ marginTop: "6px" }}>
+                        <span>الكلمات البديلة:</span>
+                        {route.from_aliases && (
+                          <span>البداية ({route.from_aliases.split(",").map((a, i) => <span key={i} className={styles.aliasChip}>{a.trim()}</span>)})</span>
+                        )}
+                        {route.to_aliases && (
+                          <span>الوجهة ({route.to_aliases.split(",").map((a, i) => <span key={i} className={styles.aliasChip}>{a.trim()}</span>)})</span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  {/* Aliases */}
-                  {(route.from_aliases || route.to_aliases) && (
-                    <div style={{ fontSize: "0.82rem", background: "rgba(255,255,255,0.02)", padding: "8px 12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
-                      {route.from_aliases && <div><strong>الأسماء البديلة للبداية:</strong> {route.from_aliases}</div>}
-                      {route.to_aliases && <div style={{ marginTop: "2px" }}><strong>الأسماء البديلة للوجهة:</strong> {route.to_aliases}</div>}
-                    </div>
-                  )}
+                  {/* Actions (with stopPropagation so clicking action buttons doesn't toggle accordion) */}
+                  <div style={{ display: "flex", gap: "8px" }} onClick={e => e.stopPropagation()}>
+                    <button
+                      className={styles.secondaryActionBtn}
+                      onClick={() => handleEdit(route)}
+                      style={{ padding: "8px 16px", fontSize: "0.82rem", color: "#60a5fa" }}
+                      title="تعديل بيانات هذا الطريق"
+                    >
+                      <i className="bx bx-edit-alt" />
+                      <span>تعديل</span>
+                    </button>
+                    <button
+                      className={styles.removeBtn}
+                      onClick={() => handleDelete(route.from_location, route.to_location)}
+                      style={{ padding: "8px 16px", fontSize: "0.82rem" }}
+                      title="حذف هذا الطريق"
+                    >
+                      <i className="bx bx-trash" />
+                      <span>حذف</span>
+                    </button>
+                  </div>
+                </div>
 
-                  {/* Transit Options */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
-                    <span style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--text-secondary)" }}>وسائل المواصلات المتاحة:</span>
+                {/* Collapsible Content Section */}
+                {isExpanded && (
+                  <div className={styles.optionsGrid} style={{ marginTop: "12px", animation: "slideDown 0.2s ease" }}>
                     {(route.options || []).map((opt, optIdx) => (
-                      <div key={optIdx} style={{ display: "flex", gap: "10px", padding: "14px", borderRadius: "10px", background: "rgba(255,255,255,0.01)", border: "1px solid var(--border-glass)", flexDirection: "column" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <i className={opt.icon} style={{ fontSize: "1.2rem", color: "#3b82f6" }} />
-                            <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "var(--text-primary)" }}>{opt.type_name}</span>
+                      <div key={optIdx} className={styles.optionItem}>
+
+                        {/* Option Meta Bar */}
+                        <div className={styles.optionMeta}>
+                          <div className={styles.vehicleTypeGroup}>
+                            <div className={styles.vehicleIcon}>
+                              <i className={opt.icon} />
+                            </div>
+                            <span className={styles.vehicleName}>{opt.type_name}</span>
                           </div>
-                          <div style={{ display: "flex", gap: "6px" }}>
-                            <span style={{ fontSize: "0.75rem", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", padding: "2px 6px", borderRadius: "4px" }}>الإجمالي {opt.cost} ج.م</span>
-                            <span style={{ fontSize: "0.75rem", background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6", padding: "2px 6px", borderRadius: "4px" }}>{opt.duration}</span>
+
+                          <div style={{ display: "flex", gap: "8px" }}>
+                            <span className={`${styles.badgePill} ${styles.badgeCost}`}>
+                              <i className="bx bx-wallet" />
+                              <span>{opt.cost} ج.م</span>
+                            </span>
+                            <span className={`${styles.badgePill} ${styles.badgeDuration}`}>
+                              <i className="bx bx-time-five" />
+                              <span>{opt.duration}</span>
+                            </span>
                           </div>
                         </div>
 
-                        {/* Display Stages/Legs */}
+                        {/* Journey Legs Stepper Timeline */}
                         {opt.legs && Array.isArray(opt.legs) && opt.legs.length > 0 ? (
-                          <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "6px" }}>
+                          <div className={styles.timelineStepper}>
                             {(opt.legs || []).map((leg, lIdx) => (
-                              <div key={lIdx} style={{ background: "rgba(255,255,255,0.02)", padding: "10px 12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.04)" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
-                                  <span>📍 {leg.title}</span>
-                                  <div style={{ display: "flex", gap: "6px" }}>
-                                    {leg.cost !== undefined && <span style={{ color: "#10b981" }}>{leg.cost} ج.م</span>}
-                                    {leg.duration && <span style={{ color: "#3b82f6" }}>{leg.duration}</span>}
+                              <div key={lIdx} className={styles.timelineStep}>
+                                <div className={styles.stepDot} />
+                                <div className={styles.stepContent}>
+                                  <div className={styles.stepHeader}>
+                                    <span>📍 {leg.title}</span>
+                                    <div style={{ display: "flex", gap: "8px" }}>
+                                      {leg.cost !== undefined && <span style={{ color: "#34d399" }}>{leg.cost} ج.م</span>}
+                                      {leg.duration && <span style={{ color: "#60a5fa" }}>{leg.duration}</span>}
+                                    </div>
                                   </div>
+                                  <ol className={styles.stepList}>
+                                    {(leg.steps || []).map((step, sIdx) => (
+                                      <li key={sIdx}>{step}</li>
+                                    ))}
+                                  </ol>
                                 </div>
-                                <ol style={{ paddingRight: "16px", margin: "4px 0 0", fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.4" }}>
-                                  {(leg.steps || []).map((step, sIdx) => (
-                                    <li key={sIdx}>{step}</li>
-                                  ))}
-                                </ol>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <ol style={{ paddingRight: "16px", margin: "6px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.4" }}>
+                          <ol className={styles.stepList} style={{ paddingRight: "20px" }}>
                             {(opt.steps || []).map((step, stepIdx) => (
                               <li key={stepIdx}>{step}</li>
                             ))}
                           </ol>
                         )}
 
-                        {/* Tip */}
+                        {/* Tips Callout */}
                         {opt.tips && (
-                          <div style={{ fontSize: "0.75rem", color: "var(--accent-warning)", marginTop: "4px", display: "flex", gap: "4px" }}>
-                            <span>💡</span>
-                            <span>{opt.tips}</span>
+                          <div className={styles.tipBanner}>
+                            <i className="bx bx-bulb" style={{ fontSize: "1.1rem" }} />
+                            <span><strong>نصيحة للمسافرين:</strong> {opt.tips}</span>
                           </div>
                         )}
 
-                        {/* Map Link */}
+                        {/* Map Link Callout */}
                         {opt.map_link && (
-                          <div style={{ fontSize: "0.75rem", color: "var(--accent-success)", marginTop: "4px", display: "flex", gap: "4px" }}>
-                            <span>📍</span>
-                            <span><strong>مسار بدء الرحلة:</strong> <a href={opt.map_link} target="_blank" rel="noopener noreferrer" style={{ color: "#10b981", textDecoration: "underline", fontWeight: "700" }}>فتح خرائط Google</a></span>
+                          <div className={styles.mapBanner}>
+                            <i className="bx bx-map-pin" style={{ fontSize: "1.1rem" }} />
+                            <span><strong>مسار بدء الرحلة:</strong> <a href={opt.map_link} target="_blank" rel="noopener noreferrer" className={styles.mapLink}>فتح الخريطة عبر Google Maps</a></span>
                           </div>
                         )}
+
                       </div>
                     ))}
                   </div>
-                </div>
+                )}
 
-                <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                  <button
-                    className="ios-btn"
-                    onClick={() => handleEdit(route)}
-                    style={{ padding: "6px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6" }}
-                  >
-                    تعديل الطريق بالكامل
-                  </button>
-                  <button
-                    className="ios-btn"
-                    onClick={() => handleDelete(route.from_location, route.to_location)}
-                    style={{ padding: "6px 12px", height: "auto", fontSize: "0.8rem", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}
-                  >
-                    حذف الطريق بالكامل
-                  </button>
-                </div>
               </div>
-            ))}
-          </div>
+            );
+          })
         )}
       </div>
 

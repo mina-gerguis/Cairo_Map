@@ -74,6 +74,26 @@ export default function ProfilePage() {
   const [profileUserId, setProfileUserId] = useState<string | null>(null);
   const isOwnProfile = !profileUserId || (user && profileUserId === user.id);
 
+  const [greetingPrefix, setGreetingPrefix] = useState<string>("مساء الخير");
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) {
+      setGreetingPrefix("صباح الخير");
+    } else {
+      setGreetingPrefix("مساء الخير");
+    }
+  }, []);
+
+  const getGreetingHeader = () => {
+    const rawName = profile?.full_name || formData.fullName || user?.user_metadata?.full_name || user?.user_metadata?.first_name || "";
+    const firstName = rawName.trim().split(/\s+/)[0];
+    if (user && firstName) {
+      return `${greetingPrefix}، ${firstName}`;
+    }
+    return greetingPrefix;
+  };
+
   const profileExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasRemindersAccess = profile?.is_admin || 
     ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !profileExpired);
@@ -1881,6 +1901,13 @@ export default function ProfilePage() {
           `}} />
         </div>
       )}
+      {/* ─── 0. TOP TIME-BASED GREETING ─── */}
+      <div className={styles.topGreetingHeader}>
+        <h1 className={styles.topGreetingTitle}>
+          {getGreetingHeader()}
+        </h1>
+      </div>
+
       {/* ─── 1. PROFILE RECTANGLE CARD ─── */}
       <div
         className={`glass-panel ${styles.profileCard} ${isProfileExpanded ? styles.profileCardExpanded : ''}`}

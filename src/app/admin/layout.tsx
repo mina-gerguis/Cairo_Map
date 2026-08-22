@@ -59,6 +59,7 @@ export default function AdminLayout({
           { label: "البلاغات والشكاوى", href: "/admin/reports", category: "صفحة إدارية", icon: "bx bx-error-circle" },
           { label: "الرصيد والشحن المالي", href: "/admin/points?tab=users", category: "صفحة إدارية", icon: "bx bx-coin-stack" },
           { label: "طلبات الإيداع والسحب المعلقة", href: "/admin/points?tab=requests", category: "صفحة إدارية", icon: "bx bx-transfer" },
+          { label: "إدارة الحسابات والمستخدمين", href: "/admin/users", category: "صفحة إدارية", icon: "bx bx-group" },
           { label: "الاشتراكات المميزة والذهبية", href: "/admin/subscriptions", category: "صفحة إدارية", icon: "bx bx-crown" },
           { label: "إدارة المطارات", href: "/admin/airports", category: "خدمة موقع", icon: "bx bx-plane" },
           { label: "إدارة الموانئ البحرية", href: "/admin/ports", category: "خدمة موقع", icon: "bx bx-anchor" },
@@ -247,6 +248,7 @@ export default function AdminLayout({
     else pageTitle = "الرصيد والشحن";
   }
   else if (pathname === "/admin/subscriptions") pageTitle = "الاشتراكات المميزة";
+  else if (pathname === "/admin/users") pageTitle = "إدارة الحسابات والمستخدمين";
 
   // Compute greeting based on time
   const currentHour = new Date().getHours();
@@ -546,6 +548,21 @@ export default function AdminLayout({
                   {pendingReportsCount}
                 </span>
               )}
+            </Link>
+
+            {/* ── الحسابات والمستخدمين ── */}
+            <div className={styles.sidebarGroupLabel}>الحسابات والمستخدمين</div>
+            <Link
+              href="/admin/users"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/users" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-group ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة الحسابات والمستخدمين</span>
+              </div>
             </Link>
 
             {/* ── الرصيد والاشتراكات ── */}

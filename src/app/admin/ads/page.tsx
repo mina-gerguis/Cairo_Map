@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -18,7 +18,13 @@ import {
   FaUpload,
   FaMagic,
   FaTimes,
-  FaExternalLinkAlt
+  FaExternalLinkAlt,
+  FaSearch,
+  FaFilter,
+  FaCopy,
+  FaSun,
+  FaMoon,
+  FaChartPie
 } from "react-icons/fa";
 import { AdSlide, DEFAULT_SLIDES } from "@/components/AdSlider";
 import styles from "../admin.module.css";
@@ -63,6 +69,15 @@ export default function AdminAdsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSlide, setEditingSlide] = useState<AdSlide | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Filters & Search State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [placementFilter, setPlacementFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+
+  // Modal Preview Theme Toggle (Dark vs Light Preview)
+  const [previewTheme, setPreviewTheme] = useState<"dark" | "light">("dark");
 
   // Form State
   const [formData, setFormData] = useState<Partial<AdSlide>>({
@@ -141,6 +156,12 @@ export default function AdminAdsPage() {
       const updated = slides.filter((s) => s.id !== id);
       saveSlidesToStorage(updated, "تم حذف الإعلان بنجاح 🗑️");
     }
+  };
+
+  // Copy Ad Link
+  const handleCopyLink = (link: string) => {
+    navigator.clipboard.writeText(link);
+    showToast("تم نسخ رابط الإعلان إلى الحافظة 📋");
   };
 
   // Open modal for new slide
@@ -253,12 +274,43 @@ export default function AdminAdsPage() {
       showToast("تمت إضافة الإعلان الجديد بنجاح 🎉");
     }
 
-    saveSlidesToStorage(updated, "تم حفظ التغييرات وتحديث البانر في الصفحة الرئيسية!");
+    saveSlidesToStorage(updated, "تم حفظ التغييرات وتحديث البانر في الموقع!");
     setIsModalOpen(false);
   };
 
+  // Stats Calculations
+  const totalCount = slides.length;
+  const activeCount = slides.filter((s) => s.isActive !== false).length;
+  const inactiveCount = slides.filter((s) => s.isActive === false).length;
+  const imageOnlyCount = slides.filter((s) => s.isImageOnly && s.image).length;
+
+  // Filtered Slides
+  const filteredSlides = slides.filter((slide) => {
+    // Placement filter
+    if (placementFilter !== "all" && (slide.placement || "home_slider") !== placementFilter) {
+      return false;
+    }
+    // Status filter
+    if (statusFilter === "active" && slide.isActive === false) return false;
+    if (statusFilter === "inactive" && slide.isActive !== false) return false;
+
+    // Type filter
+    if (typeFilter === "image_only" && !slide.isImageOnly) return false;
+    if (typeFilter === "text" && slide.isImageOnly) return false;
+
+    // Search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const titleMatch = slide.title?.toLowerCase().includes(q);
+      const descMatch = slide.description?.toLowerCase().includes(q);
+      const tagMatch = slide.tag?.toLowerCase().includes(q);
+      if (!titleMatch && !descMatch && !tagMatch) return false;
+    }
+    return true;
+  });
+
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px 10px" }}>
+    <div className={styles.adsContainer}>
       {/* Toast Notification */}
       {toastMessage && (
         <div
@@ -285,45 +337,21 @@ export default function AdminAdsPage() {
       )}
 
       {/* Header Banner Section */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "16px",
-          marginBottom: "32px",
-          padding: "24px",
-          borderRadius: "20px",
-          background: "linear-gradient(135deg, rgba(0, 111, 238, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%)",
-          border: "1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.12))",
-        }}
-      >
+      <div className={styles.adsHeaderBanner}>
         <div>
-          <h1 style={{ margin: "0 0 6px 0", fontSize: "1.8rem", fontWeight: "800", color: "#fff" }}>
+          <h1 className={styles.adsTitle}>
             📺 إدارة بنرات الإعلانات بالسلايدات
           </h1>
-          <p style={{ margin: 0, color: "var(--text-secondary, #94a3b8)", fontSize: "0.95rem" }}>
-            التحكم الشامل في إعلانات البانر المعروضة في أعلى الصفحة الرئيسية مع دعم خيار إعلان صورة فقط تفاعلية.
+          <p className={styles.adsSubtitle}>
+            التحكم الشامل في إعلانات البانر المعروضة في الصفحة الرئيسية والأماكن مع التوافق الكامل مع الوضع الفاتح والداكن.
           </p>
         </div>
 
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <button
             onClick={handleResetToDefault}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "10px 18px",
-              borderRadius: "12px",
-              backgroundColor: "rgba(255, 255, 255, 0.08)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
-              color: "#e2e8f0",
-              fontWeight: "600",
-              fontSize: "0.85rem",
-              cursor: "pointer",
-            }}
+            className={styles.adsResetBtn}
+            title="إعادة ضبط السلايدات الافتراضية"
           >
             <FaUndo />
             <span>إعادة تعيين الافتراضي</span>
@@ -331,20 +359,7 @@ export default function AdminAdsPage() {
 
           <button
             onClick={handleOpenAddModal}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "12px 24px",
-              borderRadius: "12px",
-              background: "linear-gradient(135deg, #006fee, #005bc4)",
-              color: "#ffffff",
-              fontWeight: "700",
-              fontSize: "0.9rem",
-              border: "none",
-              cursor: "pointer",
-              boxShadow: "0 6px 20px rgba(0, 111, 238, 0.35)",
-            }}
+            className={styles.adsAddBtn}
           >
             <FaPlus />
             <span>إضافة إعلان جديد</span>
@@ -352,259 +367,313 @@ export default function AdminAdsPage() {
         </div>
       </div>
 
-      {/* Ads Cards Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "20px" }}>
-        {slides.map((slide) => {
-          const isActive = slide.isActive !== false;
-          const isImageOnly = slide.isImageOnly && slide.image;
+      {/* Summary Analytics Cards */}
+      <div className={styles.adsStatsGrid}>
+        <div className={styles.adsStatCard}>
+          <div className={styles.adsStatIcon} style={{ background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" }}>
+            <FaBullhorn />
+          </div>
+          <div>
+            <div className={styles.adsStatVal}>{totalCount}</div>
+            <div className={styles.adsStatLabel}>إجمالي الإعلانات المسجلة</div>
+          </div>
+        </div>
 
-          return (
-            <div
-              key={slide.id}
-              style={{
-                position: "relative",
-                borderRadius: "18px",
-                overflow: "hidden",
-                background: slide.image 
-                  ? "#0f172a" 
-                  : (slide.bgGradient || "rgba(15, 23, 42, 0.8)"),
-                border: `1.5px solid ${isActive ? (slide.borderColor || "rgba(255,255,255,0.15)") : "rgba(239, 68, 68, 0.3)"}`,
-                boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                opacity: isActive ? 1 : 0.65,
-                transition: "all 0.3s ease",
-              }}
+        <div className={styles.adsStatCard}>
+          <div className={styles.adsStatIcon} style={{ background: "rgba(16, 185, 129, 0.15)", color: "#10b981" }}>
+            <FaCheckCircle />
+          </div>
+          <div>
+            <div className={styles.adsStatVal}>{activeCount}</div>
+            <div className={styles.adsStatLabel}>إعلانات نشطة وتعرض حالياً</div>
+          </div>
+        </div>
+
+        <div className={styles.adsStatCard}>
+          <div className={styles.adsStatIcon} style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444" }}>
+            <FaEyeSlash />
+          </div>
+          <div>
+            <div className={styles.adsStatVal}>{inactiveCount}</div>
+            <div className={styles.adsStatLabel}>إعلانات معطلة أو مؤقتة</div>
+          </div>
+        </div>
+
+        <div className={styles.adsStatCard}>
+          <div className={styles.adsStatIcon} style={{ background: "rgba(168, 85, 247, 0.15)", color: "#a855f7" }}>
+            <FaImage />
+          </div>
+          <div>
+            <div className={styles.adsStatVal}>{imageOnlyCount}</div>
+            <div className={styles.adsStatLabel}>إعلانات صور تفاعلية فقط</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter & Search Bar */}
+      <div className={styles.adsFilterBar}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
+          <FaSearch style={{ color: "#94a3b8", fontSize: "0.9rem" }} />
+          <input
+            type="text"
+            placeholder="ابحث بعنوان الإعلان، الوصف، أو الوسم..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.adsSearchInput}
+          />
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+          {/* Filter by Placement */}
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <FaFilter style={{ color: "#94a3b8", fontSize: "0.8rem" }} />
+            <select
+              value={placementFilter}
+              onChange={(e) => setPlacementFilter(e.target.value)}
+              className={styles.adsSelect}
             >
-              {/* Background Thumbnail Image if present */}
-              {slide.image && (
-                <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-                  <img
-                    src={slide.image}
-                    alt={slide.title}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      filter: isImageOnly ? "brightness(0.85)" : "brightness(0.4)",
-                    }}
-                  />
-                  {!isImageOnly && (
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.5))" }} />
-                  )}
-                </div>
-              )}
+              <option value="all">جميع مواضع الظهور 📍</option>
+              <option value="home_slider">🏠 سلايدر الرئيسية</option>
+              <option value="places_top">🔝 أعلى صفحة الأماكن</option>
+              <option value="places_middle">↔️ وسط صفحة الأماكن</option>
+              <option value="places_bottom">⬇️ أسفل صفحة الأماكن</option>
+            </select>
+          </div>
 
-              {/* Card Main Body */}
-              <div style={{ position: "relative", zIndex: 2, padding: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                {/* Header Row: Badge & Status */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
-                  <span
-                    style={{
-                      fontSize: "0.75rem",
-                      fontWeight: "700",
-                      padding: "4px 10px",
-                      borderRadius: "999px",
-                      backgroundColor: slide.tagBg || "rgba(255,255,255,0.1)",
-                      color: slide.tagColor || "#fff",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                    }}
-                  >
-                    {isImageOnly ? "إعلان صورة فقط 🖼️" : slide.tag}
-                  </span>
+          {/* Filter by Status */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className={styles.adsSelect}
+          >
+            <option value="all">جميع الحالات ⚡</option>
+            <option value="active">نشط فقط ●</option>
+            <option value="inactive">معطل فقط ⚪</option>
+          </select>
 
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    {slide.badge && !isImageOnly && (
-                      <span
-                        style={{
-                          fontSize: "0.7rem",
-                          fontWeight: "800",
-                          padding: "3px 8px",
-                          borderRadius: "6px",
-                          background: "linear-gradient(90deg, #ef4444, #f59e0b)",
-                          color: "#fff",
-                        }}
-                      >
-                        {slide.badge}
-                      </span>
-                    )}
+          {/* Filter by Type */}
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className={styles.adsSelect}
+          >
+            <option value="all">جميع الأنواع 🎨</option>
+            <option value="text">نص وصورة 📝</option>
+            <option value="image_only">صورة فقط 🖼️</option>
+          </select>
+        </div>
+      </div>
 
-                    <span
-                      style={{
-                        fontSize: "0.72rem",
-                        fontWeight: "700",
-                        padding: "3px 8px",
-                        borderRadius: "6px",
-                        backgroundColor: isActive ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)",
-                        color: isActive ? "#34d399" : "#f87171",
-                        border: `1px solid ${isActive ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
-                      }}
-                    >
-                      {isActive ? "نشط ●" : "معطل ⚪"}
-                    </span>
+      {/* Ads Cards Grid */}
+      {filteredSlides.length === 0 ? (
+        <div className={styles.adsEmptyState}>
+          <FaBullhorn style={{ fontSize: "2.5rem", marginBottom: "12px", opacity: 0.5 }} />
+          <h3 style={{ margin: "0 0 8px 0", fontSize: "1.2rem" }}>لا توجد إعلانات مطابقة لمعايير البحث والفلترة</h3>
+          <p style={{ margin: 0, fontSize: "0.9rem" }}>جرب تغيير نص البحث أو خيارات التصفية المعروضة بالأعلى.</p>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "20px" }}>
+          {filteredSlides.map((slide) => {
+            const isActive = slide.isActive !== false;
+            const isImageOnly = slide.isImageOnly && slide.image;
 
-                    <span
-                      style={{
-                        fontSize: "0.72rem",
-                        fontWeight: "700",
-                        padding: "3px 8px",
-                        borderRadius: "6px",
-                        backgroundColor: "rgba(59, 130, 246, 0.15)",
-                        color: "#60a5fa",
-                        border: "1px solid rgba(59, 130, 246, 0.25)",
-                      }}
-                    >
-                      {
-                        slide.placement === "places_top" ? "أعلى الأماكن 🔝" :
-                        slide.placement === "places_middle" ? "وسط الأماكن ↔️" :
-                        slide.placement === "places_bottom" ? "أسفل الأماكن ⬇️" :
-                        "سلايدر الرئيسية 🏠"
-                      }
-                    </span>
-                  </div>
-                </div>
-
-                {/* Title & Description */}
-                <div style={{ minHeight: isImageOnly ? "60px" : "auto" }}>
-                  <h3 style={{ margin: "4px 0 6px 0", fontSize: "1.1rem", fontWeight: "800", color: "#fff", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span>{slide.icon || "📢"}</span>
-                    <span>{slide.title}</span>
-                  </h3>
-                  {!isImageOnly && (
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", lineHeight: "1.5" }}>
-                      {slide.description}
-                    </p>
-                  )}
-                </div>
-
-                {/* Image Mode Indicator */}
-                {isImageOnly ? (
-                  <div style={{ fontSize: "0.75rem", color: "#34d399", display: "flex", alignItems: "center", gap: "6px", backgroundColor: "rgba(16, 185, 129, 0.25)", padding: "4px 10px", borderRadius: "6px", width: "fit-content", backdropFilter: "blur(6px)" }}>
-                    <FaImage />
-                    <span>صورة بانر فقط (النقر يفتح الرابط مباشرة)</span>
-                  </div>
-                ) : slide.image ? (
-                  <div style={{ fontSize: "0.75rem", color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px", backgroundColor: "rgba(56, 189, 248, 0.1)", padding: "4px 10px", borderRadius: "6px", width: "fit-content" }}>
-                    <FaImage />
-                    <span>يحتوي على صورة خلفية مخصصة</span>
-                  </div>
-                ) : null}
-              </div>
-
-              {/* Card Footer Actions */}
+            return (
               <div
+                key={slide.id}
+                className={styles.adsCardItem}
                 style={{
-                  position: "relative",
-                  zIndex: 2,
-                  padding: "12px 20px",
-                  backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  borderTop: "1px solid rgba(255, 255, 255, 0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  background: slide.image 
+                    ? "#0f172a" 
+                    : (slide.bgGradient || "rgba(15, 23, 42, 0.8)"),
+                  border: `1.5px solid ${isActive ? (slide.borderColor || "rgba(255,255,255,0.15)") : "rgba(239, 68, 68, 0.3)"}`,
+                  opacity: isActive ? 1 : 0.65,
                 }}
               >
-                <div style={{ fontSize: "0.78rem", color: "var(--text-muted, #94a3b8)", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  رابط: <code style={{ color: "#38bdf8" }}>{slide.ctaLink}</code>
+                {/* Background Thumbnail Image if present */}
+                {slide.image && (
+                  <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        filter: isImageOnly ? "brightness(0.85)" : "brightness(0.4)",
+                      }}
+                    />
+                    {!isImageOnly && (
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15, 23, 42, 0.66), rgba(248, 248, 248, 0.04))" }} />
+                    )}
+                  </div>
+                )}
+
+                {/* Card Main Body */}
+                <div style={{ position: "relative", zIndex: 2, padding: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {/* Header Row: Badge & Status */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      {slide.badge && !isImageOnly && (
+                        <span
+                          style={{
+                            fontSize: "0.7rem",
+                            fontWeight: "800",
+                            padding: "3px 8px",
+                            borderRadius: "6px",
+                            background: "linear-gradient(90deg, #ef4444, #f59e0b)",
+                            color: "#fff",
+                          }}
+                        >
+                          {slide.badge}
+                        </span>
+                      )}
+
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          fontWeight: "700",
+                          padding: "3px 8px",
+                          borderRadius: "6px",
+                          backgroundColor: isActive ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)",
+                          color: isActive ? "#34d399" : "#f87171",
+                          border: `1px solid ${isActive ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
+                        }}
+                      >
+                        {isActive ? "● نشط " : "معطل ⚪"}
+                      </span>
+
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          fontWeight: "700",
+                          padding: "3px 8px",
+                          borderRadius: "6px",
+                          backgroundColor: "rgba(59, 130, 246, 0.15)",
+                          color: "#60a5fa",
+                          border: "1px solid rgba(59, 130, 246, 0.25)",
+                        }}
+                      >
+                        {
+                          slide.placement === "places_top" ? "أعلى الأماكن 🔝" :
+                          slide.placement === "places_middle" ? "وسط الأماكن ↔️" :
+                          slide.placement === "places_bottom" ? "أسفل الأماكن ⬇️" :
+                          "سلايدر الرئيسية 🏠"
+                        }
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Title & Description */}
+                  <div style={{ minHeight: isImageOnly ? "50px" : "auto" }}>
+                    <h3
+                      className={styles.adsCardBodyTextTitle}
+                      style={slide.image ? { color: "#ffffff", textShadow: "0 2px 4px rgba(0,0,0,0.9)" } : undefined}
+                    >
+                      <span>{slide.icon || "📢"}</span>
+                      <span>{slide.title}</span>
+                    </h3>
+                    {!isImageOnly && (
+                      <p
+                        className={styles.adsCardBodyTextDesc}
+                        style={slide.image ? { color: "rgba(255, 255, 255, 0.9)", textShadow: "0 1px 3px rgba(0,0,0,0.9)", fontWeight: "600" } : undefined}
+                      >
+                        {slide.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <button
-                    onClick={() => handleToggleActive(slide.id)}
-                    title={isActive ? "تعطيل الإعلان" : "تفعيل الإعلان"}
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: "8px",
-                      border: "none",
-                      backgroundColor: isActive ? "rgba(239, 68, 68, 0.2)" : "rgba(16, 185, 129, 0.2)",
-                      color: isActive ? "#f87171" : "#34d399",
-                      cursor: "pointer",
-                      fontSize: "0.8rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                  >
-                    {isActive ? <FaEyeSlash /> : <FaEye />}
-                  </button>
+                {/* Card Footer Actions */}
+                <div className={styles.adsCardFooterBar}>
+                  <div className={styles.adsCardLinkCode}>
+                    رابط: <code>{slide.ctaLink}</code>
+                  </div>
 
-                  <button
-                    onClick={() => handleOpenEditModal(slide)}
-                    title="تعديل الإعلان"
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "8px",
-                      border: "none",
-                      backgroundColor: "rgba(59, 130, 246, 0.2)",
-                      color: "#60a5fa",
-                      cursor: "pointer",
-                      fontSize: "0.8rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                  >
-                    <FaEdit />
-                    <span>تعديل</span>
-                  </button>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <button
+                      onClick={() => handleCopyLink(slide.ctaLink)}
+                      title="نسخ رابط الإعلان"
+                      style={{
+                        padding: "8px 10px",
+                        borderRadius: "8px",
+                        border: "none",
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        color: "#fff",
+                        cursor: "pointer",
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      <FaCopy />
+                    </button>
 
-                  <button
-                    onClick={() => handleDeleteSlide(slide.id)}
-                    title="حذف الإعلان"
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: "8px",
-                      border: "none",
-                      backgroundColor: "rgba(239, 68, 68, 0.15)",
-                      color: "#ef4444",
-                      cursor: "pointer",
-                      fontSize: "0.8rem",
-                    }}
-                  >
-                    <FaTrash />
-                  </button>
+                    <button
+                      onClick={() => handleToggleActive(slide.id)}
+                      title={isActive ? "تعطيل الإعلان" : "تفعيل الإعلان"}
+                      style={{
+                        padding: "8px 10px",
+                        borderRadius: "8px",
+                        border: "none",
+                        backgroundColor: isActive ? "rgba(239, 68, 68, 0.2)" : "rgba(16, 185, 129, 0.2)",
+                        color: isActive ? "#f87171" : "#34d399",
+                        cursor: "pointer",
+                        fontSize: "0.8rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}
+                    >
+                      {isActive ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+
+                    <button
+                      onClick={() => handleOpenEditModal(slide)}
+                      title="تعديل الإعلان"
+                      style={{
+                        padding: "8px 10px",
+                        borderRadius: "8px",
+                        border: "none",
+                        backgroundColor: "rgba(59, 130, 246, 0.2)",
+                        color: "#60a5fa",
+                        cursor: "pointer",
+                        fontSize: "0.8rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}
+                    >
+                      <FaEdit />
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteSlide(slide.id)}
+                      title="حذف الإعلان"
+                      style={{
+                        padding: "6px 10px",
+                        borderRadius: "8px",
+                        border: "none",
+                        backgroundColor: "rgba(239, 68, 68, 0.15)",
+                        color: "#ef4444",
+                        cursor: "pointer",
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* CREATE / EDIT AD MODAL */}
       {isModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.75)",
-            backdropFilter: "blur(10px)",
-            zIndex: 9999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-            overflowY: "auto",
-          }}
-        >
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              maxWidth: "750px",
-              maxHeight: "90vh",
-              overflowY: "auto",
-              backgroundColor: "#0f172a",
-              border: "1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15))",
-              borderRadius: "24px",
-              padding: "28px",
-              boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
-              color: "#ffffff",
-            }}
-          >
+        <div className={styles.adsModalOverlay}>
+          <div className={styles.adsModalBox}>
             {/* Modal Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "800" }}>
+              <h2 className={styles.adsModalHeaderTitle}>
                 {editingSlide ? "✏️ تعديل بيانات الإعلان" : "➕ إضافة إعلان بنر جديد"}
               </h2>
               <button
@@ -621,11 +690,58 @@ export default function AdminAdsPage() {
               </button>
             </div>
 
-            {/* LIVE PREVIEW OF SLIDE BANNER */}
+            {/* LIVE PREVIEW OF SLIDE BANNER WITH LIGHT / DARK MODE TOGGLE */}
             <div style={{ marginBottom: "24px" }}>
-              <div style={{ fontSize: "0.8rem", fontWeight: "700", color: "#38bdf8", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
-                <FaMagic />
-                <span>معاينة حية لشكل البانر في الصفحة الرئيسية:</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                <div style={{ fontSize: "0.8rem", fontWeight: "700", color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <FaMagic />
+                  <span>معاينة حية لشكل البانر في الموقع:</span>
+                </div>
+
+                {/* Theme Preview Switcher */}
+                <div style={{ display: "flex", alignItems: "center", gap: "4px", backgroundColor: "rgba(255,255,255,0.08)", padding: "3px 6px", borderRadius: "8px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewTheme("dark")}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      border: "none",
+                      backgroundColor: previewTheme === "dark" ? "#1e293b" : "transparent",
+                      color: previewTheme === "dark" ? "#38bdf8" : "#94a3b8",
+                      fontSize: "0.75rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <FaMoon />
+                    <span>داكن</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setPreviewTheme("light")}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      border: "none",
+                      backgroundColor: previewTheme === "light" ? "#ffffff" : "transparent",
+                      color: previewTheme === "light" ? "#2563eb" : "#94a3b8",
+                      fontSize: "0.75rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <FaSun />
+                    <span>فاتح</span>
+                  </button>
+                </div>
               </div>
 
               {formData.isImageOnly && formData.image ? (
@@ -637,7 +753,7 @@ export default function AdminAdsPage() {
                     overflow: "hidden",
                     border: "2px solid #38bdf8",
                     minHeight: "180px",
-                    boxShadow: "0 10px 30px rgba(56, 189, 248, 0.2)",
+                    boxShadow: previewTheme === "light" ? "0 4px 16px rgba(0,0,0,0.08)" : "0 10px 30px rgba(56, 189, 248, 0.2)",
                   }}
                 >
                   <img
@@ -650,12 +766,12 @@ export default function AdminAdsPage() {
                       position: "absolute",
                       bottom: "10px",
                       right: "10px",
-                      backgroundColor: "rgba(0,0,0,0.75)",
+                      backgroundColor: previewTheme === "light" ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.75)",
                       backdropFilter: "blur(6px)",
                       padding: "6px 12px",
                       borderRadius: "8px",
                       fontSize: "0.78rem",
-                      color: "#38bdf8",
+                      color: previewTheme === "light" ? "#2563eb" : "#38bdf8",
                       fontWeight: "700",
                       display: "flex",
                       alignItems: "center",
@@ -680,28 +796,36 @@ export default function AdminAdsPage() {
                     position: "relative",
                     borderRadius: "18px",
                     overflow: "hidden",
-                    background: formData.image 
-                      ? "#080c16" 
-                      : (formData.bgGradient || "linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.9) 100%)"),
-                    border: `1.5px solid ${formData.borderColor || "rgba(255,255,255,0.2)"}`,
+                    background: previewTheme === "light"
+                      ? (formData.bgGradient ? "linear-gradient(135deg, rgba(241, 245, 249, 0.95) 0%, rgba(226, 232, 240, 0.9) 100%)" : "#ffffff")
+                      : (formData.image ? "#080c16" : (formData.bgGradient || "linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.9) 100%)")),
+                    border: `1.5px solid ${formData.borderColor || (previewTheme === "light" ? "#cbd5e1" : "rgba(255,255,255,0.2)")}`,
                     padding: "20px",
                     minHeight: "150px",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
+                    color: previewTheme === "light" ? "#0f172a" : "#ffffff",
+                    boxShadow: previewTheme === "light" ? "0 4px 16px rgba(0,0,0,0.06)" : "none",
                   }}
                 >
                   {/* Background Image Preview */}
                   {formData.image && (
                     <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
                       <img src={formData.image} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(8,12,22,0.92) 0%, rgba(15,23,42,0.82) 50%, rgba(8,12,22,0.7) 100%)" }} />
+                      <div style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: previewTheme === "light" 
+                          ? "linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(248,250,252,0.85) 60%, rgba(255,255,255,0.7) 100%)" 
+                          : "linear-gradient(90deg, rgba(8,12,22,0.92) 0%, rgba(15,23,42,0.82) 50%, rgba(8,12,22,0.7) 100%)"
+                      }} />
                     </div>
                   )}
 
                   <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", gap: "10px" }}>
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                      <span style={{ fontSize: "0.75rem", fontWeight: "700", padding: "4px 10px", borderRadius: "999px", backgroundColor: formData.tagBg || "rgba(255,255,255,0.15)", color: formData.tagColor || "#fff" }}>
+                      <span style={{ fontSize: "0.75rem", fontWeight: "700", padding: "4px 10px", borderRadius: "999px", backgroundColor: formData.tagBg || (previewTheme === "light" ? "rgba(37,99,235,0.1)" : "rgba(255,255,255,0.15)"), color: formData.tagColor || (previewTheme === "light" ? "#2563eb" : "#fff") }}>
                         {formData.tag || "إعلان مميز"}
                       </span>
                       {formData.badge && (
@@ -711,10 +835,10 @@ export default function AdminAdsPage() {
                       )}
                     </div>
                     <div>
-                      <h3 style={{ margin: "4px 0", fontSize: "1.2rem", fontWeight: "800", color: "#fff" }}>
+                      <h3 style={{ margin: "4px 0", fontSize: "1.2rem", fontWeight: "800", color: previewTheme === "light" ? "#0f172a" : "#fff" }}>
                         {formData.icon} {formData.title || "عنوان الإعلان يظهر هنا"}
                       </h3>
-                      <p style={{ margin: 0, fontSize: "0.85rem", color: "rgba(255,255,255,0.85)" }}>
+                      <p style={{ margin: 0, fontSize: "0.85rem", color: previewTheme === "light" ? "#475569" : "rgba(255,255,255,0.85)" }}>
                         {formData.description || "تفاصيل ووصف الإعلان تظهر هنا بأسلوب أنيق..."}
                       </p>
                     </div>
@@ -741,7 +865,7 @@ export default function AdminAdsPage() {
                   transition: "all 0.3s ease",
                 }}
               >
-                <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", fontWeight: "700", color: formData.isImageOnly ? "#38bdf8" : "#ffffff", fontSize: "0.95rem" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", fontWeight: "700", color: formData.isImageOnly ? "#38bdf8" : "inherit", fontSize: "0.95rem" }}>
                   <input
                     type="checkbox"
                     checked={formData.isImageOnly || false}
@@ -750,14 +874,14 @@ export default function AdminAdsPage() {
                   />
                   <span>🖼️ جعل الإعلان "صورة فقط" (بدون نصوص) - عند النقر على الصورة يتم فتح الرابط مباشرة</span>
                 </label>
-                <p style={{ margin: "6px 0 0 30px", fontSize: "0.8rem", color: "var(--text-muted, #94a3b8)", lineHeight: "1.5" }}>
+                <p style={{ margin: "6px 0 0 30px", fontSize: "0.8rem", color: "#94a3b8", lineHeight: "1.5" }}>
                   عند تفعيل هذا الخيار، سيتم عرض الصورة بالكامل دون أي كتابة أو أزرار فوقها، وتصبح الصورة نفسها رابطاً تفاعلياً قابلاً للنقر.
                 </p>
               </div>
 
               {/* BANNER IMAGE SELECTOR & UPLOAD */}
-              <div style={{ padding: "16px", borderRadius: "14px", backgroundColor: "rgba(255, 255, 255, 0.03)", border: "1px dashed rgba(255, 255, 255, 0.18)" }}>
-                <label style={{ display: "block", fontSize: "0.9rem", fontWeight: "700", color: "#38bdf8", marginBottom: "8px" }}>
+              <div className={styles.adsFormBox}>
+                <label className={styles.adsFormLabel} style={{ color: "#38bdf8" }}>
                   🖼️ صورة البانر {formData.isImageOnly ? "*" : "(اختياري)"}:
                 </label>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "12px", alignItems: "center" }}>
@@ -766,15 +890,7 @@ export default function AdminAdsPage() {
                     placeholder="أدخل رابط صورة (http...) أو اختر صورة موقع مثل /1.jpg أو قم بالرفع من الجهاز"
                     value={formData.image || ""}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      borderRadius: "10px",
-                      backgroundColor: "rgba(0, 0, 0, 0.3)",
-                      border: "1px solid rgba(255, 255, 255, 0.15)",
-                      color: "#fff",
-                      fontSize: "0.85rem",
-                    }}
+                    className={styles.adsFormInput}
                   />
 
                   <label
@@ -816,30 +932,22 @@ export default function AdminAdsPage() {
                 )}
               </div>
 
-              {/* Row 4: CTA Link & External Link */}
+              {/* Row: CTA Link & External Link */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "12px", alignItems: "flex-end" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>رابط الانتقال عند النقر على الإعلان *</label>
+                  <label className={styles.adsFormLabel}>رابط الانتقال عند النقر على الإعلان *</label>
                   <input
                     type="text"
                     required
                     placeholder="مثال: /places أو https://example.com"
                     value={formData.ctaLink || ""}
                     onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      borderRadius: "10px",
-                      backgroundColor: "rgba(255, 255, 255, 0.06)",
-                      border: "1px solid rgba(255, 255, 255, 0.15)",
-                      color: "#fff",
-                      fontSize: "0.9rem",
-                    }}
+                    className={styles.adsFormInput}
                   />
                 </div>
 
                 <div style={{ paddingBottom: "10px" }}>
-                  <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "0.85rem", color: "#e2e8f0" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "0.85rem" }}>
                     <input
                       type="checkbox"
                       checked={formData.isExternal || false}
@@ -853,26 +961,16 @@ export default function AdminAdsPage() {
 
               {/* Placement Selection */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>موضع ومكان ظهور الإعلان *</label>
+                <label className={styles.adsFormLabel}>موضع ومكان ظهور الإعلان *</label>
                 <select
                   value={formData.placement || "home_slider"}
                   onChange={(e) => setFormData({ ...formData, placement: e.target.value as any })}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    borderRadius: "10px",
-                    backgroundColor: "rgba(255, 255, 255, 0.06)",
-                    border: "1px solid rgba(255, 255, 255, 0.15)",
-                    color: "#fff",
-                    fontSize: "0.9rem",
-                    outline: "none",
-                    fontFamily: "var(--font-heading)",
-                  }}
+                  className={styles.adsFormSelect}
                 >
-                  <option value="home_slider" style={{ background: "#0f172a" }}>🏠 سلايدر الصفحة الرئيسية (Home Slider)</option>
-                  <option value="places_top" style={{ background: "#0f172a" }}>🔝 أعلى صفحة الأماكن (Places Top)</option>
-                  <option value="places_middle" style={{ background: "#0f172a" }}>↔️ وسط صفحة الأماكن (Places Middle)</option>
-                  <option value="places_bottom" style={{ background: "#0f172a" }}>⬇️ أسفل صفحة الأماكن (Places Bottom)</option>
+                  <option value="home_slider">🏠 سلايدر الصفحة الرئيسية (Home Slider)</option>
+                  <option value="places_top">🔝 أعلى صفحة الأماكن (Places Top)</option>
+                  <option value="places_middle">↔️ وسط صفحة الأماكن (Places Middle)</option>
+                  <option value="places_bottom">⬇️ أسفل صفحة الأماكن (Places Bottom)</option>
                 </select>
               </div>
 
@@ -882,129 +980,81 @@ export default function AdminAdsPage() {
                   {/* Row 1: Title & Icon */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 120px", gap: "12px" }}>
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>عنوان الإعلان الرئيسي *</label>
+                      <label className={styles.adsFormLabel}>عنوان الإعلان الرئيسي *</label>
                       <input
                         type="text"
                         placeholder="مثال: خصم خاص 20% في شاورما وصاج الشام 🌯"
                         value={formData.title || ""}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          borderRadius: "10px",
-                          backgroundColor: "rgba(255, 255, 255, 0.06)",
-                          border: "1px solid rgba(255, 255, 255, 0.15)",
-                          color: "#fff",
-                          fontSize: "0.9rem",
-                        }}
+                        className={styles.adsFormInput}
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>الرمز/الأيقونة</label>
+                      <label className={styles.adsFormLabel}>الرمز/الأيقونة</label>
                       <input
                         type="text"
                         placeholder="مثال: 🌯"
                         value={formData.icon || ""}
                         onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          borderRadius: "10px",
-                          backgroundColor: "rgba(255, 255, 255, 0.06)",
-                          border: "1px solid rgba(255, 255, 255, 0.15)",
-                          color: "#fff",
-                          fontSize: "0.9rem",
-                          textAlign: "center",
-                        }}
+                        className={styles.adsFormInput}
+                        style={{ textAlign: "center" }}
                       />
                     </div>
                   </div>
 
                   {/* Row 2: Description */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>تفاصيل ووصف الإعلان *</label>
+                    <label className={styles.adsFormLabel}>تفاصيل ووصف الإعلان *</label>
                     <textarea
                       rows={2}
                       placeholder="اكتب وصفاً جذاباً ومختصراً للإعلان يعرض للمستخدمين..."
                       value={formData.description || ""}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        borderRadius: "10px",
-                        backgroundColor: "rgba(255, 255, 255, 0.06)",
-                        border: "1px solid rgba(255, 255, 255, 0.15)",
-                        color: "#fff",
-                        fontSize: "0.9rem",
-                        resize: "vertical",
-                      }}
+                      className={styles.adsFormInput}
+                      style={{ resize: "vertical" }}
                     />
                   </div>
 
                   {/* Row 3: Tag, Badge & CTA Text */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>علامة التبويب (Tag)</label>
+                      <label className={styles.adsFormLabel}>علامة التبويب (Tag)</label>
                       <input
                         type="text"
                         placeholder="إعلان مميز ✨"
                         value={formData.tag || ""}
                         onChange={(e) => setFormData({ ...formData, tag: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          borderRadius: "10px",
-                          backgroundColor: "rgba(255, 255, 255, 0.06)",
-                          border: "1px solid rgba(255, 255, 255, 0.15)",
-                          color: "#fff",
-                          fontSize: "0.9rem",
-                        }}
+                        className={styles.adsFormInput}
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>الشارة المميزة</label>
+                      <label className={styles.adsFormLabel}>الشارة المميزة</label>
                       <input
                         type="text"
                         placeholder="خصم 25%"
                         value={formData.badge || ""}
                         onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          borderRadius: "10px",
-                          backgroundColor: "rgba(255, 255, 255, 0.06)",
-                          border: "1px solid rgba(255, 255, 255, 0.15)",
-                          color: "#fff",
-                          fontSize: "0.9rem",
-                        }}
+                        className={styles.adsFormInput}
                       />
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>نص الزر</label>
+                      <label className={styles.adsFormLabel}>نص الزر</label>
                       <input
                         type="text"
                         placeholder="اطلب الآن 🚀"
                         value={formData.ctaText || ""}
                         onChange={(e) => setFormData({ ...formData, ctaText: e.target.value })}
-                        style={{
-                          width: "100%",
-                          padding: "10px 14px",
-                          borderRadius: "10px",
-                          backgroundColor: "rgba(255, 255, 255, 0.06)",
-                          border: "1px solid rgba(255, 255, 255, 0.15)",
-                          color: "#fff",
-                          fontSize: "0.9rem",
-                        }}
+                        className={styles.adsFormInput}
                       />
                     </div>
                   </div>
 
                   {/* Preset Style Theme */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", color: "#94a3b8", marginBottom: "6px" }}>نمط متدرج الألوان للشريحة</label>
+                    <label className={styles.adsFormLabel}>نمط متدرج الألوان للشريحة</label>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "8px" }}>
                       {GRADIENT_PRESETS.map((preset, idx) => {
                         const isSelected = formData.bgGradient === preset.bgGradient;
@@ -1027,11 +1077,12 @@ export default function AdminAdsPage() {
                               borderRadius: "10px",
                               background: preset.bgGradient,
                               border: `1.5px solid ${isSelected ? "#ffffff" : preset.borderColor}`,
-                              color: "#fff",
+                              color: "var(--text-primary)",
                               fontSize: "0.75rem",
                               fontWeight: "700",
                               cursor: "pointer",
                               textAlign: "center",
+                              fontFamily: "var(--font-heading)",
                             }}
                           >
                             {preset.name}
@@ -1053,7 +1104,7 @@ export default function AdminAdsPage() {
                     borderRadius: "10px",
                     backgroundColor: "rgba(255, 255, 255, 0.08)",
                     border: "none",
-                    color: "#e2e8f0",
+                    color: "inherit",
                     fontWeight: "600",
                     fontSize: "0.88rem",
                     cursor: "pointer",
@@ -1086,4 +1137,3 @@ export default function AdminAdsPage() {
     </div>
   );
 }
-

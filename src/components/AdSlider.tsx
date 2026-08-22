@@ -474,10 +474,18 @@ export default function AdSlider({
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    filter: "brightness(0.55)",
+                    filter: isLight ? "brightness(0.9)" : "brightness(0.6)",
                   }}
                 />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.65) 100%)" }} />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: isLight
+                      ? "linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.88) 60%, rgba(255,255,255,0.55) 100%)"
+                      : "linear-gradient(90deg, rgba(8,12,22,0.96) 0%, rgba(15,23,42,0.88) 60%, rgba(8,12,22,0.55) 100%)",
+                  }}
+                />
               </div>
             )}
 
@@ -503,7 +511,7 @@ export default function AdSlider({
                       borderRadius: "6px",
                       backgroundColor: currentSlideTheme.tagBg,
                       color: currentSlideTheme.tagColor,
-                      border: `1px solid ${isLight ? "rgba(0,0,0,0.05)" : "rgba(255, 255, 255, 0.1)"}`,
+                      border: `1px solid ${isLight ? "rgba(0,0,0,0.08)" : "rgba(255, 255, 255, 0.1)"}`,
                     }}
                   >
                     {currentSlide.tag}
@@ -518,7 +526,7 @@ export default function AdSlider({
                         borderRadius: "6px",
                         backgroundColor: currentSlideTheme.badgeBg,
                         color: currentSlideTheme.badgeColor,
-                        border: `1px solid ${isLight ? "rgba(0,0,0,0.03)" : "rgba(255, 255, 255, 0.05)"}`,
+                        border: `1px solid ${isLight ? "rgba(0,0,0,0.05)" : "rgba(255, 255, 255, 0.05)"}`,
                       }}
                     >
                       {currentSlide.badge}
@@ -541,9 +549,10 @@ export default function AdSlider({
                     style={{
                       margin: isMobile ? "0 0 4px 0" : "0 0 6px 0",
                       fontSize: isMobile ? "0.95rem" : "clamp(1.05rem, 2.2vw, 1.3rem)",
-                      fontWeight: "700",
+                      fontWeight: "800",
                       color: "var(--text-primary)",
                       lineHeight: "1.4",
+                      textShadow: currentSlide.image ? (isLight ? "0 1px 2px rgba(255,255,255,0.9)" : "0 2px 4px rgba(0,0,0,0.8)") : "none",
                     }}
                   >
                     {currentSlide.icon && <span style={{ marginLeft: "5px" }}>{currentSlide.icon}</span>}
@@ -556,6 +565,8 @@ export default function AdSlider({
                       color: "var(--text-muted)",
                       lineHeight: isMobile ? "1.5" : "1.6",
                       maxWidth: "700px",
+                      fontWeight: "600",
+                      textShadow: currentSlide.image ? (isLight ? "0 1px 2px rgba(255,255,255,0.9)" : "0 2px 4px rgba(0,0,0,0.8)") : "none",
                     }}
                   >
                     {currentSlide.description}
