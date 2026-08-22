@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import VoiceInputButton from "@/components/VoiceInputButton";
 
 /* ============================================================
    Cairo Metro Data — Lines 1, 2, 3 (with branch)
@@ -618,9 +619,12 @@ export default function MetroPage() {
 
             {/* FROM STATION INPUT */}
             <div style={{ position: "relative", zIndex: showFromList ? 10 : 1 }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
-                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> من محطة (نقطة الانطلاق)
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
+                  <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> من محطة (نقطة الانطلاق)
+                </label>
+                <VoiceInputButton onTranscript={(text) => { setFromQuery(text); setSelectedFrom(null); setShowFromList(true); setResult(null); }} />
+              </div>
               <div style={{ position: "relative" }}>
                 <input
                   className="ios-input"
@@ -703,9 +707,12 @@ export default function MetroPage() {
 
             {/* TO STATION INPUT */}
             <div style={{ position: "relative", zIndex: showToList ? 10 : 1 }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
-                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> إلى محطة (الجهة المقصودة)
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
+                  <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> إلى محطة (الجهة المقصودة)
+                </label>
+                <VoiceInputButton onTranscript={(text) => { setToQuery(text); setSelectedTo(null); setShowToList(true); setResult(null); }} />
+              </div>
               <div style={{ position: "relative" }}>
                 <input
                   className="ios-input"

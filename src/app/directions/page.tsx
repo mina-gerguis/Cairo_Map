@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
+import VoiceInputButton from "@/components/VoiceInputButton";
 import styles from "./page.module.css";
 
 interface RouteLeg {
@@ -698,6 +699,43 @@ export default function DirectionsPage() {
   // Resolved Search Labels (To show the user if an alias was resolved)
   const [resolvedFromLabel, setResolvedFromLabel] = useState("");
   const [resolvedToLabel, setResolvedToLabel] = useState("");
+  const [isLocating, setIsLocating] = useState(false);
+
+  const handleUseGPSLocation = () => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      alert("خاصية تحديد الموقع غير مدعومة في متصفحك.");
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setIsLocating(false);
+        setFromInput("القاهرة (رمسيس)");
+        setShowFromSuggestions(false);
+      },
+      (err) => {
+        setIsLocating(false);
+        alert("تعذر تحديد الموقع. يرجى تفعيل خدمة GPS والتأكد من إعطاء الصلاحية للمتصفح.");
+      }
+    );
+  };
+
+  const handleShareRoute = (option: RouteOption, legs: RouteLeg[], summary: { totalCost: number; totalDuration: string }) => {
+    const stepsList = legs
+      .map((leg, i) => `📌 مرحلة ${i + 1}: ${leg.title}\n` + (leg.steps || []).map((s) => `  • ${s}`).join("\n"))
+      .join("\n\n");
+    const shareText = `🚗 *خط السير عبر ماب القاهرة (Cairo Map)* 🗺️\n\n📍 *من:* ${resolvedFromLabel || fromInput}\n🎯 *إلى:* ${resolvedToLabel || toInput}\n🚌 *نوع الوسيلة:* ${option.typeName}\n💵 *الإجمالي:* ${summary.totalCost} ج.م\n⏱️ *المدة المتوقعة:* ${summary.totalDuration}\n\n📋 *الخطوات التفصيلية:*\n${stepsList}\n\n🔗 *تصفح المسارات كاملة:* ${typeof window !== "undefined" ? window.location.href : ""}`;
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      navigator.share({
+        title: `مسار مواصلات: من ${resolvedFromLabel || fromInput} إلى ${resolvedToLabel || toInput}`,
+        text: shareText,
+      }).catch(() => {});
+    } else if (typeof window !== "undefined") {
+      const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+      window.open(waUrl, "_blank");
+    }
+  };
 
   // Suggestion form states
   const [suggestContent, setSuggestContent] = useState("");
@@ -1253,9 +1291,35 @@ export default function DirectionsPage() {
 
             {/* FROM INPUT */}
             <div style={{ position: "relative", zIndex: showFromSuggestions ? 10 : 1 }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
-                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> منين ؟ (نقطة الانطلاق)
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
+                  <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> منين ؟ (نقطة الانطلاق)
+                </label>
+                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  <button
+                    type="button"
+                    onClick={handleUseGPSLocation}
+                    title="حدد موقعك الحالي بالـ GPS"
+                    style={{
+                      background: isLocating ? "rgba(239, 68, 68, 0.2)" : "rgba(16, 185, 129, 0.15)",
+                      color: isLocating ? "#ef4444" : "#10b981",
+                      border: "1px solid rgba(16, 185, 129, 0.3)",
+                      borderRadius: "8px",
+                      padding: "6px 10px",
+                      fontSize: "0.78rem",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px"
+                    }}
+                  >
+                    <i className="bx bx-target-lock" style={{ fontSize: "1rem" }} />
+                    <span>{isLocating ? "جاري التحديد..." : "موقعي"}</span>
+                  </button>
+                  <VoiceInputButton onTranscript={(text) => { setFromInput(text); setShowFromSuggestions(true); setSearchTriggered(false); }} />
+                </div>
+              </div>
               <div style={{ position: "relative" }}>
                 <input
                   className="ios-input"
@@ -1358,9 +1422,12 @@ export default function DirectionsPage() {
 
             {/* TO INPUT */}
             <div style={{ position: "relative", zIndex: showToSuggestions ? 10 : 1 }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
-                <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> لفين ؟ (الجهة المقصودة)
-              </label>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
+                  <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> لفين ؟ (الجهة المقصودة)
+                </label>
+                <VoiceInputButton onTranscript={(text) => { setToInput(text); setShowToSuggestions(true); setSearchTriggered(false); }} />
+              </div>
               <div style={{ position: "relative" }}>
                 <input
                   className="ios-input"
@@ -1710,32 +1777,59 @@ export default function DirectionsPage() {
                         </div>
                       )}
 
-                      {/* Google Maps Route Navigation Button */}
-                      {option.map_link && (
-                        <a
-                          href={option.map_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      {/* Action Buttons: WhatsApp Share & Google Maps */}
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "4px" }}>
+                        <button
+                          type="button"
+                          onClick={() => handleShareRoute(option, legs, summary)}
                           style={{
+                            flex: "1 1 140px",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             gap: "8px",
-                            textDecoration: "none",
                             height: "44px",
                             fontWeight: "700",
                             fontSize: "0.9rem",
                             borderRadius: "12px",
                             color: "#ffffff",
-                            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.2)",
+                            background: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
+                            boxShadow: "0 4px 12px rgba(37, 211, 102, 0.25)",
+                            border: "none",
+                            cursor: "pointer",
                             transition: "all 0.2s ease"
                           }}
                         >
-                          <i className="bx bx-navigation" style={{ fontSize: "1.2rem" }} />
-                          <span>فتح المسار على خريطة Google</span>
-                        </a>
-                      )}
+                          <i className="bx bxl-whatsapp" style={{ fontSize: "1.3rem" }} />
+                          <span>مشاركة خط السير</span>
+                        </button>
+                        {option.map_link && (
+                          <a
+                            href={option.map_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              flex: "1 1 140px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: "8px",
+                              textDecoration: "none",
+                              height: "44px",
+                              fontWeight: "700",
+                              fontSize: "0.9rem",
+                              borderRadius: "12px",
+                              color: "#ffffff",
+                              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                              boxShadow: "0 4px 12px rgba(16, 185, 129, 0.2)",
+                              transition: "all 0.2s ease"
+                            }}
+                          >
+                            <i className="bx bx-navigation" style={{ fontSize: "1.2rem" }} />
+                            <span>خريطة Google</span>
+                          </a>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
