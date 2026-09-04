@@ -204,6 +204,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
+      // Check if user is suspended BEFORE setting session or user in state!
+      const { data: profCheck } = await supabase
+        .from("profiles")
+        .select("is_suspended")
+        .eq("id", currentSession.user.id)
+        .maybeSingle();
+
+      if (profCheck?.is_suspended) {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("account_suspended_notice", "true");
+        }
+        await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setMfaPending(false);
+        setIsSessionRegistered(false);
+        setLoading(false);
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+          window.location.href = "/login?suspended=true";
+        }
+        return;
+      }
+
       const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
       if (aalData && aalData.currentLevel === "aal1" && aalData.nextLevel === "aal2") {
         // Password verified, BUT MFA (2FA) is required and NOT YET verified!
@@ -225,6 +249,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsSessionRegistered(true);
       }
     } catch (e) {
+      try {
+        const { data: profCheck } = await supabase
+          .from("profiles")
+          .select("is_suspended")
+          .eq("id", currentSession.user.id)
+          .maybeSingle();
+
+        if (profCheck?.is_suspended) {
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("account_suspended_notice", "true");
+          }
+          await supabase.auth.signOut();
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+          setMfaPending(false);
+          setIsSessionRegistered(false);
+          setLoading(false);
+          if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+            window.location.href = "/login?suspended=true";
+          }
+          return;
+        }
+      } catch (err) {}
+
       setSession(currentSession);
       setUser(currentSession.user);
       setMfaPending(false);
@@ -411,6 +460,55 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       if (supabase) {
         supabase.removeChannel(channel);
+      }
+    };
+  }, [user, logout]);
+
+  // Active suspension monitor (polls every 3.5s and on tab focus/visibility change)
+  useEffect(() => {
+    if (!user || !supabase) return;
+
+    let cancelled = false;
+
+    const enforceSuspensionCheck = async () => {
+      if (cancelled || !supabase || !user) return;
+      try {
+        const { data } = await supabase
+          .from("profiles")
+          .select("is_suspended")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (data?.is_suspended) {
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("account_suspended_notice", "true");
+          }
+          await logout();
+          if (typeof window !== "undefined") {
+            window.location.href = "/login?suspended=true";
+          }
+        }
+      } catch (err) {
+        console.error("Suspension monitor check error:", err);
+      }
+    };
+
+    const interval = setInterval(enforceSuspensionCheck, 3500);
+    const onActivity = () => {
+      enforceSuspensionCheck();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", onActivity);
+      document.addEventListener("visibilitychange", onActivity);
+    }
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("focus", onActivity);
+        document.removeEventListener("visibilitychange", onActivity);
       }
     };
   }, [user, logout]);

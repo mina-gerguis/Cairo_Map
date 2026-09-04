@@ -27,6 +27,12 @@ export default function LoginPage() {
   // Auto redirect if fully authenticated
   React.useEffect(() => {
     if (user && !mfaPending) {
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("suspended") === "true" || sessionStorage.getItem("account_suspended_notice") === "true") {
+          return;
+        }
+      }
       router.push("/");
     }
   }, [user, mfaPending, router]);
@@ -116,16 +122,36 @@ export default function LoginPage() {
       const cleanedUsername = loginEmail.toLowerCase().replace(/[^a-z0-9_]/g, "");
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("email")
+        .select("email, is_suspended")
         .eq("username", cleanedUsername)
-        .single();
+        .maybeSingle();
 
       if (profileError || !profileData?.email) {
         setError("اسم المستخدم أو كلمة المرور غير صحيحة.");
         setLoading(false);
         return;
       }
+
+      if (profileData.is_suspended) {
+        setError("الحساب تم إيقافه، برجاء التواصل مع الإدارة لفتح الحساب.");
+        setLoading(false);
+        return;
+      }
+
       loginEmail = profileData.email;
+    } else {
+      // Pre-check if email belongs to a suspended account
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("is_suspended")
+        .eq("email", loginEmail)
+        .maybeSingle();
+
+      if (profileData?.is_suspended) {
+        setError("الحساب تم إيقافه، برجاء التواصل مع الإدارة لفتح الحساب.");
+        setLoading(false);
+        return;
+      }
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email: loginEmail, password });
