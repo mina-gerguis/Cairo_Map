@@ -31,6 +31,18 @@ export default function LoginPage() {
     }
   }, [user, mfaPending, router]);
 
+  // Check if redirected due to account suspension
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const isSuspended = params.get("suspended") === "true" || sessionStorage.getItem("account_suspended_notice") === "true";
+      if (isSuspended) {
+        setError("الحساب تم إيقافه، برجاء التواصل مع الإدارة لفتح الحساب.");
+        sessionStorage.removeItem("account_suspended_notice");
+      }
+    }
+  }, []);
+
   // Handle pending MFA on page load/refresh
   React.useEffect(() => {
     const initMfaStep = async () => {
@@ -125,6 +137,20 @@ export default function LoginPage() {
     }
 
     if (data.user) {
+      // Check if user's account is suspended
+      const { data: profCheck } = await supabase
+        .from("profiles")
+        .select("is_suspended")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      if (profCheck?.is_suspended) {
+        await supabase.auth.signOut();
+        setError("الحساب تم إيقافه، برجاء التواصل مع الإدارة لفتح الحساب.");
+        setLoading(false);
+        return;
+      }
+
       const { data: factors } = await supabase.auth.mfa.listFactors();
       const totpFactor = factors?.totp?.[0];
 
@@ -164,6 +190,20 @@ export default function LoginPage() {
       setError("كود المصادقة غير صحيح.");
       setLoading(false);
     } else {
+      if (verify.data?.user) {
+        const { data: profCheck } = await supabase
+          .from("profiles")
+          .select("is_suspended")
+          .eq("id", verify.data.user.id)
+          .maybeSingle();
+
+        if (profCheck?.is_suspended) {
+          await supabase.auth.signOut();
+          setError("الحساب تم إيقافه، برجاء التواصل مع الإدارة لفتح الحساب.");
+          setLoading(false);
+          return;
+        }
+      }
       router.push("/");
     }
   };

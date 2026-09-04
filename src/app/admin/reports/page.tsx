@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../admin.module.css";
+import CustomModal from "@/components/common/Modals";
 
 interface PlaceReport {
   id: string;
@@ -60,6 +61,32 @@ export default function AdminReportsPage() {
   const [replyText, setReplyText] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [actionStatus, setActionStatus] = useState("");
+
+  // Delete Confirmation Modal State
+  const [reportToDelete, setReportToDelete] = useState<{
+    id: string;
+    type: "microbus" | "place" | "feedback" | "contact";
+    title?: string;
+  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Delete Place From Database Modal State
+  const [placeToDeleteFromDb, setPlaceToDeleteFromDb] = useState<{
+    placeId: string;
+    placeName: string;
+    reportId: string;
+  } | null>(null);
+  const [isDeletingPlace, setIsDeletingPlace] = useState(false);
+
+  // Auto-clear actionStatus toast
+  useEffect(() => {
+    if (actionStatus) {
+      const timer = setTimeout(() => {
+        setActionStatus("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [actionStatus]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -272,29 +299,12 @@ export default function AdminReportsPage() {
     }
   };
 
-  const handleDeleteContactMessage = async (id: string) => {
-    if (!confirm("هل أنت متأكد من حذف هذه الرسالة نهائياً؟")) return;
-    if (!supabase || !isAdmin) return;
-
-    setUpdatingId(id);
-    setActionStatus("");
-    try {
-      const { error } = await supabase
-        .from("contact_messages")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
-      setActionStatus("تم حذف الرسالة بنجاح.");
-      fetchContactMessages();
-      if (activeReportId === id) {
-        setActiveReportId(null);
-      }
-    } catch (err: any) {
-      setActionStatus(`خطأ: ${err.message}`);
-    } finally {
-      setUpdatingId(null);
-    }
+  const handleDeleteContactMessage = (id: string, name?: string) => {
+    setReportToDelete({
+      id,
+      type: "contact",
+      title: name ? `رسالة تواصل من: ${name}` : "رسالة تواصل"
+    });
   };
 
   const fetchMicrobusReports = async () => {
@@ -339,63 +349,159 @@ export default function AdminReportsPage() {
     }
   };
 
-  const handleDeleteMicrobusReport = async (reportId: string) => {
-    if (!supabase) return;
-    if (!window.confirm("هل أنت متأكد من رغبتك في حذف هذا البلاغ؟")) return;
+  const handleDeleteMicrobusReport = (report: any) => {
+    setReportToDelete({
+      id: typeof report === "string" ? report : report.id,
+      type: "microbus",
+      title: typeof report === "object" && report.comment ? (report.comment.length > 60 ? report.comment.slice(0, 60) + "..." : report.comment) : "بلاغ سرفيس ومواقف"
+    });
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!reportToDelete || !supabase || !isAdmin) return;
+    setIsDeleting(true);
+    setActionStatus("");
+
+    const target = reportToDelete;
     try {
-      const { data, error } = await supabase
-        .from("route_interactions")
-        .delete()
-        .eq("id", reportId)
-        .select();
+      if (target.type === "microbus") {
+        const { data, error } = await supabase
+          .from("route_interactions")
+          .delete()
+          .eq("id", target.id)
+          .select();
 
-      if (error) {
-        alert("فشل حذف البلاغ: " + error.message);
-      } else if (!data || data.length === 0) {
-        // RLS blocked delete because auth user is admin and policy was missing
-        alert("تعذر حذف البلاغ من قاعدة البيانات (قد يكون بسب سياسة الحماية RLS). يرجى تشغيل ملف SQL الخاص بصلاحية أدمن في Supabase.");
-      } else {
-        alert("تم حذف البلاغ بنجاح من قاعدة البيانات.");
-        setMicrobusReports(prev => prev.filter(r => r.id !== reportId));
+        if (error) {
+          setActionStatus("فشل حذف البلاغ: " + error.message);
+        } else if (!data || data.length === 0) {
+          setActionStatus("تعذر حذف البلاغ من قاعدة البيانات (قد يكون بسبب صلاحيات الحماية RLS).");
+        } else {
+          setActionStatus("تم حذف البلاغ بنجاح 🗑️");
+          setMicrobusReports(prev => prev.filter(r => r.id !== target.id));
+        }
+      } else if (target.type === "place") {
+        const { error } = await supabase
+          .from("place_reports")
+          .delete()
+          .eq("id", target.id);
+
+        if (error) {
+          setActionStatus("فشل حذف البلاغ: " + error.message);
+        } else {
+          setActionStatus("تم حذف البلاغ بنجاح 🗑️");
+          setReports(prev => prev.filter(r => r.id !== target.id));
+          if (activeReportId === target.id) {
+            setActiveReportId(null);
+          }
+        }
+      } else if (target.type === "feedback") {
+        const { error } = await supabase
+          .from("app_feedback")
+          .delete()
+          .eq("id", target.id);
+
+        if (error) {
+          setActionStatus("فشل حذف البلاغ: " + error.message);
+        } else {
+          setActionStatus("تم حذف البلاغ بنجاح 🗑️");
+          setAppFeedbacks(prev => prev.filter(f => f.id !== target.id));
+          if (activeReportId === target.id) {
+            setActiveReportId(null);
+          }
+        }
+      } else if (target.type === "contact") {
+        const { error } = await supabase
+          .from("contact_messages")
+          .delete()
+          .eq("id", target.id);
+
+        if (error) {
+          setActionStatus("فشل حذف الرسالة: " + error.message);
+        } else {
+          setActionStatus("تم حذف الرسالة بنجاح 🗑️");
+          setContactMessages(prev => prev.filter(c => c.id !== target.id));
+          if (activeReportId === target.id) {
+            setActiveReportId(null);
+          }
+        }
       }
     } catch (err: any) {
-      console.error("Failed to delete microbus report:", err);
-      alert("حدث خطأ غير متوقع: " + (err?.message || err));
+      console.error("Failed to delete report:", err);
+      setActionStatus("حدث خطأ غير متوقع أثناء الحذف: " + (err?.message || err));
+    } finally {
+      setIsDeleting(false);
+      setReportToDelete(null);
+    }
+  };
+
+  const handleConfirmDeletePlaceFromDb = async () => {
+    if (!placeToDeleteFromDb || !supabase || !isAdmin) return;
+    setIsDeletingPlace(true);
+    setActionStatus("");
+
+    const { placeId, placeName } = placeToDeleteFromDb;
+    try {
+      // 1. Delete associated data referencing place_id
+      await Promise.allSettled([
+        supabase.from("branches").delete().eq("place_id", placeId),
+        supabase.from("favorite_places").delete().eq("place_id", placeId),
+        supabase.from("place_notes").delete().eq("place_id", placeId),
+        supabase.from("reviews").delete().eq("place_id", placeId),
+      ]);
+
+      // 2. Delete the place itself
+      let { error: placeError } = await supabase
+        .from("places")
+        .delete()
+        .eq("id", placeId);
+
+      // If foreign key constraint on place_reports prevented delete:
+      if (placeError && placeError.message?.toLowerCase().includes("place_reports")) {
+        await supabase.from("place_reports").delete().eq("place_id", placeId);
+        const retry = await supabase.from("places").delete().eq("id", placeId);
+        placeError = retry.error;
+      }
+
+      if (placeError) throw placeError;
+
+      // 3. Update local state: mark the place as deleted for any reports pointing to it
+      setReports(prev => prev.map(r => {
+        if (r.place_id === placeId) {
+          return {
+            ...r,
+            place_name: "مكان محذوف أو غير معروف"
+          };
+        }
+        return r;
+      }));
+
+      setActionStatus(`تم حذف المكان « ${placeName} » نهائياً من قاعدة البيانات بنجاح 🗑️`);
+    } catch (err: any) {
+      console.error("Failed to delete place from DB:", err);
+      setActionStatus(`فشل حذف المكان من قاعدة البيانات: ${err.message || err}`);
+    } finally {
+      setIsDeletingPlace(false);
+      setPlaceToDeleteFromDb(null);
     }
   };
 
   const handleUpdateAppFeedbackStatus = async (feedback: any, newStatus: string) => {
     if (!supabase || !isAdmin) return;
 
-    let deleteEntry = false;
-    if (newStatus === "action_taken") {
-      deleteEntry = confirm("لقد قمت باتخاذ إجراء لحل هذه المشكلة/الاقتراح. هل تريد حذف هذا الطلب نهائياً من القائمة لتنظيف الشاشة؟");
-    }
-
     setUpdatingId(feedback.id);
     setActionStatus("");
 
     try {
-      if (deleteEntry) {
-        // First delete it from app_feedback so it vanishes
-        const { error: deleteError } = await supabase
-          .from("app_feedback")
-          .delete()
-          .eq("id", feedback.id);
-        if (deleteError) throw deleteError;
-      } else {
-        // Update the feedback status as usual
-        const { error: updateError } = await supabase
-          .from("app_feedback")
-          .update({
-            status: newStatus,
-            admin_reply: replyText.trim() || null,
-            updated_at: new Date().toISOString()
-          })
-          .eq("id", feedback.id);
-        if (updateError) throw updateError;
-      }
+      // Update the feedback status as usual
+      const { error: updateError } = await supabase
+        .from("app_feedback")
+        .update({
+          status: newStatus,
+          admin_reply: replyText.trim() || null,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", feedback.id);
+      if (updateError) throw updateError;
 
       // 2. Send notification to the user (so they still know action was taken)
       let notifTitle = "";
@@ -432,7 +538,7 @@ export default function AdminReportsPage() {
         localStorage.setItem("dftry_solved_bugs_count", nextCount.toString());
       }
 
-      setActionStatus(deleteEntry ? "تم اتخاذ الإجراء وحذف الطلب بنجاح!" : "تم تحديث حالة البلاغ وإشعار المستخدم بنجاح!");
+      setActionStatus("تم تحديث حالة البلاغ وإشعار المستخدم بنجاح!");
       setReplyText("");
       fetchAppFeedbacks();
     } catch (err: any) {
@@ -1162,19 +1268,130 @@ export default function AdminReportsPage() {
                                       {updatingId === report.id ? "جاري الحفظ..." : "مرفوض ❌"}
                                     </button>
 
+                                    <button
+                                      type="button"
+                                      onClick={() => setReportToDelete({
+                                        id: report.id,
+                                        type: "place",
+                                        title: report.place_name ? `بلاغ حول: ${report.place_name}` : "بلاغ مكان"
+                                      })}
+                                      disabled={updatingId !== null}
+                                      className="btn"
+                                      style={{
+                                        background: "rgba(255, 59, 48, 0.1)",
+                                        border: "1px solid rgba(255, 59, 48, 0.25)",
+                                        color: "#ff3b30",
+                                        fontSize: "0.85rem",
+                                        fontWeight: "bold",
+                                        padding: "6px 14px",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "4px"
+                                      }}
+                                    >
+                                      <i className="bx bx-trash" style={{ fontSize: "1rem" }} />
+                                      حذف البلاغ
+                                    </button>
                                   </div>
                                 </>
                               )}
 
-                              <div style={{ marginTop: "14px", display: "flex", gap: "8px" }}>
+                              {/* Post-Resolution Place Deletion Action (After acceptance or rejection) */}
+                              {(report.status === "accepted" || report.status === "rejected") && (
+                                <div style={{
+                                  marginTop: "14px",
+                                  padding: "12px 16px",
+                                  borderRadius: "12px",
+                                  background: report.status === "accepted" ? "rgba(52, 199, 89, 0.07)" : "rgba(255, 59, 48, 0.07)",
+                                  border: `1px dashed ${report.status === "accepted" ? "rgba(52, 199, 89, 0.35)" : "rgba(255, 59, 48, 0.35)"}`,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  gap: "12px",
+                                  flexWrap: "wrap",
+                                  animation: "fadeIn 0.25s ease-out"
+                                }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                    <span style={{ fontSize: "1.4rem" }}>{report.status === "accepted" ? "✅" : "❌"}</span>
+                                    <div>
+                                      <div style={{ fontWeight: "700", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                                        {report.status === "accepted" ? "تم قبول البلاغ والموافقة عليه" : "تم رفض البلاغ"}
+                                      </div>
+                                      <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", marginTop: "2px" }}>
+                                        {report.place_name === "مكان محذوف أو غير معروف"
+                                          ? "هذا المكان تم مسحه بالفعل من قاعدة البيانات."
+                                          : "يمكنك الآن مسح هذا المكان نهائياً من قاعدة البيانات (الداتا بيز)."}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {report.place_name !== "مكان محذوف أو غير معروف" && (
+                                    <button
+                                      type="button"
+                                      onClick={() => setPlaceToDeleteFromDb({
+                                        placeId: report.place_id,
+                                        placeName: report.place_name || "مكان غير معروف",
+                                        reportId: report.id
+                                      })}
+                                      className="btn"
+                                      style={{
+                                        background: "#ff3b30",
+                                        border: "none",
+                                        color: "#ffffff",
+                                        fontSize: "0.85rem",
+                                        fontWeight: "700",
+                                        padding: "8px 16px",
+                                        borderRadius: "8px",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "6px",
+                                        cursor: "pointer",
+                                        boxShadow: "0 4px 12px rgba(255, 59, 48, 0.25)"
+                                      }}
+                                    >
+                                      <i className="bx bx-trash" style={{ fontSize: "1.05rem" }} />
+                                      مسح المكان من الداتا بيز
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+
+                              <div style={{ marginTop: "14px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
                                 <Link
                                   href={`/places/${report.place_id}`}
                                   target="_blank"
                                   className="btn"
-                                  style={{ width: "100%", textAlign: "center", textDecoration: "none", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+                                  style={{ flex: 1, minWidth: "200px", textAlign: "center", textDecoration: "none", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
                                 >
                                   <i className="bx bx-link-external"></i> الانتقال لصفحة المكان للمعاينة أو التعديل
                                 </Link>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setPlaceToDeleteFromDb({
+                                    placeId: report.place_id,
+                                    placeName: report.place_name || "مكان غير معروف",
+                                    reportId: report.id
+                                  })}
+                                  disabled={report.place_name === "مكان محذوف أو غير معروف"}
+                                  className="btn"
+                                  style={{
+                                    background: report.place_name === "مكان محذوف أو غير معروف" ? "rgba(255, 255, 255, 0.04)" : "rgba(255, 59, 48, 0.1)",
+                                    border: `1px solid ${report.place_name === "مكان محذوف أو غير معروف" ? "var(--borderGlass)" : "rgba(255, 59, 48, 0.25)"}`,
+                                    color: report.place_name === "مكان محذوف أو غير معروف" ? "var(--textSecondary)" : "#ff3b30",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold",
+                                    padding: "8px 16px",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                    cursor: report.place_name === "مكان محذوف أو غير معروف" ? "not-allowed" : "pointer",
+                                    opacity: report.place_name === "مكان محذوف أو غير معروف" ? 0.6 : 1
+                                  }}
+                                >
+                                  <i className="bx bx-trash" style={{ fontSize: "1rem" }} />
+                                  {report.place_name === "مكان محذوف أو غير معروف" ? "المكان محذوف من الداتا بيز" : "مسح المكان من الداتا بيز 🗑️"}
+                                </button>
                               </div>
 
                             </div>
@@ -1438,6 +1655,31 @@ export default function AdminReportsPage() {
                                   }}
                                 >
                                   {updatingId === feedback.id ? "جاري الحفظ..." : "اعتماد وتطبيق الاقتراح ✅"}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setReportToDelete({
+                                    id: feedback.id,
+                                    type: "feedback",
+                                    title: feedback.title ? `اقتراح: ${feedback.title}` : "اقتراح"
+                                  })}
+                                  disabled={updatingId !== null}
+                                  className="btn"
+                                  style={{
+                                    background: "rgba(255, 59, 48, 0.1)",
+                                    border: "1px solid rgba(255, 59, 48, 0.25)",
+                                    color: "#ff3b30",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold",
+                                    padding: "6px 14px",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "4px"
+                                  }}
+                                >
+                                  <i className="bx bx-trash" style={{ fontSize: "1rem" }} />
+                                  حذف الاقتراح
                                 </button>
                               </div>
                             </div>
@@ -1762,6 +2004,31 @@ export default function AdminReportsPage() {
                                 >
                                   {updatingId === feedback.id ? "جاري الحفظ..." : "اتخاذ إجراء وحل المشكلة ✅"}
                                 </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => setReportToDelete({
+                                    id: feedback.id,
+                                    type: "feedback",
+                                    title: feedback.title ? `مشكلة: ${feedback.title}` : "بلاغ مشكلة"
+                                  })}
+                                  disabled={updatingId !== null}
+                                  className="btn"
+                                  style={{
+                                    background: "rgba(255, 59, 48, 0.1)",
+                                    border: "1px solid rgba(255, 59, 48, 0.25)",
+                                    color: "#ff3b30",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold",
+                                    padding: "6px 14px",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "4px"
+                                  }}
+                                >
+                                  <i className="bx bx-trash" style={{ fontSize: "1rem" }} />
+                                  حذف البلاغ
+                                </button>
                               </div>
                             </div>
 
@@ -1952,7 +2219,8 @@ export default function AdminReportsPage() {
                                 </button>
 
                                 <button
-                                  onClick={() => handleDeleteContactMessage(contact.id)}
+                                  type="button"
+                                  onClick={() => handleDeleteContactMessage(contact.id, contact.name)}
                                   disabled={updatingId !== null}
                                   className="btn"
                                   style={{
@@ -2096,7 +2364,8 @@ export default function AdminReportsPage() {
                     {/* Actions */}
                     <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", borderTop: "1px solid var(--borderGlass)", paddingTop: "12px", marginTop: "4px" }}>
                       <button
-                        onClick={() => handleDeleteMicrobusReport(report.id)}
+                        type="button"
+                        onClick={() => handleDeleteMicrobusReport(report)}
                         style={{
                           padding: "6px 12px",
                           borderRadius: "8px",
@@ -2106,10 +2375,14 @@ export default function AdminReportsPage() {
                           fontSize: "0.8rem",
                           fontWeight: "bold",
                           cursor: "pointer",
-                          transition: "all 0.2s"
+                          transition: "all 0.2s",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px"
                         }}
                       >
-                        🗑️ حذف البلاغ
+                        <i className="bx bx-trash" style={{ fontSize: "1rem" }} />
+                        حذف البلاغ
                       </button>
                       <Link
                         href="/microbus-stations"
@@ -2149,6 +2422,170 @@ export default function AdminReportsPage() {
           )}
         </div>
       )}
+
+      {/* Floating Status Toast */}
+      {actionStatus && (
+        <div
+          style={{
+            position: "fixed",
+            top: "24px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 22000,
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "12px 22px",
+            borderRadius: "50px",
+            backgroundColor:
+              actionStatus.startsWith("خطأ") ||
+              actionStatus.startsWith("فشل") ||
+              actionStatus.startsWith("تعذر")
+                ? "#ef4444"
+                : "#10b981",
+            color: "#ffffff",
+            boxShadow: "0 12px 30px rgba(0, 0, 0, 0.35)",
+            fontWeight: "700",
+            fontSize: "0.95rem",
+            fontFamily: "var(--font-heading)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <i
+            className={`bx ${
+              actionStatus.startsWith("خطأ") ||
+              actionStatus.startsWith("فشل") ||
+              actionStatus.startsWith("تعذر")
+                ? "bx-error-circle"
+                : "bx-check-circle"
+            }`}
+            style={{ fontSize: "1.3rem" }}
+          />
+          <span>{actionStatus}</span>
+          <button
+            type="button"
+            onClick={() => setActionStatus("")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#ffffff",
+              cursor: "pointer",
+              padding: "0 0 0 6px",
+              display: "flex",
+              alignItems: "center",
+              opacity: 0.8
+            }}
+          >
+            <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
+          </button>
+        </div>
+      )}
+
+      {/* Professional Delete Confirmation Modal */}
+      <CustomModal
+        isOpen={Boolean(reportToDelete)}
+        onClose={() => !isDeleting && setReportToDelete(null)}
+        title="تأكيد الحذف"
+        titleColor="#ff3b30"
+        iconSrc="/images/icons3d/trash.png"
+        borderColor="rgba(255, 59, 48, 0.25)"
+        message={
+          reportToDelete?.type === "contact"
+            ? "هل أنت متأكد من رغبتك في حذف هذه الرسالة؟"
+            : "هل أنت متأكد من رغبتك في حذف هذا البلاغ؟"
+        }
+        primaryButton={{
+          label: isDeleting ? "جاري الحذف..." : "نعم، احذف",
+          onClick: handleConfirmDelete,
+          bgColor: "#ff3b30",
+          disabled: isDeleting,
+          icon: <i className="bx bx-trash" style={{ fontSize: "1.2rem" }} />
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setReportToDelete(null),
+          bgColor: "var(--cancelBtn)",
+          disabled: isDeleting,
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
+        }}
+      >
+        {reportToDelete?.title && (
+          <div
+            style={{
+              backgroundColor: "rgba(255, 59, 48, 0.06)",
+              border: "1px dashed rgba(255, 59, 48, 0.25)",
+              borderRadius: "10px",
+              padding: "10px 14px",
+              margin: "4px 0 0",
+              textAlign: "center"
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                color: "var(--textPrimary)",
+                fontSize: "0.9rem",
+                fontWeight: "600",
+                wordBreak: "break-word",
+                lineHeight: "1.5"
+              }}
+            >
+              « {reportToDelete.title} »
+            </p>
+          </div>
+        )}
+      </CustomModal>
+
+      {/* Professional Delete Place From Database Confirmation Modal */}
+      <CustomModal
+        isOpen={Boolean(placeToDeleteFromDb)}
+        onClose={() => !isDeletingPlace && setPlaceToDeleteFromDb(null)}
+        title="تأكيد مسح المكان من قاعدة البيانات"
+        titleColor="#ff3b30"
+        iconSrc="/images/icons3d/trash.png"
+        borderColor="rgba(255, 59, 48, 0.25)"
+        message="هل أنت متأكد من رغبتك في حذف هذا المكان نهائياً من قاعدة البيانات (الداتا بيز)؟ لا يمكن التراجع عن هذه العملية وسيتم حذف كافة الفروع والملاحظات والتقييمات المرتبطة به."
+        primaryButton={{
+          label: isDeletingPlace ? "جاري مسح المكان..." : "نعم، امسح المكان نهائياً",
+          onClick: handleConfirmDeletePlaceFromDb,
+          bgColor: "#ff3b30",
+          disabled: isDeletingPlace,
+          icon: <i className="bx bx-trash" style={{ fontSize: "1.2rem" }} />
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setPlaceToDeleteFromDb(null),
+          bgColor: "var(--cancelBtn)",
+          disabled: isDeletingPlace,
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
+        }}
+      >
+        {placeToDeleteFromDb && (
+          <div
+            style={{
+              backgroundColor: "rgba(255, 59, 48, 0.06)",
+              border: "1px dashed rgba(255, 59, 48, 0.25)",
+              borderRadius: "10px",
+              padding: "12px 14px",
+              margin: "4px 0 0",
+              textAlign: "center"
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                color: "#ff4d4d",
+                fontSize: "0.95rem",
+                fontWeight: "700",
+                wordBreak: "break-word",
+                lineHeight: "1.5"
+              }}
+            >
+              « {placeToDeleteFromDb.placeName} »
+            </p>
+          </div>
+        )}
+      </CustomModal>
     </div>
   );
 }

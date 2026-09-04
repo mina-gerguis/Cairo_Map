@@ -47,6 +47,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .eq("id", userId)
         .single();
       if (data) {
+        // If the user's account is suspended by admin, immediately force logout
+        if (data.is_suspended) {
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("account_suspended_notice", "true");
+          }
+          await logout();
+          if (typeof window !== "undefined") {
+            window.location.href = "/login?suspended=true";
+          }
+          return;
+        }
+
         // Fallback check: if subscription_end has passed, treat as free/expired
         const isExpired = data.subscription_tier !== "free" && data.subscription_end && new Date(data.subscription_end) < new Date();
         const profileData = isExpired ? {
@@ -314,9 +326,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (!data) return;
 
         if (data.is_active === false || data.logged_out_at !== null) {
-          // Remotely logged out!
+          // Remotely logged out or deactivated!
           clearInterval(interval);
-          if (!cancelled) await logout();
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("account_suspended_notice", "true");
+          }
+          if (!cancelled) {
+            await logout();
+            if (typeof window !== "undefined") {
+              window.location.href = "/login?suspended=true";
+            }
+          }
+          return;
+        }
+
+        // Also check if account is suspended directly in profiles
+        const { data: profCheck } = await supabase
+          .from("profiles")
+          .select("is_suspended")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (profCheck?.is_suspended) {
+          clearInterval(interval);
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("account_suspended_notice", "true");
+          }
+          if (!cancelled) {
+            await logout();
+            if (typeof window !== "undefined") {
+              window.location.href = "/login?suspended=true";
+            }
+          }
+          return;
         }
       } catch (err) {
         console.error("Failed to check active session status:", err);
@@ -337,6 +379,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       clearInterval(interval);
     };
   }, [user, isSessionRegistered, logout]);
+
+  // Real-time listener for instant suspension detection
+  useEffect(() => {
+    if (!user || !supabase) return;
+
+    const channel = supabase
+      .channel(`profile-suspension-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${user.id}`,
+        },
+        async (payload: any) => {
+          if (payload.new && payload.new.is_suspended) {
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem("account_suspended_notice", "true");
+            }
+            await logout();
+            if (typeof window !== "undefined") {
+              window.location.href = "/login?suspended=true";
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      if (supabase) {
+        supabase.removeChannel(channel);
+      }
+    };
+  }, [user, logout]);
 
 
   return (

@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+const escapeHtml = (str: string = "") =>
+  String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const formatParagraphs = (str: string = "") =>
+  escapeHtml(str).replace(/\r\n|\r|\n/g, "<br />");
+
 export async function POST(request: Request) {
   try {
     const { toEmail, toName, originalMessage, replyText } = await request.json();
@@ -34,34 +45,86 @@ export async function POST(request: Request) {
     });
 
     const senderEmail = process.env.SMTP_FROM || smtpUser;
+    const safeToName = escapeHtml(toName);
+    const safeOriginalMessage = formatParagraphs(originalMessage);
+    const safeReplyText = formatParagraphs(replyText);
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
 
     // Email content in Arabic
     const mailOptions = {
-      from: `"خريطة القاهرة - الدعم الفني" <${senderEmail}>`,
+      from: `"ماب القاهرة - الدعم الفني" <${senderEmail}>`,
       to: toEmail,
       replyTo: process.env.SMTP_REPLY_TO || senderEmail,
-      subject: "الرد على استفسارك - خريطة القاهرة",
+      subject: "الرد على استفسارك - ماب القاهرة",
+      text: `مرحباً ${toName}،\n\nقام فريق الدعم الفني بمراجعة رسالتك وإرسال الرد التالي:\n\nرسالتك الأصلية:\n${originalMessage || ''}\n\nرد الدعم الفني:\n${replyText}\n\n---\nماب القاهرة - الدعم الفني`,
       html: `
-        <div style="direction: rtl; text-align: right; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 25px; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #ffffff;">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <h2 style="color: #007aff; margin: 0; font-size: 1.5rem; font-weight: 800; border-bottom: 2px solid #007aff; padding-bottom: 10px; display: inline-block;">خريطة القاهرة - الدعم الفني</h2>
-          </div>
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>الرد على استفسارك</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #000000; color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; direction: rtl; text-align: center;">
           
-          <p style="font-size: 1.05rem; margin-top: 20px;">مرحباً <strong>${toName}</strong>،</p>
-          <p>نشكرك على تواصلك معنا. لقد قام فريق الدعم الفني بمراجعة رسالتك والرد عليها:</p>
-          
-          <div style="background-color: #f9f9f9; padding: 15px; border: 1px solid #f0f0f0; border-right: 4px solid #8e8e93; margin: 20px 0; border-radius: 8px;">
-            <p style="margin: 0; font-weight: bold; color: #555; font-size: 0.9rem;">رسالتك الأصلية:</p>
-            <p style="margin: 8px 0 0 0; color: #666; font-style: italic; font-size: 0.95rem; white-space: pre-wrap;">"${originalMessage}"</p>
-          </div>
-          
-          <div style="background-color: #f2f9ff; padding: 18px; border: 1px solid #e1f0ff; border-right: 4px solid #34c759; margin: 20px 0; border-radius: 8px;">
-            <p style="margin: 0; font-weight: bold; color: #0056b3; font-size: 0.9rem;">رد الإدارة والدعم الفني:</p>
-            <p style="margin: 8px 0 0 0; color: #1c3d5a; font-weight: 500; font-size: 1.05rem; white-space: pre-wrap;">${replyText}</p>
-          </div>
-          
-          <p style="font-size: 0.9rem; color: #8a8a8f; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;">هذا البريد الإلكتروني مرسل تلقائياً، يرجى عدم الرد عليه مباشرة.</p>
-        </div>
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #000000; margin: 0; padding: 40px 16px;">
+            <tr>
+              <td align="center">
+                <!-- المحتوى بتصميم ومقاس المودل وبدون حاوية إضافية -->
+                <div style="max-width: 440px; width: 100%; text-align: center; margin: 0 auto;">
+                  
+                  <!-- أيقونة المودل ثلاثية الأبعاد (نفس أيقونة مودل الخروج والتنبيهات) -->
+                  <div style="width: 72px; height: 72px; margin: 0 auto 18px auto; text-align: center;">
+                    <img src="${siteUrl}/images/icons3d/alert.png" alt="ماب القاهرة" width="72" height="72" style="width: 72px; height: 72px; display: inline-block; object-fit: contain; border: 0;" />
+                  </div>
+
+                  <!-- عنوان المودل -->
+                  <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0 0 10px 0; color: #f4f4f5; letter-spacing: -0.3px;">
+                    الرد على استفسارك
+                  </h2>
+
+                  <!-- الرسالة الترحيبية -->
+                  <p style="font-size: 0.95rem; line-height: 1.6; color: #a1a1aa; margin: 0 0 24px 0;">
+                    مرحباً <strong style="color: #ffffff;">${safeToName}</strong>، لقد قام فريق الدعم الفني بمراجعة رسالتك والرد عليها:
+                  </p>
+
+                  <!-- الرسالة الأصلية إن وجدت (بتنسيق كروت المودل الهادئة) -->
+                  ${originalMessage ? `
+                  <div style="background-color: #0d0d0e; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; text-align: right; direction: rtl;">
+                    <span style="display: block; font-size: 11px; font-weight: 700; color: #71717a; margin-bottom: 6px;">لقد قمت بمراسلتنا بخصوص :</span>
+                    <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #a1a1aa; font-style: italic;">
+                      "${safeOriginalMessage}"
+                    </p>
+                  </div>
+                  ` : ''}
+
+                  <!-- رد الإدارة والدعم الفني -->
+                  <div style="padding: 16px 18px; margin-bottom: 24px; text-align: right; direction: rtl;">
+                    <span style="display: block; font-size: 11px; font-weight: 700; color: #38bdf8; margin-bottom: 8px;">رد فريق الدعم الفني:</span>
+                    <div style="font-size: 14px; line-height: 1.75; color: #f4f4f5; font-weight: 500;">
+                      ${safeReplyText}
+                    </div>
+                  </div>
+
+                  <!-- زر المودل الرئيسي (نفس زر تأكيد المودل) -->
+                  <div style="margin: 28px 0 20px 0;">
+                    <a href="${siteUrl}" target="_blank" style="display: inline-block; background-color: rgb(39, 39, 255); color: #ffffff; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 14px rgba(39, 39, 255, 0.35);">
+                      الانتقال إلى ماب القاهرة
+                    </a>
+                  </div>
+
+                  <!-- تذييل سفلي بسيط مدمج -->
+                  <p style="font-size: 11px; color: #52525b; margin-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 16px; line-height: 1.6;">
+                    هذا البريد مرسل تلقائياً من خريطة ماب القاهرة • لا يتطلب الرد المباشر
+                  </p>
+
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </body>
+        </html>
       `,
     };
 

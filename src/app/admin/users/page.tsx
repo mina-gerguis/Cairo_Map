@@ -27,6 +27,9 @@ interface UserProfile {
   points?: number;
   created_at: string;
   is_admin: boolean;
+  is_suspended?: boolean;
+  suspended_at?: string | null;
+  suspended_reason?: string | null;
 }
 
 interface ActivityEvent {
@@ -52,6 +55,12 @@ export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [tierFilter, setTierFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  // Suspend User Modal State
+  const [suspendTarget, setSuspendTarget] = useState<UserProfile | null>(null);
+  const [suspendReason, setSuspendReason] = useState<string>("");
+  const [suspending, setSuspending] = useState<boolean>(false);
 
   // Edit User Profile Modal State
   const [editUser, setEditUser] = useState<UserProfile | null>(null);
@@ -68,6 +77,8 @@ export default function AdminUsersPage() {
     balance: 0,
     promo_balance: 0,
     points: 0,
+    is_suspended: false,
+    suspended_reason: "",
   });
   const [savingEdit, setSavingEdit] = useState(false);
 
@@ -168,6 +179,8 @@ export default function AdminUsersPage() {
       balance: targetUser.balance || 0,
       promo_balance: targetUser.promo_balance || 0,
       points: targetUser.points || 0,
+      is_suspended: !!targetUser.is_suspended,
+      suspended_reason: targetUser.suspended_reason || "",
     });
     setStatusMessage(null);
   };
@@ -180,6 +193,10 @@ export default function AdminUsersPage() {
     setStatusMessage(null);
 
     try {
+      const isSuspendingNow = editForm.is_suspended;
+      const suspendedReasonFinal = isSuspendingNow ? (editForm.suspended_reason.trim() || "تم إيقاف الحساب من قبل الإدارة") : null;
+      const suspendedAtFinal = isSuspendingNow ? (editUser.suspended_at || new Date().toISOString()) : null;
+
       const { error } = await supabase
         .from("profiles")
         .update({
@@ -195,11 +212,25 @@ export default function AdminUsersPage() {
           balance: Number(editForm.balance),
           promo_balance: Number(editForm.promo_balance),
           points: Number(editForm.points),
+          is_suspended: isSuspendingNow,
+          suspended_at: suspendedAtFinal,
+          suspended_reason: suspendedReasonFinal,
           updated_at: new Date().toISOString(),
         })
         .eq("id", editUser.id);
 
       if (error) throw error;
+
+      // If set to suspended, deactivate all user devices immediately to force logout
+      if (isSuspendingNow) {
+        await supabase
+          .from("user_devices")
+          .update({
+            is_active: false,
+            logged_out_at: new Date().toISOString(),
+          })
+          .eq("user_id", editUser.id);
+      }
 
       // Update state locally
       setUsers((prev) =>
@@ -219,6 +250,9 @@ export default function AdminUsersPage() {
               balance: Number(editForm.balance),
               promo_balance: Number(editForm.promo_balance),
               points: Number(editForm.points),
+              is_suspended: isSuspendingNow,
+              suspended_at: suspendedAtFinal,
+              suspended_reason: suspendedReasonFinal,
             }
             : u
         )
@@ -233,6 +267,82 @@ export default function AdminUsersPage() {
       setStatusMessage({ type: "error", text: "فشل تحديث بيانات الحساب: " + err.message });
     } finally {
       setSavingEdit(false);
+    }
+  };
+
+  // Toggle User Suspension (Suspend / Unsuspend)
+  const handleConfirmToggleSuspension = async () => {
+    if (!supabase || !suspendTarget) return;
+    setSuspending(true);
+    setStatusMessage(null);
+
+    const willSuspend = !suspendTarget.is_suspended;
+    const finalReason = willSuspend ? (suspendReason.trim() || "تم إيقاف الحساب من قبل الإدارة") : null;
+
+    try {
+      // 1. Attempt RPC call first
+      const { data: rpcData, error: rpcError } = await supabase.rpc("toggle_user_suspension", {
+        p_user_id: suspendTarget.id,
+        p_suspend: willSuspend,
+        p_reason: finalReason,
+      });
+
+      if (rpcError) {
+        // Fallback: update profiles table directly
+        const { error: profileErr } = await supabase
+          .from("profiles")
+          .update({
+            is_suspended: willSuspend,
+            suspended_at: willSuspend ? new Date().toISOString() : null,
+            suspended_reason: finalReason,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", suspendTarget.id);
+
+        if (profileErr) throw profileErr;
+
+        // Invalidate active device sessions if suspending
+        if (willSuspend) {
+          await supabase
+            .from("user_devices")
+            .update({
+              is_active: false,
+              logged_out_at: new Date().toISOString(),
+            })
+            .eq("user_id", suspendTarget.id);
+        }
+      }
+
+      // Update local state
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === suspendTarget.id
+            ? {
+                ...u,
+                is_suspended: willSuspend,
+                suspended_at: willSuspend ? new Date().toISOString() : null,
+                suspended_reason: finalReason,
+              }
+            : u
+        )
+      );
+
+      setStatusMessage({
+        type: "success",
+        text: willSuspend
+          ? `تم إيقاف وتعليق حساب (${suspendTarget.full_name || suspendTarget.username}) بنجاح وتسجيل خروجه من كافة الأجهزة!`
+          : `تم إلغاء إيقاف حساب (${suspendTarget.full_name || suspendTarget.username}) وإعادة تفعيله بنجاح!`,
+      });
+
+      setSuspendTarget(null);
+      setSuspendReason("");
+    } catch (err: any) {
+      setStatusMessage({
+        type: "error",
+        text: `فشل ${willSuspend ? "إيقاف" : "إعادة تفعيل"} الحساب: ` + err.message,
+      });
+    } finally {
+      setSuspending(false);
     }
   };
 
@@ -455,13 +565,19 @@ export default function AdminUsersPage() {
 
     const matchesTier = tierFilter === "all" || u.subscription_tier === tierFilter;
 
-    return matchesSearch && matchesRole && matchesTier;
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "active" && !u.is_suspended) ||
+      (statusFilter === "suspended" && !!u.is_suspended);
+
+    return matchesSearch && matchesRole && matchesTier && matchesStatus;
   });
 
   // Calculate statistics
   const totalUsersCount = users.length;
   const adminUsersCount = users.filter((u) => u.is_admin).length;
   const paidUsersCount = users.filter((u) => u.subscription_tier && u.subscription_tier !== "free").length;
+  const suspendedUsersCount = users.filter((u) => u.is_suspended).length;
   const regularUsersCount = totalUsersCount - adminUsersCount;
 
   if (authChecking) {
@@ -496,7 +612,7 @@ export default function AdminUsersPage() {
             <span>👥</span> إدارة الحسابات والمستخدمين
           </h1>
           <p className={styles.tableSubtitle} style={{ marginTop: "4px", fontSize: "0.9rem" }}>
-            إدارة كافة حسابات الأعضاء المسجلين بالموقع، تعديل البيانات الشاملة (المحافظة، تاريخ الميلاد، الجنس، الرصيد، الصلاحية)، متابعة الأنشطة، أو حذف الحسابات.
+            إدارة كافة حسابات الأعضاء المسجلين بالموقع، إيقاف وتعليق الحسابات أو فك الحظر، تعديل البيانات الشاملة (المحافظة، تاريخ الميلاد، الجنس، الرصيد، الصلاحية)، ومتابعة الأنشطة.
           </p>
         </div>
       </div>
@@ -542,6 +658,16 @@ export default function AdminUsersPage() {
             <span className={styles.subStatLabel}>مديرو النظام (Admins)</span>
           </div>
         </div>
+
+        <div className={styles.subStatCard}>
+          <div className={styles.subStatIcon} style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444" }}>
+            <i className="bx bx-user-x" />
+          </div>
+          <div className={styles.subStatContent}>
+            <span className={styles.subStatValue} style={{ color: suspendedUsersCount > 0 ? "#ef4444" : undefined }}>{suspendedUsersCount}</span>
+            <span className={styles.subStatLabel}>حسابات معلقة / موقوفة ⛔</span>
+          </div>
+        </div>
       </div>
 
       {/* Alert Banner */}
@@ -582,6 +708,17 @@ export default function AdminUsersPage() {
               />
               <i className="bx bx-search" style={{ position: "absolute", left: "14px", top: "12px", color: "var(--text-muted)", fontSize: "1.1rem" }} />
             </div>
+
+            {/* Status Filter */}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className={styles.subSelect}
+            >
+              <option value="all">كل الحالات 🔄</option>
+              <option value="active">حسابات نشطة 🟢</option>
+              <option value="suspended">حسابات موقوفة ومعلقة ⛔</option>
+            </select>
 
             {/* Role Filter */}
             <select
@@ -656,13 +793,36 @@ export default function AdminUsersPage() {
                       {/* Role & Subscription Tier */}
                       <td className={styles.adminTd}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-start" }}>
-                          <span className={styles.badge} style={{
-                            background: u.is_admin ? "rgba(239, 68, 68, 0.15)" : "rgba(99, 102, 241, 0.12)",
-                            color: u.is_admin ? "#f87171" : "#818cf8",
-                            border: u.is_admin ? "1px solid rgba(239, 68, 68, 0.3)" : "1px solid rgba(99, 102, 241, 0.3)",
-                          }}>
-                            {u.is_admin ? "👑 أدمن" : "👤 عضو"}
-                          </span>
+                          <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                            <span className={styles.badge} style={{
+                              background: u.is_admin ? "rgba(239, 68, 68, 0.15)" : "rgba(99, 102, 241, 0.12)",
+                              color: u.is_admin ? "#f87171" : "#818cf8",
+                              border: u.is_admin ? "1px solid rgba(239, 68, 68, 0.3)" : "1px solid rgba(99, 102, 241, 0.3)",
+                            }}>
+                              {u.is_admin ? "👑 أدمن" : "👤 عضو"}
+                            </span>
+
+                            {u.is_suspended ? (
+                              <span className={styles.badge} style={{
+                                background: "rgba(239, 68, 68, 0.18)",
+                                color: "#ef4444",
+                                border: "1px solid rgba(239, 68, 68, 0.4)",
+                                fontWeight: "800",
+                              }}>
+                                ⛔ موقوف
+                              </span>
+                            ) : (
+                              <span className={styles.badge} style={{
+                                background: "rgba(16, 185, 129, 0.12)",
+                                color: "#10b981",
+                                border: "1px solid rgba(16, 185, 129, 0.25)",
+                                fontWeight: "700",
+                                fontSize: "0.72rem",
+                              }}>
+                                🟢 نشط
+                              </span>
+                            )}
+                          </div>
 
                           <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--textSecondary)" }}>
                             باقة: {u.subscription_tier === "gold" ? "🥇 الذهبية" : u.subscription_tier === "silver" ? "🥈 الفضية" : u.subscription_tier === "mishwar" ? "⚡ المشوار" : "⚪ مجانية"}
@@ -715,6 +875,26 @@ export default function AdminUsersPage() {
                             <i className="bx bx-edit" />
 
                           </button>
+
+                          {/* Suspend / Unsuspend User Button */}
+                          {u.id !== user?.id && (
+                            <button
+                              onClick={() => {
+                                setSuspendTarget(u);
+                                setSuspendReason(u.suspended_reason || "");
+                              }}
+                              className={styles.actionBtn}
+                              style={{
+                                background: u.is_suspended ? "rgba(16, 185, 129, 0.15)" : "rgba(245, 158, 11, 0.15)",
+                                color: u.is_suspended ? "#10b981" : "#f59e0b",
+                                borderColor: u.is_suspended ? "rgba(16, 185, 129, 0.35)" : "rgba(245, 158, 11, 0.35)",
+                                borderRadius: "50%"
+                              }}
+                              title={u.is_suspended ? "إلغاء الإيقاف وإعادة تنشيط الحساب" : "إيقاف وتعليق الحساب وتسجيل خروجه فوراً"}
+                            >
+                              <i className={`bx ${u.is_suspended ? "bx-lock-open-alt" : "bx-lock-alt"}`} />
+                            </button>
+                          )}
 
                           {/* Send Notification Button */}
                           <button
@@ -942,6 +1122,37 @@ export default function AdminUsersPage() {
                   <option value="user">عضو عادي (Regular User)</option>
                   <option value="admin">مسؤول نظام كامل (Admin) 👑</option>
                 </select>
+              </div>
+
+              {/* ── Section 4: Account Status & Suspension ── */}
+              <div style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--colorSecondary)", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "6px", marginTop: "8px" }}>
+                🔒 حالة الحساب والتعليق
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: editForm.is_suspended ? "1fr 1fr" : "1fr", gap: "12px" }}>
+                <div>
+                  <label className={styles.subFormLabel}>حالة تنشيط الحساب</label>
+                  <select
+                    value={editForm.is_suspended ? "suspended" : "active"}
+                    onChange={(e) => setEditForm({ ...editForm, is_suspended: e.target.value === "suspended" })}
+                    className={styles.subFormSelect}
+                  >
+                    <option value="active">🟢 حساب نشط ويعمل بصورة طبيعية</option>
+                    <option value="suspended">⛔ حساب معلق وموقوف (تسجيل خروج إجباري)</option>
+                  </select>
+                </div>
+                {editForm.is_suspended && (
+                  <div>
+                    <label className={styles.subFormLabel}>سبب الإيقاف / التعليق</label>
+                    <input
+                      type="text"
+                      value={editForm.suspended_reason}
+                      onChange={(e) => setEditForm({ ...editForm, suspended_reason: e.target.value })}
+                      className={styles.subFormInput}
+                      placeholder="مثال: مخالفة شروط الاستخدام..."
+                    />
+                  </div>
+                )}
               </div>
 
               <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
@@ -1181,6 +1392,61 @@ export default function AdminUsersPage() {
         <p style={{ color: "#ef4444", fontWeight: "bold", fontSize: "0.9rem", margin: 0, textAlign: "center" }}>
           ⚠️ هذا الإجراء لا يمكن التراجع عنه نهائياً وسيتم حذف كافة بياناته ومحفظته.
         </p>
+      </CustomModal>
+
+      {/* ── MODAL 4: Confirm Suspend / Unsuspend User ── */}
+      <CustomModal
+        isOpen={Boolean(suspendTarget)}
+        onClose={() => !suspending && setSuspendTarget(null)}
+        title={suspendTarget?.is_suspended ? "تأكيد إلغاء إيقاف الحساب" : "تأكيد إيقاف وتعليق الحساب"}
+        titleColor={suspendTarget?.is_suspended ? "#10b981" : "#f59e0b"}
+        borderColor={suspendTarget?.is_suspended ? "rgba(16, 185, 129, 0.3)" : "rgba(245, 158, 11, 0.3)"}
+        message={
+          suspendTarget
+            ? suspendTarget.is_suspended
+              ? `هل تريد إلغاء إيقاف حساب (${suspendTarget.full_name || suspendTarget.username}) والسماح له بتسجيل الدخول واستخدام حسابه مجدداً؟`
+              : `هل أنت متأكد من رغبتك في إيقاف وتعليق حساب (${suspendTarget.full_name || suspendTarget.username})؟`
+            : undefined
+        }
+        primaryButton={{
+          label: suspending
+            ? suspendTarget?.is_suspended ? "جاري التنشيط..." : "جاري الإيقاف..."
+            : suspendTarget?.is_suspended ? "تأكيد إعادة التفعيل" : "تأكيد الإيقاف الفوري",
+          onClick: handleConfirmToggleSuspension,
+          bgColor: suspendTarget?.is_suspended ? "#10b981" : "#f59e0b",
+          disabled: suspending,
+          icon: <i className={`bx ${suspendTarget?.is_suspended ? "bx-lock-open-alt" : "bx-lock-alt"}`} style={{ fontSize: "1.2rem" }} />
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setSuspendTarget(null),
+          bgColor: "var(--cancelBtn)",
+          disabled: suspending,
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
+        }}
+      >
+        {!suspendTarget?.is_suspended ? (
+          <div style={{ marginTop: "12px", width: "100%", textAlign: "right" }}>
+            <label style={{ display: "block", fontSize: "0.86rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+              سبب الإيقاف (اختياري، يوضح للمستخدم سبب التعليق):
+            </label>
+            <input
+              type="text"
+              value={suspendReason}
+              onChange={(e) => setSuspendReason(e.target.value)}
+              placeholder="مثال: مخالفة شروط الاستخدام أو بناء على قرار الإدارة"
+              className={styles.subFormInput}
+              style={{ width: "100%", textAlign: "right" }}
+            />
+            <p style={{ color: "#ef4444", fontWeight: "600", fontSize: "0.85rem", marginTop: "10px", textAlign: "center" }}>
+              ⚠️ سيتم تسجيل خروج المستخدم فوراً من كافة الأجهزة النشطة، ولن يتمكن من الدخول مجدداً حتى تفعيل حسابه.
+            </p>
+          </div>
+        ) : (
+          <p style={{ color: "#10b981", fontWeight: "bold", fontSize: "0.9rem", margin: 0, textAlign: "center" }}>
+            ✅ بمجرد التأكيد، سيتمكن المستخدم من تسجيل الدخول إلى حسابه واستخدامه بصورة طبيعية.
+          </p>
+        )}
       </CustomModal>
     </div>
   );
