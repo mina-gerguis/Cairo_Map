@@ -349,15 +349,15 @@ function AdminLrtInner() {
       {/* Top Banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary)", marginBottom: "6px" }}>
             إدارة القطار الكهربائي LRT
           </h1>
-          <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
+          <p style={{ color: "var(--textMuted)", fontSize: "0.9rem", margin: 0 }}>
             إضافة وتعديل وحذف محطات القطار الكهربائي الخفيف (LRT) والمعالم القريبة.
           </p>
         </div>
 
-        <button onClick={handleOpenAdd} className="btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "10px 20px" }}>
+        <button onClick={handleOpenAdd} className="btn btn-primary">
           <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
           <span>إضافة محطة جديدة</span>
         </button>
@@ -400,7 +400,7 @@ function AdminLrtInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--text-muted, #94a3b8)",
+            color: "var(--textMuted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -421,7 +421,7 @@ function AdminLrtInner() {
           />
         </div>
 
-        <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
+        <div style={{ fontSize: "0.9rem", color: "var(--textMuted)" }}>
           إجمالي المحطات: {filteredRows.length}
         </div>
       </div>
@@ -460,8 +460,8 @@ function AdminLrtInner() {
                     padding: "6px 14px",
                     borderRadius: "10px",
                     fontSize: "0.82rem",
-                    fontWeight: "800",
-                    fontFamily: "var(--font-body)",
+                    fontWeight: "400",
+                    fontFamily: "var(--font-sub)",
                     cursor: "pointer",
                     transition: "all 0.25s ease",
                     border: "1px solid",
@@ -522,6 +522,7 @@ function AdminLrtInner() {
                       </td>
                       <td className={styles.adminTd} style={{ width: "12%" }}>
                         <span style={{
+                          display: "inline-block",
                           fontSize: "0.75rem",
                           background: lineColor + "15",
                           color: lineColor,
@@ -561,6 +562,7 @@ function AdminLrtInner() {
                       </td>
                       <td className={styles.adminTd} style={{ width: "10%" }}>
                         <span style={{
+                          display: "inline-block",
                           fontSize: "0.75rem",
                           background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : "rgba(16, 185, 129, 0.12)",
                           color: station.status === "تحت الإنشاء" ? "#ef4444" : "#10b981",
@@ -577,28 +579,16 @@ function AdminLrtInner() {
                           <button
                             type="button"
                             onClick={() => handleOpenEdit(station)}
-                            className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                            className="actionBtn actionBtnEdit"
                             title="تعديل"
-                            style={{
-                              padding: "5px 5px",
-                              borderRadius: "50%",
-                              background: "var(--bgSecondary)",
-                            }}
                           >
                             <i className="bx bx-edit-alt" />
                           </button>
                           <button
                             type="button"
                             onClick={() => handleDelete(station)}
-                            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                            className="actionBtn actionBtnDelete"
                             title="حذف"
-                            style={{
-                              padding: "5px 5px",
-                              borderRadius: "50%",
-                              background: "#ff000025",
-                              color: "#ff0000f5",
-                              border: "#ff000025",
-                            }}
                           >
                             <i className="bx bx-trash" />
                           </button>
@@ -632,9 +622,9 @@ function AdminLrtInner() {
           padding: "20px"
         }}>
           <div style={{
-            background: "#0b0f19",
+            background: "var(--bgGlass)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "20px",
+            borderRadius: "var(--radius-card)",
             width: "100%",
             maxWidth: "520px",
             boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
@@ -648,22 +638,12 @@ function AdminLrtInner() {
               padding: "20px 24px",
               borderBottom: "1px solid var(--borderGlass)"
             }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900", color: "#fff" }}>
+              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingItem ? "تعديل محطة القطار الكهربائي" : "إضافة محطة قطار كهربائي جديدة"}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#94a3b8",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  padding: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+                className="closeBtn"
               >
                 <i className="bx bx-x" />
               </button>
@@ -672,7 +652,7 @@ function AdminLrtInner() {
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
+                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
                 <input
                   type="text"
                   required
@@ -684,7 +664,7 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المسار / الخط *</label>
+                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المسار / الخط *</label>
                 <select
                   value={formData.line_type || "trunk"}
                   onChange={e => setFormData({ ...formData, line_type: e.target.value })}
@@ -698,7 +678,7 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في المسار *</label>
+                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في المسار *</label>
                 <input
                   type="number"
                   required
@@ -711,7 +691,7 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
+                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
                 <input
                   type="text"
                   placeholder="مثال: مدينة المعرفة، جامعة السويدي"
@@ -723,7 +703,7 @@ function AdminLrtInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
+                <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
                 <select
                   value={formData.status || "تشغيل فعلي"}
                   onChange={e => setFormData({ ...formData, status: e.target.value })}
@@ -746,15 +726,13 @@ function AdminLrtInner() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="btn"
-                  style={{ background: "rgba(255,255,255,0.05)", color: "#94a3b8" }}
+                  className="btn btn-cancle"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="btn"
-                  style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)", color: "#fff" }}
+                  className="btn btn-primary"
                 >
                   {editingItem ? "حفظ التغييرات" : "إضافة المحطة"}
                 </button>
