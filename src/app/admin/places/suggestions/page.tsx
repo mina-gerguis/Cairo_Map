@@ -98,20 +98,45 @@ export default function PlacesSuggestionsPage() {
   const [isProcessingProposal, setIsProcessingProposal] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<any | null>(null);
   const [proposalsError, setProposalsError] = useState<string | null>(null);
+  const [isConfirmingClearApproved, setIsConfirmingClearApproved] = useState(false);
+  const [proposalToDelete, setProposalToDelete] = useState<string | null>(null);
+  const [feedbackModal, setFeedbackModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: "success" | "error" | "warning";
+  } | null>(null);
+
+  const showFeedback = (title: string, message: string, type: "success" | "error" | "warning" = "success") => {
+    setFeedbackModal({
+      isOpen: true,
+      title,
+      message,
+      type,
+    });
+  };
 
   const fetchProposals = async () => {
     if (!supabase) return;
     setProposalsError(null);
     try {
+      // 1. Try to permanently delete any items marked as deleted from the database
+      await supabase.from("place_proposals").delete().eq("status", "deleted");
+
+      // 2. Fetch proposals excluding any marked as deleted
       const { data, error } = await supabase
         .from("place_proposals")
         .select("*")
+        .neq("status", "deleted")
         .order("created_at", { ascending: false });
+
       if (error) {
         console.error("Proposals fetch error:", error);
         setProposalsError("خطأ من Supabase: " + error.message);
       } else if (data) {
-        const userIds = Array.from(new Set(data.map(p => p.user_id).filter(Boolean)));
+        // Filter out deleted items, keep all active, approved, rejected, and retracted
+        const validProposals = data.filter(p => p.status !== "deleted");
+        const userIds = Array.from(new Set(validProposals.map(p => p.user_id).filter(Boolean)));
         if (userIds.length > 0) {
           const { data: profilesData } = await supabase
             .from("profiles")
@@ -119,13 +144,13 @@ export default function PlacesSuggestionsPage() {
             .in("id", userIds);
 
           const profilesMap = new Map((profilesData || []).map(pr => [pr.id, pr]));
-          const proposalsWithProfiles = data.map(p => ({
+          const proposalsWithProfiles = validProposals.map(p => ({
             ...p,
             user_profile: profilesMap.get(p.user_id) || null
           }));
           setProposals(proposalsWithProfiles);
         } else {
-          setProposals(data);
+          setProposals(validProposals);
         }
       }
     } catch (err: any) {
@@ -240,10 +265,10 @@ export default function PlacesSuggestionsPage() {
         link: newPlaceId ? `/places/${newPlaceId}` : "/profile"
       }]);
 
-      alert(`تمت الموافقة ونشر المكان "${proposal.name}" بنجاح!`);
+      showFeedback("تم النشر بنجاح", `تمت الموافقة ونشر المكان "${proposal.name}" بنجاح!`, "success");
       fetchProposals();
     } catch (err: any) {
-      setError("حدث خطأ أثناء اعتماد المكان: " + (err.message || ""));
+      showFeedback("خطأ في الاعتماد", "حدث خطأ أثناء اعتماد المكان: " + (err.message || ""), "error");
     } finally {
       setIsProcessingProposal(false);
     }
@@ -252,13 +277,14 @@ export default function PlacesSuggestionsPage() {
   const handleConfirmRejection = async () => {
     if (!supabase || !rejectingProposal) return;
     if (!rejectionReasonInput.trim()) {
-      alert("يرجى كتابة سبب الرفض لتوضيحه للمستخدم.");
+      showFeedback("تنبيه", "يرجى كتابة سبب الرفض لتوضيحه للمستخدم.", "warning");
       return;
     }
 
     setIsProcessingProposal(true);
     setError("");
     try {
+      // 1. Update proposal status to rejected in database
       const { error: updateError } = await supabase
         .from("place_proposals")
         .update({
@@ -270,21 +296,91 @@ export default function PlacesSuggestionsPage() {
 
       if (updateError) throw updateError;
 
-      await supabase.from("notifications").insert([{
-        user_id: rejectingProposal.user_id,
-        title: "⚠️ تم رفض اقتراح المكان",
-        message: `نأسف، لم نتمكن من إدراج المكان "${rejectingProposal.name}". السبب: ${rejectionReasonInput.trim()}. اضغط هنا للتعديل وإعادة الإرسال.`,
-        type: "system",
-        is_read: false,
-        link: `/propose-place?edit=${rejectingProposal.id}`
-      }]);
+      // 2. Send notification to user with reason and edit link
+      if (rejectingProposal.user_id) {
+        await supabase.from("notifications").insert([{
+          user_id: rejectingProposal.user_id,
+          title: "⚠️ تم رفض اقتراح المكان",
+          message: `نأسف، لم نتمكن من إدراج المكان "${rejectingProposal.name}". السبب: ${rejectionReasonInput.trim()}. يمكنك تعديل بيانات الاقتراح وإعادة إرساله.`,
+          type: "system",
+          is_read: false,
+          link: `/propose-place?edit=${rejectingProposal.id}`
+        }]);
+      }
 
-      alert(`تم رفض المقترح وإبلاغ المستخدم بطلب التعديل.`);
+      showFeedback("تم الرفض بنجاح", `تم رفض المقترح وإبلاغ المستخدم بالسبب. يمكنك حذفه يدوياً في أي وقت.`, "success");
       setRejectingProposal(null);
       setRejectionReasonInput("");
       fetchProposals();
     } catch (err: any) {
-      setError("حدث خطأ أثناء رفض الطلب: " + (err.message || ""));
+      showFeedback("خطأ", "حدث خطأ أثناء رفض الطلب: " + (err.message || ""), "error");
+    } finally {
+      setIsProcessingProposal(false);
+    }
+  };
+
+  const handleClearAllApproved = async () => {
+    if (!supabase) return;
+    setIsProcessingProposal(true);
+    setError("");
+    try {
+      // 1. Try hard delete
+      const { data: delData, error: deleteError } = await supabase
+        .from("place_proposals")
+        .delete()
+        .eq("status", "approved")
+        .select();
+
+      // If RLS blocked hard delete, update status to deleted as fallback
+      if (!delData || delData.length === 0) {
+        await supabase
+          .from("place_proposals")
+          .update({ status: "deleted", updated_at: new Date().toISOString() })
+          .eq("status", "approved");
+      }
+
+      setProposals(prev => prev.filter(p => p.status !== "approved"));
+      setIsConfirmingClearApproved(false);
+      showFeedback("تم الإفراغ بنجاح", "تم إفراغ وحذف جميع الاقتراحات المقبولة بنجاح.", "success");
+      fetchProposals();
+    } catch (err: any) {
+      showFeedback("خطأ", "حدث خطأ أثناء إفراغ الاقتراحات المقبولة: " + (err.message || ""), "error");
+    } finally {
+      setIsProcessingProposal(false);
+    }
+  };
+
+  const handleDeleteProposal = (proposalId: string) => {
+    setProposalToDelete(proposalId);
+  };
+
+  const handleConfirmDeleteProposal = async () => {
+    if (!supabase || !proposalToDelete) return;
+    setIsProcessingProposal(true);
+    setError("");
+    try {
+      // 1. Try hard delete
+      const { data: delData, error: deleteError } = await supabase
+        .from("place_proposals")
+        .delete()
+        .eq("id", proposalToDelete)
+        .select();
+
+      // If RLS blocked hard delete, update status to deleted as fallback
+      if (!delData || delData.length === 0) {
+        await supabase
+          .from("place_proposals")
+          .update({ status: "deleted", updated_at: new Date().toISOString() })
+          .eq("id", proposalToDelete);
+      }
+
+      setProposals(prev => prev.filter(p => p.id !== proposalToDelete));
+      setProposalToDelete(null);
+      setSelectedProposalDetails(null);
+      showFeedback("تم الحذف بنجاح", "تم حذف الاقتراح بنجاح.", "success");
+      fetchProposals();
+    } catch (err: any) {
+      showFeedback("خطأ", "حدث خطأ أثناء حذف الاقتراح: " + (err.message || ""), "error");
     } finally {
       setIsProcessingProposal(false);
     }
@@ -348,7 +444,7 @@ export default function PlacesSuggestionsPage() {
         )}
 
         {/* Proposal Filters */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap", alignItems: "center" }}>
           {[
             { id: "pending", label: "المعلقة", count: proposals.filter(p => p.status === "pending").length },
             { id: "approved", label: "المقبولة", count: proposals.filter(p => p.status === "approved").length },
@@ -356,27 +452,28 @@ export default function PlacesSuggestionsPage() {
             { id: "retracted", label: "المتراجع عنها", count: proposals.filter(p => p.status === "retracted").length },
             { id: "all", label: "الكل", count: proposals.length },
           ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setProposalsFilter(tab.id as any)}
-              className="btn"
-              style={{
-                padding: "7px 14px",
-                fontSize: "0.85rem",
-                background: proposalsFilter === tab.id ? "rgba(108, 99, 255, 0.25)" : "var(--bgGlass-card)",
-                color: proposalsFilter === tab.id ? "var(--colorPrimary)" : "var(--textSecondary)",
-                border: proposalsFilter === tab.id ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)"
-              }}
-            >
-              {tab.label} ({tab.count})
-            </button>
+            <React.Fragment key={tab.id}>
+              <button
+                onClick={() => setProposalsFilter(tab.id as any)}
+                className="btn"
+                style={{
+                  padding: "7px 14px",
+                  fontSize: "0.85rem",
+                  background: proposalsFilter === tab.id ? "rgba(108, 99, 255, 0.25)" : "var(--bgGlass)",
+                  color: proposalsFilter === tab.id ? "var(--colorPrimary)" : "var(--textSecondary)",
+                  border: proposalsFilter === tab.id ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)"
+                }}
+              >
+                {tab.label} ({tab.count})
+              </button>
+            </React.Fragment>
           ))}
         </div>
 
         {/* Proposals Grid */}
         {proposals.filter(p => proposalsFilter === "all" || p.status === proposalsFilter).length === 0 ? (
           <div style={{ padding: "30px", textAlign: "center", color: "var(--text-muted)", fontSize: "0.9rem" }}>
-            لا توجد اقتراحات أصلية في قسم ({proposalsFilter}) حالياً.
+            لا توجد اقتراحات في قسم ({proposalsFilter === "pending" ? "المعلقة" : proposalsFilter === "approved" ? "المقبولة" : proposalsFilter === "rejected" ? "المرفوضة" : proposalsFilter === "retracted" ? "المتراجع عنها" : "الكل"}) حالياً.
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "16px" }}>
@@ -460,30 +557,52 @@ export default function PlacesSuggestionsPage() {
                       </button>
                     </div>
 
-                    {/* Action Buttons for pending */}
-                    {prop.status === "pending" && (
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        style={{ display: "flex", gap: "8px", marginTop: "8px" }}
-                      >
+                    {/* Action Buttons: manual delete enabled for ALL statuses */}
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ display: "flex", gap: "8px", marginTop: "8px" }}
+                    >
+                      {prop.status === "pending" ? (
+                        <>
+                          <button
+                            onClick={() => handleApproveProposal(prop)}
+                            disabled={isProcessingProposal}
+                            className="btn"
+                            style={{ flex: 1, padding: "8px", background: "linear-gradient(135deg, #34c759, #00d4aa)", color: "#fff", fontWeight: "700", border: "none", fontSize: "0.85rem" }}
+                          >
+                            ✓ نشر
+                          </button>
+                          <button
+                            onClick={() => { setRejectingProposal(prop); setRejectionReasonInput(""); }}
+                            disabled={isProcessingProposal}
+                            className="btn"
+                            style={{ flex: 1, padding: "8px", background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", fontWeight: "700", border: "1px solid rgba(255, 59, 48, 0.3)", fontSize: "0.85rem" }}
+                          >
+                            ✕ رفض
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteProposal(prop.id)}
+                            disabled={isProcessingProposal}
+                            className="btn"
+                            title="حذف الاقتراح نهائياً"
+                            style={{ padding: "8px 12px", background: "rgba(255, 59, 48, 0.12)", color: "#ff3b30", fontWeight: "700", border: "1px solid rgba(255, 59, 48, 0.3)", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center" }}
+                          >
+                            <i className="bx bx-trash" style={{ fontSize: "1.1rem" }}></i>
+                          </button>
+                        </>
+                      ) : (
                         <button
-                          onClick={() => handleApproveProposal(prop)}
+                          type="button"
+                          onClick={() => handleDeleteProposal(prop.id)}
                           disabled={isProcessingProposal}
                           className="btn"
-                          style={{ flex: 1, padding: "8px", background: "linear-gradient(135deg, #34c759, #00d4aa)", color: "#fff", fontWeight: "700", border: "none", fontSize: "0.85rem" }}
+                          style={{ flex: 1, padding: "8px", background: "rgba(255, 59, 48, 0.12)", color: "#ff3b30", fontWeight: "700", border: "1px solid rgba(255, 59, 48, 0.3)", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
                         >
-                          ✓ نشر
+                          <i className="bx bx-trash" style={{ fontSize: "1rem" }}></i> حذف الاقتراح
                         </button>
-                        <button
-                          onClick={() => { setRejectingProposal(prop); setRejectionReasonInput(""); }}
-                          disabled={isProcessingProposal}
-                          className="btn"
-                          style={{ flex: 1, padding: "8px", background: "rgba(255, 59, 48, 0.15)", color: "#ff3b30", fontWeight: "700", border: "1px solid rgba(255, 59, 48, 0.3)", fontSize: "0.85rem" }}
-                        >
-                          ✕ رفض
-                        </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -569,7 +688,7 @@ export default function PlacesSuggestionsPage() {
                     </div>
 
                     {/* Quick Info / Action Row */}
-                    <div style={{ display: "grid", gridTemplateColumns: selectedProposalDetails.status === 'pending' ? "repeat(4, 1fr)" : "repeat(2, 1fr)", gap: "10px", marginBottom: "24px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: selectedProposalDetails.status === 'pending' ? "repeat(5, 1fr)" : "repeat(3, 1fr)", gap: "10px", marginBottom: "24px" }}>
                       {/* Directions */}
                       <a
                         href={selectedProposalDetails.location_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedProposalDetails.name + ' ' + selectedProposalDetails.city)}`}
@@ -698,6 +817,32 @@ export default function PlacesSuggestionsPage() {
                           </button>
                         </>
                       )}
+
+                      {/* Delete button available for ANY status inside detail sheet */}
+                      <button
+                        onClick={() => {
+                          handleDeleteProposal(selectedProposalDetails.id);
+                        }}
+                        disabled={isProcessingProposal}
+                        style={{
+                          background: "rgba(255, 59, 48, 0.15)",
+                          border: "1px solid rgba(255, 59, 48, 0.3)",
+                          color: "#ff3b30",
+                          borderRadius: "12px",
+                          padding: "8px 6px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "2px",
+                          cursor: "pointer",
+                          textAlign: "center",
+                          transition: "opacity 0.2s"
+                        }}
+                      >
+                        <span style={{ fontSize: "1.1rem" }}>🗑️</span>
+                        <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>حذف الاقتراح</span>
+                      </button>
                     </div>
 
                     {/* Proposer Banner Card */}
@@ -985,6 +1130,98 @@ export default function PlacesSuggestionsPage() {
           />
         </div>
       </CustomModal>
+
+
+      {/* Modal for Confirming Single Proposal Deletion */}
+      <CustomModal
+        isOpen={Boolean(proposalToDelete)}
+        onClose={() => !isProcessingProposal && setProposalToDelete(null)}
+        title="تأكيد حذف الاقتراح"
+        titleColor="#ff3b30"
+        iconSrc="/images/icons3d/trash.png"
+        borderColor="rgba(255, 59, 48, 0.25)"
+        message="هل أنت متأكد من رغبتك في حذف هذا الاقتراح نهائياً من قاعدة البيانات؟"
+        primaryButton={{
+          label: isProcessingProposal ? "جاري ..." : "تأكيد ",
+          onClick: handleConfirmDeleteProposal,
+          bgColor: "#ff3b30",
+          disabled: isProcessingProposal,
+          icon: <i className="bx bx-trash" style={{ fontSize: "1.2rem" }} />
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setProposalToDelete(null),
+          bgColor: "var(--cancelBtn)",
+          disabled: isProcessingProposal,
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
+        }}
+      />
+
+      {/* Centered Professional Alert / Feedback Modal */}
+      {feedbackModal && (
+        <CustomModal
+          isOpen={feedbackModal.isOpen}
+          onClose={() => setFeedbackModal(null)}
+          title={feedbackModal.title}
+          titleColor={
+            feedbackModal.type === "success"
+              ? "#34c759"
+              : feedbackModal.type === "error"
+              ? "#ff3b30"
+              : "#ff9500"
+          }
+          iconNode={
+            feedbackModal.type === "success" ? (
+              <div
+                style={{
+                  width: "68px",
+                  height: "68px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, rgba(52, 199, 89, 0.2), rgba(0, 212, 170, 0.15))",
+                  border: "2px solid #34c759",
+                  color: "#34c759",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "2.2rem",
+                  boxShadow: "0 8px 24px rgba(52, 199, 89, 0.3)"
+                }}
+              >
+                ✓
+              </div>
+            ) : undefined
+          }
+          iconSrc={
+            feedbackModal.type === "error" || feedbackModal.type === "warning"
+              ? "/images/icons3d/alert.png"
+              : undefined
+          }
+          borderColor={
+            feedbackModal.type === "success"
+              ? "rgba(52, 199, 89, 0.3)"
+              : feedbackModal.type === "error"
+              ? "rgba(255, 59, 48, 0.3)"
+              : "rgba(255, 149, 0, 0.3)"
+          }
+          message={feedbackModal.message}
+          primaryButton={{
+            label: "حسناً",
+            onClick: () => setFeedbackModal(null),
+            bgColor:
+              feedbackModal.type === "success"
+                ? "linear-gradient(135deg, #34c759, #00d4aa)"
+                : feedbackModal.type === "error"
+                ? "#ff3b30"
+                : "#ff9500",
+            icon:
+              feedbackModal.type === "success" ? (
+                <i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }} />
+              ) : (
+                <i className="bx bx-info-circle" style={{ fontSize: "1.2rem" }} />
+              )
+          }}
+        />
+      )}
     </div>
   );
 }
