@@ -589,6 +589,7 @@ function AdminMonorailInner() {
                       <td className={styles.adminTd} style={{ width: "10%" }}>
                         <span style={{
                           fontSize: "0.75rem",
+                          display: "inline-block",
                           background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.12)" : "rgba(16, 185, 129, 0.12)"),
                           color: station.status === "تحت الإنشاء" ? "#ef4444" : (station.status === "تشغيل تجريبي" ? "#fbbf24" : "#10b981"),
                           border: `1px solid ${station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.25)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.25)" : "rgba(16, 185, 129, 0.25)")}`,
@@ -604,28 +605,16 @@ function AdminMonorailInner() {
                           <button
                             type="button"
                             onClick={() => handleOpenEdit(station)}
-                            className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                            className="actionBtn actionBtnEdit"
                             title="تعديل"
-                            style={{
-                              padding: "5px 5px",
-                              borderRadius: "50%",
-                              background: "var(--bgSecondary)",
-                            }}
                           >
                             <i className="bx bx-edit-alt" />
                           </button>
                           <button
                             type="button"
                             onClick={() => handleDelete(station)}
-                            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                            className="actionBtn actionBtnDelete"
                             title="حذف"
-                            style={{
-                              padding: "5px 5px",
-                              borderRadius: "50%",
-                              background: "#ff000025",
-                              color: "#ff0000f5",
-                              border: "#ff000025",
-                            }}
                           >
                             <i className="bx bx-trash" />
                           </button>
@@ -659,9 +648,9 @@ function AdminMonorailInner() {
           padding: "20px"
         }}>
           <div style={{
-            background: "#0b0f19",
+            background: "var(--bgGlass)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "20px",
+            borderRadius: "var(--radius-card)",
             width: "100%",
             maxWidth: "520px",
             boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
@@ -675,22 +664,12 @@ function AdminMonorailInner() {
               padding: "20px 24px",
               borderBottom: "1px solid var(--borderGlass)"
             }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900", color: "#fff" }}>
+              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingItem ? "تعديل محطة مونوريل" : "إضافة محطة مونوريل جديدة"}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#94a3b8",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  padding: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+                className="closeBtn"
               >
                 <i className="bx bx-x" />
               </button>
@@ -716,7 +695,7 @@ function AdminMonorailInner() {
                   value={formData.line_type || "east"}
                   onChange={e => setFormData({ ...formData, line_type: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%", background: "#ffffffff" }}
+                  style={{ width: "100%"}}
                 >
                   <option value="east">شرق النيل (العاصمة الإدارية)</option>
                   <option value="west">غرب النيل (6 أكتوبر)</option>
@@ -773,15 +752,13 @@ function AdminMonorailInner() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="btn"
-                  style={{ background: "rgba(255,255,255,0.05)", color: "#94a3b8" }}
+                  className="btn btn-cancle"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="btn"
-                  style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)", color: "#fff" }}
+                  className="btn btn-primary"
                 >
                   {editingItem ? "حفظ التغييرات" : "إضافة المحطة"}
                 </button>
