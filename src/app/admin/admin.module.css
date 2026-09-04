@@ -213,6 +213,31 @@
   transform: translateX(100%);
 }
 
+.sidebarHiddenByModal {
+  transform: translateX(100%) !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  z-index: -1 !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, visibility 0.2s !important;
+}
+
+:global(body.admin-modal-open) .sidebar {
+  transform: translateX(100%) !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  z-index: -1 !important;
+}
+
+:global(body.admin-modal-open) .sidebarBackdrop {
+  display: none !important;
+}
+
+:global(body.admin-modal-open) .contentWrapper {
+  margin-right: 0 !important;
+}
+
 .contentWrapper {
   display: flex;
   flex-direction: column;
@@ -3243,7 +3268,7 @@
   inset: 0;
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(10px);
-  z-index: 9999;
+  z-index: 20000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3925,7 +3950,7 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
-  z-index: 9999;
+  z-index: 20000;
   display: flex;
   align-items: center;
   justify-content: center;

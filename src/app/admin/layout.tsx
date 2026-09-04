@@ -28,10 +28,13 @@ export default function AdminLayout({
   const [pendingReportsCount, setPendingReportsCount] = useState(0);
   const [pendingPointsCount, setPendingPointsCount] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isModalActive, setIsModalActive] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState<string | null>(null);
+
+  const shouldShowSidebar = isSidebarOpen && !isModalActive;
 
   // Global Search states
   const [globalSearchQuery, setGlobalSearchQuery] = useState("");
@@ -169,9 +172,9 @@ export default function AdminLayout({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Lock body scroll when mobile drawer is open
+  // Lock body scroll when mobile drawer is open or modal is active
   useEffect(() => {
-    if (isMobile && isSidebarOpen) {
+    if ((isMobile && shouldShowSidebar) || isModalActive) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -179,7 +182,119 @@ export default function AdminLayout({
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMobile, isSidebarOpen]);
+  }, [isMobile, shouldShowSidebar, isModalActive]);
+
+  // Automatically detect any active modal/popup across all admin pages to hide the sidebar
+  useEffect(() => {
+    const checkModalPresence = () => {
+      // 1. Check known modal overlay classes, roles, or attributes
+      const overlaySelectors = [
+        '[class*="ModalOverlay"]',
+        '[class*="modalOverlay"]',
+        '[class*="subModalOverlay"]',
+        '[class*="adsModalOverlay"]',
+        '[class*="editorModalOverlay"]',
+        '[class*="cropperOverlay"]',
+        '[data-modal-overlay="true"]',
+        '.customModalOverlay',
+        '[role="dialog"]',
+        '[aria-modal="true"]'
+      ].join(", ");
+
+      const knownOverlay = document.querySelector(overlaySelectors);
+      if (knownOverlay) {
+        document.body.classList.add("admin-modal-open");
+        setIsModalActive(true);
+        return;
+      }
+
+      // 2. Check full-screen fixed overlays (excluding layout's own sidebar and mobile backdrop)
+      const fixedCandidates = document.querySelectorAll<HTMLElement>(
+        'div[style*="fixed"], div[style*="Fixed"], section[style*="fixed"], aside[style*="fixed"]'
+      );
+
+      for (let i = 0; i < fixedCandidates.length; i++) {
+        const el = fixedCandidates[i];
+        // Ignore sidebar and its mobile backdrop
+        if (el.closest(`.${styles.sidebar}`) || el.classList.contains(styles.sidebarBackdrop)) {
+          continue;
+        }
+        // Ignore topbar search dropdown, toasts, and context dropdowns
+        if (
+          el.closest(`.${styles.globalSearchContainer}`) ||
+          el.classList.contains(styles.actionDropdown) ||
+          el.className.includes("toast")
+        ) {
+          continue;
+        }
+
+        const s = el.style;
+        if (s.position !== "fixed") continue;
+
+        const isZero = (v: string) => v === "0" || v === "0px" || v === "0%";
+        const isInsetZero = isZero(s.inset) || s.inset.includes("0px 0px 0px 0px") || s.inset === "0 0 0 0";
+        const isSpanning =
+          (isZero(s.top) || isZero(s.insetBlockStart)) &&
+          (isZero(s.left) || isZero(s.insetInlineStart)) &&
+          (isZero(s.right) || isZero(s.bottom) || s.width === "100%" || s.width === "100vw" || s.height === "100%" || s.height === "100vh");
+
+        if (isInsetZero || isSpanning) {
+          document.body.classList.add("admin-modal-open");
+          setIsModalActive(true);
+          return;
+        }
+
+        // Check if bounding client rect covers at least 80% of viewport width and height
+        const rect = el.getBoundingClientRect();
+        if (
+          rect.width >= window.innerWidth * 0.8 &&
+          rect.height >= window.innerHeight * 0.8 &&
+          rect.top <= 80
+        ) {
+          document.body.classList.add("admin-modal-open");
+          setIsModalActive(true);
+          return;
+        }
+      }
+
+      document.body.classList.remove("admin-modal-open");
+      setIsModalActive(false);
+    };
+
+    checkModalPresence();
+
+    let rafId: number | null = null;
+    const observer = new MutationObserver(() => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(checkModalPresence);
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "class"]
+    });
+
+    const handleCustomOpen = () => {
+      document.body.classList.add("admin-modal-open");
+      setIsModalActive(true);
+    };
+    const handleCustomClose = () => {
+      requestAnimationFrame(checkModalPresence);
+    };
+
+    window.addEventListener("admin:modal-open", handleCustomOpen);
+    window.addEventListener("admin:modal-close", handleCustomClose);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      observer.disconnect();
+      window.removeEventListener("admin:modal-open", handleCustomOpen);
+      window.removeEventListener("admin:modal-close", handleCustomClose);
+      document.body.classList.remove("admin-modal-open");
+    };
+  }, [styles]);
 
   // Theme observer: sync with localStorage & HTML class
   useEffect(() => {
@@ -320,7 +435,7 @@ export default function AdminLayout({
   return (
     <div className={`${styles.adminShell} ${theme === "light" ? "light" : ""}`}>
       {/* ── Mobile Backdrop ── */}
-      {isMobile && isSidebarOpen && (
+      {isMobile && shouldShowSidebar && (
         <div
           className={styles.sidebarBackdrop}
           onClick={() => setIsSidebarOpen(false)}
@@ -328,7 +443,7 @@ export default function AdminLayout({
       )}
 
       {/* ── Left Sidebar ── */}
-      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}>
+      <aside className={`${styles.sidebar} ${shouldShowSidebar ? styles.sidebarOpen : styles.sidebarClosed} ${isModalActive ? styles.sidebarHiddenByModal : ""}`}>
         <div className={styles.sidebarInner}>
           {/* Profile Section */}
           <div className={styles.sidebarProfile}>
@@ -743,7 +858,7 @@ export default function AdminLayout({
       </aside>
 
       {/* ── Main Content Area ── */}
-      <div className={`${styles.contentWrapper} ${isSidebarOpen ? styles.contentWithSidebar : styles.contentFullWidth}`}>
+      <div className={`${styles.contentWrapper} ${shouldShowSidebar ? styles.contentWithSidebar : styles.contentFullWidth}`}>
         {/* Topbar Header */}
         <header className={styles.topbar}>
           <div className={styles.topbarLeft}>
@@ -753,7 +868,7 @@ export default function AdminLayout({
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               aria-label="Toggle Sidebar"
             >
-              <i className={`bx ${isSidebarOpen ? "bx-menu-alt-right" : "bx-menu"}`} />
+              <i className={`bx ${shouldShowSidebar ? "bx-menu-alt-right" : "bx-menu"}`} />
             </button>
 
             {/* Welcome Greeting / Page Title */}

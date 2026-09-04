@@ -535,12 +535,12 @@ function AdminAirportsInner() {
           <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary, #fff)", marginBottom: "6px" }}>
             إدارة المطارات
           </h1>
-          <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
+          <p style={{ color: "var(--textMuted)", fontSize: "0.9rem", margin: 0 }}>
             إضافة وتعديل وحذف مطارات القاهرة ومصر وتعديل بياناتها والاتصال والرحلات.
           </p>
         </div>
 
-        <button onClick={handleOpenAdd} className="btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "10px 20px" }}>
+        <button onClick={handleOpenAdd} className="btn btn-primary">
           <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
           إضافة مطار جديد
         </button>
@@ -585,7 +585,7 @@ function AdminAirportsInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--text-muted, #94a3b8)",
+            color: "var(--textMuted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -719,25 +719,11 @@ function AdminAirportsInner() {
                   </td>
                   <td className={styles.adminTd}>
                     <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                      <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
-                        style={{
-                          padding: "5px 5px",
-                          borderRadius: "50%",
-                          background: "var(--bgSecondary)",
-
-                        }}
+                      <button onClick={() => handleOpenEdit(item)} className="actionBtn actionBtnEdit" title="تعديل"
                       >
                         <i className="bx bx-edit-alt" />
                       </button>
-                      <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
-                        style={{
-                          padding: "5px 5px",
-                          borderRadius: "50%",
-                          background: "#ff000025",
-                          color: "#ff0000f5",
-                          border: "#ff000025",
-                        }}
-                      >
+                      <button onClick={() => handleDelete(item)} className="actionBtn actionBtnDelete" title="حذف">
                         <i className="bx bx-trash" />
                       </button>
                     </div>
@@ -771,15 +757,15 @@ function AdminAirportsInner() {
             overflowY: "auto",
             padding: "30px",
             border: "1px solid var(--borderGlass)",
-            background: "#0f172a",
-            borderRadius: "20px",
+            background: "var(--bgGlass)",
+            borderRadius: "var(--radius-card)",
             boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "12px" }}>
-              <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "#fff", margin: 0 }}>
+              <h2 style={{ fontSize: "1.35rem", fontWeight: "900", margin: 0 }}>
                 {editingItem ? "تعديل بيانات المطار" : "إضافة مطار جديد"}
               </h2>
-              <button onClick={() => setShowModal(false)} style={{ background: "rgba(255,255,255,0.05)", border: "none", width: "32px", height: "32px", borderRadius: "50%", color: "#94a3b8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <button onClick={() => setShowModal(false)} className="closeBtn">
                 <i className="bx bx-x" style={{ fontSize: "1.5rem" }} />
               </button>
             </div>
@@ -789,11 +775,10 @@ function AdminAirportsInner() {
 
                 {/* Group 1: الأساسيات والتصنيف */}
                 <div style={{
-                  background: "rgba(255, 255, 255, 0.02)",
+                  background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
+                  borderRadius: "var(--radius-card)",
                   padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}>
                   <h3 style={{ margin: "0 0 16px 0", fontSize: "0.98rem", color: "#818cf8", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
                     <i className="bx bx-id-card" style={{ fontSize: "1.2rem" }} />
@@ -892,11 +877,10 @@ function AdminAirportsInner() {
 
                 {/* Group 2: الموقع والجغرافيا */}
                 <div style={{
-                  background: "rgba(255, 255, 255, 0.02)",
+                  background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
+                  borderRadius: "var(--radius-card)",
                   padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}>
                   <h3 style={{ margin: "0 0 16px 0", fontSize: "0.98rem", color: "#3b82f6", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
                     <i className="bx bx-map-pin" style={{ fontSize: "1.2rem" }} />
@@ -1011,11 +995,10 @@ function AdminAirportsInner() {
 
                 {/* Group 3: الأوصاف والملخص */}
                 <div style={{
-                  background: "rgba(255, 255, 255, 0.02)",
+                  background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
+                  borderRadius: "var(--radius-card)",
                   padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}>
                   <h3 style={{ margin: "0 0 16px 0", fontSize: "0.98rem", color: "#10b981", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
                     <i className="bx bx-detail" style={{ fontSize: "1.2rem" }} />
@@ -1048,11 +1031,10 @@ function AdminAirportsInner() {
 
                 {/* Group 4: البنية التحتية */}
                 <div style={{
-                  background: "rgba(255, 255, 255, 0.02)",
+                 background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
+                  borderRadius: "var(--radius-card)",
                   padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}>
                   <h3 style={{ margin: "0 0 16px 0", fontSize: "0.98rem", color: "#f59e0b", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
                     <i className="bx bx-building" style={{ fontSize: "1.2rem" }} />
@@ -1126,11 +1108,10 @@ function AdminAirportsInner() {
 
                 {/* Group 5: الربط وحركة الطيران */}
                 <div style={{
-                  background: "rgba(255, 255, 255, 0.02)",
+                 background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
+                  borderRadius: "var(--radius-card)",
                   padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}>
                   <h3 style={{ margin: "0 0 16px 0", fontSize: "0.98rem", color: "#ec4899", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
                     <i className="bx bx-transfer-alt" style={{ fontSize: "1.2rem" }} />
@@ -1201,11 +1182,10 @@ function AdminAirportsInner() {
 
                 {/* Group 6: الخدمات والمواصلات والاتصال */}
                 <div style={{
-                  background: "rgba(255, 255, 255, 0.02)",
+                 background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
+                  borderRadius: "var(--radius-card)",
                   padding: "20px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
                 }}>
                   <h3 style={{ margin: "0 0 16px 0", fontSize: "0.98rem", color: "#8b5cf6", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
                     <i className="bx bx-car" style={{ fontSize: "1.2rem" }} />
@@ -1330,10 +1310,10 @@ function AdminAirportsInner() {
 
               {/* Action buttons */}
               <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "10px", borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "16px" }}>
-                <button type="button" onClick={() => setShowModal(false)} className="btn" style={{ background: "rgba(255,255,255,0.05)", color: "#fff", border: "1px solid rgba(255,255,255,0.1)" }}>
+                <button type="button" onClick={() => setShowModal(false)} className="btn btn-cancle" >
                   إلغاء
                 </button>
-                <button type="submit" className="btn" style={{ background: "linear-gradient(135deg, #30d158 0%, #24b047 100%)", color: "#fff" }}>
+                <button type="submit" className="btn btn-primary">
                   حفظ البيانات
                 </button>
               </div>

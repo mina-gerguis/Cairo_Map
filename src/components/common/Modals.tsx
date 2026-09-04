@@ -57,6 +57,10 @@ export default function CustomModal({
       `}</style>
 
       <div
+        role="dialog"
+        aria-modal="true"
+        data-modal-overlay="true"
+        className="customModalOverlay"
         style={{
           position: "fixed",
           inset: 0,
