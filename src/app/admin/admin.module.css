@@ -540,7 +540,6 @@
   font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
-  border: 1px solid transparent;
   transition: all 0.2s ease;
   white-space: nowrap;
 }

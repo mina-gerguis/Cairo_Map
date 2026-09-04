@@ -1,7 +1,8 @@
 "use client";
-
+import styles from "../admin.module.css";
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import CustomModal from "@/components/common/Modals";
 import { FamousCity, CityLandmark, INITIAL_FAMOUS_CITIES, getStoredCities, saveStoredCities } from "@/data/cities";
 import {
   FaPlus,
@@ -108,6 +109,11 @@ export default function AdminCitiesPage() {
   const [selectedCityForLandmarks, setSelectedCityForLandmarks] = useState<FamousCity | null>(null);
   const [isLandmarkModalOpen, setIsLandmarkModalOpen] = useState<boolean>(false);
   const [editingLandmark, setEditingLandmark] = useState<CityLandmark | null>(null);
+
+  // Delete confirmation modals state
+  const [cityToDelete, setCityToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [landmarkToDelete, setLandmarkToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   // Form states for City
   const [cityName, setCityName] = useState("");
@@ -304,25 +310,30 @@ export default function AdminCitiesPage() {
   };
 
   // ── Delete City ──
-  const handleDeleteCity = async (cityId: string, name: string) => {
-    if (!confirm(`هل أنت متأكد من حذف مدينة "${name}" وكافة معالمها السياحية؟`)) return;
-
-    const updatedCities = cities.filter((c) => c.id !== cityId);
-    setCities(updatedCities);
-    saveStoredCities(updatedCities);
-
-    if (selectedCityForLandmarks?.id === cityId) {
-      setSelectedCityForLandmarks(null);
-    }
-
-    showToast(`تم حذف مدينة ${name} بنجاح.`);
+  const confirmDeleteCity = async () => {
+    if (!cityToDelete) return;
+    const { id: cityId, name } = cityToDelete;
+    setIsDeleting(true);
 
     try {
+      const updatedCities = cities.filter((c) => c.id !== cityId);
+      setCities(updatedCities);
+      saveStoredCities(updatedCities);
+
+      if (selectedCityForLandmarks?.id === cityId) {
+        setSelectedCityForLandmarks(null);
+      }
+
+      showToast(`تم حذف مدينة "${name}" بنجاح.`);
+
       if (supabase) {
         await supabase.from("famous_cities").delete().eq("id", cityId);
       }
     } catch (err) {
-      console.warn(err);
+      console.warn("Could not delete city from Supabase DB:", err);
+    } finally {
+      setIsDeleting(false);
+      setCityToDelete(null);
     }
   };
 
@@ -514,30 +525,34 @@ export default function AdminCitiesPage() {
   };
 
   // ── Delete Landmark ──
-  const handleDeleteLandmark = async (landmarkId: string, name: string) => {
-    if (!selectedCityForLandmarks) return;
-    if (!confirm(`هل أنت متأكد من حذف المعلم "${name}"؟`)) return;
-
-    let updatedCityObj: FamousCity | null = null;
-
-    const updatedCities = cities.map((city) => {
-      if (city.id !== selectedCityForLandmarks.id) return city;
-      const updatedLandmarks = (city.landmarks || []).filter((l) => l.id !== landmarkId);
-      updatedCityObj = { ...city, landmarks: updatedLandmarks };
-      return updatedCityObj;
-    });
-
-    setCities(updatedCities);
-    saveStoredCities(updatedCities);
-    if (updatedCityObj) setSelectedCityForLandmarks(updatedCityObj);
-    showToast(`تم حذف المعلم ${name} بنجاح.`);
+  const confirmDeleteLandmark = async () => {
+    if (!landmarkToDelete || !selectedCityForLandmarks) return;
+    const { id: landmarkId, name } = landmarkToDelete;
+    setIsDeleting(true);
 
     try {
+      let updatedCityObj: FamousCity | null = null;
+
+      const updatedCities = cities.map((city) => {
+        if (city.id !== selectedCityForLandmarks.id) return city;
+        const updatedLandmarks = (city.landmarks || []).filter((l) => l.id !== landmarkId);
+        updatedCityObj = { ...city, landmarks: updatedLandmarks };
+        return updatedCityObj;
+      });
+
+      setCities(updatedCities);
+      saveStoredCities(updatedCities);
+      if (updatedCityObj) setSelectedCityForLandmarks(updatedCityObj);
+      showToast(`تم حذف المعلم "${name}" بنجاح.`);
+
       if (supabase) {
         await supabase.from("city_landmarks").delete().eq("id", landmarkId);
       }
     } catch (err) {
-      console.warn(err);
+      console.warn("Could not delete landmark from Supabase DB:", err);
+    } finally {
+      setIsDeleting(false);
+      setLandmarkToDelete(null);
     }
   };
 
@@ -552,22 +567,27 @@ export default function AdminCitiesPage() {
         <div
           style={{
             position: "fixed",
-            bottom: "24px",
+            top: "28px",
             left: "50%",
             transform: "translateX(-50%)",
-            backgroundColor: "#10b981",
+            backgroundColor: "rgba(16, 185, 129, 0.95)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
             color: "#fff",
-            padding: "12px 24px",
+            padding: "14px 28px",
             borderRadius: "999px",
             fontWeight: "700",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
-            zIndex: 2000,
+            fontSize: "0.95rem",
+            boxShadow: "0 12px 35px rgba(0,0,0,0.35)",
+            border: "1px solid rgba(255, 255, 255, 0.25)",
+            zIndex: 25000,
             display: "flex",
             alignItems: "center",
-            gap: "8px",
+            gap: "10px",
+            animation: "customModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
           }}
         >
-          <FaCheck />
+          <FaCheck style={{ fontSize: "1.1rem" }} />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -584,7 +604,7 @@ export default function AdminCitiesPage() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 6px 0", color: "#fff" }}>
+          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 6px 0", color: "var(--textPrimary)" }}>
             🏙️ إدارة المدن الشهيرة والمعالم السياحية
           </h1>
           <p style={{ fontSize: "0.9rem", color: "var(--text-muted, #94a3b8)", margin: 0 }}>
@@ -594,19 +614,15 @@ export default function AdminCitiesPage() {
 
         <button
           onClick={() => openCityModal()}
+          className="btn btn-primary"
           style={{
-            backgroundColor: "var(--colorPrimary, #006fee)",
             color: "#fff",
-            border: "none",
-            borderRadius: "12px",
-            padding: "10px 20px",
             fontSize: "0.95rem",
             fontWeight: "700",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            boxShadow: "0 4px 14px rgba(0, 111, 238, 0.4)",
           }}
         >
           <FaPlus />
@@ -618,29 +634,32 @@ export default function AdminCitiesPage() {
       <div style={{ marginBottom: "24px", maxWidth: "450px" }}>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.04)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            borderRadius: "12px",
-            padding: "8px 14px",
+            position: "relative", width: "100%", maxWidth: "450px"
           }}
         >
-          <FaSearch style={{ color: "var(--text-muted, #94a3b8)", marginLeft: "10px" }} />
           <input
             type="text"
             placeholder="ابحث باسم المدينة..."
             value={searchQuery}
+            className="input-fields"
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              color: "#fff",
-              fontSize: "0.95rem",
               width: "100%",
+              paddingRight: "44px",
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid var(--borderGlass)",
+              color: "var(--textSecondary)"
             }}
           />
+          <i className="bx bx-search" style={{
+            position: "absolute",
+            right: "16px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "var(--text-muted, #94a3b8)",
+            fontSize: "1.2rem"
+          }} />
         </div>
       </div>
 
@@ -707,33 +726,18 @@ export default function AdminCitiesPage() {
                 >
                   <button
                     onClick={() => openCityModal(city)}
-                    style={{
-                      background: "rgba(0,0,0,0.6)",
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      color: "#fff",
-                      borderRadius: "8px",
-                      padding: "6px 10px",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                    }}
+                    className="actionBtn actionBtnEdit"
+
                     title="تعديل المدينة"
                   >
-                    <FaEdit />
+                    <i className="bx bx-edit-alt" />
                   </button>
                   <button
-                    onClick={() => handleDeleteCity(city.id, city.name)}
-                    style={{
-                      background: "rgba(239, 68, 68, 0.7)",
-                      border: "none",
-                      color: "#fff",
-                      borderRadius: "8px",
-                      padding: "6px 10px",
-                      cursor: "pointer",
-                      fontSize: "0.85rem",
-                    }}
+                    onClick={() => setCityToDelete({ id: city.id, name: city.name })}
+                    className="actionBtn actionBtnDelete"
                     title="حذف المدينة"
                   >
-                    <FaTrash />
+                    <i className="bx bx-trash" />
                   </button>
                 </div>
               </div>
@@ -750,16 +754,16 @@ export default function AdminCitiesPage() {
                     marginBottom: "12px",
                   }}
                 >
-                  <div>👥 السكان: <strong style={{ color: "#fff" }}>{city.population || "-"}</strong></div>
-                  <div>📐 المساحة: <strong style={{ color: "#fff" }}>{city.area || "-"}</strong></div>
-                  <div>🏙️ الكثافة: <strong style={{ color: "#fff" }}>{city.density || "-"}</strong></div>
-                  <div>🌡️ الحرارة: <strong style={{ color: "#f59e0b" }}>{city.temperature || "-"}</strong></div>
+                  <div>👥 السكان: <strong style={{ color: "var(--textPrimary)" }}>{city.population || "-"}</strong></div>
+                  <div>📐 المساحة: <strong style={{ color: "var(--textPrimary)" }}>{city.area || "-"}</strong></div>
+                  <div>🏙️ الكثافة: <strong style={{ color: "var(--textPrimary)" }}>{city.density || "-"}</strong></div>
+                  <div>🌡️ الحرارة: <strong style={{ color: "var(--textPrimary)" }}>{city.temperature || "-"}</strong></div>
                 </div>
 
                 <p
                   style={{
                     fontSize: "0.85rem",
-                    color: "#cbd5e1",
+                    color: "var(--textMuted)",
                     margin: "0 0 16px 0",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
@@ -774,13 +778,9 @@ export default function AdminCitiesPage() {
                 {/* Manage Landmarks Button */}
                 <button
                   onClick={() => setSelectedCityForLandmarks(city)}
+                  className="btn btn-outline-blue"
                   style={{
                     width: "100%",
-                    backgroundColor: "rgba(0, 111, 238, 0.15)",
-                    border: "1px solid rgba(0, 111, 238, 0.3)",
-                    color: "#3b82f6",
-                    borderRadius: "10px",
-                    padding: "10px",
                     fontSize: "0.9rem",
                     fontWeight: "700",
                     cursor: "pointer",
@@ -817,15 +817,15 @@ export default function AdminCitiesPage() {
         >
           <div
             style={{
-              backgroundColor: "var(--card-glass, #121826)",
-              border: "1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15))",
-              borderRadius: "20px",
+              backgroundColor: "var(--bgSecondary)",
+              border: "1px solid var(--borderGlass)",
+              borderRadius: "var(--radius-sm)",
               width: "100%",
               maxWidth: "850px",
               maxHeight: "85vh",
               overflowY: "auto",
               padding: "24px",
-              color: "#fff",
+              color: "var(--textPrimary)",
               position: "relative",
             }}
             onClick={(e) => e.stopPropagation()}
@@ -844,20 +844,17 @@ export default function AdminCitiesPage() {
                 <h2 style={{ fontSize: "1.4rem", fontWeight: "800", margin: 0 }}>
                   المعالم السياحية في مدينة {selectedCityForLandmarks.name}
                 </h2>
-                <span style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)" }}>
+                <span style={{ fontSize: "0.85rem", color: "var(--textMuted)" }}>
                   إضافة وتعديل الأماكن المعروضة في الكروت المستطيلة للمدينة
                 </span>
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <button
+                  className="btn btn-primary"
                   onClick={() => openLandmarkModal()}
                   style={{
-                    backgroundColor: "#10b981",
-                    color: "#fff",
                     border: "none",
-                    borderRadius: "10px",
-                    padding: "8px 16px",
                     fontSize: "0.9rem",
                     fontWeight: "700",
                     cursor: "pointer",
@@ -871,20 +868,9 @@ export default function AdminCitiesPage() {
                 </button>
                 <button
                   onClick={() => setSelectedCityForLandmarks(null)}
-                  style={{
-                    background: "rgba(255,255,255,0.1)",
-                    border: "none",
-                    color: "#fff",
-                    borderRadius: "50%",
-                    width: "36px",
-                    height: "36px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
+                  className="closeBtn"
                 >
-                  <FaTimes />
+                  <i className="bx bx-x"></i>
                 </button>
               </div>
             </div>
@@ -903,9 +889,9 @@ export default function AdminCitiesPage() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      backgroundColor: "rgba(255, 255, 255, 0.03)",
-                      border: "1px solid rgba(255, 255, 255, 0.08)",
-                      borderRadius: "14px",
+                      backgroundColor: "var(--bgThird)",
+                      border: "1px solid var(--borderGlass)",
+                      borderRadius: "var(--radius-xs)",
                       padding: "12px 16px",
                       gap: "16px",
                     }}
@@ -918,10 +904,10 @@ export default function AdminCitiesPage() {
                       />
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                          <h4 style={{ fontSize: "1.05rem", fontWeight: "800", margin: 0, color: "#fff" }}>
+                          <h5 style={{ fontSize: "1.05rem", fontWeight: "800", margin: 0, color: "var(--textPrimary)" }}>
                             {lm.name}
-                          </h4>
-                          <span
+                          </h5>
+                          {/* <span
                             style={{
                               fontSize: "0.75rem",
                               backgroundColor: "rgba(0, 111, 238, 0.2)",
@@ -932,8 +918,8 @@ export default function AdminCitiesPage() {
                             }}
                           >
                             {lm.type}
-                          </span>
-                          {lm.is_popular && (
+                          </span> */}
+                          {/* {lm.is_popular && (
                             <span
                               style={{
                                 fontSize: "0.75rem",
@@ -946,12 +932,12 @@ export default function AdminCitiesPage() {
                             >
                               ⭐ شائع
                             </span>
-                          )}
+                          )} */}
                         </div>
                         <p
                           style={{
                             fontSize: "0.82rem",
-                            color: "var(--text-muted, #94a3b8)",
+                            color: "var(--textMuted)",
                             margin: 0,
                             display: "-webkit-box",
                             WebkitLineClamp: 1,
@@ -967,33 +953,16 @@ export default function AdminCitiesPage() {
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       <button
                         onClick={() => openLandmarkModal(lm)}
-                        style={{
-                          backgroundColor: "rgba(59, 130, 246, 0.2)",
-                          border: "1px solid rgba(59, 130, 246, 0.4)",
-                          color: "#60a5fa",
-                          borderRadius: "8px",
-                          padding: "6px 12px",
-                          cursor: "pointer",
-                          fontSize: "0.85rem",
-                          fontWeight: "600",
-                        }}
+                        className="actionBtn actionBtnEdit"
                       >
-                        تعديل
+                        <i className="bx bxs-edit"></i>
                       </button>
                       <button
-                        onClick={() => handleDeleteLandmark(lm.id, lm.name)}
-                        style={{
-                          backgroundColor: "rgba(239, 68, 68, 0.2)",
-                          border: "1px solid rgba(239, 68, 68, 0.4)",
-                          color: "#f87171",
-                          borderRadius: "8px",
-                          padding: "6px 12px",
-                          cursor: "pointer",
-                          fontSize: "0.85rem",
-                          fontWeight: "600",
-                        }}
+                        onClick={() => setLandmarkToDelete({ id: lm.id, name: lm.name })}
+                        className="actionBtn actionBtnDelete"
+                        title="حذف المعلم"
                       >
-                        حذف
+                        <i className="bx bxs-trash"></i>
                       </button>
                     </div>
                   </div>
@@ -1022,15 +991,14 @@ export default function AdminCitiesPage() {
         >
           <div
             style={{
-              backgroundColor: "var(--card-glass, #121826)",
-              border: "1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15))",
-              borderRadius: "20px",
+              backgroundColor: "var(--bgGlass)",
+              border: "1px solid var(--borderGlass)",
+              borderRadius: "var(--radius-card)",
               width: "100%",
               maxWidth: "600px",
               maxHeight: "90vh",
               overflowY: "auto",
               padding: "24px",
-              color: "#fff",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1040,7 +1008,7 @@ export default function AdminCitiesPage() {
 
             <form onSubmit={handleSaveCity} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   اسم المدينة *
                 </label>
                 <input
@@ -1049,19 +1017,12 @@ export default function AdminCitiesPage() {
                   placeholder="مثال: الأقصر"
                   value={cityName}
                   onChange={(e) => setCityName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   الـ Slug (رابط مختصر بالإنجليزية)
                 </label>
                 <input
@@ -1069,19 +1030,12 @@ export default function AdminCitiesPage() {
                   placeholder="مثال: luxor"
                   value={citySlug}
                   onChange={(e) => setCitySlug(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   رابط صورة الغلاف (Cover Image URL) *
                 </label>
                 <input
@@ -1090,20 +1044,13 @@ export default function AdminCitiesPage() {
                   placeholder="https://images.unsplash.com/..."
                   value={cityCoverImage}
                   onChange={(e) => setCityCoverImage(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                     عدد السكان (السكان)
                   </label>
                   <input
@@ -1111,18 +1058,11 @@ export default function AdminCitiesPage() {
                     placeholder="مثال: 1.3 مليون نسمة"
                     value={cityPopulation}
                     onChange={(e) => setCityPopulation(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      borderRadius: "10px",
-                      color: "#fff",
-                    }}
+                    className="input-fields"
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                     المساحة (المساحة)
                   </label>
                   <input
@@ -1130,21 +1070,14 @@ export default function AdminCitiesPage() {
                     placeholder="مثال: 416 كم²"
                     value={cityArea}
                     onChange={(e) => setCityArea(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      borderRadius: "10px",
-                      color: "#fff",
-                    }}
+                    className="input-fields"
                   />
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                     الكثافة السكانية (الكثافة)
                   </label>
                   <input
@@ -1152,18 +1085,11 @@ export default function AdminCitiesPage() {
                     placeholder="مثال: 3,100 نسمة/كم²"
                     value={cityDensity}
                     onChange={(e) => setCityDensity(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      borderRadius: "10px",
-                      color: "#fff",
-                    }}
+                    className="input-fields"
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                     درجة الحرارة الحالية
                   </label>
                   <input
@@ -1171,20 +1097,13 @@ export default function AdminCitiesPage() {
                     placeholder="مثال: 32° م"
                     value={cityTemperature}
                     onChange={(e) => setCityTemperature(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      borderRadius: "10px",
-                      color: "#fff",
-                    }}
+                    className="input-fields"
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   نبذة عن المدينة (الوصف التعريفى)
                 </label>
                 <textarea
@@ -1192,15 +1111,7 @@ export default function AdminCitiesPage() {
                   placeholder="نبذة كاملة عن موقع وحضارة وتاريخ المدينة..."
                   value={cityOverview}
                   onChange={(e) => setCityOverview(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                    resize: "vertical",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
@@ -1208,28 +1119,13 @@ export default function AdminCitiesPage() {
                 <button
                   type="button"
                   onClick={() => setIsCityModalOpen(false)}
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    color: "#fff",
-                    borderRadius: "10px",
-                    padding: "8px 18px",
-                    cursor: "pointer",
-                  }}
+                 className="btn btn-cancle"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  style={{
-                    backgroundColor: "#006fee",
-                    border: "none",
-                    color: "#fff",
-                    borderRadius: "10px",
-                    padding: "8px 22px",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                  }}
+                  className="btn btn-primary"
                 >
                   حفظ البيانات
                 </button>
@@ -1257,15 +1153,14 @@ export default function AdminCitiesPage() {
         >
           <div
             style={{
-              backgroundColor: "var(--card-glass, #121826)",
-              border: "1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15))",
-              borderRadius: "20px",
+              backgroundColor: "var(--bgGlass)",
+              border: "1px solid var(--borderGlass)",
+              borderRadius: "var(--radius-card)",
               width: "100%",
               maxWidth: "650px",
               maxHeight: "90vh",
               overflowY: "auto",
               padding: "24px",
-              color: "#fff",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1275,7 +1170,7 @@ export default function AdminCitiesPage() {
 
             <form onSubmit={handleSaveLandmark} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   اسم المكان / المعلم السياحي *
                 </label>
                 <input
@@ -1284,20 +1179,13 @@ export default function AdminCitiesPage() {
                   placeholder="مثال: معبد الكرنك"
                   value={landmarkName}
                   onChange={(e) => setLandmarkName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                     نوع المكان (مثلاً: معلم سياحي، متحف، حديقة)
                   </label>
                   <input
@@ -1305,14 +1193,7 @@ export default function AdminCitiesPage() {
                     placeholder="معلم سياحي"
                     value={landmarkType}
                     onChange={(e) => setLandmarkType(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "10px 14px",
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      borderRadius: "10px",
-                      color: "#fff",
-                    }}
+                    className="input-fields"
                   />
                 </div>
 
@@ -1322,15 +1203,15 @@ export default function AdminCitiesPage() {
                       type="checkbox"
                       checked={landmarkIsPopular}
                       onChange={(e) => setLandmarkIsPopular(e.target.checked)}
-                      style={{ width: "18px", height: "18px", accentColor: "#f59e0b" }}
+                      style={{ width: "18px", height: "18px", accentColor: "var(--mainBtn)" }}
                     />
-                    <span style={{ color: "#f59e0b", fontWeight: "700" }}>علامة "شائع" (الأكثر رواجاً)</span>
+                    <span style={{ fontFamily: "var(--font-sub)", color: "var(--textPrimary)", fontWeight: "700" }}>علامة "شائع" (الأكثر رواجاً)</span>
                   </label>
                 </div>
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   رابط صورة الغلاف للمعلم *
                 </label>
                 <input
@@ -1339,19 +1220,12 @@ export default function AdminCitiesPage() {
                   placeholder="https://..."
                   value={landmarkCoverImage}
                   onChange={(e) => setLandmarkCoverImage(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   وصف المكان
                 </label>
                 <textarea
@@ -1359,20 +1233,12 @@ export default function AdminCitiesPage() {
                   placeholder="شرح موجز لموقع وأهمية المعلم السياحي..."
                   value={landmarkDescription}
                   onChange={(e) => setLandmarkDescription(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                    resize: "vertical",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "8px", fontWeight: "700" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "8px", fontWeight: "700" }}>
                   🚇 المحطات القريبة والمسافة بينها وبين المكان
                 </label>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "10px" }}>
@@ -1391,25 +1257,16 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: "rgba(255,255,255,0.05)",
-                          border: "1px solid rgba(255,255,255,0.15)",
-                          borderRadius: "10px",
-                          color: "#fff",
-                          fontSize: "0.88rem",
-                          outline: "none",
-                          cursor: "pointer",
-                        }}
+                        className="input-fields"
                       >
-                        <option value="مترو" style={{ backgroundColor: "#1f2937", color: "#fff" }}>مترو</option>
-                        <option value="أتوبيس" style={{ backgroundColor: "#1f2937", color: "#fff" }}>أتوبيس</option>
-                        <option value="قطار كهربائي LRT" style={{ backgroundColor: "#1f2937", color: "#fff" }}>قطار كهربائي LRT</option>
-                        <option value="مونوريل" style={{ backgroundColor: "#1f2937", color: "#fff" }}>مونوريل</option>
-                        <option value="ميكروباص" style={{ backgroundColor: "#1f2937", color: "#fff" }}>ميكروباص</option>
-                        <option value="ترام" style={{ backgroundColor: "#1f2937", color: "#fff" }}>ترام</option>
-                        <option value="قطار" style={{ backgroundColor: "#1f2937", color: "#fff" }}>قطار</option>
-                        <option value="أخرى" style={{ backgroundColor: "#1f2937", color: "#fff" }}>أخرى</option>
+                        <option value="مترو" style={{ backgroundColor: "var(--bgGlass)" }}>مترو</option>
+                        <option value="أتوبيس" style={{ backgroundColor: "var(--bgGlass)" }}>أتوبيس</option>
+                        <option value="قطار كهربائي LRT" style={{ backgroundColor: "var(--bgGlass)" }}>قطار كهربائي LRT</option>
+                        <option value="مونوريل" style={{ backgroundColor: "var(--bgGlass)" }}>مونوريل</option>
+                        <option value="ميكروباص" style={{ backgroundColor: "var(--bgGlass)" }}>ميكروباص</option>
+                        <option value="ترام" style={{ backgroundColor: "var(--bgGlass)" }}>ترام</option>
+                        <option value="قطار" style={{ backgroundColor: "var(--bgGlass)" }}>قطار</option>
+                        <option value="أخرى" style={{ backgroundColor: "var(--bgGlass)" }}>أخرى</option>
                       </select>
                       <input
                         type="text"
@@ -1426,14 +1283,7 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: "rgba(255,255,255,0.05)",
-                          border: "1px solid rgba(255,255,255,0.15)",
-                          borderRadius: "10px",
-                          color: "#fff",
-                          fontSize: "0.88rem",
-                        }}
+                       className="input-fields"
                       />
                       <input
                         type="text"
@@ -1450,14 +1300,7 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: "rgba(255,255,255,0.05)",
-                          border: "1px solid rgba(255,255,255,0.15)",
-                          borderRadius: "10px",
-                          color: "#fff",
-                          fontSize: "0.88rem",
-                        }}
+                       className="input-fields"
                       />
                       <button
                         type="button"
@@ -1471,20 +1314,10 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                        style={{
-                          backgroundColor: "rgba(239, 68, 68, 0.2)",
-                          color: "#ef4444",
-                          border: "1px solid rgba(239, 68, 68, 0.3)",
-                          borderRadius: "8px",
-                          padding: "8px 12px",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
+                       className="actionBtn actionBtnDelete"
                         title="حذف المحطة"
                       >
-                        <FaTrash style={{ fontSize: "0.85rem" }} />
+                        <i className="bx bx-trash"></i>
                       </button>
                     </div>
                   ))}
@@ -1495,20 +1328,8 @@ export default function AdminCitiesPage() {
                   onClick={() => {
                     setLandmarkStationRows([...landmarkStationRows, { type: "مترو", name: "", distance: "" }]);
                   }}
-                  style={{
-                    backgroundColor: "rgba(0, 111, 238, 0.15)",
-                    color: "#3b82f6",
-                    border: "1px solid rgba(0, 111, 238, 0.3)",
-                    borderRadius: "10px",
-                    padding: "6px 14px",
-                    fontSize: "0.85rem",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    marginTop: "4px",
-                  }}
+                  className="btn btn-primary"
+                  title="إضافة محطة قريبة جديدة"
                 >
                   <FaPlus />
                   <span>إضافة محطة قريبة جديدة</span>
@@ -1516,7 +1337,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   الأنشطة وماذا تفعل هناك ("واقدر اعمل اي في المكان ده" - اكتب كل نشاط في سطر)
                 </label>
                 <textarea
@@ -1524,20 +1345,12 @@ export default function AdminCitiesPage() {
                   placeholder="مشاهدة طريق الكباش الأثري&#10;التقاط أروع الصور الفوتوغرافية"
                   value={landmarkActivities}
                   onChange={(e) => setLandmarkActivities(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                    resize: "vertical",
-                  }}
+                  className="input-fields"
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--text-muted, #94a3b8)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
                   ألبوم صور المكان (روابط إضافية، اكتب كل رابط في سطر)
                 </label>
                 <textarea
@@ -1545,15 +1358,7 @@ export default function AdminCitiesPage() {
                   placeholder="https://...&#10;https://..."
                   value={landmarkImages}
                   onChange={(e) => setLandmarkImages(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                    borderRadius: "10px",
-                    color: "#fff",
-                    resize: "vertical",
-                  }}
+                 className="input-fields"
                 />
               </div>
 
@@ -1561,28 +1366,13 @@ export default function AdminCitiesPage() {
                 <button
                   type="button"
                   onClick={() => setIsLandmarkModalOpen(false)}
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                    color: "#fff",
-                    borderRadius: "10px",
-                    padding: "8px 18px",
-                    cursor: "pointer",
-                  }}
+                  className="btn btn-cancel"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  style={{
-                    backgroundColor: "#10b981",
-                    border: "none",
-                    color: "#fff",
-                    borderRadius: "10px",
-                    padding: "8px 22px",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                  }}
+                 className="btn btn-primary"
                 >
                   حفظ المعلم
                 </button>
@@ -1591,6 +1381,100 @@ export default function AdminCitiesPage() {
           </div>
         </div>
       )}
+
+      {/* ── Landmark Delete Confirmation Modal ── */}
+      <CustomModal
+        isOpen={Boolean(landmarkToDelete)}
+        onClose={() => !isDeleting && setLandmarkToDelete(null)}
+        title="تأكيد حذف المعلم"
+        titleColor="#ff3b30"
+        iconSrc="/images/icons3d/trash.png"
+        borderColor="rgba(255, 59, 48, 0.25)"
+        message={`هل أنت متأكد من حذف المعلم "${landmarkToDelete?.name}"؟`}
+        primaryButton={{
+          label: isDeleting ? "جاري الحذف..." : "نعم، احذف",
+          onClick: confirmDeleteLandmark,
+          bgColor: "#ff3b30",
+          disabled: isDeleting,
+          icon: <i className="bx bx-trash" style={{ fontSize: "1.2rem" }} />,
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setLandmarkToDelete(null),
+          bgColor: "var(--cancelBtn)",
+          disabled: isDeleting,
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
+        }}
+      >
+        {landmarkToDelete && (
+          <div
+            style={{
+              marginTop: "4px",
+              padding: "10px 16px",
+              backgroundColor: "rgba(255, 59, 48, 0.08)",
+              borderRadius: "12px",
+              border: "1px dashed rgba(255, 59, 48, 0.3)",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            <FaTrash style={{ color: "#ff4d4d", fontSize: "0.95rem" }} />
+            <span style={{ color: "#ff4d4d", fontSize: "1.05rem", fontWeight: "700" }}>
+              « {landmarkToDelete.name} »
+            </span>
+          </div>
+        )}
+      </CustomModal>
+
+      {/* ── City Delete Confirmation Modal ── */}
+      <CustomModal
+        isOpen={Boolean(cityToDelete)}
+        onClose={() => !isDeleting && setCityToDelete(null)}
+        title="تأكيد حذف المدينة"
+        titleColor="#ff3b30"
+        iconSrc="/images/icons3d/trash.png"
+        borderColor="rgba(255, 59, 48, 0.25)"
+        message={`هل أنت متأكد من حذف مدينة "${cityToDelete?.name}" وكافة معالمها السياحية؟`}
+        primaryButton={{
+          label: isDeleting ? "جاري الحذف..." : "نعم، احذف",
+          onClick: confirmDeleteCity,
+          bgColor: "#ff3b30",
+          disabled: isDeleting,
+          icon: <i className="bx bx-trash" style={{ fontSize: "1.2rem" }} />,
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setCityToDelete(null),
+          bgColor: "var(--cancelBtn)",
+          disabled: isDeleting,
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
+        }}
+      >
+        {cityToDelete && (
+          <div
+            style={{
+              marginTop: "4px",
+              padding: "12px 16px",
+              backgroundColor: "rgba(255, 59, 48, 0.08)",
+              borderRadius: "12px",
+              border: "1px dashed rgba(255, 59, 48, 0.3)",
+              textAlign: "center",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "4px" }}>
+              <FaTrash style={{ color: "#ff4d4d", fontSize: "0.95rem" }} />
+              <span style={{ color: "#ff4d4d", fontSize: "1.05rem", fontWeight: "700" }}>
+                « {cityToDelete.name} »
+              </span>
+            </div>
+            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-muted, #94a3b8)" }}>
+              ⚠️ تنبيه: سيتم حذف كافة المعالم والأنشطة والمحطات المرتبطة بهذه المدينة نهائياً.
+            </p>
+          </div>
+        )}
+      </CustomModal>
     </div>
   );
 }

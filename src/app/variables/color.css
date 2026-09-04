@@ -11,6 +11,7 @@
     /* Background Global */
     --bgPrimary: #000000;
     --bgSecondary: #070707;
+    --bgThird: #121212;
     --bgGlass: rgba(0, 0, 0, 0.7);
     --bgAlert: linear-gradient(135deg, rgba(117, 117, 117, 0.08) 0%, rgba(32, 32, 32, 0.08) 100%);
     /* Text Global */
@@ -25,6 +26,7 @@
     --radius-lg: 24px;
     --radius-xl: 32px;
     --radius-full: 999px;
+    --radius-card: var(--radius-xs);
     /* Borders Global */
     --borderGlass: var(--borderGlassBtn);
     --borderPrimary: #7c7c7c36;
@@ -101,6 +103,8 @@ html.light {
     --bgSecondary: #f4f4f5;
     --bgAlert: linear-gradient(135deg, rgba(85, 85, 85, 0.11) 0%, rgba(32, 32, 32, 0.205) 100%);
     --bgGlass: rgba(255, 255, 255, 0.8);
+    --bgThird: #f8f8f8;
+
     --textPrimary: #18181b;
     --textSecondary: #52525b;
     /* Buttons */
@@ -172,6 +176,18 @@ html.light {
 }
 
 .btn-outline:hover {
+    background: var(--mainBtn);
+    color: #ffffff;
+    backdrop-filter: blur(20px) saturate(15);
+}
+
+.btn-outline-blue {
+    background: rgba(0, 111, 238, 0.15);
+    border: 1px solid rgba(0, 111, 238, 0.3);
+    color: #3b82f6;
+}
+
+.btn-outline-blue:hover {
     background: var(--mainBtn);
     color: #ffffff;
     backdrop-filter: blur(20px) saturate(15);
@@ -253,8 +269,51 @@ html.light {
     transition: all 0.2s;
 }
 
+.closeBtn:hover {
+    background: var(--bgPrimary);
+    color: var(--textPrimary);
+}
+
 .btn-radius-lg {
     border-radius: var(--radiusBtnLg);
+}
+
+.actionBtn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: .9rem;
+    transition: all 0.2s;
+    padding: 8px;
+    width: 30px;
+    height: 30px;
+    
+}
+
+.actionBtnEdit {
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    color: var(--colorPrimary);
+}
+
+.actionBtnEdit:hover {
+    background: var(--mainBtn);
+    color: #fff;
+}
+
+.actionBtnDelete {
+    background: #ff000025;
+    color: #ff0000f5;
+    border: #ff000025;
+}
+
+.actionBtnDelete:hover {
+    background: red;
+    color: #fff;
 }
 
 /* ==================== Card Glass ==================== */
