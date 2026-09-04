@@ -549,6 +549,7 @@ function AdminMonorailInner() {
                       </td>
                       <td className={styles.adminTd}>
                         <span style={{
+                          display: "inline-block",
                           fontSize: "0.75rem",
                           background: lineColor + "15",
                           color: lineColor,
@@ -695,7 +696,7 @@ function AdminMonorailInner() {
                   value={formData.line_type || "east"}
                   onChange={e => setFormData({ ...formData, line_type: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
                 >
                   <option value="east">شرق النيل (العاصمة الإدارية)</option>
                   <option value="west">غرب النيل (6 أكتوبر)</option>
