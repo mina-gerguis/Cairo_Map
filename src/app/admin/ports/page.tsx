@@ -497,7 +497,7 @@ function AdminPortsInner() {
           </p>
         </div>
 
-        <button onClick={handleOpenAdd} className="btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "10px 20px" }}>
+        <button onClick={handleOpenAdd} className="btn btn-primary">
           <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
           إضافة ميناء جديد
         </button>
@@ -540,7 +540,7 @@ function AdminPortsInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--text-muted, #94a3b8)",
+            color: "var(--textMuted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -628,23 +628,13 @@ function AdminPortsInner() {
                   </td>
                   <td className={styles.adminTd}>
                     <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                      <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
-                        style={{
-                          padding: "5px 5px",
-                          borderRadius: "50%",
-                          background: "var(--bgSecondary)",
-                        }}
+                      <button onClick={() => handleOpenEdit(item)} title="تعديل"
+                      className="actionBtn actionBtnEdit"
                       >
                         <i className="bx bx-edit-alt" />
                       </button>
-                      <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
-                        style={{
-                          padding: "5px 5px",
-                          borderRadius: "50%",
-                          background: "#ff000025",
-                          color: "#ff0000f5",
-                          border: "#ff000025",
-                        }}
+                      <button onClick={() => handleDelete(item)} title="حذف"
+                       className="actionBtn actionBtnDelete"
                       >
                         <i className="bx bx-trash" />
                       </button>
@@ -705,15 +695,15 @@ function AdminPortsInner() {
             overflowY: "auto",
             padding: "30px",
             border: "1px solid var(--borderGlass)",
-            background: "#0f172a",
+            background: "var(--bgGlass)",
             borderRadius: "20px",
             boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "12px" }}>
-              <h2 style={{ fontSize: "1.35rem", fontWeight: "900", color: "#fff", margin: 0 }}>
+              <h2 style={{ fontSize: "1.35rem", fontWeight: "900",margin: 0 }}>
                 {editingItem ? "تعديل بيانات الميناء" : "إضافة ميناء جديد"}
               </h2>
-              <button onClick={() => setShowModal(false)} style={{ background: "rgba(255,255,255,0.05)", border: "none", width: "32px", height: "32px", borderRadius: "50%", color: "#94a3b8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <button onClick={() => setShowModal(false)} className="closeBtn">
                 <i className="bx bx-x" style={{ fontSize: "1.5rem" }} />
               </button>
             </div>
@@ -834,30 +824,13 @@ function AdminPortsInner() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  style={{
-                    padding: "10px 18px",
-                    borderRadius: "10px",
-                    background: "rgba(255,255,255,0.08)",
-                    color: "#fff",
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-heading)"
-                  }}
+                 className="btn btn-cancel"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  style={{
-                    padding: "10px 24px",
-                    borderRadius: "10px",
-                    background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
-                    color: "#fff",
-                    border: "none",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-heading)"
-                  }}
+                 className="btn btn-primary"
                 >
                   {editingItem ? "حفظ التعديلات" : "إضافة الميناء"}
                 </button>
