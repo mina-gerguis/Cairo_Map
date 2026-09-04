@@ -1,0 +1,328 @@
+:root {
+    /* ==================== Global Colors ==================== */
+    --colorPrimary: rgb(39, 39, 255);
+    --colorSecondary: #3b82f6;
+    --colorAccent: #1a3eff;
+    --colorMuted: #a1a1aa;
+    --colorSuccess: #10b981;
+    --colorWarning: #ffa500;
+    --colorDanger: #ff0000;
+    --colorInfo: #0000ff;
+    /* Background Global */
+    --bgPrimary: #000000;
+    --bgSecondary: #070707;
+    --bgGlass: rgba(0, 0, 0, 0.7);
+    --bgAlert: linear-gradient(135deg, rgba(117, 117, 117, 0.08) 0%, rgba(32, 32, 32, 0.08) 100%);
+    /* Text Global */
+    --textPrimary: #f4f4f5;
+    --textSecondary: #a1a1aa;
+    --textMuted: #71717a;
+    /* Radius Global */
+    --radius-xs: 8px;
+    --radius-sm2: 10px;
+    --radius-sm: 14px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius-full: 999px;
+    /* Borders Global */
+    --borderGlass: var(--borderGlassBtn);
+    --borderPrimary: #7c7c7c36;
+    /* Shadows Global */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 2px 4px 0 rgba(0, 0, 0, 0.02), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+
+    /* Buttons */
+    --mainBtn: var(--colorPrimary);
+    --mainBtnBorder: #2563eb;
+    --secondBtn: rgb(48, 48, 48);
+    --cancelBtn: rgba(157, 159, 161, 0.267);
+    --cancelHoverBtn: rgb(78, 78, 78);
+    --successBtn: #00db123b;
+    --warningBtn: #ffa500;
+    --dangerBtn: rgba(255, 0, 0, 0.150);
+    --button--ghost: ;
+    --accentBtn: #fff;
+    --hoverBtn: rgba(39, 39, 42, 0.8);
+    --paddingBtn: 10px 16px;
+    --radiusBtn: var(--radius-xs);
+    --radiusBtnLg: var(--radius-sm);
+    --borderGlassBtn: rgba(255, 255, 255, 0.1);
+    --radiusBtnTabs: var(--radius-full);
+
+    /* Input Fields */
+    --inputBorder: rgba(255, 255, 255, 0.1);
+    --inputBg: rgba(24, 24, 27, 0.7);
+    --inputShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --inputRadius: var(--radius-sm);
+
+    /* Card Glass */
+    --cardGlassBg: rgba(24, 24, 27, 0.7);
+    --cardGlassBorder: rgba(255, 255, 255, 0.1);
+    --cardGlassShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --cardGlassRadius: var(--radius-sm);
+
+    /* Card Model */
+    --modelCardBg: #fff;
+    --modelCardBorder: rgb(34, 31, 31);
+    --modelCardShadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+    --modelCardRadius: var(--radius-xs);
+    /* Container */
+    --containerBorder: rgba(255, 255, 255, 0.158);
+    --containerBg: rgba(2, 2, 2, 0.7);
+    --containerShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --containerRadius: var(--radius-xs);
+
+    /* Transitions */
+    --transition-fast: all 0.15s ease-out;
+    --transition-smooth: all 0.25s ease-out;
+    --transition-spring: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* ==================== Subscribe Model ==================== */
+    /* base */
+    --bg-subscribe-button-base: linear-gradient(135deg, var(--mainBtn) 0%, #2563eb 100%);
+    --br-subscribe-button-base: #3b82f6;
+    --bs-subscribe-button-base: 0 4px 15px rgba(59, 130, 246, 0.384);
+    /* seliver */
+    --bg-subscribe-button-seliver: linear-gradient(135deg, rgba(26, 25, 25, 0.541) 0%, #818181ff 100%);
+    --br-subscribe-button-seliver: #727272;
+    /* Gold */
+    --bg-subscribe-button-gold: linear-gradient(135deg, #ffdd00ff 0%, #d4b500ff 100%);
+    --br-subscribe-button-gold: #ffdd00ff;
+    --bs-subscribe-button-gold: 0 4px 15px rgba(255, 221, 0, 0.384);
+}
+
+html.light {
+    /* Global Variables */
+    --bgPrimary: #ffffff;
+    --bgSecondary: #f4f4f5;
+    --bgAlert: linear-gradient(135deg, rgba(85, 85, 85, 0.11) 0%, rgba(32, 32, 32, 0.205) 100%);
+    --bgGlass: rgba(255, 255, 255, 0.8);
+    --textPrimary: #18181b;
+    --textSecondary: #52525b;
+    /* Buttons */
+    --secondBtn: rgb(224, 224, 224);
+    --dangerBtn: rgba(255, 0, 0, 0.123);
+    --accentBtn: #000000;
+    --cancelHoverBtn: rgb(205, 199, 199);
+    --borderGlassBtn: rgba(0, 0, 0, 0.08);
+    --hoverBtn: rgba(244, 244, 245, 0.9);
+    --secondHoverBtn: rgb(182, 182, 182);
+    /* border */
+    --borderPrimary: rgba(151, 151, 151, 0.384);
+    /* Input Fields */
+    --inputBorder: rgba(151, 151, 151, 0.384);
+    --inputBg: rgb(250, 250, 250);
+    --inputShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    /* Card Glass */
+    --cardGlassBg: rgba(255, 255, 255, 0.8);
+    --cardGlassBorder: rgba(105, 95, 95, 0.137);
+    --cardGlassShadow: var(--shadow-card);
+    /* Card Model */
+    --modelCardBg: #fff;
+    --modelCardBorder: rgb(211, 211, 211);
+    /* Container */
+    --containerBorder: rgba(0, 0, 0, 0.158);
+    --containerBg: rgba(255, 255, 255, 0.7);
+    --containerShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --containerRadius: var(--radius-sm);
+}
+
+/* ==================== Style Global ==================== */
+
+
+/* ============================================================
+   Buttons — Premium
+   ============================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: var(--paddingBtn);
+    border-radius: var(--radiusBtn);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-spring);
+    font-family: var(--font-sub);
+    outline: none;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: var(--mainBtn);
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    opacity: 0.85;
+}
+
+.btn-outline {
+    background: var(--bgGlass-card);
+    border: 1.5px solid var(--colorPrimary);
+    color: var(--colorPrimary);
+}
+
+.btn-outline:hover {
+    background: var(--mainBtn);
+    color: #ffffff;
+    backdrop-filter: blur(20px) saturate(15);
+}
+
+.btn-secondary {
+    background: var(--secondBtn);
+    color: var(--textPrimary);
+}
+
+.btn-secondary:hover {
+    background: var(--secondHoverBtn);
+    color: var(--textPrimary);
+}
+
+.btn-success {
+    background: var(--successBtn);
+    color: var(--textPrimary);
+}
+
+.btn-success:hover {
+    background: var(--secondHoverBtn);
+    color: var(--textPrimary);
+}
+
+.btn-cancel {
+    background: var(--cancelBtn);
+    color: var(--textPrimary);
+    border: 1px solid var(--borderGlassBtn);
+}
+
+.btn-cancel:hover {
+    background: var(--cancelHoverBtn);
+    color: var(--textPrimary);
+}
+
+.btn-danger {
+    background: var(--dangerBtn);
+    color: #ff0000;
+    border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+.btn-danger:hover {
+    background: red;
+    color: #fff;
+}
+
+.btn-silver {
+    background: var(--bg-subscribe-button-seliver);
+    color: #fff;
+}
+
+.btn-silver:hover {
+    background: var(--textPrimary);
+    color: var(--bgPrimary);
+}
+
+.btn-gold {
+    background: var(--bg-subscribe-button-gold);
+    color: #000000;
+}
+
+.btn-gold:hover {
+    background: var(--textPrimary);
+    color: var(--bgPrimary);
+}
+
+.closeBtn {
+    background: rgba(131, 131, 131, 0.055);
+    border: 1px solid var(--borderGlass);
+    color: var(--textPrimary);
+    border-radius: 50%;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+}
+
+.btn-radius-lg {
+    border-radius: var(--radiusBtnLg);
+}
+
+/* ==================== Card Glass ==================== */
+.glass-panel {
+    background: var(--bgGlass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--borderGlass);
+    border-radius: var(--radius-sm2);
+    transition: var(--transition-smooth);
+}
+
+.glass-card {
+    background: var(--cardGlassBg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--cardGlassBorder);
+    border-radius: var(--cardGlassRadius);
+    box-shadow: var(--cardGlassShadow);
+    transition: var(--transition-spring);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card::before {
+    content: none;
+}
+
+.glass-card:hover {
+    background: var(--hoverBtn);
+}
+
+.glass-card:active {
+    transform: scale(0.97);
+}
+
+/* ============================================================
+   Input Fields — Premium
+   ============================================================ */
+.input-fields {
+    width: 100%;
+    padding: 8px 20px;
+    border-radius: var(--inputRadius);
+    border: 1px solid var(--borderGlass);
+    background: var(--inputBg);
+    color: var(--textPrimary);
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition-smooth);
+    font-family: var(--font-body);
+}
+
+.input-fields:focus {
+    border-color: var(--colorPrimary);
+    box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.15);
+}
+
+.input-fields::placeholder {
+    color: var(--textMuted);
+}
+
+.input-fields[aria-invalid="true"],
+.input-fields.has-error {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+}
+
+.input-fields[aria-invalid="true"]:focus,
+.input-fields.has-error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}

@@ -1,0 +1,282 @@
+.editorContainer {
+  width: 100%;
+  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: var(--bgSecondary, #18181b);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 0.8rem;
+  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.8));
+  border-bottom: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  user-select: none;
+}
+
+.toolbarGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.divider {
+  width: 1px;
+  height: 22px;
+  background-color: var(--borderGlass, rgba(255, 255, 255, 0.15));
+  margin: 0 0.25rem;
+}
+
+.toolbarBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--textPrimary, #f4f4f5);
+  border-radius: 8px;
+  padding: 0.4rem 0.55rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  transition: all 0.15s ease;
+}
+
+.toolbarBtn:hover {
+  background-color: var(--hoverBtn, rgba(39, 39, 42, 0.8));
+  color: var(--colorPrimary, #006FEE);
+}
+
+.toolbarBtn.active {
+  background-color: rgba(0, 111, 238, 0.15);
+  border-color: rgba(0, 111, 238, 0.4);
+  color: var(--colorPrimary, #006FEE);
+}
+
+.btnLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.toolbarSelect {
+  background-color: var(--bgSecondary, #18181b);
+  color: var(--textPrimary, #f4f4f5);
+  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.toolbarSelect:focus {
+  border-color: var(--colorPrimary, #006FEE);
+}
+
+.colorPickerWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  cursor: pointer;
+  font-size: 1.1rem;
+  overflow: hidden;
+}
+
+.colorInput {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 50px;
+  height: 50px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.colorPresets {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.colorDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease;
+}
+
+.colorDot:hover {
+  transform: scale(1.2);
+}
+
+/* ── Content Area ── */
+.editableContent {
+  padding: 1.2rem;
+  color: var(--textPrimary, #f4f4f5);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  outline: none;
+  overflow-y: auto;
+}
+
+.editableContent:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted, #71717a);
+  cursor: text;
+}
+
+.editableContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 1rem 0;
+  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  box-shadow: var(--shadow-sm);
+}
+
+.editableContent blockquote {
+  border-right: 4px solid var(--colorPrimary, #006FEE);
+  margin: 1rem 0;
+  padding: 0.6rem 1.1rem;
+  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.7));
+  border-radius: 4px 0 0 4px;
+  font-style: italic;
+  color: var(--textSecondary, #a1a1aa);
+}
+
+.editableContent a {
+  color: var(--colorPrimary, #006FEE);
+  text-decoration: underline;
+}
+
+.sourceTextarea {
+  width: 100%;
+  padding: 1.2rem;
+  background-color: var(--bgPrimary, #000000);
+  color: var(--colorPrimary, #006FEE);
+  font-family: monospace, monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  border: none;
+  outline: none;
+  resize: vertical;
+  direction: ltr;
+}
+
+/* ── Modals ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modalBody {
+  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.95));
+  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  border-radius: 20px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.5));
+  color: var(--textPrimary, #f4f4f5);
+  backdrop-filter: blur(16px);
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--textPrimary, #f4f4f5);
+}
+
+.modalTitle i {
+  color: var(--colorPrimary, #006FEE);
+}
+
+.modalSubtitle {
+  font-size: 0.85rem;
+  color: var(--textSecondary, #a1a1aa);
+  margin: 0 0 1.2rem 0;
+}
+
+.modalInput {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  background-color: var(--bgSecondary, #18181b);
+  color: var(--textPrimary, #f4f4f5);
+  font-size: 0.95rem;
+  outline: none;
+  margin-bottom: 1.25rem;
+  direction: ltr;
+}
+
+.modalInput:focus {
+  border-color: var(--colorPrimary, #006FEE);
+  box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.2);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.modalCancelBtn {
+  padding: 0.65rem 1.3rem;
+  border-radius: 10px;
+  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  background: transparent;
+  color: var(--textSecondary, #a1a1aa);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.modalCancelBtn:hover {
+  background-color: var(--hoverBtn);
+  color: var(--textPrimary);
+}
+
+.modalSubmitBtn {
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--colorPrimary, #006FEE), #0284c7);
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0, 111, 238, 0.35);
+  transition: all 0.2s ease;
+}
+
+.modalSubmitBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 111, 238, 0.45);
+}

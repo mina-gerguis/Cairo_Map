@@ -1,0 +1,12 @@
+### Pages & Services
+- [x] => Home Page || 26/08/25 07:48 PM || Version 1.0.2
+- [x] => Parking Page || 27/08/25 10:37 PM || Version 1.0.1
+- [x] => Places Page || 03/09/26 12:45 PM || Version 1.0.1
+- [x] => Blog Page 
+- [x] => Directory Page || 27/08/25 07:30 PM || Version 1.0.1
+- [x] => Metro Page || 03/09/26 12:45 PM || Version 1.0.2
+- [x] => Monorail Page || 27/08/25 07:39 PM || Version 1.0.1
+- [x] => LRT Page || 27/08/25 07:57 PM || Version 1.0.1
+- [x] => Railways Page || 28/08/25 09:10 AM || Version 1.0.1
+- [x] => Airports Page || 28/08/25 09:20 AM || Version 1.0.1
+- [x] => Profile Page || 31/08/25 10:21 AM || Version 1.0.1

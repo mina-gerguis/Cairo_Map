@@ -1,0 +1,2269 @@
+/* ─── Profile Page Module Styles ─── */
+
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.loadingContainer {
+  text-align: center;
+  padding: 50px;
+}
+
+/* ─── Top Greeting ─── */
+.topGreetingHeader {
+  margin-bottom: 20px;
+  padding: 0 4px;
+  direction: rtl;
+}
+
+.topGreetingTitle {
+  font-family: "Hagrid", var(--font-main), sans-serif;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--textPrimary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ─── Profile Card ─── */
+.profileCard {
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  transition: transform 0.2s, background-color 0.2s;
+  border: 1px solid var(--borderGlass);
+}
+
+.profileCardExpanded {
+  border-color: var(--colorSecondary);
+}
+
+/* Guest View */
+.guestContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.guestAvatarBg {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--borderGlass-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--borderGlass-bright);
+}
+
+.guestAvatarIcon {
+  font-size: 2rem;
+  color: var(--text-muted);
+}
+
+.guestTextWrapper {
+  text-align: center;
+}
+
+.guestTitle {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--textPrimary);
+}
+
+.guestSubtitle {
+  margin: 0;
+  color: var(--textSecondary);
+  font-size: 0.85rem;
+  font-family: var(--font-sub);
+}
+
+.guestLoginBtn {
+  width: 100%;
+  text-decoration: none;
+  justify-content: center;
+}
+
+.guestLoginIcon {
+  font-size: 1.2rem;
+}
+
+.guestSignupLink {
+  color: var(--colorSecondary);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+/* Logged-in Header */
+.profileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profileHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profileAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--colorSecondary);
+}
+
+.profileAvatarPlaceholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--borderGlass-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--colorSecondary);
+}
+
+.profileAvatarIcon {
+  font-size: 1.8rem;
+  color: var(--textSecondary);
+}
+
+.profileInfoText {
+  text-align: right;
+}
+
+.profileName {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: var(--font-sub);
+  color: var(--textPrimary);
+}
+
+.profileEmail {
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--textSecondary);
+  font-size: 0.78rem;
+  max-width: 90%;
+  direction: ltr;
+}
+
+.profileChevron {
+  font-size: 1.5rem;
+  color: var(--textSecondary);
+}
+
+/* Expanded Profile Content */
+.profileExpandedContent {
+  cursor: default;
+  border-top: 1px solid var(--borderGlass);
+  padding-top: 16px;
+}
+
+/* Banner Messages */
+.messageBanner {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.messageError {
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  color: #ff3b30;
+}
+
+.messageSuccess {
+  background: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  color: #34c759;
+}
+
+/* Form Styles */
+.formGap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: var(--font-heading);
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--borderGlass);
+}
+
+.avatarRelative {
+  position: relative;
+}
+
+.formAvatarImg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--colorSecondary);
+}
+
+.formAvatarPlaceholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--borderGlass-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--borderGlass-bright);
+}
+
+.formAvatarIcon {
+  font-size: 2.5rem;
+  color: var(--textSecondary);
+}
+
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarSpinner {
+  width: 20px;
+  height: 20px;
+}
+
+.uploadBtnLabel {
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  cursor: pointer;
+  background: rgba(108, 99, 255, 0.15);
+  border: 1px solid rgba(108, 99, 255, 0.3);
+  color: var(--colorPrimary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.uploadIcon {
+  font-size: 1.1rem;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadMutedText {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.avatarsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.avatarPresetItem {
+  border: 2px solid transparent;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 1;
+}
+
+.avatarPresetItemDimmed {
+  opacity: 0.5;
+}
+
+.avatarPresetItemActive {
+  border: 3px solid var(--colorSecondary);
+  box-shadow: 0 0 12px rgba(108, 99, 255, 0.5);
+  opacity: 1;
+}
+
+.avatarPresetImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 1;
+}
+
+.inputDobDisabled {
+  text-align: left;
+  direction: ltr;
+  opacity: 0.65;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dobWarningText {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.dobWarningLink {
+  color: var(--colorPrimary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.usernameInput {
+  text-align: left;
+  direction: ltr;
+}
+
+.usernameInputInvalid {
+  border-color: #ff6eb4;
+}
+
+.usernameWarningText {
+  color: #ff6eb4;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.emailInput {
+  text-align: left;
+  direction: ltr;
+}
+
+.phoneInputContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.phonePrefix {
+  position: absolute;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--textSecondary);
+  z-index: 1;
+  direction: ltr;
+}
+
+.phonePrefixCode {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.phonePrefixDivider {
+  height: 20px;
+  width: 1px;
+  background: var(--borderGlass-bright);
+  margin: 0 4px;
+}
+
+.phoneInput {
+  text-align: left;
+  direction: ltr;
+  padding-left: 85px;
+}
+
+.interestsSection {
+  margin-top: 8px;
+}
+
+.interestsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.interestPillBtn {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.interestPillIcon {
+  font-size: 1.1rem;
+}
+
+.formButtonsRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+/* Info view mode */
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoLabel {
+  color: var(--textSecondary);
+  font-size: 0.9rem;
+}
+
+.infoValue {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.interestsDisplaySection {
+  margin-top: 4px;
+  border-top: 1px solid var(--borderGlass);
+  padding-top: 12px;
+}
+
+.interestsDisplayTitle {
+  color: var(--textSecondary);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.interestPillReadonly {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  pointer-events: none;
+  font-weight: 400;
+}
+
+.noInterestsCard {
+  background: var(--bgSecondary);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px dashed var(--borderGlass);
+}
+
+.noInterestsText {
+  font-size: 0.85rem;
+  color: var(--textSecondary);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.addInterestsBtn {
+  padding: 6px 16px;
+  font-size: 0.85rem;
+  margin: 0 auto;
+}
+
+/* ─── General Section (Mather / App Theme & Quick Links) ─── */
+.sectionCard {
+  background-color: var(--bgPrimary);
+  border: 1px solid var(--borderGlass);
+  border-radius: var(--radius-sm2);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--font-heading);
+}
+
+/* Card Main Style */
+.cardContainer {
+  border: none !important;
+  padding: 0px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
+.cardContainer::selection {
+  background-color: transparent !important;
+}
+
+.cardContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cardIcon {
+  font-size: 1.3rem;
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--textPrimary);
+}
+
+.chevronIcon {
+  font-size: 1.1rem;
+  color: var(--textSecondary);
+}
+
+.dividerDashed {
+  width: 95%;
+  border: 1px dashed var(--border-break);
+  margin: 0 auto;
+}
+
+/* Favorite Card */
+.badgeRight {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.favBadge {
+  font-size: 0.85rem;
+  color: var(--textSecondary);
+  font-weight: bold;
+}
+
+/* Notifications Card */
+.notifCard {
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.notifHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notifBadgeRed {
+  font-size: 0.65rem;
+  color: #fff;
+  background: #ff3b30;
+  padding: 2px 9px;
+  border-radius: 50px;
+  font-weight: bold;
+}
+
+.notifChevron {
+  font-size: 1.5rem;
+  color: var(--textSecondary);
+  transition: transform 0.3s;
+}
+
+/* Notification log  */
+.notifExpandedContent {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--borderGlass);
+  animation: fade-in 0.3s ease;
+}
+
+.notifExpandedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.notifExpandedTitle {
+  font-family: var(--font-cairo);
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--textPrimary);
+}
+
+.notifActions {
+  display: flex;
+  gap: 8px;
+  width: 60%;
+}
+
+.notifBtnSmall {
+  background-color: rgba(108, 99, 255, 0.08);
+  border: 1px solid rgba(108, 99, 255, 0.2);
+  color: var(--textPrimary);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  height: auto;
+}
+
+.notifBtnDeleteAll {
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  height: auto;
+  border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+.notifEmpty {
+  text-align: center;
+  padding: 24px 0;
+  color: var(--text-muted);
+}
+
+.notifEmptyIcon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.notifEmptyText {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.notifList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.notifItem {
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: background 0.2s;
+  border: 1px solid var(--border-break) !important;
+}
+
+.notifItemRead {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+}
+
+.notifItemUnread {
+  background: rgba(108, 99, 255, 0.08);
+  border: 1px solid rgba(108, 99, 255, 0.2);
+}
+
+.notifEmoji {
+  font-size: 1.5rem;
+  margin-top: 2px;
+}
+
+.notifItemBody {
+  flex: 1;
+  overflow: hidden;
+}
+
+.notifItemTitle {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+}
+
+.notifItemTitleRead {
+  color: var(--textSecondary);
+}
+
+.notifItemTitleUnread {
+  color: var(--textPrimary);
+}
+
+.notifItemMsg {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notifItemDate {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.notifUnreadDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff3b30;
+  margin-top: 8px;
+}
+
+
+/* Section Header Labels */
+.sectionHeaderLabel {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+/* Security Cards */
+.securityCard {
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  transition: transform 0.2s, background-color 0.2s;
+  border: 1px solid var(--borderGlass);
+}
+
+.securityCardMargin {
+  margin-bottom: 24px;
+}
+
+.securityIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(108, 99, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--colorSecondary);
+}
+
+.securityIcon {
+  font-size: 1.4rem;
+}
+
+.securitySubtitle {
+  margin: 4px 0 0;
+  color: var(--textSecondary);
+  font-size: 0.82rem;
+}
+
+.mfaCardActive {
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  background: rgba(52, 199, 89, 0.05);
+}
+
+.mfaCardInactive {
+  border: 1px solid var(--borderGlass);
+  background: var(--glass-bg);
+}
+
+.mfaIconWrapperActive {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(52, 199, 89, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34c759;
+}
+
+.mfaIconWrapperInactive {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--borderGlass-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--textSecondary);
+}
+
+.mfaCheckIcon {
+  font-size: 1.5rem;
+  color: #34c759;
+}
+
+/* Help Section */
+.helpHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+
+.helpExpandedContent {
+  cursor: default;
+  border-top: 1px solid var(--borderGlass);
+  padding: 20px 0;
+}
+
+.tabsContainer {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.tabBtn {
+  flex: 1;
+  padding: 4px 2px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--textSecondary);
+  font-family: var(--font-cairo);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.tabBtnActive {
+  background: var(--colorSecondary);
+  color: #fff;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faqEmptyText {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 12px;
+}
+
+.faqItem {
+  border-bottom: 1px solid var(--borderGlass);
+  padding-bottom: 12px;
+}
+
+.faqQuestionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.faqQuestionTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--textPrimary);
+}
+
+.faqActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.faqDeleteBtn {
+  background: transparent;
+  border: none;
+  color: var(--accent-danger);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.faqDeleteIcon {
+  font-size: 1.1rem;
+}
+
+.faqToggleIcon {
+  color: var(--textSecondary);
+  font-size: 1.1rem;
+}
+
+.faqAnswerText {
+  margin: 8px 0 0;
+  font-size: 0.88rem;
+  color: var(--textSecondary);
+  line-height: 1.6;
+}
+
+.adminFaqForm {
+  margin-top: 20px;
+  border-top: 1px dashed var(--borderGlass);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adminFaqTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--colorSecondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adminFaqIcon {
+  font-size: 1.2rem;
+}
+
+.adminFaqTextarea {
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.adminFaqSubmitBtn {
+  height: 40px;
+  font-size: 0.9rem;
+}
+
+/* Social Grid */
+.socialGrid {
+  display: grid;
+  align-items: center;
+  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+@media screen and (max-width: 768px) {
+  .socialGrid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .socialGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+}
+
+.socialPill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--borderGlass);
+  text-decoration: none;
+}
+
+.socialPillFull {
+  grid-column: 1 / -1;
+}
+
+.socialIconWhatsapp {
+  font-size: 1.3rem;
+  color: #25d366;
+}
+
+.socialIconFacebook {
+  font-size: 1.3rem;
+  color: #1877f2;
+}
+
+.socialIconTelegram {
+  font-size: 1.3rem;
+  color: #0088cc;
+}
+
+.socialIconInstagram {
+  font-size: 1.3rem;
+  color: #e1306c;
+}
+
+.socialIconGlobe {
+  font-size: 1.2rem;
+  color: var(--colorSecondary);
+}
+
+/* Contact Form */
+.contactSuccess {
+  text-align: center;
+  padding: 20px;
+}
+
+.contactSuccessIcon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  color: #34c759;
+}
+
+.contactSuccessTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.contactSuccessMsg {
+  color: var(--textSecondary);
+  font-size: 0.85rem;
+  margin: 0 0 16px;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.grid2Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.inputLtrRight {
+  direction: ltr;
+  text-align: right;
+}
+
+.contactTextarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.contactSubmitBtn {
+  height: 45px;
+  font-size: 0.95rem;
+}
+
+/* Information Section */
+.infoCard {
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  transition: transform 0.2s, background-color 0.2s;
+  border: 1px solid var(--borderGlass);
+}
+
+.infoCardMargin {
+  margin-bottom: 24px;
+}
+
+.infoIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(108, 99, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--colorSecondary);
+}
+
+.infoIcon {
+  font-size: 1.4rem;
+}
+
+/* Advanced Section */
+.logoutCard {
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  transition: transform 0.2s, background-color 0.2s;
+  border: 1px solid var(--borderGlass);
+}
+
+.logoutIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 149, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff9500;
+}
+
+.logoutIcon {
+  font-size: 1.4rem;
+}
+
+.logoutSubtitle {
+  margin: 4px 0 0;
+  color: var(--textSecondary);
+  font-size: 0.82rem;
+}
+
+.deleteAccountCard {
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  transition: transform 0.2s, background-color 0.2s;
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  background: rgba(255, 59, 48, 0.03);
+}
+
+.deleteAccountIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 59, 48, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff3b30;
+}
+
+.deleteAccountIcon {
+  font-size: 1.4rem;
+}
+
+.deleteAccountTitle {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ff3b30;
+}
+
+.deleteChevron {
+  font-size: 1.5rem;
+  color: #ff3b30;
+}
+
+/* Modals Overlay */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade-in 0.2s ease;
+}
+
+.modalBackdropSlow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade-in 0.3s ease;
+}
+
+/* Delete Modal */
+.deleteModalDialog {
+  max-width: 440px;
+  width: 100%;
+  padding: 0;
+  animation: slide-up 0.25s ease;
+  border: 1px solid rgba(255, 59, 48, 0.25);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.deleteModalHeader {
+  background: rgba(255, 59, 48, 0.08);
+  border-bottom: 1px solid rgba(255, 59, 48, 0.15);
+  padding: 24px 28px 20px;
+  text-align: center;
+}
+
+.deleteModalIconWrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 59, 48, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.deleteModalHeaderIcon {
+  font-size: 1.8rem;
+  color: #ff3b30;
+}
+
+.deleteModalHeaderTitle {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ff3b30;
+  margin: 0;
+}
+
+.deleteModalHeaderSub {
+  font-size: 0.85rem;
+  color: var(--textSecondary);
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.deleteModalBody {
+  padding: 20px 28px 24px;
+}
+
+.deleteModalPromptText {
+  font-size: 0.88rem;
+  color: var(--textSecondary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.deletePhraseBox {
+  user-select: none;
+  color: var(--textPrimary);
+  padding: 10px 14px;
+  background: rgba(255, 59, 48, 0.06);
+  border: 1px dashed rgba(255, 59, 48, 0.3);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.deleteConfirmInput {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.deleteModalActions {
+  display: flex;
+  gap: 10px;
+}
+
+.deleteBtnCancel {
+  flex: 1;
+}
+
+.deleteBtnConfirm {
+  flex: 1;
+  background: #ff3b30;
+  color: #fff;
+  transition: opacity 0.2s;
+}
+
+.btnDisabled {
+  opacity: 0.45;
+}
+
+/* 2FA Modal */
+.mfaModalPanel {
+  max-width: 440px;
+  width: 100%;
+  padding: 30px;
+  animation: fade-in 0.3s ease;
+  border: 1px solid var(--borderGlass);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  border-radius: 28px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.mfaModalTitle {
+  font-size: 1.3rem;
+  color: var(--textPrimary);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.mfaErrorBanner {
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  color: #ff3b30;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  text-align: center;
+  animation: fade-in 0.3s ease;
+}
+
+.mfaStepText {
+  font-size: 0.95rem;
+  color: var(--textSecondary);
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.mfaListGap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mfaOptionItemDisabled {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--borderGlass);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mfaOptionLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mfaOptionIconDisabled {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--borderGlass-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--textSecondary);
+}
+
+.mfaOptionTitle {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--textPrimary);
+}
+
+.mfaOptionBadgeSoon {
+  font-size: 0.8rem;
+  background: var(--borderGlass);
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: var(--textSecondary);
+}
+
+.mfaOptionItemActive {
+  border: 1px solid rgba(52, 199, 89, 0.4);
+  background: rgba(52, 199, 89, 0.05);
+  cursor: default;
+}
+
+.mfaOptionItemInactive {
+  border: 1px solid var(--colorSecondary);
+  background: rgba(108, 99, 255, 0.05);
+  cursor: pointer;
+}
+
+.mfaOptionBase {
+  padding: 16px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+}
+
+.mfaOptionIconActive {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(52, 199, 89, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34c759;
+}
+
+.mfaOptionIconInactive {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(108, 99, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--colorSecondary);
+}
+
+.mfaOptionSubActive {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #34c759;
+}
+
+.mfaOptionSubInactive {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--textSecondary);
+}
+
+.mfaSpinnerActive {
+  width: 20px;
+  height: 20px;
+  border-top-color: #34c759;
+}
+
+.mfaSpinnerInactive {
+  width: 20px;
+  height: 20px;
+  border-top-color: var(--colorSecondary);
+}
+
+.mfaUnenrollBtn {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mfaEnrollColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.mfaQrBox {
+  background: #fff;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--borderGlass-bright);
+}
+
+.mfaQrImg {
+  width: 200px;
+  height: 200px;
+}
+
+.mfaQrPlaceholder {
+  width: 200px;
+  height: 200px;
+  background: var(--borderGlass-bright);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mfaSecretText {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.mfaSecretCode {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+  display: inline-block;
+  letter-spacing: 1px;
+  user-select: all;
+}
+
+.digitsRow {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  direction: ltr;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.digitInput {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0;
+  border-radius: 12px;
+  border: 2px solid rgba(108, 99, 255, 0.2);
+  background: rgba(108, 99, 255, 0.05);
+  color: var(--textPrimary);
+}
+
+.mfaUnenrollForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fade-in 0.3s ease;
+  padding: 10px 0;
+}
+
+.relativeFullWidth {
+  position: relative;
+  width: 100%;
+}
+
+.passwordInputPaddedRight {
+  padding-right: 40px;
+  width: 100%;
+}
+
+.eyeIconToggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--textSecondary);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.unenrollBtnConfirm {
+  flex: 1;
+  background: #ff3b30;
+  color: #fff;
+}
+
+.btnOpacity60 {
+  opacity: 0.6;
+}
+
+/* Password Change Modal */
+.passwordModalPanel {
+  max-width: 440px;
+  width: 100%;
+  padding: 30px;
+  animation: fade-in 0.3s ease;
+  border: 1px solid var(--borderGlass);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  border-radius: 28px;
+}
+
+.passwordModalTitle {
+  font-size: 1.3rem;
+  color: var(--textPrimary);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.passwordModalSubtitle {
+  font-size: 0.95rem;
+  color: var(--textSecondary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.passwordInputRelative {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.passwordInputConfirmRelative {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.passwordInputLeftPadded {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  direction: ltr;
+  padding-left: 48px;
+}
+
+.eyeIconBtn {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--textSecondary);
+  display: flex;
+  align-items: center;
+}
+
+.pwdRulesBox {
+  background: rgba(108, 99, 255, 0.06);
+  border: 1px solid rgba(108, 99, 255, 0.15);
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 24px;
+  direction: rtl;
+}
+
+.pwdRuleItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+.pwdRuleSuccess {
+  color: #00d4aa;
+}
+
+.pwdRuleMuted {
+  color: var(--text-muted);
+}
+
+.ruleCheckIcon {
+  font-size: 1.1rem;
+}
+
+/* Logout Modal */
+.logoutModalPanel {
+  max-width: 440px;
+  width: 100%;
+  padding: 30px;
+  animation: fade-in 0.3s ease;
+  border: 1px solid rgba(255, 149, 0, 0.3);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  border-radius: 28px;
+}
+
+.logoutModalTitle {
+  font-size: 1.3rem;
+  color: #ff9500;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.logoutModalPrompt {
+  font-size: 0.95rem;
+  color: var(--textPrimary);
+  margin-bottom: 24px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.logoutBtnConfirm {
+  flex: 1;
+  background: #ff9500;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Notification Details Modal */
+.notifModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fade-in 0.3s ease;
+}
+
+.notifModalPanel {
+  background: var(--bgGlass);
+  border: 1px solid var(--borderGlass);
+  border-radius: 24px;
+  padding: 30px 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  position: relative;
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.notifModalCloseBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(59, 31, 31, 0.1);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  cursor: pointer;
+}
+
+.notifModalHeader {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.notifModalEmoji {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.notifModalTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-family: var(--font-cairo);
+  font-weight: 800;
+  color: var(--textPrimary);
+}
+
+.notifModalDate {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.notifModalBody {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 24px;
+  border: 1px solid rgba(240, 240, 240, 0.233);
+}
+
+.notifModalMessage {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--textPrimary);
+  white-space: pre-wrap;
+}
+
+.notifModalActionBtn {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.05rem;
+}
+
+/* ─── Footer Card (Noon Style) ─── */
+.footerCard {
+  background-color: var(--bgGlass);
+  border: 1px solid var(--borderGlass);
+  border-radius: var(--radius-sm2);
+  padding: 24px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.footerLinks {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 4px 16px;
+}
+
+.footerLink {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--textSecondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerLink:hover {
+  color: var(--textPrimary);
+}
+
+.footerLinkArrow {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.footerDivider {
+  width: 100%;
+  border: none;
+  border-top: 1px dashed var(--borderGlass-bright);
+  margin: 16px 0;
+}
+
+.socialRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 8px 0 16px;
+  direction: ltr;
+}
+
+.socialIconWrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background-color: var(--hoverBtn);
+  border: 1px solid var(--borderGlass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--textSecondary);
+  transition: transform 0.2s, color 0.2s, background-color 0.2s;
+  text-decoration: none;
+}
+
+.socialIconWrapper:hover {
+  transform: translateY(-2px);
+  color: var(--textPrimary);
+  background-color: var(--bgGlass-active);
+}
+
+.socialIconWrapper svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.versionText {
+  font-size: 0.78rem;
+  color: var(--textSecondary);
+  margin-bottom: 6px;
+  text-align: center;
+  font-family: var(--font-cairo);
+  opacity: 0.8;
+}
+
+.copyrightText {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-family: var(--font-cairo);
+  opacity: 0.85;
+}
+
+/* ─── Device Management Modal Styles ─── */
+.devicesModalPanel {
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: var(--bgGlass-card);
+  border: 1px solid var(--borderGlass);
+  border-radius: 24px;
+  color: var(--textPrimary);
+  display: flex;
+  flex-direction: column;
+}
+
+.modalCloseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.devicesModalTitle {
+  font-family: var(--font-cairo);
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.modalCloseIconBtn {
+  background: none;
+  border: none;
+  color: var(--textSecondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.modalCloseIconBtn:hover {
+  color: var(--textPrimary);
+}
+
+.devicesModalSubtitle {
+  font-size: 0.88rem;
+  color: var(--textSecondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.devicesListContainer {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.devicesSpinnerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+  gap: 12px;
+  color: var(--textSecondary);
+  font-size: 0.9rem;
+}
+
+.noDevicesText {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 30px 0;
+  font-size: 0.9rem;
+}
+
+.devicesListGap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deviceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--borderGlass);
+  border-radius: 16px;
+  transition: background-color 0.2s;
+  text-align: right;
+  direction: rtl;
+}
+
+.deviceItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.currentDeviceItem {
+  border-color: var(--colorSuccess);
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.deviceItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.deviceIconBox {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--hoverBtn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--textSecondary);
+}
+
+.currentDeviceItem .deviceIconBox {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--colorSuccess);
+}
+
+.deviceIcon {
+  font-size: 1.5rem;
+}
+
+.deviceInfoTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deviceNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.deviceName {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.currentDeviceBadge {
+  font-size: 0.72rem;
+  background: var(--colorSuccess);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-weight: bold;
+}
+
+.activeDeviceBadge {
+  font-size: 0.72rem;
+  background: var(--colorPrimary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-weight: bold;
+}
+
+.deviceMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--textSecondary);
+  flex-wrap: wrap;
+}
+
+.metaDivider {
+  color: var(--text-muted);
+}
+
+.loggedOutTimeText {
+  font-size: 0.76rem;
+  color: #ff3b30;
+  margin-top: 2px;
+}
+
+.deactivateDeviceBtn {
+  background: rgba(255, 59, 48, 0.08);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: #ff3b30;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.deactivateDeviceBtn:hover {
+  background: #ff3b30;
+  color: white;
+}
+
+.deactivateDeviceBtn:active {
+  transform: scale(0.95);
+}
+
+/* ─── Profile Badges Container & Pill Styles ─── */
+.userBadgesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.badgePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: fit-content;
+}
+
+.badgePoints {
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #b38001;
+}
+
+.badgePoints:hover {
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+.badgePoints i {
+  font-size: 0.95rem;
+  animation: coinPulse 2s infinite ease-in-out;
+}
+
+.badgeWallet {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #009463;
+}
+
+.badgeWallet:hover {
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+.badgeWallet i {
+  font-size: 0.95rem;
+  animation: walletPulse 2.5s infinite ease-in-out;
+}
+
+.badgePromo {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
+}
+
+.badgePromo:hover {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.badgePromo i {
+  font-size: 0.95rem;
+  animation: promoPulse 3s infinite ease-in-out;
+}
+
+@keyframes coinPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
+  }
+}
+
+@keyframes walletPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5));
+  }
+}
+
+@keyframes promoPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5));
+  }
+}
+
+.usernameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.copyButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--textMuted);
+  transition: color 0.2s ease, transform 0.1s ease;
+  border-radius: 4px;
+}
+
+.copyButton:hover {
+  color: var(--textPrimary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.copyButton:active {
+  transform: scale(0.9);
+}
+
+.copyButton i {
+  font-size: 1.1rem;
+}
+
+.copiedIcon {
+  color: var(--colorSuccess) !important;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+
+
+/* Wallet Section */
+.actionsButton {
+  flex: 1;
+  padding: var(--paddingBtn);
+  border-radius: var(--radius-xs);
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: bold;
+}

@@ -1,0 +1,231 @@
+.loaderWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 75vh;
+  padding: 40px 20px;
+  direction: rtl;
+  position: relative;
+  overflow: hidden;
+}
+
+.loaderCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 42px 36px;
+  background: var(--bgGlass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--borderGlass-bright);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 0 50px rgba(59, 130, 246, 0.12);
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 2;
+}
+
+/* Ambient Background Glow */
+.ambientGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.22) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(20px);
+  animation: pulseGlow 3s ease-in-out infinite alternate;
+}
+
+/* Spinner graphic wrapper */
+.spinnerGraphic {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+/* Outer Orbit Rings */
+.outerRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(59, 130, 246, 0.12);
+  border-top-color: var(--colorSecondary);
+  border-right-color: rgba(59, 130, 246, 0.6);
+  animation: orbitRotate 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.25);
+}
+
+.innerPulseRing {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 2px dashed rgba(59, 130, 246, 0.25);
+  animation: reverseOrbit 2.4s linear infinite;
+}
+
+/* Center Icon Badge */
+.iconBadge {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(37, 99, 235, 0.08));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--colorSecondary);
+  font-size: 1.6rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  animation: iconBreathe 2s ease-in-out infinite alternate;
+}
+
+/* Texts */
+.title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--textPrimary);
+  margin: 0 0 8px 0;
+  font-family: var(--font-display, var(--font-main, sans-serif));
+  letter-spacing: -0.3px;
+}
+
+.subtitle {
+  font-size: 0.88rem;
+  color: var(--textSecondary);
+  line-height: 1.55;
+  margin: 0 0 20px 0;
+  font-family: var(--font-body, sans-serif);
+  max-width: 320px;
+}
+
+/* Modern Shimmer Progress Bar */
+.shimmerTrack {
+  width: 150px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+:global(html.light) .shimmerTrack {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.shimmerBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 45%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--colorSecondary), transparent);
+  animation: shimmerMove 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--colorSecondary);
+}
+
+/* Keyframe Animations */
+@keyframes orbitRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes reverseOrbit {
+  0% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes iconBreathe {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.12);
+  }
+
+  100% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.35);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+@keyframes shimmerMove {
+  0% {
+    left: -45%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .loaderCard {
+    padding: 32px 20px;
+    border-radius: 20px;
+  }
+
+  .spinnerGraphic {
+    width: 76px;
+    height: 76px;
+  }
+
+  .iconBadge {
+    width: 46px;
+    height: 46px;
+    font-size: 1.4rem;
+  }
+
+  .title {
+    font-size: 1.15rem;
+  }
+
+  .subtitle {
+    font-size: 0.82rem;
+  }
+}
