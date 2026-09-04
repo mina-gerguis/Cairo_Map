@@ -561,7 +561,7 @@ function AdminMetroInner() {
           onClick={() => { setActiveSection("stations"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
-            background: activeSection === "stations" ? "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)" : "rgba(255,255,255,0.05)",
+            background: activeSection === "stations" ? "var(--colorPrimary)" : "var(--bgSecondary)",
             color: activeSection === "stations" ? "#fff" : "var(--textSecondary)",
             fontWeight: "bold",
             padding: "10px 20px"
@@ -574,7 +574,7 @@ function AdminMetroInner() {
           onClick={() => { setActiveSection("pricing"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
-            background: activeSection === "pricing" ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : "rgba(255,255,255,0.05)",
+            background: activeSection === "pricing" ? "var(--colorPrimary)" : "var(--bgSecondary)",
             color: activeSection === "pricing" ? "#fff" : "var(--textSecondary)",
             fontWeight: "bold",
             padding: "10px 20px"
@@ -628,11 +628,11 @@ function AdminMetroInner() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
             <div>
               <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--textPrimary)" }}>إدارة محطات المترو</h2>
-              <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
+              <p style={{ color: "var(--textMuted)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
                 إضافة وتعديل وحذف محطات مترو الأنفاق في خطوطها الستة.
               </p>
             </div>
-            <button onClick={handleOpenAddStation} className="btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "10px 20px" }}>
+            <button onClick={handleOpenAddStation} className="btn btn-primary">
               <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
               <span>إضافة محطة مترو جديدة</span>
             </button>
@@ -677,7 +677,7 @@ function AdminMetroInner() {
                       padding: "6px 14px",
                       borderRadius: "10px",
                       fontSize: "0.82rem",
-                      fontWeight: "800",
+                      fontWeight: "400",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
                       border: "1px solid",
@@ -775,6 +775,7 @@ function AdminMetroInner() {
                         </td>
                         <td className={styles.adminTd} style={{ width: "10%" }}>
                           <span style={{
+                            display:"inline-block",
                             fontSize: "0.75rem",
                             background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.12)" : "rgba(16, 185, 129, 0.12)"),
                             color: station.status === "تحت الإنشاء" ? "#ef4444" : (station.status === "تشغيل تجريبي" ? "#fbbf24" : "#10b981"),
@@ -791,18 +792,16 @@ function AdminMetroInner() {
                             <button
                               type="button"
                               onClick={() => handleOpenEditStation(station)}
-                              className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                              className="actionBtn actionBtnEdit"
                               title="تعديل"
-                              style={{ padding: "5px 5px", borderRadius: "50%", background: "var(--bgSecondary)" }}
                             >
                               <i className="bx bx-edit-alt" />
                             </button>
                             <button
                               type="button"
                               onClick={() => handleStationDelete(station)}
-                              className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                               title="حذف"
-                              style={{ padding: "5px 5px", borderRadius: "50%", background: "#ff000031", color: "#ff0000" }}
+                              className="actionBtn actionBtnDelete"
                             >
                               <i className="bx bx-trash" />
                             </button>
@@ -873,7 +872,7 @@ function AdminMetroInner() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button type="submit" className="btn" style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "#fff", padding: "10px 24px", fontWeight: "bold" }}>
+              <button type="submit" className="btn btn-primary" >
                 <i className="bx bx-save" style={{ marginLeft: "6px" }} />
                 حفظ تعديلات أسعار التذاكر
               </button>
@@ -901,9 +900,9 @@ function AdminMetroInner() {
           padding: "20px"
         }}>
           <div style={{
-            background: "#0c111d",
+            background: "var(--bgGlass)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "16px",
+            borderRadius: "var(--radius-card)",
             width: "100%",
             maxWidth: "520px",
             boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
@@ -917,22 +916,12 @@ function AdminMetroInner() {
               padding: "20px 24px",
               borderBottom: "1px solid var(--borderGlass)"
             }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900", color: "#fff" }}>
+              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingStation ? "تعديل محطة مترو" : "إضافة محطة مترو جديدة"}
               </h3>
               <button
                 onClick={() => setShowStationModal(false)}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "#94a3b8",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  padding: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
+                className="closeBtn"
               >
                 <i className="bx bx-x" />
               </button>
@@ -1021,15 +1010,13 @@ function AdminMetroInner() {
                 <button
                   type="button"
                   onClick={() => setShowStationModal(false)}
-                  className="btn"
-                  style={{ background: "rgba(255,255,255,0.05)", color: "#94a3b8" }}
+                  className="btn btn-cancel"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="btn"
-                  style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff" }}
+                  className="btn btn-primary"
                 >
                   {editingStation ? "حفظ التغييرات" : "إضافة المحطة"}
                 </button>
