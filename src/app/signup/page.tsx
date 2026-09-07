@@ -1,10 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import {
+  getFirebaseAuth,
+  isFirebaseConfigured,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  type ConfirmationResult
+} from "@/lib/firebase";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 
 /* ═══════════════════════════════════════════
@@ -321,6 +328,140 @@ export default function SignupPage() {
   const [showDobConfirmModal, setShowDobConfirmModal] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
+  // Email verification state
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [emailOtpHash, setEmailOtpHash] = useState("");
+  const [emailOtpExpiresAt, setEmailOtpExpiresAt] = useState<number | null>(null);
+  const [emailOtpTimer, setEmailOtpTimer] = useState(0);
+  const [emailOtpLoading, setEmailOtpLoading] = useState(false);
+  const [emailOtpError, setEmailOtpError] = useState("");
+  const [emailVerificationToken, setEmailVerificationToken] = useState("");
+  const [emailCodeDigits, setEmailCodeDigits] = useState<string[]>(Array(6).fill(""));
+  const emailInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Email timer countdown
+  useEffect(() => {
+    if (emailOtpTimer <= 0) return;
+    const interval = setInterval(() => {
+      setEmailOtpTimer(t => t - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [emailOtpTimer]);
+
+  const handleEmailDigitChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    const newDigits = [...emailCodeDigits];
+    newDigits[index] = value.slice(-1);
+    setEmailCodeDigits(newDigits);
+    setEmailOtp(newDigits.join(''));
+    if (value && index < 5) {
+      emailInputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleEmailKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !emailCodeDigits[index] && index > 0) {
+      emailInputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleEmailPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text/plain').replace(/\D/g, '').slice(0, 6);
+    if (pastedData) {
+      const newDigits = [...emailCodeDigits];
+      for (let i = 0; i < pastedData.length; i++) {
+        newDigits[i] = pastedData[i];
+      }
+      setEmailCodeDigits(newDigits);
+      setEmailOtp(newDigits.join(''));
+      const nextIndex = Math.min(pastedData.length, 5);
+      emailInputRefs.current[nextIndex]?.focus();
+    }
+  };
+
+
+  const handleSendEmailOtp = async () => {
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setEmailOtpError("يرجى كتابة بريد إلكتروني صحيح أولاً");
+      return;
+    }
+
+    setEmailOtpLoading(true);
+    setEmailOtpError("");
+
+    if (supabase) {
+      try {
+        const { data: existing } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", formData.email.trim())
+          .limit(1);
+        if (existing && existing.length > 0) {
+          setEmailOtpError("هذا البريد الإلكتروني مسجل مسبقاً لحساب آخر");
+          setEmailOtpLoading(false);
+          return;
+        }
+      } catch (e) {}
+    }
+
+    try {
+      const res = await fetch("/api/auth/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "فشل إرسال كود التحقق");
+      }
+      setEmailOtpHash(data.hash);
+      setEmailOtpExpiresAt(data.expiresAt);
+      setEmailOtpSent(true);
+      setEmailOtpTimer(60);
+      setEmailCodeDigits(Array(6).fill(""));
+      setEmailOtp("");
+    } catch (err: any) {
+      setEmailOtpError(err.message || "حدث خطأ أثناء إرسال الكود");
+    } finally {
+      setEmailOtpLoading(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async () => {
+    if (!emailOtp || emailOtp.trim().length !== 6) {
+      setEmailOtpError("يرجى إدخال كود التحقق المكون من 6 أرقام");
+      return;
+    }
+    setEmailOtpLoading(true);
+    setEmailOtpError("");
+    try {
+      const res = await fetch("/api/auth/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          otp: emailOtp.trim(),
+          hash: emailOtpHash,
+          expiresAt: emailOtpExpiresAt,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "كود التحقق غير صحيح");
+      }
+      setIsEmailVerified(true);
+      setEmailVerificationToken(data.verificationToken || "");
+    } catch (err: any) {
+      setEmailOtpError(err.message || "كود التحقق غير صحيح");
+    } finally {
+      setEmailOtpLoading(false);
+    }
+  };
+
+
   const transliterate = (text: string) => {
     const map: Record<string, string> = {
       'ا': 'a', 'أ': 'a', 'إ': 'e', 'آ': 'a', 'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'g', 'ح': 'h', 'خ': 'kh',
@@ -384,6 +525,13 @@ export default function SignupPage() {
     if (field === "phone") {
       const n = value.replace(/[^0-9]/g, '');
       if (n.length <= 10) setFormData(p => ({ ...p, phone: n }));
+    } else if (field === "email") {
+      setFormData(p => ({ ...p, email: value }));
+      setIsEmailVerified(false);
+      setEmailOtpSent(false);
+      setEmailOtp("");
+      setEmailCodeDigits(Array(6).fill(""));
+      setEmailOtpError("");
     } else if (field === "username") {
       const c = value.toLowerCase().replace(/[^a-z0-9_]/g, '');
       setFormData(p => ({ ...p, username: c }));
@@ -477,7 +625,8 @@ export default function SignupPage() {
           governorate: formData.governorate,
           city: formData.city,
           avatar_url: formData.avatarUrl,
-          dob: formData.dob
+          dob: formData.dob,
+          email_verified: isEmailVerified,
         }
       },
     });
@@ -508,6 +657,7 @@ export default function SignupPage() {
             city: formData.city,
             avatar_url: formData.avatarUrl,
             dob: formData.dob,
+            email_verified: isEmailVerified,
             updated_at: new Date().toISOString()
           }, { onConflict: "id" });
         } catch (profileErr) {
@@ -595,7 +745,8 @@ export default function SignupPage() {
     formData.username.trim().length >= 3 &&
     !fieldErrors.username &&
     formData.email.trim() !== "" &&
-    !fieldErrors.email
+    !fieldErrors.email &&
+    isEmailVerified
   );
 
   const isStep2Valid = Boolean(
@@ -783,18 +934,200 @@ export default function SignupPage() {
                 {/* Email */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   <label htmlFor="signupEmail">{fieldLabel("bx bx-envelope", "البريد الإلكتروني")}</label>
-                  <input
-                    id="signupEmail"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => updateData("email", e.target.value)}
-                    onFocus={() => setFocusedField("email")}
-                    onBlur={() => setFocusedField(null)}
-                    placeholder="example@email.com"
-                    style={{ ...fieldInputStyle("email", !!fieldErrors.email), textAlign: "left", direction: "ltr" }}
-                  />
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <input
+                      id="signupEmail"
+                      type="email"
+                      required
+                      disabled={isEmailVerified}
+                      value={formData.email}
+                      onChange={(e) => updateData("email", e.target.value)}
+                      onFocus={() => setFocusedField("email")}
+                      onBlur={() => setFocusedField(null)}
+                      placeholder="example@email.com"
+                      style={{
+                        ...fieldInputStyle("email", !!fieldErrors.email),
+                        textAlign: "left",
+                        direction: "ltr",
+                        background: isEmailVerified ? "#f0fdf4" : "#f8fafc",
+                        borderColor: isEmailVerified ? "#86efac" : undefined
+                      }}
+                    />
+                    {!isEmailVerified && (
+                      <button
+                        type="button"
+                        onClick={handleSendEmailOtp}
+                        disabled={!formData.email || !!fieldErrors.email || emailOtpLoading || emailOtpTimer > 0}
+                        style={{
+                          whiteSpace: "nowrap",
+                          padding: "0 16px",
+                          borderRadius: "var(--radiusBtn, 8px)",
+                          border: "none",
+                          background: (!formData.email || !!fieldErrors.email || emailOtpTimer > 0) ? "#e2e8f0" : "var(--colorPrimary, #006FEE)",
+                          color: (!formData.email || !!fieldErrors.email || emailOtpTimer > 0) ? "#94a3b8" : "#ffffff",
+                          cursor: (!formData.email || !!fieldErrors.email || emailOtpTimer > 0) ? "not-allowed" : "pointer",
+                          fontWeight: "700",
+                          fontSize: "0.85rem",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          transition: "all 0.2s ease"
+                        }}
+                      >
+                        {emailOtpLoading ? (
+                          <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "1.1rem" }}></i>
+                        ) : emailOtpTimer > 0 ? (
+                          `${emailOtpTimer}s`
+                        ) : emailOtpSent ? (
+                          "إعادة الإرسال"
+                        ) : (
+                          "إرسال كود التأكيد"
+                        )}
+                      </button>
+                    )}
+                  </div>
                   {fieldErrors.email && <div style={{ color: "#dc2626", fontSize: "0.78rem", fontFamily: "var(--font-sub)" }}>⚠ {fieldErrors.email}</div>}
+
+                  {/* Email OTP Verification Box - 2FA Style */}
+                  {emailOtpSent && !isEmailVerified && (
+                    <div style={{
+                      marginTop: "10px",
+                      padding: "18px 16px",
+                      borderRadius: "14px",
+                      background: "rgba(108, 99, 255, 0.03)",
+                      border: "1.5px solid rgba(108, 99, 255, 0.2)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "14px",
+                      animation: "slide-in-section 0.35s ease"
+                    }}>
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "50%",
+                          background: "rgba(108, 99, 255, 0.1)",
+                          color: "var(--colorPrimary, #006FEE)",
+                          fontSize: "1.2rem",
+                          marginBottom: "6px"
+                        }}>
+                          <i className="bx bx-envelope"></i>
+                        </div>
+                        <div style={{ fontSize: "0.88rem", fontWeight: "800", color: "#0f172a" }}>
+                          كود التحقق من البريد
+                        </div>
+                        <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "0.8rem", lineHeight: "1.4" }}>
+                          أدخل الـ 6 أرقام المرسلة إلى <span style={{ color: "var(--colorPrimary, #006FEE)", fontWeight: "700", direction: "ltr", display: "inline-block" }}>{formData.email}</span>
+                        </p>
+                      </div>
+
+                      {/* 6 Digits Inputs (2FA Style) */}
+                      <div style={{ display: "flex", gap: "8px", justifyContent: "center", direction: "ltr" }}>
+                        {emailCodeDigits.map((digit, idx) => (
+                          <input
+                            key={idx}
+                            ref={(el) => { emailInputRefs.current[idx] = el; }}
+                            type="text"
+                            inputMode="numeric"
+                            value={digit}
+                            onChange={(e) => handleEmailDigitChange(idx, e.target.value)}
+                            onKeyDown={(e) => handleEmailKeyDown(idx, e)}
+                            onPaste={handleEmailPaste}
+                            maxLength={2}
+                            style={{
+                              width: "42px",
+                              height: "48px",
+                              textAlign: "center",
+                              fontSize: "1.35rem",
+                              fontWeight: "700",
+                              padding: "0",
+                              borderRadius: "10px",
+                              border: digit ? "2px solid var(--colorPrimary, #006FEE)" : "2px solid rgba(108, 99, 255, 0.25)",
+                              background: digit ? "rgba(108, 99, 255, 0.08)" : "#ffffff",
+                              color: "#0f172a",
+                              outline: "none",
+                              transition: "all 0.2s ease",
+                              boxShadow: digit ? "0 2px 8px rgba(108, 99, 255, 0.15)" : "none"
+                            }}
+                          />
+                        ))}
+                      </div>
+
+                      {emailOtpError && (
+                        <div style={{
+                          color: "#dc2626",
+                          fontSize: "0.8rem",
+                          fontWeight: "600",
+                          textAlign: "center",
+                          background: "#fef2f2",
+                          padding: "6px 12px",
+                          borderRadius: "8px",
+                          border: "1px solid #fecaca"
+                        }}>
+                          ⚠ {emailOtpError}
+                        </div>
+                      )}
+
+                      {/* Verify Button (2FA style with icon and gradient/color) */}
+                      <button
+                        type="button"
+                        onClick={handleVerifyEmailOtp}
+                        disabled={emailOtp.length !== 6 || emailOtpLoading}
+                        style={{
+                          width: "100%",
+                          padding: "10px 16px",
+                          fontSize: "0.92rem",
+                          fontWeight: "700",
+                          borderRadius: "8px",
+                          border: "none",
+                          background: "var(--colorPrimary, #006FEE)",
+                          color: "#ffffff",
+                          cursor: (emailOtp.length !== 6 || emailOtpLoading) ? "not-allowed" : "pointer",
+                          opacity: (emailOtp.length !== 6 || emailOtpLoading) ? 0.6 : 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                          transition: "all 0.25s ease",
+                          fontFamily: "var(--font-heading)"
+                        }}
+                      >
+                        {emailOtpLoading ? (
+                          <>
+                            <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "1.1rem" }}></i>
+                            جاري التحقق...
+                          </>
+                        ) : (
+                          <>
+                            <i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }}></i>
+                            تأكيد ومتابعة
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  {isEmailVerified && (
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      color: "#16a34a",
+                      fontSize: "0.86rem",
+                      fontWeight: "700",
+                      marginTop: "4px",
+                      background: "#f0fdf4",
+                      padding: "10px 14px",
+                      borderRadius: "10px",
+                      border: "1px solid #bbf7d0"
+                    }}>
+                      <i className="bx bxs-check-shield" style={{ fontSize: "1.25rem", color: "#16a34a" }}></i>
+                      تم التحقق من ملكية البريد الإلكتروني بنجاح
+                    </div>
+                  )}
                 </div>
 
                 <button
@@ -819,7 +1152,7 @@ export default function SignupPage() {
                     fontFamily: "Hagrid",
                   }}
                 >
-                  التالي
+                  {isEmailVerified ? "التالي" : "يرجى تأكيد البريد أولاً"}
                 </button>
               </div>
             )}
@@ -849,9 +1182,15 @@ export default function SignupPage() {
                       onFocus={() => setFocusedField("phone")}
                       onBlur={() => setFocusedField(null)}
                       placeholder="1xxxxxxxxx"
-                      style={{ ...fieldInputStyle("phone", !!fieldErrors.phone), textAlign: "left", direction: "ltr", paddingLeft: "90px" }}
+                      style={{
+                        ...fieldInputStyle("phone", !!fieldErrors.phone),
+                        textAlign: "left",
+                        direction: "ltr",
+                        paddingLeft: "90px",
+                      }}
                     />
                   </div>
+
                   {fieldErrors.phone && <div style={{ color: "#dc2626", fontSize: "0.8rem", marginTop: "-4px", fontFamily: "var(--font-sub)" }}>⚠ {fieldErrors.phone}</div>}
                 </div>
 
@@ -864,7 +1203,18 @@ export default function SignupPage() {
                       padding: "12px",
                       borderRadius: "50px",
                       border: "none",
-                      background: isStep2Valid ? "var(--ios-blue)" : "#e2e8f0", color: isStep2Valid ? "#ffffff" : "#94a3b8", cursor: isStep2Valid ? "pointer" : "not-allowed", opacity: isStep2Valid ? 1 : 0.65, fontWeight: "800", fontFamily: "Hagrid", fontSize: "0.95rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                      background: isStep2Valid ? "var(--ios-blue)" : "#e2e8f0",
+                      color: isStep2Valid ? "#ffffff" : "#94a3b8",
+                      cursor: isStep2Valid ? "pointer" : "not-allowed",
+                      opacity: isStep2Valid ? 1 : 0.65,
+                      fontWeight: "800",
+                      fontFamily: "Hagrid",
+                      fontSize: "0.95rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      transition: "all 0.25s ease",
                     }}
                   >
                     التالي

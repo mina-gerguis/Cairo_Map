@@ -59,6 +59,7 @@ interface StationInfo {
   name: string;
   lines: LineId[];
   isTransfer: boolean;
+  landmarks?: string[];
 }
 
 const LINE_NAMES: Record<LineId, string> = {
@@ -79,12 +80,108 @@ const LINE_COLORS: Record<LineId, string> = {
   line6: "#ec4899", // Pink
 };
 
+export const METRO_STATION_LANDMARKS: Record<string, string[]> = {
+  // الخط الأول
+  "حلوان": ["الحديقة اليابانية", "متحف ركن فاروق", "كابريتاج حلوان الكبريتي", "مستشفى حلوان العام", "شارع راغب التجاري", "سوق حلوان"],
+  "عين حلوان": ["كلية الحاسبات والذكاء الاصطناعي", "مركز بحوث الفلزات", "مساكن عين حلوان", "معهد بحوث التبين"],
+  "جامعة حلوان": ["الحرم الرئيسي لجامعة حلوان", "مجمع الكليات والمعاهد", "الصالة المغطاة للألعاب الرياضية", "مدينة الطلبة والطالبات"],
+  "وادي حوف": ["ضاحية وادي حوف الهادئة", "شركة النصر لصناعة السيارات", "مستشفى النصر التخصصي", "مدرسة وادي حوف"],
+  "حدائق حلوان": ["نادي حدائق حلوان الرياضي", "كورنيش النيل (المعادي - حلوان)", "شارع الوهم", "منطقة ركن حلوان"],
+  "المعصرة": ["مصنع سيماف لعربات السكك الحديدية والمترو", "كورنيش المعصرة", "سوق المعصرة", "شارع المستودع"],
+  "طرة الأسمنت": ["مصنع أسمنت بورتلاند طرة", "طريق الأوتوستراد السريع", "منطقة معادي هايتس"],
+  "كوتسيكا": ["منطقة كوتسيكا الصناعية", "كوبري شمال طرة", "طريق مصر حلوان الزراعي"],
+  "طرة البلد": ["مجمع مصالح طرة البلد", "كورنيش طرة النيل", "معهد أمين الشرطة", "شارع كورنيش النيل"],
+  "ثكنات المعادي": ["نادي المعادي لليخوت والتجديف", "شارع 9 التجاري (الجهة الجنوبية)", "المستشفى العسكري بالمعادي", "فيكتوريا كوليدج المعادي"],
+  "المعادي": ["شارع 9 السياحي (أشهر المطاعم والكافيهات)", "ميدان الحرية", "مستشفى القوات المسلحة بالمعادي", "كنيسة القديس يوحنا المعمدان", "جراند مول المعادي"],
+  "حدائق المعادي": ["شارع حسنين دسوقي التجاري", "شارع فرج يوسف", "سوق حدائق المعادي", "أبراج النصر"],
+  "دار السلام": ["سوق دار السلام الكبير", "مستشفى دار السلام العام (هرمل)", "شارع الفيوم التجاري", "مجمع مدارس دار السلام"],
+  "الزهراء": ["المتحف القومي للحضارة المصرية (NMEC)", "بحيرة عين الصيرة وممشاها السياحي", "جامع عمرو بن العاص التاريخي", "مجمع الأديان بمصر القديمة", "حديقة تلال الفسطاط"],
+  "مار جرجس": ["الكنيسة المعلقة (أقدم كنائس مصر)", "كنيسة ومزار مار جرجس", "المتحف القبطي", "حصن بابليون الروماني", "معبد بن عزرا اليهودي"],
+  "الملك الصالح": ["مستشفى الملك الصالح", "مقياس النيل بجزيرة الروضة", "قصر المانسترلي ومتحف أم كلثوم", "شارع البحر الأعظم", "مستشفى حميات العباسية فرع مصر القديمة"],
+  "السيدة زينب": ["مسجد السيدة زينب التاريخي وميدانها", "مستشفى أحمد ماهر التعليمي", "مستشفى أطفال أبو الريش (الياباني والمنيرة)", "مسرح الهوسابير", "شارع بورسعيد"],
+  "سعد زغلول": ["ضريح ومتحف بيت الأمة (سعد زغلول)", "مقر مجلس النواب ومجلس الوزراء", "وزارة الصحة والسكان", "مستشفى قصر العيني القديم والفرنساوي", "شارع قصر العيني"],
+  "أنور السادات": ["ميدان التحرير ومسلته التاريخية", "المتحف المصري بالتحرير", "مجمع التحرير الخدمي", "فندق النيل ريتز كارلتون", "مقر جامعة الدول العربية", "كوبري قصر النيل"],
+  "جمال عبد الناصر": ["دار القضاء العالي", "نقابة المحامين ونقابة الصحفيين", "شارع 26 يوليو التجاري", "وكالة البلح للأقمشة والملابس", "محطة الإسعاف المصرية"],
+  "أحمد عرابي": ["سوق التوفيقية لقطع غيار السيارات والفواكه", "مستشفى الجلاء التعليمي للولادة", "الهيئة القومية لسكك حديد مصر (المبنى الإداري)", "شارع الجلاء", "معهد ناصر للغات"],
+  "الشهداء": ["محطة مصر للقطارات برمسيس", "ميدان رمسيس الشهير", "مسجد الفتح التاريخي", "شارع الفجالة (سوق الأدوات المدرسية والكتب)", "مبنى البريد المركزي المصري", "سنترال رمسيس"],
+  "غمرة": ["مستشفى غمرة العسكري", "المستشفى القبطي", "كنيسة السيدة العذراء بغمرة", "مطلع ومنزل كوبري 6 أكتوبر", "شارع رمسيس الرئيسي"],
+  "الدمرداش": ["مستشفيات جامعة عين شمس (مستشفى الدمرداش الجامعي)", "كلية الطب وكلية التمريض بجامعة عين شمس", "معهد القلب القومي القديم", "شارع رمسيس"],
+  "منشية الصدر": ["قصر الزعفران (إدارة جامعة عين شمس)", "حرم جامعة عين شمس (كليات الآداب والحقوق والعلوم والتجارة)", "مدينة الطالبات بجامعة عين شمس", "ميدان العباسية"],
+  "كوبري القبة": ["إدارة التجنيد والتعبئة بالقوات المسلحة", "مجمع كوبري القبة العسكري", "نادي ضباط القبة", "مشيخة الطرق الصوفية"],
+  "حمامات القبة": ["قصر القبة الرئاسي وحدائقه الملكية", "ميدان سراي القبة", "مدرسة القبة الثانوية العسكرية", "محيط حي الزيتون التاريخي"],
+  "سراي القبة": ["حديقة ابن سندر العامة", "ميدان السواح ومصانع الأدوية", "قصر الطاهرة التاريخي", "شارع مصر والسودان"],
+  "حدائق الزيتون": ["كنيسة العذراء مريم بالزيتون (موقع التجلي الشهير)", "ميدان الساعة بالزيتون", "مستشفى الزيتون التخصصي", "شارع طومان باي"],
+  "حلمية الزيتون": ["مستشفى الحلمية العسكري للعظام التخصصي", "ميدان ابن الحكم", "نادي الحلمية الرياضي", "شارع سليم الأول التجاري", "كنيسة مار يوحنا"],
+  "المطرية": ["شجرة مريم العذراء ومزار العائلة المقدسة", "مسلة سنوسرت الأول التاريخية (مسلة المطرية)", "مستشفى المطرية التعليمي", "سوق الخميس التاريخي"],
+  "عين شمس": ["كلية الهندسة جامعة عين شمس", "محطة قطار عين شمس السطحية", "شارع أحمد عصمت التجاري", "سوق عين شمس وميدان الحلمية"],
+  "عزبة النخل": ["شارع ترعة التوفيقية التجاري", "موقف سيارات الأقاليم والقليوبية", "مستشفى اليوم الواحد بعزبة النخل", "سوق عزبة النخل المركزي"],
+  "المرج": ["موقف أقاليم المرج للسيارات والميكروباصات", "شارع مؤسسة الزكاة التجاري", "كوبري المرج وسوق المرج القديم"],
+  "المرج الجديدة": ["الطريق الدائري (تقاطع ونزلة المرج)", "موقف محافظات القليوبية والشرقية والدلتا", "ترعة الإسماعيلية وموقف سيارات السريع"],
+
+  // الخط الثاني
+  "شبرا الخيمة": ["قصر محمد علي التاريخي بشبرا الخيمة", "محطة قطارات شبرا الخيمة", "كوبري أحمد عرابي", "مستشفى النيل للتأمين الصحي", "كلية الزراعة فرع شبرا"],
+  "كلية الزراعة": ["كلية الزراعة جامعة عين شمس", "ميدان المؤسسة بشبرا الخيمة", "طريق مصر إسكندرية الزراعي", "معهد بحوث وقاية النبات"],
+  "المظلات": ["معهد ناصر للبحوث والعلاج", "كورنيش النيل بشبرا", "حديقة أغاخان النيلية", "كوبري المظلات", "نادي الكهرباء الرياضي"],
+  "الخلفاوي": ["مستشفى شبرا العام", "معهد القلب القومي التابع لمعهد ناصر", "شارع شبرا الرئيسي", "سينما التحرير السابقة"],
+  "سانت تريزا": ["كنيسة ومزار القديسة تريزا للأطفال", "مستشفى الراعي الصالح التخصصي", "شارع شبرا التجاري والملابس", "مدرسة الفرير شبرا"],
+  "روض الفرج": ["سوق روض الفرج التاريخي", "قصر ثقافة روض الفرج التابع لوزارة الثقافة", "مدرسة التوفيقية الثانوية العريقة", "شارع جزيرة بدران"],
+  "مسرة": ["كنيسة السيدة العذراء بمسرة", "منطقة البنوك والمحلات التجارية بشارع شبرا", "سينما أوسكار دوللي بشبرا", "مدرسة الترعة الإعدادية"],
+  "العتبة": ["ميدان العتبة التجاري", "المسرح القومي المصري", "سور الأزبكية للكتب القديمة والمستعملة", "حديقة الأزبكية التراثية", "سوق الموسكي وخان الخليلي", "جراج العتبة"],
+  "محمد نجيب": ["قصر عابدين التاريخي ومتاحفه الملكية", "ميدان الجمهورية بعابدين", "مقر وزارة التربية والتعليم", "شارع التحرير وشارع محمد فريد بوسط البلد"],
+  "الأوبرا": ["دار الأوبرا المصرية ومسارحها", "برج القاهرة السياحي ومطلاته", "حديقة الأندلس التراثية على النيل", "نادي الجزيرة الرياضي العريق", "حديقة الحرية وحديقة الأسماك بالزمالك", "كوبري قصر النيل"],
+  "الدقي": ["ميدان الدقي الشهير", "شارع التحرير ومحلات الدقي", "مستشفى مصر الدولي", "فندق شيراتون القاهرة", "مجمع مجلس الدولة", "متحف محمود خليل وحرمه"],
+  "البحوث": ["المركز القومي للبحوث (NRC)", "مدينة الطلبة لجامعة القاهرة بالدقي", "شارع التحرير وشارع محيي الدين أبو العز", "مستشفى 6 أكتوبر للتأمين الصحي"],
+  "جامعة القاهرة": ["قبة جامعة القاهرة التاريخية وساعة الجامعة", "الحرم الجامعي وكليات الحقوق والتجارة والآداب", "حديقة الحيوان بالجيزة", "حديقة الأورمان النباتية التراثية", "ميدان النهضة"],
+  "فيصل": ["شارع الملك فيصل التجاري المزدحم", "كوبري فيصل المؤدي إلى الجيزة", "موقف ميكروباصات وسرفيس فيصل والهرم", "مستشفى تبارك للأطفال"],
+  "الجيزة": ["محطة قطارات سكك حديد الجيزة للوجه القبلي", "ميدان الجيزة الرئيسي", "بداية شارع الأهرام (شارع الهرم)", "مجمع محاكم الجيزة بشارع مراد", "الباب الخلفي لحديقة الحيوان"],
+  "أم المصريين": ["مستشفى أم المصريين العام", "ميدان أم المصريين", "مصلحة الجوازات والهجرة فرع الجيزة", "مدرسة الجيزة الثانوية للبنات"],
+  "ساقية مكي": ["القرية الفرعونية السياحية على النيل", "شارع البحر الأعظم الترفيهي", "كورنيش الجيزة ومطاعم المراكب النيلية", "نادي التجديف واليخوت بجزيرة الدهب"],
+  "المنيب": ["موقف المنيب الإقليمي لأوتوبيسات وميكروباصات الصعيد", "الطريق الدائري (نزلة المنيب وكوبري المنيب)", "كورنيش النيل بالمنيب", "شارع المدبح"],
+
+  // الخط الثالث - Trunk
+  "عدلي منصور": ["المحطة التبادلية المركزية عدلي منصور (مترو + قطار LRT + قطار السويس + SuperJet)", "موقف السلام للأقاليم", "طريق مصر الإسماعيلية الصحراوي", "سوق العبور الجديد"],
+  "الهايكستب": ["منطقة الهايكستب العسكرية", "مستشفى الهايكستب العسكري للقوات المسلحة", "طريق مصر الإسماعيلية الصحراوي", "قرب الكلية الحربية"],
+  "عمر بن الخطاب": ["شارع جسر السويس التجاري", "ميدان الحرفيين الشهير لقطع غيار السيارات", "مدرسة الفاروق الإسلامية للغات", "سوق قباء"],
+  "قباء": ["مدينة قباء السكنية", "شارع جسر السويس", "شارع الأربعين", "مجمع مدارس قباء التجريبية"],
+  "هشام بركات": ["مستشفى السلام التخصصي", "شارع الخمسين بالنزهة 2", "شارع جسر السويس", "موقف النزهة 2"],
+  "النزهة": ["حي النزهة الجديدة الراقي", "شارع جوزيف تيتو المؤدي للمطار", "نادي النزهة الرياضي", "طريق مطار القاهرة الدولي"],
+  "نادي الشمس": ["نادي الشمس الرياضي الاجتماعي", "شارع عبد الحميد بدوي", "حديقة بدر العامة", "ميدان الألف مسكن"],
+  "ألف مسكن": ["ميدان الألف مسكن ومواقف سيارات التجمع ومدينة نصر", "شارع جسر السويس", "مستشفى عين شمس العام", "سوق الألف مسكن التجاري"],
+  "ميدان هليوبوليس": ["ميدان هليوبوليس بمصر الجديدة", "كنيسة القديس مار جرجس هليوبوليس", "ميدان الحجاز", "مستشفى هليوبوليس التخصصي"],
+  "هارون": ["شارع هارون الرشيد بمصر الجديدة", "ميدان الإسماعيلية", "شارع أبو بكر الصديق", "مدرسة نوتردام دي زابوتر"],
+  "الأهرام": ["قصر البارون إمبان الأثري", "ميدان الكوربة التراثي والمطاعم التاريخية", "كنيسة البازيليك العريقة", "شارع الأهرام بمصر الجديدة"],
+  "كلية البنات": ["كلية البنات جامعة عين شمس", "شارع الميرغني الشهير", "قصر الاتحادية الرئاسي", "مستشفى الصفا التخصصي"],
+  "استاد القاهرة": ["مجمع صالات استاد القاهرة الدولي", "الصالة المغطاة ومجمع السباحة الأولمبي", "شارع يوسف عباس ودار الهيئة الهندسية", "ميدان الشهيد هشام بركات"],
+  "المعرض": ["مركز القاهرة الدولي للمؤتمرات والمعارض (CICC)", "الهيئة العامة للاستثمار والمناطق الحرة (GAFI)", "أرض المعارض بمدينة نصر", "شارع صلاح سالم الحيوي"],
+  "العباسية": ["ميدان العباسية وموقف سيارات الأقاليم", "مستشفى العباسية للصحة النفسية", "كلية الهندسة جامعة عين شمس", "مصلحة الأحوال المدنية بالعباسية", "كاتدرائية القديس مرقس بالعباسية"],
+  "عبده باشا": ["كلية الهندسة جامعة عين شمس (بوابة عبده باشا)", "كلية الفنون التطبيقية جامعة حلوان", "ميدان عبده باشا", "مستشفى الطلبة بالعباسية"],
+  "الجيش": ["ميدان الجيش بالظاهر", "شارع العباسية", "كنيسة العذراء مريم بالظاهر التراثية", "مستشفى باب الشعرية الجامعي (سيد جلال)"],
+  "باب الشعرية": ["ميدان باب الشعرية التاريخي وتمثال محمد عبد الوهاب", "سوق باب الشعرية للأدوات والمصنوعات الجلدية", "مستشفى سيد جلال الجامعي", "شارع بورسعيد وجامع زغلول"],
+  "ماسبيرو": ["مبنى الإذاعة والتليفزيون (ماسبيرو)", "مقر وزارة الخارجية المصرية على النيل", "أبراج ماسبيرو السكنية والاستثمارية الجديدة", "كورنيش النيل بالقاهرة", "كوبري 15 مايو"],
+  "صفاء حجازي": ["حي الزمالك الراقي وسفارات الدول", "ساقية عبد المنعم الصاوي الثقافية", "شارع 26 يوليو بالزمالك ومطاعمه العالمية", "كلية التربية الموسيقية والتربية النوعية", "سفارة هولندا وسفارة ألمانيا"],
+  "الكيت كات": ["ميدان الكيت كات الشهير", "كورنيش النيل بإمبابة والمراكب النيلية", "مسجد خالد بن الوليد بالكيت كات", "معهد الكبد القومي بإمبابة", "شارع السودان التجاري"],
+
+  // الخط الثالث - Branch A
+  "السودان": ["محكمة شمال الجيزة الابتدائية", "شارع السودان بحي الدقي والعجوزة", "مستشفى إمبابة العام", "محيط حي ميت عقبة"],
+  "إمبابة": ["قلب حي إمبابة الشعبي العريق", "حديقة سفاري بارك بإمبابة (أكبر حدائق الجيزة)", "شارع طلعت حرب إمبابة", "مستشفى حميات إمبابة", "سوق إمبابة المركزي"],
+  "البوهي": ["شارع البوهي التجاري المزدحم", "ميدان الجامع بإمبابة", "مجمع المدارس الحكومية والتجريبية بالبوهي", "مستشفى الصدر بإمبابة"],
+  "القومية العربية": ["شارع القومية العربية التجاري", "سوق القومية العربية للخضار والمأكولات", "منطقة بشتيل الجديدة ومجمع المواقف", "شارع السبعين"],
+  "الطريق الدائري": ["تقاطع الطريق الدائري مع الوراق ومحور 26 يوليو", "موقف ميكروباصات الطريق الدائري والمريوطية", "محور روض الفرج السريع", "منطقة الوراق السكنية"],
+  "محور روض الفرج": ["كوبري تحيا مصر الملجم (أعرض كوبري ملجم في العالم)", "محور روض الفرج السريع", "ممشى أهل مصر بالوراق وشمال القاهرة", "كورنيش النيل شمال القاهرة وجزيرة الوراق"],
+
+  // الخط الثالث - Branch B
+  "التوفيقية": ["معهد بحوث البترول بالمهندسين", "شارع أحمد عرابي الشهير بالمهندسين", "نادي التوفيقية للتنس", "ميدان سفنكس ومحلات الإلكترونيات والكمبيوتر"],
+  "وادي النيل": ["شارع وادي النيل بالمهندسين", "مستشفى ابن سينا التخصصي", "شارع جامعة الدول العربية ومطاعمه", "شارع جزيرة العرب للتسوق"],
+  "جامعة الدول العربية": ["شارع جامعة الدول العربية الحيوي", "ميدان ومسجد مصطفى محمود", "شارع البطل أحمد عبد العزيز", "مطاعم وكافيهات وتوكيلات المهندسين العالمية"],
+  "بولاق الدكرور": ["مستشفى بولاق الدكرور العام", "شارع التحرير باتجاه صفط اللبن وكوبري ثروت", "كلية التربية للطفولة المبكرة بجامعة القاهرة", "سوق بولاق الدكرور التجاري"],
+};
+
 const DEFAULT_METRO_STATIONS = [
-  ...LINE1_STATIONS.map((name, idx) => ({ name, line_type: "line1" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
-  ...LINE2_STATIONS.map((name, idx) => ({ name, line_type: "line2" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
-  ...LINE3_TRUNK.map((name, idx) => ({ name, line_type: "line3" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
-  ...LINE3_BRANCH_A.slice(1).map((name, idx) => ({ name, line_type: "line3_branch_a" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
-  ...LINE3_BRANCH_B.slice(1).map((name, idx) => ({ name, line_type: "line3_branch_b" as LineId, station_order: idx + 1, landmarks: [], status: "تشغيل فعلي" })),
+  ...LINE1_STATIONS.map((name, idx) => ({ name, line_type: "line1" as LineId, station_order: idx + 1, landmarks: METRO_STATION_LANDMARKS[name] || [], status: "تشغيل فعلي" })),
+  ...LINE2_STATIONS.map((name, idx) => ({ name, line_type: "line2" as LineId, station_order: idx + 1, landmarks: METRO_STATION_LANDMARKS[name] || [], status: "تشغيل فعلي" })),
+  ...LINE3_TRUNK.map((name, idx) => ({ name, line_type: "line3" as LineId, station_order: idx + 1, landmarks: METRO_STATION_LANDMARKS[name] || [], status: "تشغيل فعلي" })),
+  ...LINE3_BRANCH_A.slice(1).map((name, idx) => ({ name, line_type: "line3_branch_a" as LineId, station_order: idx + 1, landmarks: METRO_STATION_LANDMARKS[name] || [], status: "تشغيل فعلي" })),
+  ...LINE3_BRANCH_B.slice(1).map((name, idx) => ({ name, line_type: "line3_branch_b" as LineId, station_order: idx + 1, landmarks: METRO_STATION_LANDMARKS[name] || [], status: "تشغيل فعلي" })),
 ];
 
 const DEFAULT_METRO_PRICES = [
@@ -452,7 +549,12 @@ export default function MetroPage() {
         try {
           const { data, error } = await supabase.from("metro_stations").select("*");
           if (!error && data && data.length > 0) {
-            loadedStations = data;
+            loadedStations = data.map((st: any) => ({
+              ...st,
+              landmarks: (st.landmarks && Array.isArray(st.landmarks) && st.landmarks.length > 0)
+                ? st.landmarks
+                : (METRO_STATION_LANDMARKS[st.name] || [])
+            }));
           } else {
             loadedStations = getLocalStations();
           }
@@ -495,6 +597,9 @@ export default function MetroPage() {
           return parsed.map((item: any) => {
             let updated = { ...item };
             updated.status = item.status || "تشغيل فعلي";
+            if (!updated.landmarks || !Array.isArray(updated.landmarks) || updated.landmarks.length === 0) {
+              updated.landmarks = METRO_STATION_LANDMARKS[updated.name] || [];
+            }
             return updated;
           });
         }
@@ -607,7 +712,16 @@ export default function MetroPage() {
 
     const allStats: StationInfo[] = [];
     statsMap.forEach((lines, name) => {
-      allStats.push({ name, lines: Array.from(lines) as LineId[], isTransfer: lines.size > 1 });
+      const stationObj = stations.find(s => s.name === name);
+      const stationLandmarks = (stationObj && stationObj.landmarks && Array.isArray(stationObj.landmarks) && stationObj.landmarks.length > 0)
+        ? stationObj.landmarks
+        : (METRO_STATION_LANDMARKS[name] || []);
+      allStats.push({
+        name,
+        lines: Array.from(lines) as LineId[],
+        isTransfer: lines.size > 1,
+        landmarks: stationLandmarks,
+      });
     });
     allStats.sort((a, b) => a.name.localeCompare(b.name, "ar"));
 
@@ -632,12 +746,22 @@ export default function MetroPage() {
 
   const filteredFrom = useMemo(() => {
     const q = normalizeArabic(fromQuery.trim());
-    return allStations.filter(s => normalizeArabic(s.name).includes(q) && q.length > 0);
+    if (!q) return [];
+    return allStations.filter(s => {
+      const nameMatch = normalizeArabic(s.name).includes(q);
+      const landmarkMatch = (s.landmarks || []).some(l => normalizeArabic(l).includes(q));
+      return nameMatch || landmarkMatch;
+    });
   }, [fromQuery, allStations]);
 
   const filteredTo = useMemo(() => {
     const q = normalizeArabic(toQuery.trim());
-    return allStations.filter(s => normalizeArabic(s.name).includes(q) && q.length > 0);
+    if (!q) return [];
+    return allStations.filter(s => {
+      const nameMatch = normalizeArabic(s.name).includes(q);
+      const landmarkMatch = (s.landmarks || []).some(l => normalizeArabic(l).includes(q));
+      return nameMatch || landmarkMatch;
+    });
   }, [toQuery, allStations]);
 
   const handleFind = () => {
@@ -854,7 +978,7 @@ export default function MetroPage() {
               <div style={{ position: "relative" }}>
                 <input
                   className="input-fields"
-                  placeholder="اكتب اسم محطة البداية... (مثال: حلوان)"
+                  placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: التحرير، برج القاهرة، جامعة حلوان)"
                   value={fromQuery}
                   onChange={e => { setFromQuery(e.target.value); setSelectedFrom(null); setShowFromList(true); setResult(null); }}
                   onFocus={() => setShowFromList(true)}
@@ -877,24 +1001,35 @@ export default function MetroPage() {
                   borderRadius: "12px", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
                   boxShadow: "var(--shadow-lg)", marginTop: "6px"
                 }}>
-                  {filteredFrom.map(s => (
-                    <div key={s.name} onMouseDown={() => { setSelectedFrom(s.name); setFromQuery(s.name); setShowFromList(false); }} style={{
-                      padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
-                      borderBottom: "1px solid rgba(255,255,255,0.03)",
-                      transition: "background 0.2s", fontFamily: "var(--font-sub)"
-                    }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
-                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                    >
-                      <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
-                      <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
-                        {s.lines.map(l => (
-                          <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
-                        ))}
+                  {filteredFrom.map(s => {
+                    const q = normalizeArabic(fromQuery.trim());
+                    const matchedLandmark = q ? (s.landmarks || []).find(l => normalizeArabic(l).includes(q)) : null;
+                    return (
+                      <div key={s.name} onMouseDown={() => { setSelectedFrom(s.name); setFromQuery(s.name); setShowFromList(false); }} style={{
+                        padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
+                        borderBottom: "1px solid rgba(255,255,255,0.03)",
+                        transition: "background 0.2s", fontFamily: "var(--font-sub)"
+                      }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          {matchedLandmark && (
+                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                              📍 بالقرب من: {matchedLandmark}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
+                          {s.lines.map(l => (
+                            <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
+                          ))}
+                        </div>
+                        {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
                       </div>
-                      {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -942,7 +1077,7 @@ export default function MetroPage() {
               <div style={{ position: "relative" }}>
                 <input
                   className="input-fields"
-                  placeholder="اكتب اسم محطة النهاية... (مثال: العباسية)"
+                  placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: العباسية، الأوبرا، قصر عابدين)"
                   value={toQuery}
                   onChange={e => { setToQuery(e.target.value); setSelectedTo(null); setShowToList(true); setResult(null); }}
                   onFocus={() => setShowToList(true)}
@@ -965,24 +1100,35 @@ export default function MetroPage() {
                   borderRadius: "12px", overflow: "hidden", zIndex: 1000, maxHeight: "220px", overflowY: "auto",
                   boxShadow: "var(--shadow-lg)", marginTop: "6px", fontFamily: "var(--font-sub)"
                 }}>
-                  {filteredTo.map(s => (
-                    <div key={s.name} onMouseDown={() => { setSelectedTo(s.name); setToQuery(s.name); setShowToList(false); }} style={{
-                      padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
-                      borderBottom: "1px solid rgba(255,255,255,0.03)",
-                      transition: "background 0.2s",
-                    }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
-                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                    >
-                      <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
-                      <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
-                        {s.lines.map(l => (
-                          <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
-                        ))}
+                  {filteredTo.map(s => {
+                    const q = normalizeArabic(toQuery.trim());
+                    const matchedLandmark = q ? (s.landmarks || []).find(l => normalizeArabic(l).includes(q)) : null;
+                    return (
+                      <div key={s.name} onMouseDown={() => { setSelectedTo(s.name); setToQuery(s.name); setShowToList(false); }} style={{
+                        padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
+                        borderBottom: "1px solid rgba(255,255,255,0.03)",
+                        transition: "background 0.2s",
+                      }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          {matchedLandmark && (
+                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                              📍 بالقرب من: {matchedLandmark}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
+                          {s.lines.map(l => (
+                            <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
+                          ))}
+                        </div>
+                        {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
                       </div>
-                      {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

@@ -1,8 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 import { formatBoxIcon } from "@/data/places";
+import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
 
 interface PhoneEntry {
   id: string;
@@ -30,7 +33,616 @@ const COMPANY_META: Record<string, { label: string; logo: string; color: string;
   we: { label: "وي", logo: "we.png", color: "rgba(108, 99, 255, 0.08)", border: "rgba(108, 99, 255, 0.2)" },
 };
 
+interface DirectorySuggestionBoxProps {
+  searchQuery: string;
+  user: { id: string } | null;
+  specialties: string[];
+  defaultType?: "phone" | "code";
+  defaultCompany?: string;
+  onSuccess?: () => void;
+}
+
+function DirectorySuggestionBox({
+  searchQuery,
+  user,
+  specialties,
+  defaultType = "phone",
+  defaultCompany = "vodafone",
+  onSuccess,
+}: DirectorySuggestionBoxProps) {
+  const q = searchQuery.trim();
+  const isCodePattern = q.startsWith("*") || q.endsWith("#") || (q.includes("*") && q.includes("#"));
+  const isDigitsPattern = /^[0-9+\s-]+$/.test(q);
+  const calculatedType: "phone" | "code" = isCodePattern ? "code" : defaultType;
+
+  const [type, setType] = useState<"phone" | "code">(calculatedType);
+  const [phoneName, setPhoneName] = useState(() => (!isDigitsPattern && !isCodePattern && calculatedType === "phone" ? q : ""));
+  const [phoneNumber, setPhoneNumber] = useState(() => (isDigitsPattern && calculatedType === "phone" ? q : ""));
+  const [phoneSpecialty, setPhoneSpecialty] = useState("");
+  const [customSpecialty, setCustomSpecialty] = useState("");
+  const [phoneNotes, setPhoneNotes] = useState("");
+
+  const [codeCompany, setCodeCompany] = useState(defaultCompany);
+  const [codeTitle, setCodeTitle] = useState(() => (!isDigitsPattern && !isCodePattern && calculatedType === "code" ? q : ""));
+  const [codeValue, setCodeValue] = useState(() => ((isCodePattern || isDigitsPattern) && calculatedType === "code" ? q : ""));
+  const [codeNotes, setCodeNotes] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      setError("يرجى تسجيل الدخول أولاً لتتمكن من إرسال اقتراحك.");
+      return;
+    }
+    if (!supabase) {
+      setError("خدمة البيانات غير متوفرة حالياً. يرجى المحاولة لاحقاً.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const limitReached = await isFeedbackLimitReached(user.id);
+      if (limitReached) {
+        setError("لديك 5 طلبات أو اقتراحات قيد المراجعة حالياً. يرجى الانتظار حتى تنتهي الإدارة من مراجعتها.");
+        setLoading(false);
+        return;
+      }
+
+      let category = "";
+      let title = "";
+      let content = "";
+      let itemTitle = "";
+
+      if (type === "phone") {
+        const finalName = phoneName.trim();
+        const finalPhone = phoneNumber.trim();
+        if (!finalName || !finalPhone) {
+          setError("يرجى إدخال اسم الجهة أو الخدمة ورقم الهاتف.");
+          setLoading(false);
+          return;
+        }
+
+        const finalSpec = customSpecialty.trim() || (phoneSpecialty !== "other" && phoneSpecialty) || "عام / غير محدد";
+        category = "اقتراح رقم هاتف جديد";
+        title = `اقتراح إضافة رقم: ${finalName} (${finalPhone})`;
+        itemTitle = finalName;
+        content = `📞 نوع الاقتراح: إضافة رقم هاتف جديد للدليل
+🏢 اسم الجهة أو الخدمة: ${finalName}
+📱 رقم الهاتف: ${finalPhone}
+🏷️ التخصص / الفئة: ${finalSpec}
+📝 ملاحظات أو تفاصيل إضافية: ${phoneNotes.trim() || "لا توجد ملاحظات إضافية"}`;
+      } else {
+        const finalTitle = codeTitle.trim();
+        const finalCode = codeValue.trim();
+        if (!finalTitle || !finalCode) {
+          setError("يرجى إدخال اسم الخدمة والكود المطلوب.");
+          setLoading(false);
+          return;
+        }
+
+        const companyLabel = COMPANY_META[codeCompany]?.label || codeCompany;
+        category = "اقتراح كود شبكة جديد";
+        title = `اقتراح كود ${companyLabel}: ${finalTitle} (${finalCode})`;
+        itemTitle = `${finalTitle} (${companyLabel})`;
+        content = `📶 نوع الاقتراح: إضافة كود شبكة اتصالات جديد
+🏢 شركة الاتصالات: ${companyLabel}
+📌 عنوان الخدمة / الغرض: ${finalTitle}
+🔢 الكود: ${finalCode}
+📝 ملاحظات أو طريقة الاستخدام: ${codeNotes.trim() || "لا توجد ملاحظات إضافية"}`;
+      }
+
+      const { error: insertErr } = await supabase.from("app_feedback").insert([
+        {
+          user_id: user.id,
+          type: "suggestion",
+          category,
+          title,
+          content,
+          status: "pending",
+        },
+      ]);
+
+      if (insertErr) throw insertErr;
+
+      // In-app notification
+      try {
+        await supabase.from("notifications").insert([
+          {
+            user_id: user.id,
+            title: "تم استلام اقتراحك بنجاح 💡",
+            message: `شكراً لمساهمتك في دليل الهاتف! تم استلام اقتراحك لإضافة "${itemTitle}". سيتم مراجعته وإضافته للدليل قريباً لتعم الفائدة على الجميع.`,
+            type: "success",
+            link: "/profile",
+          },
+        ]);
+      } catch (notifErr) {
+        console.error("Failed to insert notification:", notifErr);
+      }
+
+      setSuccess(true);
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      console.error(err);
+      setError("حدث خطأ أثناء إرسال الاقتراح. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      className="metro-animate-slide-up"
+      style={{
+        backgroundColor: "var(--bgPrimary)",
+        border: "1px solid var(--borderGlass)",
+        borderRadius: "var(--radius-card)",
+        padding: "22px 18px",
+        boxShadow: "var(--shadow-sm)",
+        textAlign: "right",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Decorative top accent */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "3px",
+          background: "linear-gradient(90deg, var(--colorSecondary), var(--colorPrimary), #10b981)",
+        }}
+      />
+
+      {/* Header section */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", marginBottom: "16px" }}>
+        <div
+          style={{
+            width: "42px",
+            height: "42px",
+            borderRadius: "12px",
+            background: "rgba(59, 130, 246, 0.1)",
+            border: "1px solid rgba(59, 130, 246, 0.2)",
+            color: "var(--colorSecondary)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "1.2rem",
+            flexShrink: 0,
+          }}
+        >
+          <i className="fa-solid fa-lightbulb"></i>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
+            <h3
+              style={{
+                margin: 0,
+                fontSize: "1.02rem",
+                fontWeight: "800",
+                color: "var(--textPrimary)",
+                fontFamily: "var(--font-cairo)",
+              }}
+            >
+              لم تجد الرقم أو الكود الذي تبحث عنه؟
+            </h3>
+            {searchQuery.trim() && (
+              <span
+                style={{
+                  background: "rgba(239, 68, 68, 0.1)",
+                  color: "#ef4444",
+                  fontSize: "0.74rem",
+                  padding: "2px 8px",
+                  borderRadius: "8px",
+                  fontWeight: "700",
+                  fontFamily: "var(--font-cairo)",
+                }}
+              >
+                بحثك: {searchQuery}
+              </span>
+            )}
+          </div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "0.82rem",
+              color: "var(--textSecondary)",
+              lineHeight: "1.5",
+              fontFamily: "var(--font-cairo)",
+            }}
+          >
+            إذا كنت تعرف هذا الرقم أو الكود غير الموجود، اقترحه الآن على الإدارة لمراجعته وإضافته للدليل حتى يستفيد الجميع!
+          </p>
+        </div>
+      </div>
+
+      {success ? (
+        <div
+          style={{
+            padding: "20px",
+            textAlign: "center",
+            background: "rgba(16, 185, 129, 0.08)",
+            border: "1px solid rgba(16, 185, 129, 0.25)",
+            borderRadius: "var(--radius-card)",
+            marginTop: "10px",
+          }}
+        >
+          <div
+            style={{
+              width: "46px",
+              height: "46px",
+              borderRadius: "50%",
+              background: "rgba(16, 185, 129, 0.2)",
+              color: "var(--colorSuccess)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.4rem",
+              margin: "0 auto 10px",
+            }}
+          >
+            <i className="fa-solid fa-check"></i>
+          </div>
+          <h4 style={{ margin: "0 0 6px", color: "var(--textPrimary)", fontSize: "0.98rem", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+            تم إرسال اقتراحك بنجاح للإدارة! 💡
+          </h4>
+          <p style={{ margin: "0 0 16px", color: "var(--textSecondary)", fontSize: "0.82rem", lineHeight: "1.5", fontFamily: "var(--font-cairo)" }}>
+            شكراً لمساهمتك القيمة في إثراء الدليل، سيتم مراجعة بيانات الرقم أو الكود وإضافته في أقرب وقت لتعم الفائدة على الجميع.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSuccess(false);
+              setPhoneName("");
+              setPhoneNumber("");
+              setPhoneNotes("");
+              setCodeTitle("");
+              setCodeValue("");
+              setCodeNotes("");
+            }}
+            style={{
+              background: "var(--colorSecondary)",
+              color: "#fff",
+              border: "none",
+              padding: "8px 20px",
+              borderRadius: "20px",
+              fontSize: "0.84rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              fontFamily: "var(--font-cairo)",
+            }}
+          >
+            اقتراح رقم أو كود آخر ➕
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Tabs switch */}
+          <div style={{ display: "flex", gap: "8px", marginBottom: "14px", marginTop: "6px" }}>
+            <button
+              type="button"
+              onClick={() => setType("phone")}
+              style={{
+                flex: 1,
+                padding: "8px 12px",
+                borderRadius: "10px",
+                border: type === "phone" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                background: type === "phone" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
+                color: type === "phone" ? "var(--textPrimary)" : "var(--textSecondary)",
+                fontWeight: "700",
+                fontSize: "0.82rem",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                fontFamily: "var(--font-cairo)",
+                transition: "all 0.2s ease",
+              }}
+            >
+              <i className="fa-solid fa-phone"></i>
+              رقم هاتف أو جهة
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setType("code")}
+              style={{
+                flex: 1,
+                padding: "8px 12px",
+                borderRadius: "10px",
+                border: type === "code" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                background: type === "code" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
+                color: type === "code" ? "var(--textPrimary)" : "var(--textSecondary)",
+                fontWeight: "700",
+                fontSize: "0.82rem",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                fontFamily: "var(--font-cairo)",
+                transition: "all 0.2s ease",
+              }}
+            >
+              <i className="fa-solid fa-hashtag"></i>
+              كود شبكة اتصالات
+            </button>
+          </div>
+
+          {/* If NOT logged in */}
+          {!user ? (
+            <div
+              style={{
+                background: "var(--bgSecondary)",
+                border: "1px solid var(--borderGlass)",
+                borderRadius: "12px",
+                padding: "16px",
+                textAlign: "center",
+                marginTop: "10px",
+              }}
+            >
+              <div style={{ fontSize: "1.5rem", marginBottom: "8px" }}>🔐</div>
+              <h5 style={{ margin: "0 0 6px", color: "var(--textPrimary)", fontSize: "0.92rem", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+                سجل دخولك لتتمكن من إرسال الاقتراح
+              </h5>
+              <p style={{ fontSize: "0.8rem", color: "var(--textSecondary)", margin: "0 0 12px", lineHeight: "1.5", fontFamily: "var(--font-cairo)" }}>
+                سجل دخولك لتتمكن من مشاركة الأرقام والأكواد ومتابعة حالة اقتراحك وكسب نقاط مكافأة في حسابك!
+              </p>
+              <Link
+                href="/login"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "8px 22px",
+                  fontSize: "0.85rem",
+                  borderRadius: "var(--radiusBtn)",
+                  background: "var(--colorSecondary)",
+                  color: "#ffffff",
+                  fontWeight: "700",
+                  textDecoration: "none",
+                  fontFamily: "var(--font-cairo)",
+                }}
+              >
+                <i className="fa-solid fa-arrow-right-to-bracket"></i>
+                تسجيل الدخول للمتابعة
+              </Link>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {type === "phone" ? (
+                <>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "4px", fontFamily: "var(--font-cairo)" }}>
+                      اسم الجهة أو الخدمة <span style={{ color: "var(--accent-danger, #ef4444)" }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="input-fields"
+                      placeholder="مثال: خدمة عملاء البنك الأهلي، طوارئ الغاز، صيدلية..."
+                      value={phoneName}
+                      onChange={(e) => setPhoneName(e.target.value)}
+                      required
+                      style={{ width: "100%", height: "40px", borderRadius: "10px", fontFamily: "var(--font-cairo)" }}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "4px", fontFamily: "var(--font-cairo)" }}>
+                        رقم الهاتف أو الخط الساخن <span style={{ color: "var(--accent-danger, #ef4444)" }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="input-fields"
+                        placeholder="مثال: 19888 أو 0233333333"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        required
+                        style={{ width: "100%", height: "40px", borderRadius: "10px", direction: "ltr", textAlign: "right", fontFamily: "var(--font-cairo)" }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "4px", fontFamily: "var(--font-cairo)" }}>
+                        التخصص أو الفئة
+                      </label>
+                      <select
+                        className="input-fields"
+                        value={phoneSpecialty}
+                        onChange={(e) => setPhoneSpecialty(e.target.value)}
+                        style={{ width: "100%", height: "40px", borderRadius: "10px", fontFamily: "var(--font-cairo)" }}
+                      >
+                        <option value="">اختر التخصص (اختياري)...</option>
+                        {specialties.map((spec) => (
+                          <option key={spec} value={spec}>
+                            {spec}
+                          </option>
+                        ))}
+                        <option value="other">تخصص آخر...</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {phoneSpecialty === "other" && (
+                    <div>
+                      <input
+                        type="text"
+                        className="input-fields"
+                        placeholder="اكتب التخصص الجديد هنا..."
+                        value={customSpecialty}
+                        onChange={(e) => setCustomSpecialty(e.target.value)}
+                        style={{ width: "100%", height: "38px", borderRadius: "10px", fontFamily: "var(--font-cairo)" }}
+                      />
+                    </div>
+                  )}
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "4px", fontFamily: "var(--font-cairo)" }}>
+                      ملاحظات أو تفاصيل إضافية (اختياري)
+                    </label>
+                    <textarea
+                      className="input-fields"
+                      placeholder="أوقات العمل، الفرع، أو أي تفاصيل تساعد في تدقيق الرقم..."
+                      value={phoneNotes}
+                      onChange={(e) => setPhoneNotes(e.target.value)}
+                      rows={2}
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: "10px", fontFamily: "var(--font-cairo)", resize: "vertical" }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "6px", fontFamily: "var(--font-cairo)" }}>
+                      شركة الاتصالات <span style={{ color: "var(--accent-danger, #ef4444)" }}>*</span>
+                    </label>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "6px" }}>
+                      {Object.entries(COMPANY_META).map(([key, meta]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setCodeCompany(key)}
+                          style={{
+                            padding: "8px 6px",
+                            borderRadius: "10px",
+                            border: codeCompany === key ? `1px solid ${meta.border}` : "1px solid var(--borderGlass)",
+                            background: codeCompany === key ? meta.color : "var(--bgSecondary)",
+                            color: codeCompany === key ? "var(--textPrimary)" : "var(--textSecondary)",
+                            fontSize: "0.76rem",
+                            fontWeight: "700",
+                            cursor: "pointer",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "4px",
+                            fontFamily: "var(--font-cairo)",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          <Image src={`/images/company/${meta.logo}`} alt={meta.label} width={20} height={20} style={{ borderRadius: "50%" }} />
+                          {meta.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "4px", fontFamily: "var(--font-cairo)" }}>
+                        اسم الخدمة / الغرض من الكود <span style={{ color: "var(--accent-danger, #ef4444)" }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="input-fields"
+                        placeholder="مثال: معرفة الرصيد، كود باقة سوبر ميجا..."
+                        value={codeTitle}
+                        onChange={(e) => setCodeTitle(e.target.value)}
+                        required
+                        style={{ width: "100%", height: "40px", borderRadius: "10px", fontFamily: "var(--font-cairo)" }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "4px", fontFamily: "var(--font-cairo)" }}>
+                        الكود المطلوب <span style={{ color: "var(--accent-danger, #ef4444)" }}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="input-fields"
+                        placeholder="مثال: *888# أو *86*..."
+                        value={codeValue}
+                        onChange={(e) => setCodeValue(e.target.value)}
+                        required
+                        style={{ width: "100%", height: "40px", borderRadius: "10px", direction: "ltr", textAlign: "right", fontFamily: "var(--font-cairo)" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "4px", fontFamily: "var(--font-cairo)" }}>
+                      ملاحظات أو طريقة الاستخدام (اختياري)
+                    </label>
+                    <textarea
+                      className="input-fields"
+                      placeholder="رسوم الخدمة، أو شروط تفعيلها..."
+                      value={codeNotes}
+                      onChange={(e) => setCodeNotes(e.target.value)}
+                      rows={2}
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: "10px", fontFamily: "var(--font-cairo)", resize: "vertical" }}
+                    />
+                  </div>
+                </>
+              )}
+
+              {error && (
+                <div style={{ color: "var(--accent-danger, #ef4444)", fontSize: "0.8rem", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+                  ⚠️ {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  alignSelf: "flex-end",
+                  padding: "9px 22px",
+                  borderRadius: "var(--radiusBtn)",
+                  background: "var(--colorSecondary)",
+                  color: "#ffffff",
+                  fontSize: "0.86rem",
+                  fontWeight: "700",
+                  fontFamily: "var(--font-cairo)",
+                  border: "none",
+                  cursor: loading ? "not-allowed" : "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginTop: "4px",
+                  opacity: loading ? 0.7 : 1,
+                  transition: "opacity 0.2s",
+                }}
+              >
+                {loading ? (
+                  <>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: "14px",
+                        height: "14px",
+                        border: "2px solid #ffffff",
+                        borderTopColor: "transparent",
+                        borderRadius: "50%",
+                        animation: "spin 1s linear infinite",
+                      }}
+                    />
+                    جاري إرسال الاقتراح...
+                  </>
+                ) : (
+                  <>
+                    <i className="fa-solid fa-paper-plane"></i>
+                    إرسال الاقتراح للإدارة
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function PhoneDirectoryPage() {
+  const { user } = useAuth();
   const [entries, setEntries] = useState<PhoneEntry[]>([]);
   const [codes, setCodes] = useState<TelecomCodeEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +652,16 @@ export default function PhoneDirectoryPage() {
   // New Directory UI States
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
   const [visibleCount, setVisibleCount] = useState(6);
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem("recent_phone_searches");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [showManualSuggest, setShowManualSuggest] = useState(false);
 
   // Public Telecom Codes UI State
   const [activeCompany, setActiveCompany] = useState<string>("vodafone");
@@ -49,16 +670,6 @@ export default function PhoneDirectoryPage() {
   const [codeInputs, setCodeInputs] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    // Load recent searches
-    const saved = localStorage.getItem("recent_phone_searches");
-    if (saved) {
-      try {
-        setRecentSearches(JSON.parse(saved));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
     async function fetchData() {
       if (!supabase) {
         setLoading(false);
@@ -87,10 +698,12 @@ export default function PhoneDirectoryPage() {
     fetchData();
   }, []);
 
-  // Reset pagination limit when search query or category tab changes
-  useEffect(() => {
+  // Reset pagination limit when search query or category tab changes during render
+  const [prevFilter, setPrevFilter] = useState({ query: searchQuery, specialty: selectedSpecialty });
+  if (prevFilter.query !== searchQuery || prevFilter.specialty !== selectedSpecialty) {
+    setPrevFilter({ query: searchQuery, specialty: selectedSpecialty });
     setVisibleCount(6);
-  }, [searchQuery, selectedSpecialty]);
+  }
 
   const normalizeArabic = (text: string) => {
     if (!text) return "";
@@ -148,7 +761,7 @@ export default function PhoneDirectoryPage() {
     return map;
   }, [codes]);
 
-  // Combined filtering logic
+  // Combined filtering logic for phones
   const filteredEntries = React.useMemo(() => {
     const q = normalizeArabic(searchQuery.trim());
 
@@ -178,17 +791,43 @@ export default function PhoneDirectoryPage() {
     return filteredEntries.slice(0, visibleCount);
   }, [filteredEntries, visibleCount]);
 
-  // Filter codes for the active company
-  const activeCompanyCodes = codes.filter((c) => c.company === activeCompany);
+  // Filter codes for the active company, taking searchQuery into account
+  const activeCompanyCodes = React.useMemo(() => {
+    const q = normalizeArabic(searchQuery.trim());
+    const companyCodes = codes.filter((c) => c.company === activeCompany);
+    if (!q) return companyCodes;
+    return companyCodes.filter((c) => {
+      const searchable = normalizeArabic(`${c.title} ${c.code} ${c.section_name} ${COMPANY_META[c.company]?.label || ""}`);
+      return searchable.includes(q);
+    });
+  }, [codes, activeCompany, searchQuery]);
+
+  // Check if search matches any telecom code across ANY OTHER company
+  const matchingCodesInOtherCompanies = React.useMemo(() => {
+    const q = normalizeArabic(searchQuery.trim());
+    if (!q) return [];
+    return Object.keys(COMPANY_META)
+      .filter((comp) => comp !== activeCompany)
+      .filter((comp) => {
+        return codes.some(
+          (c) =>
+            c.company === comp &&
+            normalizeArabic(`${c.title} ${c.code} ${c.section_name} ${COMPANY_META[c.company]?.label || ""}`).includes(q)
+        );
+      });
+  }, [codes, activeCompany, searchQuery]);
 
   // Group codes by section_name
-  const groupedCodes: Record<string, TelecomCodeEntry[]> = {};
-  activeCompanyCodes.forEach((code) => {
-    if (!groupedCodes[code.section_name]) {
-      groupedCodes[code.section_name] = [];
-    }
-    groupedCodes[code.section_name].push(code);
-  });
+  const groupedCodes: Record<string, TelecomCodeEntry[]> = React.useMemo(() => {
+    const grouped: Record<string, TelecomCodeEntry[]> = {};
+    activeCompanyCodes.forEach((code) => {
+      if (!grouped[code.section_name]) {
+        grouped[code.section_name] = [];
+      }
+      grouped[code.section_name].push(code);
+    });
+    return grouped;
+  }, [activeCompanyCodes]);
 
   const toggleSection = (sectionName: string) => {
     setExpandedSections((prev) => ({
@@ -202,22 +841,22 @@ export default function PhoneDirectoryPage() {
   };
 
   const handleCopyCode = (code: string, id: string) => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(code).then(() => {
-        setCopiedId(id);
-        // Open the dialer app and pre-fill the code
-        window.location.href = getDialUrl(code);
-        setTimeout(() => {
-          setCopiedId(null);
-        }, 2000);
-      }).catch((err) => {
-        console.error("Failed to copy code: ", err);
-        // Fallback: still open the dialer even if copy fails
-        window.location.href = getDialUrl(code);
-      });
-    } else {
-      // Fallback for environments where clipboard API is not available
-      window.location.href = getDialUrl(code);
+    if (typeof window !== "undefined") {
+      const dialUrl = getDialUrl(code);
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(() => {
+          setCopiedId(id);
+          window.location.assign(dialUrl);
+          setTimeout(() => {
+            setCopiedId(null);
+          }, 2000);
+        }).catch((err) => {
+          console.error("Failed to copy code: ", err);
+          window.location.assign(dialUrl);
+        });
+      } else {
+        window.location.assign(dialUrl);
+      }
     }
   };
 
@@ -239,7 +878,7 @@ export default function PhoneDirectoryPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontFamily: "var(--font-display)",
+            fontFamily: "var(--font-sub)",
             fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "600",
             color: "var(--textPrimary)",
@@ -285,15 +924,17 @@ export default function PhoneDirectoryPage() {
         <div className="metro-animate-slide-up metro-delay-200" style={{
           backgroundColor: "var(--bgPrimary)",
           border: "1px solid var(--borderGlass)",
-          borderRadius: "15px",
+          borderRadius: "var(--radius-card)",
           padding: "20px",
           marginTop: "24px",
-          boxShadow: "var(--shadow-card)",
+          boxShadow: "var(--shadow-sm)",
           display: "flex",
           flexDirection: "column",
           gap: "16px",
+          position: "relative",
+          zIndex: 100,
         }}>
-          <div style={{ position: "relative" }}>
+          <div style={{ position: "relative", zIndex: 10 }}>
             <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>
               <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--colorSecondary)" }}></i> ابحث في الدليل (الاسم، الرقم أو التخصص)
             </label>
@@ -314,8 +955,9 @@ export default function PhoneDirectoryPage() {
               style={{
                 width: "100%",
                 direction: "rtl",
-                fontFamily: "var(--font-cairo)",
+                fontFamily: "var(--font-sub)",
                 height: "50px",
+                borderRadius: "var(--radius-card)",
               }}
             />
 
@@ -328,11 +970,11 @@ export default function PhoneDirectoryPage() {
                   top: "calc(100% + 6px)",
                   left: 0,
                   right: 0,
-                  zIndex: 100,
+                  zIndex: 2000,
                   backgroundColor: "var(--bgPrimary)",
                   border: "1px solid var(--borderGlass)",
-                  borderRadius: "15px",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
+                  borderRadius: "var(--radius-card)",
+                  boxShadow: "var(--shadow-md)",
                   maxHeight: "320px",
                   overflowY: "auto",
                   padding: "6px 0",
@@ -369,7 +1011,7 @@ export default function PhoneDirectoryPage() {
                           style={{
                             width: "36px",
                             height: "36px",
-                            borderRadius: "8px",
+                            borderRadius: "var(--radius-sm)",
                             objectFit: "cover",
                             backgroundColor: "#fff",
                             border: "1px solid var(--borderGlass)"
@@ -379,7 +1021,7 @@ export default function PhoneDirectoryPage() {
                         <div style={{
                           width: "36px",
                           height: "36px",
-                          borderRadius: "8px",
+                          borderRadius: "var(--radius-sm)",
                           background: "var(--bgSecondary)",
                           border: "1px solid var(--borderGlass)",
                           display: "flex",
@@ -387,7 +1029,7 @@ export default function PhoneDirectoryPage() {
                           justifyContent: "center",
                           fontSize: "1.1rem"
                         }}>
-                          🏢
+                          <img src="images/icons3d/headset.png" alt="phone" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         </div>
                       )}
                       <div style={{ display: "flex", flexDirection: "column", textAlign: "right" }}>
@@ -462,25 +1104,21 @@ export default function PhoneDirectoryPage() {
                 </button>
               ))}
               <button
+              className="actionBtn actionBtnDelete"
                 onClick={() => {
                   setRecentSearches([]);
                   localStorage.removeItem("recent_phone_searches");
                 }}
                 style={{
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--accent-danger)",
-                  fontSize: "0.75rem",
                   cursor: "pointer",
-                  padding: "4px 8px"
                 }}
               >
-                مسح 🗑️
+                <i className="bx bx-trash"></i> 
               </button>
             </div>
           )}
         </div>
-
+        {/* Loading Data */}
         {loading ? (
           <div style={{ textAlign: "center", padding: "50px 0", color: "var(--textSecondary)" }}>
             <span style={{ display: "inline-block", width: "24px", height: "24px", border: "3px solid var(--borderGlass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
@@ -575,17 +1213,46 @@ export default function PhoneDirectoryPage() {
 
               {/* Stack of phones */}
               {slicedEntries.length === 0 ? (
-                <div style={{
-                  textAlign: "center",
-                  padding: "40px",
-                  color: "var(--textSecondary)",
-                  backgroundColor: "var(--bgPrimary)",
-                  border: "1px solid var(--borderGlass)",
-                  borderRadius: "15px"
-                }}>
-                  <div style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
-                  <p className="sub-title">لا توجد أرقام مطابقة لبحثك في هذا التبويب</p>
-                </div>
+                searchQuery.trim() !== "" ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{
+                      textAlign: "center",
+                      padding: "24px 20px",
+                      color: "var(--textSecondary)",
+                      backgroundColor: "var(--bgPrimary)",
+                      border: "1px solid var(--borderGlass)",
+                      borderRadius: "15px"
+                    }}>
+                      <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🔍</div>
+                      <p className="sub-title" style={{ margin: "0 0 6px", fontWeight: "700", color: "var(--textPrimary)", fontSize: "1rem" }}>
+                        لم يتم العثور على أرقام مطابقة لبحثك &quot;{searchQuery}&quot;
+                      </p>
+                      <p style={{ margin: 0, fontSize: "0.84rem", color: "var(--textSecondary)" }}>
+                        إذا كنت تعرف هذا الرقم أو جهة الاتصال، شاركنا إياه عبر النموذج بالأسفل لإضافته للدليل ويستفيد الجميع!
+                      </p>
+                    </div>
+
+                    <DirectorySuggestionBox
+                      key={`${searchQuery}_empty_phone`}
+                      searchQuery={searchQuery}
+                      user={user}
+                      specialties={specialties}
+                      defaultType="phone"
+                    />
+                  </div>
+                ) : (
+                  <div style={{
+                    textAlign: "center",
+                    padding: "40px",
+                    color: "var(--textSecondary)",
+                    backgroundColor: "var(--bgPrimary)",
+                    border: "1px solid var(--borderGlass)",
+                    borderRadius: "15px"
+                  }}>
+                    <div style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
+                    <p className="sub-title">لا توجد أرقام مطابقة لبحثك في هذا التبويب</p>
+                  </div>
+                )
               ) : (
                 <>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -595,26 +1262,24 @@ export default function PhoneDirectoryPage() {
                         style={{
                           backgroundColor: "var(--bgPrimary)",
                           border: "1px solid var(--borderGlass)",
-                          borderRadius: "15px",
+                          borderRadius: "var(--radius-card)",
                           padding: "16px",
-                          boxShadow: "var(--shadow-card)",
+                          boxShadow: "var(--shadow-sm)",
                           display: "flex",
                           alignItems: "center",
                           gap: "16px",
                           transition: "transform 0.2s ease",
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                        onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
                       >
                         {entry.logo_url ? (
-                          <img src={entry.logo_url} alt={entry.name} loading="lazy" decoding="async" style={{ width: "50px", height: "50px", borderRadius: "10px", objectFit: "cover", backgroundColor: "#fff", border: "1px solid var(--borderGlass)" }} />
+                          <img src={entry.logo_url} alt={entry.name} loading="lazy" decoding="async" style={{ width: "50px", height: "50px", borderRadius: "var(--radius-sm)", objectFit: "cover", }} />
                         ) : (
-                          <div style={{ width: "50px", height: "50px", borderRadius: "10px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem" }}>
-                            🏢
+                          <div style={{ width: "50px", height: "50px", borderRadius: "var(--radius-sm)", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem" }}>
+                            <img src="images/icons3d/headset.png" alt="phone" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           </div>
                         )}
                         <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-                          <h3 style={{ margin: "0 0 4px", fontSize: "0.95rem", fontWeight: "700", color: "var(--textPrimary)" }}>{entry.name}</h3>
+                          <h5 style={{ margin: "0 0 4px", fontSize: "0.95rem", fontWeight: "700", color: "var(--textPrimary)" }}>{entry.name}</h5>
 
                           {entry.description && (
                             <p style={{ margin: "0 0 10px", fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.4", fontFamily: "var(--font-body)" }}>
@@ -642,24 +1307,61 @@ export default function PhoneDirectoryPage() {
                         onClick={() => setVisibleCount((prev) => prev + 10)}
                         style={{
                           width: "auto",
-                          padding: "10px 24px",
-                          borderRadius: "20px",
+                          padding: "var(--paddingBtn)",
+                          borderRadius: "var(--radiusBtn)",
                           background: "var(--colorSecondary)",
                           color: "#ffffff",
                           fontSize: "0.88rem",
                           fontWeight: "700",
                           border: "none",
                           cursor: "pointer",
-                          fontFamily: "var(--font-cairo)",
+                          fontFamily: "var(--font-sub)",
                           transition: "opacity 0.2s"
                         }}
                         onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
                         onMouseLeave={e => e.currentTarget.style.opacity = "1"}
                       >
-                        🔄 عرض المزيد (+10)
+                        عرض المزيد (+10)
                       </button>
                     </div>
                   )}
+
+                  {/* Contributor suggestion toggle banner */}
+                  <div style={{ textAlign: "center", marginTop: "24px" }}>
+                    <button
+                      type="button"
+                      onClick={() => setShowManualSuggest(!showManualSuggest)}
+                      style={{
+                        background: showManualSuggest ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
+                        border: "1px dashed var(--colorSecondary)",
+                        color: "var(--textPrimary)",
+                        padding: "10px 20px",
+                        borderRadius: "12px",
+                        fontSize: "0.85rem",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontFamily: "var(--font-cairo)",
+                        transition: "all 0.2s ease"
+                      }}
+                    >
+                      <i className="fa-solid fa-lightbulb" style={{ color: "#f59e0b" }}></i>
+                      {showManualSuggest ? "إغلاق نموذج الاقتراح" : "لم تجد الرقم أو الكود الذي تبحث عنه؟ اقترحه الآن 💡"}
+                    </button>
+                    {showManualSuggest && (
+                      <div style={{ marginTop: "16px", textAlign: "right" }}>
+                        <DirectorySuggestionBox
+                          key={`${searchQuery}_manual_phone`}
+                          searchQuery={searchQuery}
+                          user={user}
+                          specialties={specialties}
+                          defaultType="phone"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
             </div>
@@ -715,33 +1417,89 @@ export default function PhoneDirectoryPage() {
 
               {/* Accordions */}
               {Object.keys(groupedCodes).length === 0 ? (
-                <div style={{
-                  textAlign: "center",
-                  padding: "40px",
-                  color: "var(--textSecondary)",
-                  backgroundColor: "var(--bgSecondary)",
-                  borderRadius: "15px",
-                  border: "1px solid var(--borderGlass)"
-                }}>
-                  <div className="sub-title" style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
-                  <p className="sub-title">لا توجد أكواد مضافة لهذه الشركة بعد</p>
-                  <p className="sub-title" style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px" }}>
-                    تعمل الإدارة على تحديث البيانات وإضافة الأكواد قريباً.
-                  </p>
-                </div>
+                searchQuery.trim() !== "" ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{
+                      textAlign: "center",
+                      padding: "24px 20px",
+                      color: "var(--textSecondary)",
+                      backgroundColor: "var(--bgSecondary)",
+                      borderRadius: "15px",
+                      border: "1px solid var(--borderGlass)"
+                    }}>
+                      <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🔍</div>
+                      <p className="sub-title" style={{ fontWeight: "700", color: "var(--textPrimary)", margin: "0 0 6px", fontSize: "1rem" }}>
+                        لا توجد أكواد مطابقة لبحثك &quot;{searchQuery}&quot; في شبكة {COMPANY_META[activeCompany]?.label}
+                      </p>
+                      {matchingCodesInOtherCompanies.length > 0 ? (
+                        <div style={{ marginTop: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+                          <span style={{ fontSize: "0.82rem", color: "var(--textSecondary)" }}>قد تتوفر نتائج في شبكات أخرى:</span>
+                          {matchingCodesInOtherCompanies.map((comp) => (
+                            <button
+                              key={comp}
+                              type="button"
+                              onClick={() => setActiveCompany(comp)}
+                              style={{
+                                background: "var(--bgPrimary)",
+                                border: "1px solid var(--borderGlass)",
+                                color: "var(--colorSecondary)",
+                                padding: "4px 12px",
+                                borderRadius: "12px",
+                                fontSize: "0.78rem",
+                                fontWeight: "700",
+                                cursor: "pointer",
+                                fontFamily: "var(--font-cairo)"
+                              }}
+                            >
+                              {COMPANY_META[comp]?.label} ↗
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <p style={{ margin: 0, fontSize: "0.84rem", color: "var(--textSecondary)" }}>
+                          إذا كنت تعرف هذا الكود، اقترحه الآن على الإدارة بالأسفل لإضافته في الدليل ويستفيد الجميع!
+                        </p>
+                      )}
+                    </div>
+
+                    <DirectorySuggestionBox
+                      key={`${searchQuery}_${activeCompany}_code`}
+                      searchQuery={searchQuery}
+                      user={user}
+                      specialties={specialties}
+                      defaultType="code"
+                      defaultCompany={activeCompany}
+                    />
+                  </div>
+                ) : (
+                  <div style={{
+                    textAlign: "center",
+                    padding: "40px",
+                    color: "var(--textSecondary)",
+                    backgroundColor: "var(--bgSecondary)",
+                    borderRadius: "15px",
+                    border: "1px solid var(--borderGlass)"
+                  }}>
+                    <div className="sub-title" style={{ fontSize: "2rem", marginBottom: "10px" }}><i className="fa-solid fa-circle-notch"></i></div>
+                    <p className="sub-title">لا توجد أكواد مضافة لهذه الشركة بعد</p>
+                    <p className="sub-title" style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px" }}>
+                      تعمل الإدارة على تحديث البيانات وإضافة الأكواد قريباً.
+                    </p>
+                  </div>
+                )
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                   {Object.entries(groupedCodes).map(([sectionName, codeList]) => {
-                    const isExpanded = !!expandedSections[sectionName];
+                    const isExpanded = searchQuery.trim() !== "" || !!expandedSections[sectionName];
                     return (
                       <div
                         key={sectionName}
                         style={{
                           backgroundColor: "var(--bgPrimary)",
                           border: "1px solid var(--borderGlass)",
-                          borderRadius: "15px",
+                          borderRadius: "var(--radius-card)",
                           overflow: "hidden",
-                          boxShadow: "var(--shadow-card)",
+                          boxShadow: "var(--shadow-sm)",
                         }}
                       >
                         {/* Header of Accordion */}
@@ -757,10 +1515,10 @@ export default function PhoneDirectoryPage() {
                             userSelect: "none",
                           }}
                         >
-                          <h2 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "700", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+                          <h5 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "700", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
                             <i className={formatBoxIcon(sectionIcons[sectionName] || 'bx-folder')} style={{ fontSize: "1.1rem", color: "var(--colorSecondary)" }}></i>
                             {sectionName}
-                          </h2>
+                          </h5>
                           <span style={{ fontSize: "1rem", color: "var(--textSecondary)" }}>
                             {isExpanded ? <i className="fa-solid fa-chevron-up"></i> : <i className="fa-solid fa-chevron-down"></i>}
                           </span>

@@ -8,6 +8,7 @@ import styles from "../admin.module.css";
 import Link from "next/link";
 import clsx from "clsx";
 import CustomModal from "@/components/common/Modals";
+import { METRO_STATION_LANDMARKS } from "@/app/metro/page";
 
 // ── Default Mock / Seed Data ──
 const DEFAULT_METRO_STATIONS: any[] = [
@@ -220,6 +221,9 @@ function AdminMetroInner() {
         const mappedData = data ? data.map(item => {
           let updated = { ...item };
           updated.status = item.status || "تشغيل فعلي";
+          if (!updated.landmarks || !Array.isArray(updated.landmarks) || updated.landmarks.length === 0) {
+            updated.landmarks = METRO_STATION_LANDMARKS[updated.name] || [];
+          }
           return updated;
         }) : [];
 
@@ -275,6 +279,9 @@ function AdminMetroInner() {
           return parsed.map((item: any) => {
             let updated = { ...item };
             updated.status = item.status || "تشغيل فعلي";
+            if (!updated.landmarks || !Array.isArray(updated.landmarks) || updated.landmarks.length === 0) {
+              updated.landmarks = METRO_STATION_LANDMARKS[updated.name] || [];
+            }
             return updated;
           });
         }

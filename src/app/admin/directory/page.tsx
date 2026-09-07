@@ -121,21 +121,61 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
   const [codeToDelete, setCodeToDelete] = useState<TelecomCodeEntry | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Selected Specialty Tab for Customer Service Phones: 'all', specific specialty, or '__other__'
+  const [selectedSpecialtyTab, setSelectedSpecialtyTab] = useState<string>("all");
+
   // Selected Company Tab for Telecom Codes: 'all' or company key
   const [selectedCompanyTab, setSelectedCompanyTab] = useState<string>("all");
 
-  // Filter entries based on search query
+  // Extract Boxicon maps for specialties
+  const specialtyIcons = React.useMemo(() => {
+    const map: Record<string, string> = {};
+    entries.forEach((e) => {
+      if (e.specialty && e.icon && !map[e.specialty]) {
+        map[e.specialty] = e.icon;
+      }
+    });
+    return map;
+  }, [entries]);
+
+  // Counts per specialty for customer service phones
+  const specialtyCounts = React.useMemo(() => {
+    const counts: Record<string, number> = { all: entries.length };
+    let otherCount = 0;
+    entries.forEach(e => {
+      const spec = e.specialty?.trim();
+      if (spec) {
+        counts[spec] = (counts[spec] || 0) + 1;
+      } else {
+        otherCount++;
+      }
+    });
+    if (otherCount > 0) {
+      counts["__other__"] = otherCount;
+    }
+    return counts;
+  }, [entries]);
+
+  // Filter entries based on selected specialty tab and search query
   const filteredEntries = React.useMemo(() => {
-    if (!searchQuery.trim()) return entries;
+    let list = entries;
+    if (selectedSpecialtyTab !== "all") {
+      if (selectedSpecialtyTab === "__other__") {
+        list = list.filter(e => !e.specialty || !e.specialty.trim());
+      } else {
+        list = list.filter(e => e.specialty?.trim() === selectedSpecialtyTab);
+      }
+    }
+    if (!searchQuery.trim()) return list;
     const term = searchQuery.toLowerCase().trim();
-    return entries.filter(e => {
+    return list.filter(e => {
       const name = (e.name || "").toLowerCase();
       const specialty = (e.specialty || "").toLowerCase();
       const description = (e.description || "").toLowerCase();
       const phone = (e.phone_number || "").toLowerCase();
       return name.includes(term) || specialty.includes(term) || description.includes(term) || phone.includes(term);
     });
-  }, [entries, searchQuery]);
+  }, [entries, selectedSpecialtyTab, searchQuery]);
 
   // Counts per company for telecom codes
   const companyCounts = React.useMemo(() => {
@@ -287,6 +327,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         if (error) throw error;
         if (data) {
           setEntries(entries.map(e => e.id === editingPhoneId ? data[0] : e));
+          setSelectedSpecialtyTab(finalSpecialty);
           handleCancelPhone();
         }
       } else {
@@ -306,6 +347,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         if (error) throw error;
         if (data) {
           setEntries([data[0], ...entries]);
+          setSelectedSpecialtyTab(finalSpecialty);
           handleCancelPhone();
         }
       }
@@ -335,6 +377,13 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
       setIsDeleting(false);
     }
   };
+
+  // Fallback if the selected specialty is no longer in existing specialties (e.g. after deletion)
+  useEffect(() => {
+    if (selectedSpecialtyTab !== "all" && selectedSpecialtyTab !== "__other__" && !existingSpecialties.includes(selectedSpecialtyTab)) {
+      setSelectedSpecialtyTab("all");
+    }
+  }, [existingSpecialties, selectedSpecialtyTab]);
 
   // CRUD for Telecom Codes
   const [editingCodeId, setEditingCodeId] = useState<string | null>(null);
@@ -481,10 +530,8 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
 
         {activeTab === "phones" ? (
           <button
-            className="btn"
+            className="btn btn-primary"
             style={{
-              background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
-              color: "#fff",
               padding: "10px 20px",
               display: "flex",
               alignItems: "center",
@@ -495,6 +542,9 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               if (showAddForm) {
                 handleCancelPhone();
               } else {
+                if (selectedSpecialtyTab !== "all" && selectedSpecialtyTab !== "__other__") {
+                  setSpecialtySelect(selectedSpecialtyTab);
+                }
                 setShowAddForm(true);
               }
             }}
@@ -510,10 +560,8 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
           </button>
         ) : (
           <button
-            className="btn"
+            className="btn btn-primary"
             style={{
-              background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
-              color: "#fff",
               padding: "10px 20px",
               display: "flex",
               alignItems: "center",
@@ -545,7 +593,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
       </div>
 
       {/* Tabs Selector */}
-      <div style={{ display: "flex", gap: "12px", marginBottom: activeTab === "codes" ? "18px" : "30px", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "12px" }}>
+      <div style={{ display: "flex", gap: "12px", marginBottom: "18px", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "12px" }}>
         <button
           onClick={() => { setActiveTab("phones"); setError(""); setSearchQuery(""); }}
           className={`category-pill ${activeTab === "phones" ? "active" : ""}`}
@@ -561,6 +609,140 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
           📱 أكواد الشركات
         </button>
       </div>
+
+      {/* Sub-tabs for Specialties (shown when activeTab === 'phones') */}
+      {activeTab === "phones" && (
+        <div style={{
+          display: "flex",
+          gap: "10px",
+          overflowX: "auto",
+          paddingBottom: "8px",
+          marginBottom: "24px",
+          alignItems: "center"
+        }}>
+          {/* All Specialties Tab */}
+          <button
+            type="button"
+            onClick={() => setSelectedSpecialtyTab("all")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "var(--paddingBtn)",
+              borderRadius: "var(--radiusBtnTabs)",
+              cursor: "pointer",
+              fontFamily: "var(--font-sub)",
+              fontSize: "0.88rem",
+              fontWeight: selectedSpecialtyTab === "all" ? "700" : "500",
+              background: selectedSpecialtyTab === "all" ? "var(--colorPrimary)" : "var(--bgGlass)",
+              border: selectedSpecialtyTab === "all" ? "1px solid var(--borderGlass)" : "1px solid var(--borderGlass)",
+              color: selectedSpecialtyTab === "all" ? "#fff" : "var(--textSecondary)",
+              transition: "all 0.2s ease",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <i className="bx bx-grid-alt" style={{ fontSize: "1.15rem" }} />
+            <span>جميع التخصصات</span>
+            <span style={{
+              fontSize: "0.75rem",
+              padding: "2px 8px",
+              borderRadius: "20px",
+              background: selectedSpecialtyTab === "all" ? "#0004faff" : "rgba(255, 255, 255, 0.08)",
+              color: selectedSpecialtyTab === "all" ? "#fff" : "var(--text-muted)",
+              fontWeight: "700"
+            }}>
+              {entries.length}
+            </span>
+          </button>
+
+          {/* Dynamic Specialty Tabs */}
+          {existingSpecialties.map((spec) => {
+            const isSelected = selectedSpecialtyTab === spec;
+            const count = specialtyCounts[spec] || 0;
+            const icon = specialtyIcons[spec] || "bx-building";
+
+            return (
+              <button
+                key={spec}
+                type="button"
+                onClick={() => {
+                  setSelectedSpecialtyTab(spec);
+                  if (showAddForm && !editingPhoneId) {
+                    setSpecialtySelect(spec);
+                  }
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "var(--paddingBtn)",
+                  borderRadius: "var(--radiusBtnTabs)",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-sub)",
+                  fontSize: "0.88rem",
+                  fontWeight: isSelected ? "700" : "500",
+                  background: isSelected ? "var(--colorPrimary)" : "var(--bgGlass)",
+                  border: isSelected ? "1px solid #6366f1" : "1px solid var(--borderGlass)",
+                  color: isSelected ? "#fff" : "var(--textSecondary)",
+                  transition: "all 0.2s ease",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <i className={formatBoxIcon(icon)} style={{ fontSize: "1.1rem", color: isSelected ? "#ffffffff" : "inherit" }} />
+                <span>{spec}</span>
+                <span style={{
+                  fontSize: "0.75rem",
+                  padding: "2px 8px",
+                  borderRadius: "20px",
+                  background: isSelected ? "#0004faff" : "rgba(255, 255, 255, 0.08)",
+                  color: isSelected ? "#fff" : "var(--text-muted)",
+                  fontWeight: "700"
+                }}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+
+          {/* Other tab if any entries without specialty */}
+          {entries.some((e) => !e.specialty || !e.specialty.trim()) && (
+            <button
+              type="button"
+              onClick={() => setSelectedSpecialtyTab("__other__")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                borderRadius: "12px",
+                cursor: "pointer",
+                fontFamily: "var(--font-heading)",
+                fontSize: "0.88rem",
+                fontWeight: selectedSpecialtyTab === "__other__" ? "700" : "500",
+                background: selectedSpecialtyTab === "__other__" ? "rgba(245, 158, 11, 0.16)" : "rgba(255, 255, 255, 0.03)",
+                border: selectedSpecialtyTab === "__other__" ? "1px solid #f59e0b" : "1px solid var(--borderGlass)",
+                color: selectedSpecialtyTab === "__other__" ? "#f59e0b" : "var(--textSecondary)",
+                boxShadow: selectedSpecialtyTab === "__other__" ? "0 4px 14px rgba(245, 158, 11, 0.2)" : "none",
+                transition: "all 0.2s ease",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <i className="bx bx-package" style={{ fontSize: "1.1rem" }} />
+              <span>أخرى بدون تخصص</span>
+              <span style={{
+                fontSize: "0.75rem",
+                padding: "2px 8px",
+                borderRadius: "20px",
+                background: selectedSpecialtyTab === "__other__" ? "#f59e0b" : "rgba(255, 255, 255, 0.08)",
+                color: selectedSpecialtyTab === "__other__" ? "#fff" : "var(--text-muted)",
+                fontWeight: "700"
+              }}>
+                {specialtyCounts["__other__"] || 0}
+              </span>
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Sub-tabs for Telecom Companies (shown when activeTab === 'codes') */}
       {activeTab === "codes" && (
@@ -580,16 +762,15 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              padding: "8px 16px",
-              borderRadius: "12px",
+              padding: "var(--paddingBtn)",
+              borderRadius: "var(--radiusBtnTabs)",
               cursor: "pointer",
-              fontFamily: "var(--font-heading)",
+              fontFamily: "var(--font-sub)",
               fontSize: "0.88rem",
               fontWeight: selectedCompanyTab === "all" ? "700" : "500",
-              background: selectedCompanyTab === "all" ? "rgba(99, 102, 241, 0.16)" : "rgba(255, 255, 255, 0.03)",
-              border: selectedCompanyTab === "all" ? "1px solid #6366f1" : "1px solid var(--borderGlass)",
-              color: selectedCompanyTab === "all" ? "#818cf8" : "var(--textSecondary)",
-              boxShadow: selectedCompanyTab === "all" ? "0 4px 14px rgba(99, 102, 241, 0.2)" : "none",
+              background: selectedCompanyTab === "all" ? "var(--colorPrimary)" : "var(--bgGlass)",
+              border: selectedCompanyTab === "all" ? "1px solid var(--borderGlass)" : "1px solid var(--borderGlass)",
+              color: selectedCompanyTab === "all" ? "#fff" : "var(--textSecondary)",
               transition: "all 0.2s ease",
               whiteSpace: "nowrap",
             }}
@@ -600,7 +781,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               fontSize: "0.75rem",
               padding: "2px 8px",
               borderRadius: "20px",
-              background: selectedCompanyTab === "all" ? "#6366f1" : "rgba(255, 255, 255, 0.08)",
+              background: selectedCompanyTab === "all" ? "#0004faff" : "rgba(255, 255, 255, 0.08)",
               color: selectedCompanyTab === "all" ? "#fff" : "var(--text-muted)",
               fontWeight: "700"
             }}>
@@ -628,16 +809,15 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  padding: "8px 16px",
-                  borderRadius: "12px",
+                  padding: "var(--paddingBtn)",
+                  borderRadius: "var(--radiusBtnTabs)",
                   cursor: "pointer",
-                  fontFamily: "var(--font-heading)",
+                  fontFamily: "var(--font-sub)",
                   fontSize: "0.88rem",
                   fontWeight: isSelected ? "700" : "500",
-                  background: isSelected ? meta.activeBg : "rgba(255, 255, 255, 0.03)",
+                  background: isSelected ? meta.activeBg : "var(--bgGlass)",
                   border: isSelected ? `1px solid ${meta.activeBorder}` : "1px solid var(--borderGlass)",
                   color: isSelected ? "var(--textPrimary)" : "var(--textSecondary)",
-                  boxShadow: isSelected ? `0 4px 14px ${meta.activeBg}` : "none",
                   transition: "all 0.2s ease",
                   whiteSpace: "nowrap",
                 }}
@@ -653,7 +833,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   padding: "2px 8px",
                   borderRadius: "20px",
                   background: isSelected ? meta.badgeBg : "rgba(255, 255, 255, 0.08)",
-                  color: isSelected ? meta.color : "var(--text-muted)",
+                  color: isSelected ? meta.color : "var(--textMuted)",
                   fontWeight: "700"
                 }}>
                   {count}
@@ -678,7 +858,9 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
             type="text"
             placeholder={
               activeTab === "phones"
-                ? "البحث عن جهة خدمية باسمها، تخصصها، أو رقمها..."
+                ? selectedSpecialtyTab === "all"
+                  ? "البحث عن جهة خدمية باسمها، تخصصها، أو رقمها..."
+                  : `البحث في جهات ${selectedSpecialtyTab === "__other__" ? "أخرى" : selectedSpecialtyTab} (الاسم، الرقم أو الوصف)...`
                 : selectedCompanyTab === "all"
                 ? "البحث عن كود باسم الخدمة، القسم، الكود، أو الشركة..."
                 : `البحث في أكواد ${COMPANY_META[selectedCompanyTab]?.label || "الشركة"} (الخدمة، القسم، الكود)...`
@@ -706,7 +888,13 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         </div>
         <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
           {activeTab === "phones" ? (
-            <>إجمالي الجهات: {searchQuery.trim() ? `${filteredEntries.length} من ${entries.length}` : entries.length}</>
+            selectedSpecialtyTab === "all" ? (
+              <>إجمالي الجهات: {searchQuery.trim() ? `${filteredEntries.length} من ${entries.length}` : entries.length}</>
+            ) : (
+              <>
+                جهات {selectedSpecialtyTab === "__other__" ? "أخرى" : selectedSpecialtyTab}: {searchQuery.trim() ? `${filteredEntries.length} من ${specialtyCounts[selectedSpecialtyTab] || 0}` : (specialtyCounts[selectedSpecialtyTab] || 0)}
+              </>
+            )
           ) : selectedCompanyTab === "all" ? (
             <>إجمالي الأكواد: {searchQuery.trim() ? `${filteredCodes.length} من ${codes.length}` : codes.length}</>
           ) : (
@@ -785,7 +973,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   <textarea className="input-fields" rows={2} style={{ resize: "vertical", padding: "10px 12px", height: "auto" }} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="اكتب وصفاً أو ملاحظات إضافية هنا..." />
                 </div>
                 <div style={{ gridColumn: "1 / -1", marginTop: "10px" }}>
-                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: "100%", height: "50px", fontSize: "1.05rem" }}>
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: "100%", height: "50px", fontSize: "1.05rem", fontFamily: "var(--font-sub)" }}>
                     {isSubmitting ? "جاري الحفظ..." : editingPhoneId ? "تعديل الجهة" : "حفظ الجهة"}
                   </button>
                 </div>
@@ -815,7 +1003,11 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   ) : filteredEntries.length === 0 ? (
                     <tr>
                       <td colSpan={5} className={styles.adminTd} style={{ padding: "40px", textAlign: "center", color: "#94a3b8" }}>
-                        لا توجد نتائج تطابق بحثك.
+                        {searchQuery.trim()
+                          ? "لا توجد نتائج تطابق بحثك."
+                          : selectedSpecialtyTab !== "all"
+                          ? `لا توجد جهات مسجلة في تخصص "${selectedSpecialtyTab === "__other__" ? "أخرى" : selectedSpecialtyTab}" حالياً.`
+                          : "لا توجد نتائج تطابق بحثك."}
                       </td>
                     </tr>
                   ) : (
@@ -844,27 +1036,15 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                             <button
                               onClick={() => startEditPhone(entry)}
-                              className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                              className="actionBtn actionBtnEdit"
                               title="تعديل"
-                              style={{
-                                padding: "5px 5px",
-                                borderRadius: "50%",
-                                background: "var(--bgSecondary)",
-                              }}
                             >
                               <i className="bx bx-edit-alt" />
                             </button>
                             <button
                               onClick={() => handleDeletePhone(entry)}
-                              className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                              className="actionBtn actionBtnDelete"
                               title="حذف"
-                              style={{
-                                padding: "5px 5px",
-                                borderRadius: "50%",
-                                background: "#ff000025",
-                                color: "#ff0000f5",
-                                border: "#ff000025",
-                              }}
                             >
                               <i className="bx bx-trash" />
                             </button>
@@ -1069,27 +1249,15 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                             <button
                               onClick={() => startEditCode(item)}
-                              className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                              className="actionBtn actionBtnEdit"
                               title="تعديل"
-                              style={{
-                                padding: "5px 5px",
-                                borderRadius: "50%",
-                                background: "var(--bgSecondary)",
-                              }}
                             >
                               <i className="bx bx-edit-alt" />
                             </button>
                             <button
                               onClick={() => handleDeleteCode(item)}
-                              className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                              className="actionBtn actionBtnDelete"
                               title="حذف"
-                              style={{
-                                padding: "5px 5px",
-                                borderRadius: "50%",
-                                background: "#ff000025",
-                                color: "#ff0000f5",
-                                border: "#ff000025",
-                              }}
                             >
                               <i className="bx bx-trash" />
                             </button>

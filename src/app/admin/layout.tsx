@@ -26,6 +26,7 @@ export default function AdminLayout({
   }, [user, profile, loading, router]);
 
   const [pendingReportsCount, setPendingReportsCount] = useState(0);
+  const [pendingIncomingCount, setPendingIncomingCount] = useState(0);
   const [pendingPointsCount, setPendingPointsCount] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -69,7 +70,8 @@ export default function AdminLayout({
           { label: "إدارة الإعلانات والبنرات", href: "/admin/ads", category: "صفحة إدارية", icon: "bx bx-slideshow" },
           { label: "إدارة تنبيهات الموقع", href: "/admin/alerts", category: "صفحة إدارية", icon: "bx bx-info-circle" },
           { label: "الإشعارات والرسائل الجماعية", href: "/admin/notifications", category: "صفحة إدارية", icon: "bx bx-bell" },
-          { label: "البلاغات والشكاوى", href: "/admin/reports", category: "صفحة إدارية", icon: "bx bx-error-circle" },
+          { label: "البلاغات والاقتراحات الواردة", href: "/admin/incoming-reports", category: "صفحة إدارية", icon: "bx bx-inbox" },
+          { label: "سجل البلاغات والشكاوى", href: "/admin/reports", category: "صفحة إدارية", icon: "bx bx-error-circle" },
           { label: "الرصيد والشحن المالي", href: "/admin/points?tab=users", category: "صفحة إدارية", icon: "bx bx-coin-stack" },
           { label: "طلبات الإيداع والسحب المعلقة", href: "/admin/points?tab=requests", category: "صفحة إدارية", icon: "bx bx-transfer" },
           { label: "إدارة الحسابات والمستخدمين", href: "/admin/users", category: "صفحة إدارية", icon: "bx bx-group" },
@@ -340,9 +342,11 @@ export default function AdminLayout({
           .eq("status", "pending"),
       ]);
 
-      const reportsCount = (placeReportsRes.count || 0) + (appFeedbackRes.count || 0) + (contactMessagesRes.count || 0);
+      const incomingCount = appFeedbackRes.count || 0;
+      const reportsCount = (placeReportsRes.count || 0) + incomingCount + (contactMessagesRes.count || 0);
       const pointsCount = balanceTransactionsRes.count || 0;
 
+      setPendingIncomingCount(incomingCount);
       setPendingReportsCount(reportsCount);
       setPendingPointsCount(pointsCount);
     } catch (err) {
@@ -399,7 +403,8 @@ export default function AdminLayout({
   else if (pathname === "/admin/directory") pageTitle = "دليل الهواتف والأكواد";
   else if (pathname === "/admin/notifications") pageTitle = "الإشعارات والرسائل";
   else if (pathname === "/admin/alerts") pageTitle = "تنبيهات الموقع";
-  else if (pathname === "/admin/reports") pageTitle = "البلاغات والشكاوى";
+  else if (pathname === "/admin/incoming-reports") pageTitle = "البلاغات والاقتراحات الواردة";
+  else if (pathname === "/admin/reports") pageTitle = "سجل البلاغات والشكاوى";
   else if (pathname === "/admin/points") {
     if (activeSubTab === "requests") pageTitle = "طلبات الإيداع والسحب";
     else pageTitle = "الرصيد والشحن";
@@ -728,8 +733,46 @@ export default function AdminLayout({
               </div>
             </Link>
 
-            {/* ── الدعم والتفاعل ── */}
-            <div className={styles.sidebarGroupLabel}>التفاعل والدعم</div>
+            {/* ── البلاغات والدعم ── */}
+            <div className={styles.sidebarGroupLabel}>البلاغات والدعم</div>
+
+            {/* البلاغات الواردة (وصول سريع) */}
+            <Link
+              href="/admin/incoming-reports"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/incoming-reports" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-inbox ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>البلاغات والاقتراحات الواردة</span>
+              </div>
+              {pendingIncomingCount > 0 && (
+                <span className={styles.sidebarBadge} style={{ background: "#ef4444", color: "#fff" }} title={`هناك ${pendingIncomingCount} بلاغات واقتراحات معلقة`}>
+                  {pendingIncomingCount}
+                </span>
+              )}
+            </Link>
+
+            {/* سجل البلاغات والشكاوى */}
+            <Link
+              href="/admin/reports"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/reports" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-error-circle ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>سجل البلاغات والشكاوى</span>
+              </div>
+              {pendingReportsCount > 0 && (
+                <span className={styles.sidebarBadge} title={`هناك ${pendingReportsCount} معلقة`}>
+                  {pendingReportsCount}
+                </span>
+              )}
+            </Link>
 
             {/* الإشعارات والرسائل */}
             <Link
@@ -743,25 +786,6 @@ export default function AdminLayout({
                 <i className={`bx bx-bell ${styles.linkIcon}`} />
                 <span className={styles.linkLabel}>الإشعارات والرسائل</span>
               </div>
-            </Link>
-
-            {/* البلاغات والشكاوى */}
-            <Link
-              href="/admin/reports"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/reports" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-error-circle ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>البلاغات والشكاوى</span>
-              </div>
-              {pendingReportsCount > 0 && (
-                <span className={styles.sidebarBadge} title={`هناك ${pendingReportsCount} معلقة`}>
-                  {pendingReportsCount}
-                </span>
-              )}
             </Link>
 
             {/* ── الحسابات والمستخدمين ── */}
@@ -981,7 +1005,7 @@ export default function AdminLayout({
                     globalSearchResults.profiles.length === 0 && (
                       <div className={styles.globalSearchNoResults}>
                         <i className="bx bx-search-alt" style={{ fontSize: "2rem", opacity: 0.3 }} />
-                        <span>لا توجد نتائج لـ "{globalSearchQuery}"</span>
+                        <span>لا توجد نتائج لـ &quot;{globalSearchQuery}&quot;</span>
                       </div>
                     )}
                 </div>
