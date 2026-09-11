@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-const OTP_SECRET = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SMTP_PASS || 'cairo-map-otp-secret-key-2026';
+const OTP_SECRET = process.env.OTP_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'cairo-map-otp-token-secret';
 
 export async function POST(request: Request) {
   try {

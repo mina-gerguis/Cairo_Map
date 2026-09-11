@@ -182,7 +182,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "دليل الهاتف والأكواد",
     subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "Cairo_directory.png",
+    icon: "cairo.png",
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
@@ -245,7 +245,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مدونة ومقالات خريطة القاهرة",
     subtitle: "أدلة الترانزيت، النصائح، والأماكن",
     href: "/blog",
-    icon: "Cairo_directory.png",
+    icon: "cairo.png",
     badge: "مقالات وأدلة",
     keywords: ["مدونة", "مقالات", "مقال", "اخبار", "أخبار", "دليل", "blog", "نصائح", "مقاله"]
   }
@@ -762,7 +762,7 @@ export default function HomePage() {
     { label: "موقف الأتوبيسات", route: "/bus-stations", icon: "bus.png" },
     { label: "مدونة المقالات", route: "/blog", icon: "Cairo_logo.png" },
     { label: "خريطة المترو", route: "/metro", icon: "metro.svg" },
-    { label: "دليل الهواتف", route: "/directory", icon: "Cairo_directory.png" },
+    { label: "دليل الهواتف", route: "/directory", icon: "cairo.png" },
     { label: "ازاي اروح؟", route: "/directions", icon: "Cairo_directions.svg" },
   ];
 

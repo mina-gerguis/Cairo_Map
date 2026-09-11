@@ -36,19 +36,22 @@
     - [x] Export Data to CSV
         $Last Export Data [07/09/2026]
 )
-- [ ] Testing (
+- [x] Testing (
     # App UI & UX
-    - [ ] Mobile Responsive Design
-    - [ ] Tablet Responsive Design
-    - [ ] Desktop Responsive Design
+    - [x] Mobile Responsive Design
+    - [x] Tablet Responsive Design
+    - [x] Desktop Responsive Design
     # Browser UI & UX
-    - [ ] Google Chrome
-    - [ ] Microsoft Edge
-    - [ ] Mozilla Firefox
-    - [ ] Safari
-    - [ ] Opera
+    - [x] Google Chrome
+    - [x] Microsoft Edge
+    - [x] Mozilla Firefox
+    - [x] Safari
+    - [x] Opera
+    # Device Platforms
+    - [x] iOS
+    - [x] Android
     # Performance Testing
-    - [ ] Page Speed
-    - [ ] Memory Usage
-    - [ ] Network Requests
+    - [x] Page Speed
+    - [x] Memory Usage
+    - [x] Network Requests
 )

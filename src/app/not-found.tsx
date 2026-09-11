@@ -177,7 +177,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "دليل الهاتف والأكواد",
     subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "Cairo_directory.png",
+    icon: "cairo.png",
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },

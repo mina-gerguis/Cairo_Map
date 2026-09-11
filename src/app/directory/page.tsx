@@ -175,11 +175,11 @@ function DirectorySuggestionBox({
   };
 
   return (
-    <div
-      className="metro-animate-slide-up"
-      style={{
-        backgroundColor: "var(--bgPrimary)",
-        border: "1px solid var(--borderGlass)",
+      <div
+        className="metro-animate-slide-up"
+        style={{
+          backgroundColor: "var(--bgPrimary)",
+          border: "1px solid var(--borderGlass)",
         borderRadius: "var(--radius-card)",
         padding: "22px 18px",
         boxShadow: "var(--shadow-sm)",
@@ -670,6 +670,7 @@ export default function PhoneDirectoryPage() {
   const [codeInputs, setCodeInputs] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    document.title = "ماب القاهرة - دليل الهاتف";
     async function fetchData() {
       if (!supabase) {
         setLoading(false);
@@ -861,6 +862,8 @@ export default function PhoneDirectoryPage() {
   };
 
   return (
+    <>
+    <title>ماب القاهرة - دليل الهاتف</title>
     <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)" }}>
       {/* Header Banner - Redesigned with a beautiful cover image matching Metro */}
       <div className="metro-animate-fade" style={{
@@ -885,7 +888,7 @@ export default function PhoneDirectoryPage() {
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
           }}>
-            <img src="images/icons2d/Cairo_directory.png" loading="lazy" decoding="async" style={{ width: "35px", marginLeft: "20px" }} alt="" />
+            <img src="images/icons2d/cairo.png" loading="lazy" decoding="async" style={{ width: "35px", marginLeft: "20px" }} alt="" />
             دليل الهاتف والخدمات
           </h1>
 
@@ -1104,7 +1107,7 @@ export default function PhoneDirectoryPage() {
                 </button>
               ))}
               <button
-              className="actionBtn actionBtnDelete"
+                className="actionBtn actionBtnDelete"
                 onClick={() => {
                   setRecentSearches([]);
                   localStorage.removeItem("recent_phone_searches");
@@ -1113,7 +1116,7 @@ export default function PhoneDirectoryPage() {
                   cursor: "pointer",
                 }}
               >
-                <i className="bx bx-trash"></i> 
+                <i className="bx bx-trash"></i>
               </button>
             </div>
           )}
@@ -1348,7 +1351,7 @@ export default function PhoneDirectoryPage() {
                       }}
                     >
                       <i className="fa-solid fa-lightbulb" style={{ color: "#f59e0b" }}></i>
-                      {showManualSuggest ? "إغلاق نموذج الاقتراح" : "لم تجد الرقم أو الكود الذي تبحث عنه؟ اقترحه الآن 💡"}
+                      {showManualSuggest ? "إغلاق نموذج الاقتراح" : "مش لاقي الرقم اللي بتدور عليه؟"}
                     </button>
                     {showManualSuggest && (
                       <div style={{ marginTop: "16px", textAlign: "right" }}>
@@ -1668,5 +1671,6 @@ export default function PhoneDirectoryPage() {
         )}
       </div>
     </div>
+    </>
   );
 }

@@ -82,7 +82,7 @@ export default function Navbar() {
       icon: "fa-solid fa-star-of-life",
       subItems: [
         { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.png" },
-        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "Cairo_directory.png" },
+        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.png" },
         { href: "/parking", label: "دليل الجراجات (اركن واركب)", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.png" },
         { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.svg" },
         { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: "Cairo_monorail_east.png" },

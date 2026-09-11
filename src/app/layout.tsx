@@ -20,7 +20,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ماب القاهرة - دليل الأماكن والخدمات الذكي",
+  title: {
+    default: "ماب القاهرة - دليل الأماكن والخدمات الذكي",
+    template: "%s | ماب القاهرة",
+  },
   description: "دليلك الشامل لأرقام وعناوين ومواقع المطاعم والكافيهات والصيدليات والمستشفيات والحدائق — © RepoDex، إحدى شركات جورجيوس القابضة.",
   manifest: "/manifest.json",
   appleWebApp: {

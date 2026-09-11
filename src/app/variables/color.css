@@ -1,6 +1,6 @@
 :root {
     /* ==================== Global Colors ==================== */
-    --colorPrimary: rgb(39, 39, 255);
+    --colorPrimary: #2727ff;
     --colorSecondary: #3b82f6;
     --colorAccent: #1a3eff;
     --colorMuted: #a1a1aa;
