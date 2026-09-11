@@ -35,7 +35,7 @@ export default function IncomingReportsPage() {
   const [feedbacks, setFeedbacks] = useState<IncomingFeedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<"all" | "directory" | "suggestions" | "bugs" | "routes">("all");
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "directory" | "suggestions" | "bugs" | "routes">("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -149,10 +149,18 @@ export default function IncomingReportsPage() {
   }, [user, isAdmin, refreshKey, showToast]);
 
   // Helper to categorize item
-  const getItemSection = (item: IncomingFeedback): "directory" | "bugs" | "suggestions" | "routes" | "other" => {
+  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "bugs" | "suggestions" | "routes" | "other" => {
     const cat = (item.category || "").toLowerCase();
     const title = (item.title || "").toLowerCase();
     const content = (item.content || "").toLowerCase();
+
+    if (
+      cat.includes("مترو") ||
+      title.includes("مترو") ||
+      content.includes("مترو")
+    ) {
+      return "metro";
+    }
 
     if (
       cat.includes("دليل") ||
@@ -184,7 +192,8 @@ export default function IncomingReportsPage() {
     const reviewed = feedbacks.filter((f) => f.status === "reviewed").length;
     const actionTaken = feedbacks.filter((f) => f.status === "action_taken").length;
     const directoryCount = feedbacks.filter((f) => getItemSection(f) === "directory").length;
-    return { total, pending, reviewed, actionTaken, directoryCount };
+    const metroCount = feedbacks.filter((f) => getItemSection(f) === "metro").length;
+    return { total, pending, reviewed, actionTaken, directoryCount, metroCount };
   }, [feedbacks]);
 
   // Filtered feedbacks
@@ -198,6 +207,7 @@ export default function IncomingReportsPage() {
       // 2. Category / Section Filter
       if (categoryFilter !== "all") {
         const sec = getItemSection(item);
+        if (categoryFilter === "metro" && sec !== "metro") return false;
         if (categoryFilter === "directory" && sec !== "directory") return false;
         if (categoryFilter === "bugs" && sec !== "bugs") return false;
         if (categoryFilter === "suggestions" && sec !== "suggestions") return false;
@@ -299,6 +309,27 @@ export default function IncomingReportsPage() {
   // Category Tag badge helper
   const renderCategoryBadge = (item: IncomingFeedback) => {
     const sec = getItemSection(item);
+    if (sec === "metro") {
+      return (
+        <span
+          style={{
+            background: "rgba(16, 185, 129, 0.15)",
+            color: "#10b981",
+            border: "1px solid rgba(16, 185, 129, 0.3)",
+            padding: "3px 10px",
+            borderRadius: "8px",
+            fontSize: "0.76rem",
+            fontWeight: "700",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "5px",
+          }}
+        >
+          <i className="bx bx-train"></i>
+          المترو
+        </span>
+      );
+    }
     if (sec === "directory") {
       return (
         <span
@@ -917,6 +948,7 @@ export default function IncomingReportsPage() {
         <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
           {[
             { id: "all", label: "🌐 كل البلاغات والاقتراحات", count: feedbacks.length },
+            { id: "metro", label: "🚇 المترو", count: stats.metroCount },
             { id: "directory", label: "☎️ دليل الهاتف والأكواد", count: stats.directoryCount },
             { id: "bugs", label: "⚠️ بلاغات وأخطاء النظام", count: feedbacks.filter((f) => getItemSection(f) === "bugs").length },
             { id: "suggestions", label: "💡 اقتراحات الميزات والتطبيق", count: feedbacks.filter((f) => getItemSection(f) === "suggestions").length },
@@ -924,7 +956,7 @@ export default function IncomingReportsPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setCategoryFilter(tab.id as "all" | "directory" | "bugs" | "suggestions" | "routes")}
+              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "directory" | "bugs" | "suggestions" | "routes")}
               style={{
                 padding: "8px 16px",
                 borderRadius: "30px",
@@ -1304,6 +1336,69 @@ export default function IncomingReportsPage() {
                         </div>
                         </div>
 
+                      </div>
+                    )}
+
+                    {/* Metro Direct Action Banner */}
+                    {getItemSection(item) === "metro" && (
+                      <div
+                        style={{
+                          background: "rgba(16, 185, 129, 0.05)",
+                          border: "1px solid rgba(16, 185, 129, 0.2)",
+                          borderRadius: "12px",
+                          padding: "12px 16px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                          <i className="bx bx-train" style={{ color: "#10b981", fontSize: "1.2rem" }}></i>
+                          <span>بلاغ متعلق بخدمة ومحطات مترو القاهرة</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <Link
+                            href="/metro"
+                            target="_blank"
+                            style={{
+                              background: "var(--bgSecondary)",
+                              border: "1px solid var(--borderGlass)",
+                              color: "var(--textPrimary)",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>معاينة المترو</span>
+                            <i className="bx bx-link-external"></i>
+                          </Link>
+                          <Link
+                            href="/admin/metro"
+                            style={{
+                              background: "rgba(16, 185, 129, 0.15)",
+                              border: "1px solid rgba(16, 185, 129, 0.3)",
+                              color: "#10b981",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>إدارة المترو</span>
+                            <i className="bx bx-cog"></i>
+                          </Link>
+                        </div>
                       </div>
                     )}
 

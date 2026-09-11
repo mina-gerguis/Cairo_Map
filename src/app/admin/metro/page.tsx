@@ -152,7 +152,7 @@ function AdminMetroInner() {
     line_type: "line1",
     station_order: 1,
     landmarks: "",
-    status: "تشغيل فعلي",
+    status: "يعمل",
   });
 
   const [error, setError] = useState("");
@@ -220,7 +220,7 @@ function AdminMetroInner() {
       } else {
         const mappedData = data ? data.map(item => {
           let updated = { ...item };
-          updated.status = item.status || "تشغيل فعلي";
+          updated.status = item.status || "يعمل";
           if (!updated.landmarks || !Array.isArray(updated.landmarks) || updated.landmarks.length === 0) {
             updated.landmarks = METRO_STATION_LANDMARKS[updated.name] || [];
           }
@@ -278,7 +278,7 @@ function AdminMetroInner() {
         if (Array.isArray(parsed)) {
           return parsed.map((item: any) => {
             let updated = { ...item };
-            updated.status = item.status || "تشغيل فعلي";
+            updated.status = item.status || "يعمل";
             if (!updated.landmarks || !Array.isArray(updated.landmarks) || updated.landmarks.length === 0) {
               updated.landmarks = METRO_STATION_LANDMARKS[updated.name] || [];
             }
@@ -329,7 +329,7 @@ function AdminMetroInner() {
       line_type: "line1",
       station_order: 1,
       landmarks: "",
-      status: "تشغيل فعلي",
+      status: "يعمل",
     });
     setShowStationModal(true);
   };
@@ -341,7 +341,7 @@ function AdminMetroInner() {
     setStationForm({
       ...item,
       landmarks: Array.isArray(item.landmarks) ? item.landmarks.join(", ") : item.landmarks || "",
-      status: item.status || "تشغيل فعلي",
+      status: item.status || "يعمل",
     });
     setShowStationModal(true);
   };
@@ -536,8 +536,8 @@ function AdminMetroInner() {
       case "line1": return "الخط الأول";
       case "line2": return "الخط الثاني";
       case "line3": return "الخط الثالث (الجذع)";
-      case "line3_branch_a": return "الخط الثالث (تفريعة روض الفرج)";
-      case "line3_branch_b": return "الخط الثالث (تفريعة جامعة القاهرة)";
+      case "line3_branch_a": return " الثالث (روض الفرج)";
+      case "line3_branch_b": return " الثالث (الجامعة)";
       case "line4": return "الخط الرابع (تحت الإنشاء)";
       case "line5": return "الخط الخامس (تحت الإنشاء)";
       case "line6": return "الخط السادس (تحت الإنشاء)";
@@ -741,7 +741,7 @@ function AdminMetroInner() {
                         <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--textPrimary)" }}>
                           {station.name}
                         </td>
-                        <td className={styles.adminTd}>
+                        <td className={styles.adminTd} style={{ width: "10%" }}>
                           <span style={{
                             fontSize: "0.75rem",
                             background: lineColor + "15",
@@ -749,7 +749,8 @@ function AdminMetroInner() {
                             border: `1px solid ${lineColor}30`,
                             padding: "2px 8px",
                             borderRadius: "20px",
-                            fontWeight: "bold"
+                            fontWeight: "bold",
+                            
                           }}>
                             {lineLabel}
                           </span>
@@ -791,7 +792,7 @@ function AdminMetroInner() {
                             borderRadius: "20px",
                             fontWeight: "bold"
                           }}>
-                            {station.status || "تشغيل فعلي"}
+                            {station.status || "يعمل"}
                           </span>
                         </td>
                         <td className={styles.adminTd} style={{ textAlign: "center" }}>
@@ -959,8 +960,8 @@ function AdminMetroInner() {
                   <option value="line1">الخط الأول (حلوان - المرج)</option>
                   <option value="line2">الخط الثاني (شبرا - المنيب)</option>
                   <option value="line3">الخط الثالث (عدلي منصور - الكيت كات)</option>
-                  <option value="line3_branch_a">الخط الثالث (تفريعة روض الفرج)</option>
-                  <option value="line3_branch_b">الخط الثالث (تفريعة جامعة القاهرة)</option>
+                  <option value="line3_branch_a"> الثالث (روض الفرج)</option>
+                  <option value="line3_branch_b"> الثالث (جامعة القاهرة)</option>
                   <option value="line4">الخط الرابع (تحت الإنشاء)</option>
                   <option value="line5">الخط الخامس (تحت الإنشاء)</option>
                   <option value="line6">الخط السادس (تحت الإنشاء)</option>
@@ -995,12 +996,12 @@ function AdminMetroInner() {
               <div>
                 <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
                 <select
-                  value={stationForm.status || "تشغيل فعلي"}
+                  value={stationForm.status || "يعمل"}
                   onChange={e => setStationForm({ ...stationForm, status: e.target.value })}
                   className="input-fields"
                   style={{ width: "100%" }}
                 >
-                  <option value="تشغيل فعلي">تشغيل فعلي (في الخدمة)</option>
+                  <option value="يعمل">يعمل (في الخدمة)</option>
                   <option value="تشغيل تجريبي">تشغيل تجريبي (تجريبي)</option>
                   <option value="تحت الإنشاء">تحت الإنشاء (ليست في الخدمة)</option>
                 </select>
