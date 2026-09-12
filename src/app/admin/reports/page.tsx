@@ -41,7 +41,7 @@ export default function AdminReportsPage() {
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
 
   // App Suggestions & Bugs State
-  const [activeReportTab, setActiveReportTab] = useState<"places" | "suggestions" | "bugs" | "metro" | "monorail" | "parking" | "contacts" | "microbus">("places");
+  const [activeReportTab, setActiveReportTab] = useState<"places" | "suggestions" | "bugs" | "metro" | "monorail" | "lrt" | "parking" | "contacts" | "microbus">("places");
   const [appFeedbacks, setAppFeedbacks] = useState<any[]>([]);
   const [loadingAppFeedbacks, setLoadingAppFeedbacks] = useState(true);
   const [appStatusFilter, setAppStatusFilter] = useState<string>("all");
@@ -849,8 +849,20 @@ export default function AdminReportsPage() {
     (f.title && (f.title.toLowerCase().includes("جراج") || f.title.toLowerCase().includes("باركينج") || f.title.toLowerCase().includes("parking"))) ||
     (f.content && (f.content.toLowerCase().includes("جراج") || f.content.toLowerCase().includes("باركينج")));
 
+  const isLrtFeedback = (f: any) =>
+    !isParkingFeedback(f) &&
+    (
+      f.category === "القطار الكهربائي LRT" ||
+      f.category === "lrt" ||
+      f.category === "القطار الكهربائي" ||
+      f.category === "القطار الكهربي" ||
+      (f.title && (f.title.toLowerCase().includes("lrt") || f.title.toLowerCase().includes("القطار الكهربائي") || f.title.toLowerCase().includes("القطار الكهربي"))) ||
+      (f.content && (f.content.toLowerCase().includes("lrt") || f.content.toLowerCase().includes("القطار الكهربائي") || f.content.toLowerCase().includes("القطار الكهربي")))
+    );
+
   const isMonorailFeedback = (f: any) =>
     !isParkingFeedback(f) &&
+    !isLrtFeedback(f) &&
     (
       f.category === "مونوريل" ||
       f.category === "المونوريل" ||
@@ -862,6 +874,7 @@ export default function AdminReportsPage() {
   const isMetroFeedback = (f: any) =>
     !isParkingFeedback(f) &&
     !isMonorailFeedback(f) &&
+    !isLrtFeedback(f) &&
     (
       f.category === "مترو الأنفاق" ||
       f.category === "مترو" ||
@@ -879,12 +892,17 @@ export default function AdminReportsPage() {
     return appStatusFilter === "all" || f.status === appStatusFilter;
   });
 
+  const lrtReports = appFeedbacks.filter(isLrtFeedback);
+  const filteredLrtReports = lrtReports.filter(f => {
+    return appStatusFilter === "all" || f.status === appStatusFilter;
+  });
+
   const parkingReports = appFeedbacks.filter(isParkingFeedback);
   const filteredParkingReports = parkingReports.filter(f => {
     return appStatusFilter === "all" || f.status === appStatusFilter;
   });
 
-  const bugs = appFeedbacks.filter(f => f.type === "bug" && !isMetroFeedback(f) && !isMonorailFeedback(f) && !isParkingFeedback(f));
+  const bugs = appFeedbacks.filter(f => f.type === "bug" && !isMetroFeedback(f) && !isMonorailFeedback(f) && !isLrtFeedback(f) && !isParkingFeedback(f));
   const filteredBugs = bugs.filter(f => {
     const statusMatch = appStatusFilter === "all" || f.status === appStatusFilter;
     const categoryMatch = bugCategoryFilter === "all" || f.category === bugCategoryFilter;
@@ -905,7 +923,7 @@ export default function AdminReportsPage() {
         <button
           onClick={() => {
             if (activeReportTab === "places") fetchReports();
-            else if (activeReportTab === "suggestions" || activeReportTab === "bugs" || activeReportTab === "metro" || activeReportTab === "monorail" || activeReportTab === "parking") fetchAppFeedbacks();
+            else if (activeReportTab === "suggestions" || activeReportTab === "bugs" || activeReportTab === "metro" || activeReportTab === "monorail" || activeReportTab === "lrt" || activeReportTab === "parking") fetchAppFeedbacks();
             else if (activeReportTab === "contacts") fetchContactMessages();
             else if (activeReportTab === "microbus") fetchMicrobusReports();
           }}
@@ -1042,6 +1060,31 @@ export default function AdminReportsPage() {
           }}
         >
           المونوريل ({monorailReports.length})
+        </button>
+        <button
+          onClick={() => {
+            setActiveReportTab("lrt");
+            setActiveReportId(null);
+            setReplyText("");
+            setActionStatus("");
+            setAppStatusFilter("all");
+          }}
+          style={{
+            flex: 1,
+            padding: "10px 14px",
+            borderRadius: "10px",
+            border: "none",
+            background: activeReportTab === "lrt" ? "var(--colorPrimary)" : "transparent",
+            color: activeReportTab === "lrt" ? "#fff" : "var(--textSecondary)",
+            fontWeight: "bold",
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            transition: "all 0.2s",
+            fontFamily: "var(--font-body)",
+            whiteSpace: "nowrap"
+          }}
+        >
+          LRT ({lrtReports.length})
         </button>
         <button
           onClick={() => {
@@ -2986,6 +3029,352 @@ export default function AdminReportsPage() {
                                   id: feedback.id,
                                   type: "feedback",
                                   title: feedback.title ? `مشكلة مونوريل: ${feedback.title}` : "بلاغ مونوريل"
+                                })}
+                                disabled={updatingId !== null}
+                                className="btn"
+                                style={{
+                                  background: "rgba(255, 59, 48, 0.1)",
+                                  border: "1px solid rgba(255, 59, 48, 0.25)",
+                                  color: "#ff3b30",
+                                  fontSize: "0.85rem",
+                                  fontWeight: "bold",
+                                  padding: "6px 14px",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "4px"
+                                }}
+                              >
+                                <i className="bx bx-trash" style={{ fontSize: "1rem" }} />
+                                حذف البلاغ
+                              </button>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
+      {activeReportTab === "lrt" && (
+        <>
+          {/* Solved Count Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+                تصفية حسب الحالة:
+              </div>
+              <Link
+                href="/admin/lrt"
+                style={{
+                  background: "rgba(6, 182, 212, 0.12)",
+                  border: "1px solid rgba(6, 182, 212, 0.3)",
+                  color: "#06b6d4",
+                  padding: "4px 12px",
+                  borderRadius: "8px",
+                  fontSize: "0.78rem",
+                  fontWeight: "bold",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                <i className="bx bx-cog"></i>
+                إدارة محطات القطار الكهربائي LRT
+              </Link>
+            </div>
+            <div style={{
+              background: "rgba(52, 199, 89, 0.12)",
+              border: "1px solid rgba(52, 199, 89, 0.2)",
+              borderRadius: "14px",
+              padding: "8px 16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              color: "#34c759",
+              fontWeight: "bold",
+              fontSize: "0.9rem"
+            }}>
+              <i className="bx bx-check-double" style={{ fontSize: "1.2rem" }}></i>
+              <span>عدد بلاغات LRT المحلولة: {lrtReports.filter(b => b.status === "action_taken").length}</span>
+            </div>
+          </div>
+
+          {/* Filter Tabs for LRT Reports Status */}
+          <div style={{ display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "8px" }}>
+            {["all", "pending", "reviewed", "action_taken"].map((status) => {
+              const count = status === "all" ? lrtReports.length : lrtReports.filter(r => r.status === status).length;
+              let label = "الكل";
+              if (status === "pending") label = "قيد النظر";
+              if (status === "reviewed") label = "تمت المراجعة";
+              if (status === "action_taken") label = "تم اتخاذ إجراء";
+
+              const isActive = appStatusFilter === status;
+              return (
+                <button
+                  key={status}
+                  onClick={() => setAppStatusFilter(status)}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "20px",
+                    border: "none",
+                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    fontWeight: "600",
+                    fontSize: "0.7rem",
+                    fontFamily: "var(--font-heading)",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    flexShrink: 0
+                  }}
+                >
+                  {label}
+                  <span style={{
+                    background: isActive ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.08)",
+                    padding: "2px 8px",
+                    borderRadius: "10px",
+                    fontSize: "0.78rem"
+                  }}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {loadingAppFeedbacks ? (
+            <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل بلاغات القطار الكهربائي LRT...</div>
+          ) : filteredLrtReports.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px", color: "var(--textSecondary)" }}>
+              لا توجد بلاغات مسجلة للقطار الكهربائي LRT في هذا القسم حالياً 🎉
+            </div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "20px" }}>
+              {filteredLrtReports.map((feedback) => {
+                const isOpen = activeReportId === feedback.id;
+
+                return (
+                  <div
+                    key={feedback.id}
+                    className="glass-card"
+                    style={{
+                      padding: "20px",
+                      borderRadius: "16px",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      transition: "all 0.2s",
+                      background: "rgba(255, 255, 255, 0.02)"
+                    }}
+                  >
+                    {/* Collapsed Header Summary */}
+                    <div
+                      onClick={() => {
+                        setActiveReportId(isOpen ? null : feedback.id);
+                        setReplyText("");
+                        setActionStatus("");
+                      }}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        gap: "16px",
+                        flexWrap: "wrap"
+                      }}
+                    >
+                      <div style={{ flex: 1, minWidth: "240px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
+                          <span style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                            <i className="bx bx-train" style={{ color: "#06b6d4", fontSize: "1.2rem" }}></i>
+                            {feedback.title || "بلاغ LRT"}
+                          </span>
+                          <span style={{
+                            background: "rgba(6, 182, 212, 0.15)",
+                            color: "#06b6d4",
+                            padding: "2px 8px",
+                            borderRadius: "8px",
+                            fontSize: "0.75rem",
+                            fontWeight: "bold",
+                            border: "1px solid rgba(6, 182, 212, 0.3)"
+                          }}>
+                            {feedback.category || "LRT"}
+                          </span>
+                          {getAppStatusBadge(feedback.status)}
+                        </div>
+
+                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
+                          <span>المستخدم: <strong>{feedback.user_profile?.full_name || feedback.user_profile?.username || "مستخدم مجهول"}</strong></span>
+                          {feedback.user_profile?.phone && <span>الهاتف: <strong dir="ltr">{feedback.user_profile.phone}</strong></span>}
+                          <span>التاريخ: {new Date(feedback.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <button
+                          type="button"
+                          className="btn"
+                          style={{
+                            padding: "6px 14px",
+                            fontSize: "0.85rem",
+                            fontWeight: "bold",
+                            borderRadius: "10px",
+                            background: isOpen ? "var(--colorPrimary)" : "rgba(255,255,255,0.06)",
+                            color: isOpen ? "#fff" : "var(--textPrimary)",
+                            border: "1px solid var(--borderGlass)"
+                          }}
+                        >
+                          {isOpen ? "إخفاء التفاصيل" : "عرض واتخاذ إجراء"}
+                        </button>
+                        <button
+                          type="button"
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "var(--textSecondary)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer"
+                          }}
+                        >
+                          <i className={`bx ${isOpen ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.2rem" }} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Expanded Details Body */}
+                    {isOpen && (
+                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--borderGlass)" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
+                          {/* Content / Details */}
+                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                              تفاصيل البلاغ:
+                            </div>
+                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
+                              {feedback.content}
+                            </p>
+                          </div>
+
+                          {/* Image if available */}
+                          {feedback.image_url && (
+                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                                الصورة المرفقة:
+                              </div>
+                              <a href={feedback.image_url} target="_blank" rel="noopener noreferrer">
+                                <img
+                                  src={feedback.image_url}
+                                  alt="صورة البلاغ"
+                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--borderGlass)" }}
+                                />
+                              </a>
+                            </div>
+                          )}
+
+                          {/* Previous Admin Reply */}
+                          {feedback.admin_reply && (
+                            <div style={{ background: "rgba(16, 185, 129, 0.05)", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "14px 16px", borderRadius: "12px" }}>
+                              <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                <i className="bx bx-check-circle" /> الرد السابق المرسل للمستخدم:
+                              </div>
+                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textPrimary)", lineHeight: "1.6" }}>
+                                {feedback.admin_reply}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Actions form */}
+                          <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "14px" }}>
+                            <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800" }}>اتخاذ إجراء والرد على البلاغ</h4>
+
+                            {actionStatus && (
+                              <div style={{
+                                background: actionStatus.startsWith("خطأ") ? "rgba(255,59,48,0.1)" : "rgba(52,199,89,0.1)",
+                                color: actionStatus.startsWith("خطأ") ? "#ff3b30" : "#34c759",
+                                padding: "10px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "600", marginBottom: "12px"
+                              }}>
+                                {actionStatus}
+                              </div>
+                            )}
+
+                            {feedback.admin_reply && (
+                              <div style={{ marginBottom: "12px", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                                الرد الحالي: <strong>"{feedback.admin_reply}"</strong>
+                              </div>
+                            )}
+
+                            <textarea
+                              className="input-fields"
+                              style={{ width: "100%", minHeight: "80px", padding: "10px", fontSize: "0.9rem", resize: "vertical", fontFamily: "var(--font-heading)", marginBottom: "12px" }}
+                              placeholder="اكتب رد الإدارة للمستخدم هنا..."
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              disabled={updatingId !== null}
+                            />
+
+                            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                              <button
+                                onClick={() => handleUpdateAppFeedbackStatus(feedback, "pending")}
+                                disabled={updatingId !== null}
+                                className="btn"
+                                style={{
+                                  flex: 1,
+                                  background: "rgba(255, 149, 0, 0.1)",
+                                  border: "1px solid rgba(255, 149, 0, 0.2)",
+                                  color: "#ff9500",
+                                  fontSize: "0.85rem",
+                                  fontWeight: "bold"
+                                }}
+                              >
+                                {updatingId === feedback.id ? "جاري الحفظ..." : "قيد النظر 👀"}
+                              </button>
+
+                              <button
+                                onClick={() => handleUpdateAppFeedbackStatus(feedback, "reviewed")}
+                                disabled={updatingId !== null}
+                                className="btn"
+                                style={{
+                                  flex: 1,
+                                  background: "rgba(0, 122, 255, 0.1)",
+                                  border: "1px solid rgba(0, 122, 255, 0.2)",
+                                  color: "#007aff",
+                                  fontSize: "0.85rem",
+                                  fontWeight: "bold"
+                                }}
+                              >
+                                {updatingId === feedback.id ? "جاري الحفظ..." : "تمت المراجعة 🔎"}
+                              </button>
+
+                              <button
+                                onClick={() => handleUpdateAppFeedbackStatus(feedback, "action_taken")}
+                                disabled={updatingId !== null}
+                                className="btn"
+                                style={{
+                                  flex: 1,
+                                  background: "rgba(52, 199, 89, 0.1)",
+                                  border: "1px solid rgba(52, 199, 89, 0.2)",
+                                  color: "#34c759",
+                                  fontSize: "0.85rem",
+                                  fontWeight: "bold"
+                                }}
+                              >
+                                {updatingId === feedback.id ? "جاري الحفظ..." : "اتخاذ إجراء وحل المشكلة ✅"}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setReportToDelete({
+                                  id: feedback.id,
+                                  type: "feedback",
+                                  title: feedback.title ? `مشكلة LRT: ${feedback.title}` : "بلاغ LRT"
                                 })}
                                 disabled={updatingId !== null}
                                 className="btn"

@@ -35,7 +35,7 @@ export default function IncomingReportsPage() {
   const [feedbacks, setFeedbacks] = useState<IncomingFeedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "monorail" | "parking" | "directory" | "suggestions" | "bugs" | "routes">("all");
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "monorail" | "lrt" | "parking" | "directory" | "suggestions" | "bugs" | "routes">("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -168,7 +168,7 @@ export default function IncomingReportsPage() {
   }, [user, isAdmin, refreshKey, showToast]);
 
   // Helper to categorize item
-  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "monorail" | "parking" | "bugs" | "suggestions" | "routes" | "other" => {
+  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "monorail" | "lrt" | "parking" | "bugs" | "suggestions" | "routes" | "other" => {
     const cat = (item.category || "").toLowerCase();
     const title = (item.title || "").toLowerCase();
     const content = (item.content || "").toLowerCase();
@@ -196,7 +196,22 @@ export default function IncomingReportsPage() {
       return "monorail";
     }
 
-    // 3. Metro
+    // 3. LRT (Light Rail Transit)
+    if (
+      cat.includes("lrt") ||
+      cat.includes("القطار الكهربائي") ||
+      cat.includes("القطار الكهربي") ||
+      title.includes("lrt") ||
+      title.includes("القطار الكهربائي") ||
+      title.includes("القطار الكهربي") ||
+      content.includes("lrt") ||
+      content.includes("القطار الكهربائي") ||
+      content.includes("القطار الكهربي")
+    ) {
+      return "lrt";
+    }
+
+    // 4. Metro
     if (
       cat.includes("مترو") ||
       title.includes("مترو") ||
@@ -237,8 +252,9 @@ export default function IncomingReportsPage() {
     const directoryCount = feedbacks.filter((f) => getItemSection(f) === "directory").length;
     const metroCount = feedbacks.filter((f) => getItemSection(f) === "metro").length;
     const monorailCount = feedbacks.filter((f) => getItemSection(f) === "monorail").length;
+    const lrtCount = feedbacks.filter((f) => getItemSection(f) === "lrt").length;
     const parkingCount = feedbacks.filter((f) => getItemSection(f) === "parking").length;
-    return { total, pending, reviewed, actionTaken, directoryCount, metroCount, monorailCount, parkingCount };
+    return { total, pending, reviewed, actionTaken, directoryCount, metroCount, monorailCount, lrtCount, parkingCount };
   }, [feedbacks]);
 
   // Filtered feedbacks
@@ -254,6 +270,7 @@ export default function IncomingReportsPage() {
         const sec = getItemSection(item);
         if (categoryFilter === "metro" && sec !== "metro") return false;
         if (categoryFilter === "monorail" && sec !== "monorail") return false;
+        if (categoryFilter === "lrt" && sec !== "lrt") return false;
         if (categoryFilter === "parking" && sec !== "parking") return false;
         if (categoryFilter === "directory" && sec !== "directory") return false;
         if (categoryFilter === "bugs" && sec !== "bugs") return false;
@@ -395,6 +412,27 @@ export default function IncomingReportsPage() {
         >
           <i className="bx bx-train"></i>
           المونوريل
+        </span>
+      );
+    }
+    if (sec === "lrt") {
+      return (
+        <span
+          style={{
+            background: "rgba(6, 182, 212, 0.15)",
+            color: "#06b6d4",
+            border: "1px solid rgba(6, 182, 212, 0.3)",
+            padding: "3px 10px",
+            borderRadius: "8px",
+            fontSize: "0.76rem",
+            fontWeight: "700",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "5px",
+          }}
+        >
+          <i className="bx bx-train"></i>
+          القطار الكهربائي LRT
         </span>
       );
     }
@@ -1195,6 +1233,7 @@ export default function IncomingReportsPage() {
             { id: "all", label: "🌐 كل البلاغات والاقتراحات", count: feedbacks.length },
             { id: "metro", label: "🚇 المترو", count: stats.metroCount },
             { id: "monorail", label: "🚝 المونوريل", count: stats.monorailCount },
+            { id: "lrt", label: "🚊 القطار الكهربائي LRT", count: stats.lrtCount },
             { id: "parking", label: "🅿️ الجراجات والمواقف", count: stats.parkingCount },
             { id: "directory", label: "☎️ دليل الهاتف والأكواد", count: stats.directoryCount },
             { id: "bugs", label: "⚠️ بلاغات وأخطاء النظام", count: feedbacks.filter((f) => getItemSection(f) === "bugs").length },
@@ -1203,7 +1242,7 @@ export default function IncomingReportsPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "monorail" | "parking" | "directory" | "bugs" | "suggestions" | "routes")}
+              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "monorail" | "lrt" | "parking" | "directory" | "bugs" | "suggestions" | "routes")}
               style={{
                 padding: "8px 16px",
                 borderRadius: "30px",
@@ -1736,6 +1775,69 @@ export default function IncomingReportsPage() {
                             }}
                           >
                             <span>إدارة المونوريل</span>
+                            <i className="bx bx-cog"></i>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* LRT Direct Action Banner */}
+                    {getItemSection(item) === "lrt" && (
+                      <div
+                        style={{
+                          background: "rgba(6, 182, 212, 0.05)",
+                          border: "1px solid rgba(6, 182, 212, 0.2)",
+                          borderRadius: "12px",
+                          padding: "12px 16px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                          <i className="bx bx-train" style={{ color: "#06b6d4", fontSize: "1.2rem" }}></i>
+                          <span>بلاغ متعلق بخدمة ومحطات القطار الكهربائي LRT</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <Link
+                            href="/lrt"
+                            target="_blank"
+                            style={{
+                              background: "var(--bgSecondary)",
+                              border: "1px solid var(--borderGlass)",
+                              color: "var(--textPrimary)",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>معاينة LRT</span>
+                            <i className="bx bx-link-external"></i>
+                          </Link>
+                          <Link
+                            href="/admin/lrt"
+                            style={{
+                              background: "rgba(6, 182, 212, 0.15)",
+                              border: "1px solid rgba(6, 182, 212, 0.3)",
+                              color: "#06b6d4",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>إدارة LRT</span>
                             <i className="bx bx-cog"></i>
                           </Link>
                         </div>
