@@ -35,7 +35,7 @@ export default function IncomingReportsPage() {
   const [feedbacks, setFeedbacks] = useState<IncomingFeedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "directory" | "suggestions" | "bugs" | "routes">("all");
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "monorail" | "directory" | "suggestions" | "bugs" | "routes">("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -149,7 +149,7 @@ export default function IncomingReportsPage() {
   }, [user, isAdmin, refreshKey, showToast]);
 
   // Helper to categorize item
-  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "bugs" | "suggestions" | "routes" | "other" => {
+  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "monorail" | "bugs" | "suggestions" | "routes" | "other" => {
     const cat = (item.category || "").toLowerCase();
     const title = (item.title || "").toLowerCase();
     const content = (item.content || "").toLowerCase();
@@ -160,6 +160,14 @@ export default function IncomingReportsPage() {
       content.includes("مترو")
     ) {
       return "metro";
+    }
+
+    if (
+      cat.includes("مونوريل") ||
+      title.includes("مونوريل") ||
+      content.includes("مونوريل")
+    ) {
+      return "monorail";
     }
 
     if (
@@ -193,7 +201,8 @@ export default function IncomingReportsPage() {
     const actionTaken = feedbacks.filter((f) => f.status === "action_taken").length;
     const directoryCount = feedbacks.filter((f) => getItemSection(f) === "directory").length;
     const metroCount = feedbacks.filter((f) => getItemSection(f) === "metro").length;
-    return { total, pending, reviewed, actionTaken, directoryCount, metroCount };
+    const monorailCount = feedbacks.filter((f) => getItemSection(f) === "monorail").length;
+    return { total, pending, reviewed, actionTaken, directoryCount, metroCount, monorailCount };
   }, [feedbacks]);
 
   // Filtered feedbacks
@@ -208,6 +217,7 @@ export default function IncomingReportsPage() {
       if (categoryFilter !== "all") {
         const sec = getItemSection(item);
         if (categoryFilter === "metro" && sec !== "metro") return false;
+        if (categoryFilter === "monorail" && sec !== "monorail") return false;
         if (categoryFilter === "directory" && sec !== "directory") return false;
         if (categoryFilter === "bugs" && sec !== "bugs") return false;
         if (categoryFilter === "suggestions" && sec !== "suggestions") return false;
@@ -327,6 +337,27 @@ export default function IncomingReportsPage() {
         >
           <i className="bx bx-train"></i>
           المترو
+        </span>
+      );
+    }
+    if (sec === "monorail") {
+      return (
+        <span
+          style={{
+            background: "rgba(59, 130, 246, 0.15)",
+            color: "#3b82f6",
+            border: "1px solid rgba(59, 130, 246, 0.3)",
+            padding: "3px 10px",
+            borderRadius: "8px",
+            fontSize: "0.76rem",
+            fontWeight: "700",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "5px",
+          }}
+        >
+          <i className="bx bx-train"></i>
+          المونوريل
         </span>
       );
     }
@@ -949,6 +980,7 @@ export default function IncomingReportsPage() {
           {[
             { id: "all", label: "🌐 كل البلاغات والاقتراحات", count: feedbacks.length },
             { id: "metro", label: "🚇 المترو", count: stats.metroCount },
+            { id: "monorail", label: "🚝 المونوريل", count: stats.monorailCount },
             { id: "directory", label: "☎️ دليل الهاتف والأكواد", count: stats.directoryCount },
             { id: "bugs", label: "⚠️ بلاغات وأخطاء النظام", count: feedbacks.filter((f) => getItemSection(f) === "bugs").length },
             { id: "suggestions", label: "💡 اقتراحات الميزات والتطبيق", count: feedbacks.filter((f) => getItemSection(f) === "suggestions").length },
@@ -956,7 +988,7 @@ export default function IncomingReportsPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "directory" | "bugs" | "suggestions" | "routes")}
+              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "monorail" | "directory" | "bugs" | "suggestions" | "routes")}
               style={{
                 padding: "8px 16px",
                 borderRadius: "30px",
@@ -1396,6 +1428,69 @@ export default function IncomingReportsPage() {
                             }}
                           >
                             <span>إدارة المترو</span>
+                            <i className="bx bx-cog"></i>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Monorail Direct Action Banner */}
+                    {getItemSection(item) === "monorail" && (
+                      <div
+                        style={{
+                          background: "rgba(59, 130, 246, 0.05)",
+                          border: "1px solid rgba(59, 130, 246, 0.2)",
+                          borderRadius: "12px",
+                          padding: "12px 16px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                          <i className="bx bx-train" style={{ color: "#3b82f6", fontSize: "1.2rem" }}></i>
+                          <span>بلاغ متعلق بخدمة ومحطات قطار المونوريل</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <Link
+                            href="/monorail"
+                            target="_blank"
+                            style={{
+                              background: "var(--bgSecondary)",
+                              border: "1px solid var(--borderGlass)",
+                              color: "var(--textPrimary)",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>معاينة المونوريل</span>
+                            <i className="bx bx-link-external"></i>
+                          </Link>
+                          <Link
+                            href="/admin/monorail"
+                            style={{
+                              background: "rgba(59, 130, 246, 0.15)",
+                              border: "1px solid rgba(59, 130, 246, 0.3)",
+                              color: "#3b82f6",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>إدارة المونوريل</span>
                             <i className="bx bx-cog"></i>
                           </Link>
                         </div>

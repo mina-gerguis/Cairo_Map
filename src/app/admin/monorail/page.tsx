@@ -489,12 +489,11 @@ function AdminMonorailInner() {
                     padding: "6px 14px",
                     borderRadius: "10px",
                     fontSize: "0.82rem",
-                    fontWeight: "800",
                     fontFamily: "var(--font-body)",
                     cursor: "pointer",
                     transition: "all 0.25s ease",
                     border: "1px solid",
-                    borderColor: adminActiveMonorailLine === opt.id ? opt.color : "rgba(255,255,255,0.08)",
+                    borderColor: adminActiveMonorailLine === opt.id ? opt.color : "var(--borderGlass)",
                     background: adminActiveMonorailLine === opt.id ? `rgba(${opt.id === "west" ? "16, 185, 129" : opt.id === "east" ? "59, 130, 246" : "99, 102, 241"}, 0.15)` : "rgba(255,255,255,0.02)",
                     color: adminActiveMonorailLine === opt.id ? opt.color : "#94a3b8"
                   }}
@@ -536,10 +535,14 @@ function AdminMonorailInner() {
                         <span style={{
                           background: lineColor + "15",
                           color: lineColor,
-                          padding: "4px 10px",
-                          borderRadius: "8px",
+                          borderRadius: "var(--radius-full)",
                           fontSize: "0.85rem",
-                          border: `1px solid ${lineColor}25`
+                          border: `1px solid ${lineColor}25`,
+                          width: "25px",
+                          height: "25px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
                         }}>
                           {station.station_order}
                         </span>
