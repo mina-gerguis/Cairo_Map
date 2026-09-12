@@ -342,14 +342,14 @@ function AdminParkingInner() {
       {/* Sub header operations */}
       <div className={styles.sectionHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
-          <h2 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--textPrimary)", margin: 0, fontFamily: "var(--font-heading)" }}>
-            إدارة الجراجات وخدمة "اركن واركب" (Park & Ride)
+          <h2 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--textPrimary)", margin: 0, }}>
+            إدارة الجراجات وخدمة 
           </h2>
           <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "4px", margin: 0 }}>
             يمكنك إضافة، تعديل، وحذف بيانات الجراجات المتاحة في التطبيق وربطها بمحطات المترو والأسعار.
           </p>
         </div>
-        <button onClick={handleOpenAdd} className={styles.addButton} style={{ fontFamily: "var(--font-heading)" }}>
+        <button onClick={handleOpenAdd} className="btn" style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)", color: "#fff", padding: "10px 20px" }}>
           <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
           إضافة جراج جديد
         </button>
@@ -371,9 +371,6 @@ function AdminParkingInner() {
             <i className="bx bx-warning" style={{ fontSize: "1.3rem" }} />
             <span>يعمل في وضع الحفظ المحلي (LocalStorage)</span>
           </div>
-          <p style={{ color: "#d97706", fontSize: "0.85rem", margin: 0, lineHeight: "1.6" }}>
-            لم يتم العثور على جدول قاعدة البيانات المناسب للجراجات (`parking_spots`) في Supabase. التغييرات التي تقوم بها هنا سيتم حفظها في متصفحك الحالي فقط كحفظ احتياطي مؤقت.
-          </p>
         </div>
       )}
 
@@ -392,7 +389,7 @@ function AdminParkingInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--text-muted, #94a3b8)",
+            color: "var(--textMuted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -411,7 +408,7 @@ function AdminParkingInner() {
             }}
           />
         </div>
-        <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
+        <div style={{ fontSize: "0.9rem", color: "var(--textMuted)" }}>
           إجمالي الجراجات: {filteredRows.length}
         </div>
       </div>
@@ -475,27 +472,10 @@ function AdminParkingInner() {
                   </td>
                   <td className={styles.adminTd}>
                     <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                      <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
-                        style={{
-                          padding: "5px",
-                          borderRadius: "50%",
-                          background: "var(--bgSecondary)",
-                          border: "none",
-                          cursor: "pointer"
-                        }}
-                      >
+                      <button onClick={() => handleOpenEdit(item)} className="actionBtn actionBtnEdit" title="تعديل">
                         <i className="bx bx-edit-alt" />
                       </button>
-                      <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
-                        style={{
-                          padding: "5px",
-                          borderRadius: "50%",
-                          background: "#ff000025",
-                          color: "#ff0000f5",
-                          border: "none",
-                          cursor: "pointer"
-                        }}
-                      >
+                      <button onClick={() => handleDelete(item)} className="actionBtn actionBtnDelete" title="حذف">
                         <i className="bx bx-trash" />
                       </button>
                     </div>
@@ -556,7 +536,7 @@ function AdminParkingInner() {
             padding: "30px",
             border: "1px solid var(--borderGlass)",
             background: "#0f172a",
-            borderRadius: "20px",
+            borderRadius: "var(--radius-card)",
             boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "12px" }}>
@@ -571,102 +551,108 @@ function AdminParkingInner() {
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم الجراج *</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>اسم الجراج *</label>
                   <input
                     type="text"
                     required
                     value={formData.name || ""}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     className="input-fields"
+                    placeholder="أدخل اسم الجراج"
                     style={{ width: "100%" }}
                   />
                 </div>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المنطقة *</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>المنطقة *</label>
                   <input
                     type="text"
                     required
                     value={formData.area || ""}
                     onChange={e => setFormData({ ...formData, area: e.target.value })}
                     className="input-fields"
+                    placeholder="أدخل المنطقة"
                     style={{ width: "100%" }}
                   />
                 </div>
               </div>
 
               <div>
-                <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>العنوان *</label>
+                <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>العنوان *</label>
                 <input
                   type="text"
                   required
                   value={formData.address || ""}
                   onChange={e => setFormData({ ...formData, address: e.target.value })}
                   className="input-fields"
+                  placeholder="أدخل العنوان"
                   style={{ width: "100%" }}
                 />
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>أقرب محطة مترو *</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>أقرب محطة مترو *</label>
                   <input
                     type="text"
                     required
                     value={formData.nearestMetro || ""}
                     onChange={e => setFormData({ ...formData, nearestMetro: e.target.value })}
                     className="input-fields"
+                    placeholder="أدخل أقرب محطة مترو"
                     style={{ width: "100%" }}
                   />
                 </div>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>نوع الجراج *</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>نوع الجراج *</label>
                   <select
-                    value={formData.type || "مغطى ومتعدد الطوابق 🏢"}
+                    value={formData.type || "مغطى ومتعدد الطوابق"}
                     onChange={e => setFormData({ ...formData, type: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", height: "46px", background: "rgba(255,255,255,0.03)", border: "1px solid var(--borderGlass)", color: "#fff", borderRadius: "10px", padding: "0 10px" }}
+                    style={{ width: "100%" }}
                   >
-                    <option value="مغطى ومتعدد الطوابق 🏢" style={{ color: "#000" }}>مغطى ومتعدد الطوابق 🏢</option>
-                    <option value="جراج ذكي إلكتروني 🤖" style={{ color: "#000" }}>جراج ذكي إلكتروني 🤖</option>
-                    <option value="جراج سطحي مفتوح 🅿️" style={{ color: "#000" }}>جراج سطحي مفتوح 🅿️</option>
+                    <option value="مغطى ومتعدد الطوابق">مغطى ومتعدد الطوابق</option>
+                    <option value="جراج ذكي إلكتروني">جراج ذكي إلكتروني</option>
+                    <option value="جراج سطحي مفتوح">جراج سطحي مفتوح</option>
                   </select>
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "14px" }}>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>سعر الساعة (ج.م) *</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>سعر الساعة (ج.م) *</label>
                   <input
                     type="number"
                     required
                     min="0"
-                    value={formData.hourlyRate ?? 0}
+                    value={formData.hourlyRate || ""}
                     onChange={e => setFormData({ ...formData, hourlyRate: Number(e.target.value) })}
                     className="input-fields"
+                    placeholder="أدخل سعر الساعة"
                     style={{ width: "100%" }}
                   />
                 </div>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الحد الأقصى اليومي (ج.م)</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>الحد الأقصى اليومي (ج.م)</label>
                   <input
                     type="number"
                     min="0"
-                    placeholder="اختياري"
-                    value={formData.maxDailyRate ?? ""}
+                    placeholder="أدخل الحد الأقصى اليومي"
+                    value={formData.maxDailyRate || ""}
                     onChange={e => setFormData({ ...formData, maxDailyRate: e.target.value !== "" ? Number(e.target.value) : "" })}
                     className="input-fields"
                     style={{ width: "100%" }}
                   />
                 </div>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>السعة الإجمالية (سيارات) *</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>السعة الإجمالية (سيارات) *</label>
                   <input
                     type="number"
                     required
                     min="0"
-                    value={formData.capacity ?? 0}
+                    value={formData.capacity || ""}
                     onChange={e => setFormData({ ...formData, capacity: Number(e.target.value) })}
                     className="input-fields"
+                    placeholder="أدخل السعة الإجمالية"
                     style={{ width: "100%" }}
                   />
                 </div>
@@ -674,18 +660,19 @@ function AdminParkingInner() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>ساعات العمل *</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>ساعات العمل *</label>
                   <input
                     type="text"
                     required
                     value={formData.hours || ""}
+                    placeholder="أدخل ساعات العمل"
                     onChange={e => setFormData({ ...formData, hours: e.target.value })}
                     className="input-fields"
                     style={{ width: "100%" }}
                   />
                 </div>
                 <div>
-                  <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>رابط خرائط جوجل</label>
+                  <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>رابط خرائط جوجل</label>
                   <input
                     type="text"
                     placeholder="رابط الموقع الجغرافي"
@@ -698,7 +685,7 @@ function AdminParkingInner() {
               </div>
 
               <div>
-                <label className={clxs("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الميزات (مفصولة بفاصلة)</label>
+                <label className={clxs("help-label")} style={{ display: "block", marginBottom: "6px", color: "#fff" }}>الميزات (مفصولة بفاصلة)</label>
                 <input
                   type="text"
                   placeholder="كاميرات مراقبة, أمن وحراسة, مصاعد..."
@@ -712,30 +699,16 @@ function AdminParkingInner() {
               <div style={{ display: "flex", gap: "12px", marginTop: "10px", justifyContent: "flex-end" }}>
                 <button
                   type="submit"
-                  style={{
-                    background: "var(--colorSecondary, #3b82f6)",
-                    color: "#fff",
-                    border: "none",
-                    padding: "10px 20px",
-                    borderRadius: "10px",
-                    fontWeight: "bold",
-                    fontFamily: "var(--font-heading)",
-                    cursor: "pointer"
-                  }}
+                  className="btn btn-primary"
                 >
                   حفظ البيانات
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  style={{
-                    background: "rgba(255,255,255,0.08)",
+                  className="btn btn-cancel"
+                 style={{
                     color: "#fff",
-                    border: "none",
-                    padding: "10px 20px",
-                    borderRadius: "10px",
-                    fontFamily: "var(--font-heading)",
-                    cursor: "pointer"
                   }}
                 >
                   إلغاء

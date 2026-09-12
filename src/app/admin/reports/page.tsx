@@ -41,7 +41,7 @@ export default function AdminReportsPage() {
   const [activeReportId, setActiveReportId] = useState<string | null>(null);
 
   // App Suggestions & Bugs State
-  const [activeReportTab, setActiveReportTab] = useState<"places" | "suggestions" | "bugs" | "metro" | "monorail" | "contacts" | "microbus">("places");
+  const [activeReportTab, setActiveReportTab] = useState<"places" | "suggestions" | "bugs" | "metro" | "monorail" | "parking" | "contacts" | "microbus">("places");
   const [appFeedbacks, setAppFeedbacks] = useState<any[]>([]);
   const [loadingAppFeedbacks, setLoadingAppFeedbacks] = useState(true);
   const [appStatusFilter, setAppStatusFilter] = useState<string>("all");
@@ -77,6 +77,25 @@ export default function AdminReportsPage() {
     reportId: string;
   } | null>(null);
   const [isDeletingPlace, setIsDeletingPlace] = useState(false);
+
+  // Add Suggested Garage Modal State
+  const [suggestedGarageModal, setSuggestedGarageModal] = useState<{
+    feedbackId: string;
+    feedbackUserId: string;
+    name: string;
+    area: string;
+    address: string;
+    nearestMetro: string;
+    type: string;
+    hourlyRate: number;
+    maxDailyRate: string;
+    capacity: number;
+    hours: string;
+    features: string;
+    mapLocationLink: string;
+  } | null>(null);
+  const [isAddingGarage, setIsAddingGarage] = useState(false);
+  const [garageAddError, setGarageAddError] = useState("");
 
   // Auto-clear actionStatus toast
   useEffect(() => {
@@ -548,6 +567,159 @@ export default function AdminReportsPage() {
     }
   };
 
+  const parseSuggestedGarageFromFeedback = (feedback: any) => {
+    const text = feedback.content || "";
+    const getField = (prefix: string) => {
+      const line = text.split("\n").find((l: string) => l.includes(prefix));
+      if (!line) return "";
+      return line.replace(prefix, "").replace(/^[:\s]+/, "").trim();
+    };
+
+    const nameMatch = feedback.title?.replace(/^اقتراح جراج جديد:\s*/, "")?.trim() || getField("اسم الجراج المقترح") || getField("اسم الجراج");
+    const area = getField("المنطقة / الحي") || getField("المنطقة") || "وسط البلد";
+    const address = getField("العنوان والمعالم") || getField("العنوان") || "";
+    const nearestMetro = getField("أقرب محطة مترو") || getField("أقرب مترو") || "";
+    const type = getField("نوع الجراج") || "مغطى ومتعدد الطوابق";
+    
+    // Parse hourly rate
+    const rateStr = getField("سعر الساعة التقديري") || getField("سعر الساعة");
+    const hourlyRateNum = parseInt(rateStr.replace(/\D/g, ""), 10) || 10;
+
+    // Parse capacity
+    const capStr = getField("السعة التقديرية") || getField("السعة");
+    const capNum = parseInt(capStr.replace(/\D/g, ""), 10) || 100;
+
+    // Parse map link
+    const mapLink = getField("رابط خرائط جوجل") || getField("خرائط جوجل") || "";
+
+    // Parse features
+    const featuresStr = getField("الميزات المتوفرة") || getField("الميزات") || "أمن وحراسة, كاميرات مراقبة";
+
+    return {
+      feedbackId: feedback.id,
+      feedbackUserId: feedback.user_id,
+      name: nameMatch || "جراج مقترح",
+      area,
+      address,
+      nearestMetro,
+      type: type.includes("ذكي") ? "جراج ذكي إلكتروني" : (type.includes("سطحي") ? "جراج سطحي مفتوح" : "مغطى ومتعدد الطوابق"),
+      hourlyRate: hourlyRateNum,
+      maxDailyRate: "",
+      capacity: capNum,
+      hours: "24 ساعة طوال الأسبوع",
+      features: featuresStr,
+      mapLocationLink: mapLink
+    };
+  };
+
+  const handleConfirmAddSuggestedGarage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!suggestedGarageModal) return;
+    if (!supabase || !isAdmin) {
+      setGarageAddError("لا توجد صلاحيات كافية أو تعذر الاتصال بقاعدة البيانات.");
+      return;
+    }
+
+    setIsAddingGarage(true);
+    setGarageAddError("");
+
+    try {
+      const featuresArray = typeof suggestedGarageModal.features === "string"
+        ? suggestedGarageModal.features.split(/[،,]/).map((f: string) => f.trim()).filter(Boolean)
+        : suggestedGarageModal.features;
+
+      const newSpotRecord = {
+        name: suggestedGarageModal.name.trim(),
+        area: suggestedGarageModal.area.trim(),
+        address: suggestedGarageModal.address.trim(),
+        nearest_metro: suggestedGarageModal.nearestMetro.trim(),
+        hourly_rate: Number(suggestedGarageModal.hourlyRate || 0),
+        max_daily_rate: suggestedGarageModal.maxDailyRate !== "" && suggestedGarageModal.maxDailyRate !== null ? Number(suggestedGarageModal.maxDailyRate) : null,
+        capacity: Number(suggestedGarageModal.capacity || 0),
+        type: suggestedGarageModal.type,
+        hours: suggestedGarageModal.hours || "24 ساعة طوال الأسبوع",
+        features: featuresArray,
+        map_location_link: suggestedGarageModal.mapLocationLink || ""
+      };
+
+      // 1. Insert into parking_spots
+      const { error: insertError } = await supabase
+        .from("parking_spots")
+        .insert([newSpotRecord]);
+
+      if (insertError) throw insertError;
+
+      // 2. Also keep local storage fallback in sync
+      if (typeof window !== "undefined") {
+        try {
+          const saved = localStorage.getItem("local_parking_spots");
+          const spots = saved ? JSON.parse(saved) : [];
+          if (Array.isArray(spots)) {
+            spots.unshift({
+              id: `local_${Date.now()}`,
+              name: newSpotRecord.name,
+              area: newSpotRecord.area,
+              address: newSpotRecord.address,
+              nearestMetro: newSpotRecord.nearest_metro,
+              hourlyRate: newSpotRecord.hourly_rate,
+              maxDailyRate: newSpotRecord.max_daily_rate,
+              capacity: newSpotRecord.capacity,
+              type: newSpotRecord.type,
+              hours: newSpotRecord.hours,
+              features: newSpotRecord.features,
+              mapLocationLink: newSpotRecord.map_location_link
+            });
+            localStorage.setItem("local_parking_spots", JSON.stringify(spots));
+          }
+        } catch (e) {
+          console.error("Failed to sync local_parking_spots:", e);
+        }
+      }
+
+      // 3. Mark the feedback proposal as action_taken
+      const { error: updateFeedbackError } = await supabase
+        .from("app_feedback")
+        .update({
+          status: "action_taken",
+          admin_reply: replyText.trim() || `تمت مراجعة الاقتراح وإضافة الجراج (${newSpotRecord.name}) رسمياً إلى دليل الجراجات. شكراً لمساهمتك!`,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", suggestedGarageModal.feedbackId);
+
+      if (updateFeedbackError) console.error("Error updating feedback status:", updateFeedbackError);
+
+      // 4. Send notification to the user
+      if (suggestedGarageModal.feedbackUserId) {
+        try {
+          await supabase.from("notifications").insert([{
+            user_id: suggestedGarageModal.feedbackUserId,
+            title: "🎉 تم قبول وإضافة الجراج الذي اقترحته!",
+            message: `يسعدنا إخبارك بأنه تم اعتماد اقتراحك وإضافة جراج "${newSpotRecord.name}" رسمياً إلى دليل جراجات القاهرة. شكراً لدعمك المستمر!`,
+            type: "success",
+            link: "/parking"
+          }]);
+        } catch (notifErr) {
+          console.error("Failed to notify user of garage addition:", notifErr);
+        }
+      }
+
+      // 5. Update Solved Count
+      const nextCount = solvedCount + 1;
+      setSolvedCount(nextCount);
+      localStorage.setItem("dftry_solved_bugs_count", nextCount.toString());
+
+      setActionStatus(`تمت إضافة جراج "${newSpotRecord.name}" بنجاح وتحديث حالة الاقتراح! ✅`);
+      setSuggestedGarageModal(null);
+      setReplyText("");
+      fetchAppFeedbacks();
+    } catch (err: any) {
+      console.error("Error adding suggested garage:", err);
+      setGarageAddError(err?.message || "فشلت عملية إضافة الجراج.");
+    } finally {
+      setIsAddingGarage(false);
+    }
+  };
+
   const handleUpdateStatus = async (report: PlaceReport, newStatus: string) => {
     if (!supabase || !isAdmin) return;
     setUpdatingId(report.id);
@@ -669,17 +841,33 @@ export default function AdminReportsPage() {
     return appStatusFilter === "all" || f.status === appStatusFilter;
   });
 
-  const isMetroFeedback = (f: any) =>
-    f.category === "مترو الأنفاق" ||
-    (f.title && f.title.toLowerCase().includes("مترو")) ||
-    (f.content && f.content.toLowerCase().includes("مترو"));
+  const isParkingFeedback = (f: any) =>
+    f.category === "جراجات" ||
+    f.category === "باركينج" ||
+    f.category === "مواقف" ||
+    f.category === "parking" ||
+    (f.title && (f.title.toLowerCase().includes("جراج") || f.title.toLowerCase().includes("باركينج") || f.title.toLowerCase().includes("parking"))) ||
+    (f.content && (f.content.toLowerCase().includes("جراج") || f.content.toLowerCase().includes("باركينج")));
 
   const isMonorailFeedback = (f: any) =>
-    f.category === "مونوريل" ||
-    f.category === "المونوريل" ||
-    f.category === "مونوريل القاهرة" ||
-    (f.title && (f.title.toLowerCase().includes("مونوريل") || f.title.toLowerCase().includes("المونوريل"))) ||
-    (f.content && (f.content.toLowerCase().includes("مونوريل") || f.content.toLowerCase().includes("المونوريل")));
+    !isParkingFeedback(f) &&
+    (
+      f.category === "مونوريل" ||
+      f.category === "المونوريل" ||
+      f.category === "مونوريل القاهرة" ||
+      (f.title && (f.title.toLowerCase().includes("مونوريل") || f.title.toLowerCase().includes("المونوريل"))) ||
+      (f.content && (f.content.toLowerCase().includes("مونوريل") || f.content.toLowerCase().includes("المونوريل")))
+    );
+
+  const isMetroFeedback = (f: any) =>
+    !isParkingFeedback(f) &&
+    !isMonorailFeedback(f) &&
+    (
+      f.category === "مترو الأنفاق" ||
+      f.category === "مترو" ||
+      (f.title && f.title.toLowerCase().includes("مترو")) ||
+      (f.content && f.content.toLowerCase().includes("مترو"))
+    );
 
   const metroReports = appFeedbacks.filter(isMetroFeedback);
   const filteredMetroReports = metroReports.filter(f => {
@@ -691,7 +879,12 @@ export default function AdminReportsPage() {
     return appStatusFilter === "all" || f.status === appStatusFilter;
   });
 
-  const bugs = appFeedbacks.filter(f => f.type === "bug" && !isMetroFeedback(f) && !isMonorailFeedback(f));
+  const parkingReports = appFeedbacks.filter(isParkingFeedback);
+  const filteredParkingReports = parkingReports.filter(f => {
+    return appStatusFilter === "all" || f.status === appStatusFilter;
+  });
+
+  const bugs = appFeedbacks.filter(f => f.type === "bug" && !isMetroFeedback(f) && !isMonorailFeedback(f) && !isParkingFeedback(f));
   const filteredBugs = bugs.filter(f => {
     const statusMatch = appStatusFilter === "all" || f.status === appStatusFilter;
     const categoryMatch = bugCategoryFilter === "all" || f.category === bugCategoryFilter;
@@ -712,7 +905,7 @@ export default function AdminReportsPage() {
         <button
           onClick={() => {
             if (activeReportTab === "places") fetchReports();
-            else if (activeReportTab === "suggestions" || activeReportTab === "bugs" || activeReportTab === "metro" || activeReportTab === "monorail") fetchAppFeedbacks();
+            else if (activeReportTab === "suggestions" || activeReportTab === "bugs" || activeReportTab === "metro" || activeReportTab === "monorail" || activeReportTab === "parking") fetchAppFeedbacks();
             else if (activeReportTab === "contacts") fetchContactMessages();
             else if (activeReportTab === "microbus") fetchMicrobusReports();
           }}
@@ -849,6 +1042,31 @@ export default function AdminReportsPage() {
           }}
         >
           المونوريل ({monorailReports.length})
+        </button>
+        <button
+          onClick={() => {
+            setActiveReportTab("parking");
+            setActiveReportId(null);
+            setReplyText("");
+            setActionStatus("");
+            setAppStatusFilter("all");
+          }}
+          style={{
+            flex: 1,
+            padding: "10px 14px",
+            borderRadius: "10px",
+            border: "none",
+            background: activeReportTab === "parking" ? "var(--colorPrimary)" : "transparent",
+            color: activeReportTab === "parking" ? "#fff" : "var(--textSecondary)",
+            fontWeight: "bold",
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            transition: "all 0.2s",
+            fontFamily: "var(--font-body)",
+            whiteSpace: "nowrap"
+          }}
+        >
+          الجراجات ({parkingReports.length})
         </button>
         <button
           onClick={() => {
@@ -2800,6 +3018,441 @@ export default function AdminReportsPage() {
         </>
       )}
 
+      {activeReportTab === "parking" && (
+        <>
+          {/* Solved Count Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+                تصفية حسب الحالة:
+              </div>
+              <Link
+                href="/admin/parking"
+                style={{
+                  background: "rgba(245, 158, 11, 0.12)",
+                  border: "1px solid rgba(245, 158, 11, 0.3)",
+                  color: "#f59e0b",
+                  padding: "4px 12px",
+                  borderRadius: "8px",
+                  fontSize: "0.78rem",
+                  fontWeight: "bold",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                <i className="bx bx-cog"></i>
+                إدارة الجراجات والمواقف
+              </Link>
+            </div>
+            <div style={{
+              background: "rgba(52, 199, 89, 0.12)",
+              border: "1px solid rgba(52, 199, 89, 0.2)",
+              borderRadius: "14px",
+              padding: "8px 16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              color: "#34c759",
+              fontWeight: "bold",
+              fontSize: "0.9rem"
+            }}>
+              <i className="bx bx-check-double" style={{ fontSize: "1.2rem" }}></i>
+              <span>عدد بلاغات الجراجات المحلولة: {parkingReports.filter(b => b.status === "action_taken").length}</span>
+            </div>
+          </div>
+
+          {/* Filter Tabs for Parking Reports Status */}
+          <div style={{ display: "flex", gap: "10px", marginBottom: "20px", overflowX: "auto", paddingBottom: "8px" }}>
+            {["all", "pending", "reviewed", "action_taken"].map((status) => {
+              const count = status === "all" ? parkingReports.length : parkingReports.filter(r => r.status === status).length;
+              let label = "الكل";
+              if (status === "pending") label = "قيد النظر";
+              if (status === "reviewed") label = "تمت المراجعة";
+              if (status === "action_taken") label = "تم اتخاذ إجراء";
+
+              const isActive = appStatusFilter === status;
+              return (
+                <button
+                  key={status}
+                  onClick={() => setAppStatusFilter(status)}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "20px",
+                    border: "none",
+                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    color: isActive ? "#fff" : "var(--textSecondary)",
+                    fontWeight: "bold",
+                    fontSize: "0.85rem",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    fontFamily: "var(--font-heading)",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  {label} ({count})
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Parking Reports List */}
+          {loadingAppFeedbacks ? (
+            <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل بلاغات الجراجات والمواقف...</div>
+          ) : filteredParkingReports.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--borderGlass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+              <i className="bx bx-check-shield" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px", color: "#f59e0b" }}></i>
+              <span>لا توجد بلاغات أو مشاكل مسجلة للجراجات مطابقة للتصفية الحالية</span>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px" }}>
+              {filteredParkingReports.map((feedback) => {
+                const isOpen = activeReportId === feedback.id;
+                const formattedDate = new Date(feedback.created_at).toLocaleDateString("ar-EG", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit"
+                });
+
+                return (
+                  <div
+                    key={feedback.id}
+                    style={{
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid var(--borderGlass)",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    {/* Header Row */}
+                    <div
+                      onClick={() => {
+                        setActiveReportId(isOpen ? null : feedback.id);
+                        setReplyText(feedback.admin_reply || "");
+                      }}
+                      style={{
+                        padding: "16px 20px",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        background: isOpen ? "rgba(255,255,255,0.03)" : "transparent",
+                        flexWrap: "wrap",
+                        gap: "10px"
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                        {getAppStatusBadge(feedback.status)}
+                        <span style={{ fontWeight: "bold", fontSize: "1rem", color: "var(--textPrimary)" }}>
+                          {feedback.title || "مشكلة في دليل الجراجات"}
+                        </span>
+                        <span style={{
+                          background: feedback.type === "suggestion" ? "rgba(59, 130, 246, 0.15)" : "rgba(245, 158, 11, 0.12)",
+                          color: feedback.type === "suggestion" ? "#3b82f6" : "#f59e0b",
+                          border: feedback.type === "suggestion" ? "1px solid rgba(59, 130, 246, 0.3)" : "1px solid rgba(245, 158, 11, 0.25)",
+                          fontSize: "0.74rem",
+                          padding: "2px 8px",
+                          borderRadius: "6px",
+                          fontWeight: "bold"
+                        }}>
+                          {feedback.type === "suggestion" ? "💡 اقتراح جراج جديد" : "🅿️ بلاغ جراج"}
+                        </span>
+                      </div>
+
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                        {feedback.type === "suggestion" && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setGarageAddError("");
+                              const parsed = parseSuggestedGarageFromFeedback(feedback);
+                              setSuggestedGarageModal(parsed);
+                            }}
+                            disabled={updatingId !== null || isAddingGarage}
+                            className="btn"
+                            style={{
+                              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                              border: "none",
+                              color: "#fff",
+                              fontSize: "0.82rem",
+                              fontWeight: "bold",
+                              padding: "6px 14px",
+                              borderRadius: "8px",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                              boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
+                              cursor: "pointer",
+                              zIndex: 2
+                            }}
+                          >
+                            <i className="fa-solid fa-plus-circle" style={{ fontSize: "0.9rem" }}></i>
+                            <span>إضافة الجراج للدليل فوراً 🅿️✨</span>
+                          </button>
+                        )}
+                        <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                          {formattedDate}
+                        </span>
+                        <i
+                          className={`bx bx-chevron-${isOpen ? "up" : "down"}`}
+                          style={{ fontSize: "1.4rem", color: "var(--textSecondary)" }}
+                        ></i>
+                      </div>
+                    </div>
+
+                    {/* Expandable Details */}
+                    {isOpen && (
+                      <div style={{ padding: "20px", borderTop: "1px solid var(--borderGlass)", background: "rgba(0,0,0,0.15)" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px" }}>
+                          
+                          {/* User Info Bar */}
+                          <div style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "16px",
+                            padding: "12px 16px",
+                            background: "rgba(255,255,255,0.03)",
+                            borderRadius: "12px",
+                            fontSize: "0.85rem",
+                            border: "1px solid var(--borderGlass)"
+                          }}>
+                            <div>
+                              <span style={{ color: "var(--textSecondary)" }}>المستخدم: </span>
+                              <span style={{ fontWeight: "bold", color: "var(--textPrimary)" }}>
+                                {feedback.user_profile?.full_name || "مستخدم مجهول"}
+                              </span>
+                            </div>
+                            {feedback.user_profile?.phone && (
+                              <div>
+                                <span style={{ color: "var(--textSecondary)" }}>الهاتف: </span>
+                                <a href={`tel:${feedback.user_profile.phone}`} style={{ color: "var(--colorSuccess)", textDecoration: "none", direction: "ltr" }}>
+                                  {feedback.user_profile.phone}
+                                </a>
+                              </div>
+                            )}
+                            {feedback.user_profile?.email && (
+                              <div>
+                                <span style={{ color: "var(--textSecondary)" }}>البريد: </span>
+                                <span style={{ color: "var(--textPrimary)" }}>{feedback.user_profile.email}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Problem Details */}
+                          <div>
+                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                              تفاصيل البلاغ:
+                            </div>
+                            <div style={{
+                              padding: "14px 18px",
+                              background: "rgba(255,255,255,0.02)",
+                              borderRadius: "12px",
+                              border: "1px solid var(--borderGlass)",
+                              lineHeight: "1.7",
+                              fontSize: "0.92rem",
+                              color: "var(--textPrimary)",
+                              whiteSpace: "pre-line"
+                            }}>
+                              {feedback.content}
+                            </div>
+                          </div>
+
+                          {/* Image Attachment */}
+                          {feedback.image_url && (
+                            <div>
+                              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                                الصورة المرفقة مع البلاغ:
+                              </div>
+                              <a
+                                href={feedback.image_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ display: "inline-block" }}
+                              >
+                                <img
+                                  src={feedback.image_url}
+                                  alt="مرفق البلاغ"
+                                  style={{
+                                    maxWidth: "280px",
+                                    maxHeight: "180px",
+                                    borderRadius: "10px",
+                                    border: "1px solid var(--borderGlass)",
+                                    objectFit: "cover"
+                                  }}
+                                />
+                              </a>
+                            </div>
+                          )}
+
+                          {/* Existing Reply */}
+                          {feedback.admin_reply && (
+                            <div>
+                              <div style={{ fontSize: "0.85rem", color: "var(--colorSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                                رد الإدارة السابق:
+                              </div>
+                              <div style={{
+                                padding: "12px 16px",
+                                background: "rgba(59, 130, 246, 0.08)",
+                                borderRadius: "10px",
+                                border: "1px solid rgba(59, 130, 246, 0.2)",
+                                fontSize: "0.9rem",
+                                color: "var(--textPrimary)",
+                                lineHeight: "1.6"
+                              }}>
+                                {feedback.admin_reply}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Admin Reply & Status Actions Form */}
+                          <div style={{ marginTop: "10px" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                              إضافة رد الإدارة أو اتخاذ إجراء:
+                            </div>
+                            <textarea
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              placeholder="اكتب ردك هنا (سيتم إرسال إشعار للمستخدم بالرد)..."
+                              style={{
+                                width: "100%",
+                                minHeight: "80px",
+                                padding: "12px",
+                                borderRadius: "10px",
+                                background: "var(--bgSecondary)",
+                                border: "1px solid var(--borderGlass)",
+                                color: "var(--textPrimary)",
+                                fontFamily: "var(--font-heading)",
+                                fontSize: "0.9rem",
+                                resize: "vertical",
+                                marginBottom: "12px"
+                              }}
+                            />
+
+                            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
+                              {replyText.trim() && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateAppFeedbackStatus(feedback, feedback.status)}
+                                  disabled={updatingId !== null}
+                                  className="btn"
+                                  style={{
+                                    background: "rgba(59, 130, 246, 0.15)",
+                                    border: "1px solid rgba(59, 130, 246, 0.3)",
+                                    color: "#3b82f6",
+                                    fontSize: "0.85rem",
+                                    fontWeight: "bold"
+                                  }}
+                                >
+                                  {updatingId === feedback.id ? "جاري الحفظ..." : "حفظ الرد فقط"}
+                                </button>
+                              )}
+
+                              {feedback.type === "suggestion" && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setGarageAddError("");
+                                    const parsed = parseSuggestedGarageFromFeedback(feedback);
+                                    setSuggestedGarageModal(parsed);
+                                  }}
+                                  disabled={updatingId !== null || isAddingGarage}
+                                  className="btn"
+                                  style={{
+                                    background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                                    border: "none",
+                                    color: "#fff",
+                                    fontSize: "0.88rem",
+                                    fontWeight: "bold",
+                                    padding: "8px 16px",
+                                    borderRadius: "8px",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "6px",
+                                    boxShadow: "0 2px 8px rgba(37, 99, 235, 0.3)",
+                                    cursor: "pointer"
+                                  }}
+                                >
+                                  <i className="fa-solid fa-plus-circle" style={{ fontSize: "1rem" }}></i>
+                                  <span>إضافة الجراج للدليل فوراً 🅿️✨</span>
+                                </button>
+                              )}
+
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateAppFeedbackStatus(feedback, "reviewed")}
+                                disabled={updatingId !== null || feedback.status === "reviewed"}
+                                className="btn"
+                                style={{
+                                  background: "rgba(255, 149, 0, 0.1)",
+                                  border: "1px solid rgba(255, 149, 0, 0.2)",
+                                  color: "#ff9500",
+                                  fontSize: "0.85rem",
+                                  fontWeight: "bold"
+                                }}
+                              >
+                                وضع قيد المراجعة ⏳
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateAppFeedbackStatus(feedback, "action_taken")}
+                                disabled={updatingId !== null}
+                                className="btn"
+                                style={{
+                                  flex: 1,
+                                  background: "rgba(52, 199, 89, 0.1)",
+                                  border: "1px solid rgba(52, 199, 89, 0.2)",
+                                  color: "#34c759",
+                                  fontSize: "0.85rem",
+                                  fontWeight: "bold"
+                                }}
+                              >
+                                {updatingId === feedback.id ? "جاري الحفظ..." : "اتخاذ إجراء وحل المشكلة ✅"}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setReportToDelete({
+                                  id: feedback.id,
+                                  type: "feedback",
+                                  title: feedback.title ? `مشكلة جراج: ${feedback.title}` : "بلاغ جراجات"
+                                })}
+                                disabled={updatingId !== null}
+                                className="btn"
+                                style={{
+                                  background: "rgba(255, 59, 48, 0.1)",
+                                  border: "1px solid rgba(255, 59, 48, 0.25)",
+                                  color: "#ff3b30",
+                                  fontSize: "0.85rem",
+                                  fontWeight: "bold",
+                                  padding: "6px 14px",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "4px"
+                                }}
+                              >
+                                <i className="bx bx-trash" style={{ fontSize: "1rem" }} />
+                                حذف البلاغ
+                              </button>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
       {activeReportTab === "contacts" && (
         <>
           {/* Filter Tabs for Contact Message Status */}
@@ -3342,6 +3995,343 @@ export default function AdminReportsPage() {
           </div>
         )}
       </CustomModal>
+
+      {/* Direct Add Suggested Garage Modal */}
+      {suggestedGarageModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.78)",
+            backdropFilter: "blur(6px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10000,
+            padding: "16px",
+            direction: "rtl",
+            fontFamily: "var(--font-cairo, inherit)"
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isAddingGarage) {
+              setSuggestedGarageModal(null);
+            }
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "var(--bgPrimary, #0f172a)",
+              border: "1px solid var(--borderGlass)",
+              borderRadius: "18px",
+              width: "100%",
+              maxWidth: "620px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.6)",
+              position: "relative",
+              padding: "24px"
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "14px", marginBottom: "18px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "10px",
+                  background: "rgba(59, 130, 246, 0.15)",
+                  color: "#3b82f6",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "1.2rem"
+                }}>
+                  <i className="fa-solid fa-square-parking"></i>
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                    إضافة الجراج المقترح مباشرة لدليل الجراجات
+                  </h3>
+                  <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
+                    تم استخراج البيانات تلقائياً من اقتراح المستخدم ويمكنك مراجعتها وتعديلها
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => !isAddingGarage && setSuggestedGarageModal(null)}
+                style={{
+                  background: "var(--bgSecondary)",
+                  border: "1px solid var(--borderGlass)",
+                  borderRadius: "8px",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--textSecondary)",
+                  cursor: "pointer",
+                  fontSize: "1.1rem"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleConfirmAddSuggestedGarage} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {garageAddError && (
+                <div style={{
+                  padding: "10px 14px",
+                  borderRadius: "10px",
+                  backgroundColor: "rgba(239, 68, 68, 0.12)",
+                  border: "1px solid rgba(239, 68, 68, 0.3)",
+                  color: "#ef4444",
+                  fontSize: "0.85rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }}>
+                  <i className="fa-solid fa-triangle-exclamation"></i>
+                  <span>{garageAddError}</span>
+                </div>
+              )}
+
+              {/* Name & Area */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    اسم الجراج *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={suggestedGarageModal.name}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, name: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    المنطقة / الحي *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={suggestedGarageModal.area}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, area: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  العنوان بالتفصيل *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={suggestedGarageModal.address}
+                  onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, address: e.target.value })}
+                  className="input-fields"
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                />
+              </div>
+
+              {/* Metro & Type */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    أقرب محطة مترو *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={suggestedGarageModal.nearestMetro}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, nearestMetro: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    نوع الجراج *
+                  </label>
+                  <select
+                    value={suggestedGarageModal.type}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, type: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", cursor: "pointer" }}
+                  >
+                    <option value="مغطى ومتعدد الطوابق">مغطى ومتعدد الطوابق</option>
+                    <option value="جراج ذكي إلكتروني">جراج ذكي إلكتروني</option>
+                    <option value="جراج سطحي مفتوح">جراج سطحي مفتوح</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Rates & Capacity */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    سعر الساعة (ج.م) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    value={suggestedGarageModal.hourlyRate}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, hourlyRate: Number(e.target.value) })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    الحد الأقصى اليومي
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="اختياري"
+                    value={suggestedGarageModal.maxDailyRate}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, maxDailyRate: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    السعة (سيارة) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    value={suggestedGarageModal.capacity}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, capacity: Number(e.target.value) })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+              </div>
+
+              {/* Hours & Map Link */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    ساعات العمل *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={suggestedGarageModal.hours}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, hours: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    رابط خرائط جوجل
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://maps.google.com/..."
+                    value={suggestedGarageModal.mapLocationLink}
+                    onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, mapLocationLink: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", direction: "ltr", textAlign: "right" }}
+                  />
+                </div>
+              </div>
+
+              {/* Features */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  الميزات (مفصولة بفاصلة)
+                </label>
+                <input
+                  type="text"
+                  placeholder="أمن وحراسة, كاميرات مراقبة, مصاعد..."
+                  value={suggestedGarageModal.features}
+                  onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, features: e.target.value })}
+                  className="input-fields"
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                />
+              </div>
+
+              {/* Notification & Status note */}
+              <div style={{
+                background: "rgba(59, 130, 246, 0.08)",
+                border: "1px solid rgba(59, 130, 246, 0.2)",
+                borderRadius: "10px",
+                padding: "10px 14px",
+                fontSize: "0.82rem",
+                color: "var(--textSecondary)",
+                lineHeight: "1.5"
+              }}>
+                ℹ️ <strong>ملاحظة:</strong> بالضغط على &ldquo;تأكيد وإضافة الجراج&rdquo;، سيتم حفظ الجراج في قاعدة بيانات الجراجات فوراً، وتحديث حالة الاقتراح تلقائياً إلى <strong>تم القبول وتطبيق الإجراء ✅</strong>، وإرسال إشعار شكر للمستخدم في حسابه.
+              </div>
+
+              {/* Actions */}
+              <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                <button
+                  type="submit"
+                  disabled={isAddingGarage}
+                  className="btn btn-primary"
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    fontWeight: "800",
+                    fontSize: "0.95rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    border: "none"
+                  }}
+                >
+                  {isAddingGarage ? (
+                    <>
+                      <div style={{ width: "16px", height: "16px", border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+                      <span>جاري إضافة الجراج...</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-check-double"></i>
+                      <span>تأكيد وإضافة الجراج للدليل فوراً</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  disabled={isAddingGarage}
+                  onClick={() => setSuggestedGarageModal(null)}
+                  className="btn btn-cancel"
+                  style={{
+                    padding: "12px 20px",
+                    fontWeight: "700",
+                    fontSize: "0.92rem"
+                  }}
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

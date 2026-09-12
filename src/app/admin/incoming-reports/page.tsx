@@ -35,7 +35,7 @@ export default function IncomingReportsPage() {
   const [feedbacks, setFeedbacks] = useState<IncomingFeedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "monorail" | "directory" | "suggestions" | "bugs" | "routes">("all");
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "monorail" | "parking" | "directory" | "suggestions" | "bugs" | "routes">("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -67,6 +67,25 @@ export default function IncomingReportsPage() {
   // Options
   const [dirAutoActionTaken, setDirAutoActionTaken] = useState(true);
   const [isSubmittingDir, setIsSubmittingDir] = useState(false);
+
+  // Add to Parking Spots Modal state
+  const [parkingModalItem, setParkingModalItem] = useState<{
+    feedbackId: string;
+    feedbackUserId: string;
+    name: string;
+    area: string;
+    address: string;
+    nearestMetro: string;
+    type: string;
+    hourlyRate: number;
+    maxDailyRate: string;
+    capacity: number;
+    hours: string;
+    features: string;
+    mapLocationLink: string;
+  } | null>(null);
+  const [isSubmittingParking, setIsSubmittingParking] = useState(false);
+  const [parkingAddError, setParkingAddError] = useState("");
 
   const isAdmin = profile?.is_admin || false;
 
@@ -149,25 +168,41 @@ export default function IncomingReportsPage() {
   }, [user, isAdmin, refreshKey, showToast]);
 
   // Helper to categorize item
-  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "monorail" | "bugs" | "suggestions" | "routes" | "other" => {
+  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "monorail" | "parking" | "bugs" | "suggestions" | "routes" | "other" => {
     const cat = (item.category || "").toLowerCase();
     const title = (item.title || "").toLowerCase();
     const content = (item.content || "").toLowerCase();
 
+    // 1. Parking / Garages (Check FIRST so "أقرب مترو: ..." mentioned inside parking details doesn't falsely classify it as metro)
     if (
-      cat.includes("مترو") ||
-      title.includes("مترو") ||
-      content.includes("مترو")
+      cat.includes("باركينج") ||
+      cat.includes("جراج") ||
+      cat.includes("parking") ||
+      title.includes("باركينج") ||
+      title.includes("جراج") ||
+      title.includes("parking") ||
+      content.includes("باركينج") ||
+      content.includes("جراج")
     ) {
-      return "metro";
+      return "parking";
     }
 
+    // 2. Monorail
     if (
       cat.includes("مونوريل") ||
       title.includes("مونوريل") ||
       content.includes("مونوريل")
     ) {
       return "monorail";
+    }
+
+    // 3. Metro
+    if (
+      cat.includes("مترو") ||
+      title.includes("مترو") ||
+      content.includes("مترو")
+    ) {
+      return "metro";
     }
 
     if (
@@ -202,7 +237,8 @@ export default function IncomingReportsPage() {
     const directoryCount = feedbacks.filter((f) => getItemSection(f) === "directory").length;
     const metroCount = feedbacks.filter((f) => getItemSection(f) === "metro").length;
     const monorailCount = feedbacks.filter((f) => getItemSection(f) === "monorail").length;
-    return { total, pending, reviewed, actionTaken, directoryCount, metroCount, monorailCount };
+    const parkingCount = feedbacks.filter((f) => getItemSection(f) === "parking").length;
+    return { total, pending, reviewed, actionTaken, directoryCount, metroCount, monorailCount, parkingCount };
   }, [feedbacks]);
 
   // Filtered feedbacks
@@ -218,6 +254,7 @@ export default function IncomingReportsPage() {
         const sec = getItemSection(item);
         if (categoryFilter === "metro" && sec !== "metro") return false;
         if (categoryFilter === "monorail" && sec !== "monorail") return false;
+        if (categoryFilter === "parking" && sec !== "parking") return false;
         if (categoryFilter === "directory" && sec !== "directory") return false;
         if (categoryFilter === "bugs" && sec !== "bugs") return false;
         if (categoryFilter === "suggestions" && sec !== "suggestions") return false;
@@ -358,6 +395,27 @@ export default function IncomingReportsPage() {
         >
           <i className="bx bx-train"></i>
           المونوريل
+        </span>
+      );
+    }
+    if (sec === "parking") {
+      return (
+        <span
+          style={{
+            background: "rgba(245, 158, 11, 0.15)",
+            color: "#f59e0b",
+            border: "1px solid rgba(245, 158, 11, 0.3)",
+            padding: "3px 10px",
+            borderRadius: "8px",
+            fontSize: "0.76rem",
+            fontWeight: "700",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "5px",
+          }}
+        >
+          <i className="bx bx-parking"></i>
+          الجراجات والمواقف
         </span>
       );
     }
@@ -783,6 +841,162 @@ export default function IncomingReportsPage() {
     }
   };
 
+  // Open Add to Parking Modal with Auto-Parsed Fields
+  const handleOpenAddToParking = (item: IncomingFeedback) => {
+    const text = item.content || "";
+    const getField = (prefix: string) => {
+      const line = text.split("\n").find((l: string) => l.includes(prefix));
+      if (!line) return "";
+      return line.replace(prefix, "").replace(/^[:\s]+/, "").trim();
+    };
+
+    const nameMatch = item.title?.replace(/^اقتراح جراج جديد:\s*/, "")?.trim() || getField("اسم الجراج المقترح") || getField("اسم الجراج");
+    const area = getField("المنطقة / الحي") || getField("المنطقة") || "وسط البلد";
+    const address = getField("العنوان والمعالم") || getField("العنوان") || "";
+    const nearestMetro = getField("أقرب محطة مترو") || getField("أقرب مترو") || "";
+    const type = getField("نوع الجراج") || "مغطى ومتعدد الطوابق";
+
+    const rateStr = getField("سعر الساعة التقديري") || getField("سعر الساعة");
+    const hourlyRateNum = parseInt(rateStr.replace(/\D/g, ""), 10) || 10;
+
+    const capStr = getField("السعة التقديرية") || getField("السعة");
+    const capNum = parseInt(capStr.replace(/\D/g, ""), 10) || 100;
+
+    const mapLink = getField("رابط خرائط جوجل") || getField("خرائط جوجل") || "";
+    const featuresStr = getField("الميزات المتوفرة") || getField("الميزات") || "أمن وحراسة, كاميرات مراقبة";
+
+    setParkingAddError("");
+    setParkingModalItem({
+      feedbackId: item.id,
+      feedbackUserId: item.user_id,
+      name: nameMatch || "جراج مقترح",
+      area,
+      address,
+      nearestMetro,
+      type: type.includes("ذكي") ? "جراج ذكي إلكتروني" : (type.includes("سطحي") ? "جراج سطحي مفتوح" : "مغطى ومتعدد الطوابق"),
+      hourlyRate: hourlyRateNum,
+      maxDailyRate: "",
+      capacity: capNum,
+      hours: "24 ساعة طوال الأسبوع",
+      features: featuresStr,
+      mapLocationLink: mapLink
+    });
+  };
+
+  // Confirm Add to Parking Spots Database
+  const handleConfirmAddToParking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!parkingModalItem || !supabase || !isAdmin) return;
+
+    setIsSubmittingParking(true);
+    setParkingAddError("");
+
+    try {
+      const featuresArray = typeof parkingModalItem.features === "string"
+        ? parkingModalItem.features.split(/[،,]/).map((f: string) => f.trim()).filter(Boolean)
+        : parkingModalItem.features;
+
+      const newSpotRecord = {
+        name: parkingModalItem.name.trim(),
+        area: parkingModalItem.area.trim(),
+        address: parkingModalItem.address.trim(),
+        nearest_metro: parkingModalItem.nearestMetro.trim(),
+        hourly_rate: Number(parkingModalItem.hourlyRate || 0),
+        max_daily_rate: parkingModalItem.maxDailyRate !== "" && parkingModalItem.maxDailyRate !== null ? Number(parkingModalItem.maxDailyRate) : null,
+        capacity: Number(parkingModalItem.capacity || 0),
+        type: parkingModalItem.type,
+        hours: parkingModalItem.hours || "24 ساعة طوال الأسبوع",
+        features: featuresArray,
+        map_location_link: parkingModalItem.mapLocationLink || ""
+      };
+
+      // 1. Insert into parking_spots
+      const { error: insertError } = await supabase
+        .from("parking_spots")
+        .insert([newSpotRecord]);
+
+      if (insertError) throw insertError;
+
+      // 2. Keep local storage in sync
+      if (typeof window !== "undefined") {
+        try {
+          const saved = localStorage.getItem("local_parking_spots");
+          const spots = saved ? JSON.parse(saved) : [];
+          if (Array.isArray(spots)) {
+            spots.unshift({
+              id: `local_${Date.now()}`,
+              name: newSpotRecord.name,
+              area: newSpotRecord.area,
+              address: newSpotRecord.address,
+              nearestMetro: newSpotRecord.nearest_metro,
+              hourlyRate: newSpotRecord.hourly_rate,
+              maxDailyRate: newSpotRecord.max_daily_rate,
+              capacity: newSpotRecord.capacity,
+              type: newSpotRecord.type,
+              hours: newSpotRecord.hours,
+              features: newSpotRecord.features,
+              mapLocationLink: newSpotRecord.map_location_link
+            });
+            localStorage.setItem("local_parking_spots", JSON.stringify(spots));
+          }
+        } catch (e) {
+          console.error("Failed to sync local_parking_spots:", e);
+        }
+      }
+
+      // 3. Mark feedback status as action_taken
+      const adminReplyText = `تمت مراجعة الاقتراح وإضافة الجراج (${newSpotRecord.name}) رسمياً إلى دليل الجراجات. شكراً لمساهمتك! 🅿️✨`;
+      const { error: updateFeedbackError } = await supabase
+        .from("app_feedback")
+        .update({
+          status: "action_taken",
+          admin_reply: adminReplyText,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", parkingModalItem.feedbackId);
+
+      if (updateFeedbackError) console.error("Error updating feedback status:", updateFeedbackError);
+
+      // 4. Send notification to user
+      if (parkingModalItem.feedbackUserId) {
+        try {
+          await supabase.from("notifications").insert([{
+            user_id: parkingModalItem.feedbackUserId,
+            title: "🎉 تم قبول وإضافة الجراج الذي اقترحته!",
+            message: `يسعدنا إخبارك بأنه تم اعتماد اقتراحك وإضافة جراج "${newSpotRecord.name}" رسمياً إلى دليل جراجات القاهرة. شكراً لدعمك المستمر!`,
+            type: "success",
+            link: "/parking"
+          }]);
+        } catch (notifErr) {
+          console.error("Failed to notify user of garage addition:", notifErr);
+        }
+      }
+
+      // 5. Update local state
+      setFeedbacks((prev) =>
+        prev.map((f) =>
+          f.id === parkingModalItem.feedbackId
+            ? {
+                ...f,
+                status: "action_taken",
+                admin_reply: adminReplyText,
+              }
+            : f
+        )
+      );
+
+      showToast("success", `تمت إضافة جراج "${newSpotRecord.name}" بنجاح وتحديث حالة الاقتراح! ✅`);
+      setParkingModalItem(null);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : "حدث خطأ غير متوقع";
+      console.error("Error adding suggested garage:", err);
+      setParkingAddError(errMsg);
+      showToast("error", "فشلت إضافة الجراج: " + errMsg);
+    } finally {
+      setIsSubmittingParking(false);
+    }
+  };
+
   if (authLoading || !isAdmin) {
     return (
       <div style={{ textAlign: "center", padding: "100px 20px", color: "var(--textSecondary)" }}>
@@ -981,6 +1195,7 @@ export default function IncomingReportsPage() {
             { id: "all", label: "🌐 كل البلاغات والاقتراحات", count: feedbacks.length },
             { id: "metro", label: "🚇 المترو", count: stats.metroCount },
             { id: "monorail", label: "🚝 المونوريل", count: stats.monorailCount },
+            { id: "parking", label: "🅿️ الجراجات والمواقف", count: stats.parkingCount },
             { id: "directory", label: "☎️ دليل الهاتف والأكواد", count: stats.directoryCount },
             { id: "bugs", label: "⚠️ بلاغات وأخطاء النظام", count: feedbacks.filter((f) => getItemSection(f) === "bugs").length },
             { id: "suggestions", label: "💡 اقتراحات الميزات والتطبيق", count: feedbacks.filter((f) => getItemSection(f) === "suggestions").length },
@@ -988,7 +1203,7 @@ export default function IncomingReportsPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "monorail" | "directory" | "bugs" | "suggestions" | "routes")}
+              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "monorail" | "parking" | "directory" | "bugs" | "suggestions" | "routes")}
               style={{
                 padding: "8px 16px",
                 borderRadius: "30px",
@@ -1178,6 +1393,36 @@ export default function IncomingReportsPage() {
                   </div>
 
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    {/* Add to Parking Button on Card Header for quick action */}
+                    {getItemSection(item) === "parking" && item.type === "suggestion" && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenAddToParking(item);
+                        }}
+                        style={{
+                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                          border: "none",
+                          color: "#fff",
+                          padding: "6px 14px",
+                          borderRadius: "10px",
+                          fontSize: "0.82rem",
+                          fontWeight: "800",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          cursor: "pointer",
+                          boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
+                          transition: "all 0.2s ease",
+                        }}
+                        title="إضافة وتأكيد هذا الجراج المقترح في دليل الجراجات مباشرة"
+                      >
+                        <i className="fa-solid fa-square-parking" style={{ fontSize: "1rem" }}></i>
+                        <span>إضافة الجراج للدليل 🅿️</span>
+                      </button>
+                    )}
+
                     {isDirectoryItem && (
                       <button
                         type="button"
@@ -1491,6 +1736,92 @@ export default function IncomingReportsPage() {
                             }}
                           >
                             <span>إدارة المونوريل</span>
+                            <i className="bx bx-cog"></i>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Parking Direct Action Banner */}
+                    {getItemSection(item) === "parking" && (
+                      <div
+                        style={{
+                          background: "rgba(245, 158, 11, 0.05)",
+                          border: "1px solid rgba(245, 158, 11, 0.2)",
+                          borderRadius: "12px",
+                          padding: "12px 16px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                          <i className="bx bx-parking" style={{ color: "#f59e0b", fontSize: "1.2rem" }}></i>
+                          <span>بلاغ متعلق بدليل الجراجات والمواقف</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          {item.type === "suggestion" && (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenAddToParking(item)}
+                              style={{
+                                background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                                border: "none",
+                                color: "#fff",
+                                padding: "6px 14px",
+                                borderRadius: "8px",
+                                fontSize: "0.82rem",
+                                fontWeight: "800",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                cursor: "pointer",
+                                boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
+                              }}
+                            >
+                              <i className="fa-solid fa-plus-circle"></i>
+                              <span>إضافة الجراج للدليل فوراً 🅿️✨</span>
+                            </button>
+                          )}
+                          <Link
+                            href="/parking"
+                            target="_blank"
+                            style={{
+                              background: "var(--bgSecondary)",
+                              border: "1px solid var(--borderGlass)",
+                              color: "var(--textPrimary)",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>معاينة الجراجات</span>
+                            <i className="bx bx-link-external"></i>
+                          </Link>
+                          <Link
+                            href="/admin/parking"
+                            style={{
+                              background: "rgba(245, 158, 11, 0.15)",
+                              border: "1px solid rgba(245, 158, 11, 0.3)",
+                              color: "#f59e0b",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>إدارة الجراجات</span>
                             <i className="bx bx-cog"></i>
                           </Link>
                         </div>
@@ -2174,6 +2505,344 @@ export default function IncomingReportsPage() {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Suggested Garage to Database Modal */}
+      {parkingModalItem && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.78)",
+            backdropFilter: "blur(6px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 10000,
+            padding: "16px",
+            direction: "rtl",
+            fontFamily: "var(--font-cairo, inherit)"
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmittingParking) {
+              setParkingModalItem(null);
+            }
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "var(--bgPrimary, #0f172a)",
+              border: "1px solid var(--borderGlass)",
+              borderRadius: "18px",
+              width: "100%",
+              maxWidth: "620px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.6)",
+              position: "relative",
+              padding: "24px"
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "14px", marginBottom: "18px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "10px",
+                  background: "rgba(16, 185, 129, 0.15)",
+                  color: "#10b981",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "1.2rem"
+                }}>
+                  <i className="fa-solid fa-square-parking"></i>
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                    إضافة الجراج المقترح لدليل الجراجات فوراً
+                  </h3>
+                  <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
+                    تم استخراج البيانات تلقائياً من اقتراح المستخدم ويمكنك مراجعتها وتعديلها
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => !isSubmittingParking && setParkingModalItem(null)}
+                style={{
+                  background: "var(--bgSecondary)",
+                  border: "1px solid var(--borderGlass)",
+                  borderRadius: "8px",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--textSecondary)",
+                  cursor: "pointer",
+                  fontSize: "1.1rem"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleConfirmAddToParking} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {parkingAddError && (
+                <div style={{
+                  padding: "10px 14px",
+                  borderRadius: "10px",
+                  backgroundColor: "rgba(239, 68, 68, 0.12)",
+                  border: "1px solid rgba(239, 68, 68, 0.3)",
+                  color: "#ef4444",
+                  fontSize: "0.85rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px"
+                }}>
+                  <i className="fa-solid fa-triangle-exclamation"></i>
+                  <span>{parkingAddError}</span>
+                </div>
+              )}
+
+              {/* Name & Area */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    اسم الجراج *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={parkingModalItem.name}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, name: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    المنطقة / الحي *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={parkingModalItem.area}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, area: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  العنوان بالتفصيل *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={parkingModalItem.address}
+                  onChange={(e) => setParkingModalItem({ ...parkingModalItem, address: e.target.value })}
+                  className="input-fields"
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                />
+              </div>
+
+              {/* Metro & Type */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    أقرب محطة مترو *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={parkingModalItem.nearestMetro}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, nearestMetro: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    نوع الجراج *
+                  </label>
+                  <select
+                    value={parkingModalItem.type}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, type: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", cursor: "pointer" }}
+                  >
+                    <option value="مغطى ومتعدد الطوابق">مغطى ومتعدد الطوابق</option>
+                    <option value="جراج ذكي إلكتروني">جراج ذكي إلكتروني</option>
+                    <option value="جراج سطحي مفتوح">جراج سطحي مفتوح</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Rates & Capacity */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    سعر الساعة (ج.م) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    value={parkingModalItem.hourlyRate}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, hourlyRate: Number(e.target.value) })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    الحد الأقصى اليومي
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="اختياري"
+                    value={parkingModalItem.maxDailyRate}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, maxDailyRate: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    السعة (سيارة) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    value={parkingModalItem.capacity}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, capacity: Number(e.target.value) })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+              </div>
+
+              {/* Hours & Map Link */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    ساعات العمل *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={parkingModalItem.hours}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, hours: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    رابط خرائط جوجل
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://maps.google.com/..."
+                    value={parkingModalItem.mapLocationLink}
+                    onChange={(e) => setParkingModalItem({ ...parkingModalItem, mapLocationLink: e.target.value })}
+                    className="input-fields"
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", direction: "ltr", textAlign: "right" }}
+                  />
+                </div>
+              </div>
+
+              {/* Features */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  الميزات (مفصولة بفاصلة)
+                </label>
+                <input
+                  type="text"
+                  placeholder="أمن وحراسة, كاميرات مراقبة, مصاعد..."
+                  value={parkingModalItem.features}
+                  onChange={(e) => setParkingModalItem({ ...parkingModalItem, features: e.target.value })}
+                  className="input-fields"
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                />
+              </div>
+
+              {/* Notification & Status note */}
+              <div style={{
+                background: "rgba(16, 185, 129, 0.08)",
+                border: "1px solid rgba(16, 185, 129, 0.25)",
+                borderRadius: "10px",
+                padding: "10px 14px",
+                fontSize: "0.82rem",
+                color: "var(--textSecondary)",
+                lineHeight: "1.5"
+              }}>
+                ℹ️ <strong>ملاحظة:</strong> بالضغط على &ldquo;تأكيد وإضافة الجراج&rdquo;، سيتم حفظ الجراج فوراً في جدول الجراجات، وتحديث حالة البلاغ تلقائياً إلى <strong>اعتماد وتنفيذ ✅</strong>، وإرسال إشعار للمستخدم في حسابه.
+              </div>
+
+              {/* Actions */}
+              <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                <button
+                  type="submit"
+                  disabled={isSubmittingParking}
+                  className="btn btn-primary"
+                  style={{
+                    flex: 1,
+                    padding: "12px",
+                    fontWeight: "800",
+                    fontSize: "0.95rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                    border: "none",
+                    boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)"
+                  }}
+                >
+                  {isSubmittingParking ? (
+                    <>
+                      <div style={{ width: "16px", height: "16px", border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+                      <span>جاري إضافة الجراج...</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-check-double"></i>
+                      <span>تأكيد وإضافة الجراج للدليل فوراً</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  disabled={isSubmittingParking}
+                  onClick={() => setParkingModalItem(null)}
+                  className="btn btn-cancel"
+                  style={{
+                    padding: "12px 20px",
+                    fontWeight: "700",
+                    fontSize: "0.92rem"
+                  }}
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

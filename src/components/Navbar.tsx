@@ -83,7 +83,7 @@ export default function Navbar() {
       subItems: [
         { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.png" },
         { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.png" },
-        { href: "/parking", label: "دليل الجراجات (اركن واركب)", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.png" },
+        { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.png" },
         { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.svg" },
         { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: "Cairo_monorail_east.png" },
         { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: "Cairo_lrt.png" },

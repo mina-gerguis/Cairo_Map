@@ -85,7 +85,7 @@ export default function AdminLayout({
           { label: "إدارة سكك حديد مصر", href: "/admin/railways", category: "خدمة موقع", icon: "bx bx-train" },
           { label: "إدارة مواقف السرفيس", href: "/admin/microbus-stations", category: "خدمة موقع", icon: "bx bx-map-pin" },
           { label: "إدارة الأتوبيسات وسوبرجيت", href: "/admin/bus-stations", category: "خدمة موقع", icon: "bx bx-bus" },
-          { label: "إدارة الجراجات ومواقف السيارات", href: "/admin/parking", category: "خدمة موقع", icon: "bx bx-parking" },
+          { label: "إدارة الجراجات ومواقف السيارات", href: "/admin/parking", category: "خدمة موقع", icon: "bx bx-car" },
           { label: "إدارة دليل الهواتف والأكواد", href: "/admin/directory", category: "خدمة موقع", icon: "bx bx-phone-call" },
           { label: "إدارة خطوط المواصلات والاتجاهات (ازاي اروح)", href: "/admin/directions", category: "خدمة موقع", icon: "bx bx-compass" }
         ];
@@ -655,7 +655,7 @@ export default function AdminLayout({
               }}
             >
               <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-parking ${styles.linkIcon}`} />
+                <i className={`bx bx-car ${styles.linkIcon}`} />
                 <span className={styles.linkLabel}>الجراجات ومواقف السيارات</span>
               </div>
             </Link>
