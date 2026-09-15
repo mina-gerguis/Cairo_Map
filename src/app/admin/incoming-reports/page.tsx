@@ -35,7 +35,7 @@ export default function IncomingReportsPage() {
   const [feedbacks, setFeedbacks] = useState<IncomingFeedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "monorail" | "lrt" | "parking" | "directory" | "suggestions" | "bugs" | "routes">("all");
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "metro" | "monorail" | "lrt" | "railways" | "parking" | "directory" | "suggestions" | "bugs" | "routes">("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -168,7 +168,7 @@ export default function IncomingReportsPage() {
   }, [user, isAdmin, refreshKey, showToast]);
 
   // Helper to categorize item
-  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "monorail" | "lrt" | "parking" | "bugs" | "suggestions" | "routes" | "other" => {
+  const getItemSection = (item: IncomingFeedback): "directory" | "metro" | "monorail" | "lrt" | "railways" | "parking" | "bugs" | "suggestions" | "routes" | "other" => {
     const cat = (item.category || "").toLowerCase();
     const title = (item.title || "").toLowerCase();
     const content = (item.content || "").toLowerCase();
@@ -211,7 +211,30 @@ export default function IncomingReportsPage() {
       return "lrt";
     }
 
-    // 4. Metro
+    // 4. Railways (Egyptian National Railways / سكك حديد مصر)
+    if (
+      cat.includes("سكك حديد") ||
+      cat.includes("سكة حديد") ||
+      cat.includes("railway") ||
+      cat.includes("railways") ||
+      cat.includes("قطارات") ||
+      cat.includes("تالجو") ||
+      title.includes("سكك حديد") ||
+      title.includes("سكة حديد") ||
+      title.includes("قطار") ||
+      title.includes("قطارات") ||
+      title.includes("تالجو") ||
+      title.includes("railway") ||
+      content.includes("سكك حديد") ||
+      content.includes("سكة حديد") ||
+      content.includes("سكك حديد مصر") ||
+      content.includes("قطارات مصر") ||
+      content.includes("قطار تالجو")
+    ) {
+      return "railways";
+    }
+
+    // 5. Metro
     if (
       cat.includes("مترو") ||
       title.includes("مترو") ||
@@ -253,8 +276,9 @@ export default function IncomingReportsPage() {
     const metroCount = feedbacks.filter((f) => getItemSection(f) === "metro").length;
     const monorailCount = feedbacks.filter((f) => getItemSection(f) === "monorail").length;
     const lrtCount = feedbacks.filter((f) => getItemSection(f) === "lrt").length;
+    const railwayCount = feedbacks.filter((f) => getItemSection(f) === "railways").length;
     const parkingCount = feedbacks.filter((f) => getItemSection(f) === "parking").length;
-    return { total, pending, reviewed, actionTaken, directoryCount, metroCount, monorailCount, lrtCount, parkingCount };
+    return { total, pending, reviewed, actionTaken, directoryCount, metroCount, monorailCount, lrtCount, railwayCount, parkingCount };
   }, [feedbacks]);
 
   // Filtered feedbacks
@@ -271,6 +295,7 @@ export default function IncomingReportsPage() {
         if (categoryFilter === "metro" && sec !== "metro") return false;
         if (categoryFilter === "monorail" && sec !== "monorail") return false;
         if (categoryFilter === "lrt" && sec !== "lrt") return false;
+        if (categoryFilter === "railways" && sec !== "railways") return false;
         if (categoryFilter === "parking" && sec !== "parking") return false;
         if (categoryFilter === "directory" && sec !== "directory") return false;
         if (categoryFilter === "bugs" && sec !== "bugs") return false;
@@ -433,6 +458,27 @@ export default function IncomingReportsPage() {
         >
           <i className="bx bx-train"></i>
           القطار الكهربائي LRT
+        </span>
+      );
+    }
+    if (sec === "railways") {
+      return (
+        <span
+          style={{
+            background: "rgba(249, 115, 22, 0.15)",
+            color: "#f97316",
+            border: "1px solid rgba(249, 115, 22, 0.3)",
+            padding: "3px 10px",
+            borderRadius: "8px",
+            fontSize: "0.76rem",
+            fontWeight: "700",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "5px",
+          }}
+        >
+          <i className="bx bx-train"></i>
+          سكك حديد مصر
         </span>
       );
     }
@@ -1234,6 +1280,7 @@ export default function IncomingReportsPage() {
             { id: "metro", label: "🚇 المترو", count: stats.metroCount },
             { id: "monorail", label: "🚝 المونوريل", count: stats.monorailCount },
             { id: "lrt", label: "🚊 القطار الكهربائي LRT", count: stats.lrtCount },
+            { id: "railways", label: "🚆 سكك حديد مصر", count: stats.railwayCount },
             { id: "parking", label: "🅿️ الجراجات والمواقف", count: stats.parkingCount },
             { id: "directory", label: "☎️ دليل الهاتف والأكواد", count: stats.directoryCount },
             { id: "bugs", label: "⚠️ بلاغات وأخطاء النظام", count: feedbacks.filter((f) => getItemSection(f) === "bugs").length },
@@ -1242,7 +1289,7 @@ export default function IncomingReportsPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "monorail" | "lrt" | "parking" | "directory" | "bugs" | "suggestions" | "routes")}
+              onClick={() => setCategoryFilter(tab.id as "all" | "metro" | "monorail" | "lrt" | "railways" | "parking" | "directory" | "bugs" | "suggestions" | "routes")}
               style={{
                 padding: "8px 16px",
                 borderRadius: "30px",
@@ -1838,6 +1885,69 @@ export default function IncomingReportsPage() {
                             }}
                           >
                             <span>إدارة LRT</span>
+                            <i className="bx bx-cog"></i>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Railways Direct Action Banner */}
+                    {getItemSection(item) === "railways" && (
+                      <div
+                        style={{
+                          background: "rgba(249, 115, 22, 0.05)",
+                          border: "1px solid rgba(249, 115, 22, 0.2)",
+                          borderRadius: "12px",
+                          padding: "12px 16px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                          <i className="bx bx-train" style={{ color: "#f97316", fontSize: "1.2rem" }}></i>
+                          <span>بلاغ متعلق بمواعيد وقطارات سكك حديد مصر</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <Link
+                            href="/railways"
+                            target="_blank"
+                            style={{
+                              background: "var(--bgSecondary)",
+                              border: "1px solid var(--borderGlass)",
+                              color: "var(--textPrimary)",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>معاينة سكك حديد مصر</span>
+                            <i className="bx bx-link-external"></i>
+                          </Link>
+                          <Link
+                            href="/admin/railways"
+                            style={{
+                              background: "rgba(249, 115, 22, 0.15)",
+                              border: "1px solid rgba(249, 115, 22, 0.3)",
+                              color: "#f97316",
+                              padding: "6px 12px",
+                              borderRadius: "8px",
+                              fontSize: "0.8rem",
+                              fontWeight: "700",
+                              textDecoration: "none",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <span>إدارة القطارات</span>
                             <i className="bx bx-cog"></i>
                           </Link>
                         </div>

@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
+import gsap from "gsap";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
 
 interface TrainClass {
   name: string;
@@ -175,10 +177,156 @@ function getRouteShortName(route: RailwayRoute): string {
   return route.name;
 }
 
+function getRouteIconData(routeId: string, index: number, routeColor: string) {
+  if (routeId === "cairo-alex") {
+    return {
+      icon: "fa-solid fa-train",
+      bgGradient: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      glowColor: "#ef4444"
+    };
+  }
+  if (routeId === "cairo-aswan") {
+    return {
+      icon: "fa-solid fa-mountain-sun",
+      bgGradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+      glowColor: "#f59e0b"
+    };
+  }
+  if (routeId === "cairo-portsaid") {
+    return {
+      icon: "fa-solid fa-anchor",
+      bgGradient: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+      glowColor: "#3b82f6"
+    };
+  }
+  if (routeId === "cairo-mansoura") {
+    return {
+      icon: "fa-solid fa-leaf",
+      bgGradient: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      glowColor: "#10b981"
+    };
+  }
+
+  const defaultIcons = ["fa-solid fa-train-subway", "fa-solid fa-train", "fa-solid fa-compass", "fa-solid fa-route"];
+  return {
+    icon: defaultIcons[index % defaultIcons.length],
+    bgGradient: `linear-gradient(135deg, ${routeColor} 0%, ${routeColor}cc 100%)`,
+    glowColor: routeColor
+  };
+}
+
+function normalizeArabic(text: string) {
+  if (!text) return "";
+  return text
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/[\u064B-\u065F]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
 export default function RailwaysPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const [selectedRouteId, setSelectedRouteId] = useState<string>("cairo-alex");
   const [routes, setRoutes] = useState<RailwayRoute[]>([]);
+
+  // Report Problem State
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportTargetScope, setReportTargetScope] = useState<"general" | "route" | "station">("general");
+  const [reportSelectedStation, setReportSelectedStation] = useState<string>("");
+  const [reportStationSearchQuery, setReportStationSearchQuery] = useState<string>("");
+  const [showReportStationList, setShowReportStationList] = useState<boolean>(false);
+  const [reportProblemType, setReportProblemType] = useState<string>("schedule_error");
+  const [reportDetails, setReportDetails] = useState<string>("");
+  const [reportImageFile, setReportImageFile] = useState<File | null>(null);
+  const [reportImagePreview, setReportImagePreview] = useState<string | null>(null);
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportUploading, setReportUploading] = useState(false);
+  const [reportSuccess, setReportSuccess] = useState(false);
+  const [reportError, setReportError] = useState<string>("");
+  const [limitChecking, setLimitChecking] = useState(false);
+  const [limitReached, setLimitReached] = useState(false);
+
+  // GSAP animation refs for all page elements
+  const headerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const detailsPanelRef = useRef<HTMLDivElement>(null);
+  const trainTypesRef = useRef<HTMLDivElement>(null);
+  const howToBookRef = useRef<HTMLDivElement>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
+  const paywallRef = useRef<HTMLDivElement>(null);
+  const paywallCardRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
+
+  // Initial page entrance animation
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: -15 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+        );
+      }
+
+      const sections = [sliderRef.current, detailsPanelRef.current, trainTypesRef.current, howToBookRef.current].filter(Boolean);
+      if (sections.length > 0) {
+        gsap.fromTo(
+          sections,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.1, ease: "power2.out", delay: 0.1 }
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  // Route switch animation
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (detailsPanelRef.current) {
+      gsap.fromTo(
+        detailsPanelRef.current,
+        { opacity: 0.45, y: 10 },
+        { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
+      );
+    }
+  }, [selectedRouteId]);
+
+  // Modal entrance animation
+  useEffect(() => {
+    if (reportModalOpen && modalBoxRef.current) {
+      gsap.fromTo(
+        modalBoxRef.current,
+        { opacity: 0, scale: 0.94, y: 16 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(1.4)" }
+      );
+    }
+  }, [reportModalOpen]);
+
+  // Paywall screen entrance animation
+  useEffect(() => {
+    if (paywallRef.current) {
+      gsap.fromTo(
+        paywallRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+      );
+    }
+    if (paywallCardRef.current) {
+      gsap.fromTo(
+        paywallCardRef.current,
+        { opacity: 0, y: 25, scale: 0.98 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.55, delay: 0.1, ease: "power2.out" }
+      );
+    }
+  }, [user, profile]);
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -278,6 +426,218 @@ export default function RailwaysPage() {
   const activeRoutesList = routes.length > 0 ? routes : RAILWAY_ROUTES;
   const currentRoute = activeRoutesList.find(r => r.id === selectedRouteId) || activeRoutesList[0];
 
+  const allStationsList = useMemo(() => {
+    const list: { name: string; routeName: string; routeId: string }[] = [];
+    const seen = new Set<string>();
+    activeRoutesList.forEach(r => {
+      if (Array.isArray(r.stops)) {
+        r.stops.forEach(s => {
+          const key = `${r.id}-${s.name}`;
+          if (!seen.has(key)) {
+            seen.add(key);
+            list.push({ name: s.name, routeName: getRouteShortName(r), routeId: r.id });
+          }
+        });
+      }
+    });
+    return list;
+  }, [activeRoutesList]);
+
+  const filteredReportStations = useMemo(() => {
+    const q = normalizeArabic(reportStationSearchQuery.trim());
+    if (!q) return allStationsList;
+    return allStationsList.filter(s => normalizeArabic(s.name).includes(q) || normalizeArabic(s.routeName).includes(q));
+  }, [reportStationSearchQuery, allStationsList]);
+
+  const handleReportImageSelect = (file: File | null) => {
+    if (!file) {
+      if (reportImagePreview) {
+        URL.revokeObjectURL(reportImagePreview);
+      }
+      setReportImageFile(null);
+      setReportImagePreview(null);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setReportError("حجم الصورة كبير جداً، الحد الأقصى المسموح به هو 5 ميجابايت.");
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      setReportError("يرجى اختيار ملف صورة صالح (JPG, PNG, WEBP).");
+      return;
+    }
+    setReportError("");
+    setReportImageFile(file);
+    setReportImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleOpenReportModal = async (stationName: string | null = null, fromRoute: boolean = false) => {
+    setReportError("");
+    setReportSuccess(false);
+    setReportDetails("");
+    if (reportImagePreview) {
+      URL.revokeObjectURL(reportImagePreview);
+    }
+    setReportImageFile(null);
+    setReportImagePreview(null);
+    setIsDraggingImage(false);
+
+    if (stationName) {
+      setReportTargetScope("station");
+      setReportSelectedStation(stationName);
+      setReportStationSearchQuery(stationName);
+      setReportProblemType("station_info");
+    } else if (fromRoute && currentRoute) {
+      setReportTargetScope("route");
+      setReportSelectedStation("");
+      setReportStationSearchQuery("");
+      setReportProblemType("schedule_error");
+    } else {
+      setReportTargetScope("general");
+      setReportSelectedStation("");
+      setReportStationSearchQuery("");
+      setReportProblemType("schedule_error");
+    }
+
+    setReportModalOpen(true);
+
+    if (user) {
+      setLimitChecking(true);
+      try {
+        const reached = await isFeedbackLimitReached(user.id);
+        setLimitReached(reached);
+      } catch (e) {
+        console.error("Error checking feedback limit:", e);
+      } finally {
+        setLimitChecking(false);
+      }
+    }
+  };
+
+  const handleSubmitReport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      setReportError("يرجى تسجيل الدخول أولاً لتتمكن من تقديم بلاغ.");
+      return;
+    }
+    if (reportTargetScope === "station" && !reportSelectedStation) {
+      setReportError("يرجى اختيار وتحديد المحطة المراد الإبلاغ عنها أولاً.");
+      return;
+    }
+    if (!reportDetails.trim()) {
+      setReportError("يرجى كتابة تفاصيل المشكلة أو الخطأ.");
+      return;
+    }
+
+    setReportLoading(true);
+    setReportError("");
+
+    try {
+      if (!supabase) {
+        throw new Error("Supabase client is not initialized.");
+      }
+
+      let finalImageUrl = "";
+      if (reportImageFile) {
+        setReportUploading(true);
+        const fileExt = reportImageFile.name.split('.').pop() || 'jpg';
+        const fileName = `railways_${user.id}_${Date.now()}.${fileExt}`;
+        const filePath = `reports/${fileName}`;
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, reportImageFile, { upsert: true });
+
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
+          if (publicUrl) {
+            finalImageUrl = publicUrl;
+          }
+        }
+        setReportUploading(false);
+      }
+
+      const problemTypeLabels: Record<string, string> = {
+        schedule_error: "خطأ في مواعيد تحرك القطارات أو مدة الرحلة",
+        price: "أسعار التذاكر غير صحيحة أو تم تعديلها",
+        train_class: "خطأ في فئات ودرجات القطارات المتاحة (تالجو، VIP، إسباني، روسي)",
+        stops_info: "خطأ في محطات الوقوف أو مسار الخط",
+        station_info: "معلومات المحطة غير دقيقة أو مغلقة للتطوير",
+        app_bug: "مشكلة تقنية أو زر لا يستجيب في الصفحة",
+        other: "ملاحظة أو مشكلة أخرى",
+      };
+
+      const typeLabel = problemTypeLabels[reportProblemType] || "مشكلة في سكك حديد مصر";
+
+      let scopeInfo = "";
+      if (reportTargetScope === "route" && currentRoute) {
+        scopeInfo = `📍 الخط المعني: ${currentRoute.name}
+⏱️ المدة المقدرة: ${currentRoute.duration}
+🚉 عدد المحطات الرئيسية: ${currentRoute.stops?.length || 0}`;
+      } else if (reportTargetScope === "station" && reportSelectedStation) {
+        scopeInfo = `🚉 المحطة المعنية: ${reportSelectedStation}`;
+      }
+
+      const contentText = `بلاغ عن مشكلة في صفحة سكك حديد مصر (القطارات):
+${scopeInfo ? scopeInfo + "\n\n" : ""}⚠️ نوع المشكلة: ${typeLabel}
+
+📝 تفاصيل المشكلة المبلغ عنها:
+${reportDetails.trim()}`;
+
+      const reportTitle = reportTargetScope === "route" && currentRoute
+        ? `مشكلة خط قطار: ${currentRoute.name}`
+        : reportTargetScope === "station" && reportSelectedStation
+          ? `مشكلة محطة قطار: ${reportSelectedStation}`
+          : `مشكلة في سكك حديد مصر (${typeLabel})`;
+
+      const { error: insertError } = await supabase.from("app_feedback").insert([
+        {
+          user_id: user.id,
+          type: "bug",
+          category: "سكك حديد مصر",
+          title: reportTitle,
+          content: contentText,
+          image_url: finalImageUrl || null,
+          status: "pending",
+        },
+      ]);
+
+      if (insertError) throw insertError;
+
+      // Send notification to user
+      try {
+        await supabase.from("notifications").insert([
+          {
+            user_id: user.id,
+            title: "تم استلام بلاغك بنجاح 🚆",
+            message: `شكراً لمساعدتنا في تحسين وتدقيق دليل سكك حديد مصر. تم تسجيل بلاغك بخصوص "${reportTitle}" وجاري مراجعته.`,
+            type: "info",
+            link: "/profile",
+          },
+        ]);
+      } catch (notifErr) {
+        console.error("Failed to insert notification:", notifErr);
+      }
+
+      setReportSuccess(true);
+      setTimeout(() => {
+        setReportModalOpen(false);
+        setReportSuccess(false);
+        setReportDetails("");
+        if (reportImagePreview) {
+          URL.revokeObjectURL(reportImagePreview);
+        }
+        setReportImageFile(null);
+        setReportImagePreview(null);
+      }, 2200);
+    } catch (err: any) {
+      console.error("Error submitting railway report:", err);
+      setReportError(err?.message || "حدث خطأ أثناء إرسال البلاغ. يرجى المحاولة لاحقاً.");
+    } finally {
+      setReportLoading(false);
+      setReportUploading(false);
+    }
+  };
+
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
@@ -308,7 +668,7 @@ export default function RailwaysPage() {
     return (
       <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)" }}>
         {/* Banner matching Metro */}
-        <div className="metro-animate-fade" style={{
+        <div ref={paywallRef} style={{
           backgroundColor: "var(--bgPrimary)",
           padding: "24px 20px 24px",
           textAlign: "center",
@@ -338,7 +698,7 @@ export default function RailwaysPage() {
           </div>
 
           {/* Cover Image Banner */}
-          <div className="metro-animate-slide-up metro-delay-100">
+          <div>
             <h1 style={{
               display: "flex",
               alignItems: "center",
@@ -359,7 +719,7 @@ export default function RailwaysPage() {
 
         {/* Lock Panel centered container */}
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>
-          <div className="metro-animate-slide-up metro-delay-200" style={{
+          <div ref={paywallCardRef} style={{
             backgroundColor: "var(--bgPrimary)",
             border: "1px solid var(--borderGlass)",
             borderRadius: "15px",
@@ -471,110 +831,144 @@ export default function RailwaysPage() {
   const activeIndex = activeRoutesList.findIndex(r => r.id === selectedRouteId);
   const color = getRouteColor(selectedRouteId, activeIndex >= 0 ? activeIndex : 0);
 
+
+
+
+
+
+
+          // {/* Report Problem Button */}
+          // <div style={{ marginTop: "14px" }}>
+          //   <button
+          //     type="button"
+          //     onClick={() => handleOpenReportModal()}
+          //     style={{
+          //       background: "rgba(239, 68, 68, 0.08)",
+          //       border: "1px solid rgba(239, 68, 68, 0.25)",
+          //       color: "#ef4444",
+          //       borderRadius: "20px",
+          //       padding: "6px 16px",
+          //       fontSize: "0.8rem",
+          //       fontWeight: "700",
+          //       cursor: "pointer",
+          //       display: "inline-flex",
+          //       alignItems: "center",
+          //       gap: "6px",
+          //       fontFamily: "var(--font-cairo)",
+          //       transition: "all 0.2s ease",
+          //     }}
+          //     onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.16)"}
+          //     onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
+          //   >
+          //     <i className="fa-solid fa-triangle-exclamation"></i>
+          //     <span>الإبلاغ عن مشكلة في سكك حديد مصر</span>
+          //   </button>
+          // </div>
+
+
+
+
+
+
+
+
+
+
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)", direction: "rtl" }}>
-      {/* CSS internal styles definition for custom hover effects and keyframe animations */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-      `}} />
-
-      {/* Header Banner - Matches Metro Cover Style */}
-      <div className="metro-animate-fade" style={{
-        backgroundColor: "var(--bgPrimary)",
-        padding: "24px 20px 24px",
-        textAlign: "center",
-        position: "relative",
-        borderBottom: "1px solid var(--borderGlass)",
-      }}>
-        <div className="metro-animate-slide-up metro-delay-100">
-          <h1 style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
-            fontWeight: "bold",
-            color: "var(--textPrimary)",
-            margin: "0 0 10px",
-            letterSpacing: "-0.5px",
-          }}>
-            <img src="/images/icons2d/Cairo_train.png" alt="Cairo Train" loading="lazy" decoding="async" style={{ width: "40px", height: "40px", marginLeft: "10px" }} />
-            سكك حديد مصر</h1>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
-            استكشف شبكة قطارات سكك حديد مصر، اعرف أسعار التذاكر وفئات القطارات، ومسارات الرحلات والمدد الزمنية للخطوط الرئيسية.
+    //================================== START MAIN CONTAINER =================================
+    <div className="main-container">
+      {/* Header Banner */}
+      <div ref={headerRef} className="header-banner">
+        <div>
+          {/* Title */}
+          <h1 className="header-title">سكك حديد مصر</h1>
+          {/* Sub Title */}
+          <p className="header-sub-title">
+            استكشف شبكة قطارات سكك حديد مصر، اعرف أسعار التذاكر وفئات القطارات، ومسارات الرحلات والمدد الزمنية للخطوط الرئيسية ومحطات التوقف.
           </p>
-
-          {/* Badges indicators */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
-            {activeRoutesList.map((route, idx) => {
-              const routeColor = getRouteColor(route.id, idx);
-              const shortName = getRouteShortName(route);
-              return (
-                <span
-                  key={route.id}
-                  style={{
-                    background: "var(--bgSecondary)",
-                    border: "1px solid var(--borderGlass)",
-                    color: routeColor,
-                    borderRadius: "10px",
-                    padding: "4px 14px",
-                    fontSize: "0.78rem",
-                    fontWeight: "700",
-                  }}
-                >
-                  {shortName}
-                </span>
-              );
-            })}
-          </div>
         </div>
       </div>
 
-      {/* Main Container */}
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl", textAlign: "right" }}>
-
-        {/* Route Selector Tabs Grid */}
-        <div className="metro-animate-slide-up metro-delay-200" style={{
-          display: "grid",
-          gridTemplateColumns: activeRoutesList.length > 4 ? "repeat(auto-fill, minmax(130px, 1fr))" : "repeat(2, 1fr)",
-          gap: "12px",
-          marginTop: "24px",
-          marginBottom: "24px"
-        }}>
+      {/* Container */}
+      <div className="container">
+        {/* Cards Slider */}
+        <div
+          ref={sliderRef}
+          className="hide-scrollbar"
+          style={{
+            display: "flex",
+            gap: "14px",
+            overflowX: "auto",
+            padding: "6px 4px 16px 4px",
+            marginBottom: "20px",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            scrollSnapType: "x mandatory",
+          }}
+        >
           {activeRoutesList.map((route, idx) => {
             const active = selectedRouteId === route.id;
             const routeColor = getRouteColor(route.id, idx);
             const shortName = getRouteShortName(route);
+            const iconData = getRouteIconData(route.id, idx, routeColor);
 
             return (
               <button
                 key={route.id}
+                type="button"
                 onClick={() => setSelectedRouteId(route.id)}
                 style={{
-                  fontFamily: "var(--font-body)",
-                  background: "var(--bgPrimary)",
-                  border: active ? `2px solid ${routeColor}` : "1px solid var(--borderGlass)",
-                  borderRadius: "12px",
-                  padding: "14px 8px",
+                  background: `radial-gradient(circle at 100% 0%, ${iconData.glowColor}48 10%, transparent 65%), var(--bgPrimary)`,
+                  border: "1px solid var(--borderGlass)",
+                  borderRadius: "var(--radius-xs)",
+                  padding: "16px 16px 14px 16px",
                   cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  textAlign: "center",
-                  boxShadow: active ? `0 0 10px ${routeColor}15` : "none",
-                }}
-                onMouseEnter={e => {
-                  if (!active) e.currentTarget.style.background = "var(--hoverBtn)";
-                }}
-                onMouseLeave={e => {
-                  if (!active) e.currentTarget.style.background = "var(--bgPrimary)";
+                  transition: "all 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
+                  textAlign: "right",
+                  flex: "0 0 auto",
+                  minWidth: "175px",
+                  maxWidth: "200px",
+                  height: "85px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  scrollSnapAlign: "start",
+                  position: "relative",
+                  overflow: "hidden",
                 }}
               >
-                <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: routeColor, margin: "0 auto 6px" }} />
-                <div className="sub-title" style={{ color: active ? "var(--textPrimary)" : "var(--textSecondary)", fontWeight: "700", fontSize: "0.88rem" }}>
-                  {shortName}
-                </div>
-                <div className="sub-title" style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
-                  {route.stops ? route.stops.length : 0} محطات رئيسية
+                {/* Bottom Title & Subtitle */}
+                <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
+                  <div
+                    style={{
+                      color: "var(--textPrimary)",
+                      fontFamily: "var(--font-display)",
+                      fontWeight: "700",
+                      fontSize: "0.92rem",
+                      lineHeight: "1.3",
+                      letterSpacing: "-0.2px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {shortName}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--textMuted)",
+                      fontWeight: "500",
+                      marginTop: "3px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {route.stops ? route.stops.length : 0} محطات
+                  </div>
                 </div>
               </button>
             );
@@ -582,7 +976,7 @@ export default function RailwaysPage() {
         </div>
 
         {/* Main Details Panel */}
-        <div className="metro-animate-slide-up metro-delay-300" style={{
+        <div ref={detailsPanelRef} style={{
           backgroundColor: "var(--bgPrimary)",
           border: "1px solid var(--borderGlass)",
           borderRadius: "15px",
@@ -681,6 +1075,39 @@ export default function RailwaysPage() {
                           )}
                           {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة القيام)</span>}
                           {isLast && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة الوصول)</span>}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenReportModal(stop.name);
+                            }}
+                            title="الإبلاغ عن مشكلة في هذه المحطة"
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              color: "var(--text-muted)",
+                              cursor: "pointer",
+                              padding: "2px 6px",
+                              fontSize: "0.72rem",
+                              marginRight: "auto",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "3px",
+                              borderRadius: "6px",
+                              transition: "all 0.2s ease"
+                            }}
+                            onMouseEnter={e => {
+                              e.currentTarget.style.color = "#ef4444";
+                              e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)";
+                            }}
+                            onMouseLeave={e => {
+                              e.currentTarget.style.color = "var(--text-muted)";
+                              e.currentTarget.style.background = "transparent";
+                            }}
+                          >
+                            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.7rem" }}></i>
+                            <span>إبلاغ</span>
+                          </button>
                         </span>
                       </div>
 
@@ -724,10 +1151,36 @@ export default function RailwaysPage() {
             </p>
           </div>
 
+          {/* Route Report Problem Button */}
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
+            <button
+              type="button"
+              onClick={() => handleOpenReportModal(null, true)}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "#ef4444",
+                fontSize: "0.8rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "4px 8px",
+                fontFamily: "var(--font-cairo)"
+              }}
+              onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
+              onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
+            >
+              <i className="fa-solid fa-triangle-exclamation"></i>
+              <span>الإبلاغ عن خطأ في مواعيد أو تفاصيل هذا الخط</span>
+            </button>
+          </div>
+
         </div>
 
         {/* Train Types & Features Section */}
-        <div className="metro-animate-slide-up metro-delay-350" style={{
+        <div ref={trainTypesRef} style={{
           backgroundColor: "var(--bgPrimary)",
           border: "1px solid var(--borderGlass)",
           borderRadius: "15px",
@@ -884,7 +1337,7 @@ export default function RailwaysPage() {
         </div>
 
         {/* How to book section */}
-        <div className="metro-animate-slide-up metro-delay-400" style={{
+        <div ref={howToBookRef} style={{
           backgroundColor: "var(--bgPrimary)",
           border: "1px solid var(--borderGlass)",
           borderRadius: "15px",
@@ -1023,6 +1476,739 @@ export default function RailwaysPage() {
         </div>
 
       </div>
+
+      {/* Report Problem Modal */}
+      {reportModalOpen && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.75)",
+          backdropFilter: "blur(6px)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "16px",
+          direction: "rtl"
+        }}>
+          <div ref={modalBoxRef} style={{
+            backgroundColor: "var(--bgPrimary)",
+            borderRadius: "var(--radius-card)",
+            border: "1px solid var(--borderGlass)",
+            width: "100%",
+            maxWidth: "520px",
+            maxHeight: "90vh",
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            fontFamily: "var(--font-cairo)"
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              padding: "16px 20px",
+              borderBottom: "1px solid var(--borderGlass)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.02)"
+            }}>
+              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+                <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
+                <span>مشكلة في صفحة سكك حديد مصر</span>
+              </h5>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!reportLoading) {
+                    setReportModalOpen(false);
+                    handleReportImageSelect(null);
+                  }
+                }}
+                className="closeBtn"
+              >
+                <i className="bx bx-x"></i>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div style={{ padding: "20px", maxHeight: "80vh", overflowY: "auto" }}>
+              {reportSuccess ? (
+                <div style={{ textAlign: "center", padding: "30px 10px" }}>
+                  <div style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(52, 199, 89, 0.15)",
+                    color: "#34c759",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "2rem",
+                    margin: "0 auto 16px"
+                  }}>
+                    <i className="bx bx-check"></i>
+                  </div>
+                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                    تم استلام بلاغك بنجاح!
+                  </h4>
+                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                    شكراً لمساهمتك في تحسين وتدقيق مواعيد وبيانات قطارات سكك حديد مصر. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
+                  </p>
+                </div>
+              ) : limitChecking ? (
+                <div style={{ textAlign: "center", padding: "40px" }}>
+                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
+                </div>
+              ) : limitReached ? (
+                <div style={{ textAlign: "center", padding: "20px 10px" }}>
+                  <div style={{
+                    width: "80px",
+                    height: "80px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 14px"
+                  }}>
+                    <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%", objectFit: "contain" }} loading="lazy" />
+                  </div>
+                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                    تم الوصول للحد الأقصى من البلاغات المعلقة
+                  </h5>
+                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                    لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setReportModalOpen(false)}
+                    style={{ width: "100%" }}
+                  >
+                    حسناً، فهمت
+                  </button>
+                </div>
+              ) : !user ? (
+                <div style={{ textAlign: "center", padding: "20px 10px" }}>
+                  <div style={{
+                    width: "56px",
+                    height: "56px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(59, 130, 246, 0.15)",
+                    color: "var(--colorSecondary)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.8rem",
+                    margin: "0 auto 14px"
+                  }}>
+                    <i className="bx bx-user"></i>
+                  </div>
+                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                    تسجيل الدخول مطلوب
+                  </h5>
+                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                    يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي مشكلة في قطارات سكك حديد مصر ومتابعة حالته وكسب نقاط المساهمة.
+                  </p>
+                  <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+                    <Link
+                      href="/login"
+                      className="btn btn-primary"
+                      style={{ width: "100%" }}
+                    >
+                      تسجيل الدخول
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  {/* Scope Segmented Control */}
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
+                      نطاق المشكلة:
+                    </label>
+                    <div style={{ display: "grid", gridTemplateColumns: currentRoute ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setReportTargetScope("general");
+                          setReportSelectedStation("");
+                          setReportStationSearchQuery("");
+                          setShowReportStationList(false);
+                        }}
+                        style={{
+                          padding: "8px 4px",
+                          borderRadius: "8px",
+                          border: `1px solid ${reportTargetScope === "general" ? color : "var(--borderGlass)"}`,
+                          background: reportTargetScope === "general" ? `${color}1a` : "var(--bgSecondary)",
+                          color: reportTargetScope === "general" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          fontWeight: "700",
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          fontFamily: "var(--font-body)"
+                        }}
+                      >
+                        مشكلة عامة
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setReportTargetScope("station");
+                          setShowReportStationList(true);
+                        }}
+                        style={{
+                          padding: "8px 4px",
+                          borderRadius: "8px",
+                          border: `1px solid ${reportTargetScope === "station" ? color : "var(--borderGlass)"}`,
+                          background: reportTargetScope === "station" ? `${color}1a` : "var(--bgSecondary)",
+                          color: reportTargetScope === "station" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          fontWeight: "700",
+                          fontSize: "0.8rem",
+                          cursor: "pointer",
+                          fontFamily: "var(--font-body)"
+                        }}
+                      >
+                        محطة معينة
+                      </button>
+
+                      {currentRoute && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setReportTargetScope("route");
+                            setReportSelectedStation("");
+                            setReportStationSearchQuery("");
+                            setShowReportStationList(false);
+                          }}
+                          style={{
+                            padding: "8px 4px",
+                            borderRadius: "8px",
+                            border: `1px solid ${reportTargetScope === "route" ? color : "var(--borderGlass)"}`,
+                            background: reportTargetScope === "route" ? `${color}1a` : "var(--bgSecondary)",
+                            color: reportTargetScope === "route" ? "var(--textPrimary)" : "var(--textSecondary)",
+                            fontWeight: "700",
+                            fontSize: "0.8rem",
+                            cursor: "pointer",
+                            fontFamily: "var(--font-body)"
+                          }}
+                        >
+                          الخط الحالي
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* If Scope is Station: Searchable station autocomplete selector */}
+                  {reportTargetScope === "station" && (
+                    <div style={{ position: "relative" }}>
+                      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                        <span>اختر أو ابحث عن المحطة:</span>
+                        {reportSelectedStation && (
+                          <span style={{ fontSize: "0.74rem", color: color, fontWeight: "700" }}>
+                            تم تحديد: {reportSelectedStation} ✔
+                          </span>
+                        )}
+                      </label>
+                      <div style={{ position: "relative" }}>
+                        <input
+                          type="text"
+                          className="input-fields"
+                          placeholder="ابحث باسم المحطة أو الخط..."
+                          value={reportStationSearchQuery}
+                          onChange={e => {
+                            const val = e.target.value;
+                            setReportStationSearchQuery(val);
+                            setShowReportStationList(true);
+                            if (reportSelectedStation && val !== reportSelectedStation) {
+                              setReportSelectedStation("");
+                            }
+                          }}
+                          onFocus={() => setShowReportStationList(true)}
+                          onBlur={() => setTimeout(() => setShowReportStationList(false), 250)}
+                          style={{
+                            width: "100%",
+                            padding: "10px 36px 10px 36px",
+                            borderRadius: "10px",
+                            background: "var(--bgSecondary)",
+                            color: "var(--textPrimary)",
+                            border: reportSelectedStation ? `1px solid ${color}` : "1px solid var(--borderGlass)",
+                            fontFamily: "var(--font-cairo)",
+                            fontSize: "0.9rem",
+                            direction: "rtl"
+                          }}
+                        />
+                        <div style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          color: "var(--textSecondary)",
+                          pointerEvents: "none",
+                          fontSize: "0.85rem"
+                        }}>
+                          🔍
+                        </div>
+
+                        {reportStationSearchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setReportSelectedStation("");
+                              setReportStationSearchQuery("");
+                              setShowReportStationList(true);
+                            }}
+                            title="مسح"
+                            style={{
+                              position: "absolute",
+                              left: "10px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              background: "rgba(255, 255, 255, 0.08)",
+                              border: "none",
+                              borderRadius: "50%",
+                              width: "22px",
+                              height: "22px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "0.75rem",
+                              color: "var(--textSecondary)",
+                              cursor: "pointer",
+                            }}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Station suggestions list popup */}
+                      {showReportStationList && (
+                        <div style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          right: 0,
+                          background: "var(--bgSecondary)",
+                          border: "1px solid var(--borderGlass)",
+                          borderRadius: "10px",
+                          overflow: "hidden",
+                          zIndex: 1100,
+                          maxHeight: "200px",
+                          overflowY: "auto",
+                          boxShadow: "var(--shadow-lg)",
+                          marginTop: "4px",
+                          fontFamily: "var(--font-cairo)"
+                        }}>
+                          {filteredReportStations.length === 0 ? (
+                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                              لا توجد محطة مطابقة لبحثك "{reportStationSearchQuery}"
+                            </div>
+                          ) : (
+                            filteredReportStations.map((st: any) => {
+                              const isSelected = reportSelectedStation === st.name;
+                              return (
+                                <div
+                                  key={`${st.routeId}-${st.name}`}
+                                  onMouseDown={() => {
+                                    setReportSelectedStation(st.name);
+                                    setReportStationSearchQuery(st.name);
+                                    setShowReportStationList(false);
+                                  }}
+                                  style={{
+                                    padding: "9px 14px",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: "8px",
+                                    borderBottom: "1px solid rgba(255, 255, 255, 0.03)",
+                                    background: isSelected ? "rgba(59, 130, 246, 0.15)" : "transparent",
+                                    transition: "background 0.15s ease"
+                                  }}
+                                  onMouseEnter={e => {
+                                    if (!isSelected) e.currentTarget.style.background = "var(--hoverBtn)";
+                                  }}
+                                  onMouseLeave={e => {
+                                    if (!isSelected) e.currentTarget.style.background = "transparent";
+                                  }}
+                                >
+                                  <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)" }}>
+                                    {st.name}
+                                  </span>
+
+                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                    <span style={{
+                                      fontSize: "0.68rem",
+                                      padding: "2px 8px",
+                                      borderRadius: "6px",
+                                      background: "rgba(128, 128, 128, 0.1)",
+                                      color: "var(--textSecondary)",
+                                      fontWeight: "bold",
+                                      border: "1px solid var(--borderGlass)"
+                                    }}>
+                                      {st.routeName}
+                                    </span>
+                                    {isSelected && (
+                                      <span style={{ fontSize: "0.75rem", color: "var(--colorSuccess)", fontWeight: "700" }}>✔</span>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* If Scope is Route: display current route preview card */}
+                  {reportTargetScope === "route" && currentRoute && (
+                    <div style={{
+                      padding: "10px 14px",
+                      borderRadius: "10px",
+                      background: "rgba(59, 130, 246, 0.06)",
+                      border: "1px solid rgba(59, 130, 246, 0.2)",
+                      fontSize: "0.84rem",
+                      color: "var(--textPrimary)",
+                      lineHeight: "1.6"
+                    }}>
+                      <div>🚆 <strong>الخط:</strong> {currentRoute.name}</div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
+                        من: {currentRoute.from} ← إلى: {currentRoute.to} • المدة: {currentRoute.duration}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Problem Type dropdown */}
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      نوع المشكلة:
+                    </label>
+                    <select
+                      value={reportProblemType}
+                      onChange={e => setReportProblemType(e.target.value)}
+                      className="input-fields"
+                      style={{
+                        width: "100%",
+                        padding: "10px 14px",
+                        borderRadius: "10px",
+                        background: "var(--bgSecondary)",
+                        color: "var(--textPrimary)",
+                        border: "1px solid var(--borderGlass)",
+                        fontFamily: "var(--font-cairo)",
+                        fontSize: "0.9rem",
+                        cursor: "pointer"
+                      }}
+                    >
+                      <option value="schedule_error" style={{ background: "var(--bgSecondary)" }}>خطأ في مواعيد تحرك القطارات أو مدة الرحلة</option>
+                      <option value="price" style={{ background: "var(--bgSecondary)" }}>أسعار التذاكر غير صحيحة أو تم تعديلها</option>
+                      <option value="train_class" style={{ background: "var(--bgSecondary)" }}>خطأ في فئات ودرجات القطارات المتاحة (تالجو، VIP، إسباني، روسي)</option>
+                      <option value="stops_info" style={{ background: "var(--bgSecondary)" }}>خطأ في محطات الوقوف أو مسار الخط</option>
+                      <option value="station_info" style={{ background: "var(--bgSecondary)" }}>معلومات المحطة غير دقيقة أو مغلقة للتطوير</option>
+                      <option value="app_bug" style={{ background: "var(--bgSecondary)" }}>مشكلة تقنية أو زر لا يستجيب في الصفحة</option>
+                      <option value="other" style={{ background: "var(--bgSecondary)" }}>ملاحظة أو مشكلة أخرى</option>
+                    </select>
+                  </div>
+
+                  {/* Details Textarea */}
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      تفاصيل المشكلة / التصحيح المقترح: <span style={{ color: "#ef4444" }}>*</span>
+                    </label>
+                    <textarea
+                      placeholder="يرجى كتابة المشكلة بالتفصيل واقتراح التصحيح إن وُجد (مثال: سعر تذكرة تالجو تغيرت إلى كذا، أو القطار يقف أيضاً في محطة كذا)..."
+                      value={reportDetails}
+                      onChange={e => setReportDetails(e.target.value)}
+                      className="input-fields"
+                      required
+                      style={{
+                        width: "100%",
+                        minHeight: "100px",
+                        padding: "12px",
+                        borderRadius: "10px",
+                        background: "var(--bgSecondary)",
+                        color: "var(--textPrimary)",
+                        border: "1px solid var(--borderGlass)",
+                        fontFamily: "var(--font-cairo)",
+                        fontSize: "0.9rem",
+                        resize: "vertical"
+                      }}
+                    />
+                  </div>
+
+                  {/* Enhanced Image File Upload */}
+                  <div>
+                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <span>صورة توضيحية للمشكلة (اختياري):</span>
+                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal" }}>
+                        JPG, PNG, WEBP (الحد الأقصى 5MB)
+                      </span>
+                    </label>
+
+                    {!reportImagePreview ? (
+                      <div
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          setIsDraggingImage(true);
+                        }}
+                        onDragLeave={() => setIsDraggingImage(false)}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          setIsDraggingImage(false);
+                          const droppedFile = e.dataTransfer.files?.[0];
+                          if (droppedFile) handleReportImageSelect(droppedFile);
+                        }}
+                        style={{
+                          position: "relative",
+                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "1.5px dashed var(--borderGlass)",
+                          borderRadius: "12px",
+                          background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
+                          padding: "20px 16px",
+                          textAlign: "center",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!isDraggingImage) e.currentTarget.style.background = "var(--hoverBtn)";
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isDraggingImage) e.currentTarget.style.background = "rgba(255, 255, 255, 0.02)";
+                        }}
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleReportImageSelect(file);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            opacity: 0,
+                            cursor: "pointer",
+                          }}
+                        />
+
+                        <div style={{
+                          width: "46px",
+                          height: "46px",
+                          borderRadius: "50%",
+                          background: "rgba(59, 130, 246, 0.12)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: color || "var(--colorSecondary)",
+                          fontSize: "1.4rem"
+                        }}>
+                          <i className="bx bx-cloud-upload"></i>
+                        </div>
+
+                        <div>
+                          <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "3px" }}>
+                            اضغط لاختيار صورة أو اسحبها وأفلتها هنا
+                          </div>
+                          <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
+                            صورة جدول المواعيد أو التذكرة لتوضيح الخطأ بدقة
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{
+                        position: "relative",
+                        border: "1px solid var(--borderGlass)",
+                        borderRadius: "12px",
+                        background: "var(--bgSecondary)",
+                        padding: "10px 12px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                      }}>
+                        {/* Thumbnail */}
+                        <div style={{
+                          width: "64px",
+                          height: "64px",
+                          borderRadius: "8px",
+                          overflow: "hidden",
+                          flexShrink: 0,
+                          background: "#000",
+                          border: "1px solid var(--borderGlass)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          position: "relative"
+                        }}>
+                          <img
+                            src={reportImagePreview}
+                            alt="معاينة الصورة المرفقة"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover"
+                            }}
+                          />
+                        </div>
+
+                        {/* File details */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{
+                            fontSize: "0.86rem",
+                            fontWeight: "700",
+                            color: "var(--textPrimary)",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis"
+                          }}>
+                            {reportImageFile?.name || "صورة توضيحية"}
+                          </div>
+                          <div style={{ fontSize: "0.74rem", color: "var(--textSecondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                            <span>
+                              {reportImageFile
+                                ? reportImageFile.size < 1024 * 1024
+                                  ? `${(reportImageFile.size / 1024).toFixed(0)} KB`
+                                  : `${(reportImageFile.size / (1024 * 1024)).toFixed(1)} MB`
+                                : ""}
+                            </span>
+                            <span>•</span>
+                            <span style={{ color: "var(--colorSuccess)", fontWeight: "600" }}>جاهزة للإرسال ✔</span>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          {/* Change button */}
+                          <label style={{
+                            cursor: "pointer",
+                            padding: "6px 10px",
+                            borderRadius: "8px",
+                            background: "rgba(255, 255, 255, 0.05)",
+                            border: "1px solid var(--borderGlass)",
+                            color: "var(--textPrimary)",
+                            fontSize: "0.75rem",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px"
+                          }}>
+                            <i className="bx bx-sync"></i>
+                            <span>تغيير</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleReportImageSelect(file);
+                              }}
+                              style={{ display: "none" }}
+                            />
+                          </label>
+
+                          {/* Delete button */}
+                          <button
+                            type="button"
+                            onClick={() => handleReportImageSelect(null)}
+                            title="حذف الصورة"
+                            style={{
+                              padding: "6px 10px",
+                              borderRadius: "8px",
+                              background: "rgba(239, 68, 68, 0.1)",
+                              border: "1px solid rgba(239, 68, 68, 0.25)",
+                              color: "#ef4444",
+                              fontSize: "0.75rem",
+                              fontWeight: "600",
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px"
+                            }}
+                          >
+                            <i className="bx bx-trash"></i>
+                            <span>حذف</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Error Message */}
+                  {reportError && (
+                    <div style={{
+                      padding: "10px 14px",
+                      borderRadius: "8px",
+                      backgroundColor: "rgba(239, 68, 68, 0.1)",
+                      border: "1px solid rgba(239, 68, 68, 0.3)",
+                      color: "#ef4444",
+                      fontSize: "0.85rem"
+                    }}>
+                      {reportError}
+                    </div>
+                  )}
+
+                  {/* Submit and Cancel Buttons */}
+                  <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+                    <button
+                      type="submit"
+                      className="btn actionBtnDelete"
+                      disabled={reportLoading || reportUploading}
+                      style={{
+                        flex: 1,
+                        fontWeight: "700",
+                        fontSize: "0.92rem",
+                        cursor: reportLoading ? "wait" : "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "6px",
+                        width: "50%",
+                      }}
+                    >
+                      {reportLoading ? (
+                        <>
+                          <div style={{ width: "16px", height: "16px", border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+                          <span>{reportUploading ? "جاري الرفع..." : "جاري الإرسال..."}</span>
+                        </>
+                      ) : (
+                        <>
+                          <i className="bx bx-send"></i>
+                          <span>إرسال البلاغ</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-cancle"
+                      disabled={reportLoading}
+                      onClick={() => {
+                        setReportModalOpen(false);
+                        handleReportImageSelect(null);
+                      }}
+                      style={{
+                        fontWeight: "700",
+                        fontSize: "0.92rem",
+                        width: "50%",
+                      }}
+                    >
+                      إلغاء
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

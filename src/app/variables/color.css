@@ -1,5 +1,7 @@
 :root {
     /* ==================== Global Colors ==================== */
+    --bgMode: #000000;
+
     --colorPrimary: #2727ff;
     --colorSecondary: #3b82f6;
     --colorAccent: #1a3eff;
@@ -14,6 +16,9 @@
     --bgThird: #121212;
     --bgGlass: rgba(0, 0, 0, 0.7);
     --bgAlert: linear-gradient(135deg, rgba(117, 117, 117, 0.08) 0%, rgba(32, 32, 32, 0.08) 100%);
+    --bgLinear: radial-gradient(ellipse 85% 42% at 85% 24%, rgba(17, 64, 253, 0.88) 0%, rgba(48, 45, 205, 0.45) 35%, transparent 70%),
+        linear-gradient(180deg,
+            var(--bgMode) 100%); 
     /* Text Global */
     --textPrimary: #f4f4f5;
     --textSecondary: #a1a1aa;
@@ -30,6 +35,7 @@
     /* Borders Global */
     --borderGlass: var(--borderGlassBtn);
     --borderPrimary: #7c7c7c36;
+    --borderSecondary: rgb(12, 12, 12);
     /* Shadows Global */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
@@ -99,12 +105,15 @@
 
 html.light {
     /* Global Variables */
+    --bgMode: #ffffff;
     --bgPrimary: #ffffff;
     --bgSecondary: #f4f4f5;
     --bgAlert: linear-gradient(135deg, rgba(85, 85, 85, 0.11) 0%, rgba(32, 32, 32, 0.205) 100%);
     --bgGlass: rgba(255, 255, 255, 0.8);
     --bgThird: #f8f8f8;
-
+    --bgLinear: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(115, 141, 250, 0.88) 0%, rgba(45, 184, 205, 0.45) 35%, transparent 70%),
+        linear-gradient(180deg,
+            var(--bgMode) 100%); 
     --textPrimary: #18181b;
     --textSecondary: #52525b;
     /* Buttons */
@@ -117,6 +126,7 @@ html.light {
     --secondHoverBtn: rgb(182, 182, 182);
     /* border */
     --borderPrimary: rgba(151, 151, 151, 0.384);
+    --borderSecondary: rgba(151, 151, 151, 0.384);
     /* Input Fields */
     --inputBorder: rgba(151, 151, 151, 0.384);
     --inputBg: rgb(250, 250, 250);
@@ -291,7 +301,7 @@ html.light {
     padding: 8px;
     width: 30px;
     height: 30px;
-    
+
 }
 
 .actionBtnEdit {

@@ -35,7 +35,8 @@
   --accent-secondary: #10b981;
   /* Soft green */
   --accent-pink: #ec4899;
-  --accent-orange: #f59e0b;  --accent-warning: #f59e0b;
+  --accent-orange: #f59e0b;
+  --accent-warning: #f59e0b;
   --accent-danger: #ef4444;
   --accent-red: #ef4444;
 
@@ -101,7 +102,7 @@ html.light .profile-page-wrapper {
 html,
 body {
   font-family: var(--font-sub);
-  background-color: var(--bgPrimary);
+  background-color: var(--bgMode);
   color: var(--textPrimary);
   min-height: 100vh;
   width: 100%;
@@ -2167,4 +2168,54 @@ html.light .suggestion-icon {
   .home-category-card-count {
     font-size: 0.8rem;
   }
+}
+
+
+
+
+
+
+
+
+
+/* NEW */
+.main-container {
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 10px;
+  direction: rtl;
+}
+
+/* HEADER PAGE */
+.header-banner {
+  padding: 24px 20px 24px;
+  text-align: right;
+  position: relative;
+  background: var(--bgLinear);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: bold;
+  color: var(--textPrimary);
+  margin: 0 0 10px;
+  letter-spacing: -0.5px;
+}
+
+.header-sub-title {
+  color: var(--textMuted);
+  font-size: 0.95rem;
+  max-width: 500px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 10px;
 }
