@@ -1822,7 +1822,7 @@ ${reportDetails.trim()}`;
                           border: "1px solid var(--borderGlass)",
                           borderRadius: "var(--radius-card)",
                           zIndex: 1200,
-                          maxHeight: "260px",
+                          maxHeight: "360px",
                           overflowY: "auto",
                           marginTop: "6px",
                           padding: "6px",
@@ -1848,7 +1848,7 @@ ${reportDetails.trim()}`;
                                 alignItems: "center",
                                 justifyContent: "space-between",
                                 gap: "10px",
-                                background: isSelected ? "rgba(255, 255, 255, 1)" : "transparent",
+                                background: isSelected ? "var(--bgPrimary)" : "transparent",
                                 border: isSelected ? `1px solid var(--borderPrimary)` : "1px solid transparent",
                                 transition: "all 0.15s ease"
                               }}

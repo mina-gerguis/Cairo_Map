@@ -2226,7 +2226,6 @@ html.light .suggestion-icon {
   border: 1px solid var(--borderGlass);
   border-radius: var(--radius-xs);
   padding: 20px;
-  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   gap: 20px;
