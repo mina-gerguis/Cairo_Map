@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
+import TrainTypesSection from "@/components/railways/TrainTypesSection";
 
 interface TrainClass {
   name: string;
@@ -226,6 +227,65 @@ function normalizeArabic(text: string) {
     .toLowerCase();
 }
 
+export const REPORT_PROBLEM_OPTIONS = [
+  {
+    id: "schedule_error",
+    title: "خطأ في مواعيد تحرك القطارات أو مدة الرحلة",
+    desc: "أوقات القيام أو الوصول غير مطابقة للجدول الفعلي",
+    icon: "fa-regular fa-clock",
+    badge: "مواعيد",
+    badgeColor: "#3b82f6"
+  },
+  {
+    id: "price",
+    title: "أسعار التذاكر غير صحيحة أو تم تعديلها",
+    desc: "تغيير في أسعار الدرجة الأولى، الثانية أو التذاكر الموحدة",
+    icon: "fa-solid fa-tags",
+    badge: "أسعار",
+    badgeColor: "#10b981"
+  },
+  {
+    id: "train_class",
+    title: "خطأ في فئات ودرجات القطارات المتاحة",
+    desc: "نوع القطار الموضح (تالجو، VIP، إسباني، روسي) غير دقيق",
+    icon: "fa-solid fa-train",
+    badge: "قطارات",
+    badgeColor: "#f59e0b"
+  },
+  {
+    id: "stops_info",
+    title: "خطأ في محطات الوقوف أو مسار الخط",
+    desc: "محطة توقف مفقودة أو مدرجة بالخطأ في جدول الخط",
+    icon: "fa-solid fa-route",
+    badge: "محطات",
+    badgeColor: "#8b5cf6"
+  },
+  {
+    id: "station_info",
+    title: "بيانات محطة قطار غير دقيقة",
+    desc: "موقع أو اسم أو حالة تطوير المحطة غير صحيحة",
+    icon: "fa-regular fa-building",
+    badge: "بيانات",
+    badgeColor: "#06b6d4"
+  },
+  {
+    id: "app_bug",
+    title: "مشكلة تقنية أو خلل في الصفحة",
+    desc: "أزرار أو فلاتر أو جداول لا تستجيب بالشكل المطلوب",
+    icon: "fa-solid fa-bug",
+    badge: "تقني",
+    badgeColor: "#ef4444"
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو اقتراح آخر",
+    desc: "أي استفسار أو اقتراح لتحسين وتدقيق دليل القطارات",
+    icon: "fa-regular fa-comment-dots",
+    badge: "عام",
+    badgeColor: "#64748b"
+  }
+];
+
 export default function RailwaysPage() {
   const { user, profile, loading: authLoading } = useAuth();
   const [selectedRouteId, setSelectedRouteId] = useState<string>("cairo-alex");
@@ -238,6 +298,7 @@ export default function RailwaysPage() {
   const [reportStationSearchQuery, setReportStationSearchQuery] = useState<string>("");
   const [showReportStationList, setShowReportStationList] = useState<boolean>(false);
   const [reportProblemType, setReportProblemType] = useState<string>("schedule_error");
+  const [showProblemTypeDropdown, setShowProblemTypeDropdown] = useState<boolean>(false);
   const [reportDetails, setReportDetails] = useState<string>("");
   const [reportImageFile, setReportImageFile] = useState<File | null>(null);
   const [reportImagePreview, setReportImagePreview] = useState<string | null>(null);
@@ -837,33 +898,6 @@ ${reportDetails.trim()}`;
 
 
 
-          // {/* Report Problem Button */}
-          // <div style={{ marginTop: "14px" }}>
-          //   <button
-          //     type="button"
-          //     onClick={() => handleOpenReportModal()}
-          //     style={{
-          //       background: "rgba(239, 68, 68, 0.08)",
-          //       border: "1px solid rgba(239, 68, 68, 0.25)",
-          //       color: "#ef4444",
-          //       borderRadius: "20px",
-          //       padding: "6px 16px",
-          //       fontSize: "0.8rem",
-          //       fontWeight: "700",
-          //       cursor: "pointer",
-          //       display: "inline-flex",
-          //       alignItems: "center",
-          //       gap: "6px",
-          //       fontFamily: "var(--font-cairo)",
-          //       transition: "all 0.2s ease",
-          //     }}
-          //     onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.16)"}
-          //     onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
-          //   >
-          //     <i className="fa-solid fa-triangle-exclamation"></i>
-          //     <span>الإبلاغ عن مشكلة في سكك حديد مصر</span>
-          //   </button>
-          // </div>
 
 
 
@@ -873,7 +907,7 @@ ${reportDetails.trim()}`;
 
 
 
-
+// ================== Main Container ==================
   return (
     //================================== START MAIN CONTAINER =================================
     <div className="main-container">
@@ -919,8 +953,8 @@ ${reportDetails.trim()}`;
                 type="button"
                 onClick={() => setSelectedRouteId(route.id)}
                 style={{
-                  background: `radial-gradient(circle at 100% 0%, ${iconData.glowColor}48 10%, transparent 65%), var(--bgPrimary)`,
-                  border: "1px solid var(--borderGlass)",
+                  background: `radial-gradient(circle at 100% 0%, ${iconData.glowColor}98 20%, transparent 65%), var(--bgPrimary)`,
+                  border: "1px solid var(--borderSecondary)",
                   borderRadius: "var(--radius-xs)",
                   padding: "16px 16px 14px 16px",
                   cursor: "pointer",
@@ -976,57 +1010,44 @@ ${reportDetails.trim()}`;
         </div>
 
         {/* Main Details Panel */}
-        <div ref={detailsPanelRef} style={{
-          backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
-          borderRadius: "15px",
-          padding: "20px",
-          boxShadow: "var(--shadow-card)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          marginBottom: "24px"
-        }}>
-          <h5 style={{
-            fontSize: "1.25rem",
-            fontWeight: "800",
-            color: "var(--textPrimary)",
-            margin: "0"
-          }}>
+        <div ref={detailsPanelRef} className="details-panel">
+          <h5 className="text-lg fw-bold">
             تفاصيل خط {currentRoute?.name || ""}
           </h5>
 
           {/* Details Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[0]?.name?.replace(" (رمسيس)", "")?.replace(" (محطة رمسيس)", "") || currentRoute?.from || "القاهرة"}
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>القيام</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>البداية</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
+
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[currentRoute.stops.length - 1]?.name?.replace(" (محطة سيدي جابر / مصر)", "") || currentRoute?.to || "الوصول"}
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>الوصول</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>النهاية</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
+
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--textPrimary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.duration || "غير معددة"}
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>المدة المقدرة</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>وقت السفر</div>
             </div>
           </div>
 
           {/* Detailed stops vertical timeline */}
           <div style={{
-            background: "rgba(128, 128, 128, 0.02)",
+            background: "var(--bgGlass)",
             padding: "20px 16px",
-            borderRadius: "12px",
+            borderRadius: "var(--radius-xs)",
             border: "1px solid var(--borderGlass)"
           }}>
-            <h2 style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "16px" }}>
-              📌 المحطات الرئيسية على هذا الخط:
+            <h2 className="text-md fw-bold mb-4">
+              📌 المحطات الرئيسية على هذا الخط
             </h2>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
@@ -1045,7 +1066,7 @@ ${reportDetails.trim()}`;
                             height: isFirst || isLast ? "12px" : "8px",
                             borderRadius: "50%",
                             backgroundColor: isUnderConstruction ? "transparent" : color,
-                            border: isUnderConstruction ? `2px dashed #ef4444` : (isFirst || isLast ? `2px solid var(--bgPrimary)` : "none"),
+                            border: isUnderConstruction ? `2px dashed var(--colorDanger)` : (isFirst || isLast ? `2px solid var(--bgPrimary)` : "none"),
                             boxShadow: isUnderConstruction ? "none" : (isFirst || isLast ? `0 0 0 2px ${color}` : "none")
                           }} />
                         </div>
@@ -1073,41 +1094,8 @@ ${reportDetails.trim()}`;
                               تحت الإنشاء 🚧
                             </span>
                           )}
-                          {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة القيام)</span>}
-                          {isLast && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(محطة الوصول)</span>}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenReportModal(stop.name);
-                            }}
-                            title="الإبلاغ عن مشكلة في هذه المحطة"
-                            style={{
-                              background: "transparent",
-                              border: "none",
-                              color: "var(--text-muted)",
-                              cursor: "pointer",
-                              padding: "2px 6px",
-                              fontSize: "0.72rem",
-                              marginRight: "auto",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "3px",
-                              borderRadius: "6px",
-                              transition: "all 0.2s ease"
-                            }}
-                            onMouseEnter={e => {
-                              e.currentTarget.style.color = "#ef4444";
-                              e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)";
-                            }}
-                            onMouseLeave={e => {
-                              e.currentTarget.style.color = "var(--text-muted)";
-                              e.currentTarget.style.background = "transparent";
-                            }}
-                          >
-                            <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.7rem" }}></i>
-                            <span>إبلاغ</span>
-                          </button>
+                          {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(بدايــة الخط)</span>}
+                          {isLast && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "8px" }}>(نهـاية الخط)</span>}
                         </span>
                       </div>
 
@@ -1139,15 +1127,15 @@ ${reportDetails.trim()}`;
           {/* Tips Section */}
           <div style={{
             marginTop: "12px",
-            background: "rgba(59, 130, 246, 0.04)",
-            border: "1px solid rgba(59, 130, 246, 0.15)",
-            borderRadius: "12px",
+            background: "var(--bgGlass)",
+            border: "1px solid var(--borderGlass)",
+            borderRadius: "var(--radius-xs)",
             padding: "16px"
           }}>
-            <p className="sub-title" style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem", color: "var(--textPrimary)" }}>
+            <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
               <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: color, fontSize: "1.1rem", verticalAlign: "middle" }}></i>
-              <strong>نصيحة الرحلة: </strong>
-              <span style={{ color: "var(--textSecondary)" }}>{currentRoute.tips}</span>
+              <strong>نصيحة السفر: </strong>
+              <span style={{ color: "var(--textMuted)" }}>{currentRoute.tips}</span>
             </p>
           </div>
 
@@ -1155,22 +1143,16 @@ ${reportDetails.trim()}`;
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
             <button
               type="button"
+              className="btn btn-reportProblem"
               onClick={() => handleOpenReportModal(null, true)}
               style={{
-                background: "transparent",
-                border: "none",
-                color: "#ef4444",
                 fontSize: "0.8rem",
                 fontWeight: "700",
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "6px",
-                padding: "4px 8px",
-                fontFamily: "var(--font-cairo)"
               }}
-              onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
-              onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
             >
               <i className="fa-solid fa-triangle-exclamation"></i>
               <span>الإبلاغ عن خطأ في مواعيد أو تفاصيل هذا الخط</span>
@@ -1180,174 +1162,18 @@ ${reportDetails.trim()}`;
         </div>
 
         {/* Train Types & Features Section */}
-        <div ref={trainTypesRef} style={{
-          backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
-          borderRadius: "15px",
-          padding: "20px",
-          boxShadow: "var(--shadow-card)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          marginBottom: "24px"
-        }}>
-          <h2 style={{
-            fontSize: "1.25rem",
-            fontWeight: "800",
-            color: "var(--textPrimary)",
-            margin: "0 0 4px",
-            display: "flex",
-            alignItems: "center"
-          }}>
-            <i className="bx bx-train" style={{ marginLeft: "8px", color: color, fontSize: "1.4rem" }}></i>
-            أنواع القطارات والمميزات
-          </h2>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0" }}>
-            تتنوع قطارات مصر لتناسب جميع الفئات والاحتياجات، إليك تفاصيل أنواع القطارات ومميزات كل نوع:
-          </p>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-            {[
-              {
-                name: "قطار تالجو (Talgo) الفاخر",
-                badge: "الأحدث والأسرع 🚄",
-                badgeBg: "rgba(239, 68, 68, 0.12)",
-                badgeColor: "#ef4444",
-                desc: "أحدث وأفخم قطارات شبكة سكك حديد مصر المصنعة من شركة تالجو الإسبانية وتعتمد على تكنولوجيا فاخرة خفيفة الوزن ونظام تعليق هوائي يقلل الاهتزازات لراحة فائقة.",
-                features: [
-                  "شاشات عرض تفاعلية لكل مقعد في الدرجة الأولى",
-                  "خدمة واي فاي وعربة بوفيه فاخرة للمشروبات والمأكولات",
-                  "تكييف هوائي متطور ونظام عزل صوت يعطي هدوء تام",
-                  "دورات مياه حديثة مجهزة ومخصصة لذوي الهمم"
-                ]
-              },
-              {
-                name: "قطارات VIP السريعة",
-                badge: "درجة أولى ممتازة 🎖️",
-                badgeBg: "rgba(245, 158, 11, 0.12)",
-                badgeColor: "#f59e0b",
-                desc: "قطارات مكيفة بالكامل مخصصة للمسافات الطويلة بين المحافظات الرئيسية وتتميز بالسرعة وقلة محطات التوقف.",
-                features: [
-                  "مقاعد جلدية فاخرة قابلة للتعديل والميل للراحة",
-                  "منافذ شاحن كهربائي لكل مقعد وكاميرات مراقبة أمان",
-                  "عربة بوفيه متكاملة تقدم وجبات خفيفة ومشروبات",
-                  "تكييف ممتاز وخدمة نظافة دورية طوال الرحلة"
-                ]
-              },
-              {
-                name: "قطارات النوم الفاخرة (Wagon-Lits)",
-                badge: "للرحلات الطويلة 🌙",
-                badgeBg: "rgba(139, 92, 246, 0.12)",
-                badgeColor: "#8b5cf6",
-                desc: "قطارات مخصصة لرحلات النوم الليلية إلى محافظات الصعيد (الأقصر وأسوان) وتوفر راحة فندقية أثناء السفر.",
-                features: [
-                  "كابينات نوم مغلقة بها سريرين ومغسلة خاصة",
-                  "وجبة عشاء وإفطار ساخنة مجانية شاملة التذكرة",
-                  "عربة نادي وبوفيه مخصصة للسمر وتناول المشروبات",
-                  "ملاحظ كابينة مخصص لخدمة الركاب طوال فترة السفر"
-                ]
-              },
-              {
-                name: "قطارات إسباني / فرنسي مطور",
-                badge: "درجة أولى وثانية مكيفة ❄️",
-                badgeBg: "rgba(59, 130, 246, 0.12)",
-                badgeColor: "#3b82f6",
-                desc: "القطارات المكيفة الكلاسيكية الشهيرة التي تم تجديدها بالكامل لتقديم رحلات مريحة بأسعار مناسبة.",
-                features: [
-                  "تكييف مريح ومقاعد مجددة بالكامل",
-                  "أسعار اقتصادية ومناسبة للسفر اليومي والدراسي",
-                  "عربة بوفيه لتقديم المشروبات والسندويشات",
-                  "تغطي كافة المحافظات والمراكز الكبرى"
-                ]
-              },
-              {
-                name: "قطارات روسي مكيفة (الدرجة الثالثة المكيفة)",
-                badge: "اقتصادي ومكيف ❄️🚌",
-                badgeBg: "rgba(16, 185, 129, 0.12)",
-                badgeColor: "#10b981",
-                desc: "عربات جديدة دخلت الخدمة حديثاً لتوفير خدمة مكيفة بسعر اقتصادي يناسب كافة فئات المجتمع.",
-                features: [
-                  "عربات حديثة ومريحة بتكييف كامل",
-                  "شاشات إلكترونية داخل العربات لإرشادات السفر",
-                  "سعر تذكرة اقتصادي جداً وموحد",
-                  "متوفرة بكثرة على خطوط الصعيد والدلتا والوجه البحري"
-                ]
-              },
-              {
-                name: "قطارات تحيا مصر (الدرجة العادية / تهوية ديناميكية)",
-                badge: "درجة شعبية اقتصادية 🚂",
-                badgeBg: "rgba(156, 163, 175, 0.12)",
-                badgeColor: "var(--textSecondary)",
-                desc: "القطارات الاقتصادية التي تربط بين القرى والمراكز وتتوقف في كافة المحطات الفرعية على مستوى الجمهورية.",
-                features: [
-                  "تكلفتها منخفضة جداً وتناسب التنقل اليومي",
-                  "شبابيك تهوية طبيعية وعربات حديثة مطورة",
-                  "تربط كافة القرى والمراكز بالمحافظات",
-                  "رحلات متكررة على مدار اليوم"
-                ]
-              }
-            ].map((train, idx) => (
-              <div
-                key={idx}
-                style={{
-                  padding: "16px",
-                  borderRadius: "12px",
-                  background: "rgba(128, 128, 128, 0.02)",
-                  border: "1px solid var(--borderGlass)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "10px"
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-                  <h2 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--textPrimary)" }}>{train.name}</h2>
-                  <span style={{
-                    background: train.badgeBg,
-                    color: train.badgeColor,
-                    border: `1px solid ${train.badgeColor}30`,
-                    borderRadius: "6px",
-                    padding: "2px 8px",
-                    fontSize: "0.75rem",
-                    fontWeight: "bold"
-                  }}>
-                    {train.badge}
-                  </span>
-                </div>
-
-                <p className="sub-title" style={{ margin: 0, fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-                  {train.desc}
-                </p>
-
-                <div style={{
-                  background: "rgba(0,0,0,0.02)",
-                  padding: "10px 12px",
-                  borderRadius: "8px",
-                  borderRight: `3px solid ${train.badgeColor}`
-                }}>
-                  <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>✨ أهم المميزات:</div>
-                  <ul style={{ margin: 0, paddingRight: "16px", fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-                    {train.features.map((feat, fIdx) => (
-                      <li key={fIdx}>{feat}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* <TrainTypesSection
+          sectionRef={trainTypesRef}
+          themeColor={color}
+          onJumpToBooking={() => {
+            if (howToBookRef.current) {
+              howToBookRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }}
+        /> */}
 
         {/* How to book section */}
-        <div ref={howToBookRef} style={{
-          backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
-          borderRadius: "15px",
-          padding: "20px",
-          boxShadow: "var(--shadow-card)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          marginBottom: "24px"
-        }}>
+        <div ref={howToBookRef} className="details-panel">
           <h2 style={{
             fontSize: "1.25rem",
             fontWeight: "800",
@@ -1364,7 +1190,7 @@ ${reportDetails.trim()}`;
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {([
               {
-                title: "💻 الموقع الإلكتروني الرسمي",
+                title: "الموقع الإلكتروني الرسمي",
                 desc: "يمكنك حجز التذاكر والدفع ببطاقة الائتمان عبر البوابة الرسمية للهيئة عبر الإنترنت.",
                 links: [
                   {
@@ -1376,7 +1202,7 @@ ${reportDetails.trim()}`;
                 ]
               },
               {
-                title: "📱 التطبيق الهاتفي الرسمي (ENR Trains)",
+                title: "التطبيق الهاتفي الرسمي",
                 desc: "حمل تطبيق الهواتف الذكية المعتمد لحجز التذاكر والاستعلام عن مواعيد رحلات القطار بكل سهولة عبر الأندرويد والآيفون.",
                 links: [
                   {
@@ -1392,18 +1218,6 @@ ${reportDetails.trim()}`;
                     iconColor: "var(--textPrimary)"
                   }
                 ]
-              },
-              {
-                title: "🎟️ مكاتب فوري (Fawry)",
-                desc: "أصبح بإمكانك حجز تذاكر القطارات المكيفة والروسية من أي منفذ أو ماكينة فوري منتشرة في كل أنحاء الجمهورية.",
-                links: [
-                  {
-                    name: "فوري للخدمات",
-                    url: "https://fawry.com/",
-                    icon: "bx bx-store-alt",
-                    iconColor: "#f59e0b"
-                  }
-                ]
               }
             ] as { title: string; desc: string; links: { name: string; url: string; icon: string; iconColor?: string }[] }[]).map((item, idx) => (
               <div
@@ -1415,7 +1229,7 @@ ${reportDetails.trim()}`;
                   border: "1px solid var(--borderGlass)",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "flex-start",
                   flexWrap: "wrap",
                   gap: "14px",
                   transition: "all 0.2s ease"
@@ -1431,7 +1245,7 @@ ${reportDetails.trim()}`;
                 </div>
                 <div style={{
                   display: "flex",
-                  alignItems: "center",
+                  alignItems: "left",
                   flexWrap: "wrap",
                   gap: "8px"
                 }}>
@@ -1473,6 +1287,67 @@ ${reportDetails.trim()}`;
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Report Problem Section */}
+        <div style={{
+          background: "var(--bgLinearAlert)",
+          border: "1px solid var(--borderSecondary)",
+          borderRadius: "var(--radius-xs)",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "16px",
+          marginTop: "14px",
+          overflow: "hidden",
+          position: "relative"
+        }}>
+          <div style={{ flex: "1 1 300px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexDirection: "row-reverse" }}>
+              <h2 style={{
+                margin: "0 0 6px",
+                fontSize: "1rem",
+                fontWeight: "800",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}>
+                الإبلاغ عن مشكلة أو تحديث في بيانات القطارات
+              </h2>
+              <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px"}} />
+            </div>
+
+            <p style={{
+              margin: 0,
+              fontSize: "0.82rem",
+              color: "var(--textSecondary)",
+              lineHeight: "1.6"
+            }}>
+              هل لاحظت أي خطأ في المواعيد، الأسعار، أو محطات التوقف؟ شاركنا ملاحظتك لمساعدتنا في تدقيق وتحديث جدول الرحلات باستمرار.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-reportProblem"
+            onClick={() => handleOpenReportModal()}
+            style={{
+              padding: "6px 10px",
+              fontSize: "0.84rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "all 0.15s ease",
+              flexShrink: 0
+            }}
+          >
+            <i className="fa-solid fa-flag"></i>
+            <span>تقديم بلاغ عن خطأ</span>
+          </button>
         </div>
 
       </div>
@@ -1518,7 +1393,7 @@ ${reportDetails.trim()}`;
             }}>
               <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
-                <span>مشكلة في صفحة سكك حديد مصر</span>
+                <span>مشكلة في خدمة سكك حديد مصر</span>
               </h5>
               <button
                 type="button"
@@ -1562,7 +1437,7 @@ ${reportDetails.trim()}`;
               ) : limitChecking ? (
                 <div style={{ textAlign: "center", padding: "40px" }}>
                   <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
+                  <span style={{ color: "var(--textMuted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
                 </div>
               ) : limitReached ? (
                 <div style={{ textAlign: "center", padding: "20px 10px" }}>
@@ -1630,7 +1505,7 @@ ${reportDetails.trim()}`;
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
                       نطاق المشكلة:
                     </label>
-                    <div style={{ display: "grid", gridTemplateColumns: currentRoute ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
+                    <div className="taps" style={{ display: "grid", gridTemplateColumns: currentRoute ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
                       <button
                         type="button"
                         onClick={() => {
@@ -1642,9 +1517,9 @@ ${reportDetails.trim()}`;
                         style={{
                           padding: "8px 4px",
                           borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "general" ? color : "var(--borderGlass)"}`,
-                          background: reportTargetScope === "general" ? `${color}1a` : "var(--bgSecondary)",
-                          color: reportTargetScope === "general" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          border: "none",
+                          background: reportTargetScope === "general" ? "var(--textPrimary)" : "transparent",
+                          color: reportTargetScope === "general" ? "var(--bgMode)" : "var(--textPrimary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1663,9 +1538,9 @@ ${reportDetails.trim()}`;
                         style={{
                           padding: "8px 4px",
                           borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "station" ? color : "var(--borderGlass)"}`,
-                          background: reportTargetScope === "station" ? `${color}1a` : "var(--bgSecondary)",
-                          color: reportTargetScope === "station" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          border: "none",
+                          background: reportTargetScope === "station" ? "var(--textPrimary)" : "transparent",
+                          color: reportTargetScope === "station" ? "var(--bgMode)" : "var(--textPrimary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1687,9 +1562,9 @@ ${reportDetails.trim()}`;
                           style={{
                             padding: "8px 4px",
                             borderRadius: "8px",
-                            border: `1px solid ${reportTargetScope === "route" ? color : "var(--borderGlass)"}`,
-                            background: reportTargetScope === "route" ? `${color}1a` : "var(--bgSecondary)",
-                            color: reportTargetScope === "route" ? "var(--textPrimary)" : "var(--textSecondary)",
+                            border: "none",
+                            background: reportTargetScope === "route" ? "var(--textPrimary)" : "transparent",
+                            color: reportTargetScope === "route" ? "var(--bgMode)" : "var(--textPrimary)",
                             fontWeight: "700",
                             fontSize: "0.8rem",
                             cursor: "pointer",
@@ -1735,8 +1610,7 @@ ${reportDetails.trim()}`;
                             borderRadius: "10px",
                             background: "var(--bgSecondary)",
                             color: "var(--textPrimary)",
-                            border: reportSelectedStation ? `1px solid ${color}` : "1px solid var(--borderGlass)",
-                            fontFamily: "var(--font-cairo)",
+                            border: reportSelectedStation ? `1px solid var(--textPrimary)` : "1px solid var(--borderGlass)",
                             fontSize: "0.9rem",
                             direction: "rtl"
                           }}
@@ -1748,9 +1622,12 @@ ${reportDetails.trim()}`;
                           transform: "translateY(-50%)",
                           color: "var(--textSecondary)",
                           pointerEvents: "none",
-                          fontSize: "0.85rem"
+                          fontSize: "0.85rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
                         }}>
-                          🔍
+                          <i className="bx bx-search" style={{ fontSize: "1rem" }}></i>
                         </div>
 
                         {reportStationSearchQuery && (
@@ -1794,17 +1671,17 @@ ${reportDetails.trim()}`;
                           right: 0,
                           background: "var(--bgSecondary)",
                           border: "1px solid var(--borderGlass)",
-                          borderRadius: "10px",
+                          borderRadius: "var(--radius-card)",
                           overflow: "hidden",
                           zIndex: 1100,
-                          maxHeight: "200px",
+                          maxHeight: "220px",
                           overflowY: "auto",
-                          boxShadow: "var(--shadow-lg)",
-                          marginTop: "4px",
-                          fontFamily: "var(--font-cairo)"
+                          marginTop: "6px",
+                          padding: "4px"
                         }}>
                           {filteredReportStations.length === 0 ? (
-                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                            <div style={{ padding: "14px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                              <i className="bx bx-search" style={{ fontSize: "1.2rem", display: "block", marginBottom: "4px" }} />
                               لا توجد محطة مطابقة لبحثك "{reportStationSearchQuery}"
                             </div>
                           ) : (
@@ -1819,15 +1696,17 @@ ${reportDetails.trim()}`;
                                     setShowReportStationList(false);
                                   }}
                                   style={{
-                                    padding: "9px 14px",
+                                    padding: "9px 12px",
+                                    borderRadius: "8px",
                                     cursor: "pointer",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "space-between",
                                     gap: "8px",
-                                    borderBottom: "1px solid rgba(255, 255, 255, 0.03)",
                                     background: isSelected ? "rgba(59, 130, 246, 0.15)" : "transparent",
-                                    transition: "background 0.15s ease"
+                                    border: isSelected ? "1px solid rgba(59, 130, 246, 0.3)" : "1px solid transparent",
+                                    transition: "all 0.15s ease",
+                                    marginBottom: "2px"
                                   }}
                                   onMouseEnter={e => {
                                     if (!isSelected) e.currentTarget.style.background = "var(--hoverBtn)";
@@ -1836,9 +1715,12 @@ ${reportDetails.trim()}`;
                                     if (!isSelected) e.currentTarget.style.background = "transparent";
                                   }}
                                 >
-                                  <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)" }}>
-                                    {st.name}
-                                  </span>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <i className="bx bx-map-pin" style={{ color: isSelected ? "var(--colorSecondary)" : "var(--textSecondary)", fontSize: "1rem" }} />
+                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)" }}>
+                                      {st.name}
+                                    </span>
+                                  </div>
 
                                   <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                     <span style={{
@@ -1853,7 +1735,7 @@ ${reportDetails.trim()}`;
                                       {st.routeName}
                                     </span>
                                     {isSelected && (
-                                      <span style={{ fontSize: "0.75rem", color: "var(--colorSuccess)", fontWeight: "700" }}>✔</span>
+                                      <span style={{ fontSize: "0.78rem", color: "var(--colorSuccess)", fontWeight: "700" }}>✔</span>
                                     )}
                                   </div>
                                 </div>
@@ -1876,48 +1758,128 @@ ${reportDetails.trim()}`;
                       color: "var(--textPrimary)",
                       lineHeight: "1.6"
                     }}>
-                      <div>🚆 <strong>الخط:</strong> {currentRoute.name}</div>
+                      <div><strong>الخط:</strong> {currentRoute.name}</div>
                       <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
                         من: {currentRoute.from} ← إلى: {currentRoute.to} • المدة: {currentRoute.duration}
                       </div>
                     </div>
                   )}
 
-                  {/* Problem Type dropdown */}
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                      نوع المشكلة:
+                  {/* Custom Problem Type Dropdown Selector */}
+                  <div style={{ position: "relative" }}>
+                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <span>نوع المشكلة:</span>
                     </label>
-                    <select
-                      value={reportProblemType}
-                      onChange={e => setReportProblemType(e.target.value)}
-                      className="input-fields"
-                      style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        borderRadius: "10px",
-                        background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
-                        fontFamily: "var(--font-cairo)",
-                        fontSize: "0.9rem",
-                        cursor: "pointer"
-                      }}
-                    >
-                      <option value="schedule_error" style={{ background: "var(--bgSecondary)" }}>خطأ في مواعيد تحرك القطارات أو مدة الرحلة</option>
-                      <option value="price" style={{ background: "var(--bgSecondary)" }}>أسعار التذاكر غير صحيحة أو تم تعديلها</option>
-                      <option value="train_class" style={{ background: "var(--bgSecondary)" }}>خطأ في فئات ودرجات القطارات المتاحة (تالجو، VIP، إسباني، روسي)</option>
-                      <option value="stops_info" style={{ background: "var(--bgSecondary)" }}>خطأ في محطات الوقوف أو مسار الخط</option>
-                      <option value="station_info" style={{ background: "var(--bgSecondary)" }}>معلومات المحطة غير دقيقة أو مغلقة للتطوير</option>
-                      <option value="app_bug" style={{ background: "var(--bgSecondary)" }}>مشكلة تقنية أو زر لا يستجيب في الصفحة</option>
-                      <option value="other" style={{ background: "var(--bgSecondary)" }}>ملاحظة أو مشكلة أخرى</option>
-                    </select>
+
+                    {/* Dropdown Trigger Box */}
+                    {(() => {
+                      const curOpt = REPORT_PROBLEM_OPTIONS.find(o => o.id === reportProblemType) || REPORT_PROBLEM_OPTIONS[0];
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => setShowProblemTypeDropdown(prev => !prev)}
+                          style={{
+                            width: "100%",
+                            padding: "9px 12px",
+                            borderRadius: "var(--radius-card)",
+                            background: "var(--bgSecondary)",
+                            color: "var(--textPrimary)",
+                            border: showProblemTypeDropdown ? `1px solid var(--textPrimary)` : "1px solid var(--borderGlass)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            cursor: "pointer",
+                            transition: "all 0.15s ease",
+                            textAlign: "right",
+                            fontFamily: "var(--font-body)"
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                            <div style={{ minWidth: 0, textAlign: "right" }}>
+                              <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--textPrimary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {curOpt.title}
+                              </div>
+                              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {curOpt.desc}
+                              </div>
+                            </div>
+                          </div>
+
+                          <i className={showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"} style={{ fontSize: "1.25rem", color: "var(--textSecondary)", marginRight: "8px", flexShrink: 0 }} />
+                        </button>
+                      );
+                    })()}
+
+                    {/* Problem Types Floating Popup Menu */}
+                    {showProblemTypeDropdown && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          right: 0,
+                          background: "var(--bgSecondary)",
+                          border: "1px solid var(--borderGlass)",
+                          borderRadius: "var(--radius-card)",
+                          zIndex: 1200,
+                          maxHeight: "260px",
+                          overflowY: "auto",
+                          marginTop: "6px",
+                          padding: "6px",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "4px"
+                        }}
+                      >
+                        {REPORT_PROBLEM_OPTIONS.map((opt) => {
+                          const isSelected = opt.id === reportProblemType;
+                          return (
+                            <div
+                              key={opt.id}
+                              onClick={() => {
+                                setReportProblemType(opt.id);
+                                setShowProblemTypeDropdown(false);
+                              }}
+                              style={{
+                                padding: "8px 10px",
+                                borderRadius: "var(--radius-card)",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "10px",
+                                background: isSelected ? "rgba(255, 255, 255, 1)" : "transparent",
+                                border: isSelected ? `1px solid var(--borderPrimary)` : "1px solid transparent",
+                                transition: "all 0.15s ease"
+                              }}
+                              onMouseEnter={(e) => {
+                                if (!isSelected) e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!isSelected) e.currentTarget.style.background = "transparent";
+                              }}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                                <div style={{ minWidth: 0, textAlign: "right" }}>
+                                  <div style={{ fontSize: "0.84rem", fontWeight: isSelected ? "800" : "600", color: isSelected ? "var(--textPrimary)" : "var(--textPrimary)" }}>
+                                    {opt.title}
+                                  </div>
+                                  <div style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>
+                                    {opt.desc}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   {/* Details Textarea */}
                   <div>
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                      تفاصيل المشكلة / التصحيح المقترح: <span style={{ color: "#ef4444" }}>*</span>
+                      تفاصيل المشكلة : <span style={{ color: "#ef4444" }}>*</span>
                     </label>
                     <textarea
                       placeholder="يرجى كتابة المشكلة بالتفصيل واقتراح التصحيح إن وُجد (مثال: سعر تذكرة تالجو تغيرت إلى كذا، أو القطار يقف أيضاً في محطة كذا)..."
@@ -1933,7 +1895,7 @@ ${reportDetails.trim()}`;
                         background: "var(--bgSecondary)",
                         color: "var(--textPrimary)",
                         border: "1px solid var(--borderGlass)",
-                        fontFamily: "var(--font-cairo)",
+                        fontFamily: "var(--font-body)",
                         fontSize: "0.9rem",
                         resize: "vertical"
                       }}
@@ -1943,9 +1905,9 @@ ${reportDetails.trim()}`;
                   {/* Enhanced Image File Upload */}
                   <div>
                     <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                      <span>صورة توضيحية للمشكلة (اختياري):</span>
-                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal" }}>
-                        JPG, PNG, WEBP (الحد الأقصى 5MB)
+                      <span>صورة توضيحية (اختياري):</span>
+                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
+                        JPG, PNG, WEBP (Max~5MB)
                       </span>
                     </label>
 
@@ -1964,7 +1926,7 @@ ${reportDetails.trim()}`;
                         }}
                         style={{
                           position: "relative",
-                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "1.5px dashed var(--borderGlass)",
+                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderDashed)",
                           borderRadius: "12px",
                           background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
                           padding: "20px 16px",
@@ -2021,7 +1983,7 @@ ${reportDetails.trim()}`;
                             اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                           </div>
                           <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
-                            صورة جدول المواعيد أو التذكرة لتوضيح الخطأ بدقة
+                            أرسل صورة الخطأ إن وُجد لتوضيح المشكلة بدقة
                           </div>
                         </div>
                       </div>
@@ -2081,40 +2043,11 @@ ${reportDetails.trim()}`;
                                   : `${(reportImageFile.size / (1024 * 1024)).toFixed(1)} MB`
                                 : ""}
                             </span>
-                            <span>•</span>
-                            <span style={{ color: "var(--colorSuccess)", fontWeight: "600" }}>جاهزة للإرسال ✔</span>
                           </div>
                         </div>
 
                         {/* Actions */}
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                          {/* Change button */}
-                          <label style={{
-                            cursor: "pointer",
-                            padding: "6px 10px",
-                            borderRadius: "8px",
-                            background: "rgba(255, 255, 255, 0.05)",
-                            border: "1px solid var(--borderGlass)",
-                            color: "var(--textPrimary)",
-                            fontSize: "0.75rem",
-                            fontWeight: "600",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px"
-                          }}>
-                            <i className="bx bx-sync"></i>
-                            <span>تغيير</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleReportImageSelect(file);
-                              }}
-                              style={{ display: "none" }}
-                            />
-                          </label>
-
                           {/* Delete button */}
                           <button
                             type="button"
@@ -2177,7 +2110,7 @@ ${reportDetails.trim()}`;
                       {reportLoading ? (
                         <>
                           <div style={{ width: "16px", height: "16px", border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
-                          <span>{reportUploading ? "جاري الرفع..." : "جاري الإرسال..."}</span>
+                          <span>{reportUploading ? "يتم الرفع..." : "جاري الإرسال..."}</span>
                         </>
                       ) : (
                         <>

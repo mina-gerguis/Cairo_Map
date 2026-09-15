@@ -2219,3 +2219,27 @@ html.light .suggestion-icon {
   margin: 0 auto;
   padding: 0 10px;
 }
+
+/* Panel Card */
+.details-panel {
+  background-color: var(--bgPrimary);
+  border: 1px solid var(--borderGlass);
+  border-radius: var(--radius-xs);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px
+}
+
+.taps {
+  background-color: var(--bgSecondary);
+  border: 1px solid var(--borderGlass);
+  border-radius: var(--radius-xs);
+  padding: 4px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 24px
+}

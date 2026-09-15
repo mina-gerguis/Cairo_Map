@@ -18,12 +18,16 @@
     --bgAlert: linear-gradient(135deg, rgba(117, 117, 117, 0.08) 0%, rgba(32, 32, 32, 0.08) 100%);
     --bgLinear: radial-gradient(ellipse 85% 42% at 85% 24%, rgba(17, 64, 253, 0.88) 0%, rgba(48, 45, 205, 0.45) 35%, transparent 70%),
         linear-gradient(180deg,
-            var(--bgMode) 100%); 
+            var(--bgMode) 100%);
+    --bgLinearAlert: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(255, 56, 56, 0.88) 0%, rgba(255, 0, 0, 0.87) 35%, transparent 70%),
+        linear-gradient(180deg,
+            var(--bgMode) 100%);
     /* Text Global */
     --textPrimary: #f4f4f5;
     --textSecondary: #a1a1aa;
     --textMuted: #71717a;
     /* Radius Global */
+    --radius-xss: 4px;
     --radius-xs: 8px;
     --radius-sm2: 10px;
     --radius-sm: 14px;
@@ -35,7 +39,9 @@
     /* Borders Global */
     --borderGlass: var(--borderGlassBtn);
     --borderPrimary: #7c7c7c36;
-    --borderSecondary: rgb(12, 12, 12);
+    --borderSecondary: rgb(32, 32, 32);
+    --borderDashed: #ffffff71;
+
     /* Shadows Global */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
@@ -88,6 +94,54 @@
     --transition-smooth: all 0.25s ease-out;
     --transition-spring: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* =================== FONT =================== */
+    /* Text Sizes */
+    --fs-xss: 12px;
+    --fs-xs: 14px;
+    --fs-sm: 16px;
+    --fs-md: 18px;
+    --fs-lg: 20px;
+    --fs-xl: 24px;
+    --fs-2xl: 28px;
+    --fs-3xl: 32px;
+    --fs-4xl: 36px;
+    --fs-5xl: 40px;
+    --fs-6xl: 48px;
+    --fs-7xl: 56px;
+    /* Text Weights */
+    --fw-light: 300;
+    --fw-normal: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-extra-bold: 800;
+    --fw-black: 900;
+    /* Margin */
+    --mb-4: 4px;
+    --mb-8: 8px;
+    --mb-12: 12px;
+    --mb-16: 16px;
+    --mb-20: 20px;
+    --mb-24: 24px;
+    --mb-28: 28px;
+    --mb-32: 32px;
+    --mb-36: 36px;
+    --mb-40: 40px;
+    --mb-48: 48px;
+    --mb-56: 56px;
+    /* Padding */
+    --pd-4: 4px;
+    --pd-8: 8px;
+    --pd-12: 12px;
+    --pd-16: 16px;
+    --pd-20: 20px;
+    --pd-24: 24px;
+    --pd-28: 28px;
+    --pd-32: 32px;
+    --pd-36: 36px;
+    --pd-40: 40px;
+    --pd-48: 48px;
+    --pd-56: 56px;
 
     /* ==================== Subscribe Model ==================== */
     /* base */
@@ -113,7 +167,10 @@ html.light {
     --bgThird: #f8f8f8;
     --bgLinear: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(115, 141, 250, 0.88) 0%, rgba(45, 184, 205, 0.45) 35%, transparent 70%),
         linear-gradient(180deg,
-            var(--bgMode) 100%); 
+            var(--bgMode) 100%);
+    --bgLinearAlert: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(255, 0, 0, 0.733) 0%, rgba(255, 0, 0, 0.76) 35%, transparent 70%),
+        linear-gradient(180deg,
+            var(--bgMode) 100%);
     --textPrimary: #18181b;
     --textSecondary: #52525b;
     /* Buttons */
@@ -126,7 +183,8 @@ html.light {
     --secondHoverBtn: rgb(182, 182, 182);
     /* border */
     --borderPrimary: rgba(151, 151, 151, 0.384);
-    --borderSecondary: rgba(151, 151, 151, 0.384);
+    --borderSecondary: rgba(228, 228, 228, 0.863);
+    --borderDashed: #0000004f;
     /* Input Fields */
     --inputBorder: rgba(151, 151, 151, 0.384);
     --inputBg: rgb(250, 250, 250);
@@ -147,7 +205,176 @@ html.light {
 }
 
 /* ==================== Style Global ==================== */
+.text-xss {
+    font-size: var(--fs-xss);
+}
 
+.text-xs {
+    font-size: var(--fs-xs);
+}
+
+.text-sm {
+    font-size: var(--fs-sm);
+}
+
+.text-md {
+    font-size: var(--fs-md);
+}
+
+.text-lg {
+    font-size: var(--fs-lg);
+}
+
+.text-xl {
+    font-size: var(--fs-xl);
+}
+
+.text-2xl {
+    font-size: var(--fs-2xl);
+}
+
+.text-3xl {
+    font-size: var(--fs-3xl);
+}
+
+.text-4xl {
+    font-size: var(--fs-4xl);
+}
+
+.text-5xl {
+    font-size: var(--fs-5xl);
+}
+
+.text-6xl {
+    font-size: var(--fs-6xl);
+}
+
+.text-7xl {
+    font-size: var(--fs-7xl);
+}
+
+.fw-light {
+    font-weight: var(--fw-light);
+}
+
+.fw-normal {
+    font-weight: var(--fw-normal);
+}
+
+.fw-medium {
+    font-weight: var(--fw-medium);
+}
+
+.fw-semibold {
+    font-weight: var(--fw-semibold);
+}
+
+.fw-bold {
+    font-weight: var(--fw-bold);
+}
+
+.fw-extra-bold {
+    font-weight: var(--fw-extra-bold);
+}
+
+.fw-black {
+    font-weight: var(--fw-black);
+}
+
+/*===== Margin ===== */
+/* Button */
+.mb-4 {
+    margin-bottom: var(--mb-4);
+}
+
+.mb-8 {
+    margin-bottom: var(--mb-8);
+}
+
+.mb-12 {
+    margin-bottom: var(--mb-12);
+}
+
+.mb-16 {
+    margin-bottom: var(--mb-16);
+}
+
+.mb-20 {
+    margin-bottom: var(--mb-20);
+}
+
+.mb-24 {
+    margin-bottom: var(--mb-24);
+}
+
+.mb-28 {
+    margin-bottom: var(--mb-28);
+}
+
+.mb-32 {
+    margin-bottom: var(--mb-32);
+}
+
+.mb-36 {
+    margin-bottom: var(--mb-36);
+}
+
+.mb-40 {
+    margin-bottom: var(--mb-40);
+}
+
+.mb-48 {
+    margin-bottom: var(--mb-48);
+}
+
+.mb-56 {
+    margin-bottom: var(--mb-56);
+}
+
+/* Padding */
+.pd-4 {
+    padding-top: var(--pt-4);
+}
+
+.pd-8 {
+    padding-top: var(--pt-8);
+}
+
+.pd-12 {
+    padding-top: var(--pt-12);
+}
+
+.pd-16 {
+    padding-top: var(--pt-16);
+}
+
+.pd-20 {
+    padding-top: var(--pt-20);
+}
+
+.pt-24 {
+    padding-top: var(--pt-24);
+}
+
+.pt-28 {
+    padding-top: var(--pt-28);
+}
+
+.pt-32 {
+    padding-top: var(--pt-32);
+}
+
+.pt-36 {
+    padding-top: var(--pt-36);
+}
+
+.pt-40 {
+    padding-top: var(--pt-40);
+}
+
+.pt-48 {
+    margin: var(--m-lg);
+}
 
 /* ============================================================
    Buttons — Premium
@@ -241,6 +468,18 @@ html.light {
 }
 
 .btn-danger:hover {
+    background: red;
+    color: #fff;
+}
+
+.btn-reportProblem {
+    padding: 4px 8px;
+    background: #ff000025;
+    color: #ff0000f5;
+    border: #ff000025;
+}
+
+.btn-reportProblem:hover {
     background: red;
     color: #fff;
 }
