@@ -563,12 +563,12 @@ function AdminMetroInner() {
     <div style={{ padding: "0 10px 40px 10px" }}>
 
       {/* Upper Navigation Tabs */}
-      <div style={{ display: "flex", gap: "12px", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "16px", marginBottom: "24px" }}>
+      <div className="tabs" style={{ marginBottom: "24px" }}>
         <button
           onClick={() => { setActiveSection("stations"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
-            background: activeSection === "stations" ? "var(--colorPrimary)" : "var(--bgSecondary)",
+            background: activeSection === "stations" ? "var(--colorPrimary)" : "transparent",
             color: activeSection === "stations" ? "#fff" : "var(--textSecondary)",
             fontWeight: "bold",
             padding: "10px 20px"
@@ -581,7 +581,7 @@ function AdminMetroInner() {
           onClick={() => { setActiveSection("pricing"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
-            background: activeSection === "pricing" ? "var(--colorPrimary)" : "var(--bgSecondary)",
+            background: activeSection === "pricing" ? "var(--colorPrimary)" : "transparent",
             color: activeSection === "pricing" ? "#fff" : "var(--textSecondary)",
             fontWeight: "bold",
             padding: "10px 20px"
@@ -664,7 +664,7 @@ function AdminMetroInner() {
             {/* Line Selection Tabs */}
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)" }}>تصفية حسب الخط:</span>
-              <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "6px", scrollbarWidth: "none" }}>
+              <div className="tabs" style={{gap: "8px", overflowX: "auto", paddingBottom: "6px", scrollbarWidth: "none", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr));" }}>
                 {[
                   { id: "all", label: "جميع الخطوط", color: "#818cf8" },
                   { id: "line1", label: "الخط الأول (الأحمر)", color: "#ef4444" },
@@ -682,16 +682,16 @@ function AdminMetroInner() {
                     className="btn"
                     style={{
                       padding: "6px 14px",
-                      borderRadius: "10px",
+                      borderRadius: "8px",
                       fontSize: "0.82rem",
                       fontWeight: "400",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
-                      border: "1px solid",
-                      borderColor: adminActiveLine === opt.id ? opt.color : "var(--borderGlass)",
-                      background: adminActiveLine === opt.id ? `${opt.color}1c` : "var(--bgSecondary)",
-                      color: adminActiveLine === opt.id ? opt.color : "var(--textSecondary)",
+                      background: adminActiveLine === opt.id ? "var(--textPrimary)" : "transparent",
+                      border: "none",
+                      color: adminActiveLine === opt.id ? "var(--bgMode)" : "var(--textPrimary)",
                       whiteSpace: "nowrap"
+                      
                     }}
                   >
                     {opt.label}
@@ -938,10 +938,11 @@ function AdminMetroInner() {
             <form onSubmit={handleStationSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
+                <label className={clsx("help-label")} style={{ display: "block", marginBottom: "6px" }}>اسم المحطة *</label>
                 <input
                   type="text"
                   required
+                  placeholder="أدخل اسم المحطة"
                   value={stationForm.name || ""}
                   onChange={e => setStationForm({ ...stationForm, name: e.target.value })}
                   className="input-fields"
@@ -950,7 +951,7 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>الخط المترو *</label>
+                <label className={clsx("help-label")} style={{ display: "block", marginBottom: "6px" }}>الخط المترو *</label>
                 <select
                   value={stationForm.line_type || "line1"}
                   onChange={e => setStationForm({ ...stationForm, line_type: e.target.value })}
@@ -969,11 +970,12 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في الخط *</label>
+                <label className={clsx("help-label")} style={{ display: "block", marginBottom: "6px" }}>ترتيب المحطة في الخط *</label>
                 <input
                   type="number"
                   required
                   min={1}
+                  placeholder="أدخل ترتيب المحطة في الخط"
                   value={stationForm.station_order || 1}
                   onChange={e => setStationForm({ ...stationForm, station_order: parseInt(e.target.value) })}
                   className="input-fields"
@@ -982,7 +984,7 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
+                <label className={clsx("help-label")} style={{ display: "block", marginBottom: "6px" }}>المعالم والأماكن القريبة (مفصولة بفاصلة)</label>
                 <input
                   type="text"
                   placeholder="مثال: جامعة القاهرة، حديقة الأورمان"
@@ -994,7 +996,7 @@ function AdminMetroInner() {
               </div>
 
               <div>
-                <label className={clsx("help-label", "color-white-100")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
+                <label className={clsx("help-label")} style={{ display: "block", marginBottom: "6px" }}>حالة المحطة *</label>
                 <select
                   value={stationForm.status || "يعمل"}
                   onChange={e => setStationForm({ ...stationForm, status: e.target.value })}

@@ -70,7 +70,7 @@
     --inputBorder: rgba(255, 255, 255, 0.1);
     --inputBg: rgba(24, 24, 27, 0.7);
     --inputShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --inputRadius: var(--radius-sm);
+    --inputRadius: var(--radius-xs);
 
     /* Card Glass */
     --cardGlassBg: rgba(24, 24, 27, 0.7);
@@ -604,7 +604,7 @@ html.light {
    ============================================================ */
 .input-fields {
     width: 100%;
-    padding: 8px 20px;
+    padding: 10px 20px;
     border-radius: var(--inputRadius);
     border: 1px solid var(--borderGlass);
     background: var(--inputBg);

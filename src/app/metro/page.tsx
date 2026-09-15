@@ -1,16 +1,15 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
+import gsap from "gsap";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
 import VoiceInputButton from "@/components/VoiceInputButton";
-import MetroSubscriptionCalculator from "@/components/MetroSubscriptionCalculator";
-import EmergencyQuickBar from "@/components/EmergencyQuickBar";
-import TransitFAQ from "@/components/TransitFAQ";
 
 /* ============================================================
-   Cairo Metro Data — Lines 1, 2, 3 (with branch)
+   Cairo Metro Data — Lines 1, 2, 3 (with branch) & Future Lines
    ============================================================ */
 const LINE1_STATIONS = [
   "حلوان", "عين حلوان", "جامعة حلوان", "وادي حوف", "حدائق حلوان",
@@ -47,14 +46,6 @@ const LINE3_BRANCH_B = [
   "بولاق الدكرور", "جامعة القاهرة",
 ];
 
-// Combined Line 3 stations (unique list)
-const LINE3_STATIONS = [
-  ...LINE3_TRUNK.slice(0, -1), // trunk without kit-kat
-  "الكيت كات",
-  ...LINE3_BRANCH_A.slice(1),
-  ...LINE3_BRANCH_B.slice(1),
-];
-
 type LineId = "line1" | "line2" | "line3" | "line4" | "line5" | "line6";
 
 interface StationInfo {
@@ -74,13 +65,85 @@ const LINE_NAMES: Record<LineId, string> = {
 };
 
 const LINE_COLORS: Record<LineId, string> = {
-  line1: "#ef4444", // Modern Red
-  line2: "#3b82f6", // Modern Blue
-  line3: "#10b981", // Modern Green
+  line1: "#ef4444", // Red
+  line2: "#3b82f6", // Blue
+  line3: "#10b981", // Green
   line4: "#f59e0b", // Orange
   line5: "#8b5cf6", // Purple
   line6: "#ec4899", // Pink
 };
+
+const METRO_LINES_LIST: {
+  id: LineId;
+  name: string;
+  shortName: string;
+  color: string;
+  icon: string;
+  from: string;
+  to: string;
+  desc: string;
+}[] = [
+    {
+      id: "line1",
+      name: "الخط الأول (حلوان ⇆ المرج الجديدة)",
+      shortName: "الخط الأول",
+      color: "#ef4444",
+      icon: "fa-solid fa-train-subway",
+      from: "حلوان",
+      to: "المرج الجديدة",
+      desc: "الخط الأحمر - يربط أقصى جنوب القاهرة بشمالها الشرقي ويمر بقلب العاصمة.",
+    },
+    {
+      id: "line2",
+      name: "الخط الثاني (شبرا الخيمة ⇆ المنيب)",
+      shortName: "الخط الثاني",
+      color: "#3b82f6",
+      icon: "fa-solid fa-train-subway",
+      from: "شبرا الخيمة",
+      to: "المنيب",
+      desc: "الخط الأزرق - يربط محافظة القليوبية بمحافظة الجيزة مروراً بوسط القاهرة ونهر النيل.",
+    },
+    {
+      id: "line3",
+      name: "الخط الثالث (عدلي منصور ⇆ الكيت كات / تفريعتين)",
+      shortName: "الخط الثالث",
+      color: "#10b981",
+      icon: "fa-solid fa-train-subway",
+      from: "عدلي منصور",
+      to: "محور روض الفرج / جامعة القاهرة",
+      desc: "الخط الأخضر الذكي - يربط شرق القاهرة بغربها مع محطة تبادلية كبرى بعدلي منصور.",
+    },
+    {
+      id: "line4",
+      name: "الخط الرابع (6 أكتوبر ⇆ الفسطاط / الرحاب)",
+      shortName: "الخط الرابع",
+      color: "#f59e0b",
+      icon: "fa-solid fa-train-subway",
+      from: "حدائق الأشجار",
+      to: "الرحاب / التجمع",
+      desc: "الخط البرتقالي (مترو الهرم) - يربط مدينة 6 أكتوبر والمتحف المصري الكبير بوسط وشرق القاهرة.",
+    },
+    {
+      id: "line5",
+      name: "الخط الخامس (الساحل ⇆ مدينة نصر)",
+      shortName: "الخط الخامس",
+      color: "#8b5cf6",
+      icon: "fa-solid fa-train-subway",
+      from: "الساحل / شبرا",
+      to: "مدينة نصر",
+      desc: "الخط البنفسجي - خط عرضي يربط شمال العاصمة بشرقها ويتبادل مع باقي الخطوط.",
+    },
+    {
+      id: "line6",
+      name: "الخط السادس (الخصوص ⇆ المعادي الجديدة)",
+      shortName: "الخط السادس",
+      color: "#ec4899",
+      icon: "fa-solid fa-train-subway",
+      from: "الخصوص",
+      to: "المعادي الجديدة",
+      desc: "الخط الوردي - يمتد موازياً للخط الأول من أقصى الشمال للجنوب لتخفيف الضغط.",
+    },
+  ];
 
 export const METRO_STATION_LANDMARKS: Record<string, string[]> = {
   // الخط الأول
@@ -193,7 +256,6 @@ const DEFAULT_METRO_PRICES = [
   { tier_name: "أكثر من 23 محطة", max_stations: 999, price: 20 },
 ];
 
-/* Coordinates of Cairo Metro Stations for GPS location helper */
 const METRO_STATION_COORDINATES: Record<string, { lat: number; lng: number }> = {
   // الخط الأول
   "حلوان": { lat: 29.8493, lng: 31.3342 },
@@ -287,7 +349,7 @@ const METRO_STATION_COORDINATES: Record<string, { lat: number; lng: number }> = 
 };
 
 function getDistanceInKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371; // Earth radius in km
+  const R = 6371;
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a =
@@ -304,7 +366,7 @@ function getDistanceInKm(lat1: number, lon1: number, lat2: number, lon2: number)
 interface Edge {
   toStation: string;
   toLine: LineId;
-  weight: number; // 1 for next station, 5 for line transfer
+  weight: number;
 }
 
 interface DijkstraState {
@@ -367,7 +429,6 @@ function findRoute(
     };
   }
 
-  // Priority Queue initialization
   const queue: DijkstraState[] = [];
   const minDistance = new Map<string, number>();
 
@@ -394,26 +455,21 @@ function findRoute(
     }
 
     if (curr.station === to) {
-      if (!bestState || curr.dist < bestState.dist) {
-        bestState = curr;
-      }
-    }
-
-    if (bestState && curr.dist >= bestState.dist) {
+      bestState = curr;
       break;
     }
 
-    const edges = adjacencyGraph.get(currKey) || [];
-    for (const edge of edges) {
+    const neighbors = adjacencyGraph.get(currKey) || [];
+    for (const edge of neighbors) {
       const nextKey = `${edge.toStation}|${edge.toLine}`;
-      const nextDist = curr.dist + edge.weight;
+      const newDist = curr.dist + edge.weight;
 
-      if (nextDist < (minDistance.get(nextKey) ?? Infinity)) {
-        minDistance.set(nextKey, nextDist);
+      if (newDist < (minDistance.get(nextKey) ?? Infinity)) {
+        minDistance.set(nextKey, newDist);
         queue.push({
           station: edge.toStation,
           line: edge.toLine,
-          dist: nextDist,
+          dist: newDist,
           path: [...curr.path, { station: edge.toStation, line: edge.toLine }],
         });
       }
@@ -429,50 +485,46 @@ function findRoute(
       price: 0,
       needsTransfer: false,
       transfers: [],
-      description: "لا يمكن إيجاد مسار بين هاتين المحطتين بالمترو حالياً.",
+      description: "تعذر العثور على مسار مباشر أو بالتحويل بين المحطتين.",
       detailedPath: [],
       estimatedTime: 0,
     };
   }
 
-  // Parse Dijkstra path to retrieve transitions
-  const rawPath = bestState.path;
+  const pathNodes = bestState.path;
   const cleanPath: string[] = [];
-  const linesUsed: LineId[] = [];
-  const transfers: Array<{ station: string; fromLine: LineId; toLine: LineId }> = [];
   const detailedPath: Array<{ station: string; line: LineId; isTransferPoint: boolean; targetLine?: LineId }> = [];
+  const transfers: Array<{ station: string; fromLine: LineId; toLine: LineId }> = [];
+  const linesUsedSet = new Set<LineId>();
 
-  let currentLine = rawPath[0].line;
-  linesUsed.push(currentLine);
+  for (let i = 0; i < pathNodes.length; i++) {
+    const node = pathNodes[i];
+    linesUsedSet.add(node.line);
 
-  for (let i = 0; i < rawPath.length; i++) {
-    const step = rawPath[i];
-    const isLineChange = i > 0 && step.station === rawPath[i - 1].station && step.line !== rawPath[i - 1].line;
+    if (cleanPath.length === 0 || cleanPath[cleanPath.length - 1] !== node.station) {
+      cleanPath.push(node.station);
+    }
 
-    if (isLineChange) {
-      const fromLine = rawPath[i - 1].line;
-      const toLine = step.line;
+    const nextNode = pathNodes[i + 1];
+    const isTransfer = nextNode && nextNode.station === node.station && nextNode.line !== node.line;
+
+    if (isTransfer) {
       transfers.push({
-        station: step.station,
-        fromLine,
-        toLine,
+        station: node.station,
+        fromLine: node.line,
+        toLine: nextNode.line,
       });
-      // Mark the last added station in detailedPath as a transfer station
-      if (detailedPath.length > 0) {
-        detailedPath[detailedPath.length - 1].isTransferPoint = true;
-        detailedPath[detailedPath.length - 1].targetLine = toLine;
-      }
-      currentLine = toLine;
-      if (!linesUsed.includes(currentLine)) {
-        linesUsed.push(currentLine);
-      }
-    } else {
-      if (cleanPath.length === 0 || cleanPath[cleanPath.length - 1] !== step.station) {
-        cleanPath.push(step.station);
-      }
       detailedPath.push({
-        station: step.station,
-        line: step.line,
+        station: node.station,
+        line: node.line,
+        isTransferPoint: true,
+        targetLine: nextNode.line,
+      });
+      i++;
+    } else {
+      detailedPath.push({
+        station: node.station,
+        line: node.line,
         isTransferPoint: false,
       });
     }
@@ -481,20 +533,19 @@ function findRoute(
   const stationCount = cleanPath.length;
   const price = getTicketPrice(stationCount);
   const needsTransfer = transfers.length > 0;
-  const estimatedTime = (stationCount - 1) * 2;
+  const linesUsed = Array.from(linesUsedSet);
 
-  // Build Arabic Description
   let description = "";
   if (!needsTransfer) {
-    description = `اسلك ${LINE_NAMES[rawPath[0].line]} من محطة "${from}" حتى محطة "${to}" مباشرة بدون أي تبديل. تستغرق الرحلة حوالي ${estimatedTime} دقيقة.`;
+    description = `استقل قطار ${LINE_NAMES[linesUsed[0]]} مباشرة من محطة [${from}] حتى محطة [${to}] دون الحاجة للتبديل.`;
   } else {
-    description = `اركـب ${LINE_NAMES[rawPath[0].line]} من محطة "${from}"، `;
-    transfers.forEach((t, idx) => {
-      description += `ثم قم بالانتقال والتحويل في محطة "${t.station}" إلى ${LINE_NAMES[t.toLine]}`;
-      if (idx < transfers.length - 1) description += "، ";
-    });
-    description += `، وواصل رحلتك حتى محطة "${to}". تستغرق الرحلة حوالي ${estimatedTime} دقيقة (قد تزيد مع وقت التبديل بين الخطوط).`;
+    const transferDescs = transfers.map(t =>
+      `انزل في محطة [${t.station}] وحوّل إلى ${LINE_NAMES[t.toLine]}`
+    ).join("، ثم ");
+    description = `اركَب ${LINE_NAMES[linesUsed[0]]} من محطة [${from}]، ثم ${transferDescs} حتى تصل إلى محطة [${to}].`;
   }
+
+  const estimatedTime = (stationCount - 1) * 2 + transfers.length * 5;
 
   return {
     found: true,
@@ -510,17 +561,76 @@ function findRoute(
   };
 }
 
-/* ============================================================
-   UI Helpers
-   ============================================================ */
 function normalizeArabic(text: string) {
   if (!text) return "";
   return text
     .replace(/[أإآ]/g, "ا")
     .replace(/ة/g, "ه")
     .replace(/ى/g, "ي")
-    .replace(/ـ/g, ""); // remove kashida
+    .replace(/[\u064B-\u065F]/g, "")
+    .replace(/ـ/g, "")
+    .trim()
+    .toLowerCase();
 }
+
+export const METRO_PROBLEM_OPTIONS = [
+  {
+    id: "route_error",
+    title: "خطأ في حساب مسار الرحلة أو زمن الوصول",
+    desc: "المسار المقترح غير دقيق أو وقت الرحلة التقديري غير مطابق",
+    icon: "fa-regular fa-clock",
+    badge: "مسار",
+    badgeColor: "#3b82f6"
+  },
+  {
+    id: "price",
+    title: "سعر التذكرة غير صحيح أو عدد المحطات غير دقيق",
+    desc: "تغيير في تسعير شرائح تذاكر المترو الرسمية",
+    icon: "fa-solid fa-tags",
+    badge: "أسعار",
+    badgeColor: "#10b981"
+  },
+  {
+    id: "transfer",
+    title: "خطأ في محطة التبديل أو تعليمات التحويل",
+    desc: "محطة التحويل بين الخطوط غير صحيحة أو تفتقر للإرشادات",
+    icon: "fa-solid fa-repeat",
+    badge: "تبديل",
+    badgeColor: "#f59e0b"
+  },
+  {
+    id: "station_info",
+    title: "اسم محطة غير صحيح أو معالم غير دقيقة",
+    desc: "بيانات المعالم والأماكن الحيوية المحيطة بالمحطة غير مطابقة",
+    icon: "fa-regular fa-building",
+    badge: "بيانات",
+    badgeColor: "#8b5cf6"
+  },
+  {
+    id: "closed_station",
+    title: "محطة مغلقة أو تحت الإنشاء أو تم تغيير حالتها",
+    desc: "تحديث بشأن تشغيل محطة جديدة أو إغلاق محطة للصيانة",
+    icon: "fa-solid fa-person-digging",
+    badge: "حالة",
+    badgeColor: "#ec4899"
+  },
+  {
+    id: "app_bug",
+    title: "مشكلة تقنية أو زر لا يستجيب في الصفحة",
+    desc: "خلل في البحث، التحديد عبر GPS أو الأزرار التفاعلية",
+    icon: "fa-solid fa-bug",
+    badge: "تقني",
+    badgeColor: "#ef4444"
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو اقتراح آخر",
+    desc: "أي استفسار أو اقتراح لتحسين وتدقيق دليل مترو القاهرة",
+    icon: "fa-regular fa-comment-dots",
+    badge: "عام",
+    badgeColor: "#64748b"
+  }
+];
 
 export default function MetroPage() {
   const [stations, setStations] = useState<any[]>([]);
@@ -538,6 +648,8 @@ export default function MetroPage() {
   // Active Trip States
   const [isTripActive, setIsTripActive] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isTripRestored, setIsTripRestored] = useState(false);
+  const ACTIVE_METRO_TRIP_KEY = "cairo_metro_active_trip";
 
   // Metro Explorer State
   const [explorerLine, setExplorerLine] = useState<LineId>("line1");
@@ -551,6 +663,7 @@ export default function MetroPage() {
   const [reportStationSearchQuery, setReportStationSearchQuery] = useState<string>("");
   const [showReportStationList, setShowReportStationList] = useState<boolean>(false);
   const [reportProblemType, setReportProblemType] = useState<string>("route_error");
+  const [showProblemTypeDropdown, setShowProblemTypeDropdown] = useState<boolean>(false);
   const [reportDetails, setReportDetails] = useState<string>("");
   const [reportImageFile, setReportImageFile] = useState<File | null>(null);
   const [reportImagePreview, setReportImagePreview] = useState<string | null>(null);
@@ -561,6 +674,131 @@ export default function MetroPage() {
   const [reportError, setReportError] = useState<string>("");
   const [limitChecking, setLimitChecking] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
+
+  // GPS Location Helper
+  const [locatingNearest, setLocatingNearest] = useState(false);
+  const [nearestDistance, setNearestDistance] = useState<string | null>(null);
+  const [copiedRoute, setCopiedRoute] = useState(false);
+
+  // GSAP animation refs matching Railways layout
+  const headerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const searchPanelRef = useRef<HTMLDivElement>(null);
+  const detailsPanelRef = useRef<HTMLDivElement>(null);
+  const mapPanelRef = useRef<HTMLDivElement>(null);
+  const reportBannerRef = useRef<HTMLDivElement>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
+
+  // Initial page entrance animation
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: -15 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+        );
+      }
+
+      const sections = [sliderRef.current, searchPanelRef.current, detailsPanelRef.current, mapPanelRef.current, reportBannerRef.current].filter(Boolean);
+      if (sections.length > 0) {
+        gsap.fromTo(
+          sections,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.1, ease: "power2.out", delay: 0.1 }
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  // Line switch animation
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (detailsPanelRef.current) {
+      gsap.fromTo(
+        detailsPanelRef.current,
+        { opacity: 0.45, y: 10 },
+        { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
+      );
+    }
+  }, [explorerLine, line3ActiveBranch]);
+
+  // Modal entrance animation
+  useEffect(() => {
+    if (reportModalOpen && modalBoxRef.current) {
+      gsap.fromTo(
+        modalBoxRef.current,
+        { opacity: 0, scale: 0.94, y: 16 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(1.4)" }
+      );
+    }
+  }, [reportModalOpen]);
+
+  // Restore Active Metro Trip from localStorage on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem(ACTIVE_METRO_TRIP_KEY);
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data && data.isTripActive && data.result) {
+          // Keep active trip valid for 24 hours
+          const isFresh = !data.savedAt || Date.now() - data.savedAt < 24 * 60 * 60 * 1000;
+          if (isFresh) {
+            if (data.selectedFrom) setSelectedFrom(data.selectedFrom);
+            if (data.selectedTo) setSelectedTo(data.selectedTo);
+            if (data.fromQuery) setFromQuery(data.fromQuery);
+            if (data.toQuery) setToQuery(data.toQuery);
+            setResult(data.result);
+            const pathLen = data.result?.detailedPath?.length || 1;
+            const stepIdx = typeof data.currentStepIndex === "number"
+              ? Math.max(0, Math.min(data.currentStepIndex, pathLen - 1))
+              : 0;
+            setCurrentStepIndex(stepIdx);
+            setIsTripActive(true);
+          } else {
+            localStorage.removeItem(ACTIVE_METRO_TRIP_KEY);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to restore active metro trip:", e);
+    } finally {
+      setIsTripRestored(true);
+    }
+  }, []);
+
+  // Persist Active Metro Trip to localStorage whenever trip state or step changes
+  useEffect(() => {
+    if (typeof window === "undefined" || !isTripRestored) return;
+    if (isTripActive && result) {
+      try {
+        localStorage.setItem(
+          ACTIVE_METRO_TRIP_KEY,
+          JSON.stringify({
+            isTripActive: true,
+            currentStepIndex,
+            selectedFrom,
+            selectedTo,
+            fromQuery,
+            toQuery,
+            result,
+            savedAt: Date.now()
+          })
+        );
+      } catch (e) {
+        console.error("Failed to save active metro trip to localStorage:", e);
+      }
+    } else {
+      localStorage.removeItem(ACTIVE_METRO_TRIP_KEY);
+    }
+  }, [isTripRestored, isTripActive, currentStepIndex, result, selectedFrom, selectedTo, fromQuery, toQuery]);
 
   // Load stations & prices dynamically
   useEffect(() => {
@@ -698,103 +936,99 @@ export default function MetroPage() {
       if (lt !== "line3_branch_a" && lt !== "line3_branch_b") {
         resolvedLine = lt as LineId;
       }
-      if (!stationLines.has(s.name)) {
-        stationLines.set(s.name, new Set());
-      }
+      if (!stationLines.has(s.name)) stationLines.set(s.name, new Set());
       stationLines.get(s.name)!.add(resolvedLine);
     });
 
-    if (stationLines.has("الكيت كات")) {
-      stationLines.get("الكيت كات")!.add("line3");
-    }
-
-    stationLines.forEach((lines, name) => {
+    // Add Transfer Edges between intersecting lines
+    stationLines.forEach((lines, station) => {
       if (lines.size > 1) {
-        const arr = Array.from(lines);
-        for (let i = 0; i < arr.length; i++) {
-          for (let j = 0; j < arr.length; j++) {
-            if (i !== j) {
-              addEdge(name, arr[i], name, arr[j], 5);
-            }
+        const linesArr = Array.from(lines);
+        for (let i = 0; i < linesArr.length; i++) {
+          for (let j = i + 1; j < linesArr.length; j++) {
+            addEdge(station, linesArr[i], station, linesArr[j], 4);
+            addEdge(station, linesArr[j], station, linesArr[i], 4);
           }
         }
       }
     });
 
-    const statsMap = new Map<string, Set<LineId>>();
+    const uniqueMap = new Map<string, StationInfo>();
     stations.forEach(s => {
       const lt = s.line_type;
-      let l: LineId = "line3";
+      let resolvedLine: LineId = "line3";
       if (lt !== "line3_branch_a" && lt !== "line3_branch_b") {
-        l = lt as LineId;
+        resolvedLine = lt as LineId;
       }
-      if (!statsMap.has(s.name)) statsMap.set(s.name, new Set());
-      statsMap.get(s.name)!.add(l);
+      if (!uniqueMap.has(s.name)) {
+        uniqueMap.set(s.name, {
+          name: s.name,
+          lines: [resolvedLine],
+          isTransfer: false,
+          landmarks: s.landmarks || [],
+        });
+      } else {
+        const existing = uniqueMap.get(s.name)!;
+        if (!existing.lines.includes(resolvedLine)) {
+          existing.lines.push(resolvedLine);
+        }
+        if (s.landmarks && s.landmarks.length > 0) {
+          existing.landmarks = Array.from(new Set([...(existing.landmarks || []), ...s.landmarks]));
+        }
+      }
     });
 
-    const allStats: StationInfo[] = [];
-    statsMap.forEach((lines, name) => {
-      const stationObj = stations.find(s => s.name === name);
-      const stationLandmarks = (stationObj && stationObj.landmarks && Array.isArray(stationObj.landmarks) && stationObj.landmarks.length > 0)
-        ? stationObj.landmarks
-        : (METRO_STATION_LANDMARKS[name] || []);
-      allStats.push({
-        name,
-        lines: Array.from(lines) as LineId[],
-        isTransfer: lines.size > 1,
-        landmarks: stationLandmarks,
-      });
+    uniqueMap.forEach(info => {
+      info.isTransfer = info.lines.length > 1;
     });
-    allStats.sort((a, b) => a.name.localeCompare(b.name, "ar"));
 
-    return { adjacencyGraph: adj, stationLinesMap: stationLines, allStations: allStats };
+    return {
+      adjacencyGraph: adj,
+      stationLinesMap: stationLines,
+      allStations: Array.from(uniqueMap.values()),
+    };
   }, [stations]);
 
-  const getTicketPrice = (stationCount: number): number => {
-    if (ticketPrices.length === 0) {
-      if (stationCount <= 9) return 10;
-      if (stationCount <= 16) return 12;
-      if (stationCount <= 23) return 15;
+  const getTicketPrice = (count: number): number => {
+    if (!ticketPrices || ticketPrices.length === 0) {
+      if (count <= 9) return 10;
+      if (count <= 16) return 12;
+      if (count <= 23) return 15;
       return 20;
     }
     const sorted = [...ticketPrices].sort((a, b) => a.max_stations - b.max_stations);
     for (const tier of sorted) {
-      if (stationCount <= tier.max_stations) {
-        return tier.price;
-      }
+      if (count <= tier.max_stations) return tier.price;
     }
     return sorted[sorted.length - 1]?.price || 20;
   };
 
   const filteredFrom = useMemo(() => {
-    const q = normalizeArabic(fromQuery.trim());
-    if (!q) return [];
-    return allStations.filter(s => {
-      const nameMatch = normalizeArabic(s.name).includes(q);
-      const landmarkMatch = (s.landmarks || []).some(l => normalizeArabic(l).includes(q));
-      return nameMatch || landmarkMatch;
-    });
-  }, [fromQuery, allStations]);
+    if (!fromQuery.trim()) return allStations;
+    const q = normalizeArabic(fromQuery);
+    return allStations.filter(s =>
+      normalizeArabic(s.name).includes(q) ||
+      (s.landmarks && s.landmarks.some(l => normalizeArabic(l).includes(q)))
+    );
+  }, [allStations, fromQuery]);
 
   const filteredTo = useMemo(() => {
-    const q = normalizeArabic(toQuery.trim());
-    if (!q) return [];
-    return allStations.filter(s => {
-      const nameMatch = normalizeArabic(s.name).includes(q);
-      const landmarkMatch = (s.landmarks || []).some(l => normalizeArabic(l).includes(q));
-      return nameMatch || landmarkMatch;
-    });
-  }, [toQuery, allStations]);
+    if (!toQuery.trim()) return allStations;
+    const q = normalizeArabic(toQuery);
+    return allStations.filter(s =>
+      normalizeArabic(s.name).includes(q) ||
+      (s.landmarks && s.landmarks.some(l => normalizeArabic(l).includes(q)))
+    );
+  }, [allStations, toQuery]);
 
   const filteredReportStations = useMemo(() => {
-    const q = normalizeArabic(reportStationSearchQuery.trim());
-    if (!q) return allStations;
-    return allStations.filter(s => {
-      const nameMatch = normalizeArabic(s.name).includes(q);
-      const landmarkMatch = (s.landmarks || []).some(l => normalizeArabic(l).includes(q));
-      return nameMatch || landmarkMatch;
-    });
-  }, [reportStationSearchQuery, allStations]);
+    if (!reportStationSearchQuery.trim()) return allStations;
+    const q = normalizeArabic(reportStationSearchQuery);
+    return allStations.filter(s =>
+      normalizeArabic(s.name).includes(q) ||
+      (s.landmarks && s.landmarks.some(l => normalizeArabic(l).includes(q)))
+    );
+  }, [allStations, reportStationSearchQuery]);
 
   const handleFind = () => {
     if (!selectedFrom || !selectedTo) return;
@@ -815,10 +1049,6 @@ export default function MetroPage() {
     setIsTripActive(false);
     setCurrentStepIndex(0);
   };
-
-  const [locatingNearest, setLocatingNearest] = useState(false);
-  const [nearestDistance, setNearestDistance] = useState<string | null>(null);
-  const [copiedRoute, setCopiedRoute] = useState(false);
 
   const findNearestStation = () => {
     if (typeof window === "undefined" || !navigator.geolocation) {
@@ -1011,17 +1241,8 @@ export default function MetroPage() {
         setReportUploading(false);
       }
 
-      const problemTypeLabels: Record<string, string> = {
-        route_error: "خطأ في حساب مسار الرحلة أو زمن الوصول",
-        price: "سعر التذكرة غير صحيح أو عدد المحطات غير دقيق",
-        transfer: "خطأ في محطة التبديل أو تعليمات التحويل بين الخطوط",
-        station_info: "اسم محطة غير صحيح أو معالم غير دقيقة",
-        closed_station: "محطة مغلقة أو تحت الإنشاء أو تم تغيير حالتها",
-        app_bug: "مشكلة تقنية أو زر لا يعمل في الصفحة",
-        other: "ملاحظة أو مشكلة أخرى",
-      };
-
-      const typeLabel = problemTypeLabels[reportProblemType] || "مشكلة في المترو";
+      const curProblemOpt = METRO_PROBLEM_OPTIONS.find(o => o.id === reportProblemType);
+      const typeLabel = curProblemOpt ? curProblemOpt.title : "مشكلة في المترو";
 
       let scopeInfo = "";
       if (reportTargetScope === "route" && selectedFrom && selectedTo) {
@@ -1059,7 +1280,6 @@ ${reportDetails.trim()}`;
 
       if (insertError) throw insertError;
 
-      // Send notification to user
       try {
         await supabase.from("notifications").insert([
           {
@@ -1094,479 +1314,501 @@ ${reportDetails.trim()}`;
     }
   };
 
+  const selectedLineObj = METRO_LINES_LIST.find(l => l.id === explorerLine) || METRO_LINES_LIST[0];
+  const color = LINE_COLORS[explorerLine];
+
+  // Current explorer line stations list
+  const currentExplorerStations = useMemo(() => {
+    if (explorerLine === "line1") {
+      return stations.filter(s => s.line_type === "line1").sort((a, b) => a.station_order - b.station_order);
+    } else if (explorerLine === "line2") {
+      return stations.filter(s => s.line_type === "line2").sort((a, b) => a.station_order - b.station_order);
+    } else if (explorerLine === "line3") {
+      if (line3ActiveBranch === "trunk") {
+        return stations.filter(s => s.line_type === "line3").sort((a, b) => a.station_order - b.station_order);
+      } else if (line3ActiveBranch === "branchA") {
+        return stations.filter(s => s.line_type === "line3_branch_a").sort((a, b) => a.station_order - b.station_order);
+      } else {
+        return stations.filter(s => s.line_type === "line3_branch_b").sort((a, b) => a.station_order - b.station_order);
+      }
+    } else {
+      return stations.filter(s => s.line_type === explorerLine).sort((a, b) => a.station_order - b.station_order);
+    }
+  }, [stations, explorerLine, line3ActiveBranch]);
+
   return (
-    <>
-      <title>ماب القاهرة - مترو الأنفاق </title>
-      <div style={{ minHeight: "100vh", paddingBottom: "40px", backgroundColor: "var(--bgPrimary)" }}>
-        {/* Header Banner - Redesigned with a beautiful cover image instead of emoji */}
-        <div className="metro-animate-fade" style={{
-          backgroundColor: "var(--bgPrimary)",
-          padding: "24px 20px 24px",
-          textAlign: "center",
-          position: "relative",
-          borderBottom: "1px solid var(--borderGlass)",
-        }}>
-          <div className="metro-animate-slide-up metro-delay-100">
-            <h1 style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
-              fontWeight: "600",
-              color: "var(--textPrimary)",
-              margin: "0 0 10px",
-              letterSpacing: "-0.5px",
-            }}>
-              <img src="/images/icons2d/metro.svg" alt="" loading="lazy" decoding="async" style={{ width: "40px", height: "40px", marginLeft: "5px" }} />
-              مترو القاهرة
-            </h1>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
-              احسب رحلتك في ثوانٍ، تصفح المسارات، واعرف قيمة تذكرتك.
-            </p>
+    //================================== START MAIN CONTAINER =================================
+    <div className="main-container">
+      {/* Header Banner */}
+      <div ref={headerRef} className="header-banner">
+        <div>
+          {/* Title */}
+          <h1 className="header-title">مترو القاهرة الكبري</h1>
+          {/* Sub Title */}
+          <p className="header-sub-title">
+            احسب رحلتك في ثوانٍ، تصفح مسارات ومحطات خطوط المترو، واعرف قيمة تذكرتك ومحطات التبديل ومواعيد الرحلات.
+          </p>
+        </div>
+      </div>
 
-            {/* Lines Indicator Badges */}
-            <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
-              <span style={{
-                background: "var(--bgSecondary)",
-                border: "1px solid var(--borderGlass)",
-                color: "#ff5a01",
-                borderRadius: "10px",
-                padding: "4px 14px",
-                fontSize: "0.78rem",
-                fontWeight: "700",
-              }}>اعرف وجهتك</span>
-              <span style={{
-                background: "var(--bgSecondary)",
-                border: "1px solid var(--borderGlass)",
-                color: "var(--textPrimary)",
-                borderRadius: "10px",
-                padding: "4px 14px",
-                fontSize: "0.78rem",
-                fontWeight: "700",
-              }}>احسب تذكرتك</span>
-              <span style={{
-                background: "var(--bgSecondary)",
-                border: "1px solid var(--borderGlass)",
-                color: "#0051ffff",
-                borderRadius: "10px",
-                padding: "4px 14px",
-                fontSize: "0.78rem",
-                fontWeight: "700",
-              }}>وقت وصولك</span>
+      {/* Container */}
+      <div className="container">
+        {/* Cards Slider */}
+        <div
+          ref={sliderRef}
+          className="hide-scrollbar"
+          style={{
+            display: "flex",
+            gap: "14px",
+            overflowX: "auto",
+            padding: "6px 4px 16px 4px",
+            marginBottom: "20px",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            scrollSnapType: "x mandatory",
+          }}
+        >
+          {METRO_LINES_LIST.map((line) => {
+            const active = explorerLine === line.id;
+            const lineStatsCount = stations.filter(s => {
+              if (line.id === "line3") {
+                return s.line_type === "line3" || s.line_type === "line3_branch_a" || s.line_type === "line3_branch_b";
+              }
+              return s.line_type === line.id;
+            }).length;
+
+            return (
               <button
+                key={line.id}
                 type="button"
-                onClick={() => handleOpenReportModal(null)}
+                onClick={() => {
+                  setExplorerLine(line.id);
+                  if (line.id === "line3") setLine3ActiveBranch("trunk");
+                  if (detailsPanelRef.current) {
+                    detailsPanelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
                 style={{
-                  background: "rgba(239, 68, 68, 0.1)",
-                  border: "1px solid rgba(239, 68, 68, 0.3)",
-                  color: "#ef4444",
-                  borderRadius: "10px",
-                  padding: "4px 14px",
-                  fontSize: "0.78rem",
-                  fontWeight: "700",
+                  background: `radial-gradient(circle at 100% 0%, ${line.color}98 20%, transparent 65%), var(--bgPrimary)`,
+                  border: active ? `2px solid ${line.color}` : "1px solid var(--borderSecondary)",
+                  borderRadius: "var(--radius-xs)",
+                  padding: "16px 16px 14px 16px",
                   cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "5px",
-                  transition: "all 0.2s ease",
-                  fontFamily: "var(--font-cairo)",
+                  transition: "all 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
+                  textAlign: "right",
+                  flex: "0 0 auto",
+                  minWidth: "175px",
+                  maxWidth: "200px",
+                  height: "85px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  scrollSnapAlign: "start",
+                  position: "relative",
+                  overflow: "hidden",
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.background = "rgba(239, 68, 68, 0.2)";
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
-                }}
-                title="الإبلاغ عن أي خطأ أو مشكلة في صفحة المترو"
               >
-                <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.8rem" }}></i>
-                الإبلاغ عن مشكلة
+                {/* Bottom Title & Subtitle */}
+                <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
+                  <div
+                    style={{
+                      color: "var(--textPrimary)",
+                      fontFamily: "var(--font-display)",
+                      fontWeight: "700",
+                      fontSize: "0.92rem",
+                      lineHeight: "1.3",
+                      letterSpacing: "-0.2px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {line.shortName}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--textMuted)",
+                      fontWeight: "500",
+                      marginTop: "3px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {lineStatsCount > 0 ? `${lineStatsCount} محطة` : "تحت الإنشاء"}
+                  </div>
+                </div>
               </button>
-            </div>
-
-          </div>
+            );
+          })}
         </div>
 
-        {/* Main Container */}
-        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
+        {/* Trip Route Calculator Panel */}
+        <div ref={searchPanelRef} className="details-panel">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <h5 className="text-lg fw-bold" style={{ margin: 0 }}>
+              رايح فين كدا .؟
+            </h5>
 
-          {/* Search Panel Card - Styled matching profile sectionCard */}
-          <div className="metro-animate-slide-up metro-delay-200" style={{
-            backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
-            borderRadius: "var(--cardGlassRadius)",
-            padding: "20px",
-            marginTop: "24px",
-            boxShadow: "var(--shadow-sm)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
-            position: "relative",
-            zIndex: 20,
-          }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
+            <button
+              type="button"
+              onClick={findNearestStation}
+              disabled={locatingNearest}
+              style={{
+                background: "rgba(59, 130, 246, 0.08)",
+                border: "1px solid rgba(59, 130, 246, 0.2)",
+                borderRadius: "4px",
+                padding: "4px 10px",
+                fontSize: "0.75rem",
+                fontWeight: "700",
+                color: "var(--colorSecondary)",
+                cursor: locatingNearest ? "wait" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                transition: "all 0.2s ease",
+              }}
+              title="تحديد أقرب محطة مترو لموقعي الحالي عبر الـ GPS"
+            >
+              <i className={locatingNearest ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-location-crosshairs"}></i>
+              {locatingNearest ? "جاري التحديد..." : "أقرب محطة فين"}
+            </button>
+          </div>
 
-              {/* FROM STATION INPUT */}
-              <div style={{ position: "relative", zIndex: showFromList ? 10 : 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexWrap: "wrap", gap: "6px" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
-                    <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "green" }}></i> من محطة
-                    {nearestDistance && selectedFrom && (
-                      <span style={{ fontSize: "0.74rem", color: "var(--colorSuccess)", fontWeight: "700", marginRight: "8px", background: "rgba(16, 185, 129, 0.1)", padding: "2px 6px", borderRadius: "6px" }}>
-                        🎯 أقرب محطة: {nearestDistance}
-                      </span>
-                    )}
-                  </label>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <button
-                      type="button"
-                      onClick={findNearestStation}
-                      disabled={locatingNearest}
-                      style={{
-                        background: "rgba(59, 130, 246, 0.08)",
-                        border: "1px solid rgba(59, 130, 246, 0.2)",
-                        borderRadius: "8px",
-                        padding: "4px 10px",
-                        fontSize: "0.75rem",
-                        fontWeight: "700",
-                        color: "var(--colorSecondary)",
-                        cursor: locatingNearest ? "wait" : "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                        transition: "all 0.2s ease",
-                      }}
-                      title="تحديد أقرب محطة مترو لموقعي الحالي عبر الـ GPS"
-                    >
-                      <i className={locatingNearest ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-location-crosshairs"}></i>
-                      {locatingNearest ? "جاري التحديد..." : "أقرب محطة لي"}
-                    </button>
-                    <VoiceInputButton onTranscript={(text) => { setFromQuery(text); setSelectedFrom(null); setShowFromList(true); setResult(null); }} />
-                  </div>
-                </div>
-                <div style={{ position: "relative" }}>
-                  <input
-                    className="input-fields"
-                    placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: التحرير، برج القاهرة، جامعة حلوان)"
-                    value={fromQuery}
-                    onChange={e => { setFromQuery(e.target.value); setSelectedFrom(null); setShowFromList(true); setResult(null); }}
-                    onFocus={() => setShowFromList(true)}
-                    onBlur={() => setTimeout(() => setShowFromList(false), 250)}
-                    style={{
-                      width: "100%",
-                      direction: "rtl",
-                      fontFamily: "var(--font-body)",
-                      height: "50px",
-                    }}
-                  />
-                  {selectedFrom && (
-                    <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الاختيار ✔</span>
+          {/* Search Inputs Container */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
+            {/* FROM STATION INPUT */}
+            <div style={{ position: "relative", zIndex: showFromList ? 20 : 2 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexWrap: "wrap", gap: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
+                  <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "var(--colorSuccess)" }}></i> من محطة:
+                  {nearestDistance && selectedFrom && (
+                    <span style={{ fontSize: "0.74rem", color: "var(--colorSuccess)", fontWeight: "700", marginRight: "8px", background: "rgba(16, 185, 129, 0.1)", padding: "2px 6px", borderRadius: "6px" }}>
+                      أقرب محطة: {nearestDistance}
+                    </span>
                   )}
-                </div>
-                {showFromList && filteredFrom.length > 0 && (
-                  <div style={{
-                    position: "absolute", top: "100%", left: 0, right: 0,
-                    background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)",
-                    borderRadius: "var(--radius-card)", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
-                  }}>
-                    {filteredFrom.map(s => {
-                      const q = normalizeArabic(fromQuery.trim());
-                      const matchedLandmark = q ? (s.landmarks || []).find(l => normalizeArabic(l).includes(q)) : null;
-                      return (
-                        <div key={s.name} onMouseDown={() => { setSelectedFrom(s.name); setFromQuery(s.name); setShowFromList(false); }} style={{
-                          padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
-                          borderBottom: "1px solid rgba(255,255,255,0.03)",
-                          transition: "background 0.2s", fontFamily: "var(--font-sub)"
-                        }}
-                          onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
-                          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                        >
-                          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                            <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
-                            {matchedLandmark && (
-                              <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
-                                📍 قريب من: {matchedLandmark}
-                              </span>
-                            )}
-                          </div>
-                          <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
-                            {s.lines.map(l => (
-                              <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
-                            ))}
-                          </div>
-                          {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
-                        </div>
-                      );
-                    })}
-                  </div>
+                </label>
+                <VoiceInputButton onTranscript={(text) => { setFromQuery(text); setSelectedFrom(null); setShowFromList(true); setResult(null); }} />
+              </div>
+              <div style={{ position: "relative" }}>
+                <input
+                  className="input-fields"
+                  placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: التحرير، برج القاهرة، جامعة حلوان)"
+                  value={fromQuery}
+                  onChange={e => { setFromQuery(e.target.value); setSelectedFrom(null); setShowFromList(true); setResult(null); }}
+                  onFocus={() => setShowFromList(true)}
+                  onBlur={() => setTimeout(() => setShowFromList(false), 250)}
+                  style={{
+                    width: "100%",
+                    direction: "rtl",
+                    fontFamily: "var(--font-body)",
+                  }}
+                />
+                {selectedFrom && (
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الاختيار ✔</span>
                 )}
               </div>
+              {showFromList && filteredFrom.length > 0 && (
+                <div style={{
+                  position: "absolute", top: "100%", left: 0, right: 0,
+                  background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)",
+                  borderRadius: "var(--radius-card)", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
+                  marginTop: "4px", boxShadow: "0 10px 25px rgba(0,0,0,0.2)"
+                }}>
+                  {filteredFrom.map(s => {
+                    const q = normalizeArabic(fromQuery.trim());
+                    const matchedLandmark = q ? (s.landmarks || []).find(l => normalizeArabic(l).includes(q)) : null;
+                    return (
+                      <div key={s.name} onMouseDown={() => { setSelectedFrom(s.name); setFromQuery(s.name); setShowFromList(false); }} style={{
+                        padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
+                        borderBottom: "1px solid rgba(255,255,255,0.03)",
+                        transition: "background 0.2s", fontFamily: "var(--font-sub)"
+                      }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          {matchedLandmark && (
+                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                              📍 قريب من: {matchedLandmark}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
+                          {s.lines.map(l => (
+                            <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
+                          ))}
+                        </div>
+                        {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
-              {/* SWAP BUTTON - Calm iOS Style */}
-              <div style={{ display: "flex", justifyContent: "center", margin: "-8px 0" }}>
-                <button onClick={swapStations} style={{
+            {/* SWAP BUTTON */}
+            <div style={{ display: "flex", justifyContent: "center", margin: "-8px 0" }}>
+              <button
+                type="button"
+                onClick={swapStations}
+                style={{
                   background: "var(--bgSecondary)",
                   border: "1px solid var(--borderGlass)",
                   borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
+                  width: "38px",
+                  height: "38px",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "var(--textSecondary)",
-                  fontSize: "1.2rem",
+                  fontSize: "1.15rem",
                   transition: "all 0.2s ease",
-                  marginTop: "10px",
                 }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = "rotate(180deg)";
-                    e.currentTarget.style.background = "var(--hoverBtn)";
-                    e.currentTarget.style.color = "var(--colorSecondary)";
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = "rotate(0deg)";
-                    e.currentTarget.style.background = "var(--bgSecondary)";
-                    e.currentTarget.style.color = "var(--textSecondary)";
-                  }}
-                >
-                  ⇅
-                </button>
-              </div>
-
-              {/* TO STATION INPUT */}
-              <div style={{ position: "relative", zIndex: showToList ? 10 : 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
-                    <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "red" }}></i> إلى محطة
-                  </label>
-                  <VoiceInputButton onTranscript={(text) => { setToQuery(text); setSelectedTo(null); setShowToList(true); setResult(null); }} />
-                </div>
-                <div style={{ position: "relative" }}>
-                  <input
-                    className="input-fields"
-                    placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: العباسية، الأوبرا، قصر عابدين)"
-                    value={toQuery}
-                    onChange={e => { setToQuery(e.target.value); setSelectedTo(null); setShowToList(true); setResult(null); }}
-                    onFocus={() => setShowToList(true)}
-                    onBlur={() => setTimeout(() => setShowToList(false), 250)}
-                    style={{
-                      width: "100%",
-                      direction: "rtl",
-                      fontFamily: "var(--font-body)",
-                      height: "50px"
-                    }}
-                  />
-                  {selectedTo && (
-                    <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الاختيار ✔</span>
-                  )}
-                </div>
-                {showToList && filteredTo.length > 0 && (
-                  <div style={{
-                    position: "absolute", top: "100%", left: 0, right: 0,
-                    background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)",
-                    borderRadius: "var(--radius-card)", overflow: "hidden", zIndex: 1000, maxHeight: "220px", overflowY: "auto",
-                    boxShadow: "var(--shadow-lg)", marginTop: "6px", fontFamily: "var(--font-sub)"
-                  }}>
-                    {filteredTo.map(s => {
-                      const q = normalizeArabic(toQuery.trim());
-                      const matchedLandmark = q ? (s.landmarks || []).find(l => normalizeArabic(l).includes(q)) : null;
-                      return (
-                        <div key={s.name} onMouseDown={() => { setSelectedTo(s.name); setToQuery(s.name); setShowToList(false); }} style={{
-                          padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
-                          borderBottom: "1px solid rgba(255,255,255,0.03)",
-                          transition: "background 0.2s",
-                        }}
-                          onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
-                          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                        >
-                          <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                            <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
-                            {matchedLandmark && (
-                              <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
-                                📍 قريب من: {matchedLandmark}
-                              </span>
-                            )}
-                          </div>
-                          <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
-                            {s.lines.map(l => (
-                              <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
-                            ))}
-                          </div>
-                          {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = "rotate(180deg)";
+                  e.currentTarget.style.background = "var(--hoverBtn)";
+                  e.currentTarget.style.color = "var(--colorSecondary)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = "rotate(0deg)";
+                  e.currentTarget.style.background = "var(--bgSecondary)";
+                  e.currentTarget.style.color = "var(--textSecondary)";
+                }}
+                title="تبديل محطة القيام والوصول"
+              >
+                ⇅
+              </button>
             </div>
 
-            {/* SEARCH BUTTON - Calm accent iOS Button */}
-            <button
-              onClick={handleFind}
-              disabled={!selectedFrom || !selectedTo}
-              style={{
-                width: "100%",
-                marginTop: "8px",
-                padding: "var(--paddingBtn)",
-                borderRadius: "var(--radiusBtn)",
-                background: (!selectedFrom || !selectedTo) ? "rgba(255,255,255,0.05)" : "var(--colorSecondary)",
-                color: (!selectedFrom || !selectedTo) ? "var(--textMuted)" : "#ffffff",
-                fontSize: "0.95rem",
-                fontWeight: "700",
-                border: "1px solid var(--borderGlass)",
-                cursor: (!selectedFrom || !selectedTo) ? "not-allowed" : "pointer",
-                transition: "all 0.2s ease",
-                fontFamily: "var(--font-sub)",
-              }}
-              onMouseEnter={e => {
-                if (selectedFrom && selectedTo) {
-                  e.currentTarget.style.opacity = "0.9";
-                }
-              }}
-              onMouseLeave={e => {
-                if (selectedFrom && selectedTo) {
-                  e.currentTarget.style.opacity = "1";
-                }
-              }}
-            >
-              اعرض الطريق
-            </button>
+            {/* TO STATION INPUT */}
+            <div style={{ position: "relative", zIndex: showToList ? 20 : 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
+                  <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "#ff0000" }}></i> إلى محطة:
+                </label>
+                <VoiceInputButton onTranscript={(text) => { setToQuery(text); setSelectedTo(null); setShowToList(true); setResult(null); }} />
+              </div>
+              <div style={{ position: "relative" }}>
+                <input
+                  className="input-fields"
+                  placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: العباسية، الأوبرا، قصر عابدين)"
+                  value={toQuery}
+                  onChange={e => { setToQuery(e.target.value); setSelectedTo(null); setShowToList(true); setResult(null); }}
+                  onFocus={() => setShowToList(true)}
+                  onBlur={() => setTimeout(() => setShowToList(false), 250)}
+                  style={{
+                    width: "100%",
+                    direction: "rtl",
+                    fontFamily: "var(--font-body)",
+                  }}
+                />
+                {selectedTo && (
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>تم الاختيار ✔</span>
+                )}
+              </div>
+              {showToList && filteredTo.length > 0 && (
+                <div style={{
+                  position: "relative", top: "100%", left: 0, right: 0,
+                  background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)",
+                  borderRadius: "var(--radius-card)", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
+                  marginTop: "4px", boxShadow: "0 10px 25px rgba(0,0,0,0.2)", fontFamily: "var(--font-sub)"
+                }}>
+                  {filteredTo.map(s => {
+                    const q = normalizeArabic(toQuery.trim());
+                    const matchedLandmark = q ? (s.landmarks || []).find(l => normalizeArabic(l).includes(q)) : null;
+                    return (
+                      <div key={s.name} onMouseDown={() => { setSelectedTo(s.name); setToQuery(s.name); setShowToList(false); }} style={{
+                        padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px",
+                        borderBottom: "1px solid rgba(255,255,255,0.03)",
+                        transition: "background 0.2s",
+                      }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          {matchedLandmark && (
+                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                              📍 قريب من: {matchedLandmark}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
+                          {s.lines.map(l => (
+                            <span key={l} style={{ width: "6px", height: "6px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
+                          ))}
+                        </div>
+                        {s.isTransfer && <span style={{ fontSize: "0.72rem", background: "var(--borderGlass)", color: "var(--textSecondary)", padding: "2px 6px", borderRadius: "4px" }}>تبادلية</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Metro Subscription Calculator */}
+          {/* SEARCH BUTTON */}
+          <button
+            type="button"
+            onClick={handleFind}
+            disabled={!selectedFrom || !selectedTo}
+            className="btn btn-primary"
+            style={{
+              width: "100%",
+              marginTop: "4px",
+              fontSize: "0.95rem",
+              fontWeight: "700",
+              cursor: (!selectedFrom || !selectedTo) ? "not-allowed" : "pointer",
+              opacity: (!selectedFrom || !selectedTo) ? 0.6 : 1,
+            }}
+          >
+            <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "6px" }}></i>
+            اعرض مسار وتفاصيل الرحلة
+          </button>
 
-          {/* <MetroSubscriptionCalculator /> */}
-
-          {/* RESULTS SECTION - Styled matching profile sectionCard */}
+          {/* TRIP RESULTS */}
           {result && (
-            <div style={{
-              backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
-              borderRadius: "15px",
-              padding: "20px",
-              marginTop: "20px",
-              boxShadow: "var(--shadow-card)",
-              animation: "slide-in-section 0.3s ease",
-            }}>
+            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              {/* Not Found State */}
               {!result.found ? (
                 <div style={{ textAlign: "center", color: "var(--textSecondary)", padding: "20px 0" }}>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "10px" }}>😕</div>
-                  <h3 style={{ fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>عذراً، تعذر العثور على طريق</h3>
-                  <p style={{ fontSize: "0.88rem" }}>{result.description}</p>
+                  <div style={{ fontSize: "2.2rem", marginBottom: "8px" }}>😕</div>
+                  <h4 style={{ fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>عذراً، تعذر العثور على مسار</h4>
+                  <p style={{ fontSize: "0.88rem", margin: 0 }}>{result.description}</p>
                 </div>
               ) : (
                 <>
-                  {/* Result Title */}
-                  <h2 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "16px", color: "var(--textPrimary)" }}>
-                    <i className="fa-solid fa-signs-post" style={{ marginLeft: "6px", color: "var(--colorSecondary)" }}></i> تفاصيل الرحلة
-                  </h2>
-
-                  {/* Grid Summary Cards - Calm design like Device Info List */}
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "10px", marginBottom: "20px" }}>
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
-                      <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{result.stationCount}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "2px" }}>محطات المرور</div>
+                  {/* Results Details Grid */}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+                    {/* Number of Stations */}
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                      <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{result.stationCount}</div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>عدد المحطات</div>
                     </div>
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
-                      <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--colorSuccess)" }}>{result.price} ج.م</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "2px" }}>سعر التذكرة</div>
+                    {/* Price */}
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                      <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSuccess)" }}>{result.price} ج.م</div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>سعر التذكرة</div>
                     </div>
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
-                      <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{result.estimatedTime} د</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "2px" }}>وقت الوصول</div>
+                    {/* Estimated Time */}
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                      <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{result.estimatedTime} د</div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>وقت الوصول</div>
                     </div>
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
-                      <div style={{ fontSize: "1.4rem", fontWeight: "800", color: result.needsTransfer ? "var(--accent-warning)" : "var(--colorSuccess)" }}>
-                        {result.needsTransfer ? result.transfers.length : "مباشر"}
+                    {/* Number of Transfers */}
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                      <div style={{ fontSize: "1.1rem", fontWeight: "800", color: result.needsTransfer ? "var(--colorWarning, #f59e0b)" : "var(--colorSuccess)" }}>
+                        {result.needsTransfer ? `${result.transfers.length} تبديل` : "مباشر"}
                       </div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "2px" }}>التبديل</div>
+                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>نوع الرحلة</div>
                     </div>
                   </div>
 
-                  {/* Informative Guidance Bubble - Soft colors (Only shown if trip is not active) */}
+                  {/* Informative Guidance Box */}
                   {!isTripActive && (
                     <div style={{
-                      background: "rgba(59, 130, 246, 0.04)",
-                      border: "1px solid rgba(59, 130, 246, 0.15)",
-                      borderRadius: "12px",
-                      padding: "16px 18px",
-                      marginBottom: "20px",
-                      fontFamily: "var(--font-sub)"
+                      background: "var(--bgGlass)",
+                      border: "1px solid var(--borderGlass)",
+                      borderRadius: "var(--radius-xs)",
+                      padding: "14px 16px"
                     }}>
-                      <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.9rem", color: "var(--textPrimary)", fontWeight: "600", fontFamily: "var(--font-body)" }}>
-                        <i className="fa-solid fa-info-circle" style={{ marginLeft: "6px", color: "var(--colorSecondary)" }}></i>{result.description}
+                      <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                        <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: "var(--colorSecondary)", fontSize: "1.1rem", verticalAlign: "middle" }}></i>
+                        {result.description}
                       </p>
                     </div>
                   )}
 
-                  {/* Actions Grid: Start Trip + Report Route Problem */}
+                  {/* Actions Grid: Start Trip + Share Route */}
                   {!isTripActive && (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+
+                      {/* Start Trip Button */}
                       <button
-                        className="btn btn-outline"
+                        type="button"
+                        className="btn btn-primary"
                         onClick={() => {
                           setIsTripActive(true);
                           setCurrentStepIndex(0);
                         }}
                         style={{
-                          fontSize: "0.92rem",
-                          fontWeight: "700",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "6px",
-                          transition: "all 0.2s ease",
-                          fontFamily: "var(--font-sub)"
-                        }}
-                      >
-                        <i className="fa-solid fa-play"></i>
-                        ابدأ الرحلة
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleOpenReportModal(null, true)}
-                        style={{
+                          flex: "1 1 140px",
                           fontSize: "0.88rem",
                           fontWeight: "700",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           gap: "6px",
-                          padding: "10px 14px",
-                          borderRadius: "var(--radiusBtn)",
-                          background: "rgba(239, 68, 68, 0.08)",
-                          border: "1px solid rgba(239, 68, 68, 0.25)",
-                          color: "#ef4444",
-                          cursor: "pointer",
-                          transition: "all 0.2s ease",
-                          fontFamily: "var(--font-sub)"
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.16)"}
-                        onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
-                        title="الإبلاغ عن خطأ في حساب المسار، التبديل، أو سعر التذكرة"
                       >
-                        <i className="fa-solid fa-triangle-exclamation"></i>
-                        الإبلاغ عن مشكلة بالمسار
+                        <i className="fa-solid fa-play"></i>
+                        بدء تتبع الرحلة
                       </button>
+                      {/* Share Route Button */}
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={handleShareRoute}
+                        style={{
+                          flex: "1 1 140px",
+                          fontSize: "0.88rem",
+                          fontWeight: "700",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          background: "var(--bgSecondary)",
+                          border: "1px solid var(--borderGlass)",
+                          color: "var(--textPrimary)",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease"
+                        }}
+                      >
+                        <i className={copiedRoute ? "fa-solid fa-check" : "fa-solid fa-share-nodes"}></i>
+                        {copiedRoute ? "تم النسخ بنجاح ✔" : "مشاركة التفاصيل"}
+                      </button>
+                      {/* WhatsApp Share Button */}
+                      <a
+                        href={whatsappShareUrl}
+                        target="_blank"
+                        className="btn"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontSize: "0.88rem",
+                          fontWeight: "700",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          background: "rgba(0, 119, 44, 1)",
+                          border: "1px solid rgba(37, 211, 102, 0.3)",
+                          color: "#ffffffff",
+                          textDecoration: "none",
+                          cursor: "pointer",
+                          width: "100%"
+                        }}
+                      >
+                        <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }}></i>
+                        شارك مباشرا علي الواتساب
+                      </a>
                     </div>
                   )}
 
-                  {/* Active Trip Tracker Card */}
+                  {/* Active Trip Tracker */}
                   {isTripActive && (
                     <div style={{
                       background: "var(--bgSecondary)",
                       border: "1px solid var(--borderGlass)",
-                      borderRadius: "12px",
-                      padding: "20px",
-                      marginBottom: "20px",
-                      boxShadow: "var(--shadow-card)",
-                      animation: "slide-in-section 0.3s ease"
+                      borderRadius: "var(--radius-xs)",
+                      padding: "16px",
                     }}>
+                      {/* Active Trip Badge */}
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
                         <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--colorSecondary)", background: "rgba(59, 130, 246, 0.12)", padding: "4px 10px", borderRadius: "8px" }}>
                           رحلة نشطة حالياً
@@ -1578,108 +1820,92 @@ ${reportDetails.trim()}`;
                           }}
                           style={{
                             border: "none",
-                            color: "var(--accent-red)",
+                            color: "var(--accent-red, #ef4444)",
                             fontSize: "0.78rem",
                             fontWeight: "700",
                             cursor: "pointer",
-                            fontFamily: "var(--font-cairo)",
-                            background: "rgba(246, 59, 59, 0.12)", padding: "4px 10px", borderRadius: "8px"
+                            background: "rgba(246, 59, 59, 0.12)",
+                            padding: "4px 10px",
+                            borderRadius: "8px"
                           }}
                         >
-                          <i className="fa-solid fa-trash" style={{ marginLeft: "8px" }}></i>
-                          حذف التتبع
+                          <i className="fa-solid fa-trash" style={{ marginLeft: "6px" }}></i>
+                          إنهاء التتبع
                         </button>
                       </div>
 
-                      {/* Progress Indicator */}
-                      <div style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "8px", color: "var(--textSecondary)", fontFamily: "var(--font-sub)" }}>
-                        أنت دلوقتي في <span style={{ color: "var(--textPrimary)", fontSize: "1.1rem", fontWeight: "800", fontFamily: "var(--font-sub)" }}>{result.detailedPath[currentStepIndex].station}</span>
-                        <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginRight: "8px", fontFamily: "var(--font-sub)" }}>
+                      {/* Current Station Info */}
+                      <div style={{ fontSize: "0.92rem", fontWeight: "600", marginBottom: "6px", color: "var(--textSecondary)" }}>
+                        أنت الآن في محطة: <strong style={{ color: "var(--textPrimary)", fontSize: "1.05rem" }}>{result.detailedPath[currentStepIndex].station}</strong>
+                        <span style={{ fontSize: "0.78rem", color: "var(--textMuted)", marginRight: "8px" }}>
                           ({currentStepIndex + 1} من {result.detailedPath.length})
                         </span>
                       </div>
-                      {/* Live Remaining Time */}
+
                       {(() => {
                         const uniqueRemainingStations = Array.from(
                           new Set(result.detailedPath.slice(currentStepIndex).map(s => s.station))
                         );
                         const remainingTime = Math.max(0, (uniqueRemainingStations.length - 1) * 2);
                         return (
-                          <div style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "16px", color: "var(--textSecondary)", fontFamily: "var(--font-sub)" }}>
-                            ⏱️ الوقت المتبقي للوصول: <span style={{ color: "var(--colorSecondary)", fontSize: "1rem", fontWeight: "800", fontFamily: "var(--font-sub)" }}>{remainingTime} دقيقة</span>
+                          <div style={{ fontSize: "0.85rem", fontWeight: "600", marginBottom: "14px", color: "var(--textSecondary)" }}>
+                            الوقت المتبقي المقدر: <strong style={{ color: "var(--colorSecondary)" }}>{remainingTime} دقيقة</strong>
                           </div>
                         );
                       })()}
 
-                      {/* Transfer station instructions banner if current station is transfer */}
                       {result.detailedPath[currentStepIndex].isTransferPoint && (
                         <div style={{
-                          background: "rgba(245, 158, 11, 0.06)",
-                          border: "1px solid rgba(245, 158, 11, 0.2)",
-                          borderRadius: "10px",
-                          padding: "14px",
-                          marginBottom: "16px",
-                          color: "var(--textPrimary)",
-                          fontSize: "0.85rem",
-                          lineHeight: "1.7",
-                          fontFamily: "var(--font-sub)"
+                          background: "rgba(245, 158, 11, 0.08)",
+                          border: "1px solid rgba(245, 158, 11, 0.25)",
+                          borderRadius: "8px",
+                          padding: "12px",
+                          marginBottom: "14px",
+                          fontSize: "0.84rem",
+                          lineHeight: "1.6"
                         }}>
-                          <div style={{ fontWeight: "800", color: "var(--accent-warning)", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-                            <span>⚠️ تنبيه هام: محطة تحويل وتبديل خط!</span>
+                          <div style={{ fontWeight: "800", color: "#f59e0b", marginBottom: "4px" }}>
+                            ⚠️ تنبيه: محطة تبديل وتحويل خط!
                           </div>
-                          انزل هنا من القطار وابحث عن <strong>اليافطة الإرشادية</strong> المكتوب عليها{" "}
-                          <span style={{ color: LINE_COLORS[result.detailedPath[currentStepIndex].targetLine!] }}>
+                          انزل هنا من القطار وابحث عن اليافطة الإرشادية المكتوب عليها{" "}
+                          <strong style={{ color: LINE_COLORS[result.detailedPath[currentStepIndex].targetLine!] }}>
                             {LINE_NAMES[result.detailedPath[currentStepIndex].targetLine!]}
-                          </span>{" "}
-                          واتبع الأسهم والتعليمات للتوجه نحو الرصيف الصحيح وركوب قطار الخط الجديد.
+                          </strong>{" "}
+                          واتبع الأسهم للتوجه نحو الرصيف وركوب القطار التالي.
                         </div>
                       )}
 
-                      {/* Controls */}
                       {currentStepIndex < result.detailedPath.length - 1 ? (
                         <button
+                          type="button"
                           className="btn btn-primary"
                           onClick={() => setCurrentStepIndex(prev => prev + 1)}
                           style={{
                             width: "100%",
-                            fontSize: "0.95rem",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: "8px",
-                            transition: "all 0.2s ease"
+                            fontSize: "0.92rem",
+                            fontWeight: "700"
                           }}
                         >
-                          وصلت محطة {result.detailedPath[currentStepIndex + 1].station}
+                          وصلت لمحطة {result.detailedPath[currentStepIndex + 1].station} ←
                         </button>
                       ) : (
                         <div style={{
                           textAlign: "center",
-                          background: "rgba(16, 185, 129, 0.06)",
-                          border: "1px solid var(--borderGlass)",
-                          borderRadius: "10px",
-                          padding: "16px",
-                          animation: "pop-in 0.3s ease"
+                          background: "rgba(16, 185, 129, 0.08)",
+                          border: "1px solid rgba(16, 185, 129, 0.2)",
+                          borderRadius: "8px",
+                          padding: "14px"
                         }}>
-                          <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🎉</div>
-                          <h4 style={{ color: "var(--colorSuccess)", fontWeight: "800", margin: "0 0 6px" }}>حمدلله على السلامة!</h4>
-                          <p style={{ fontSize: "0.85rem", color: "var(--textSecondary)", margin: "0 0 12px" }}>لقد وصلت إلى محطة<span style={{ color: "var(--colorSecondary)", fontSize: "1rem", fontWeight: "800" }}> {result.detailedPath[currentStepIndex].station}</span>.</p>
+                          <div style={{ fontSize: "1.8rem", marginBottom: "4px" }}>🎉</div>
+                          <h4 style={{ color: "var(--colorSuccess)", fontWeight: "800", margin: "0 0 4px" }}>حمدلله على السلامة!</h4>
+                          <p style={{ fontSize: "0.84rem", color: "var(--textSecondary)", margin: "0 0 10px" }}>لقد وصلت إلى وجهتك محطة {result.detailedPath[currentStepIndex].station}.</p>
                           <button
+                            type="button"
                             onClick={() => {
                               setIsTripActive(false);
                               setCurrentStepIndex(0);
                             }}
-                            style={{
-                              background: "var(--colorSecondary)",
-                              color: "#ffffff",
-                              padding: "var(--paddingBtn)",
-                              border: "none",
-                              borderRadius: "var(--radiusBtn)",
-                              fontWeight: "700",
-                              cursor: "pointer",
-                              fontSize: "0.9rem",
-                              fontFamily: "var(--font-sub)"
-                            }}
+                            className="btn btn-primary"
                           >
                             إنهاء الرحلة
                           </button>
@@ -1688,24 +1914,23 @@ ${reportDetails.trim()}`;
                     </div>
                   )}
 
-                  {/* Dynamic Path Timeline */}
-                  <div style={{ marginBottom: "20px" }}>
-                    <h4 className="sub-title" style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "12px" }}>
-                      <i className="fa-solid fa-diamond-turn-right" style={{ margin: "0 6px" }}></i>
-                      محطات المسار
-                    </h4>
+                  {/* Detailed Stops Timeline */}
+                  <div style={{
+                    background: "var(--bgGlass)",
+                    padding: "20px 16px",
+                    borderRadius: "var(--radius-xs)",
+                    border: "1px solid var(--borderGlass)"
+                  }}>
+                    <h2 className="text-md fw-bold mb-4">
+                      المحطات وترتيب مسار الرحلة
+                    </h2>
 
-                    <div style={{
-                      maxHeight: "350px", overflowY: "auto", padding: "16px",
-                      background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)",
-                      borderRadius: "12px"
-                    }}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
                       {result.detailedPath.map((node, idx) => {
                         const isFirst = idx === 0;
                         const isLast = idx === result.detailedPath.length - 1;
                         const isTransfer = node.isTransferPoint;
                         const activeColor = LINE_COLORS[node.line];
-
                         const isPassed = isTripActive && idx < currentStepIndex;
                         const isCurrent = isTripActive && idx === currentStepIndex;
 
@@ -1714,94 +1939,57 @@ ${reportDetails.trim()}`;
 
                         return (
                           <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
-
-                            {/* Station Row */}
                             <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "32px" }}>
-
-                              {/* Dot / Indicator */}
+                              {/* Dot */}
                               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
                                 {isPassed ? (
                                   <div style={{
-                                    width: "14px",
-                                    height: "14px",
+                                    width: "12px",
+                                    height: "12px",
                                     borderRadius: "50%",
                                     backgroundColor: "var(--colorSuccess)",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    color: "#ffffff",
-                                    fontSize: "0.65rem",
-                                    fontWeight: "bold",
-                                    zIndex: 1
+                                    color: "#fff",
+                                    fontSize: "0.6rem",
+                                    fontWeight: "bold"
                                   }}>
                                     ✓
                                   </div>
                                 ) : (
                                   <div style={{
-                                    width: isFirst || isLast || isTransfer ? "14px" : "8px",
-                                    height: isFirst || isLast || isTransfer ? "14px" : "8px",
+                                    width: isFirst || isLast || isTransfer ? "12px" : "8px",
+                                    height: isFirst || isLast || isTransfer ? "12px" : "8px",
                                     borderRadius: "50%",
-                                    backgroundColor: isUnderConstruction ? "transparent" : (isCurrent
-                                      ? (isFirst ? "var(--colorSuccess)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--colorSecondary)")
-                                      : (isFirst ? "var(--colorSuccess)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--text-muted)")),
-                                    border: isUnderConstruction
-                                      ? `2px dashed ${activeColor}`
-                                      : `2px solid ${isCurrent
-                                        ? "#ffffff"
-                                        : (isFirst ? "var(--colorSuccess)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "transparent")}`,
-                                    boxShadow: isCurrent ? `0 0 10px ${activeColor}` : "none",
-                                    zIndex: 1,
+                                    backgroundColor: isUnderConstruction ? "transparent" : (isFirst || isLast ? activeColor : (isTransfer ? "var(--colorWarning, #f59e0b)" : activeColor)),
+                                    border: isUnderConstruction ? `2px dashed var(--colorDanger)` : (isFirst || isLast ? `2px solid var(--bgPrimary)` : "none"),
+                                    boxShadow: isUnderConstruction ? "none" : (isFirst || isLast ? `0 0 0 2px ${activeColor}` : "none")
                                   }} />
                                 )}
                               </div>
 
-                              {/* Station Name and Badge */}
-                              <div style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "10px",
-                                flexGrow: 1,
-                                opacity: isPassed ? 0.5 : (isUnderConstruction ? 0.75 : 1),
-                                transition: "opacity 0.3s ease"
-                              }}>
+                              {/* Text & Badges */}
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, opacity: isPassed ? 0.5 : 1 }}>
                                 <span style={{
-                                  fontSize: isFirst || isLast ? "0.95rem" : "0.88rem",
+                                  fontSize: "0.88rem",
                                   fontWeight: isFirst || isLast || isTransfer || isCurrent ? "700" : "500",
-                                  color: isUnderConstruction
-                                    ? "#ef4444"
-                                    : (isCurrent
-                                      ? "var(--textPrimary)"
-                                      : (isFirst ? "var(--colorSuccess)" : isLast ? "var(--accent-red)" : isTransfer ? "var(--accent-warning)" : "var(--textPrimary)")),
-                                  textDecoration: isPassed ? "line-through" : "none",
-                                  fontFamily: "var(--font-sub)",
+                                  color: isUnderConstruction ? "#ef4444" : (isCurrent ? "var(--colorSecondary)" : (isFirst || isLast ? "var(--textPrimary)" : "var(--textSecondary)")),
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "8px"
                                 }}>
                                   {node.station}
+                                  {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>(محطة الركوب)</span>}
+                                  {isLast && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>(محطة الوصول)</span>}
                                 </span>
-
-                                {isUnderConstruction && (
-                                  <span style={{
-                                    fontSize: "0.68rem",
-                                    background: "rgba(239, 68, 68, 0.12)",
-                                    color: "#ef4444",
-                                    border: "1px solid rgba(239, 68, 68, 0.25)",
-                                    padding: "1px 6px",
-                                    borderRadius: "4px",
-                                    fontWeight: "bold"
-                                  }}>
-                                    تحت الإنشاء 🚧
-                                  </span>
-                                )}
-
-                                {isFirst && <span style={{ fontSize: "0.68rem", background: "rgba(16,185,129,0.12)", color: "var(--colorSuccess)", padding: "1px 6px", borderRadius: "4px" }}>ركوب</span>}
-                                {isLast && <span style={{ fontSize: "0.68rem", background: "rgba(239,68,68,0.12)", color: "var(--accent-red)", padding: "1px 6px", borderRadius: "4px" }}>وصول</span>}
 
                                 <span style={{
                                   fontSize: "0.68rem",
                                   color: "#ffffff",
-                                  background: activeColor + "66",
-                                  border: `1px solid ${activeColor}88`,
+                                  background: activeColor + "cc",
                                   padding: "1px 6px",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   marginRight: "auto"
                                 }}>
                                   {LINE_NAMES[node.line].split(" ")[0] + " " + LINE_NAMES[node.line].split(" ")[1]}
@@ -1809,636 +1997,522 @@ ${reportDetails.trim()}`;
                               </div>
                             </div>
 
-                            {/* Link line to next station or transfer card */}
+                            {/* Connective Line */}
                             {!isLast && (
-                              <div style={{ display: "flex", gap: "12px", minHeight: "18px" }}>
+                              <div style={{ display: "flex", gap: "12px", minHeight: "16px" }}>
                                 <div style={{ width: "16px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
                                   <div style={{
                                     width: "2px",
                                     backgroundColor: activeColor,
-                                    minHeight: "18px",
-                                    opacity: 0.7,
+                                    minHeight: "16px",
+                                    opacity: 0.4,
                                   }} />
                                 </div>
-
-                                <div style={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
+                                <div style={{ flexGrow: 1 }}>
                                   {isTransfer && (
                                     <div style={{
-                                      background: "rgba(245, 158, 11, 0.05)",
+                                      background: "rgba(245, 158, 11, 0.06)",
                                       border: "1px solid rgba(245, 158, 11, 0.2)",
-                                      borderRadius: "10px",
-                                      padding: "10px 14px",
-                                      margin: "6px 0",
-                                      fontSize: "0.8rem",
-                                      color: "var(--accent-warning)",
-                                      fontWeight: "600",
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      gap: "4px",
-                                      width: "100%",
-                                      opacity: isPassed ? 0.6 : 1
+                                      borderRadius: "6px",
+                                      padding: "6px 10px",
+                                      margin: "4px 0",
+                                      fontSize: "0.76rem",
+                                      color: "var(--colorWarning, #f59e0b)",
+                                      fontWeight: "600"
                                     }}>
-                                      <div style={{ fontWeight: "700" }}>
-                                        🔄 محطة تبادلية: الانتقال إلى {LINE_NAMES[node.targetLine!]}
-                                      </div>
-                                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
-                                        انزل هنا وابحث عن <strong>اليافطة الإرشادية</strong> للخط الجديد واتبع السهام للتوجه للرصيف الصحيح وركوب قطار الخط الجديد.
-                                      </div>
+                                      🔄 محطة تبديل: التوجه إلى {LINE_NAMES[node.targetLine!]}
                                     </div>
                                   )}
                                 </div>
                               </div>
                             )}
-
                           </div>
                         );
                       })}
                     </div>
                   </div>
 
-                  {/* Prices Legend Footer - Styled matching profile cards details */}
-                  <div style={{
-                    padding: "12px 16px",
-                    background: "var(--bgSecondary)",
-                    border: "1px solid var(--borderGlass)",
-                    borderRadius: "12px",
-                    fontSize: "0.78rem",
-                    color: "var(--textSecondary)",
-                    lineHeight: "1.5",
-                    marginTop: "16px"
-                  }}>
-                    <i className="fa-regular fa-lightbulb" style={{ color: "var(--accent-warning)", marginLeft: "5px" }}></i>
-                    <strong>تسعير التذاكر المعتمد:</strong> <br />
-                    البيانات مبنية علي الاسعار الرسمية لأخر تحديث
-                    {ticketPrices.length > 0 ? (
-                      ticketPrices.map((tier, tIdx) => {
-                        const color = tIdx === 0 || tIdx === 1 ? "var(--colorSuccess)" : (tIdx === 2 ? "var(--accent-warning)" : "var(--accent-danger)");
-                        return (
-                          <div key={tIdx} style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", marginTop: "4px", textAlign: "right", direction: "rtl" }}>
-                            • <strong style={{ color }}>{tier.tier_name}:</strong> {tier.price} جنيهًا.
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <>
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", marginTop: "8px", textAlign: "right", direction: "rtl" }}>
-                          • <strong style={{ color: "var(--colorSuccess)" }}>المسافة من 1-9 محطات:</strong> 10 جنيهات.
-                        </div>
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
-                          • <strong style={{ color: "var(--colorSuccess)" }}>المسافة من 10-19 محطة:</strong> 12 جنيهات.
-                        </div>
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
-                          • <strong style={{ color: "var(--accent-warning)" }}>المسافة من 20-29 محطة:</strong> 15 جنيهًا.
-                        </div>
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
-                          • <strong style={{ color: "var(--accent-danger)" }}>المسافة 30 محطة فأكثر:</strong> 20 جنيهًا.
-                        </div>
-                      </>
-                    )}
+                  {/* Route Report Problem Button */}
+                  <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
+                    <button
+                      type="button"
+                      className="btn btn-reportProblem"
+                      onClick={() => handleOpenReportModal(null, true)}
+                      style={{
+                        fontSize: "0.8rem",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <i className="fa-solid fa-triangle-exclamation"></i>
+                      <span>الإبلاغ عن خطأ في حساب مسار هذه الرحلة</span>
+                    </button>
                   </div>
                 </>
               )}
             </div>
           )}
+        </div>
 
-          {/* METRO LINES EXPLORER */}
-          <div className="metro-animate-slide-up metro-delay-300" style={{ marginTop: "32px" }}>
-            <h2 style={{
-              fontSize: "1.3rem",
-              fontWeight: "800",
-              color: "var(--textPrimary)",
-              marginBottom: "6px",
-              textAlign: "center"
-            }}>🗺️ مستعرض خطوط المترو الكاملة</h2>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.9rem", textAlign: "center", marginBottom: "20px", fontFamily: "var(--font-sub)" }}>
-              اضغط على الخط لاستعراض كافة محطاته المسجلة.
-            </p>
+        {/* Main Details Panel for Selected Line */}
+        <div ref={detailsPanelRef} className="details-panel">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <h5 className="text-lg fw-bold" style={{ margin: 0 }}>
+               {selectedLineObj.name}
+            </h5>
 
-            {/* Explorer Tab Pills - Redesigned to match Verified security cards in profile */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "16px" }}>
-              {(["line1", "line2", "line3", "line4", "line5", "line6"] as LineId[]).map(lineId => {
-                const active = explorerLine === lineId;
-                const color = LINE_COLORS[lineId];
-                const lineStatsCount = stations.filter(s => {
-                  if (lineId === "line3") {
-                    return s.line_type === "line3" || s.line_type === "line3_branch_a" || s.line_type === "line3_branch_b";
-                  }
-                  return s.line_type === lineId;
-                }).length;
-
-                return (
+            {/* Line 3 sub-branches tabs */}
+            {explorerLine === "line3" && (
+              <div className="tabs" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px", marginBottom: 0, padding: "4px" }}>
+                {[
+                  { id: "trunk", name: "الفرع الرئيسي" },
+                  { id: "branchA", name: "اتجاه روض الفرج" },
+                  { id: "branchB", name: "اتجاه جامعة القاهرة" },
+                ].map(tab => (
                   <button
-                    key={lineId}
-                    onClick={() => setExplorerLine(lineId)}
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setLine3ActiveBranch(tab.id as any)}
                     style={{
-                      fontFamily: "var(--font-body)",
-                      background: "var(--bgPrimary)",
-                      border: active ? `2px solid ${color}` : "1px solid var(--borderGlass)",
-                      borderRadius: "12px",
-                      padding: "14px 8px",
+                      padding: "8px 10px",
+                      borderRadius: "8px",
+                      border: "none",
+                      background: line3ActiveBranch === tab.id ? "var(--textPrimary)" : "transparent",
+                      color: line3ActiveBranch === tab.id ? "var(--bgMode)" : "var(--textPrimary)",
+                      fontWeight: "700",
+                      fontSize: "0.8rem",
                       cursor: "pointer",
+                      fontFamily: "var(--font-body)",
                       transition: "all 0.2s ease",
-                      textAlign: "center",
-                      boxShadow: active ? `0 0 10px ${color}15` : "none",
-                    }}
-                    onMouseEnter={e => {
-                      if (!active) e.currentTarget.style.background = "var(--hoverBtn)";
-                    }}
-                    onMouseLeave={e => {
-                      if (!active) e.currentTarget.style.background = "var(--bgPrimary)";
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      whiteSpace: "nowrap"
                     }}
                   >
-                    <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: color, margin: "0 auto 6px" }} />
-                    <div style={{ color: active ? "var(--textPrimary)" : "var(--textSecondary)", fontWeight: "700", fontSize: "0.9rem", fontFamily: "var(--font-cairo)" }}>
-                      {lineId === "line1" ? "الخط الأول" :
-                        lineId === "line2" ? "الخط الثاني" :
-                          lineId === "line3" ? "الخط الثالث" :
-                            lineId === "line4" ? "الخط الرابع" :
-                              lineId === "line5" ? "الخط الخامس" : "الخط السادس"}
-                    </div>
-                    <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
-                      {lineStatsCount} {lineStatsCount >= 3 && lineStatsCount <= 10 ? "محطات" : "محطة"}
-                    </div>
+                    {tab.name}
                   </button>
-                );
-              })}
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Details Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+              <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {currentExplorerStations[0]?.name || selectedLineObj.from}
+              </div>
             </div>
 
-            {/* Explorer Station Container - Styled matching profile sectionCard */}
-            <div style={{
-              backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
-              borderRadius: "15px",
-              padding: "20px",
-              boxShadow: "var(--shadow-card)",
-            }}>
-
-              {/* Line Summary in Explorer */}
-              <div style={{ borderBottom: "1px solid var(--borderGlass)", paddingBottom: "14px", marginBottom: "16px" }}>
-                <h2 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "4px" }}>
-                  {LINE_NAMES[explorerLine]}
-                </h2>
-                <p style={{ color: "var(--textSecondary)", fontSize: "0.82rem", margin: 0 }}>
-                  {explorerLine === "line1" && "اتجاه الحركة الرئيسي: حلوان ↔ المرج الجديدة"}
-                  {explorerLine === "line2" && "اتجاه الحركة الرئيسي: شبرا الخيمة ↔ المنيب"}
-                  {explorerLine === "line3" && "الخط الذكي الجديد مع تفريعتين بالكيت كات غرباً"}
-                  {explorerLine === "line4" && "يربط غرب القاهرة (6 أكتوبر) بوسط العاصمة وشرقها (تحت الإنشاء)"}
-                  {explorerLine === "line5" && "خط عرضي يربط شمال العاصمة من الساحل إلى مدينة نصر (تحت الإنشاء)"}
-                  {explorerLine === "line6" && "يمتد من شمال القاهرة بالخصوص إلى جنوبها بالمعادي الجديدة (تحت الإنشاء)"}
-                </p>
-
-                {/* Sub-tabs for Line 3 branches - iOS Style using var(--colorSecondary) */}
-                {explorerLine === "line3" && (
-                  <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
-                    {[
-                      { id: "trunk", name: "الفرع الرئيسي" },
-                      { id: "branchA", name: "اتجاه روض الفرج" },
-                      { id: "branchB", name: "اتجاه جامعة القاهرة" },
-                    ].map(tab => (
-                      <button
-                        key={tab.id}
-                        onClick={() => setLine3ActiveBranch(tab.id as any)}
-                        style={{
-                          background: line3ActiveBranch === tab.id ? "rgba(59, 130, 246, 0.15)" : "var(--bgSecondary)",
-                          border: `1px solid ${line3ActiveBranch === tab.id ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                          color: line3ActiveBranch === tab.id ? "var(--textPrimary)" : "var(--textSecondary)",
-                          padding: "6px",
-                          borderRadius: "8px",
-                          fontSize: "0.78rem",
-                          fontWeight: "700",
-                          cursor: "pointer",
-                          fontFamily: "var(--font-sub)",
-                          transition: "all 0.2s ease"
-                        }}
-                      >
-                        {tab.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+              <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {currentExplorerStations[currentExplorerStations.length - 1]?.name || selectedLineObj.to}
               </div>
+            </div>
 
-              {/* Instruction Banner */}
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                gap: "8px",
-                background: "rgba(255, 255, 255, 0.02)",
-                border: "1px solid var(--borderGlass)",
-                borderRadius: "8px",
-                padding: "8px 12px",
-                marginBottom: "12px",
-                fontSize: "0.78rem",
-                color: "var(--textSecondary)"
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <i className="bx bx-info-circle" style={{ color: "var(--colorSecondary)", fontSize: "0.95rem" }} />
-                  <span>انقر على اسم أي محطة لعرض المعالم والأماكن الهامة القريبة منها.</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleOpenReportModal(null)}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    background: "rgba(239, 68, 68, 0.08)",
-                    border: "1px solid rgba(239, 68, 68, 0.2)",
-                    borderRadius: "6px",
-                    padding: "4px 10px",
-                    fontSize: "0.76rem",
-                    fontWeight: "700",
-                    color: "#ef4444",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    fontFamily: "var(--font-cairo)"
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.16)"}
-                  onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
-                  title="الإبلاغ عن خطأ في بيانات المحطات أو المعالم"
-                >
-                  <i className="bx bx-error-circle" style={{ fontSize: "0.9rem" }}></i>
-                  <span>الإبلاغ عن خطأ</span>
-                </button>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--textPrimary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {currentExplorerStations.length > 0 ? `${currentExplorerStations.length} محطة` : "تحت الإنشاء"}
               </div>
-
-              {/* Vertically Scrollable List of Explorer Stations */}
-              <div style={{
-                maxHeight: "350px", overflowY: "auto", padding: "16px",
-                background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)",
-                borderRadius: "12px",
-                fontFamily: "var(--font-sub)",
-              }}>
-                {(() => {
-                  let stationsList: any[] = [];
-                  if (explorerLine === "line1") {
-                    stationsList = stations.filter(s => s.line_type === "line1").sort((a, b) => a.station_order - b.station_order);
-                  } else if (explorerLine === "line2") {
-                    stationsList = stations.filter(s => s.line_type === "line2").sort((a, b) => a.station_order - b.station_order);
-                  } else if (explorerLine === "line3") {
-                    if (line3ActiveBranch === "trunk") {
-                      stationsList = stations.filter(s => s.line_type === "line3").sort((a, b) => a.station_order - b.station_order);
-                    } else if (line3ActiveBranch === "branchA") {
-                      stationsList = stations.filter(s => s.line_type === "line3_branch_a").sort((a, b) => a.station_order - b.station_order);
-                    } else {
-                      stationsList = stations.filter(s => s.line_type === "line3_branch_b").sort((a, b) => a.station_order - b.station_order);
-                    }
-                  } else {
-                    stationsList = stations.filter(s => s.line_type === explorerLine).sort((a, b) => a.station_order - b.station_order);
-                  }
-
-                  if (stationsList.length === 0) {
-                    return (
-                      <div style={{ color: "var(--text-muted)", fontSize: "0.85rem", textAlign: "center", padding: "20px" }}>
-                        لا توجد محطات مسجلة في هذا الخط حالياً.
-                      </div>
-                    );
-                  }
-
-                  return stationsList.map((stationObj, idx) => {
-                    const station = stationObj.name;
-                    const landmarks = stationObj.landmarks || [];
-                    const status = stationObj.status || "تشغيل فعلي";
-                    const isUnderConstruction = status === "تحت الإنشاء";
-
-                    const isFirst = idx === 0;
-                    const isLast = idx === stationsList.length - 1;
-                    const color = LINE_COLORS[explorerLine];
-
-                    // Check if station is transfer
-                    const allLinesForStation = Array.from(stationLinesMap.get(station) || []);
-                    const isTransfer = allLinesForStation.length > 1;
-
-                    return (
-                      <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "32px" }}>
-
-                          {/* Dot */}
-                          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
-                            <div style={{
-                              width: isTransfer ? "12px" : "8px",
-                              height: isTransfer ? "12px" : "8px",
-                              borderRadius: "50%",
-                              backgroundColor: isUnderConstruction ? "transparent" : (isTransfer ? "var(--accent-warning)" : color),
-                              border: isUnderConstruction ? `2px dashed ${color}` : `2px solid ${isTransfer ? "#ffffff" : "transparent"}`,
-                            }} />
-                          </div>
-
-                          {/* Station Text & Transfer Badges */}
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexGrow: 1, opacity: isUnderConstruction ? 0.75 : 1 }}>
-                            <span style={{
-                              fontSize: "0.88rem",
-                              fontWeight: isTransfer || isFirst || isLast ? "700" : "500",
-                              color: isUnderConstruction ? "#ef4444" : (isTransfer ? "var(--accent-warning)" : "var(--textPrimary)"),
-                              cursor: "pointer",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "8px"
-                            }}
-                              onClick={() => setExpandedStation(expandedStation === station ? null : station)}
-                            >
-                              {station}
-                              <i
-                                className={`bx ${expandedStation === station ? "bx-chevron-up" : "bx-chevron-down"}`}
-                                style={{
-                                  fontSize: "1rem",
-                                  color: expandedStation === station ? "var(--colorSecondary)" : "var(--text-muted)",
-                                  transition: "all 0.2s ease"
-                                }}
-                              />
-                              {isUnderConstruction && (
-                                <span style={{
-                                  fontSize: "0.68rem",
-                                  background: "rgba(239, 68, 68, 0.12)",
-                                  color: "#ef4444",
-                                  border: "1px solid rgba(239, 68, 68, 0.25)",
-                                  padding: "1px 6px",
-                                  borderRadius: "4px",
-                                  fontWeight: "bold"
-                                }}>
-                                  تحت الإنشاء 🚧
-                                </span>
-                              )}
-                            </span>
-
-                            {isTransfer && (
-                              <div style={{ display: "flex", gap: "4px" }}>
-                                {allLinesForStation.filter(l => l !== explorerLine).map(l => (
-                                  <button
-                                    key={l}
-                                    onClick={() => {
-                                      setExplorerLine(l);
-                                      if (l === "line3") setLine3ActiveBranch("trunk");
-                                    }}
-                                    style={{
-                                      fontSize: "0.68rem",
-                                      fontWeight: "700",
-                                      color: LINE_COLORS[l],
-                                      background: LINE_COLORS[l] + "1a",
-                                      border: `1px solid ${LINE_COLORS[l]}33`,
-                                      padding: "2px 6px",
-                                      borderRadius: "6px",
-                                      cursor: "pointer",
-                                      fontFamily: "var(--font-cairo)",
-                                    }}
-                                    title={`انقر للانتقال إلى ${LINE_NAMES[l]}`}
-                                  >
-                                    تبادل مع {l === "line1" ? "الخط الأول" : l === "line2" ? "الخط الثاني" : "الخط الثالث"}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-
-                            {isFirst && <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>البداية</span>}
-                            {isLast && <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>النهاية</span>}
-                          </div>
-                        </div>
-
-                        {/* Expanded Landmarks / Status details */}
-                        {expandedStation === station && (
-                          <div style={{
-                            margin: "4px 16px 12px 28px",
-                            padding: "10px 14px",
-                            borderRadius: "8px",
-                            background: "rgba(255,255,255,0.02)",
-                            border: isUnderConstruction ? "1px dashed rgba(239, 68, 68, 0.3)" : "1px solid var(--borderGlass)",
-                            opacity: isUnderConstruction ? 0.8 : 1,
-                          }}>
-                            {isUnderConstruction && (
-                              <div style={{ color: "#ef4444", fontSize: "0.75rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
-                                <span>⚠️ هذه المحطة قيد الإنشاء وليست في الخدمة الفعلية بعد.</span>
-                              </div>
-                            )}
-                            <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", marginBottom: "4px", fontWeight: "bold" }}>📍 المعالم والأماكن القريبة:</div>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                              {landmarks.length > 0 ? (
-                                landmarks.map((landmark: string, lIdx: number) => (
-                                  <span key={lIdx} style={{
-                                    fontSize: "0.7rem",
-                                    background: "rgba(255, 255, 255, 0.05)",
-                                    color: "var(--textPrimary)",
-                                    padding: "2px 6px",
-                                    borderRadius: "4px",
-                                    border: "1px solid var(--borderGlass)",
-                                  }}>
-                                    {landmark}
-                                  </span>
-                                ))
-                              ) : (
-                                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontStyle: "italic" }}>لم يتم تحديد معالم قريبة بعد لهذه المحطة.</span>
-                              )}
-                            </div>
-                            <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid var(--borderGlass)", display: "flex", justifyContent: "flex-end" }}>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleOpenReportModal(station);
-                                }}
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "5px",
-                                  background: "none",
-                                  border: "none",
-                                  color: "var(--textSecondary)",
-                                  fontSize: "0.74rem",
-                                  fontWeight: "600",
-                                  cursor: "pointer",
-                                  padding: "3px 8px",
-                                  borderRadius: "6px",
-                                  transition: "all 0.2s ease",
-                                  fontFamily: "var(--font-cairo)"
-                                }}
-                                onMouseEnter={e => {
-                                  e.currentTarget.style.color = "#ef4444";
-                                  e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)";
-                                }}
-                                onMouseLeave={e => {
-                                  e.currentTarget.style.color = "var(--textSecondary)";
-                                  e.currentTarget.style.background = "none";
-                                }}
-                              >
-                                <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.75rem" }}></i>
-                                الإبلاغ عن خطأ في محطة {station}
-                              </button>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Rail segment */}
-                        {!isLast && (
-                          <div style={{ display: "flex", gap: "12px", minHeight: "14px" }}>
-                            <div style={{ width: "16px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
-                              <div style={{
-                                width: "2px",
-                                backgroundColor: color,
-                                minHeight: "14px",
-                                opacity: 0.4,
-                              }} />
-                            </div>
-                            <div style={{ flexGrow: 1 }} />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  });
-                })()}
-              </div>
-
             </div>
           </div>
 
-          {/* OFFICIAL METRO MAP DOWNLOAD SECTION */}
-          <div className="metro-animate-slide-up metro-delay-400" style={{
-            backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
-            borderRadius: "15px",
-            padding: "20px",
-            marginTop: "24px",
-            boxShadow: "var(--shadow-card)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
+          {/* Detailed stops vertical timeline */}
+          <div style={{
+            background: "var(--bgGlass)",
+            padding: "20px 16px",
+            borderRadius: "var(--radius-card)",
+            border: "1px solid var(--borderGlass)"
           }}>
-            <div style={{ textAlign: "center" }}>
-              <h2 style={{
-                fontSize: "1.3rem",
-                fontWeight: "800",
-                color: "var(--textPrimary)",
-                margin: "0 0 6px 0",
-              }}>🗺️ خريطة مترو القاهرة الرسمية</h2>
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.9rem", margin: 0, lineHeight: "1.5", fontFamily: "var(--font-sub)" }}>
-                يمكنك استعراض الخريطة التوضيحية لشبكة المترو الرسمية أو تحميلها كصورة عالية الدقة للوصول إليها في أي وقت دون الحاجة لإنترنت.
-              </p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "8px" }}>
+              <h2 className="text-md fw-bold" style={{ margin: 0 }}>
+                المحطات المسجلة على هذا الخط
+              </h2>
+              <span style={{ fontSize: "0.75rem", color: "var(--textMuted)" }}>
+                انقر على اسم المحطة لاستعراض المعالم القريبة
+              </span>
             </div>
 
-            {/* Map Preview Image */}
-            <div style={{
-              position: "relative",
-              borderRadius: "12px",
-              overflow: "hidden",
-              border: "1px solid var(--borderGlass)",
-              height: "220px",
-              width: "100%",
-              backgroundColor: "rgba(0,0,0,0.05)",
-            }}>
-              <a href="/images/metro/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="/images/metro/cairo-metro-map.png"
-                  alt="Cairo Metro Official Map"
-                  loading="lazy"
-                  decoding="async"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    display: "block",
-                    transition: "transform 0.3s ease",
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.transform = "scale(1.02)"}
-                  onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-                />
-                {/* Fullscreen Overlay Guide */}
-                <div style={{
-                  position: "absolute",
-                  bottom: "10px",
-                  right: "10px",
-                  background: "rgba(0,0,0,0.6)",
-                  color: "#ffffff",
-                  padding: "4px 10px",
-                  borderRadius: "8px",
-                  fontSize: "0.75rem",
-                  fontWeight: "600",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  backdropFilter: "blur(4px)",
-                }}>
-                  <i className="bx bx-expand-alt" style={{ fontSize: "0.9rem" }}></i>
-                  اضغط للتكبير
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {currentExplorerStations.length > 0 ? (
+                currentExplorerStations.map((stationObj, idx) => {
+                  const station = stationObj.name;
+                  const landmarks = stationObj.landmarks || [];
+                  const status = stationObj.status || "تشغيل فعلي";
+                  const isUnderConstruction = status === "تحت الإنشاء";
+
+                  const isFirst = idx === 0;
+                  const isLast = idx === currentExplorerStations.length - 1;
+
+                  const allLinesForStation = Array.from(stationLinesMap.get(station) || []);
+                  const isTransfer = allLinesForStation.length > 1;
+
+                  return (
+                    <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "34px" }}>
+                        {/* Dot */}
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
+                          <div style={{
+                            width: isTransfer || isFirst || isLast ? "12px" : "8px",
+                            height: isTransfer || isFirst || isLast ? "12px" : "8px",
+                            borderRadius: "50%",
+                            backgroundColor: isUnderConstruction ? "transparent" : (isTransfer ? "var(--colorWarning, #f59e0b)" : color),
+                            border: isUnderConstruction ? `2px dashed var(--colorDanger)` : (isFirst || isLast ? `2px solid var(--bgPrimary)` : "none"),
+                            boxShadow: isUnderConstruction ? "none" : (isFirst || isLast ? `0 0 0 2px ${color}` : "none")
+                          }} />
+                        </div>
+
+                        {/* Text & Badges */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, flexWrap: "wrap" }}>
+                          <span
+                            onClick={() => setExpandedStation(expandedStation === station ? null : station)}
+                            style={{
+                              fontSize: "0.88rem",
+                              fontWeight: isFirst || isLast || isTransfer ? "700" : "500",
+                              color: isUnderConstruction ? "#ef4444" : (isFirst || isLast ? "var(--textPrimary)" : "var(--textPrimary)"),
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                              cursor: "pointer"
+                            }}
+                          >
+                            {station}
+                            <i
+                              className={`bx ${expandedStation === station ? "bx-chevron-up" : "bx-chevron-down"}`}
+                              style={{
+                                fontSize: "0.95rem",
+                                color: expandedStation === station ? "var(--colorSecondary)" : "var(--textMuted)",
+                                transition: "all 0.2s ease"
+                              }}
+                            />
+                            {isUnderConstruction && (
+                              <span style={{
+                                fontSize: "0.68rem",
+                                background: "rgba(239, 68, 68, 0.12)",
+                                color: "#ef4444",
+                                border: "1px solid rgba(239, 68, 68, 0.25)",
+                                padding: "1px 6px",
+                                borderRadius: "4px",
+                                fontWeight: "bold"
+                              }}>
+                                تحت الإنشاء 🚧
+                              </span>
+                            )}
+                            {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(بدايــة الخط)</span>}
+                            {isLast && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(نهـاية الخط)</span>}
+                          </span>
+
+                          {/* Transfer switcher buttons */}
+                          {isTransfer && (
+                            <div style={{ display: "flex", gap: "4px", marginRight: "auto" }}>
+                              {allLinesForStation.filter(l => l !== explorerLine).map(l => (
+                                <button
+                                  key={l}
+                                  type="button"
+                                  onClick={() => {
+                                    setExplorerLine(l);
+                                    if (l === "line3") setLine3ActiveBranch("trunk");
+                                  }}
+                                  style={{
+                                    fontSize: "0.68rem",
+                                    fontWeight: "700",
+                                    color: LINE_COLORS[l],
+                                    background: LINE_COLORS[l] + "1a",
+                                    border: `1px solid ${LINE_COLORS[l]}33`,
+                                    padding: "2px 6px",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                  }}
+                                  title={`انقر للانتقال إلى ${LINE_NAMES[l]}`}
+                                >
+                                  تبادل مع {l === "line1" ? "الخط الأول" : l === "line2" ? "الخط الثاني" : "الخط الثالث"}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Expanded Landmarks / Status details */}
+                      {expandedStation === station && (
+                        <div style={{
+                          margin: "4px 16px 12px 28px",
+                          padding: "10px 14px",
+                          borderRadius: "8px",
+                          background: "var(--bgSecondary)",
+                          border: isUnderConstruction ? "1px dashed rgba(239, 68, 68, 0.3)" : "1px solid var(--borderGlass)",
+                        }}>
+                          {isUnderConstruction && (
+                            <div style={{ color: "#ef4444", fontSize: "0.75rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+                              <span>⚠️ هذه المحطة قيد الإنشاء وليست في الخدمة الفعلية بعد.</span>
+                            </div>
+                          )}
+                          <div style={{ fontSize: "0.75rem", color: "var(--textPrimary)", marginBottom: "6px", fontWeight: "bold" }}>
+                            المعالم والأماكن الحيوية القريبة من المحطة:
+                          </div>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                            {landmarks.length > 0 ? (
+                              landmarks.map((landmark: string, lIdx: number) => (
+                                <span key={lIdx} style={{
+                                  fontSize: "0.72rem",
+                                  background: "rgba(255, 255, 255, 0.05)",
+                                  color: "var(--textPrimary)",
+                                  padding: "3px 8px",
+                                  borderRadius: "4px",
+                                  border: "1px solid var(--borderGlass)",
+                                }}>
+                                  {landmark}
+                                </span>
+                              ))
+                            ) : (
+                              <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", fontStyle: "italic" }}>
+                                لم يتم تسجيل معالم قريبة لهذه المحطة بعد.
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid var(--borderGlass)", display: "flex", justifyContent: "flex-end" }}>
+                            <button
+                              type="button"
+                              className="btn btn-reportProblem"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenReportModal(station);
+                              }}
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "5px",
+                                fontSize: "0.74rem",
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                padding: "3px 8px",
+                                borderRadius: "6px",
+                                transition: "all 0.2s ease",
+                              }}
+                            >
+                              <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.75rem" }}></i>
+                              الإبلاغ عن خطأ في محطة {station}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Connective Line */}
+                      {!isLast && (
+                        <div style={{ display: "flex", gap: "12px", minHeight: "14px" }}>
+                          <div style={{ width: "16px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
+                            <div style={{
+                              width: "2px",
+                              backgroundColor: color,
+                              minHeight: "14px",
+                              opacity: 0.4,
+                            }} />
+                          </div>
+                          <div style={{ flexGrow: 1 }} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
+                  لا توجد محطات مضافة لهذا الخط بعد (المشروع تحت التخطيط والإنشاء).
                 </div>
-              </a>
+              )}
             </div>
+          </div>
 
-            {/* Download Button */}
-            <a
-              href="/image/cairo-metro-map.png"
-              download="cairo-metro-map.png"
-              style={{
-                width: "100%",
-                padding: "var(--paddingBtn)",
-                borderRadius: "var(--radiusBtn)",
-                background: "var(--colorSecondary)",
+          {/* Tips / Info Section */}
+          <div style={{
+            marginTop: "12px",
+            background: "var(--bgGlass)",
+            border: "1px solid var(--borderGlass)",
+            borderRadius: "var(--radius-card)",
+            padding: "16px"
+          }}>
+            <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
+              <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: color, fontSize: "1.1rem", verticalAlign: "middle" }}></i>
+              <strong>معلومات الخط: </strong>
+              <span style={{ color: "var(--textMuted)" }}>{selectedLineObj.desc}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Official Cairo Metro Map Download Section */}
+        <div ref={mapPanelRef} className="details-panel">
+          <h2 style={{
+            fontSize: "1.25rem",
+            fontWeight: "800",
+            color: "var(--textPrimary)",
+            margin: "0 0 8px"
+          }}>
+            خريطة مترو القاهرة الرسمية
+          </h2>
+          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0" }}>
+            يمكنك استعراض الخريطة التوضيحية لشبكة المترو الرسمية أو تحميلها كصورة عالية الدقة للوصول إليها في أي وقت دون الحاجة لإنترنت:
+          </p>
+
+          <div style={{
+            position: "relative",
+            borderRadius: "var(--radius-xs)",
+            overflow: "hidden",
+            border: "1px solid var(--borderGlass)",
+            height: "220px",
+            width: "100%",
+            backgroundColor: "rgba(0,0,0,0.05)",
+          }}>
+            <a href="/images/metro/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
+              <img
+                src="/images/metro/cairo-metro-map.png"
+                alt="Cairo Metro Official Map"
+                loading="lazy"
+                decoding="async"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                  transition: "transform 0.3s ease",
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = "scale(1.02)"}
+                onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
+              />
+              <div style={{
+                position: "absolute",
+                bottom: "10px",
+                right: "10px",
+                background: "rgba(0,0,0,0.6)",
                 color: "#ffffff",
-                fontSize: "0.95rem",
-                fontWeight: "700",
-                border: "1px solid var(--borderGlass)",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                fontFamily: "var(--font-sub)",
-                textAlign: "center",
-                textDecoration: "none",
+                padding: "4px 10px",
+                borderRadius: "8px",
+                fontSize: "0.75rem",
+                fontWeight: "600",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              }}
-              onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
-              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-            >
-              <i className="bx bx-download" style={{ fontSize: "1.2rem" }}></i>
-              تحميل الخريطة بجودة عالية
+                gap: "4px",
+                backdropFilter: "blur(4px)",
+              }}>
+                <i className="bx bx-expand-alt" style={{ fontSize: "0.9rem" }}></i>
+                اضغط للتكبير وعرض الخريطة كاملة
+              </div>
             </a>
           </div>
 
-          {/* Emergency Quick Bar */}
-          {/* <EmergencyQuickBar /> */}
-
-          {/* Transit FAQ Accordion */}
-          {/* <TransitFAQ /> */}
-
+          <a
+            href="/images/metro/cairo-metro-map.png"
+            download="cairo-metro-map.png"
+            className="btn btn-primary"
+            style={{
+              width: "100%",
+              fontSize: "0.92rem",
+              fontWeight: "700",
+              textAlign: "center",
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            <i className="bx bx-download" style={{ fontSize: "1.2rem" }}></i>
+            تحميل خريطة المترو بجودة فائقة
+          </a>
         </div>
+
+        {/* Report Problem Banner Matching Railways */}
+        <div ref={reportBannerRef} style={{
+          background: "var(--bgLinearAlert)",
+          border: "1px solid var(--borderSecondary)",
+          borderRadius: "var(--radius-xs)",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "16px",
+          marginTop: "14px",
+          overflow: "hidden",
+          position: "relative"
+        }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexDirection: "row-reverse", justifyContent: "flex-end" }}>
+              <h2 style={{
+                margin: "0 0 6px",
+                fontSize: "1rem",
+                fontWeight: "800",
+                gap: "8px"
+              }}>
+                الإبلاغ عن مشكلة فى بيانات المترو
+              </h2>
+              <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px" }} />
+            </div>
+
+            <p style={{
+              margin: 0,
+              fontSize: "0.82rem",
+              color: "var(--textSecondary)",
+              lineHeight: "1.6"
+            }}>
+              هل لاحظت أي خطأ في أسعار التذاكر، محطات التبديل؟ شاركنا ملاحظتك لمساعدتنا في تدقيق وتحديث شبكة المترو باستمرار.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-reportProblem"
+            onClick={() => handleOpenReportModal()}
+            style={{
+              fontSize: "0.84rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "all 0.15s ease",
+              flexShrink: 0
+            }}
+          >
+            <i className="fa-solid fa-flag"></i>
+            <span>تقديم بلاغ عن خطأ</span>
+          </button>
+        </div>
+
       </div>
 
-      {/* Report Problem Modal Overlay */}
+      {/* Report Problem Modal */}
       {reportModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.75)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            zIndex: 10000,
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.75)",
+          backdropFilter: "blur(6px)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "16px",
+          direction: "rtl"
+        }}>
+          <div ref={modalBoxRef} style={{
+            backgroundColor: "var(--bgPrimary)",
+            borderRadius: "var(--radius-card)",
+            border: "1px solid var(--borderGlass)",
+            width: "100%",
+            maxWidth: "520px",
+            maxHeight: "90vh",
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-            direction: "rtl"
-          }}
-          onClick={() => !reportLoading && setReportModalOpen(false)}
-        >
-          <div
-            style={{
-              maxWidth: "520px",
-              width: "100%",
-              backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-card)",
-              boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)",
-              overflow: "hidden",
-              position: "relative",
-              animation: "metro-slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both"
-            }}
-            onClick={e => e.stopPropagation()}
-          >
+            flexDirection: "column",
+            overflow: "hidden",
+            fontFamily: "var(--font-cairo)"
+          }}>
             {/* Modal Header */}
             <div style={{
               padding: "16px 20px",
@@ -2450,7 +2524,7 @@ ${reportDetails.trim()}`;
             }}>
               <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
-                مشكلة في صفحة مترو الأنفاق
+                <span>مشكلة في خدمة مترو الأنفاق</span>
               </h5>
               <button
                 type="button"
@@ -2488,25 +2562,25 @@ ${reportDetails.trim()}`;
                     تم استلام بلاغك بنجاح!
                   </h4>
                   <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-                    شكراً لمساهمتك في تحسين وتدقيق خدمة مترو الأنفاق. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
+                    شكراً لمساهمتك في تحسين وتدقيق مسارات وبيانات مترو القاهرة. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
                   </p>
                 </div>
               ) : limitChecking ? (
                 <div style={{ textAlign: "center", padding: "40px" }}>
                   <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
+                  <span style={{ color: "var(--textMuted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
                 </div>
               ) : limitReached ? (
                 <div style={{ textAlign: "center", padding: "20px 10px" }}>
                   <div style={{
-                    width: "90px",
-                    height: "90px",
+                    width: "80px",
+                    height: "80px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     margin: "0 auto 14px"
                   }}>
-                    <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%" }} loading="lazy" />
+                    <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%", objectFit: "contain" }} loading="lazy" />
                   </div>
                   <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
@@ -2562,7 +2636,7 @@ ${reportDetails.trim()}`;
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
                       نطاق المشكلة:
                     </label>
-                    <div style={{ display: "grid", gridTemplateColumns: (selectedFrom && selectedTo) ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
+                    <div className="tabs" style={{ display: "grid", gridTemplateColumns: (selectedFrom && selectedTo) ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
                       <button
                         type="button"
                         onClick={() => {
@@ -2574,9 +2648,9 @@ ${reportDetails.trim()}`;
                         style={{
                           padding: "8px 4px",
                           borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "general" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                          background: reportTargetScope === "general" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "general" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          border: "none",
+                          background: reportTargetScope === "general" ? "var(--textPrimary)" : "transparent",
+                          color: reportTargetScope === "general" ? "var(--bgMode)" : "var(--textPrimary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -2595,9 +2669,9 @@ ${reportDetails.trim()}`;
                         style={{
                           padding: "8px 4px",
                           borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "station" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                          background: reportTargetScope === "station" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "station" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          border: "none",
+                          background: reportTargetScope === "station" ? "var(--textPrimary)" : "transparent",
+                          color: reportTargetScope === "station" ? "var(--bgMode)" : "var(--textPrimary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -2619,9 +2693,9 @@ ${reportDetails.trim()}`;
                           style={{
                             padding: "8px 4px",
                             borderRadius: "8px",
-                            border: `1px solid ${reportTargetScope === "route" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                            background: reportTargetScope === "route" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                            color: reportTargetScope === "route" ? "var(--textPrimary)" : "var(--textSecondary)",
+                            border: "none",
+                            background: reportTargetScope === "route" ? "var(--textPrimary)" : "transparent",
+                            color: reportTargetScope === "route" ? "var(--bgMode)" : "var(--textPrimary)",
                             fontWeight: "700",
                             fontSize: "0.8rem",
                             cursor: "pointer",
@@ -2640,7 +2714,7 @@ ${reportDetails.trim()}`;
                       <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
                         <span>اختر أو ابحث عن المحطة:</span>
                         {reportSelectedStation && (
-                          <span style={{ fontSize: "0.74rem", color: "var(--colorSecondary)", fontWeight: "700" }}>
+                          <span style={{ fontSize: "0.74rem", color: color, fontWeight: "700" }}>
                             تم تحديد: {reportSelectedStation} ✔
                           </span>
                         )}
@@ -2663,16 +2737,29 @@ ${reportDetails.trim()}`;
                           onBlur={() => setTimeout(() => setShowReportStationList(false), 250)}
                           style={{
                             width: "100%",
-                            padding: "10px 10px 10px 36px",
+                            padding: "10px 36px 10px 36px",
                             borderRadius: "10px",
                             background: "var(--bgSecondary)",
                             color: "var(--textPrimary)",
-                            border: reportSelectedStation ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
-                            fontFamily: "var(--font-body)",
+                            border: reportSelectedStation ? `1px solid var(--textPrimary)` : "1px solid var(--borderGlass)",
                             fontSize: "0.9rem",
                             direction: "rtl"
                           }}
                         />
+                        <div style={{
+                          position: "absolute",
+                          right: "12px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          color: "var(--textSecondary)",
+                          pointerEvents: "none",
+                          fontSize: "0.85rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
+                        }}>
+                          <i className="bx bx-search" style={{ fontSize: "1rem" }}></i>
+                        </div>
 
                         {reportStationSearchQuery && (
                           <button
@@ -2715,25 +2802,22 @@ ${reportDetails.trim()}`;
                           right: 0,
                           background: "var(--bgSecondary)",
                           border: "1px solid var(--borderGlass)",
-                          borderRadius: "10px",
+                          borderRadius: "var(--radius-card)",
                           overflow: "hidden",
                           zIndex: 1100,
-                          maxHeight: "200px",
+                          maxHeight: "220px",
                           overflowY: "auto",
-                          boxShadow: "var(--shadow-lg)",
-                          marginTop: "4px",
-                          fontFamily: "var(--font-body)"
+                          marginTop: "6px",
+                          padding: "4px"
                         }}>
                           {filteredReportStations.length === 0 ? (
-                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                            <div style={{ padding: "14px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                              <i className="bx bx-search" style={{ fontSize: "1.2rem", display: "block", marginBottom: "4px" }} />
                               لا توجد محطة مطابقة لبحثك "{reportStationSearchQuery}"
                             </div>
                           ) : (
-                            filteredReportStations.map(st => {
+                            filteredReportStations.map((st: any) => {
                               const isSelected = reportSelectedStation === st.name;
-                              const q = normalizeArabic(reportStationSearchQuery.trim());
-                              const matchedLandmark = q ? (st.landmarks || []).find(l => normalizeArabic(l).includes(q)) : null;
-
                               return (
                                 <div
                                   key={st.name}
@@ -2743,15 +2827,17 @@ ${reportDetails.trim()}`;
                                     setShowReportStationList(false);
                                   }}
                                   style={{
-                                    padding: "9px 14px",
+                                    padding: "9px 12px",
+                                    borderRadius: "8px",
                                     cursor: "pointer",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "space-between",
                                     gap: "8px",
-                                    borderBottom: "1px solid rgba(255, 255, 255, 0.03)",
                                     background: isSelected ? "rgba(59, 130, 246, 0.15)" : "transparent",
-                                    transition: "background 0.15s ease"
+                                    border: isSelected ? "1px solid rgba(59, 130, 246, 0.3)" : "1px solid transparent",
+                                    transition: "all 0.15s ease",
+                                    marginBottom: "2px"
                                   }}
                                   onMouseEnter={e => {
                                     if (!isSelected) e.currentTarget.style.background = "var(--hoverBtn)";
@@ -2760,15 +2846,16 @@ ${reportDetails.trim()}`;
                                     if (!isSelected) e.currentTarget.style.background = "transparent";
                                   }}
                                 >
-                                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)", fontFamily:"var(--font-body)" }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <i className="bx bx-map-pin" style={{ color: isSelected ? "var(--colorSecondary)" : "var(--textSecondary)", fontSize: "1rem" }} />
+                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)" }}>
                                       {st.name}
                                     </span>
                                   </div>
 
                                   <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                     <div style={{ display: "flex", gap: "3px" }}>
-                                      {st.lines.map(l => (
+                                      {st.lines.map((l: LineId) => (
                                         <span key={l} style={{ width: "7px", height: "7px", borderRadius: "50%", background: LINE_COLORS[l], display: "inline-block" }} />
                                       ))}
                                     </div>
@@ -2778,7 +2865,7 @@ ${reportDetails.trim()}`;
                                       </span>
                                     )}
                                     {isSelected && (
-                                      <span style={{ fontSize: "0.75rem", color: "var(--colorSuccess)", fontWeight: "700" }}>✔</span>
+                                      <span style={{ fontSize: "0.78rem", color: "var(--colorSuccess)", fontWeight: "700" }}>✔</span>
                                     )}
                                   </div>
                                 </div>
@@ -2801,7 +2888,7 @@ ${reportDetails.trim()}`;
                       color: "var(--textPrimary)",
                       lineHeight: "1.6"
                     }}>
-                      <div>📍 <strong>من:</strong> {selectedFrom} ← <strong>إلى:</strong> {selectedTo}</div>
+                      <div> <strong>من:</strong> {selectedFrom} ← <strong>إلى:</strong> {selectedTo}</div>
                       {result && (
                         <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
                           سعر التذكرة: {result.price} ج.م • المحطات: {result.stationCount} • الوقت: {result.estimatedTime} د
@@ -2810,35 +2897,115 @@ ${reportDetails.trim()}`;
                     </div>
                   )}
 
-                  {/* Problem Type dropdown */}
-                  <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                      نوع المشكلة:
+                  {/* Custom Problem Type Dropdown Selector */}
+                  <div style={{ position: "relative" }}>
+                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <span>نوع المشكلة:</span>
                     </label>
-                    <select
-                      value={reportProblemType}
-                      onChange={e => setReportProblemType(e.target.value)}
-                      className="input-fields"
-                      style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        borderRadius: "10px",
-                        background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
-                        fontFamily: "var(--font-sub)",
-                        fontSize: "0.9rem",
-                        cursor: "pointer"
-                      }}
-                    >
-                      <option value="route_error" style={{ background: "var(--bgSecondary)" }}> خطأ في حساب مسار الرحلة أو زمن الوصول</option>
-                      <option value="price" style={{ background: "var(--bgSecondary)" }}> سعر التذكرة غير صحيح أو عدد المحطات غير دقيق</option>
-                      <option value="transfer" style={{ background: "var(--bgSecondary)" }}> خطأ في محطة التبديل أو تعليمات التحويل بين الخطوط</option>
-                      <option value="station_info" style={{ background: "var(--bgSecondary)" }}> اسم المحطة أو المعالم القريبة غير دقيقة</option>
-                      <option value="closed_station" style={{ background: "var(--bgSecondary)" }}> محطة مغلقة أو تحت الإنشاء أو تغيرت حالتها</option>
-                      <option value="app_bug" style={{ background: "var(--bgSecondary)" }}> مشكلة تقنية أو زر لا يستجيب في الصفحة</option>
-                      <option value="other" style={{ background: "var(--bgSecondary)" }}> ملاحظة أو مشكلة أخرى</option>
-                    </select>
+
+                    {/* Dropdown Trigger Box */}
+                    {(() => {
+                      const curOpt = METRO_PROBLEM_OPTIONS.find(o => o.id === reportProblemType) || METRO_PROBLEM_OPTIONS[0];
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => setShowProblemTypeDropdown(prev => !prev)}
+                          style={{
+                            width: "100%",
+                            padding: "9px 12px",
+                            borderRadius: "var(--radius-card)",
+                            background: "var(--bgSecondary)",
+                            color: "var(--textPrimary)",
+                            border: showProblemTypeDropdown ? `1px solid var(--textPrimary)` : "1px solid var(--borderGlass)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            cursor: "pointer",
+                            transition: "all 0.15s ease",
+                            textAlign: "right",
+                            fontFamily: "var(--font-body)"
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                            <div style={{ minWidth: 0, textAlign: "right" }}>
+                              <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--textPrimary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {curOpt.title}
+                              </div>
+                              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {curOpt.desc}
+                              </div>
+                            </div>
+                          </div>
+
+                          <i className={showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"} style={{ fontSize: "1.25rem", color: "var(--textSecondary)", marginRight: "8px", flexShrink: 0 }} />
+                        </button>
+                      );
+                    })()}
+
+                    {/* Problem Types Floating Popup Menu */}
+                    {showProblemTypeDropdown && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          right: 0,
+                          background: "var(--bgSecondary)",
+                          border: "1px solid var(--borderGlass)",
+                          borderRadius: "var(--radius-card)",
+                          zIndex: 1200,
+                          maxHeight: "360px",
+                          overflowY: "auto",
+                          marginTop: "6px",
+                          padding: "6px",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "4px"
+                        }}
+                      >
+                        {METRO_PROBLEM_OPTIONS.map((opt) => {
+                          const isSelected = opt.id === reportProblemType;
+                          return (
+                            <div
+                              key={opt.id}
+                              onClick={() => {
+                                setReportProblemType(opt.id);
+                                setShowProblemTypeDropdown(false);
+                              }}
+                              style={{
+                                padding: "8px 10px",
+                                borderRadius: "var(--radius-card)",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "10px",
+                                background: isSelected ? "var(--bgPrimary)" : "transparent",
+                                border: isSelected ? `1px solid var(--borderPrimary)` : "1px solid transparent",
+                                transition: "all 0.15s ease"
+                              }}
+                              onMouseEnter={(e) => {
+                                if (!isSelected) e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!isSelected) e.currentTarget.style.background = "transparent";
+                              }}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                                <div style={{ minWidth: 0, textAlign: "right" }}>
+                                  <div style={{ fontSize: "0.84rem", fontWeight: isSelected ? "800" : "600", color: "var(--textPrimary)" }}>
+                                    {opt.title}
+                                  </div>
+                                  <div style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>
+                                    {opt.desc}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   {/* Details Textarea */}
@@ -2860,7 +3027,7 @@ ${reportDetails.trim()}`;
                         background: "var(--bgSecondary)",
                         color: "var(--textPrimary)",
                         border: "1px solid var(--borderGlass)",
-                        fontFamily: "var(--font-cairo)",
+                        fontFamily: "var(--font-body)",
                         fontSize: "0.9rem",
                         resize: "vertical"
                       }}
@@ -2870,9 +3037,9 @@ ${reportDetails.trim()}`;
                   {/* Enhanced Image File Upload */}
                   <div>
                     <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                      <span>صورة توضيحية للمشكلة (اختياري):</span>
-                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal" }}>
-                        JPG, PNG, WEBP (الحد الأقصى 5MB)
+                      <span>صورة توضيحية (اختياري):</span>
+                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
+                        JPG, PNG, WEBP (Max~5MB)
                       </span>
                     </label>
 
@@ -2891,7 +3058,7 @@ ${reportDetails.trim()}`;
                         }}
                         style={{
                           position: "relative",
-                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "1.5px dashed var(--borderGlass)",
+                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderDashed)",
                           borderRadius: "12px",
                           background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
                           padding: "20px 16px",
@@ -2937,7 +3104,7 @@ ${reportDetails.trim()}`;
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          color: "var(--colorSecondary)",
+                          color: color || "var(--colorSecondary)",
                           fontSize: "1.4rem"
                         }}>
                           <i className="bx bx-cloud-upload"></i>
@@ -2948,7 +3115,7 @@ ${reportDetails.trim()}`;
                             اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                           </div>
                           <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
-                            لقطة شاشة للخطأ، أو صورة للمحطة لتوضيح المشكلة بدقة
+                            أرسل صورة الخطأ إن وُجد لتوضيح المشكلة بدقة
                           </div>
                         </div>
                       </div>
@@ -2963,7 +3130,6 @@ ${reportDetails.trim()}`;
                         alignItems: "center",
                         gap: "12px",
                       }}>
-                        {/* Thumbnail */}
                         <div style={{
                           width: "64px",
                           height: "64px",
@@ -2975,7 +3141,6 @@ ${reportDetails.trim()}`;
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          position: "relative"
                         }}>
                           <img
                             src={reportImagePreview}
@@ -2988,7 +3153,6 @@ ${reportDetails.trim()}`;
                           />
                         </div>
 
-                        {/* File details */}
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{
                             fontSize: "0.86rem",
@@ -3008,41 +3172,10 @@ ${reportDetails.trim()}`;
                                   : `${(reportImageFile.size / (1024 * 1024)).toFixed(1)} MB`
                                 : ""}
                             </span>
-                            <span>•</span>
-                            <span style={{ color: "var(--colorSuccess)", fontWeight: "600" }}>جاهزة للإرسال ✔</span>
                           </div>
                         </div>
 
-                        {/* Actions */}
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                          {/* Change button */}
-                          <label style={{
-                            cursor: "pointer",
-                            padding: "6px 10px",
-                            borderRadius: "8px",
-                            background: "rgba(255, 255, 255, 0.05)",
-                            border: "1px solid var(--borderGlass)",
-                            color: "var(--textPrimary)",
-                            fontSize: "0.75rem",
-                            fontWeight: "600",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px"
-                          }}>
-                            <i className="bx bx-sync"></i>
-                            <span>تغيير</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleReportImageSelect(file);
-                              }}
-                              style={{ display: "none" }}
-                            />
-                          </label>
-
-                          {/* Delete button */}
                           <button
                             type="button"
                             onClick={() => handleReportImageSelect(null)}
@@ -3104,7 +3237,7 @@ ${reportDetails.trim()}`;
                       {reportLoading ? (
                         <>
                           <div style={{ width: "16px", height: "16px", border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
-                          <span>{reportUploading ? "جاري رفع الصورة..." : "جاري الإرسال..."}</span>
+                          <span>{reportUploading ? "جاري الرفع ..." : "جاري الإرسال..."}</span>
                         </>
                       ) : (
                         <>
@@ -3136,6 +3269,6 @@ ${reportDetails.trim()}`;
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
