@@ -381,8 +381,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 15px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius-xss);
   overflow: hidden;
   margin-bottom: 32px;
   transition: border-color 0.3s ease;
@@ -464,11 +463,9 @@
   text-align: right;
 }
 
-.adminThead {
-  background: rgba(30, 41, 59, 0.6);
-}
-
 .adminTh {
+  background: var(--textPrimary);
+  color: var(--bgPrimary);
   padding: 16px 20px;
   font-weight: 800;
   font-size: 0.82rem;
@@ -2555,14 +2552,7 @@
 }
 
 /* ── Table Light Mode Overrides for High Contrast ── */
-:global(.light) .adminThead {
-  background: #f4edeb;
-  color: oklch(55.17% 0.0200 36.66);
-}
-
 :global(.light) .adminTh {
-  background: #f4edeb;
-  color: oklch(55.17% 0.0200 36.66);
   border-bottom-color: #ebdcd2;
 }
 

@@ -2232,13 +2232,12 @@ html.light .suggestion-icon {
   margin-bottom: 24px
 }
 
-.taps {
+.tabs {
+  display: grid;
   background-color: var(--bgSecondary);
   border: 1px solid var(--borderGlass);
   border-radius: var(--radius-xs);
   padding: 4px 10px;
-  display: flex;
-  flex-direction: column;
   gap: 20px;
   margin-bottom: 24px
 }

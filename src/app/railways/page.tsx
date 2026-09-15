@@ -15,8 +15,9 @@ interface TrainClass {
 }
 
 interface RailwayStop {
+  id?: string;
   name: string;
-  status: "تشغيل فعلي" | "تحت الإنشاء";
+  status: "تعمل" | "تشغيل فعلي" | "تحت الإنشاء";
 }
 
 interface RailwayRoute {
@@ -411,12 +412,12 @@ export default function RailwaysPage() {
         if (stationsErr) throw stationsErr;
 
         const combined: RailwayRoute[] = (routesData || []).map((route: any) => {
-          const stops = (stationsData || [])
+          const stops: RailwayStop[] = (stationsData || [])
             .filter((s: any) => s.route_id === route.id)
             .map((s: any) => ({
               id: s.id,
               name: s.name,
-              status: s.status || "تشغيل فعلي"
+              status: (s.status === "تحت الإنشاء" ? "تحت الإنشاء" : "تعمل") as "تعمل" | "تحت الإنشاء"
             }));
 
           return {
@@ -702,7 +703,7 @@ ${reportDetails.trim()}`;
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
-
+// ========================= Loading screen
   if (authLoading) {
     return (
       <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", direction: "rtl" }}>
@@ -715,7 +716,7 @@ ${reportDetails.trim()}`;
           animation: "spin 1s linear infinite",
           marginBottom: "24px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-display)" }}>جاري التحقق من التفاصيل ...</p>
+        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-sub)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -724,40 +725,18 @@ ${reportDetails.trim()}`;
     );
   }
 
-  // Paywall / Lock screen matching Metro & Directory premium view style
+  // ========================= Lock screen
   if (!user || !hasAccess) {
     return (
-      <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)" }}>
-        {/* Banner matching Metro */}
+      <div className="main-container">
+        {/* Banner */}
         <div ref={paywallRef} style={{
-          backgroundColor: "var(--bgPrimary)",
           padding: "24px 20px 24px",
           textAlign: "center",
           position: "relative",
           borderBottom: "1px solid var(--borderGlass)",
           direction: "rtl"
         }}>
-          {/* Back Button */}
-          <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-            <Link
-              href="/"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                background: "var(--bgGlass-card)",
-                border: "1px solid var(--borderGlass)",
-                color: "var(--textPrimary)",
-                textDecoration: "none"
-              }}
-            >
-              <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-            </Link>
-          </div>
-
           {/* Cover Image Banner */}
           <div>
             <h1 style={{
@@ -781,13 +760,11 @@ ${reportDetails.trim()}`;
         {/* Lock Panel centered container */}
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>
           <div ref={paywallCardRef} style={{
-            backgroundColor: "var(--bgPrimary)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "15px",
+            borderRadius: "var(--radius-card)",
             padding: "35px 25px",
             textAlign: "center",
             marginTop: "32px",
-            boxShadow: "var(--shadow-card)",
             position: "relative",
             overflow: "hidden"
           }}>
@@ -795,11 +772,11 @@ ${reportDetails.trim()}`;
             <div style={{
               marginBottom: "24px",
             }}>
-              <img src="/images/icons3d/lockPage.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
+              <img src="/images/icons3d/CairoSilver.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", objectFit: "contain" }} />
             </div>
 
             <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
-              دليل سكك حديد مصر يتطلب أشتراك في الباقة فضية
+              دليل سكك حديد مصر يتطلب أشتراك في الباقة الفضية
             </h2>
 
             <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
@@ -810,15 +787,14 @@ ${reportDetails.trim()}`;
             <div style={{
               background: "rgba(128, 128, 128, 0.04)",
               padding: "18px 20px",
-              borderRadius: "12px",
+              borderRadius: "var(--radius-card)",
               border: "1px solid var(--borderGlass)",
               textAlign: "right",
               margin: "0 auto 28px",
               maxWidth: "420px"
             }}>
               <div style={{ fontWeight: "800", color: "var(--textPrimary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <i className="bx bxs-award" style={{ color: "#fbbf24", fontSize: "1.1rem" }}></i>
-                <span>ميزات الباقة الفضية :</span>
+                <span>ما الذي يميز الباقة الفضية ؟</span>
               </div>
               <ul style={{
                 paddingRight: "16px",
@@ -831,10 +807,10 @@ ${reportDetails.trim()}`;
                 gap: "6px",
                 fontFamily: "var(--font-body)"
               }}>
-                <li>✨ مواعيد وجداول تحرك القطارات (تالجو، VIP، إسباني ومكيف)</li>
-                <li>✨ أسعار التذاكر التفصيلية لكافة درجات السفر</li>
-                <li>✨ نصائح الحجز ومسارات التوقف والمحطات البينية</li>
-                <li>✨ تشمل أيضاً خريطة المونوريل وخطوط LRT ومحرك البحث</li>
+                <li>✨ خطوط ومحطات القطارات</li>
+                <li>✨ نقاط التبديل بين القطارات</li>
+                <li>✨ البحث عن أنواع القطارات</li>
+                <li>✨ كيفية الحجز ونصائح السفر</li>
               </ul>
             </div>
 
@@ -891,23 +867,7 @@ ${reportDetails.trim()}`;
 
   const activeIndex = activeRoutesList.findIndex(r => r.id === selectedRouteId);
   const color = getRouteColor(selectedRouteId, activeIndex >= 0 ? activeIndex : 0);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ================== Main Container ==================
+// ================== Main Container 
   return (
     //================================== START MAIN CONTAINER =================================
     <div className="main-container">
@@ -1505,7 +1465,7 @@ ${reportDetails.trim()}`;
                     <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
                       نطاق المشكلة:
                     </label>
-                    <div className="taps" style={{ display: "grid", gridTemplateColumns: currentRoute ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
+                    <div className="tabs" style={{ display: "grid", gridTemplateColumns: currentRoute ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
                       <button
                         type="button"
                         onClick={() => {

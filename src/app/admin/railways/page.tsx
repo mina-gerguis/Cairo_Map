@@ -18,7 +18,7 @@ interface TrainClass {
 interface RailwayStop {
   id?: string;
   name: string;
-  status: "تشغيل فعلي" | "تحت الإنشاء";
+  status: "تعمل" | "تشغيل فعلي" | "تحت الإنشاء";
 }
 
 interface RailwayRoute {
@@ -40,12 +40,12 @@ const DEFAULT_ROUTES: RailwayRoute[] = [
     to: "الإسكندرية (محطة سيدي جابر / مصر)",
     duration: "ساعتين إلى 3 ساعات ونصف (حسب نوع القطار)",
     stops: [
-      { name: "القاهرة (رمسيس)", status: "تشغيل فعلي" },
-      { name: "بنها", status: "تشغيل فعلي" },
-      { name: "طنطا", status: "تشغيل فعلي" },
-      { name: "دمنهور", status: "تشغيل فعلي" },
-      { name: "سيدي جابر", status: "تشغيل فعلي" },
-      { name: "الإسكندرية", status: "تشغيل فعلي" }
+      { name: "القاهرة (رمسيس)", status: "تعمل" },
+      { name: "بنها", status: "تعمل" },
+      { name: "طنطا", status: "تعمل" },
+      { name: "دمنهور", status: "تعمل" },
+      { name: "سيدي جابر", status: "تعمل" },
+      { name: "الإسكندرية", status: "تعمل" }
     ],
     classes: [
       { name: "قطار تالجو (Talgo) الفاخر", price: "درجة أولى: 225 ج.م | درجة ثانية: 150 ج.م", features: "شاشات عرض، واي فاي، عربة بوفيه فاخرة، تكييف متطور، هدوء تام وسرعة عالية." },
@@ -62,17 +62,17 @@ const DEFAULT_ROUTES: RailwayRoute[] = [
     to: "أسوان",
     duration: "10 إلى 13 ساعة",
     stops: [
-      { name: "القاهرة (رمسيس)", status: "تشغيل فعلي" },
-      { name: "الجيزة", status: "تشغيل فعلي" },
-      { name: "بني سويف", status: "تشغيل فعلي" },
-      { name: "المنيا", status: "تشغيل فعلي" },
-      { name: "أسيوط", status: "تشغيل فعلي" },
-      { name: "سوهاج", status: "تشغيل فعلي" },
-      { name: "قنا", status: "تشغيل فعلي" },
-      { name: "الأقصر", status: "تشغيل فعلي" },
-      { name: "إدفو", status: "تشغيل فعلي" },
-      { name: "كوم أمبو", status: "تشغيل فعلي" },
-      { name: "أسوان", status: "تشغيل فعلي" }
+      { name: "القاهرة (رمسيس)", status: "تعمل" },
+      { name: "الجيزة", status: "تعمل" },
+      { name: "بني سويف", status: "تعمل" },
+      { name: "المنيا", status: "تعمل" },
+      { name: "أسيوط", status: "تعمل" },
+      { name: "سوهاج", status: "تعمل" },
+      { name: "قنا", status: "تعمل" },
+      { name: "الأقصر", status: "تعمل" },
+      { name: "إدفو", status: "تعمل" },
+      { name: "كوم أمبو", status: "تعمل" },
+      { name: "أسوان", status: "تعمل" }
     ],
     classes: [
       { name: "قطارات النوم الفاخرة (Wagon-Lits)", price: "كابينة فردية: 1200+ ج.م | كابينة مزدوجة: 850 ج.م (للمصريين)", features: "وجبة عشاء وإفطار مجانية، سرير مريح في كابينة مغلقة." },
@@ -117,10 +117,10 @@ function AdminRailwaysInner() {
   });
 
   const [showStationModal, setShowStationModal] = useState(false);
-  const [editingStation, setEditingStation] = useState<{ id?: string; index: number; name: string; status: "تشغيل فعلي" | "تحت الإنشاء" } | null>(null);
+  const [editingStation, setEditingStation] = useState<{ id?: string; index: number; name: string; status: "تعمل" | "تشغيل فعلي" | "تحت الإنشاء" } | null>(null);
   const [stationForm, setStationForm] = useState({
     name: "",
-    status: "تشغيل فعلي" as "تشغيل فعلي" | "تحت الإنشاء"
+    status: "تعمل" as "تعمل" | "تشغيل فعلي" | "تحت الإنشاء"
   });
 
   const [success, setSuccess] = useState("");
@@ -188,12 +188,12 @@ function AdminRailwaysInner() {
       if (stationsErr) throw stationsErr;
 
       const combined: RailwayRoute[] = (routesData || []).map((route: any) => {
-        const stops = (stationsData || [])
+        const stops: RailwayStop[] = (stationsData || [])
           .filter((s: any) => s.route_id === route.id)
           .map((s: any) => ({
             id: s.id,
             name: s.name,
-            status: s.status || "تشغيل فعلي"
+            status: (s.status === "تحت الإنشاء" ? "تحت الإنشاء" : "تعمل") as "تعمل" | "تحت الإنشاء"
           }));
 
         return {
@@ -234,9 +234,9 @@ function AdminRailwaysInner() {
             if (Array.isArray(route.stops)) {
               route.stops = route.stops.map((stop: any) => {
                 if (typeof stop === "string") {
-                  return { name: stop, status: "تشغيل فعلي" };
+                  return { name: stop, status: "تعمل" as const };
                 }
-                return { name: stop.name, status: stop.status || "تشغيل فعلي" };
+                return { name: stop.name, status: (stop.status === "تحت الإنشاء" ? "تحت الإنشاء" : "تعمل") as "تعمل" | "تحت الإنشاء" };
               });
             } else {
               route.stops = [];
@@ -425,15 +425,15 @@ function AdminRailwaysInner() {
     setError("");
     setSuccess("");
     setEditingStation(null);
-    setStationForm({ name: "", status: "تشغيل فعلي" });
+    setStationForm({ name: "", status: "تعمل" });
     setShowStationModal(true);
   };
 
   const handleOpenEditStation = (index: number, stop: RailwayStop) => {
     setError("");
     setSuccess("");
-    setEditingStation({ id: stop.id, index, name: stop.name, status: stop.status });
-    setStationForm({ name: stop.name, status: stop.status });
+    setEditingStation({ id: stop.id, index, name: stop.name, status: stop.status === "تحت الإنشاء" ? "تحت الإنشاء" : "تعمل" });
+    setStationForm({ name: stop.name, status: stop.status === "تحت الإنشاء" ? "تحت الإنشاء" : "تعمل" });
     setShowStationModal(true);
   };
 
@@ -638,73 +638,40 @@ function AdminRailwaysInner() {
             <i className="bx bx-warning" style={{ fontSize: "1.3rem" }} />
             <span>يعمل في وضع الحفظ المحلي (LocalStorage) لبيانات سكك الحديد.</span>
           </div>
-          <p style={{ margin: "4px 0", fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-            لم يتم العثور على جداول السكك الحديدية في قاعدة بيانات Supabase. لتفعيل الحفظ الدائم لجميع المستخدمين، يرجى إنشاء الجداول عن طريق تشغيل كود الـ SQL التالي في محرِّر الاستعلامات الخاص بـ Supabase (SQL Editor):
-          </p>
-          <pre style={{
-            background: "rgba(0, 0, 0, 0.3)",
-            padding: "14px",
-            borderRadius: "8px",
-            fontSize: "0.78rem",
-            color: "#e2e8f0",
-            overflowX: "auto",
-            direction: "ltr",
-            textAlign: "left"
-          }}>
-            {`CREATE TABLE IF NOT EXISTS public.railway_routes (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    from_location TEXT NOT NULL,
-    to_location TEXT NOT NULL,
-    duration TEXT NOT NULL,
-    tips TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS public.railway_stations (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    route_id TEXT NOT NULL REFERENCES public.railway_routes(id) ON DELETE CASCADE,
-    name TEXT NOT NULL,
-    station_order INTEGER NOT NULL DEFAULT 0,
-    status TEXT NOT NULL DEFAULT 'تشغيل فعلي',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);`}
-          </pre>
         </div>
       )}
 
       {/* Tabs */}
-      <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "10px", marginBottom: "24px" }}>
+      <div className="tabs" style={{ gap: "8px", marginBottom: "24px", gridTemplateColumns: "repeat(2, 1fr)" }}>
         <button
           onClick={() => { setActiveSection("lines"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
             padding: "8px 16px",
-            background: activeSection === "lines" ? "rgba(99, 102, 241, 0.15)" : "transparent",
-            color: activeSection === "lines" ? "#818cf8" : "var(--textSecondary)",
-            border: activeSection === "lines" ? "1px solid #818cf8" : "1px solid transparent",
+            background: activeSection === "lines" ? "var(--textPrimary)" : "transparent",
+            color: activeSection === "lines" ? "var(--bgPrimary)" : "var(--textSecondary)",
+            border: activeSection === "lines" ? "1px solid var(--bgPrimary)" : "1px solid transparent",
             borderRadius: "8px",
             fontWeight: "bold",
             cursor: "pointer"
           }}
         >
-          🚊 إدارة خطوط القطار
+          إدارة خطوط القطار
         </button>
         <button
           onClick={() => { setActiveSection("stations"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
             padding: "8px 16px",
-            background: activeSection === "stations" ? "rgba(16, 185, 129, 0.15)" : "transparent",
-            color: activeSection === "stations" ? "#34d399" : "var(--textSecondary)",
-            border: activeSection === "stations" ? "1px solid #34d399" : "1px solid transparent",
+            background: activeSection === "stations" ? "var(--textPrimary)" : "transparent",
+            color: activeSection === "stations" ? "var(--bgPrimary)" : "var(--textSecondary)",
+            border: activeSection === "stations" ? "1px solid var(--bgPrimary)" : "1px solid transparent",
             borderRadius: "8px",
             fontWeight: "bold",
             cursor: "pointer"
           }}
         >
-          🚉 إدارة محطات التوقف والحالة
+          إدارة محطات التوقف
         </button>
       </div>
 
@@ -725,6 +692,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
       {/* ==================== LINE MANAGEMENT SECTION ==================== */}
       {activeSection === "lines" && (
         <div>
+          {/* Search And Add New line */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
             <div style={{ position: "relative", width: "100%", maxWidth: "360px" }}>
               <i className="bx bx-search" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--textSecondary)", fontSize: "1.1rem" }} />
@@ -737,24 +705,26 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                 style={{ width: "100%", paddingRight: "36px", height: "40px" }}
               />
             </div>
-            <button onClick={handleOpenAddLine} className="btn" style={{ background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)", color: "#fff", padding: "8px 16px", borderRadius: "8px", fontWeight: "bold", width: "70%" }}>
+            <button onClick={handleOpenAddLine} className="btn btn-primary">
               <i className="bx bx-plus-medical"></i> إضافة خط قطار جديد
             </button>
           </div>
-
+          {/* Lines Data Table */}
           <div className={styles.tableCard} style={{ overflowX: "auto" }}>
             <table className={styles.adminTable} style={{ width: "100%" }}>
+              {/* Thead */}
               <thead className={styles.adminThead}>
                 <tr className={styles.adminTr}>
                   <th className={styles.adminTh}>كود الخط (ID)</th>
                   <th className={styles.adminTh}>اسم الخط</th>
-                  <th className={styles.adminTh}>محطة القيام</th>
-                  <th className={styles.adminTh}>محطة الوصول</th>
+                  <th className={styles.adminTh}>بداية الخط</th>
+                  <th className={styles.adminTh}>نهاية الخط</th>
                   <th className={styles.adminTh}>المدة الزمنية</th>
-                  <th className={styles.adminTh}>المحطات</th>
+                  <th className={styles.adminTh}>عدد المحطات</th>
                   <th className={styles.adminTh} style={{ textAlign: "center", width: "120px" }}>خيارات</th>
                 </tr>
               </thead>
+              {/* Tbody */}
               <tbody>
                 {filteredLines.map((line) => (
                   <tr key={line.id} className={styles.adminTr}>
@@ -765,32 +735,23 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                     <td className={styles.adminTd}>{line.duration}</td>
                     <td className={styles.adminTd}>{line.stops.length} محطات</td>
                     <td className={styles.adminTd} style={{ textAlign: "center" }}>
+                      {/* Buttons */}
                       <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                        {/* Edit Button */}
                         <button
                           type="button"
                           onClick={() => handleOpenEditLine(line)}
-                          className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                          className="actionBtn actionBtnEdit"
                           title="تعديل"
-                          style={{
-                            padding: "5px 5px",
-                            borderRadius: "50%",
-                            background: "var(--bgSecondary)",
-                          }}
                         >
                           <i className="bx bx-edit-alt" />
                         </button>
+                        {/* Delete Button */}
                         <button
                           type="button"
                           onClick={() => handleDeleteLine(line)}
-                          className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                          className="actionBtn actionBtnDelete"
                           title="حذف"
-                          style={{
-                            padding: "5px 5px",
-                            borderRadius: "50%",
-                            background: "#ff000025",
-                            color: "#ff0000f5",
-                            border: "#ff000025",
-                          }}
                         >
                           <i className="bx bx-trash" />
                         </button>
@@ -814,8 +775,16 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
       {/* ==================== STATION MANAGEMENT SECTION ==================== */}
       {activeSection === "stations" && (
         <div>
+          {/* Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+            <h1>محطات القطار</h1>
+            <button onClick={handleOpenAddStation} className="btn btn-primary">
+              <i className="bx bx-plus-medical"></i> إضافة محطة جديدة
+            </button>
+          </div>
+          {/* Dropdown To Choose Route */}
           <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "16px", padding: "20px", marginBottom: "24px" }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold", color: "var(--textSecondary)" }}>اختر خط سكة الحديد لإدارته:</label>
+            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold", color: "var(--textSecondary)", fontFamily: "var(--font-sub)" }}>اختر خط سكة الحديد لإدارته:</label>
             <select
               value={selectedRouteId}
               onChange={e => { setSelectedRouteId(e.target.value); setError(""); setSuccess(""); }}
@@ -832,11 +801,8 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                 <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)", width: "50%" }}>
-                  محطات التوقف لخط: <span style={{ color: "#34d399" }}>{activeRoute.name}</span>
+                  محطات التوقف لخط: <span style={{ color: "var(--colorPrimary)" }}>{activeRoute.name}</span>
                 </h3>
-                <button onClick={handleOpenAddStation} className="btn" style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "#fff", padding: "8px 16px", borderRadius: "8px", fontWeight: "bold" }}>
-                  <i className="bx bx-plus-medical"></i> إضافة محطة جديدة للخط
-                </button>
               </div>
 
               <div className={styles.tableCard} style={{ overflowX: "auto" }}>
@@ -870,7 +836,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                               color: isUnderConstruction ? "#ef4444" : "#10b981",
                               border: isUnderConstruction ? "1px solid rgba(239, 68, 68, 0.2)" : "1px solid rgba(16, 185, 129, 0.2)",
                             }}>
-                              {stop.status || "تشغيل فعلي"}
+                              {stop.status === "تحت الإنشاء" ? "تحت الإنشاء" : "تعمل"}
                             </span>
                           </td>
                           <td className={styles.adminTd} style={{ textAlign: "center" }}>
@@ -882,6 +848,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                                 style={{
                                   padding: "4px 8px",
                                   background: "var(--bgSecondary)",
+                                  color: "var(--textPrimary)",
                                   fontSize: "0.8rem",
                                   opacity: isFirst ? 0.3 : 1,
                                   cursor: isFirst ? "not-allowed" : "pointer"
@@ -895,6 +862,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                                 className="btn"
                                 style={{
                                   background: "var(--bgSecondary)",
+                                  color: "var(--textPrimary)",
                                   padding: "4px 8px",
                                   fontSize: "0.8rem",
                                   opacity: isLast ? 0.3 : 1,
@@ -910,28 +878,16 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                               <button
                                 type="button"
                                 onClick={() => handleOpenEditStation(index, stop)}
-                                className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                                className="actionBtn actionBtnEdit"
                                 title="تعديل"
-                                style={{
-                                  padding: "5px 5px",
-                                  borderRadius: "50%",
-                                  background: "var(--bgSecondary)",
-                                }}
                               >
                                 <i className="bx bx-edit-alt" />
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleDeleteStation(index)}
-                                className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                                className="actionBtn actionBtnDelete"
                                 title="حذف"
-                                style={{
-                                  padding: "5px 5px",
-                                  borderRadius: "50%",
-                                  background: "#ff000025",
-                                  color: "#ff0000f5",
-                                  border: "#ff000025",
-                                }}
                               >
                                 <i className="bx bx-trash" />
                               </button>
@@ -973,19 +929,19 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
           padding: "20px"
         }}>
           <div style={{
-            background: "#0b0f19",
+            background: "var(--bgGlass)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "20px",
+            borderRadius: "var(--radius-card)",
             width: "100%",
             maxWidth: "520px",
             boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
             overflow: "hidden"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", borderBottom: "1px solid var(--borderGlass)" }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900", color: "#fff" }}>
+              <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingLine ? "تعديل خط سكة الحديد" : "إضافة خط سكة حديد جديد"}
-              </h3>
-              <button onClick={() => setShowLineModal(false)} style={{ background: "transparent", border: "none", color: "#94a3b8", fontSize: "1.5rem", cursor: "pointer" }}>
+              </h2>
+              <button onClick={() => setShowLineModal(false)} className="closeBtn">
                 <i className="bx bx-x" />
               </button>
             </div>
@@ -996,6 +952,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                 <input
                   type="text"
                   required
+                  placeholder="مثال: cairo-suez"
                   disabled={!!editingLine}
                   value={lineForm.id}
                   onChange={e => setLineForm({ ...lineForm, id: e.target.value })}
@@ -1023,6 +980,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                   <input
                     type="text"
                     required
+                    placeholder="مثال: محطة السكة الحديد"
                     value={lineForm.from}
                     onChange={e => setLineForm({ ...lineForm, from: e.target.value })}
                     className="input-fields"
@@ -1034,6 +992,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                   <input
                     type="text"
                     required
+                    placeholder="مثال: محطة السكة الحديد"
                     value={lineForm.to}
                     onChange={e => setLineForm({ ...lineForm, to: e.target.value })}
                     className="input-fields"
@@ -1059,6 +1018,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                 <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>نصيحة الموقع لمستخدمي الخط</label>
                 <textarea
                   value={lineForm.tips}
+                  placeholder="مثال: يفضل شراء التذاكر مسبقًا"
                   onChange={e => setLineForm({ ...lineForm, tips: e.target.value })}
                   className="input-fields"
                   style={{ width: "100%", minHeight: "80px", resize: "vertical", padding: "10px" }}
@@ -1066,8 +1026,8 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowLineModal(false)} className="btn" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)", color: "var(--color-white-100)" }}>إلغاء</button>
-                <button type="submit" className="btn" style={{ padding: "8px 20px", background: "#6366f1", color: "#fff" }}>حفظ الخط</button>
+                <button type="button" onClick={() => setShowLineModal(false)} className="btn btn-cancle">إلغاء</button>
+                <button type="submit" className="btn btn-primary">حفظ الخط</button>
               </div>
             </form>
           </div>
@@ -1092,19 +1052,19 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
           padding: "20px"
         }}>
           <div style={{
-            background: "#0b0f19",
+            background: "var(--bgGlass)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "20px",
+            borderRadius: "var(--radius-card)",
             width: "100%",
             maxWidth: "460px",
             boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
             overflow: "hidden"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", borderBottom: "1px solid var(--borderGlass)" }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900", color: "#fff" }}>
+              <h2 className="color-white-100" style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingStation ? "تعديل محطة توقف" : "إضافة محطة جديدة للخط"}
-              </h3>
-              <button onClick={() => setShowStationModal(false)} style={{ background: "transparent", border: "none", color: "#94a3b8", fontSize: "1.5rem", cursor: "pointer" }}>
+              </h2>
+              <button onClick={() => setShowStationModal(false)} className="closeBtn">
                 <i className="bx bx-x" />
               </button>
             </div>
@@ -1115,6 +1075,7 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
                 <input
                   type="text"
                   required
+                  placeholder="مثال: محطة السكة الحديد"
                   value={stationForm.name}
                   onChange={e => setStationForm({ ...stationForm, name: e.target.value })}
                   className="input-fields"
@@ -1125,19 +1086,19 @@ CREATE TABLE IF NOT EXISTS public.railway_stations (
               <div>
                 <label className="help-label color-white-100" style={{ display: "block", marginBottom: "6px" }}>حالة المحطة والتشغيل *</label>
                 <select
-                  value={stationForm.status}
-                  onChange={e => setStationForm({ ...stationForm, status: e.target.value as "تشغيل فعلي" | "تحت الإنشاء" })}
+                  value={stationForm.status === "تحت الإنشاء" ? "تحت الإنشاء" : "تعمل"}
+                  onChange={e => setStationForm({ ...stationForm, status: e.target.value as "تعمل" | "تحت الإنشاء" })}
                   className="input-fields"
                   style={{ width: "100%" }}
                 >
-                  <option value="تشغيل فعلي">تشغيل فعلي (تعمل)</option>
-                  <option value="تحت الإنشاء">تحت الإنشاء 🚧</option>
+                  <option value="تعمل">تعمل</option>
+                  <option value="تحت الإنشاء">تحت الإنشاء</option>
                 </select>
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowStationModal(false)} className="btn" style={{ padding: "8px 16px", background: "rgba(255,255,255,0.05)", color: "var(--color-white-100)" }}>إلغاء</button>
-                <button type="submit" className="btn" style={{ padding: "8px 20px", background: "#10b981", color: "#fff" }}>حفظ المحطة</button>
+                <button type="button" onClick={() => setShowStationModal(false)} className="btn btn-cancle" >إلغاء</button>
+                <button type="submit" className="btn btn-primary" >حفظ المحطة</button>
               </div>
             </form>
           </div>
