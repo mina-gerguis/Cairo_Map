@@ -22,7 +22,7 @@ export function AdminDirectionsHeader({
             <i className="bx bx-compass" />
           </div>
           <div>
-            <h1 className={styles.pageTitle}>إدارة خطوط ومسارات المواصلات (ازاي اروح)</h1>
+            <h1 className={styles.pageTitle}>إدارة خطوط ومسارات المواصلات</h1>
             <p className={styles.pageSubtitle}>
               إضافة وتعديل خطوط مواصلات الانتقال بين المدن، المراحل، والأجرة والخطوات التفصيلية.
             </p>
