@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import { QuickRouteItem } from "../types";
+import styles from "../page.module.css";
 
 interface PopularRoutesSliderProps {
   sliderRef: RefObject<HTMLDivElement | null>;
@@ -10,70 +11,88 @@ interface PopularRoutesSliderProps {
 export default function PopularRoutesSlider({
   sliderRef,
   routes,
-  onSelectRoute
+  onSelectRoute,
 }: PopularRoutesSliderProps) {
   if (!routes || routes.length === 0) return null;
 
   return (
     <div
       ref={sliderRef}
-      className="hide-scrollbar"
-      style={{
-        display: "flex",
-        gap: "12px",
-        overflowX: "auto",
-        padding: "4px 4px 16px 4px",
-        marginBottom: "16px",
-        WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        scrollSnapType: "x mandatory",
-      }}
+      className={`${styles.popularSlider} hide-scrollbar`}
     >
       {routes.map((item, idx) => {
         const isTop = idx === 0;
-        const isSecond = idx === 1;
 
         return (
           <button
             key={`${item.from}-${item.to}-${idx}`}
             type="button"
             onClick={() => onSelectRoute(item.from, item.to)}
+            className={styles.popularCard}
             style={{
-              background: `radial-gradient(circle at 100% 0%, ${item.glowColor}98 20%, transparent 55%), var(--bgPrimary)`,
-              border: isTop ? `1px solid ${item.glowColor}` : "1px solid var(--border-secondary)",
-              borderRadius: "var(--ra-6)",
-              padding: "14px 16px",
-              cursor: "pointer",
-              transition: "all 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
-              textAlign: "right",
-              flex: "0 0 auto",
-              minWidth: "165px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              scrollSnapAlign: "start",
-              position: "relative",
-              overflow: "hidden",
+              background: `radial-gradient(135px circle at top right, ${item.glowColor}33 0%, ${item.glowColor}10 45%, transparent 75%), var(--cardGlassBg, rgba(18, 18, 22, 0.72))`,
+              borderColor: isTop ? `${item.glowColor}80` : undefined,
             }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = `${item.glowColor}80`;
+              e.currentTarget.style.boxShadow = `inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 8px 24px -2px ${item.glowColor}35, 0 4px 12px rgba(0,0,0,0.2)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = isTop ? `${item.glowColor}80` : "";
+              e.currentTarget.style.boxShadow = "";
+            }}
+            aria-label={`اختيار مسار ${item.label}`}
           >
-            {/* Title & Subtitle */}
-            <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
+            {/* Top Row: Icon Squircle + Optional Badge */}
+            <div className={styles.popularCardTop}>
               <div
+                className={styles.popularCardIconBox}
                 style={{
-                  color: "var(--text-primary)",
-                  fontFamily: "var(--font-display)",
-                  fontWeight: "700",
-                  fontSize: "0.88rem",
-                  lineHeight: "1.3",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
+                  boxShadow: `0 4px 12px ${item.glowColor}25`,
+                  borderColor: `${item.glowColor}35`,
                 }}
               >
+                {item.icon ? (
+                  <img
+                    src={item.icon}
+                    alt={item.label}
+                    className={styles.popularCardIcon}
+                    loading="lazy"
+                  />
+                ) : (
+                  <i
+                    className={`fa-solid fa-route ${styles.popularCardFontIcon}`}
+                    style={{ color: item.glowColor }}
+                  />
+                )}
+              </div>
+
+              {item.isTrending && (
+                <span className={styles.popularCardTrendingPill}>
+                  <span
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      backgroundColor: item.glowColor,
+                      display: "inline-block",
+                    }}
+                  />
+                  {isTop ? "الأكثر طلباً" : "شائع"}
+                </span>
+              )}
+            </div>
+
+            {/* Bottom Row: Title & Subtitle */}
+            <div className={styles.popularCardBottom}>
+              <div className={styles.popularCardTitle}>
                 {item.label}
               </div>
+              {item.subtitle && (
+                <div className={styles.popularCardSubtitle}>
+                  {item.subtitle}
+                </div>
+              )}
             </div>
           </button>
         );
@@ -81,3 +100,4 @@ export default function PopularRoutesSlider({
     </div>
   );
 }
+

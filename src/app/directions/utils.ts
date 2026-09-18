@@ -428,7 +428,10 @@ export function buildDynamicPopularRoutes(
   liveSearchCounts: Record<string, number>
 ): QuickRouteItem[] {
   // Map of normalized key -> aggregated item
-  const map: Map<string, { from: string; to: string; label: string; count: number }> = new Map();
+  const map: Map<
+    string,
+    { from: string; to: string; label: string; count: number; icon?: string; subtitle?: string }
+  > = new Map();
 
   // 1. Seed with default baseline popular routes
   DEFAULT_POPULAR_ROUTES.forEach((item) => {
@@ -437,20 +440,33 @@ export function buildDynamicPopularRoutes(
       from: item.from,
       to: item.to,
       label: item.label,
-      count: item.searchCount || 10
+      count: item.searchCount || 10,
+      icon: item.icon,
+      subtitle: item.subtitle,
     });
   });
 
   // 2. Add routes from loaded database dataset
   availableRoutes.forEach((r) => {
     const key = `${r.from}|||${r.to}`;
+    const primaryOption = r.options?.[0];
+    const iconPath = primaryOption ? getTransitOptionIconPath(primaryOption).src : undefined;
+    const optionsCount = r.options?.length || 1;
+    const subtitle = optionsCount > 1 ? `${optionsCount} خيارات مواصلات` : (primaryOption?.typeName || "مسار مباشر");
+
     if (!map.has(key)) {
       map.set(key, {
         from: r.from,
         to: r.to,
         label: formatRouteShortLabel(r.from, r.to),
-        count: (r.options?.length || 1) * 5
+        count: optionsCount * 5,
+        icon: iconPath,
+        subtitle,
       });
+    } else {
+      const existing = map.get(key)!;
+      if (!existing.icon && iconPath) existing.icon = iconPath;
+      if (!existing.subtitle && subtitle) existing.subtitle = subtitle;
     }
   });
 
@@ -462,12 +478,14 @@ export function buildDynamicPopularRoutes(
       const userSearches = liveSearchCounts[key] || 0;
       if (existing) {
         existing.count += userSearches * 10; // Boost weight of real active searches
+        existing.subtitle = `${existing.count} عملية بحث`;
       } else {
         map.set(key, {
           from: f,
           to: t,
           label: formatRouteShortLabel(f, t),
-          count: userSearches * 10
+          count: userSearches * 10,
+          subtitle: `${userSearches * 10} عملية بحث`,
         });
       }
     }
@@ -479,13 +497,37 @@ export function buildDynamicPopularRoutes(
   // 5. Build QuickRouteItems with glowing color palette and trending badges
   return sorted.slice(0, 10).map((item, idx) => {
     const glowColor = POPULAR_ROUTE_COLOR_PALETTE[idx % POPULAR_ROUTE_COLOR_PALETTE.length];
+
+    // Resolve icon fallback
+    let iconSrc = item.icon;
+    if (!iconSrc) {
+      const foundRoute = availableRoutes.find((r) => r.from === item.from && r.to === item.to);
+      if (foundRoute?.options?.[0]) {
+        iconSrc = getTransitOptionIconPath(foundRoute.options[0]).src;
+      } else {
+        if (item.to.includes("مطار") || item.from.includes("مطار")) {
+          iconSrc = "/images/icons2d/airport.png";
+        } else if (item.to.includes("الإسكندرية") || item.to.includes("المنصورة")) {
+          iconSrc = "/images/icons2d/Cairo_train.png";
+        } else if (item.to.includes("مترو") || item.from.includes("مترو") || item.to.includes("رمسيس")) {
+          iconSrc = "/images/icons2d/metro.png";
+        } else {
+          iconSrc = "/images/icons2d/microbus.png";
+        }
+      }
+    }
+
+    const subtitleText = item.subtitle || (item.count ? `${item.count} عملية بحث` : "مسار موصى به");
+
     return {
       from: item.from,
       to: item.to,
       label: item.label,
       glowColor,
       searchCount: item.count,
-      isTrending: idx < 3
+      isTrending: idx < 3,
+      icon: iconSrc,
+      subtitle: subtitleText,
     };
   });
 }

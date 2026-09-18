@@ -72,6 +72,9 @@ export interface QuickRouteItem {
   glowColor: string;
   searchCount?: number;
   isTrending?: boolean;
+  icon?: string;
+  vehicleType?: string;
+  subtitle?: string;
 }
 
 export interface ReportProblemOption {
