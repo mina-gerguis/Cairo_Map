@@ -108,8 +108,8 @@ function getSlideTheme(slide: AdSlide, isLight: boolean) {
   let tagColor = slide.tagColor || (isLight ? "#2563eb" : "#93c5fd");
   let badgeBg = slide.tagBg || "rgba(59, 130, 246, 0.15)";
   let badgeColor = slide.tagColor || (isLight ? "#2563eb" : "#93c5fd");
-  let bgGradient = slide.bgGradient || "var(--bgGlass-card)";
-  let borderColor = slide.borderColor || "var(--borderGlass)";
+  let bgGradient = slide.bgGradient || "var(--bg-glass-card)";
+  let borderColor = slide.borderColor || "var(--border-glass)";
 
   if (slide.tagBg) tagBg = slide.tagBg;
   if (slide.tagColor) {
@@ -316,8 +316,8 @@ export default function AdSlider({
           overflow: "hidden",
           background: currentSlide.image
             ? "var(--bgPrimary, #0f172a)"
-            : (currentSlideTheme.bgGradient || "var(--bgGlass-card, rgba(15, 23, 42, 0.6))"),
-          border: `1px solid ${currentSlideTheme.borderColor || "var(--borderGlass, rgba(255, 255, 255, 0.08))"}`,
+            : (currentSlideTheme.bgGradient || "var(--bg-glass-card, rgba(15, 23, 42, 0.6))"),
+          border: `1px solid ${currentSlideTheme.borderColor || "var(--border-glass, rgba(255, 255, 255, 0.08))"}`,
           boxShadow: isLight ? "0 4px 20px rgba(0, 0, 0, 0.05)" : "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
           transition: "all 0.4s ease",
           display: "flex",
@@ -480,7 +480,7 @@ export default function AdSlider({
                           padding: isMobile ? "2px 7px" : "3px 10px",
                           borderRadius: "6px",
                           backgroundColor: "#aaaaaa3f",
-                          color: "var(--textPrimary)",
+                          color: "var(--text-primary)",
                           backdropFilter: "blur(6px)",
                           border: `1px solid ${isLight ? "rgba(0,0,0,0.05)" : "rgba(255, 255, 255, 0.05)"}`,
                         }}
@@ -507,7 +507,7 @@ export default function AdSlider({
                       margin: isMobile ? "0 0 4px 0" : "0 0 6px 0",
                       fontSize: isMobile ? "0.95rem" : "clamp(1.05rem, 2.2vw, 1.3rem)",
                       fontWeight: "700",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       lineHeight: "1.4",
                       textShadow: currentSlide.image ? (isLight ? "0 1px 2px rgba(255,255,255,0.9)" : "0 2px 4px rgba(0,0,0,0.8)") : "none",
                     }}
@@ -566,7 +566,7 @@ export default function AdSlider({
                         alignItems: "center",
                         justifyContent: "center",
                         gap: "8px",
-                        padding:"var(--paddingBtn)",
+                        padding: "var(--padding-btn)",
                         borderRadius: "var(--radiusBtn)",
                         backgroundColor: "var(--colorPrimary)",
                         color: "#ffffff",
@@ -576,7 +576,7 @@ export default function AdSlider({
                         transition: "opacity 0.2s ease",
                         width: isMobile ? "100%" : "auto",
                         textAlign: "center",
-                        fontFamily:"var(--font-sub)"
+                        fontFamily: "var(--font-sub)"
                       }}
                       onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
                       onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}

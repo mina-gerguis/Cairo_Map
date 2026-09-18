@@ -423,7 +423,7 @@ export default function NotFound() {
         justifyContent: "center",
         padding: "3rem 1rem 4rem",
         background: "var(--bgPrimary)",
-        color: "var(--textPrimary)",
+        color: "var(--text-primary)",
         textAlign: "center",
         position: "relative",
         overflow: "hidden",
@@ -520,8 +520,8 @@ export default function NotFound() {
             width: "220px",
             height: "220px",
             borderRadius: "50%",
-            background: "var(--bgGlass, rgba(0, 0, 0, 0.5))",
-            border: "2px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.12))",
+            background: "var(--bg-glass, rgba(0, 0, 0, 0.5))",
+            border: "2px solid var(--border-glass-bright, rgba(255, 255, 255, 0.12))",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
@@ -542,7 +542,7 @@ export default function NotFound() {
             width: "86px",
             height: "86px",
             borderRadius: "50%",
-            border: "1px dashed var(--borderGlass, rgba(255,255,255,0.06))",
+            border: "1px dashed var(--border-glass, rgba(255,255,255,0.06))",
             pointerEvents: "none"
           }} />
 
@@ -612,7 +612,7 @@ export default function NotFound() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                backgroundColor: "var(--bgGlass)",
+                backgroundColor: "var(--bg-glass)",
                 border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--colorPrimary)" : "1.5px solid var(--borderPrimary)",
                 borderRadius: "var(--ra-32)",
                 padding: "8px 15px 8px 15px",
@@ -621,7 +621,7 @@ export default function NotFound() {
                 transition: "border-color 0.2s ease"
               }}
             >
-              <FaSearch style={{ fontSize: "1.2rem", color: "var(--textMuted)", marginLeft: "12px" }} />
+              <FaSearch style={{ fontSize: "1.2rem", color: "var(--text-muted)", marginLeft: "12px" }} />
               <input
                 ref={searchInputRef}
                 type="text"
@@ -637,7 +637,7 @@ export default function NotFound() {
                   background: "transparent",
                   border: "none",
                   outline: "none",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   fontSize: "1rem",
                   fontFamily: "var(--font-heading)",
                   textAlign: "right"
@@ -651,7 +651,7 @@ export default function NotFound() {
                 }}
                 style={{
                   backgroundColor: "rgba(255, 255, 255, 0.07)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   backdropFilter: "blur(8px)",
                   borderRadius: "var(--ra-14)",
                   padding: "4px 8px",
@@ -669,7 +669,7 @@ export default function NotFound() {
                   fontFamily: "inherit",
                   fontSize: "0.75rem",
                   fontWeight: "bold",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -680,7 +680,7 @@ export default function NotFound() {
                   fontFamily: "inherit",
                   fontSize: "0.75rem",
                   fontWeight: "bold",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -699,7 +699,7 @@ export default function NotFound() {
               right: 0,
               backgroundColor: "var(--card-glass, rgba(17, 17, 17, 0.986))",
               backdropFilter: "blur(20px)",
-              border: "1px solid var(--borderGlass-bright)",
+              border: "1px solid var(--border-glass-bright)",
               borderRadius: "var(--ra-24)",
               boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
               zIndex: 100,
@@ -738,10 +738,10 @@ export default function NotFound() {
                         padding: "10px 14px",
                         borderRadius: "var(--ra-18)",
                         backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         marginBottom: "6px",
                         textDecoration: "none",
-                        color: "var(--textPrimary)",
+                        color: "var(--text-primary)",
                         transition: "var(--transition-fast)"
                       }}
                     >
@@ -807,10 +807,10 @@ export default function NotFound() {
                         padding: "10px 14px",
                         borderRadius: "var(--ra-18)",
                         backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         marginBottom: "6px",
                         textDecoration: "none",
-                        color: "var(--textPrimary)",
+                        color: "var(--text-primary)",
                         transition: "var(--transition-fast)"
                       }}
                     >
@@ -872,9 +872,9 @@ export default function NotFound() {
                           padding: "6px 12px",
                           borderRadius: "var(--ra-full)",
                           backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           textDecoration: "none",
-                          color: "var(--textPrimary)",
+                          color: "var(--text-primary)",
                           fontSize: "0.85rem"
                         }}
                       >
@@ -897,7 +897,7 @@ export default function NotFound() {
                   <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
                     <FaInbox style={{ fontSize: "2rem", marginBottom: "6px" }} />
                   </div>
-                  <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--textPrimary)", marginBottom: "4px" }}>
+                  <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--text-primary)", marginBottom: "4px" }}>
                     عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                   </div>
                   <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--textSecondary)" }}>
@@ -911,8 +911,8 @@ export default function NotFound() {
                         padding: "6px 14px",
                         borderRadius: "8px",
                         backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
-                        border: "1px solid var(--borderGlass)",
-                        color: "var(--textPrimary)",
+                        border: "1px solid var(--border-glass)",
+                        color: "var(--text-primary)",
                         fontSize: "0.82rem",
                         cursor: "pointer"
                       }}
@@ -961,7 +961,7 @@ export default function NotFound() {
                 style={{
                   width: "100%",
                   marginTop: "8px",
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--ra-full)",
                   backgroundColor: "var(--colorPrimary)",
                   color: "#ffffff",
@@ -1004,7 +1004,7 @@ export default function NotFound() {
               gap: "8px",
               background: "var(--colorPrimary)",
               color: "#ffffff",
-              padding: "var(--paddingBtn)",
+              padding: "var(--padding-btn)",
               borderRadius: "var(--ra-full)",
               fontWeight: 700,
               fontSize: "0.95rem",
@@ -1053,7 +1053,7 @@ export default function NotFound() {
         {/* Shortcut Grid to Popular Sections */}
         <div
           style={{
-            background: "var(--bgGlass)",
+            background: "var(--bg-glass)",
             border: "1px solid var(--borderPrimary)",
             borderRadius: "var(--ra-24)",
             padding: "1.75rem",
@@ -1097,7 +1097,7 @@ export default function NotFound() {
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
-                border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
+                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
             >
@@ -1130,7 +1130,7 @@ export default function NotFound() {
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
-                border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
+                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
             >
@@ -1163,7 +1163,7 @@ export default function NotFound() {
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
-                border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
+                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
             >
@@ -1196,7 +1196,7 @@ export default function NotFound() {
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
-                border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
+                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
             >
@@ -1229,7 +1229,7 @@ export default function NotFound() {
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
-                border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
+                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
             >
@@ -1262,7 +1262,7 @@ export default function NotFound() {
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
-                border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
+                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
             >

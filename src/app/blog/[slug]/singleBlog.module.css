@@ -1,7 +1,7 @@
 .pageShell {
   min-height: 100vh;
   background-color: var(--bgPrimary);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
   padding-bottom: 60px;
@@ -13,7 +13,7 @@
   padding: 24px 20px 24px;
   text-align: center;
   position: relative;
-  border-bottom: 1px solid var(--borderGlass);
+  border-bottom: 1px solid var(--border-glass);
 }
 
 /* Main Container */
@@ -44,18 +44,18 @@
 }
 
 .breadcrumb a:hover {
-  color: var(--colorSecondary);
+  color: var(--color-secondary);
 }
 
 .breadcrumb span {
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-weight: 700;
 }
 
 /* Header Section */
 .articleHeader {
   background-color: var(--bgPrimary);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 24px;
   box-shadow: var(--shadow-card);
@@ -69,8 +69,8 @@
   padding: 4px 14px;
   border-radius: 10px;
   background: var(--bgSecondary);
-  color: var(--colorSecondary);
-  border: 1px solid var(--borderGlass);
+  color: var(--color-secondary);
+  border: 1px solid var(--border-glass);
   font-size: 0.8rem;
   font-weight: 700;
   margin-bottom: 12px;
@@ -82,7 +82,7 @@
   font-weight: 800;
   line-height: 1.4;
   margin: 0 0 16px 0;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-family: var(--font-display);
   letter-spacing: -0.3px;
   word-break: break-word;
@@ -96,7 +96,7 @@
   flex-wrap: wrap;
   gap: 12px;
   padding-top: 16px;
-  border-top: 1px solid var(--borderGlass);
+  border-top: 1px solid var(--border-glass);
 }
 
 .authorInfo {
@@ -110,14 +110,14 @@
   height: 38px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
 }
 
 .authorName {
   display: block;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-family: var(--font-body);
 }
 
@@ -148,7 +148,7 @@
   border-radius: 15px;
   overflow: hidden;
   margin-bottom: 20px;
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   box-shadow: var(--shadow-card);
 }
 
@@ -172,7 +172,7 @@
   flex-wrap: wrap;
   gap: 12px;
   background-color: var(--bgPrimary);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 14px 18px;
   margin-bottom: 24px;
@@ -190,9 +190,9 @@
   gap: 6px;
   padding: 8px 14px;
   border-radius: 10px;
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   background-color: var(--bgSecondary);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
@@ -201,8 +201,8 @@
 }
 
 .actionBtn:hover {
-  border-color: var(--colorSecondary);
-  color: var(--colorSecondary);
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
 }
 
 .likedBtn {
@@ -214,7 +214,7 @@
 .bookmarkedBtn {
   background-color: rgba(59, 130, 246, 0.12) !important;
   border-color: rgba(59, 130, 246, 0.35) !important;
-  color: var(--colorSecondary) !important;
+  color: var(--color-secondary) !important;
 }
 
 .shareGroup {
@@ -233,9 +233,9 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   background-color: var(--bgSecondary);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,7 +246,7 @@
 }
 
 .shareIconBtn:hover {
-  background-color: var(--colorSecondary);
+  background-color: var(--color-secondary);
   color: #ffffff;
   border-color: transparent;
   transform: translateY(-2px);
@@ -267,7 +267,7 @@
 /* Article Body Card Container */
 .articleCard {
   background-color: var(--bgPrimary);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 28px 24px;
   box-shadow: var(--shadow-card);
@@ -277,7 +277,7 @@
 .articleBody {
   font-size: 1rem;
   line-height: 1.85;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-family: var(--font-body);
 }
 
@@ -285,8 +285,8 @@
   font-size: 1.35rem;
   font-weight: 800;
   margin: 1.8rem 0 1rem 0;
-  color: var(--textPrimary);
-  border-right: 4px solid var(--colorSecondary);
+  color: var(--text-primary);
+  border-right: 4px solid var(--color-secondary);
   padding-right: 10px;
   font-family: var(--font-display);
 }
@@ -295,13 +295,13 @@
   font-size: 1.15rem;
   font-weight: 700;
   margin: 1.5rem 0 0.8rem 0;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-family: var(--font-display);
 }
 
 .articleBody p {
   margin-bottom: 1.2rem;
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .articleBody ul,
@@ -312,15 +312,15 @@
 
 .articleBody li {
   margin-bottom: 0.4rem;
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .articleBody blockquote {
-  border-right: 4px solid var(--colorSecondary);
+  border-right: 4px solid var(--color-secondary);
   background-color: var(--bgSecondary);
-  border-top: 1px solid var(--borderGlass);
-  border-left: 1px solid var(--borderGlass);
-  border-bottom: 1px solid var(--borderGlass);
+  border-top: 1px solid var(--border-glass);
+  border-left: 1px solid var(--border-glass);
+  border-bottom: 1px solid var(--border-glass);
   padding: 16px 20px;
   border-radius: 12px;
   margin: 1.6rem 0;
@@ -334,14 +334,14 @@
   height: auto;
   border-radius: 12px;
   margin: 1.4rem 0;
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
 }
 
 /* Tags Container */
 .tagsContainer {
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid var(--borderGlass);
+  border-top: 1px solid var(--border-glass);
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -367,9 +367,9 @@
   padding: 4px 10px;
   border-radius: 8px;
   background-color: var(--bgSecondary);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   font-size: 0.78rem;
-  color: var(--colorSecondary);
+  color: var(--color-secondary);
   font-weight: 600;
 }
 
@@ -377,7 +377,7 @@
 .commentsSection {
   margin-top: 28px;
   background-color: var(--bgPrimary);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 24px;
   box-shadow: var(--shadow-card);
@@ -390,7 +390,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-family: var(--font-display);
 }
 
@@ -416,16 +416,16 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
 }
 
 .commentTextarea {
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   background-color: var(--bgSecondary);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-size: 0.9rem;
   outline: none;
   resize: vertical;
@@ -434,7 +434,7 @@
 }
 
 .commentTextarea:focus {
-  border-color: var(--colorSecondary);
+  border-color: var(--color-secondary);
 }
 
 .submitCommentBtn {
@@ -445,7 +445,7 @@
   padding: 8px 18px;
   border-radius: 10px;
   border: none;
-  background: var(--colorSecondary);
+  background: var(--color-secondary);
   color: #ffffff;
   font-size: 0.85rem;
   font-weight: 700;
@@ -466,21 +466,21 @@
   padding: 16px;
   border-radius: 12px;
   background: var(--bgSecondary);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   color: var(--textSecondary);
   font-size: 0.86rem;
 }
 
 .loginPromptBox i {
   font-size: 1.8rem;
-  color: var(--colorSecondary);
+  color: var(--color-secondary);
 }
 
 .loginBtn {
   margin-right: auto;
   padding: 6px 14px;
   border-radius: 8px;
-  background: var(--colorSecondary);
+  background: var(--color-secondary);
   color: #ffffff;
   text-decoration: none;
   font-size: 0.8rem;
@@ -503,7 +503,7 @@
 
 .noComments i {
   font-size: 2rem;
-  color: var(--colorSecondary);
+  color: var(--color-secondary);
   margin-bottom: 8px;
 }
 
@@ -513,7 +513,7 @@
   padding: 14px;
   border-radius: 12px;
   background-color: var(--bgSecondary);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
 }
 
 .commentAvatar {
@@ -537,7 +537,7 @@
 .commentAuthor {
   font-size: 0.86rem;
   font-weight: 700;
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .commentTime {
@@ -557,7 +557,7 @@
 
 .commentBody {
   font-size: 0.88rem;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.5;
 }
@@ -576,13 +576,13 @@
 .loadingBox i,
 .errorBox i {
   font-size: 3rem;
-  color: var(--colorSecondary);
+  color: var(--color-secondary);
   margin-bottom: 12px;
 }
 
 .errorBox h2 {
   font-size: 1.3rem;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
@@ -591,7 +591,7 @@
   margin-top: 16px;
   padding: 8px 18px;
   border-radius: 10px;
-  background: var(--colorSecondary);
+  background: var(--color-secondary);
   color: #ffffff;
   text-decoration: none;
   font-weight: 700;

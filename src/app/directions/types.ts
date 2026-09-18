@@ -4,6 +4,8 @@ export type TransitVehicleType =
   | "car"
   | "train"
   | "monorail"
+  | "lrt"
+  | "brt"
   | "metro"
   | "plane"
   | "ship"

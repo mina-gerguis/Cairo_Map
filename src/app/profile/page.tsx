@@ -1980,7 +1980,7 @@ export default function ProfilePage() {
           isOpen={message !== null}
           onClose={() => setMessage(null)}
           title={message.type === 'error' ? "تنبيه" : "عملية ناجحة"}
-          titleColor={message.type === 'error' ? "#ff3b30" : "var(--textPrimary)"}
+          titleColor={message.type === 'error' ? "#ff3b30" : "var(--text-primary)"}
           message={message.text}
           iconNode={
             <div style={{
@@ -2032,7 +2032,7 @@ export default function ProfilePage() {
               <p className={styles.guestSubtitle}>سجل دخولك للوصول إلى ملفك الشخصي وكل مزايا التطبيق</p>
             </div>
             <Link href="/login" className={`btn btn-primary ${styles.guestLoginBtn}`} style={{
-              padding: "var(--paddingBtn)",
+              padding: "var(--padding-btn)",
               borderRadius: "8px"
             }}>
               <i className={`bx bx-log-in ${styles.guestLoginIcon}`}></i> تسجيل الدخول
@@ -2211,8 +2211,8 @@ export default function ProfilePage() {
                 </div>
 
                 <div className={styles.formButtonsRow}>
-                  <button className={`btn ${styles.flex1}`} onClick={() => setEditMode(false)} style={{ border: "1px solid var(--borderGlass)", borderRadius: "var(--radiusBtnLg)", width: "50%", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", padding: "var(--paddingBtn)" }}>إلغاء</button>
-                  <button className={`btn btn-primary ${styles.flex1}`} onClick={handleSave} disabled={saving} style={{ border: "1px solid var(--borderGlass)", borderRadius: "var(--radiusBtnLg)", width: "50%", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", padding: "var(--paddingBtn)" }}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
+                  <button className={`btn ${styles.flex1}`} onClick={() => setEditMode(false)} style={{ border: "1px solid var(--border-glass)", borderRadius: "var(--radiusBtnLg)", width: "50%", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", padding: "var(--padding-btn)" }}>إلغاء</button>
+                  <button className={`btn btn-primary ${styles.flex1}`} onClick={handleSave} disabled={saving} style={{ border: "1px solid var(--border-glass)", borderRadius: "var(--radiusBtnLg)", width: "50%", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-heading)", padding: "var(--padding-btn)" }}>{saving ? "جاري الحفظ..." : "حفظ التغييرات"}</button>
                 </div>
               </div>
             ) : (
@@ -2383,7 +2383,7 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div className={styles.badgeRight}>
-                <span className={styles.favBadge} style={{ background: "none", color: "var(--colorSecondary)", fontWeight: "bold", fontSize: "0.8rem" }}>
+                <span className={styles.favBadge} style={{ background: "none", color: "var(--color-secondary)", fontWeight: "bold", fontSize: "0.8rem" }}>
                   {!profileExpired && profile?.subscription_tier === 'mishwar' ? 'المشوار' : !profileExpired && profile?.subscription_tier === 'silver' ? 'الفضية' : !profileExpired && profile?.subscription_tier === 'gold' ? 'الذهبية' : 'ترقية'}
                 </span>
                 {isOwnProfile && <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>}
@@ -2494,7 +2494,7 @@ export default function ProfilePage() {
               <div className={styles.cardContent}
                 style={{ justifyContent: "space-between" }}>
                 <div className={styles.notifHeaderLeft}>
-                  <div style={{ color: "var(--colorSecondary)" }}>
+                  <div style={{ color: "var(--color-secondary)" }}>
                     <i className={`bx bxs-bell ${styles.cardIcon}`}></i>
                   </div>
                   <div>
@@ -2626,7 +2626,7 @@ export default function ProfilePage() {
               {isRequestsExpanded && (
                 <div className={styles.notifExpandedContent} onClick={(e) => e.stopPropagation()}>
                   {/* Segment control/tabs */}
-                  <div style={{ display: "flex", gap: "8px", marginBottom: "16px", background: "rgba(255,255,255,0.03)", padding: "4px", borderRadius: "10px", border: "1px solid var(--borderGlass)" }}>
+                  <div style={{ display: "flex", gap: "8px", marginBottom: "16px", background: "rgba(255,255,255,0.03)", padding: "4px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
                     <button
                       type="button"
                       onClick={() => setActiveRequestsTab("proposals")}
@@ -2698,9 +2698,9 @@ export default function ProfilePage() {
                     ) : (
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingLeft: "4px" }}>
                         {userProposals.map((prop) => (
-                          <div key={prop.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                          <div key={prop.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <strong style={{ fontSize: "0.95rem", color: "var(--textPrimary)" }}>{prop.name}</strong>
+                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>{prop.name}</strong>
                               {getProposalStatusBadge(prop.status)}
                             </div>
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -2747,9 +2747,9 @@ export default function ProfilePage() {
                     ) : (
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingLeft: "4px" }}>
                         {userReports.map((report) => (
-                          <div key={report.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                          <div key={report.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <strong style={{ fontSize: "0.95rem", color: "var(--textPrimary)" }}>{report.place_name}</strong>
+                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>{report.place_name}</strong>
                               {getReportStatusBadge(report.status)}
                             </div>
                             <div style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
@@ -2798,9 +2798,9 @@ export default function ProfilePage() {
                     ) : (
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingLeft: "4px" }}>
                         {userAppFeedbacks.map((fb) => (
-                          <div key={fb.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                          <div key={fb.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <strong style={{ fontSize: "0.95rem", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                              <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                                 {fb.type === "suggestion" ? (
                                   <>
                                     <BsStars size={20} style={{ color: "var(--colorPrimary)" }} />
@@ -3308,7 +3308,7 @@ export default function ProfilePage() {
           label: "إلغاء",
           onClick: () => { setShowDeleteModal(false); setDeleteConfirmation(""); },
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: loading,
         }}
       >
@@ -3342,7 +3342,7 @@ export default function ProfilePage() {
               ? "تفعيل المصادقة الثنائية"
               : "إلغاء تفعيل المصادقة الثنائية"
         }
-        titleColor={mfaStep === "unenroll_confirm" ? "#ff3b30" : "var(--textPrimary)"}
+        titleColor={mfaStep === "unenroll_confirm" ? "#ff3b30" : "var(--text-primary)"}
         iconSrc="/images/icons3d/padlock.png"
         borderColor={mfaStep === "unenroll_confirm" ? "rgba(255, 59, 48, 0.25)" : "var(--modelCardBorder)"}
         primaryButton={
@@ -3350,8 +3350,8 @@ export default function ProfilePage() {
             ? {
               label: "إغلاق",
               onClick: () => setShow2FAModal(false),
-              bgColor: "var(--cancelBtn)",
-              textColor: "var(--textPrimary)",
+              bgColor: "var(--btn-cancel)",
+              textColor: "var(--text-primary)",
             }
             : mfaStep === "enroll"
               ? {
@@ -3372,7 +3372,7 @@ export default function ProfilePage() {
             ? {
               label: "رجوع",
               onClick: () => setMfaStep("selection"),
-              bgColor: "var(--cancelBtn)",
+              bgColor: "var(--btn-cancel)",
               disabled: mfaLoading,
             }
             : mfaStep === "unenroll_confirm"
@@ -3384,7 +3384,7 @@ export default function ProfilePage() {
                   setMfaPasswordConfirm("");
                   setMfaError("");
                 },
-                bgColor: "var(--cancelBtn)",
+                bgColor: "var(--btn-cancel)",
                 disabled: mfaLoading,
               }
               : undefined
@@ -3553,8 +3553,8 @@ export default function ProfilePage() {
           primaryButton={{
             label: "إغلاق",
             onClick: () => setShowDevicesModal(false),
-            bgColor: "var(--cancelBtn)",
-            textColor: "var(--textPrimary)",
+            bgColor: "var(--btn-cancel)",
+            textColor: "var(--text-primary)",
           }}
         >
           <div style={{ textAlign: "right" }}>
@@ -3640,7 +3640,7 @@ export default function ProfilePage() {
             label: "إلغاء",
             onClick: () => setDeviceToDeactivate(null),
             icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-            bgColor: "var(--cancelBtn)",
+            bgColor: "var(--btn-cancel)",
           }}
         />
       </div>
@@ -3662,7 +3662,7 @@ export default function ProfilePage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => { setShowPasswordModal(false); setPasswordForm({ new: "", confirm: "" }); },
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
         }}
       >
         <div style={{ textAlign: "right" }}>
@@ -3728,7 +3728,7 @@ export default function ProfilePage() {
           label: "إلغاء",
           onClick: () => setShowLogoutModal(false),
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: loading,
         }}
       />
@@ -3767,7 +3767,7 @@ export default function ProfilePage() {
           label: "إلغاء",
           onClick: () => setFeedbackToDelete(null),
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
         }}
       >
         <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
@@ -3813,7 +3813,7 @@ export default function ProfilePage() {
           label: "إلغاء",
           onClick: () => setProposalToRetract(null),
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
         }}
       >
         <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
@@ -3859,7 +3859,7 @@ export default function ProfilePage() {
           label: "إلغاء",
           onClick: () => setReportToRetract(null),
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
         }}
       >
         <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
@@ -3899,8 +3899,8 @@ export default function ProfilePage() {
             : {
               label: "إغلاق",
               onClick: () => setIsRemindersModalOpen(false),
-              bgColor: "var(--cancelBtn)",
-              textColor: "var(--textPrimary)",
+              bgColor: "var(--btn-cancel)",
+              textColor: "var(--text-primary)",
             }
         }
       >
@@ -3910,7 +3910,7 @@ export default function ProfilePage() {
               <h4 style={{
                 fontSize: "1.15rem",
                 fontWeight: "800",
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 marginBottom: "10px",
                 fontFamily: "var(--font-cairo)"
               }}>
@@ -3990,7 +3990,7 @@ export default function ProfilePage() {
             ? "#ff9500"
             : selectedNotification?.type === "error"
               ? "#ff3b30"
-              : "var(--textPrimary)"
+              : "var(--text-primary)"
         }
         borderColor={
           selectedNotification?.type === "warning"
@@ -4037,12 +4037,12 @@ export default function ProfilePage() {
           >
             <i
               className={`bx ${selectedNotification?.type === "warning"
-                  ? "bx-error"
-                  : selectedNotification?.type === "error"
-                    ? "bx-error-circle"
-                    : selectedNotification?.type === "success"
-                      ? "bx-check-circle"
-                      : "bxs-bell-ring"
+                ? "bx-error"
+                : selectedNotification?.type === "error"
+                  ? "bx-error-circle"
+                  : selectedNotification?.type === "success"
+                    ? "bx-check-circle"
+                    : "bxs-bell-ring"
                 }`}
               style={{ fontSize: "2.3rem" }}
             />
@@ -4072,7 +4072,7 @@ export default function ProfilePage() {
             ? {
               label: "إلغاء",
               onClick: () => setSelectedNotification(null),
-              bgColor: "var(--cancelBtn)",
+              bgColor: "var(--btn-cancel)",
               icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
             }
             : undefined
@@ -4089,7 +4089,7 @@ export default function ProfilePage() {
                 alignItems: "center",
                 gap: "6px",
                 background: "rgba(255,255,255,0.03)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 padding: "5px 14px",
                 borderRadius: "20px"
               }}
@@ -4109,7 +4109,7 @@ export default function ProfilePage() {
             <div
               style={{
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.03))",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "14px",
                 padding: "16px",
                 textAlign: "right",
@@ -4122,7 +4122,7 @@ export default function ProfilePage() {
                 style={{
                   margin: 0,
                   fontSize: "0.95rem",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   lineHeight: "1.7",
                   whiteSpace: "pre-wrap",
                   fontFamily: "var(--font-cairo)"
@@ -4153,7 +4153,7 @@ export default function ProfilePage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setShowSuggestionModal(false),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
         }}
       >
         <div style={{ textAlign: "right" }}>
@@ -4219,7 +4219,7 @@ export default function ProfilePage() {
               setBugImageFile(null);
             }
           },
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: bugLoading || bugUploading,
         }}
       >
@@ -4252,7 +4252,7 @@ export default function ProfilePage() {
             <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold" }}>إرفاق صورة للمشكلة (اختياري)</label>
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
-              border: "1px dashed var(--borderGlass)",
+              border: "1px dashed var(--border-glass)",
               borderRadius: "14px",
               padding: "16px",
               textAlign: "center",
@@ -4286,7 +4286,7 @@ export default function ProfilePage() {
               ) : (
                 <>
                   <i className="bx bx-camera" style={{ fontSize: "1.8rem", color: "var(--text-muted)" }}></i>
-                  <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--textPrimary)" }}>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-primary)" }}>
                     اضغط لاختيار صورة، رفع ملف، أو التقاط صورة جديدة
                   </span>
                 </>
@@ -4310,7 +4310,7 @@ export default function ProfilePage() {
               background: "var(--bgPrimary)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               animation: "slide-up 0.3s ease",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -4326,7 +4326,7 @@ export default function ProfilePage() {
               >
                 <i className="bx bx-x"></i>
               </button>
-              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--textPrimary)", fontFamily: "var(--font-cairo)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
                 عملة ماب القاهرة
               </h3>
               <div style={{ width: "38px" }}></div>
@@ -4400,14 +4400,14 @@ export default function ProfilePage() {
               <div
                 style={{
                   background: "rgba(255,255,255,0.02)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "16px",
                   marginBottom: "24px",
                   animation: "slide-up 0.2s ease"
                 }}
               >
-                <h4 style={{ margin: "0 0 10px", fontSize: "0.9rem", fontFamily: "var(--font-heading)", fontWeight: "700", color: "var(--textPrimary)" }}>
+                <h4 style={{ margin: "0 0 10px", fontSize: "0.9rem", fontFamily: "var(--font-heading)", fontWeight: "700", color: "var(--text-primary)" }}>
                   تحويل النقاط إلى رصيد محفظة كاش
                 </h4>
                 <p style={{ margin: "0 0 14px", fontSize: "0.78rem", fontFamily: "var(--font-body)", color: "var(--text-muted)", lineHeight: "1.5" }}>
@@ -4429,7 +4429,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => setConvertPointsAmount((profile?.points ?? 0).toString())}
                     className="btn"
-                    style={{ fontSize: "0.82rem", whiteSpace: "nowrap", fontWeight: "bold", width: "25%", border: "1px solid var(--borderGlass)" }}
+                    style={{ fontSize: "0.82rem", whiteSpace: "nowrap", fontWeight: "bold", width: "25%", border: "1px solid var(--border-glass)" }}
                   >
                     الأقصي
                   </button>
@@ -4473,7 +4473,7 @@ export default function ProfilePage() {
             )}
 
             {/* Explanation Sections */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--borderGlass)", paddingTop: "20px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
               {/* What is Cairo Map Coin */}
               <div>
                 <h4 className="sub-title" style={{ margin: "0 0 8px", fontSize: "0.92rem", fontWeight: "800", color: "#9e7100ff", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -4522,7 +4522,7 @@ export default function ProfilePage() {
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-gift" style={{ color: "#3b82f6", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <span style={{ fontWeight: "bold", color: "var(--textPrimary)" }}>الهدايا والمكافآت:</span> الجوائز اليومية والمسابقات والفعاليات المنظمة.
+                      <span style={{ fontWeight: "bold", color: "var(--text-primary)" }}>الهدايا والمكافآت:</span> الجوائز اليومية والمسابقات والفعاليات المنظمة.
                     </div>
                   </li>
                 </ul>
@@ -4590,7 +4590,7 @@ export default function ProfilePage() {
                 backdropFilter: "blur(20px)",
                 WebkitBackdropFilter: "blur(20px)",
                 boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 animation: "slide-up 0.3s ease",
                 maxHeight: "90vh",
                 overflowY: "auto",
@@ -4600,7 +4600,7 @@ export default function ProfilePage() {
             >
               {/* Modal Header */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", fontFamily: "var(--font-heading)" }}>
-                <h3 className="sub-title" style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--textPrimary)", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                <h3 className="sub-title" style={{ fontSize: "1.3rem", fontWeight: "900", color: "var(--text-primary)", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
                   <i className="bx bxs-crown" style={{ color: "#fbbf24" }}></i>
                   باقات ماب القاهرة
                 </h3>
@@ -4627,7 +4627,7 @@ export default function ProfilePage() {
               }}>
                 <div>
                   <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>باقيتك الحالية:</div>
-                  <div style={{ fontSize: "1.1rem", fontWeight: "bold", color: "var(--textPrimary)", marginTop: "2px" }}>
+                  <div style={{ fontSize: "1.1rem", fontWeight: "bold", color: "var(--text-primary)", marginTop: "2px" }}>
                     {effectiveTier === 'mishwar'
                       ? (profile?.subscription_status === 'cancelled' ? ' باقة المشوار (بانتظار الإلغاء)' : ' باقة المشوار (نشط)')
                       : effectiveTier === 'silver'
@@ -4742,7 +4742,7 @@ export default function ProfilePage() {
                 {/* Card 1: Free */}
                 <div style={{
                   background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                  border: effectiveTier === "free" ? "2px solid var(--borderGlass)" : "1px solid var(--borderGlass)",
+                  border: effectiveTier === "free" ? "2px solid var(--border-glass)" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
@@ -4755,14 +4755,14 @@ export default function ProfilePage() {
                   scrollSnapAlign: "center"
                 }}>
                   <div>
-                    <h4 className="sub-title" style={{ fontFamily: "var(--font-heading)", fontSize: "1.2rem", fontWeight: "bold", color: "var(--textPrimary)", margin: "0 0 8px" }}>
+                    <h4 className="sub-title" style={{ fontFamily: "var(--font-heading)", fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>
                       {getPlan("free").name}
                     </h4>
-                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--textPrimary)", marginBottom: "16px" }}>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>
                       {getPlanPrice("free", null)} ج.م
                     </div>
 
-                    <hr style={{ border: "none", borderTop: "1px solid var(--borderGlass)", margin: "16px 0" }} />
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
                     <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
                       {(getPlan("free").features || []).map((feature: string, idx: number) => (
@@ -4780,9 +4780,9 @@ export default function ProfilePage() {
                     onClick={() => handleConfirmSubscribe("free", null)}
                     style={{
                       width: "100%",
-                      padding: "var(--paddingBtn)",
+                      padding: "var(--padding-btn)",
                       borderRadius: "var(--radiusBtn)",
-                      background: effectiveTier === "free" ? "var(--cancelBtn)" : "rgba(255,255,255,0.1)",
+                      background: effectiveTier === "free" ? "var(--btn-cancel)" : "rgba(255,255,255,0.1)",
                       color: effectiveTier === "free" ? "#64748b" : "#fff",
                       border: "none",
                       fontWeight: "bold",
@@ -4798,7 +4798,7 @@ export default function ProfilePage() {
                 {/* Card 1.5: Mishwar */}
                 <div style={{
                   background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                  border: effectiveTier === "mishwar" ? "2px solid #10b981" : "1px solid var(--borderGlass)",
+                  border: effectiveTier === "mishwar" ? "2px solid #10b981" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
@@ -4812,17 +4812,17 @@ export default function ProfilePage() {
                   scrollSnapAlign: "center"
                 }}>
                   <div>
-                    <h4 className="sub-title" style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--textPrimary)", margin: "0 0 8px" }}>
+                    <h4 className="sub-title" style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>
                       {getPlan("mishwar").name}
                     </h4>
-                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--textPrimary)", marginBottom: "16px" }}>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>
                       {getPlanPrice("mishwar", "daily")} ج.م
                       <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
                         {" "} / 24 ساعة
                       </span>
                     </div>
 
-                    <hr style={{ border: "none", borderTop: "1px solid var(--borderGlass)", margin: "16px 0" }} />
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
                     <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
                       {(getPlan("mishwar").features || []).map((feature: string, idx: number) => (
@@ -4839,9 +4839,9 @@ export default function ProfilePage() {
                     onClick={() => handleConfirmSubscribe("mishwar", "daily")}
                     style={{
                       width: "100%",
-                      padding: "var(--paddingBtn)",
+                      padding: "var(--padding-btn)",
                       borderRadius: "var(--radiusBtn)",
-                      background: effectiveTier === "mishwar" ? "var(--cancelBtn)" : "var(--mainBtn)",
+                      background: effectiveTier === "mishwar" ? "var(--btn-cancel)" : "var(--mainBtn)",
                       color: effectiveTier === "mishwar" ? "#64748b" : "#fff",
                       border: "none",
                       fontWeight: "bold",
@@ -4858,7 +4858,7 @@ export default function ProfilePage() {
                 {/* Card 2: Silver */}
                 <div style={{
                   background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                  border: effectiveTier === "silver" ? "2px solid #6366f1" : "1px solid var(--borderGlass)",
+                  border: effectiveTier === "silver" ? "2px solid #6366f1" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
@@ -4873,23 +4873,23 @@ export default function ProfilePage() {
                 }}>
                   <div>
                     <img src="images/icons3d/CairoSailver.png" alt="" width="60px" />
-                    <h4 className="sub-title" style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--textPrimary)", margin: "0 0 8px" }}>
+                    <h4 className="sub-title" style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>
                       {getPlan("silver").name}
                     </h4>
-                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--textPrimary)", marginBottom: "16px" }}>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>
                       {getPlanPrice("silver", subscriptionPeriod)} ج.م
                       <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
                         {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
                       </span>
                     </div>
 
-                    <hr style={{ border: "none", borderTop: "1px solid var(--borderGlass)", margin: "16px 0" }} />
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
                     <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
                       {(getPlan("silver").features || []).map((feature: string, idx: number) => {
                         const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
                         return (
-                          <li key={idx} style={hasEmoji ? { color: "var(--textPrimary)", fontWeight: "bold" } : undefined}>
+                          <li key={idx} style={hasEmoji ? { color: "var(--text-primary)", fontWeight: "bold" } : undefined}>
                             {feature}
                           </li>
                         );
@@ -4906,7 +4906,7 @@ export default function ProfilePage() {
                     onClick={() => handleConfirmSubscribe("silver", subscriptionPeriod)}
                     style={{
                       width: "100%",
-                      padding: "var(--paddingBtn)",
+                      padding: "var(--padding-btn)",
                       borderRadius: "var(--radiusBtn)",
                       background: (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "rgba(255,255,255,0.04)" : "var(--bg-subscribe-button-seliver)",
                       color: (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#000000ff",
@@ -4925,7 +4925,7 @@ export default function ProfilePage() {
                 {/* Card 3: Gold */}
                 <div style={{
                   background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                  border: effectiveTier === "gold" ? "2px solid #eab308" : "1px solid var(--borderGlass)",
+                  border: effectiveTier === "gold" ? "2px solid #eab308" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
                   display: "flex",
@@ -4944,23 +4944,23 @@ export default function ProfilePage() {
                   <div>
                     <img src="images/icons3d/CairoGold.png" alt="" width="60px" />
 
-                    <h4 className="sub-title" style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--textPrimary)", margin: "0 0 8px" }}>
+                    <h4 className="sub-title" style={{ fontSize: "1.2rem", fontWeight: "bold", color: "var(--text-primary)", margin: "0 0 8px" }}>
                       {getPlan("gold").name}
                     </h4>
-                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--textPrimary)", marginBottom: "16px" }}>
+                    <div style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "16px" }}>
                       {getPlanPrice("gold", subscriptionPeriod)} ج.م
                       <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: "normal" }}>
                         {subscriptionPeriod === "monthly" ? " / شهرياً" : " / سنوياً"}
                       </span>
                     </div>
 
-                    <hr style={{ border: "none", borderTop: "1px solid var(--borderGlass)", margin: "16px 0" }} />
+                    <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
                     <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
                       {(getPlan("gold").features || []).map((feature: string, idx: number) => {
                         const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
                         return (
-                          <li key={idx} style={hasEmoji ? { color: "var(--textPrimary)", fontWeight: "bold" } : undefined}>
+                          <li key={idx} style={hasEmoji ? { color: "var(--text-primary)", fontWeight: "bold" } : undefined}>
                             {feature}
                           </li>
                         );
@@ -4974,9 +4974,9 @@ export default function ProfilePage() {
                     onClick={() => handleConfirmSubscribe("gold", subscriptionPeriod)}
                     style={{
                       width: "100%",
-                      padding: "var(--paddingBtn)",
+                      padding: "var(--padding-btn)",
                       borderRadius: "var(--radiusBtn)",
-                      background: (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "var(--cancelBtn)" : "var(--bg-subscribe-button-gold)",
+                      background: (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "var(--btn-cancel)" : "var(--bg-subscribe-button-gold)",
                       color: (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod) ? "#64748b" : "#000",
                       border: "none",
                       fontWeight: "bold",
@@ -5035,7 +5035,7 @@ export default function ProfilePage() {
                         width: activeCardIndex === idx ? "24px" : "8px",
                         height: "8px",
                         borderRadius: "4px",
-                        background: activeCardIndex === idx ? "var(--mainBtn)" : "var(--textMuted)",
+                        background: activeCardIndex === idx ? "var(--mainBtn)" : "var(--text-muted)",
                         border: "none",
                         padding: 0,
                         cursor: "pointer",
@@ -5059,7 +5059,7 @@ export default function ProfilePage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: activeCardIndex === 3 ? "var(--textMuted)" : "var(--mainBtn)",
+                    color: activeCardIndex === 3 ? "var(--text-muted)" : "var(--mainBtn)",
                     cursor: activeCardIndex === 3 ? "default" : "pointer",
                     fontSize: "1.2rem",
                     transition: "all 0.2s"
@@ -5091,7 +5091,7 @@ export default function ProfilePage() {
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
               boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               animation: "slide-up 0.25s ease",
               direction: "rtl",
               textAlign: "center",
@@ -5117,7 +5117,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Title */}
-            <h3 style={{ margin: "0 0 12px", fontSize: "1.25rem", fontWeight: "700", color: "var(--textPrimary)", fontFamily: "var(--font-cairo)" }}>
+            <h3 style={{ margin: "0 0 12px", fontSize: "1.25rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
               تأكيد عملية الاشتراك
             </h3>
 
@@ -5161,7 +5161,7 @@ export default function ProfilePage() {
                   justifyContent: "center",
                   background: "rgba(255, 255, 255, 0.05)",
                   color: "var(--textSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   cursor: "pointer",
                   fontFamily: "var(--font-cairo)"
                 }}
@@ -5187,7 +5187,7 @@ export default function ProfilePage() {
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
               boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               animation: "slide-up 0.3s ease",
               maxHeight: "90vh",
               overflowY: "auto",
@@ -5213,7 +5213,7 @@ export default function ProfilePage() {
                   <i className="bx bx-x"></i>
                 </button>
               )}
-              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--textPrimary)", fontFamily: "var(--font-cairo)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-cairo)" }}>
                 {walletTab === "main" && "المحفظة المالية"}
                 {walletTab === "deposit" && "طلب إيداع رصيد"}
                 {walletTab === "withdraw" && "طلب سحب رصيد"}
@@ -5285,7 +5285,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => setWalletTab("history")}
                     className="btn"
-                    style={{ width: "100%", justifyContent: "center", fontSize: "0.9rem", border: "1px solid var(--borderGlass)" }}
+                    style={{ width: "100%", justifyContent: "center", fontSize: "0.9rem", border: "1px solid var(--border-glass)" }}
                   >
                     <i className="bx bx-history" style={{ fontSize: "1.1rem" }}></i>
                     سجل المعاملات المالية
@@ -5313,7 +5313,7 @@ export default function ProfilePage() {
                   </div>
                 )}
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>طريقة الإيداع</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>طريقة الإيداع</label>
                   <select
                     className="input-fields"
                     value={depositMethod}
@@ -5328,44 +5328,44 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Instructions */}
-                <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem" }}>
-                  <h5 style={{ margin: "0 0 8px", color: "var(--colorSecondary)", fontWeight: "bold" }}>تعليمات التحويل:</h5>
+                <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem" }}>
+                  <h5 style={{ margin: "0 0 8px", color: "var(--color-secondary)", fontWeight: "bold" }}>تعليمات التحويل:</h5>
                   {depositMethod === "instapay" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
                       قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي: <br />
-                      العنوان: <strong style={{ color: "var(--textPrimary)" }}>cairomap@instapay</strong>
+                      العنوان: <strong style={{ color: "var(--text-primary)" }}>cairomap@instapay</strong>
                       <br />
-                      الاسم: <strong style={{ color: "var(--textPrimary)" }}>Mina G***** A</strong>
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina G***** A</strong>
                       <br />
-                      الرابط السريع : <a href="https://ipn.eg/S/cairomap/instapay/2FxCLI" target="_blank" rel="noopener noreferrer"><strong style={{ color: "var(--colorSecondary)" }}>https://ipn.eg/S/cairomap/instapay/2FxCLI</strong></a>
+                      الرابط السريع : <a href="https://ipn.eg/S/cairomap/instapay/2FxCLI" target="_blank" rel="noopener noreferrer"><strong style={{ color: "var(--color-secondary)" }}>https://ipn.eg/S/cairomap/instapay/2FxCLI</strong></a>
                     </p>
                   )}
                   {depositMethod === "telda" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
                       قم بالتحويل عبر تطبيق تيلدا إلى التاج (Tag) التالي:<br />
-                      التاج: <strong style={{ color: "var(--textPrimary)" }}>@minagerguis</strong><br />
-                      الاسم: <strong style={{ color: "var(--textPrimary)" }}>Mina Gerguis</strong>
+                      التاج: <strong style={{ color: "var(--text-primary)" }}>@minagerguis</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina Gerguis</strong>
                     </p>
                   )}
                   {depositMethod === "vodafone_cash" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
                       قم بتحويل رصيد كاش إلى رقم المحفظة التالي:<br />
-                      الرقم: <strong style={{ color: "var(--textPrimary)" }}>01020372317</strong><br />
-                      الاسم: <strong style={{ color: "var(--textPrimary)" }}>مينا جرجس</strong>
+                      الرقم: <strong style={{ color: "var(--text-primary)" }}>01020372317</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>مينا جرجس</strong>
                     </p>
                   )}
                   {depositMethod === "bank_transfer" && (
                     <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
                       قم بالتحويل البنكي المباشر للحساب التالي:<br />
-                      البنك: <strong style={{ color: "var(--textPrimary)" }}>بنك قطر الوطني الأهلي (QNB)</strong><br />
-                      رقم الحساب: <strong style={{ color: "var(--textPrimary)" }}>1020670700235</strong><br />
-                      الاسم: <strong style={{ color: "var(--textPrimary)" }}>مينا جرجس</strong>
+                      البنك: <strong style={{ color: "var(--text-primary)" }}>بنك قطر الوطني الأهلي (QNB)</strong><br />
+                      رقم الحساب: <strong style={{ color: "var(--text-primary)" }}>1020670700235</strong><br />
+                      الاسم: <strong style={{ color: "var(--text-primary)" }}>مينا جرجس</strong>
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>المبلغ المراد شحنه (بالجنيه المصري)</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>المبلغ المراد شحنه (بالجنيه المصري)</label>
                   <input
                     type="number"
                     min="1"
@@ -5380,7 +5380,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>الرقم/الحساب الذي قمت بالتحويل منه</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>الرقم/الحساب الذي قمت بالتحويل منه</label>
                   <input
                     type="text"
                     required
@@ -5393,7 +5393,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>رقم العملية (Transaction ID / Reference)</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>رقم العملية (Transaction ID / Reference)</label>
                   <input
                     type="text"
                     placeholder="أدخل رقم التحويل المميز للعملية"
@@ -5406,7 +5406,7 @@ export default function ProfilePage() {
 
                 {/* Screenshot upload */}
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>إرفاق صورة إيصال التحويل</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>إرفاق صورة إيصال التحويل</label>
                   <label className={`btn`} style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "2px dashed var(--bg-muted)", padding: "12px", background: "rgba(255,255,255,0.01)" }}>
                     <i className="bx bx-image-add" style={{ fontSize: "1.2rem", marginLeft: "6px" }}></i>
                     {depositImageFile ? "تغيير الإيصال المرفق" : "اختر صورة الإيصال"}
@@ -5415,7 +5415,7 @@ export default function ProfilePage() {
 
                   {depositImageUrl && (
                     <div style={{ marginTop: "10px", textAlign: "center" }}>
-                      <img src={depositImageUrl} alt="إيصال التحويل" style={{ maxWidth: "100%", maxHeight: "150px", borderRadius: "8px", border: "1px solid var(--borderGlass)" }} />
+                      <img src={depositImageUrl} alt="إيصال التحويل" style={{ maxWidth: "100%", maxHeight: "150px", borderRadius: "8px", border: "1px solid var(--border-glass)" }} />
                     </div>
                   )}
                 </div>
@@ -5464,7 +5464,7 @@ export default function ProfilePage() {
                       cursor: "not-allowed",
                       background: "rgba(255, 255, 255, 0.05)",
                       color: "var(--text-muted, #8e8e93)",
-                      borderColor: "var(--borderGlass, rgba(255, 255, 255, 0.1))"
+                      borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))"
                     } : {})
                   }}
                 >
@@ -5501,14 +5501,14 @@ export default function ProfilePage() {
                     <strong>تنبيه هام (الحد الأقصى للطلبات المعلقة):</strong> لديك حالياً <strong>{pendingTransactionsCount}</strong> طلبات معلقة قيد المراجعة. لا يمكنك تقديم طلب سحب جديد حتى تقوم الإدارة بمراجعة طلباتك الحالية.
                   </div>
                 )}
-                <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem", textAlign: "center" }}>
+                <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem", textAlign: "center" }}>
                   <span style={{ color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>الرصيد المتاح للسحب</span>
                   <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "#10b981" }}>{formatNumber(profile?.balance ?? 0, 2)} ج.م</h4>
                   <p style={{ margin: "6px 0 0 0", color: "var(--text-muted)", fontSize: "0.72rem" }}>* الحد الأدنى لأي عملية سحب هو 100 ج.م</p>
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>طريقة استلام الرصيد</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>طريقة استلام الرصيد</label>
                   <select
                     className="input-fields"
                     value={withdrawMethod}
@@ -5523,7 +5523,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>المبلغ المراد سحبه (بالجنيه المصري)</label>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>المبلغ المراد سحبه (بالجنيه المصري)</label>
                   <input
                     type="number"
                     min="100"
@@ -5538,7 +5538,7 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>
+                  <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>
                     {withdrawMethod === "instapay" && "عنوان انستا باي المستلم (IPA)"}
                     {withdrawMethod === "telda" && "التاج الخاص بك على تيلدا (Telda Tag)"}
                     {withdrawMethod === "vodafone_cash" && "رقم محفظة المحمول المراد التحويل إليها"}
@@ -5562,7 +5562,7 @@ export default function ProfilePage() {
 
                 {withdrawMethod !== "vodafone_cash" && (
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--textPrimary)" }}>اسم المستلم بالكامل (ثلاثي على الأقل)</label>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "6px", color: "var(--text-primary)" }}>اسم المستلم بالكامل (ثلاثي على الأقل)</label>
                     <input
                       type="text"
                       required={withdrawMethod !== "vodafone_cash"}
@@ -5605,7 +5605,7 @@ export default function ProfilePage() {
                       cursor: "not-allowed",
                       background: "rgba(255, 255, 255, 0.05)",
                       color: "var(--text-muted, #8e8e93)",
-                      borderColor: "var(--borderGlass, rgba(255, 255, 255, 0.1))"
+                      borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))"
                     } : {
                       background: "var(--colorPrimary)",
                       borderColor: "var(--colorPrimary)"
@@ -5633,7 +5633,7 @@ export default function ProfilePage() {
                     <p style={{ color: "var(--textSecondary)", fontSize: "0.8rem", marginTop: "8px" }}>جاري تحميل كشف الحساب...</p>
                   </div>
                 ) : userTransactions.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "40px 0", border: "1px dashed var(--borderGlass)", borderRadius: "12px" }}>
+                  <div style={{ textAlign: "center", padding: "40px 0", border: "1px dashed var(--border-glass)", borderRadius: "12px" }}>
                     <i className="bx bx-receipt" style={{ fontSize: "2.4rem", color: "var(--text-muted)", marginBottom: "8px" }}></i>
                     <p style={{ color: "var(--textSecondary)", fontSize: "0.82rem", margin: 0 }}>لا توجد معاملات سابقة حالياً.</p>
                   </div>
@@ -5643,7 +5643,7 @@ export default function ProfilePage() {
                       key={tx.id}
                       style={{
                         background: "rgba(255,255,255,0.02)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
                         padding: "12px 14px",
                         display: "flex",
@@ -5668,7 +5668,7 @@ export default function ProfilePage() {
                             <i className={tx.type === "deposit" ? "bx bx-plus-circle" : "bx bx-minus-circle"} style={{ fontSize: "1.1rem" }}></i>
                           </span>
                           <div>
-                            <span style={{ fontSize: "0.82rem", fontWeight: "bold", color: "var(--textPrimary)" }}>
+                            <span style={{ fontSize: "0.82rem", fontWeight: "bold", color: "var(--text-primary)" }}>
                               {tx.type === "deposit" ? "إيداع رصيد" : "سحب رصيد"}
                             </span>
                             <span style={{ display: "block", fontSize: "0.68rem", color: "var(--text-muted)" }}>
@@ -5736,7 +5736,7 @@ export default function ProfilePage() {
 
             {/* Explanation Sections */}
             {walletTab === "main" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--borderGlass)", paddingTop: "20px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px", borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
                 {/* What is Cash Wallet */}
                 <div>
                   <h4 className="sub-title" style={{ margin: "0 0 8px", fontSize: "0.92rem", fontWeight: "800", color: "#10b981", display: "flex", alignItems: "center", gap: "6px" }}>
@@ -5750,14 +5750,14 @@ export default function ProfilePage() {
 
                 {/* Supported Payment & Withdrawal Methods */}
                 <div>
-                  <h4 className="sub-title" style={{ margin: "0 0 12px", fontSize: "0.92rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <h4 className="sub-title" style={{ margin: "0 0 12px", fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                     <i className="bx bx-credit-card-front" style={{ fontSize: "1.1rem" }}></i>
                     طرق الشحن والسحب المدعومة
                   </h4>
                   <p style={{ margin: "0 0 12px", fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
                     يمكنك استخدام الطرق التالية للشحن أو سحب مستحقاتك وأرصدتك المالية:
                   </p>
-                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "16px", border: "1px solid var(--borderGlass)" }}>
+                  <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center", background: "rgba(255,255,255,0.02)", padding: "12px", borderRadius: "16px", border: "1px solid var(--border-glass)" }}>
                     {[
                       { name: "vodafone cash", title: "فودافون كاش", icon: "/images/payment/vodafone.jpg" },
                       { name: "instapay", title: "انستاباي", icon: "/images/payment/instapay.png" },
@@ -5773,7 +5773,7 @@ export default function ProfilePage() {
                         title={pay.title}
                         style={{
                           background: "rgba(255,255,255,0.04)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           borderRadius: "8px",
                           padding: "6px 10px",
                           display: "flex",
@@ -5789,7 +5789,7 @@ export default function ProfilePage() {
                           height={20}
                           style={{ objectFit: "contain", borderRadius: "4px" }}
                         />
-                        <span style={{ fontSize: "0.75rem", color: "var(--textPrimary)", fontWeight: "500", fontFamily: "var(--font-body)" }}>{pay.title}</span>
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-primary)", fontWeight: "500", fontFamily: "var(--font-body)" }}>{pay.title}</span>
                       </div>
                     ))}
                   </div>

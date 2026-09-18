@@ -12,7 +12,7 @@ export default function HelpPage() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--textSecondary)" }}>
-      <span style={{ display: "inline-block", width: "24px", height: "24px", border: "3px solid var(--borderGlass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+      <span style={{ display: "inline-block", width: "24px", height: "24px", border: "3px solid var(--border-glass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
       <p style={{ marginRight: "12px", fontFamily: "var(--font-body)" }}>جاري توجيهك لمركز المساعدة والدعم...</p>
     </div>
   );

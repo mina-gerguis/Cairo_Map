@@ -1118,28 +1118,25 @@ export default function AdminDashboard() {
         <div className={styles.adminActionCardsGrid}>
           {/* Card 1: Pending Financial Transactions */}
           <div
-            className={`${styles.actionCard} ${
-              actionCounts.pendingPoints > 0
+            className={`${styles.actionCard} ${actionCounts.pendingPoints > 0
                 ? `${styles.actionCardAlert}`
                 : styles.actionCardSuccess
-            }`}
+              }`}
           >
             <div className={styles.actionCardTop}>
               <div
-                className={`${styles.actionCardIconWrap} ${
-                  actionCounts.pendingPoints > 0
+                className={`${styles.actionCardIconWrap} ${actionCounts.pendingPoints > 0
                     ? styles.actionCardIconAmber
                     : styles.actionCardIconGreen
-                }`}
+                  }`}
               >
                 <i className="bx bx-wallet-alt" />
               </div>
               <span
-                className={`${styles.actionCardStatusBadge} ${
-                  actionCounts.pendingPoints > 0
+                className={`${styles.actionCardStatusBadge} ${actionCounts.pendingPoints > 0
                     ? styles.actionCardStatusBadgeWarning
                     : styles.actionCardStatusBadgeDone
-                }`}
+                  }`}
               >
                 {actionCounts.pendingPoints > 0 ? "يتطلب إجراء" : "مكتمل"}
               </span>
@@ -1162,11 +1159,10 @@ export default function AdminDashboard() {
 
             <button
               onClick={() => router.push("/admin/points?tab=requests")}
-              className={`${styles.actionCardBtn} ${
-                actionCounts.pendingPoints > 0
+              className={`${styles.actionCardBtn} ${actionCounts.pendingPoints > 0
                   ? styles.actionCardBtnAmber
                   : styles.actionCardBtnMuted
-              }`}
+                }`}
             >
               <span>مراجعة الطلبات المالية</span>
               <i className="bx bx-left-arrow-alt" />
@@ -1175,28 +1171,25 @@ export default function AdminDashboard() {
 
           {/* Card 2: Place Proposals */}
           <div
-            className={`${styles.actionCard} ${
-              actionCounts.pendingProposals > 0
+            className={`${styles.actionCard} ${actionCounts.pendingProposals > 0
                 ? `${styles.actionCardAlert} ${styles.actionCardInfo}`
                 : styles.actionCardSuccess
-            }`}
+              }`}
           >
             <div className={styles.actionCardTop}>
               <div
-                className={`${styles.actionCardIconWrap} ${
-                  actionCounts.pendingProposals > 0
+                className={`${styles.actionCardIconWrap} ${actionCounts.pendingProposals > 0
                     ? styles.actionCardIconBlue
                     : styles.actionCardIconGreen
-                }`}
+                  }`}
               >
                 <i className="bx bx-map-pin" />
               </div>
               <span
-                className={`${styles.actionCardStatusBadge} ${
-                  actionCounts.pendingProposals > 0
+                className={`${styles.actionCardStatusBadge} ${actionCounts.pendingProposals > 0
                     ? styles.actionCardStatusBadgeInfo
                     : styles.actionCardStatusBadgeDone
-                }`}
+                  }`}
               >
                 {actionCounts.pendingProposals > 0 ? "اقتراح جديد" : "معتمد"}
               </span>
@@ -1219,11 +1212,10 @@ export default function AdminDashboard() {
 
             <button
               onClick={() => router.push("/admin/places/suggestions")}
-              className={`${styles.actionCardBtn} ${
-                actionCounts.pendingProposals > 0
+              className={`${styles.actionCardBtn} ${actionCounts.pendingProposals > 0
                   ? styles.actionCardBtnPrimary
                   : styles.actionCardBtnMuted
-              }`}
+                }`}
             >
               <span>فحص اقتراحات الأعضاء</span>
               <i className="bx bx-left-arrow-alt" />
@@ -1232,28 +1224,25 @@ export default function AdminDashboard() {
 
           {/* Card 3: Reports & Complaints */}
           <div
-            className={`${styles.actionCard} ${
-              actionCounts.pendingReports > 0
+            className={`${styles.actionCard} ${actionCounts.pendingReports > 0
                 ? `${styles.actionCardAlert} ${styles.actionCardDanger}`
                 : styles.actionCardSuccess
-            }`}
+              }`}
           >
             <div className={styles.actionCardTop}>
               <div
-                className={`${styles.actionCardIconWrap} ${
-                  actionCounts.pendingReports > 0
+                className={`${styles.actionCardIconWrap} ${actionCounts.pendingReports > 0
                     ? styles.actionCardIconRed
                     : styles.actionCardIconGreen
-                }`}
+                  }`}
               >
                 <i className="bx bx-error-circle" />
               </div>
               <span
-                className={`${styles.actionCardStatusBadge} ${
-                  actionCounts.pendingReports > 0
+                className={`${styles.actionCardStatusBadge} ${actionCounts.pendingReports > 0
                     ? styles.actionCardStatusBadgeDanger
                     : styles.actionCardStatusBadgeDone
-                }`}
+                  }`}
               >
                 {actionCounts.pendingReports > 0 ? "شكوى معلقة" : "نظيف"}
               </span>
@@ -1276,11 +1265,10 @@ export default function AdminDashboard() {
 
             <button
               onClick={() => router.push("/admin/reports")}
-              className={`${styles.actionCardBtn} ${
-                actionCounts.pendingReports > 0
+              className={`${styles.actionCardBtn} ${actionCounts.pendingReports > 0
                   ? styles.actionCardBtnRed
                   : styles.actionCardBtnMuted
-              }`}
+                }`}
             >
               <span>معالجة البلاغات</span>
               <i className="bx bx-left-arrow-alt" />
@@ -1289,28 +1277,25 @@ export default function AdminDashboard() {
 
           {/* Card 4: Transit Route Reports */}
           <div
-            className={`${styles.actionCard} ${
-              actionCounts.pendingRouteReports > 0
+            className={`${styles.actionCard} ${actionCounts.pendingRouteReports > 0
                 ? `${styles.actionCardAlert} ${styles.actionCardPurple}`
                 : styles.actionCardSuccess
-            }`}
+              }`}
           >
             <div className={styles.actionCardTop}>
               <div
-                className={`${styles.actionCardIconWrap} ${
-                  actionCounts.pendingRouteReports > 0
+                className={`${styles.actionCardIconWrap} ${actionCounts.pendingRouteReports > 0
                     ? styles.actionCardIconPurple
                     : styles.actionCardIconGreen
-                }`}
+                  }`}
               >
                 <i className="bx bx-compass" />
               </div>
               <span
-                className={`${styles.actionCardStatusBadge} ${
-                  actionCounts.pendingRouteReports > 0
+                className={`${styles.actionCardStatusBadge} ${actionCounts.pendingRouteReports > 0
                     ? styles.actionCardStatusBadgePurple
                     : styles.actionCardStatusBadgeDone
-                }`}
+                  }`}
               >
                 {actionCounts.pendingRouteReports > 0 ? "تحديث خطوط" : "مستقر"}
               </span>
@@ -1333,11 +1318,10 @@ export default function AdminDashboard() {
 
             <button
               onClick={() => router.push("/admin/directions")}
-              className={`${styles.actionCardBtn} ${
-                actionCounts.pendingRouteReports > 0
+              className={`${styles.actionCardBtn} ${actionCounts.pendingRouteReports > 0
                   ? styles.actionCardBtnPurple
                   : styles.actionCardBtnMuted
-              }`}
+                }`}
             >
               <span>إدارة خطوط ازاي اروح</span>
               <i className="bx bx-left-arrow-alt" />
@@ -1397,7 +1381,7 @@ export default function AdminDashboard() {
               <span>الإيرادات - السحوبات</span>
             </span>
           </div>
-          <p className={styles.statCardValue} style={{ color: liveProfit >= 0 ? "var(--textPrimary)" : "#ef4444" }}>
+          <p className={styles.statCardValue} style={{ color: liveProfit >= 0 ? "var(--text-primary)" : "#ef4444" }}>
             {formatNum(liveProfit)} ج.م
           </p>
         </div>
@@ -1430,8 +1414,8 @@ export default function AdminDashboard() {
                     {visitsTimeRange === "7days"
                       ? "الزيارات خلال آخر 7 أيام"
                       : visitsTimeRange === "14days"
-                      ? "الزيارات خلال آخر أسبوعين (14 يوم)"
-                      : "الزيارات خلال آخر شهر (30 يوم)"}
+                        ? "الزيارات خلال آخر أسبوعين (14 يوم)"
+                        : "الزيارات خلال آخر شهر (30 يوم)"}
                   </h3>
                   <button
                     onClick={async () => {

@@ -356,7 +356,7 @@ function AdminBusStationsInner() {
   if (authLoading || loading) {
     return (
       <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--colorSecondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
+        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
         <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة الأتوبيسات...</p>
       </div>
     );
@@ -369,7 +369,7 @@ function AdminBusStationsInner() {
       {/* Upper Status/Welcome banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
             إدارة الأتوبيسات (سوبرجيت)
           </h1>
           <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
@@ -453,7 +453,7 @@ function AdminBusStationsInner() {
               paddingRight: "44px",
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--textSecondary)"
             }}
           />
@@ -712,7 +712,7 @@ function AdminBusStationsInner() {
                                   setFormCompanies(updated);
                                 }}
                                 className="input-fields"
-                                style={{ width: "100%", padding: "6px 10px", fontSize: "0.85rem", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)" }}
+                                style={{ width: "100%", padding: "6px 10px", fontSize: "0.85rem", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)" }}
                               >
                                 <option value="">بدون لوجو</option>
                                 {availableLogos.map((logo) => (
@@ -799,7 +799,7 @@ function AdminBusStationsInner() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setStationToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

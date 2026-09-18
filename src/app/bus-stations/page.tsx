@@ -326,7 +326,7 @@ ${reportDetails.trim()}`;
           width: "48px",
           height: "48px",
           border: "4px solid rgba(128,128,128,0.1)",
-          borderTop: "4px solid var(--colorSecondary, #3b82f6)",
+          borderTop: "4px solid var(--color-secondary, #3b82f6)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           margin: "0 auto 24px"
@@ -349,7 +349,7 @@ ${reportDetails.trim()}`;
           padding: "24px 20px 24px",
           textAlign: "center",
           position: "relative",
-          borderBottom: "1px solid var(--borderGlass)",
+          borderBottom: "1px solid var(--border-glass)",
           direction: "rtl"
         }}>
           {/* Back Button */}
@@ -363,9 +363,9 @@ ${reportDetails.trim()}`;
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
-                background: "var(--bgGlass-card)",
-                border: "1px solid var(--borderGlass)",
-                color: "var(--textPrimary)",
+                background: "var(--bg-glass-card)",
+                border: "1px solid var(--border-glass)",
+                color: "var(--text-primary)",
                 textDecoration: "none"
               }}
             >
@@ -381,7 +381,7 @@ ${reportDetails.trim()}`;
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               marginLeft: "10px",
               letterSpacing: "-0.5px",
             }}>
@@ -398,7 +398,7 @@ ${reportDetails.trim()}`;
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>
           <div className="metro-animate-slide-up metro-delay-200" style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "15px",
             padding: "35px 25px",
             textAlign: "center",
@@ -412,7 +412,7 @@ ${reportDetails.trim()}`;
               <img src="/images/icons3d/lockPage.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
             </div>
 
-            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
               مواقف الأتوبيسات يتطلب اشتراك في الباقة الذهبية
             </h2>
 
@@ -423,14 +423,14 @@ ${reportDetails.trim()}`;
             {/* Perks list */}
             <div style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "12px",
               padding: "16px 20px",
               textAlign: "right",
               margin: "0 auto 32px",
               maxWidth: "440px"
             }}>
-              <div style={{ fontWeight: "800", color: "var(--textPrimary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
+              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
               <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ تفاصيل مواقف الأتوبيسات الرئيسية (ألماظة، الترجمان، المنيب، عبود، إلخ)</li>
                 <li>✨ دليل الشركات المتاحة (السوبر جيت، جو باص، غرب ووسط الدلتا، إلخ)</li>
@@ -445,7 +445,7 @@ ${reportDetails.trim()}`;
                 <Link
                   href="/profile?expand=subscription"
                   style={{
-                    padding: "var(--paddingBtn)",
+                    padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
                     background: "var(--bg-subscribe-button-gold)",
                     color: "#000",
@@ -462,7 +462,7 @@ ${reportDetails.trim()}`;
                 <Link
                   href="/login"
                   style={{
-                    padding: "var(--paddingBtn)",
+                    padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
                     background: "var(--bg-subscribe-button-base)",
                     color: "#fff",
@@ -480,14 +480,14 @@ ${reportDetails.trim()}`;
               <Link
                 href="/"
                 style={{
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtn)",
-                  background: "var(--cancelBtn)",
-                  color: "var(--textMuted)",
+                  background: "var(--btn-cancel)",
+                  color: "var(--text-muted)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   display: "block"
                 }}
               >
@@ -508,7 +508,7 @@ ${reportDetails.trim()}`;
         padding: "24px 20px 24px",
         textAlign: "center",
         position: "relative",
-        borderBottom: "1px solid var(--borderGlass)",
+        borderBottom: "1px solid var(--border-glass)",
         direction: "rtl"
       }}>
         {/* Back Button */}
@@ -522,9 +522,9 @@ ${reportDetails.trim()}`;
               width: "40px",
               height: "40px",
               borderRadius: "50%",
-              background: "var(--bgGlass-card)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
+              background: "var(--bg-glass-card)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
               textDecoration: "none"
             }}
           >
@@ -540,7 +540,7 @@ ${reportDetails.trim()}`;
             fontFamily: "var(--font-display)",
             fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "600",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             letterSpacing: "-0.5px",
           }}>
             <img src="/images/icons2d/bus.png" alt="Cairo Bus" style={{ width: "40px", marginLeft: "10px" }} />
@@ -558,7 +558,7 @@ ${reportDetails.trim()}`;
         {/* Search Panel Card - Styled matching Metro / Monorail Search */}
         <div className="metro-animate-slide-up metro-delay-200" style={{
           backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "15px",
           padding: "20px",
           marginTop: "24px",
@@ -581,8 +581,8 @@ ${reportDetails.trim()}`;
                 padding: "14px 44px 14px 16px",
                 borderRadius: "12px",
                 background: "var(--bgSecondary)",
-                color: "var(--textPrimary)",
-                border: "1px solid var(--borderGlass)",
+                color: "var(--text-primary)",
+                border: "1px solid var(--border-glass)",
                 fontFamily: "var(--font-cairo)",
                 fontSize: "0.95rem",
                 height: "50px",
@@ -605,7 +605,7 @@ ${reportDetails.trim()}`;
         <div className="metro-animate-slide-up metro-delay-300" style={{ marginTop: "24px" }}>
           <div style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "15px",
             padding: "20px",
             boxShadow: "var(--shadow-card)",
@@ -621,14 +621,14 @@ ${reportDetails.trim()}`;
               flexWrap: "wrap",
               gap: "8px",
               background: "rgba(255, 255, 255, 0.02)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "8px",
               padding: "8px 12px",
               fontSize: "0.78rem",
               color: "var(--textSecondary)"
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <i className="bx bx-info-circle" style={{ color: "var(--colorSecondary)", fontSize: "0.95rem" }} />
+                <i className="bx bx-info-circle" style={{ color: "var(--color-secondary)", fontSize: "0.95rem" }} />
                 <span>انقر على اسم أي موقف لعرض تفاصيله والشركات المتاحة به.</span>
               </div>
 
@@ -665,7 +665,7 @@ ${reportDetails.trim()}`;
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {loading ? (
                 <div style={{ textAlign: "center", padding: "40px" }}>
-                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--color-secondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
                   <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري تحميل البيانات...</span>
                 </div>
               ) : filteredStations.length > 0 ? (
@@ -675,7 +675,7 @@ ${reportDetails.trim()}`;
                     <div
                       key={station.id || idx}
                       style={{
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
                         background: "var(--bgSecondary)",
                         overflow: "hidden",
@@ -705,13 +705,13 @@ ${reportDetails.trim()}`;
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            color: "var(--colorSecondary)",
+                            color: "var(--color-secondary)",
                             fontSize: "1.2rem"
                           }}>
                             <i className="bx bx-bus"></i>
                           </div>
                           <div style={{ textAlign: "right" }}>
-                            <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                            <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "700", color: "var(--text-primary)" }}>
                               {station.name}
                             </h3>
                             <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginTop: "2px" }}>
@@ -724,7 +724,7 @@ ${reportDetails.trim()}`;
                             fontSize: "0.75rem",
                             background: "var(--color-blue-600)",
                             color: "var(--color-white-50)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             padding: "4px 10px",
                             borderRadius: "20px",
                             fontWeight: "700"
@@ -746,7 +746,7 @@ ${reportDetails.trim()}`;
                       {isExpanded && (
                         <div style={{
                           padding: "20px",
-                          borderTop: "1px solid var(--borderGlass)",
+                          borderTop: "1px solid var(--border-glass)",
                           background: "var(--bgSecondary)",
                           display: "flex",
                           flexDirection: "column",
@@ -763,8 +763,8 @@ ${reportDetails.trim()}`;
                           {/* Companies inside the station */}
                           {Array.isArray(station.companies) && station.companies.length > 0 && (
                             <div>
-                              <strong style={{ color: "var(--textPrimary)", fontSize: "0.9rem", display: "block", marginBottom: "8px" }}>
-                                <i className="bx bxs-bus" style={{ color: "var(--colorSecondary)" }}></i> شركات السفر والحجز المتاحة بالداخل:
+                              <strong style={{ color: "var(--text-primary)", fontSize: "0.9rem", display: "block", marginBottom: "8px" }}>
+                                <i className="bx bxs-bus" style={{ color: "var(--color-secondary)" }}></i> شركات السفر والحجز المتاحة بالداخل:
                               </strong>
                               <div style={{ display: "flex", flexDirection: "column", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
                                 {station.companies.map((company, cIdx) => (
@@ -774,7 +774,7 @@ ${reportDetails.trim()}`;
                                       padding: "12px",
                                       borderRadius: "10px",
                                       background: "var(--bgPrimary)",
-                                      border: "1px solid var(--borderGlass)",
+                                      border: "1px solid var(--border-glass)",
                                     }}
                                   >
                                     <div style={{ display: "flex", alignItems: "center", gap: "10px", textAlign: "right" }}>
@@ -808,7 +808,7 @@ ${reportDetails.trim()}`;
                                         </div>
                                       )}
                                       <div>
-                                        <span style={{ color: "var(--textPrimary)", fontWeight: "700", fontSize: "0.85rem", display: "block" }}>
+                                        <span style={{ color: "var(--text-primary)", fontWeight: "700", fontSize: "0.85rem", display: "block" }}>
                                           {company.name}
                                         </span>
                                         <span style={{ color: "var(--textSecondary)", fontSize: "0.75rem" }}>
@@ -820,7 +820,7 @@ ${reportDetails.trim()}`;
                                       href={`tel:${company.phone}`}
                                       style={{
                                         background: "rgba(59, 130, 246, 0.1)",
-                                        color: "var(--colorSecondary)",
+                                        color: "var(--color-secondary)",
                                         padding: "6px 12px",
                                         borderRadius: "8px",
                                         fontSize: "0.8rem",
@@ -847,7 +847,7 @@ ${reportDetails.trim()}`;
                           {/* Served destinations */}
                           {Array.isArray(station.destinations) && station.destinations.length > 0 && (
                             <div>
-                              <strong style={{ color: "var(--textPrimary)", fontSize: "0.9rem", display: "block", marginBottom: "6px" }}>
+                              <strong style={{ color: "var(--text-primary)", fontSize: "0.9rem", display: "block", marginBottom: "6px" }}>
                                 🚌 أهم الوجهات المباشرة من الموقف:
                               </strong>
                               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -857,10 +857,10 @@ ${reportDetails.trim()}`;
                                     style={{
                                       fontSize: "0.75rem",
                                       background: "rgba(255, 255, 255, 0.05)",
-                                      border: "1px solid var(--borderGlass)",
+                                      border: "1px solid var(--border-glass)",
                                       padding: "4px 10px",
                                       borderRadius: "8px",
-                                      color: "var(--textPrimary)"
+                                      color: "var(--text-primary)"
                                     }}
                                   >
                                     {dest}
@@ -872,7 +872,7 @@ ${reportDetails.trim()}`;
 
                           {/* Action Bar (Report Problem & Map Directions) */}
                           <div style={{
-                            borderTop: "1px solid var(--borderGlass)",
+                            borderTop: "1px solid var(--border-glass)",
                             paddingTop: "14px",
                             display: "flex",
                             justifyContent: "space-between",
@@ -917,7 +917,7 @@ ${reportDetails.trim()}`;
                               style={{
                                 padding: "8px 18px",
                                 borderRadius: "8px",
-                                background: "var(--colorSecondary)",
+                                background: "var(--color-secondary)",
                                 color: "#ffffff",
                                 textDecoration: "none",
                                 fontWeight: "700",
@@ -948,7 +948,7 @@ ${reportDetails.trim()}`;
                   padding: "40px",
                   textAlign: "center",
                   color: "var(--text-muted)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "12px",
                   background: "var(--bgSecondary)"
                 }}>
@@ -988,7 +988,7 @@ ${reportDetails.trim()}`;
               maxWidth: "520px",
               width: "100%",
               backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "18px",
               boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)",
               overflow: "hidden",
@@ -1000,13 +1000,13 @@ ${reportDetails.trim()}`;
             {/* Modal Header */}
             <div style={{
               padding: "16px 20px",
-              borderBottom: "1px solid var(--borderGlass)",
+              borderBottom: "1px solid var(--border-glass)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "rgba(255, 255, 255, 0.02)"
             }}>
-              <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bx-error-circle" style={{ color: "#ef4444", fontSize: "1.3rem" }}></i>
                 الإبلاغ عن خطأ في بيانات المواقف
               </h3>
@@ -1046,7 +1046,7 @@ ${reportDetails.trim()}`;
                   }}>
                     <i className="bx bx-check"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم استلام بلاغك بنجاح!
                   </h4>
                   <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1055,7 +1055,7 @@ ${reportDetails.trim()}`;
                 </div>
               ) : limitChecking ? (
                 <div style={{ textAlign: "center", padding: "40px" }}>
-                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--color-secondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
                   <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
                 </div>
               ) : limitReached ? (
@@ -1074,7 +1074,7 @@ ${reportDetails.trim()}`;
                   }}>
                     <i className="bx bx-time-five"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h4 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
                   </h4>
                   <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1086,7 +1086,7 @@ ${reportDetails.trim()}`;
                     style={{
                       padding: "8px 24px",
                       borderRadius: "8px",
-                      background: "var(--colorSecondary)",
+                      background: "var(--color-secondary)",
                       color: "#fff",
                       border: "none",
                       fontWeight: "700",
@@ -1104,7 +1104,7 @@ ${reportDetails.trim()}`;
                     height: "56px",
                     borderRadius: "50%",
                     backgroundColor: "rgba(59, 130, 246, 0.15)",
-                    color: "var(--colorSecondary)",
+                    color: "var(--color-secondary)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1113,7 +1113,7 @@ ${reportDetails.trim()}`;
                   }}>
                     <i className="bx bx-user"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h4 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تسجيل الدخول مطلوب
                   </h4>
                   <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1125,7 +1125,7 @@ ${reportDetails.trim()}`;
                       style={{
                         padding: "8px 20px",
                         borderRadius: "8px",
-                        background: "var(--colorSecondary)",
+                        background: "var(--color-secondary)",
                         color: "#fff",
                         textDecoration: "none",
                         fontWeight: "700",
@@ -1142,7 +1142,7 @@ ${reportDetails.trim()}`;
                         borderRadius: "8px",
                         background: "rgba(255, 255, 255, 0.05)",
                         color: "var(--textSecondary)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         fontSize: "0.85rem",
                         cursor: "pointer"
                       }}
@@ -1155,7 +1155,7 @@ ${reportDetails.trim()}`;
                 <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   {/* Station selector */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       الموقف المعني بالبلاغ:
                     </label>
                     <select
@@ -1177,8 +1177,8 @@ ${reportDetails.trim()}`;
                         padding: "10px 14px",
                         borderRadius: "10px",
                         background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
                         fontSize: "0.9rem",
                         cursor: "pointer"
@@ -1198,7 +1198,7 @@ ${reportDetails.trim()}`;
                   {/* Custom station name if selected other */}
                   {(!selectedStationForReport || customStationName) && (
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         اسم الموقف أو المحطة: <span style={{ color: "#ef4444" }}>*</span>
                       </label>
                       <input
@@ -1213,8 +1213,8 @@ ${reportDetails.trim()}`;
                           padding: "10px 14px",
                           borderRadius: "10px",
                           background: "var(--bgSecondary)",
-                          color: "var(--textPrimary)",
-                          border: "1px solid var(--borderGlass)",
+                          color: "var(--text-primary)",
+                          border: "1px solid var(--border-glass)",
                           fontFamily: "var(--font-cairo)",
                           fontSize: "0.9rem"
                         }}
@@ -1224,7 +1224,7 @@ ${reportDetails.trim()}`;
 
                   {/* Problem Type */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       نوع الخطأ أو المشكلة:
                     </label>
                     <select
@@ -1236,8 +1236,8 @@ ${reportDetails.trim()}`;
                         padding: "10px 14px",
                         borderRadius: "10px",
                         background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
                         fontSize: "0.9rem",
                         cursor: "pointer"
@@ -1255,7 +1255,7 @@ ${reportDetails.trim()}`;
 
                   {/* Details textarea */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       تفاصيل التصحيح / الخطأ: <span style={{ color: "#ef4444" }}>*</span>
                     </label>
                     <textarea
@@ -1270,8 +1270,8 @@ ${reportDetails.trim()}`;
                         padding: "12px",
                         borderRadius: "10px",
                         background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
                         fontSize: "0.9rem",
                         resize: "vertical"
@@ -1328,7 +1328,7 @@ ${reportDetails.trim()}`;
                         padding: "10px 18px",
                         borderRadius: "8px",
                         background: "rgba(255, 255, 255, 0.05)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         color: "var(--textSecondary)",
                         cursor: "pointer",
                         fontSize: "0.85rem",

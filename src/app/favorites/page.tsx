@@ -127,11 +127,11 @@ export default function FavoritesPage() {
   return (
     <div style={{ minHeight: "100vh", paddingBottom: "100px" }}>
       {/* Header */}
-      <div style={{ position: "sticky", top: 0, zIndex: 10, background: "var(--bgGlass)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid var(--borderGlass)" }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 10, background: "var(--bg-glass)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid var(--border-glass)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <button onClick={() => router.back()} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", width: "40px", height: "40px", borderRadius: "50%" }}>
-              <i className="bx bx-chevron-right" style={{ fontSize: "1.8rem", color: "var(--textPrimary)" }}></i>
+              <i className="bx bx-chevron-right" style={{ fontSize: "1.8rem", color: "var(--text-primary)" }}></i>
             </button>
             <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "700" }}>الأماكن المفضلة</h1>
           </div>
@@ -143,13 +143,13 @@ export default function FavoritesPage() {
           <div style={{ position: "relative" }}>
             <div style={{ filter: "blur(6px)", opacity: 0.5, pointerEvents: "none", userSelect: "none" }}>
               <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-                <div style={{ width: "60px", height: "35px", background: "var(--borderGlass-bright)", borderRadius: "20px" }}></div>
-                <div style={{ width: "80px", height: "35px", background: "var(--borderGlass-bright)", borderRadius: "20px" }}></div>
-                <div style={{ width: "70px", height: "35px", background: "var(--borderGlass-bright)", borderRadius: "20px" }}></div>
+                <div style={{ width: "60px", height: "35px", background: "var(--border-glass-bright)", borderRadius: "20px" }}></div>
+                <div style={{ width: "80px", height: "35px", background: "var(--border-glass-bright)", borderRadius: "20px" }}></div>
+                <div style={{ width: "70px", height: "35px", background: "var(--border-glass-bright)", borderRadius: "20px" }}></div>
               </div>
               <div style={{ display: "grid", gap: "16px" }}>
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="glass-card" style={{ height: "114px", borderRadius: "12px", background: "var(--borderGlass-bright)" }}></div>
+                  <div key={i} className="glass-card" style={{ height: "114px", borderRadius: "12px", background: "var(--border-glass-bright)" }}></div>
                 ))}
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function FavoritesPage() {
                     height="auto"
                     alt="lock" />
                 </div>
-                <h2 style={{ margin: "0 0 10px", fontSize: "1.3rem", color: "var(--textPrimary)" }}>سجل الدخول أولاً</h2>
+                <h2 style={{ margin: "0 0 10px", fontSize: "1.3rem", color: "var(--text-primary)" }}>سجل الدخول أولاً</h2>
                 <p className="sub-title" style={{ margin: "0 0 20px", color: "var(--textSecondary)", lineHeight: "1.5" }}>
                   يجب عليك تسجيل الدخول لتتمكن من رؤية الأماكن المفضلة لديك وإدارتها.
                 </p>
@@ -182,7 +182,7 @@ export default function FavoritesPage() {
               width="64"
               height="auto"
               alt="broken heart" />
-            <p className="sub-title" style={{ margin: 0, fontSize: "1rem", color: "var(--textPrimary)", fontWeight: "600" }}>لا يوجد أماكن مفضلة</p>
+            <p className="sub-title" style={{ margin: 0, fontSize: "1rem", color: "var(--text-primary)", fontWeight: "600" }}>لا يوجد أماكن مفضلة</p>
             <p className="sub-title" style={{ marginTop: "8px", fontSize: "0.85rem" }}>لم تقم بإضافة أي أماكن للمفضلة بعد.</p>
           </div>
         ) : (
@@ -205,11 +205,11 @@ export default function FavoritesPage() {
                 onClick={() => setSelectedFavCategory("الكل")}
                 className="sub-title"
                 style={{
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtnTabs)",
                   border: "none",
                   background: selectedFavCategory === "الكل" ? "var(--mainBtn)" : "var(--secondBtn)",
-                  color: selectedFavCategory === "الكل" ? "#fff" : "var(--textPrimary)",
+                  color: selectedFavCategory === "الكل" ? "#fff" : "var(--text-primary)",
                   fontWeight: "600",
                   fontSize: "0.95rem",
                   cursor: "pointer",
@@ -221,7 +221,7 @@ export default function FavoritesPage() {
                 }}
               >
                 الكل
-                <span className="sub-title" style={{ background: selectedFavCategory === "الكل" ? "rgba(255,255,255,0.25)" : "var(--bgGlass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === "الكل" ? "#fff" : "var(--textSecondary)" }}>
+                <span className="sub-title" style={{ background: selectedFavCategory === "الكل" ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === "الكل" ? "#fff" : "var(--textSecondary)" }}>
                   {favorites.length}
                 </span>
               </button>
@@ -234,11 +234,11 @@ export default function FavoritesPage() {
                     onClick={() => setSelectedFavCategory(catLabel)}
                     className="sub-title"
                     style={{
-                      padding: "var(--paddingBtn)",
+                      padding: "var(--padding-btn)",
                       borderRadius: "var(--radiusBtnTabs)",
                       border: "none",
                       background: selectedFavCategory === catLabel ? "var(--mainBtn)" : "var(--secondBtn)",
-                      color: selectedFavCategory === catLabel ? "#fff" : "var(--textPrimary)",
+                      color: selectedFavCategory === catLabel ? "#fff" : "var(--text-primary)",
                       fontWeight: "600",
                       fontSize: "0.95rem",
                       cursor: "pointer",
@@ -250,7 +250,7 @@ export default function FavoritesPage() {
                     }}
                   >
                     {catLabel}
-                    <span style={{ background: selectedFavCategory === catLabel ? "rgba(255,255,255,0.25)" : "var(--bgGlass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === catLabel ? "#fff" : "var(--textSecondary)" }}>
+                    <span style={{ background: selectedFavCategory === catLabel ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === catLabel ? "#fff" : "var(--textSecondary)" }}>
                       {count}
                     </span>
                   </button>
@@ -285,7 +285,7 @@ export default function FavoritesPage() {
                       </button>
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <h2 style={{ fontSize: "1.05rem", margin: "0 0 4px", color: "var(--textPrimary)", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{place.name}</h2>
+                      <h2 style={{ fontSize: "1.05rem", margin: "0 0 4px", color: "var(--text-primary)", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{place.name}</h2>
                       <p className="sub-title" style={{ fontSize: "0.85rem", color: "var(--textSecondary)", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {place.briefLocation}
                       </p>

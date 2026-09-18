@@ -6,7 +6,7 @@
   margin: 0 auto;
   padding: 24px 16px 100px 16px;
   font-family: var(--font-body);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   direction: rtl;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -14,10 +14,10 @@
 
 /* Glassmorphism Panel */
 .glass-panel-luxury {
-  background: var(--bgGlass-card);
+  background: var(--bg-glass-card);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-24);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
   padding: 24px;
@@ -30,7 +30,7 @@
 }
 
 .glass-panel-luxury:hover {
-  border-color: var(--borderGlass-bright);
+  border-color: var(--border-glass-bright);
   box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -49,7 +49,7 @@
   font-family: var(--font-display);
   font-size: 2.2rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--textPrimary) 0%, var(--colorPrimary) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--colorPrimary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 12px;
@@ -147,8 +147,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--textPrimary);
-  border-bottom: 1px solid var(--borderGlass);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-glass);
   padding-bottom: 10px;
   word-break: break-word;
 }
@@ -160,9 +160,9 @@
   box-sizing: border-box;
   min-height: 110px;
   background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-14);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   padding: 14px 16px;
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -237,7 +237,7 @@
 
 .preset-pill {
   background: rgba(131, 131, 131, 0.08);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-14);
   padding: 10px;
   text-align: center;
@@ -257,7 +257,7 @@
 .preset-pill:hover {
   background: var(--hoverBtn);
   transform: translateY(-2px);
-  border-color: var(--borderGlass-bright);
+  border-color: var(--border-glass-bright);
 }
 
 .preset-pill.active {
@@ -273,7 +273,7 @@
 .preset-label {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   word-break: break-word;
   max-width: 100%;
 }
@@ -351,7 +351,7 @@
 
 .timeline-card {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-18);
   padding: 16px;
   transition: var(--transition-spring);
@@ -453,7 +453,7 @@
 
 .transit-details {
   background: rgba(131, 131, 131, 0.05);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-8);
   padding: 6px 12px;
   display: inline-flex;
@@ -472,7 +472,7 @@
   max-width: 100%;
   height: 260px;
   background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-18);
   position: relative;
   overflow: hidden;
@@ -485,11 +485,11 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background: var(--bgGlass);
+  background: var(--bg-glass);
   backdrop-filter: blur(10px);
   padding: 6px 12px;
   border-radius: var(--ra-8);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   font-size: 0.75rem;
   font-weight: 700;
   z-index: 5;
@@ -546,7 +546,7 @@
 
 .budget-item {
   background: rgba(131, 131, 131, 0.05);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-8);
   padding: 10px 6px;
   text-align: center;
@@ -622,7 +622,7 @@
   padding: 8px 10px;
   border-radius: var(--ra-8);
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   font-size: 0.75rem;
   min-width: 0;
   max-width: 100%;
@@ -730,7 +730,7 @@
 
 .ai-assistant-panel {
   position: relative;
-  background: var(--bgGlass-card);
+  background: var(--bg-glass-card);
   backdrop-filter: blur(24px) saturate(190%);
   -webkit-backdrop-filter: blur(24px) saturate(190%);
   border: 1px solid rgba(0, 111, 238, 0.25);
@@ -828,12 +828,12 @@
 
 .ai-prompt-chip {
   background: rgba(131, 131, 131, 0.08);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 20px;
   padding: 6px 12px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -872,7 +872,7 @@
 
 .ai-vibe-btn {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 12px;
   padding: 5px 10px;
   font-size: 0.74rem;
@@ -886,7 +886,7 @@
 
 .ai-vibe-btn:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .ai-vibe-btn.active {
@@ -928,7 +928,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  border-bottom: 1px solid var(--borderGlass);
+  border-bottom: 1px solid var(--border-glass);
   padding-bottom: 8px;
   flex-wrap: wrap;
   gap: 8px;
@@ -1051,7 +1051,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    border-top: 1px solid var(--borderGlass);
+    border-top: 1px solid var(--border-glass);
     padding-top: 10px;
     margin-top: 4px;
   }

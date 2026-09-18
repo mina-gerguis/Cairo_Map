@@ -143,12 +143,12 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
 
         .city-modal-shell {
           background-color: var(--bgPrimary);
-          color: var(--textPrimary);
+          color: var(--text-primary);
           border: 1px solid var(--border-color);
         }
 
-        .city-modal-textPrimary {
-          color: var(--textPrimary);
+        .city-modal-text-primary {
+          color: var(--text-primary);
         }
 
         .city-modal-textSecondary {
@@ -348,7 +348,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="city-modal-text-muted sub-title" style={{ fontSize: "0.8rem" }}>عدد السكان</div>
-                    <div className="city-modal-textPrimary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div className="city-modal-text-primary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {city.population || "غير محدد"}
                     </div>
                   </div>
@@ -383,7 +383,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="city-modal-text-muted sub-title" style={{ fontSize: "0.8rem" }}>المساحة</div>
-                    <div className="city-modal-textPrimary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div className="city-modal-text-primary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {city.area || "غير محدد"}
                     </div>
                   </div>
@@ -418,7 +418,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="city-modal-text-muted sub-title" style={{ fontSize: "0.8rem" }}>المدينة</div>
-                    <div className="city-modal-textPrimary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div className="city-modal-text-primary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", marginTop: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {city.density || "غير محدد"}
                     </div>
                   </div>
@@ -454,7 +454,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="city-modal-text-muted sub-title" style={{ fontSize: "0.8rem" }}>درجة الحرارة</div>
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
-                      <span className="city-modal-textPrimary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800" }}>
+                      <span className="city-modal-text-primary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800" }}>
                         {currentTemp || city.temperature || "غير محدد"}
                       </span>
                     </div>
@@ -472,7 +472,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                 marginBottom: "32px",
               }}
             >
-              <h2 className="city-modal-textPrimary" style={{ fontSize: "1rem", fontWeight: "800", marginBottom: "8px" }}>
+              <h2 className="city-modal-text-primary" style={{ fontSize: "1rem", fontWeight: "800", marginBottom: "8px" }}>
                 نبذة
               </h2>
               <p className="city-modal-textSecondary sub-title" style={{ fontSize: "0.98rem", lineHeight: "1.8", margin: 0 }}>
@@ -495,7 +495,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                     fontSize: "1.2rem",
                     fontWeight: "800",
                     margin: 0,
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
@@ -573,7 +573,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                             }}
                           >
                             <h2
-                              className="city-modal-textPrimary"
+                              className="city-modal-text-primary"
                               style={{
                                 fontSize: "1.05rem",
                                 fontWeight: "800",

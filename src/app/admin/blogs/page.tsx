@@ -362,7 +362,7 @@ export default function AdminBlogsPage() {
               جدول المقالات (public.blogs) غير موجود في قاعدة بيانات Supabase بعد
             </strong>
             <p style={{ margin: "0.25rem 0 0 0", fontSize: "0.9rem", opacity: 0.9 }}>
-              من فضلك قم بنسخ محتوى ملف <code>supabase_blogs_schema.sql</code> الموجود في المجلد الرئيسي للمشروع، ولصقه وتفيذه في لوحة تحكم Supabase الخاصة بك: 
+              من فضلك قم بنسخ محتوى ملف <code>supabase_blogs_schema.sql</code> الموجود في المجلد الرئيسي للمشروع، ولصقه وتفيذه في لوحة تحكم Supabase الخاصة بك:
               <br />
               <strong>Supabase Dashboard ➔ SQL Editor ➔ New Query ➔ Run</strong>
             </p>
@@ -478,9 +478,8 @@ export default function AdminBlogsPage() {
                   className={styles.cardCover}
                 />
                 <span
-                  className={`${styles.statusBadge} ${
-                    blog.status === "published" ? styles.badgePublished : styles.badgeDraft
-                  }`}
+                  className={`${styles.statusBadge} ${blog.status === "published" ? styles.badgePublished : styles.badgeDraft
+                    }`}
                   onClick={() => toggleStatus(blog)}
                   title="انقر لتغيير حالة المقال"
                 >
@@ -706,7 +705,7 @@ export default function AdminBlogsPage() {
               <div className={styles.formSubmitRow}>
                 <button
                   type="button"
-                  className={styles.cancelBtn}
+                  className={styles["btn-cancel"]}
                   onClick={() => setIsFormOpen(false)}
                 >
                   إلغاء
@@ -747,7 +746,7 @@ export default function AdminBlogsPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setDeleteBlogId(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: deleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

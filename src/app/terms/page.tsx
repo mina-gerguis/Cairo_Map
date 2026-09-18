@@ -34,7 +34,7 @@ export default function TermsPage() {
       content: (
         <>
           <p>
-            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--colorPrimary)" }}>ماب القاهرة (Cairo Map)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--colorSecondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
+            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--colorPrimary)" }}>ماب القاهرة (Cairo Map)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
           </p>
           <p style={{ marginTop: "8px" }}>
             إذا كنت لا توافق على أي بند من هذه الشروط، يرجى التوقف الفوري عن استخدام التطبيق وكافة خدمات الدليل المرتبطة به.
@@ -54,7 +54,7 @@ export default function TermsPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "12px" }}>
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--ra-14)",
               padding: "14px 16px",
             }}>
@@ -69,7 +69,7 @@ export default function TermsPage() {
 
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--ra-14)",
               padding: "14px 16px",
             }}>
@@ -84,7 +84,7 @@ export default function TermsPage() {
 
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--ra-14)",
               padding: "14px 16px",
             }}>
@@ -132,7 +132,7 @@ export default function TermsPage() {
       title: "4. حقوق الملكية الفكرية والعلامة التجارية",
       content: (
         <p>
-          كافة عناصر التصميم، الشفرات البرمجية، الأيقونات ثلاثية الأبعاد، الشعارات، والنصوص المنشورة في تطبيق <strong style={{ color: "var(--textPrimary)" }}>ماب القاهرة</strong> هي ملكية حصرية لشركة <strong>RepoDex</strong> (إحدى شركات جورجيوس القابضة) ومحمية بموجب قوانين حقوق الملكية الفكرية. لا يجوز نسخ أو إعادة إنتاج أو تفكيك أي جزء من المنصة دون إذن خطي مسبق.
+          كافة عناصر التصميم، الشفرات البرمجية، الأيقونات ثلاثية الأبعاد، الشعارات، والنصوص المنشورة في تطبيق <strong style={{ color: "var(--text-primary)" }}>ماب القاهرة</strong> هي ملكية حصرية لشركة <strong>RepoDex</strong> (إحدى شركات جورجيوس القابضة) ومحمية بموجب قوانين حقوق الملكية الفكرية. لا يجوز نسخ أو إعادة إنتاج أو تفكيك أي جزء من المنصة دون إذن خطي مسبق.
         </p>
       ),
     },
@@ -156,7 +156,7 @@ export default function TermsPage() {
           }}>
             <i className="bx bx-info-circle" style={{ fontSize: "1.8rem", color: "#f59e0b", marginTop: "2px" }}></i>
             <div>
-              <h4 style={{ margin: "0 0 4px 0", fontSize: "1rem", color: "var(--textPrimary)", fontWeight: "700" }}>طبيعة البيانات الاسترشادية</h4>
+              <h4 style={{ margin: "0 0 4px 0", fontSize: "1rem", color: "var(--text-primary)", fontWeight: "700" }}>طبيعة البيانات الاسترشادية</h4>
               <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
                 نبذل أقصى جهودنا للتحقق من صحة ودقة البيانات دورياً، ولكننا لا نضمن عدم حدوث تغييرات طارئة في أرقام الهواتف أو مواعيد العمل أو عناوين الفروع من قبل الجهات المالكة. استخدام المعلومات يقع على مسؤولية المستخدم الخاصة.
               </p>
@@ -199,7 +199,7 @@ export default function TermsPage() {
             alignItems: "center",
             gap: "8px",
             border: "none",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             textDecoration: "none",
             fontWeight: "600",
             fontSize: "0.9rem",
@@ -216,7 +216,7 @@ export default function TermsPage() {
             alignItems: "center",
             gap: "6px",
             fontSize: "0.8rem",
-            color: "var(--textMuted)",
+            color: "var(--text-muted)",
             padding: "6px 12px",
             borderRadius: "var(--ra-full)",
           }}>
@@ -290,7 +290,7 @@ export default function TermsPage() {
             fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
             fontWeight: "900",
             marginBottom: "12px",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             letterSpacing: "-0.02em",
           }}
         >
@@ -308,7 +308,7 @@ export default function TermsPage() {
             lineHeight: "1.7",
           }}
         >
-          القواعد والإرشادات المنظمة لضمان بيئة موثوقة وعادلة لجميع مستخدمي تطبيق <strong style={{ color: "var(--textPrimary)" }}>ماب القاهرة</strong>.
+          القواعد والإرشادات المنظمة لضمان بيئة موثوقة وعادلة لجميع مستخدمي تطبيق <strong style={{ color: "var(--text-primary)" }}>ماب القاهرة</strong>.
         </p>
       </div>
 
@@ -332,7 +332,7 @@ export default function TermsPage() {
               flexDirection: "column",
               gap: "10px",
               transition: "var(--transition-smooth)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
             }}
           >
             <div
@@ -351,7 +351,7 @@ export default function TermsPage() {
             >
               <i className={item.icon}></i>
             </div>
-            <h3 style={{ fontSize: "1.05rem", fontWeight: "700", margin: 0, color: "var(--textPrimary)" }}>
+            <h3 style={{ fontSize: "1.05rem", fontWeight: "700", margin: 0, color: "var(--text-primary)" }}>
               {item.title}
             </h3>
             <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", margin: 0, lineHeight: "1.6" }}>
@@ -371,7 +371,7 @@ export default function TermsPage() {
             style={{
               padding: "24px 22px",
               borderRadius: "var(--ra-18)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               transition: "var(--transition-smooth)",
             }}
           >
@@ -392,7 +392,7 @@ export default function TermsPage() {
                 <h2 style={{
                   fontSize: "1.2rem",
                   fontWeight: "700",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   margin: 0,
                 }}>
                   {sec.title}
@@ -422,8 +422,8 @@ export default function TermsPage() {
           padding: "28px 24px",
           borderRadius: "var(--ra-18)",
           textAlign: "center",
-          background: "linear-gradient(180deg, var(--bgGlass) 0%, rgba(0, 111, 238, 0.04) 100%)",
-          border: "1px solid var(--borderGlass)",
+          background: "linear-gradient(180deg, var(--bg-glass) 0%, rgba(0, 111, 238, 0.04) 100%)",
+          border: "1px solid var(--border-glass)",
         }}
       >
         <div
@@ -442,7 +442,7 @@ export default function TermsPage() {
         >
           <i className="bx bx-help-circle"></i>
         </div>
-        <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--textPrimary)" }}>
+        <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>
           هل لديك استفسار قانوني أو ملاحظة حول الشروط؟
         </h3>
         <p style={{ fontSize: "0.92rem", color: "var(--textSecondary)", maxWidth: "520px", margin: "0 auto 18px", lineHeight: "1.6" }}>

@@ -711,7 +711,7 @@ ${reportDetails.trim()}`;
           width: "48px",
           height: "48px",
           border: "4px solid rgba(128,128,128,0.1)",
-          borderTop: "4px solid var(--colorSecondary, #3b82f6)",
+          borderTop: "4px solid var(--color-secondary, #3b82f6)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           marginBottom: "24px"
@@ -734,7 +734,7 @@ ${reportDetails.trim()}`;
           padding: "24px 20px 24px",
           textAlign: "center",
           position: "relative",
-          borderBottom: "1px solid var(--borderGlass)",
+          borderBottom: "1px solid var(--border-glass)",
           direction: "rtl"
         }}>
           {/* Cover Image Banner */}
@@ -745,7 +745,7 @@ ${reportDetails.trim()}`;
               justifyContent: "center",
               fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               margin: "0 0 10px",
               letterSpacing: "-0.5px",
             }}>
@@ -760,7 +760,7 @@ ${reportDetails.trim()}`;
         {/* Lock Panel centered container */}
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>
           <div ref={paywallCardRef} style={{
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "var(--radius-card)",
             padding: "35px 25px",
             textAlign: "center",
@@ -775,7 +775,7 @@ ${reportDetails.trim()}`;
               <img src="/images/icons3d/CairoSilver.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", objectFit: "contain" }} />
             </div>
 
-            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
               دليل سكك حديد مصر يتطلب أشتراك في الباقة الفضية
             </h2>
 
@@ -788,12 +788,12 @@ ${reportDetails.trim()}`;
               background: "rgba(128, 128, 128, 0.04)",
               padding: "18px 20px",
               borderRadius: "var(--radius-card)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               textAlign: "right",
               margin: "0 auto 28px",
               maxWidth: "420px"
             }}>
-              <div style={{ fontWeight: "800", color: "var(--textPrimary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <span>ما الذي يميز الباقة الفضية ؟</span>
               </div>
               <ul style={{
@@ -849,7 +849,7 @@ ${reportDetails.trim()}`;
                 href="/"
                 className="btn btn-cancel"
                 style={{
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
@@ -914,7 +914,7 @@ ${reportDetails.trim()}`;
                 onClick={() => setSelectedRouteId(route.id)}
                 style={{
                   background: `radial-gradient(circle at 100% 0%, ${iconData.glowColor}98 20%, transparent 65%), var(--bgPrimary)`,
-                  border: "1px solid var(--borderSecondary)",
+                  border: "1px solid var(--border-secondary)",
                   borderRadius: "var(--ra-8)",
                   padding: "16px 16px 14px 16px",
                   cursor: "pointer",
@@ -937,7 +937,7 @@ ${reportDetails.trim()}`;
                 <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
                   <div
                     style={{
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontFamily: "var(--font-display)",
                       fontWeight: "700",
                       fontSize: "0.92rem",
@@ -953,7 +953,7 @@ ${reportDetails.trim()}`;
                   <div
                     style={{
                       fontSize: "0.75rem",
-                      color: "var(--textMuted)",
+                      color: "var(--text-muted)",
                       fontWeight: "500",
                       marginTop: "3px",
                       whiteSpace: "nowrap",
@@ -977,22 +977,22 @@ ${reportDetails.trim()}`;
 
           {/* Details Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[0]?.name?.replace(" (رمسيس)", "")?.replace(" (محطة رمسيس)", "") || currentRoute?.from || "القاهرة"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>البداية</div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[currentRoute.stops.length - 1]?.name?.replace(" (محطة سيدي جابر / مصر)", "") || currentRoute?.to || "الوصول"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>النهاية</div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
-              <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--textPrimary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.duration || "غير معددة"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>وقت السفر</div>
@@ -1001,10 +1001,10 @@ ${reportDetails.trim()}`;
 
           {/* Detailed stops vertical timeline */}
           <div style={{
-            background: "var(--bgGlass)",
+            background: "var(--bg-glass)",
             padding: "20px 16px",
             borderRadius: "var(--ra-8)",
-            border: "1px solid var(--borderGlass)"
+            border: "1px solid var(--border-glass)"
           }}>
             <h2 className="text-md fw-bold mb-4">
               📌 المحطات الرئيسية على هذا الخط
@@ -1035,7 +1035,7 @@ ${reportDetails.trim()}`;
                         <span style={{
                           fontSize: "0.88rem",
                           fontWeight: isFirst || isLast ? "700" : "500",
-                          color: isUnderConstruction ? "#ef4444" : (isFirst || isLast ? "var(--textPrimary)" : "var(--textSecondary)"),
+                          color: isUnderConstruction ? "#ef4444" : (isFirst || isLast ? "var(--text-primary)" : "var(--textSecondary)"),
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "8px"
@@ -1087,15 +1087,15 @@ ${reportDetails.trim()}`;
           {/* Tips Section */}
           <div style={{
             marginTop: "12px",
-            background: "var(--bgGlass)",
-            border: "1px solid var(--borderGlass)",
+            background: "var(--bg-glass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "var(--ra-8)",
             padding: "16px"
           }}>
             <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
               <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: color, fontSize: "1.1rem", verticalAlign: "middle" }}></i>
               <strong>نصيحة السفر: </strong>
-              <span style={{ color: "var(--textMuted)" }}>{currentRoute.tips}</span>
+              <span style={{ color: "var(--text-muted)" }}>{currentRoute.tips}</span>
             </p>
           </div>
 
@@ -1103,7 +1103,7 @@ ${reportDetails.trim()}`;
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
             <button
               type="button"
-              className="btn btn-reportProblem"
+              className="btn btn-report"
               onClick={() => handleOpenReportModal(null, true)}
               style={{
                 fontSize: "0.8rem",
@@ -1137,7 +1137,7 @@ ${reportDetails.trim()}`;
           <h2 style={{
             fontSize: "1.25rem",
             fontWeight: "800",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             margin: "0 0 8px"
           }}>
             <i className="bx bxs-book-open" style={{ marginLeft: "8px", color: color, fontSize: "1.3rem", verticalAlign: "middle" }}></i>
@@ -1175,7 +1175,7 @@ ${reportDetails.trim()}`;
                     name: "App Store",
                     url: "https://apps.apple.com/eg/app/سكك-حديد-مصر-التطبيق-الرسمى/id1486815902?l=ar",
                     icon: "bx bxl-apple",
-                    iconColor: "var(--textPrimary)"
+                    iconColor: "var(--text-primary)"
                   }
                 ]
               }
@@ -1186,7 +1186,7 @@ ${reportDetails.trim()}`;
                   padding: "16px",
                   borderRadius: "12px",
                   background: "rgba(128,128,128,0.03)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "flex-start",
@@ -1196,7 +1196,7 @@ ${reportDetails.trim()}`;
                 }}
               >
                 <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-                  <h3 className="sub-title" style={{ margin: "0 0 6px 0", color: "var(--textPrimary)", fontWeight: "700", fontSize: "0.92rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <h3 className="sub-title" style={{ margin: "0 0 6px 0", color: "var(--text-primary)", fontWeight: "700", fontSize: "0.92rem", display: "flex", alignItems: "center", gap: "6px" }}>
                     {item.title}
                   </h3>
                   <p className="sub-title" style={{ margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
@@ -1221,12 +1221,12 @@ ${reportDetails.trim()}`;
                         gap: "6px",
                         fontSize: "0.8rem",
                         fontWeight: "600",
-                        color: "var(--textPrimary)",
+                        color: "var(--text-primary)",
                         textDecoration: "none",
                         padding: "6px 10px",
                         borderRadius: "8px",
                         background: "rgba(128, 128, 128, 0.06)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         transition: "all 0.2s ease",
                         cursor: "pointer"
                       }}
@@ -1236,7 +1236,7 @@ ${reportDetails.trim()}`;
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = "rgba(128, 128, 128, 0.06)";
-                        e.currentTarget.style.borderColor = "var(--borderGlass)";
+                        e.currentTarget.style.borderColor = "var(--border-glass)";
                       }}
                     >
                       <i className={link.icon} style={{ fontSize: "1.15rem", color: link.iconColor || color || "#3b82f6" }}></i>
@@ -1251,8 +1251,8 @@ ${reportDetails.trim()}`;
 
         {/* Report Problem Section */}
         <div style={{
-          background: "var(--bgLinearAlert)",
-          border: "1px solid var(--borderSecondary)",
+          background: "var(--bg-linear-alert)",
+          border: "1px solid var(--border-secondary)",
           borderRadius: "var(--ra-8)",
           padding: "20px",
           display: "flex",
@@ -1291,7 +1291,7 @@ ${reportDetails.trim()}`;
 
           <button
             type="button"
-            className="btn btn-reportProblem"
+            className="btn btn-report"
             onClick={() => handleOpenReportModal()}
             style={{
               padding: "6px 10px",
@@ -1332,7 +1332,7 @@ ${reportDetails.trim()}`;
           <div ref={modalBoxRef} style={{
             backgroundColor: "var(--bgPrimary)",
             borderRadius: "var(--radius-card)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             width: "100%",
             maxWidth: "520px",
             maxHeight: "90vh",
@@ -1345,13 +1345,13 @@ ${reportDetails.trim()}`;
             {/* Modal Header */}
             <div style={{
               padding: "16px 20px",
-              borderBottom: "1px solid var(--borderGlass)",
+              borderBottom: "1px solid var(--border-glass)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "rgba(255, 255, 255, 0.02)"
             }}>
-              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
                 <span>مشكلة في خدمة سكك حديد مصر</span>
               </h5>
@@ -1387,7 +1387,7 @@ ${reportDetails.trim()}`;
                   }}>
                     <i className="bx bx-check"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم استلام بلاغك بنجاح!
                   </h4>
                   <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1396,8 +1396,8 @@ ${reportDetails.trim()}`;
                 </div>
               ) : limitChecking ? (
                 <div style={{ textAlign: "center", padding: "40px" }}>
-                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
-                  <span style={{ color: "var(--textMuted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
+                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--color-secondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
                 </div>
               ) : limitReached ? (
                 <div style={{ textAlign: "center", padding: "20px 10px" }}>
@@ -1411,7 +1411,7 @@ ${reportDetails.trim()}`;
                   }}>
                     <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%", objectFit: "contain" }} loading="lazy" />
                   </div>
-                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
                   </h5>
                   <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1433,7 +1433,7 @@ ${reportDetails.trim()}`;
                     height: "56px",
                     borderRadius: "50%",
                     backgroundColor: "rgba(59, 130, 246, 0.15)",
-                    color: "var(--colorSecondary)",
+                    color: "var(--color-secondary)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1442,7 +1442,7 @@ ${reportDetails.trim()}`;
                   }}>
                     <i className="bx bx-user"></i>
                   </div>
-                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تسجيل الدخول مطلوب
                   </h5>
                   <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1462,7 +1462,7 @@ ${reportDetails.trim()}`;
                 <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   {/* Scope Segmented Control */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "8px" }}>
                       نطاق المشكلة:
                     </label>
                     <div className="tabs" style={{ display: "grid", gridTemplateColumns: currentRoute ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
@@ -1478,8 +1478,8 @@ ${reportDetails.trim()}`;
                           padding: "8px 4px",
                           borderRadius: "8px",
                           border: "none",
-                          background: reportTargetScope === "general" ? "var(--textPrimary)" : "transparent",
-                          color: reportTargetScope === "general" ? "var(--bgMode)" : "var(--textPrimary)",
+                          background: reportTargetScope === "general" ? "var(--text-primary)" : "transparent",
+                          color: reportTargetScope === "general" ? "var(--bgMode)" : "var(--text-primary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1499,8 +1499,8 @@ ${reportDetails.trim()}`;
                           padding: "8px 4px",
                           borderRadius: "8px",
                           border: "none",
-                          background: reportTargetScope === "station" ? "var(--textPrimary)" : "transparent",
-                          color: reportTargetScope === "station" ? "var(--bgMode)" : "var(--textPrimary)",
+                          background: reportTargetScope === "station" ? "var(--text-primary)" : "transparent",
+                          color: reportTargetScope === "station" ? "var(--bgMode)" : "var(--text-primary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1523,8 +1523,8 @@ ${reportDetails.trim()}`;
                             padding: "8px 4px",
                             borderRadius: "8px",
                             border: "none",
-                            background: reportTargetScope === "route" ? "var(--textPrimary)" : "transparent",
-                            color: reportTargetScope === "route" ? "var(--bgMode)" : "var(--textPrimary)",
+                            background: reportTargetScope === "route" ? "var(--text-primary)" : "transparent",
+                            color: reportTargetScope === "route" ? "var(--bgMode)" : "var(--text-primary)",
                             fontWeight: "700",
                             fontSize: "0.8rem",
                             cursor: "pointer",
@@ -1540,7 +1540,7 @@ ${reportDetails.trim()}`;
                   {/* If Scope is Station: Searchable station autocomplete selector */}
                   {reportTargetScope === "station" && (
                     <div style={{ position: "relative" }}>
-                      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         <span>اختر أو ابحث عن المحطة:</span>
                         {reportSelectedStation && (
                           <span style={{ fontSize: "0.74rem", color: color, fontWeight: "700" }}>
@@ -1569,8 +1569,8 @@ ${reportDetails.trim()}`;
                             padding: "10px 36px 10px 36px",
                             borderRadius: "10px",
                             background: "var(--bgSecondary)",
-                            color: "var(--textPrimary)",
-                            border: reportSelectedStation ? `1px solid var(--textPrimary)` : "1px solid var(--borderGlass)",
+                            color: "var(--text-primary)",
+                            border: reportSelectedStation ? `1px solid var(--text-primary)` : "1px solid var(--border-glass)",
                             fontSize: "0.9rem",
                             direction: "rtl"
                           }}
@@ -1630,7 +1630,7 @@ ${reportDetails.trim()}`;
                           left: 0,
                           right: 0,
                           background: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           borderRadius: "var(--radius-card)",
                           overflow: "hidden",
                           zIndex: 1100,
@@ -1676,8 +1676,8 @@ ${reportDetails.trim()}`;
                                   }}
                                 >
                                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                    <i className="bx bx-map-pin" style={{ color: isSelected ? "var(--colorSecondary)" : "var(--textSecondary)", fontSize: "1rem" }} />
-                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)" }}>
+                                    <i className="bx bx-map-pin" style={{ color: isSelected ? "var(--color-secondary)" : "var(--textSecondary)", fontSize: "1rem" }} />
+                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--color-secondary)" : "var(--text-primary)" }}>
                                       {st.name}
                                     </span>
                                   </div>
@@ -1690,7 +1690,7 @@ ${reportDetails.trim()}`;
                                       background: "rgba(128, 128, 128, 0.1)",
                                       color: "var(--textSecondary)",
                                       fontWeight: "bold",
-                                      border: "1px solid var(--borderGlass)"
+                                      border: "1px solid var(--border-glass)"
                                     }}>
                                       {st.routeName}
                                     </span>
@@ -1715,7 +1715,7 @@ ${reportDetails.trim()}`;
                       background: "rgba(59, 130, 246, 0.06)",
                       border: "1px solid rgba(59, 130, 246, 0.2)",
                       fontSize: "0.84rem",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       lineHeight: "1.6"
                     }}>
                       <div><strong>الخط:</strong> {currentRoute.name}</div>
@@ -1727,7 +1727,7 @@ ${reportDetails.trim()}`;
 
                   {/* Custom Problem Type Dropdown Selector */}
                   <div style={{ position: "relative" }}>
-                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       <span>نوع المشكلة:</span>
                     </label>
 
@@ -1743,8 +1743,8 @@ ${reportDetails.trim()}`;
                             padding: "9px 12px",
                             borderRadius: "var(--radius-card)",
                             background: "var(--bgSecondary)",
-                            color: "var(--textPrimary)",
-                            border: showProblemTypeDropdown ? `1px solid var(--textPrimary)` : "1px solid var(--borderGlass)",
+                            color: "var(--text-primary)",
+                            border: showProblemTypeDropdown ? `1px solid var(--text-primary)` : "1px solid var(--border-glass)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "space-between",
@@ -1756,7 +1756,7 @@ ${reportDetails.trim()}`;
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                             <div style={{ minWidth: 0, textAlign: "right" }}>
-                              <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--textPrimary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                 {curOpt.title}
                               </div>
                               <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -1779,7 +1779,7 @@ ${reportDetails.trim()}`;
                           left: 0,
                           right: 0,
                           background: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           borderRadius: "var(--radius-card)",
                           zIndex: 1200,
                           maxHeight: "360px",
@@ -1821,10 +1821,10 @@ ${reportDetails.trim()}`;
                             >
                               <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                                 <div style={{ minWidth: 0, textAlign: "right" }}>
-                                  <div style={{ fontSize: "0.84rem", fontWeight: isSelected ? "800" : "600", color: isSelected ? "var(--textPrimary)" : "var(--textPrimary)" }}>
+                                  <div style={{ fontSize: "0.84rem", fontWeight: isSelected ? "800" : "600", color: isSelected ? "var(--text-primary)" : "var(--text-primary)" }}>
                                     {opt.title}
                                   </div>
-                                  <div style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>
+                                  <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
                                     {opt.desc}
                                   </div>
                                 </div>
@@ -1838,7 +1838,7 @@ ${reportDetails.trim()}`;
 
                   {/* Details Textarea */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       تفاصيل المشكلة : <span style={{ color: "#ef4444" }}>*</span>
                     </label>
                     <textarea
@@ -1853,8 +1853,8 @@ ${reportDetails.trim()}`;
                         padding: "12px",
                         borderRadius: "10px",
                         background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-body)",
                         fontSize: "0.9rem",
                         resize: "vertical"
@@ -1864,7 +1864,7 @@ ${reportDetails.trim()}`;
 
                   {/* Enhanced Image File Upload */}
                   <div>
-                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       <span>صورة توضيحية (اختياري):</span>
                       <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
                         JPG, PNG, WEBP (Max~5MB)
@@ -1886,7 +1886,7 @@ ${reportDetails.trim()}`;
                         }}
                         style={{
                           position: "relative",
-                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderDashed)",
+                          border: isDraggingImage ? "2px dashed var(--color-secondary)" : "2px dashed var(--borderDashed)",
                           borderRadius: "12px",
                           background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
                           padding: "20px 16px",
@@ -1932,14 +1932,14 @@ ${reportDetails.trim()}`;
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          color: color || "var(--colorSecondary)",
+                          color: color || "var(--color-secondary)",
                           fontSize: "1.4rem"
                         }}>
                           <i className="bx bx-cloud-upload"></i>
                         </div>
 
                         <div>
-                          <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "3px" }}>
+                          <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
                             اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                           </div>
                           <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
@@ -1950,7 +1950,7 @@ ${reportDetails.trim()}`;
                     ) : (
                       <div style={{
                         position: "relative",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
                         background: "var(--bgSecondary)",
                         padding: "10px 12px",
@@ -1966,7 +1966,7 @@ ${reportDetails.trim()}`;
                           overflow: "hidden",
                           flexShrink: 0,
                           background: "#000",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -1988,7 +1988,7 @@ ${reportDetails.trim()}`;
                           <div style={{
                             fontSize: "0.86rem",
                             fontWeight: "700",
-                            color: "var(--textPrimary)",
+                            color: "var(--text-primary)",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis"

@@ -35,7 +35,7 @@ export default function RequireAuthModal({
       secondaryButton={{
         label: "إلغاء",
         onClick: onClose,
-        bgColor: "var(--cancelBtn)",
+        bgColor: "var(--btn-cancel)",
       }}
     />
   );

@@ -422,7 +422,7 @@ export default function RichTextEditor({
             <div className={styles.modalActions}>
               <button
                 type="button"
-                className={styles.modalCancelBtn}
+                className={styles["modalbtn-cancel"]}
                 onClick={() => setShowImageModal(false)}
               >
                 إلغاء
@@ -458,7 +458,7 @@ export default function RichTextEditor({
             <div className={styles.modalActions}>
               <button
                 type="button"
-                className={styles.modalCancelBtn}
+                className={styles["modalbtn-cancel"]}
                 onClick={() => setShowLinkModal(false)}
               >
                 إلغاء

@@ -150,7 +150,7 @@ export default function IntercityBusesPage() {
             🚌
           </div>
           <div>
-            <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+            <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
               دليل أتوبيسات الأقاليم والسفر بين المحافظات
             </h1>
             <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", marginTop: "6px", margin: 0 }}>
@@ -161,7 +161,7 @@ export default function IntercityBusesPage() {
       </div>
 
       {/* Main Companies Grid */}
-      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "16px" }}>
+      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "16px" }}>
         🏢 أبرز شركات السفر والنقل الجماعي
       </h2>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "16px", marginBottom: "32px" }}>
@@ -181,7 +181,7 @@ export default function IntercityBusesPage() {
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
                 <span style={{ fontSize: "1.8rem" }}>{company.logo}</span>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                   {company.name}
                 </h3>
               </div>
@@ -215,7 +215,7 @@ export default function IntercityBusesPage() {
       </div>
 
       {/* Search & Route Schedule */}
-      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "16px" }}>
+      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "16px" }}>
         🗺️ مواعيد الرحلات والخطوط الشائعة
       </h2>
 
@@ -231,9 +231,9 @@ export default function IntercityBusesPage() {
             minWidth: "260px",
             padding: "12px 18px",
             borderRadius: "14px",
-            background: "var(--bgGlass)",
-            border: "1px solid var(--borderGlass)",
-            color: "var(--textPrimary)",
+            background: "var(--bg-glass)",
+            border: "1px solid var(--border-glass)",
+            color: "var(--text-primary)",
             outline: "none"
           }}
         />
@@ -246,9 +246,9 @@ export default function IntercityBusesPage() {
             minWidth: "180px",
             padding: "12px 18px",
             borderRadius: "14px",
-            background: "var(--bgGlass)",
-            border: "1px solid var(--borderGlass)",
-            color: "var(--textPrimary)"
+            background: "var(--bg-glass)",
+            border: "1px solid var(--border-glass)",
+            color: "var(--text-primary)"
           }}
         >
           <option value="all">جميع الشركات</option>
@@ -277,7 +277,7 @@ export default function IntercityBusesPage() {
                 <span style={{ padding: "6px 12px", borderRadius: "10px", background: "rgba(99, 102, 241, 0.2)", color: "#818cf8", fontSize: "0.85rem", fontWeight: "800" }}>
                   {route.companyName}
                 </span>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                   {route.from} ➔ {route.to}
                 </h3>
               </div>
@@ -292,7 +292,7 @@ export default function IntercityBusesPage() {
               <span>💺 <strong>الفئة:</strong> {route.classType}</span>
             </div>
 
-            <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "12px", borderRadius: "14px", border: "1px solid var(--borderGlass)" }}>
+            <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "12px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
               <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>
                 ⏰ مواعيد القيام اليومية:
               </span>
@@ -303,7 +303,7 @@ export default function IntercityBusesPage() {
                     style={{
                       background: "rgba(99, 102, 241, 0.12)",
                       border: "1px solid rgba(99, 102, 241, 0.25)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       padding: "4px 10px",
                       borderRadius: "8px",
                       fontSize: "0.82rem",

@@ -1040,7 +1040,7 @@ export default function AdminLayout({
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setShowLogoutModal(false),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isLoggingOut,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

@@ -342,8 +342,8 @@ function AdminParkingInner() {
       {/* Sub header operations */}
       <div className={styles.sectionHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
-          <h2 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--textPrimary)", margin: 0, }}>
-            إدارة الجراجات وخدمة 
+          <h2 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--text-primary)", margin: 0, }}>
+            إدارة الجراجات وخدمة
           </h2>
           <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "4px", margin: 0 }}>
             يمكنك إضافة، تعديل، وحذف بيانات الجراجات المتاحة في التطبيق وربطها بمحطات المترو والأسعار.
@@ -389,7 +389,7 @@ function AdminParkingInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--textMuted)",
+            color: "var(--text-muted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -403,12 +403,12 @@ function AdminParkingInner() {
               paddingRight: "44px",
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--textSecondary)"
             }}
           />
         </div>
-        <div style={{ fontSize: "0.9rem", color: "var(--textMuted)" }}>
+        <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
           إجمالي الجراجات: {filteredRows.length}
         </div>
       </div>
@@ -507,7 +507,7 @@ function AdminParkingInner() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setItemToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}
@@ -534,7 +534,7 @@ function AdminParkingInner() {
             maxHeight: "90vh",
             overflowY: "auto",
             padding: "30px",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             background: "#0f172a",
             borderRadius: "var(--radius-card)",
             boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
@@ -707,7 +707,7 @@ function AdminParkingInner() {
                   type="button"
                   onClick={() => setShowModal(false)}
                   className="btn btn-cancel"
-                 style={{
+                  style={{
                     color: "#fff",
                   }}
                 >

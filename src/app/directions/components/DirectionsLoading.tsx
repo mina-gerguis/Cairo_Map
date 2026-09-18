@@ -19,7 +19,7 @@ export default function DirectionsLoading() {
           width: "48px",
           height: "48px",
           border: "4px solid rgba(128,128,128,0.1)",
-          borderTop: "4px solid var(--colorSecondary, #3b82f6)",
+          borderTop: "4px solid var(--color-secondary, #3b82f6)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           marginBottom: "24px"

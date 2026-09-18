@@ -580,7 +580,7 @@ export default function AdminReportsPage() {
     const address = getField("العنوان والمعالم") || getField("العنوان") || "";
     const nearestMetro = getField("أقرب محطة مترو") || getField("أقرب مترو") || "";
     const type = getField("نوع الجراج") || "مغطى ومتعدد الطوابق";
-    
+
     // Parse hourly rate
     const rateStr = getField("سعر الساعة التقديري") || getField("سعر الساعة");
     const hourlyRateNum = parseInt(rateStr.replace(/\D/g, ""), 10) || 10;
@@ -769,7 +769,7 @@ export default function AdminReportsPage() {
   if (authLoading || authChecking) {
     return (
       <div style={{ textAlign: "center", padding: "50px", marginTop: "100px" }}>
-        <div style={{ width: "40px", height: "40px", border: "3px solid var(--borderGlass)", borderTop: "3px solid var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
+        <div style={{ width: "40px", height: "40px", border: "3px solid var(--border-glass)", borderTop: "3px solid var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
         <p style={{ color: "var(--textSecondary)" }}>جاري التحقق من الصلاحيات...</p>
       </div>
     );
@@ -781,7 +781,7 @@ export default function AdminReportsPage() {
         <div style={{ width: "80px", height: "80px", background: "rgba(255, 59, 48, 0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
           <i className="bx bxs-error-circle" style={{ fontSize: "3rem", color: "#ff3b30" }}></i>
         </div>
-        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--textPrimary)" }}>صلاحيات غير كافية</h2>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--text-primary)" }}>صلاحيات غير كافية</h2>
         <p style={{ color: "var(--textSecondary)", marginBottom: "32px", lineHeight: "1.6" }}>
           عفواً، حسابك لا يمتلك صلاحيات المسؤول للوصول إلى هذه الصفحة.
         </p>
@@ -949,7 +949,7 @@ export default function AdminReportsPage() {
     <div style={{ padding: "30px 0 120px 0" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
         <div>
-          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.64rem", fontWeight: "800", color: "var(--textPrimary)", margin: "0 0 6px" }}>البلاغات</h1>
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.64rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>البلاغات</h1>
           <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", margin: 0 }}>مراجعة التواصل وبلاغات الأماكن والمواقف والاقتراحات والشكاوى</p>
         </div>
         <button
@@ -967,7 +967,7 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Segmented Control for Tabs */}
-      <div style={{ display: "flex", background: "rgba(255,255,255,0.03)", padding: "4px", borderRadius: "14px", border: "1px solid var(--borderGlass)", marginBottom: "24px", maxWidth: "750px", overflowX: "auto" }}>
+      <div style={{ display: "flex", background: "rgba(255,255,255,0.03)", padding: "4px", borderRadius: "14px", border: "1px solid var(--border-glass)", marginBottom: "24px", maxWidth: "750px", overflowX: "auto" }}>
         <button
           onClick={() => {
             setActiveReportTab("places");
@@ -1241,7 +1241,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -1269,7 +1269,7 @@ export default function AdminReportsPage() {
           {loadingReports ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل البلاغات...</div>
           ) : filteredReports.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--borderGlass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--border-glass)", borderRadius: "16px", color: "var(--text-muted)" }}>
               <i className="bx bx-info-circle" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px" }}></i>
               <span>لا يوجد بلاغات مطابقة للتصفية المحددة</span>
             </div>
@@ -1284,7 +1284,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s"
                     }}
                   >
@@ -1299,7 +1299,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>{report.place_name}</span>
+                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>{report.place_name}</span>
                           <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>#{report.place_id}</span>
                           {getStatusBadge(report.status)}
                         </div>
@@ -1330,7 +1330,7 @@ export default function AdminReportsPage() {
                             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>تفاصيل البلاغ</h4>
 
                             {/* Render details based on type */}
-                            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px" }}>
+                            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
 
                               {/* name incorrect */}
                               {report.problem_type === "name" && (
@@ -1419,7 +1419,7 @@ export default function AdminReportsPage() {
                                       <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px" }}>الأقسام المحددة للتعديل:</span>
                                       <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                                         {report.details.selectedIssues.map((issueId: string) => (
-                                          <span key={issueId} style={{ background: "rgba(0, 122, 255, 0.12)", color: "var(--colorSecondary)", padding: "4px 10px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "bold", border: "1px solid rgba(0, 122, 255, 0.2)" }}>
+                                          <span key={issueId} style={{ background: "rgba(0, 122, 255, 0.12)", color: "var(--color-secondary)", padding: "4px 10px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "bold", border: "1px solid rgba(0, 122, 255, 0.2)" }}>
                                             {getProblemLabel(issueId)}
                                           </span>
                                         ))}
@@ -1429,7 +1429,7 @@ export default function AdminReportsPage() {
 
                                   {/* Sub-issue: Name */}
                                   {report.details?.name?.newName && (
-                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--borderGlass)" }}>
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                                       <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "2px" }}>الاسم المقترح الجديد:</span>
                                       <strong style={{ fontSize: "1rem", color: "var(--colorSuccess)" }}>{report.details.name.newName}</strong>
                                     </div>
@@ -1437,7 +1437,7 @@ export default function AdminReportsPage() {
 
                                   {/* Sub-issue: Address */}
                                   {report.details?.address && (
-                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--borderGlass)", display: "flex", flexDirection: "column", gap: "4px" }}>
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "4px" }}>
                                       <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)" }}>العنوان المقترح:</span>
                                       <strong>{report.details.address.newAddress || "غير محدد"}</strong>
                                       {report.details.address.newMapsUrl && (
@@ -1457,7 +1457,7 @@ export default function AdminReportsPage() {
 
                                   {/* Sub-issue: Phone / Website */}
                                   {report.details?.phone_website && (
-                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--borderGlass)", display: "flex", flexDirection: "column", gap: "4px" }}>
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "4px" }}>
                                       {report.details.phone_website.newPhones && report.details.phone_website.newPhones.length > 0 && (
                                         <div>
                                           <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)" }}>أرقام الهاتف المقترحة:</span>
@@ -1475,7 +1475,7 @@ export default function AdminReportsPage() {
 
                                   {/* Sub-issue: Working Hours */}
                                   {report.details?.working_hours?.workingHours && (
-                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--borderGlass)" }}>
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                                       <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "4px" }}>مواعيد العمل المقترحة:</span>
                                       {report.details.working_hours.workingHours.type === "24/7" ? (
                                         <strong style={{ color: "#34c759" }}>🟢 مفتوح 24/7</strong>
@@ -1494,7 +1494,7 @@ export default function AdminReportsPage() {
 
                                   {/* Sub-issue: Closed */}
                                   {report.details?.closed?.closureStatus && (
-                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--borderGlass)" }}>
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                                       <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "2px" }}>حالة الإغلاق المبلّغ عنها:</span>
                                       <strong style={{ color: "#ff3b30" }}>
                                         {report.details.closed.closureStatus === "permanently_closed" && "مغلق نهائياً 🔴"}
@@ -1506,7 +1506,7 @@ export default function AdminReportsPage() {
 
                                   {/* Sub-issue: Category */}
                                   {report.details?.category?.newCategoryLabel && (
-                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--borderGlass)" }}>
+                                    <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                                       <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "2px" }}>التصنيف المقترح:</span>
                                       <strong>{report.details.category.newCategoryLabel} ({report.details.category.newCategory})</strong>
                                     </div>
@@ -1526,7 +1526,7 @@ export default function AdminReportsPage() {
                               {report.comment && (
                                 <div style={{ marginTop: "12px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "8px" }}>
                                   <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>تعليق وتوضيح المستخدم:</span>
-                                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textPrimary)", whiteSpace: "pre-line" }}>"{report.comment}"</p>
+                                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)", whiteSpace: "pre-line" }}>"{report.comment}"</p>
                                 </div>
                               )}
                             </div>
@@ -1539,7 +1539,7 @@ export default function AdminReportsPage() {
                                   <img
                                     src={report.image_url}
                                     alt="المرفق"
-                                    style={{ maxWidth: "100%", maxHeight: "180px", borderRadius: "10px", objectFit: "contain", border: "1px solid var(--borderGlass)", cursor: "zoom-in" }}
+                                    style={{ maxWidth: "100%", maxHeight: "180px", borderRadius: "10px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }}
                                   />
                                 </a>
                               </div>
@@ -1553,7 +1553,7 @@ export default function AdminReportsPage() {
                             <div>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
                               {report.user_profile ? (
-                                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
+                                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                   <div>الاسم الكامل: <strong>{report.user_profile.full_name || "غير محدد"}</strong></div>
                                   <div>البريد الإلكتروني: <strong>{report.user_profile.email || "غير محدد"}</strong></div>
                                   <div>رقم الهاتف: <strong>{report.user_profile.phone || "غير محدد"}</strong></div>
@@ -1571,7 +1571,7 @@ export default function AdminReportsPage() {
                               {report.status === "retracted" ? (
                                 <div style={{
                                   background: "rgba(255, 255, 255, 0.04)",
-                                  border: "1px dashed var(--borderGlass)",
+                                  border: "1px dashed var(--border-glass)",
                                   padding: "16px",
                                   borderRadius: "12px",
                                   color: "var(--text-muted)",
@@ -1704,7 +1704,7 @@ export default function AdminReportsPage() {
                                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                     <span style={{ fontSize: "1.4rem" }}>{report.status === "accepted" ? "✅" : "❌"}</span>
                                     <div>
-                                      <div style={{ fontWeight: "700", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                                      <div style={{ fontWeight: "700", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                         {report.status === "accepted" ? "تم قبول البلاغ والموافقة عليه" : "تم رفض البلاغ"}
                                       </div>
                                       <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", marginTop: "2px" }}>
@@ -1767,7 +1767,7 @@ export default function AdminReportsPage() {
                                   className="btn"
                                   style={{
                                     background: report.place_name === "مكان محذوف أو غير معروف" ? "rgba(255, 255, 255, 0.04)" : "rgba(255, 59, 48, 0.1)",
-                                    border: `1px solid ${report.place_name === "مكان محذوف أو غير معروف" ? "var(--borderGlass)" : "rgba(255, 59, 48, 0.25)"}`,
+                                    border: `1px solid ${report.place_name === "مكان محذوف أو غير معروف" ? "var(--border-glass)" : "rgba(255, 59, 48, 0.25)"}`,
                                     color: report.place_name === "مكان محذوف أو غير معروف" ? "var(--textSecondary)" : "#ff3b30",
                                     fontSize: "0.85rem",
                                     fontWeight: "bold",
@@ -1842,7 +1842,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -1870,7 +1870,7 @@ export default function AdminReportsPage() {
           {loadingAppFeedbacks ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل الاقتراحات...</div>
           ) : filteredSuggestions.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--borderGlass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--border-glass)", borderRadius: "16px", color: "var(--text-muted)" }}>
               <i className="bx bx-bulb" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px", color: "#eab308" }}></i>
               <span>لا توجد اقتراحات مطابقة للتصفية المحددة</span>
             </div>
@@ -1885,7 +1885,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -1901,7 +1901,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                             💡 اقتراح: {feedback.category || feedback.title || "اقتراح عام"}
                           </span>
                           {getAppStatusBadge(feedback.status)}
@@ -1930,10 +1930,10 @@ export default function AdminReportsPage() {
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>التفاصيل ومحتوى الاقتراح</h4>
 
-                            <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px" }}>
+                            <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
                                 <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>نص الاقتراح:</span>
-                                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
+                                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
                                   {feedback.content}
                                 </p>
                               </div>
@@ -1946,7 +1946,7 @@ export default function AdminReportsPage() {
                                   <img
                                     src={feedback.image_url}
                                     alt="مرفق الاقتراح"
-                                    style={{ maxWidth: "100%", maxHeight: "220px", borderRadius: "12px", objectFit: "contain", border: "1px solid var(--borderGlass)", cursor: "zoom-in" }}
+                                    style={{ maxWidth: "100%", maxHeight: "220px", borderRadius: "12px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }}
                                   />
                                 </a>
                               </div>
@@ -1958,7 +1958,7 @@ export default function AdminReportsPage() {
                             <div>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب الاقتراح</h4>
                               {feedback.user_profile ? (
-                                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
+                                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                   <div>الاسم الكامل: <strong>{feedback.user_profile.full_name || "غير محدد"}</strong></div>
                                   <div>البريد الإلكتروني: <strong>{feedback.user_profile.email || "غير محدد"}</strong></div>
                                   <div>رقم الهاتف: <strong>{feedback.user_profile.phone || "غير محدد"}</strong></div>
@@ -2129,7 +2129,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -2174,7 +2174,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -2202,7 +2202,7 @@ export default function AdminReportsPage() {
           {loadingAppFeedbacks ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل البلاغات...</div>
           ) : filteredBugs.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--borderGlass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--border-glass)", borderRadius: "16px", color: "var(--text-muted)" }}>
               <i className="bx bx-error-alt" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px", color: "#ef4444" }}></i>
               <span>لا توجد بلاغات أو مشاكل مطابقة للتصفية المحددة</span>
             </div>
@@ -2221,7 +2221,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -2237,7 +2237,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                             {isMetro ? `🚇 بلاغ مترو: ${feedback.title}` : isBusStation ? `🚌 بلاغ موقف: ${feedback.title}` : isTransit ? `🗺️ بلاغ مواصلات: ${feedback.title}` : `⚠️ مشكلة: ${feedback.title}`}
                           </span>
                           {feedback.category && (
@@ -2248,7 +2248,7 @@ export default function AdminReportsPage() {
                               borderRadius: "8px",
                               fontSize: "0.75rem",
                               fontWeight: "bold",
-                              border: "1px solid var(--borderGlass)"
+                              border: "1px solid var(--border-glass)"
                             }}>
                               {feedback.category}
                             </span>
@@ -2279,10 +2279,10 @@ export default function AdminReportsPage() {
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>التفاصيل ومحتوى البلاغ</h4>
 
-                            <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px" }}>
+                            <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
                                 <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>تفاصيل الخطأ المبلغ عنه:</span>
-                                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
+                                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
                                   {feedback.content}
                                 </p>
                               </div>
@@ -2295,7 +2295,7 @@ export default function AdminReportsPage() {
                                   <img
                                     src={feedback.image_url}
                                     alt="مرفق البلاغ"
-                                    style={{ maxWidth: "100%", maxHeight: "220px", borderRadius: "12px", objectFit: "contain", border: "1px solid var(--borderGlass)", cursor: "zoom-in" }}
+                                    style={{ maxWidth: "100%", maxHeight: "220px", borderRadius: "12px", objectFit: "contain", border: "1px solid var(--border-glass)", cursor: "zoom-in" }}
                                   />
                                 </a>
                               </div>
@@ -2307,7 +2307,7 @@ export default function AdminReportsPage() {
                             <div>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
                               {feedback.user_profile ? (
-                                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
+                                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                   <div>الاسم الكامل: <strong>{feedback.user_profile.full_name || "غير محدد"}</strong></div>
                                   <div>البريد الإلكتروني: <strong>{feedback.user_profile.email || "غير محدد"}</strong></div>
                                   <div>رقم الهاتف: <strong>{feedback.user_profile.phone || "غير محدد"}</strong></div>
@@ -2499,7 +2499,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -2542,7 +2542,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -2558,7 +2558,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                             🚇 بلاغ مترو: {feedback.title || "مشكلة في المترو"}
                           </span>
                           <span style={{
@@ -2568,7 +2568,7 @@ export default function AdminReportsPage() {
                             borderRadius: "8px",
                             fontSize: "0.75rem",
                             fontWeight: "bold",
-                            border: "1px solid var(--borderGlass)"
+                            border: "1px solid var(--border-glass)"
                           }}>
                             {feedback.category || "مترو الأنفاق"}
                           </span>
@@ -2578,7 +2578,7 @@ export default function AdminReportsPage() {
                         {/* User Profile Mini Details */}
                         <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "var(--textSecondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                            <i className="bx bx-user" style={{ color: "var(--colorSecondary)" }} />
+                            <i className="bx bx-user" style={{ color: "var(--color-secondary)" }} />
                             <span>المُبلِغ: <strong>{feedback.user_profile?.full_name || "مستخدم مجهول"}</strong></span>
                           </div>
                           {feedback.user_profile?.phone && (
@@ -2598,8 +2598,8 @@ export default function AdminReportsPage() {
                         <button
                           style={{
                             background: "rgba(255,255,255,0.05)",
-                            border: "1px solid var(--borderGlass)",
-                            color: "var(--textPrimary)",
+                            border: "1px solid var(--border-glass)",
+                            color: "var(--text-primary)",
                             borderRadius: "50%",
                             width: "36px",
                             height: "36px",
@@ -2616,21 +2616,21 @@ export default function AdminReportsPage() {
 
                     {/* Expanded Details Body */}
                     {isOpen && (
-                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--borderGlass)" }}>
+                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                             <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
-                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
+                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
                               {feedback.content}
                             </p>
                           </div>
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                               <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
@@ -2638,7 +2638,7 @@ export default function AdminReportsPage() {
                                 <img
                                   src={feedback.image_url}
                                   alt="صورة البلاغ"
-                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--borderGlass)" }}
+                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--border-glass)" }}
                                 />
                               </a>
                             </div>
@@ -2650,7 +2650,7 @@ export default function AdminReportsPage() {
                               <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                                 <i className="bx bx-check-circle" /> الرد السابق المرسل للمستخدم:
                               </div>
-                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textPrimary)", lineHeight: "1.6" }}>
+                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
                                 {feedback.admin_reply}
                               </p>
                             </div>
@@ -2836,7 +2836,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -2879,7 +2879,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -2902,7 +2902,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "240px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                             <i className="bx bx-train" style={{ color: "#3b82f6", fontSize: "1.2rem" }}></i>
                             {feedback.title || "بلاغ مونوريل"}
                           </span>
@@ -2937,8 +2937,8 @@ export default function AdminReportsPage() {
                             fontWeight: "bold",
                             borderRadius: "10px",
                             background: isOpen ? "var(--colorPrimary)" : "rgba(255,255,255,0.06)",
-                            color: isOpen ? "#fff" : "var(--textPrimary)",
-                            border: "1px solid var(--borderGlass)"
+                            color: isOpen ? "#fff" : "var(--text-primary)",
+                            border: "1px solid var(--border-glass)"
                           }}
                         >
                           {isOpen ? "إخفاء التفاصيل" : "عرض واتخاذ إجراء"}
@@ -2962,21 +2962,21 @@ export default function AdminReportsPage() {
 
                     {/* Expanded Details Body */}
                     {isOpen && (
-                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--borderGlass)" }}>
+                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                             <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
-                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
+                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
                               {feedback.content}
                             </p>
                           </div>
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                               <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
@@ -2984,7 +2984,7 @@ export default function AdminReportsPage() {
                                 <img
                                   src={feedback.image_url}
                                   alt="صورة البلاغ"
-                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--borderGlass)" }}
+                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--border-glass)" }}
                                 />
                               </a>
                             </div>
@@ -2996,7 +2996,7 @@ export default function AdminReportsPage() {
                               <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                                 <i className="bx bx-check-circle" /> الرد السابق المرسل للمستخدم:
                               </div>
-                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textPrimary)", lineHeight: "1.6" }}>
+                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
                                 {feedback.admin_reply}
                               </p>
                             </div>
@@ -3182,7 +3182,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -3225,7 +3225,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -3248,7 +3248,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "240px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                             <i className="bx bx-train" style={{ color: "#06b6d4", fontSize: "1.2rem" }}></i>
                             {feedback.title || "بلاغ LRT"}
                           </span>
@@ -3283,8 +3283,8 @@ export default function AdminReportsPage() {
                             fontWeight: "bold",
                             borderRadius: "10px",
                             background: isOpen ? "var(--colorPrimary)" : "rgba(255,255,255,0.06)",
-                            color: isOpen ? "#fff" : "var(--textPrimary)",
-                            border: "1px solid var(--borderGlass)"
+                            color: isOpen ? "#fff" : "var(--text-primary)",
+                            border: "1px solid var(--border-glass)"
                           }}
                         >
                           {isOpen ? "إخفاء التفاصيل" : "عرض واتخاذ إجراء"}
@@ -3308,21 +3308,21 @@ export default function AdminReportsPage() {
 
                     {/* Expanded Details Body */}
                     {isOpen && (
-                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--borderGlass)" }}>
+                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                             <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
-                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
+                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
                               {feedback.content}
                             </p>
                           </div>
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                               <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
@@ -3330,7 +3330,7 @@ export default function AdminReportsPage() {
                                 <img
                                   src={feedback.image_url}
                                   alt="صورة البلاغ"
-                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--borderGlass)" }}
+                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--border-glass)" }}
                                 />
                               </a>
                             </div>
@@ -3342,7 +3342,7 @@ export default function AdminReportsPage() {
                               <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                                 <i className="bx bx-check-circle" /> الرد السابق المرسل للمستخدم:
                               </div>
-                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textPrimary)", lineHeight: "1.6" }}>
+                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
                                 {feedback.admin_reply}
                               </p>
                             </div>
@@ -3528,7 +3528,7 @@ export default function AdminReportsPage() {
                     borderRadius: "20px",
                     border: "none",
                     background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textPrimary)",
+                    color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
                     fontFamily: "var(--font-heading)",
@@ -3571,7 +3571,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -3594,7 +3594,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "240px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                             <i className="bx bx-train" style={{ color: "#f97316", fontSize: "1.2rem" }}></i>
                             {feedback.title || "بلاغ سكك حديد مصر"}
                           </span>
@@ -3629,8 +3629,8 @@ export default function AdminReportsPage() {
                             fontWeight: "bold",
                             borderRadius: "10px",
                             background: isOpen ? "var(--colorPrimary)" : "rgba(255,255,255,0.06)",
-                            color: isOpen ? "#fff" : "var(--textPrimary)",
-                            border: "1px solid var(--borderGlass)"
+                            color: isOpen ? "#fff" : "var(--text-primary)",
+                            border: "1px solid var(--border-glass)"
                           }}
                         >
                           {isOpen ? "إخفاء التفاصيل" : "عرض واتخاذ إجراء"}
@@ -3654,21 +3654,21 @@ export default function AdminReportsPage() {
 
                     {/* Expanded Details Body */}
                     {isOpen && (
-                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--borderGlass)" }}>
+                      <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                             <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
-                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
+                            <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
                               {feedback.content}
                             </p>
                           </div>
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--borderGlass)" }}>
+                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
                               <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
@@ -3676,7 +3676,7 @@ export default function AdminReportsPage() {
                                 <img
                                   src={feedback.image_url}
                                   alt="صورة البلاغ"
-                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--borderGlass)" }}
+                                  style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "8px", objectFit: "contain", border: "1px solid var(--border-glass)" }}
                                 />
                               </a>
                             </div>
@@ -3688,7 +3688,7 @@ export default function AdminReportsPage() {
                               <div style={{ fontSize: "0.85rem", color: "#10b981", fontWeight: "bold", marginBottom: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                                 <i className="bx bx-check-circle" /> الرد السابق المرسل للمستخدم:
                               </div>
-                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textPrimary)", lineHeight: "1.6" }}>
+                              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
                                 {feedback.admin_reply}
                               </p>
                             </div>
@@ -3893,7 +3893,7 @@ export default function AdminReportsPage() {
           {loadingAppFeedbacks ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل بلاغات الجراجات والمواقف...</div>
           ) : filteredParkingReports.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--borderGlass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--border-glass)", borderRadius: "16px", color: "var(--text-muted)" }}>
               <i className="bx bx-check-shield" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px", color: "#f59e0b" }}></i>
               <span>لا توجد بلاغات أو مشاكل مسجلة للجراجات مطابقة للتصفية الحالية</span>
             </div>
@@ -3914,7 +3914,7 @@ export default function AdminReportsPage() {
                     key={feedback.id}
                     style={{
                       background: "rgba(255,255,255,0.02)",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       borderRadius: "16px",
                       overflow: "hidden",
                       transition: "all 0.2s"
@@ -3939,7 +3939,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                         {getAppStatusBadge(feedback.status)}
-                        <span style={{ fontWeight: "bold", fontSize: "1rem", color: "var(--textPrimary)" }}>
+                        <span style={{ fontWeight: "bold", fontSize: "1rem", color: "var(--text-primary)" }}>
                           {feedback.title || "مشكلة في دليل الجراجات"}
                         </span>
                         <span style={{
@@ -3999,9 +3999,9 @@ export default function AdminReportsPage() {
 
                     {/* Expandable Details */}
                     {isOpen && (
-                      <div style={{ padding: "20px", borderTop: "1px solid var(--borderGlass)", background: "rgba(0,0,0,0.15)" }}>
+                      <div style={{ padding: "20px", borderTop: "1px solid var(--border-glass)", background: "rgba(0,0,0,0.15)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px" }}>
-                          
+
                           {/* User Info Bar */}
                           <div style={{
                             display: "flex",
@@ -4011,11 +4011,11 @@ export default function AdminReportsPage() {
                             background: "rgba(255,255,255,0.03)",
                             borderRadius: "12px",
                             fontSize: "0.85rem",
-                            border: "1px solid var(--borderGlass)"
+                            border: "1px solid var(--border-glass)"
                           }}>
                             <div>
                               <span style={{ color: "var(--textSecondary)" }}>المستخدم: </span>
-                              <span style={{ fontWeight: "bold", color: "var(--textPrimary)" }}>
+                              <span style={{ fontWeight: "bold", color: "var(--text-primary)" }}>
                                 {feedback.user_profile?.full_name || "مستخدم مجهول"}
                               </span>
                             </div>
@@ -4030,7 +4030,7 @@ export default function AdminReportsPage() {
                             {feedback.user_profile?.email && (
                               <div>
                                 <span style={{ color: "var(--textSecondary)" }}>البريد: </span>
-                                <span style={{ color: "var(--textPrimary)" }}>{feedback.user_profile.email}</span>
+                                <span style={{ color: "var(--text-primary)" }}>{feedback.user_profile.email}</span>
                               </div>
                             )}
                           </div>
@@ -4044,10 +4044,10 @@ export default function AdminReportsPage() {
                               padding: "14px 18px",
                               background: "rgba(255,255,255,0.02)",
                               borderRadius: "12px",
-                              border: "1px solid var(--borderGlass)",
+                              border: "1px solid var(--border-glass)",
                               lineHeight: "1.7",
                               fontSize: "0.92rem",
-                              color: "var(--textPrimary)",
+                              color: "var(--text-primary)",
                               whiteSpace: "pre-line"
                             }}>
                               {feedback.content}
@@ -4073,7 +4073,7 @@ export default function AdminReportsPage() {
                                     maxWidth: "280px",
                                     maxHeight: "180px",
                                     borderRadius: "10px",
-                                    border: "1px solid var(--borderGlass)",
+                                    border: "1px solid var(--border-glass)",
                                     objectFit: "cover"
                                   }}
                                 />
@@ -4084,7 +4084,7 @@ export default function AdminReportsPage() {
                           {/* Existing Reply */}
                           {feedback.admin_reply && (
                             <div>
-                              <div style={{ fontSize: "0.85rem", color: "var(--colorSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                              <div style={{ fontSize: "0.85rem", color: "var(--color-secondary)", marginBottom: "6px", fontWeight: "bold" }}>
                                 رد الإدارة السابق:
                               </div>
                               <div style={{
@@ -4093,7 +4093,7 @@ export default function AdminReportsPage() {
                                 borderRadius: "10px",
                                 border: "1px solid rgba(59, 130, 246, 0.2)",
                                 fontSize: "0.9rem",
-                                color: "var(--textPrimary)",
+                                color: "var(--text-primary)",
                                 lineHeight: "1.6"
                               }}>
                                 {feedback.admin_reply}
@@ -4116,8 +4116,8 @@ export default function AdminReportsPage() {
                                 padding: "12px",
                                 borderRadius: "10px",
                                 background: "var(--bgSecondary)",
-                                border: "1px solid var(--borderGlass)",
-                                color: "var(--textPrimary)",
+                                border: "1px solid var(--border-glass)",
+                                color: "var(--text-primary)",
                                 fontFamily: "var(--font-heading)",
                                 fontSize: "0.9rem",
                                 resize: "vertical",
@@ -4284,7 +4284,7 @@ export default function AdminReportsPage() {
           {loadingContacts ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل رسائل التواصل...</div>
           ) : filteredContactMessages.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--borderGlass)", borderRadius: "16px", color: "var(--text-muted)" }}>
+            <div style={{ textAlign: "center", padding: "60px", background: "rgba(255,255,255,0.02)", border: "1px dashed var(--border-glass)", borderRadius: "16px", color: "var(--text-muted)" }}>
               <i className="bx bx-info-circle" style={{ fontSize: "2.5rem", display: "block", marginBottom: "12px" }}></i>
               <span>لا توجد رسائل تواصل مطابقة للتصفية المحددة</span>
             </div>
@@ -4299,7 +4299,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -4315,7 +4315,7 @@ export default function AdminReportsPage() {
                     >
                       <div style={{ flex: 1, minWidth: "200px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
-                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                          <span style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                             📩 {contact.contact_type}: {contact.first_name} {contact.last_name}
                           </span>
                           <span style={{
@@ -4354,10 +4354,10 @@ export default function AdminReportsPage() {
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>محتوى رسالة التواصل</h4>
 
-                            <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px" }}>
+                            <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
                                 <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>نص الرسالة:</span>
-                                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--textPrimary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
+                                <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
                                   {contact.message}
                                 </p>
                               </div>
@@ -4368,7 +4368,7 @@ export default function AdminReportsPage() {
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <div>
                               <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات التواصل</h4>
-                              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
+                              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                 <div>الاسم الكامل: <strong>{contact.first_name} {contact.last_name}</strong></div>
                                 <div>البريد الإلكتروني: <strong>{contact.email}</strong></div>
                                 <div>رقم الهاتف: <strong>{contact.phone}</strong></div>
@@ -4454,7 +4454,7 @@ export default function AdminReportsPage() {
         <div style={{ animation: "fadeIn 0.3s ease-out" }}>
           {loadingMicrobus ? (
             <div style={{ textAlign: "center", padding: "40px" }}>
-              <div style={{ width: "30px", height: "30px", border: "3px solid var(--borderGlass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+              <div style={{ width: "30px", height: "30px", border: "3px solid var(--border-glass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
               <span>جاري تحميل بلاغات السرفيس...</span>
             </div>
           ) : microbusReports.length > 0 ? (
@@ -4473,7 +4473,7 @@ export default function AdminReportsPage() {
                 return (
                   <div key={report.id} style={{
                     background: isMissingRoute ? "rgba(16, 185, 129, 0.03)" : "rgba(255, 255, 255, 0.02)",
-                    border: isMissingRoute ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid var(--borderGlass)",
+                    border: isMissingRoute ? "1px solid rgba(16, 185, 129, 0.3)" : "1px solid var(--border-glass)",
                     borderRadius: "12px",
                     padding: "16px",
                     display: "flex",
@@ -4484,7 +4484,7 @@ export default function AdminReportsPage() {
                     {/* Header: Station & Route */}
                     <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", alignItems: "flex-start" }}>
                       <div>
-                        <h4 style={{ margin: "0 0 4px 0", color: "var(--textPrimary)", fontSize: "1rem", fontWeight: "bold" }}>
+                        <h4 style={{ margin: "0 0 4px 0", color: "var(--text-primary)", fontSize: "1rem", fontWeight: "bold" }}>
                           🚌 {report.station_name}
                         </h4>
                         <span style={{ fontSize: "0.85rem", color: "var(--colorPrimary)", fontWeight: "bold" }}>
@@ -4544,7 +4544,7 @@ export default function AdminReportsPage() {
                         <div style={{
                           marginTop: "8px",
                           background: "rgba(255, 255, 255, 0.01)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           borderRadius: "8px",
                           padding: "10px 12px",
                           fontSize: "0.8rem",
@@ -4563,7 +4563,7 @@ export default function AdminReportsPage() {
                     </div>
 
                     {/* Actions */}
-                    <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", borderTop: "1px solid var(--borderGlass)", paddingTop: "12px", marginTop: "4px" }}>
+                    <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", borderTop: "1px solid var(--border-glass)", paddingTop: "12px", marginTop: "4px" }}>
                       <button
                         type="button"
                         onClick={() => handleDeleteMicrobusReport(report)}
@@ -4592,8 +4592,8 @@ export default function AdminReportsPage() {
                           padding: "6px 12px",
                           borderRadius: "8px",
                           background: "rgba(255, 255, 255, 0.04)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.8rem",
                           fontWeight: "bold",
                           textDecoration: "none",
@@ -4612,7 +4612,7 @@ export default function AdminReportsPage() {
           ) : (
             <div style={{
               backgroundColor: "rgba(255, 255, 255, 0.02)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "12px",
               padding: "40px",
               textAlign: "center",
@@ -4640,8 +4640,8 @@ export default function AdminReportsPage() {
             borderRadius: "50px",
             backgroundColor:
               actionStatus.startsWith("خطأ") ||
-              actionStatus.startsWith("فشل") ||
-              actionStatus.startsWith("تعذر")
+                actionStatus.startsWith("فشل") ||
+                actionStatus.startsWith("تعذر")
                 ? "#ef4444"
                 : "#10b981",
             color: "#ffffff",
@@ -4653,13 +4653,12 @@ export default function AdminReportsPage() {
           }}
         >
           <i
-            className={`bx ${
-              actionStatus.startsWith("خطأ") ||
+            className={`bx ${actionStatus.startsWith("خطأ") ||
               actionStatus.startsWith("فشل") ||
               actionStatus.startsWith("تعذر")
-                ? "bx-error-circle"
-                : "bx-check-circle"
-            }`}
+              ? "bx-error-circle"
+              : "bx-check-circle"
+              }`}
             style={{ fontSize: "1.3rem" }}
           />
           <span>{actionStatus}</span>
@@ -4705,7 +4704,7 @@ export default function AdminReportsPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setReportToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}
@@ -4724,7 +4723,7 @@ export default function AdminReportsPage() {
             <p
               style={{
                 margin: 0,
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 fontSize: "0.9rem",
                 fontWeight: "600",
                 wordBreak: "break-word",
@@ -4756,7 +4755,7 @@ export default function AdminReportsPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setPlaceToDeleteFromDb(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeletingPlace,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}
@@ -4818,7 +4817,7 @@ export default function AdminReportsPage() {
           <div
             style={{
               backgroundColor: "var(--bgPrimary, #0f172a)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "18px",
               width: "100%",
               maxWidth: "620px",
@@ -4830,7 +4829,7 @@ export default function AdminReportsPage() {
             }}
           >
             {/* Modal Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "14px", marginBottom: "18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px", marginBottom: "18px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <div style={{
                   width: "40px",
@@ -4846,7 +4845,7 @@ export default function AdminReportsPage() {
                   <i className="fa-solid fa-square-parking"></i>
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     إضافة الجراج المقترح مباشرة لدليل الجراجات
                   </h3>
                   <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
@@ -4859,7 +4858,7 @@ export default function AdminReportsPage() {
                 onClick={() => !isAddingGarage && setSuggestedGarageModal(null)}
                 style={{
                   background: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "8px",
                   width: "32px",
                   height: "32px",
@@ -4897,7 +4896,7 @@ export default function AdminReportsPage() {
               {/* Name & Area */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     اسم الجراج *
                   </label>
                   <input
@@ -4906,11 +4905,11 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.name}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, name: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     المنطقة / الحي *
                   </label>
                   <input
@@ -4919,14 +4918,14 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.area}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, area: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
               </div>
 
               {/* Address */}
               <div>
-                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   العنوان بالتفصيل *
                 </label>
                 <input
@@ -4935,14 +4934,14 @@ export default function AdminReportsPage() {
                   value={suggestedGarageModal.address}
                   onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, address: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                 />
               </div>
 
               {/* Metro & Type */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     أقرب محطة مترو *
                   </label>
                   <input
@@ -4951,18 +4950,18 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.nearestMetro}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, nearestMetro: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     نوع الجراج *
                   </label>
                   <select
                     value={suggestedGarageModal.type}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, type: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", cursor: "pointer" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", cursor: "pointer" }}
                   >
                     <option value="مغطى ومتعدد الطوابق">مغطى ومتعدد الطوابق</option>
                     <option value="جراج ذكي إلكتروني">جراج ذكي إلكتروني</option>
@@ -4974,7 +4973,7 @@ export default function AdminReportsPage() {
               {/* Rates & Capacity */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     سعر الساعة (ج.م) *
                   </label>
                   <input
@@ -4984,11 +4983,11 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.hourlyRate}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, hourlyRate: Number(e.target.value) })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     الحد الأقصى اليومي
                   </label>
                   <input
@@ -4998,11 +4997,11 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.maxDailyRate}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, maxDailyRate: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     السعة (سيارة) *
                   </label>
                   <input
@@ -5012,7 +5011,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.capacity}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, capacity: Number(e.target.value) })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
               </div>
@@ -5020,7 +5019,7 @@ export default function AdminReportsPage() {
               {/* Hours & Map Link */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     ساعات العمل *
                   </label>
                   <input
@@ -5029,11 +5028,11 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.hours}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, hours: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     رابط خرائط جوجل
                   </label>
                   <input
@@ -5042,14 +5041,14 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.mapLocationLink}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, mapLocationLink: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", direction: "ltr", textAlign: "right" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", direction: "ltr", textAlign: "right" }}
                   />
                 </div>
               </div>
 
               {/* Features */}
               <div>
-                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   الميزات (مفصولة بفاصلة)
                 </label>
                 <input
@@ -5058,7 +5057,7 @@ export default function AdminReportsPage() {
                   value={suggestedGarageModal.features}
                   onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, features: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                 />
               </div>
 

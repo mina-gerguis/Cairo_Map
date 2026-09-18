@@ -1092,7 +1092,7 @@ ${reportDetails.trim()}`;
                 }}
                 style={{
                   background: `radial-gradient(circle at 100% 0%, ${line.color}98 20%, transparent 65%), var(--bgPrimary)`,
-                  border: active ? `2px solid ${line.color}` : "1px solid var(--borderSecondary)",
+                  border: active ? `2px solid ${line.color}` : "1px solid var(--border-secondary)",
                   borderRadius: "var(--ra-8)",
                   padding: "16px 16px 14px 16px",
                   cursor: "pointer",
@@ -1115,7 +1115,7 @@ ${reportDetails.trim()}`;
                 <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
                   <div
                     style={{
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontFamily: "var(--font-display)",
                       fontWeight: "700",
                       fontSize: "0.92rem",
@@ -1131,7 +1131,7 @@ ${reportDetails.trim()}`;
                   <div
                     style={{
                       fontSize: "0.75rem",
-                      color: "var(--textMuted)",
+                      color: "var(--text-muted)",
                       fontWeight: "500",
                       marginTop: "3px",
                       whiteSpace: "nowrap",
@@ -1165,7 +1165,7 @@ ${reportDetails.trim()}`;
                 padding: "4px 10px",
                 fontSize: "0.75rem",
                 fontWeight: "700",
-                color: "var(--colorSecondary)",
+                color: "var(--color-secondary)",
                 cursor: locatingNearest ? "wait" : "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -1219,7 +1219,7 @@ ${reportDetails.trim()}`;
                   }}
                 />
                 {selectedFrom && (
-                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--color-secondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>
                     تم الاختيار ✔
                   </span>
                 )}
@@ -1232,7 +1232,7 @@ ${reportDetails.trim()}`;
                     left: 0,
                     right: 0,
                     background: "var(--bgSecondary)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     borderRadius: "var(--radius-card)",
                     overflow: "hidden",
                     zIndex: 100,
@@ -1270,9 +1270,9 @@ ${reportDetails.trim()}`;
                         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                       >
                         <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--text-primary)" }}>{s.name}</span>
                           {matchedLandmark && (
-                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                            <span style={{ fontSize: "0.72rem", color: "var(--color-secondary)", fontWeight: "bold" }}>
                               📍 قريب من: {matchedLandmark}
                             </span>
                           )}
@@ -1310,7 +1310,7 @@ ${reportDetails.trim()}`;
                 onClick={swapStations}
                 style={{
                   background: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "50%",
                   width: "38px",
                   height: "38px",
@@ -1325,7 +1325,7 @@ ${reportDetails.trim()}`;
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "rotate(180deg)";
                   e.currentTarget.style.background = "var(--hoverBtn)";
-                  e.currentTarget.style.color = "var(--colorSecondary)";
+                  e.currentTarget.style.color = "var(--color-secondary)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "rotate(0deg)";
@@ -1371,7 +1371,7 @@ ${reportDetails.trim()}`;
                   }}
                 />
                 {selectedTo && (
-                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--color-secondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>
                     تم الاختيار ✔
                   </span>
                 )}
@@ -1384,7 +1384,7 @@ ${reportDetails.trim()}`;
                     left: 0,
                     right: 0,
                     background: "var(--bgSecondary)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     borderRadius: "var(--radius-card)",
                     overflow: "hidden",
                     zIndex: 100,
@@ -1422,9 +1422,9 @@ ${reportDetails.trim()}`;
                         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                       >
                         <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--text-primary)" }}>{s.name}</span>
                           {matchedLandmark && (
-                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                            <span style={{ fontSize: "0.72rem", color: "var(--color-secondary)", fontWeight: "bold" }}>
                               📍 قريب من: {matchedLandmark}
                             </span>
                           )}
@@ -1486,22 +1486,22 @@ ${reportDetails.trim()}`;
               {/* Results Details Grid */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
                 {/* Number of Stations */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
-                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{routeResult.count}</div>
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-secondary)" }}>{routeResult.count}</div>
                   <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>عدد المحطات</div>
                 </div>
                 {/* Price */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                   <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSuccess)" }}>{routeResult.price} ج.م</div>
                   <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>سعر التذكرة</div>
                 </div>
                 {/* Estimated Time */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
-                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{routeResult.time} د</div>
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-secondary)" }}>{routeResult.time} د</div>
                   <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>زمن الرحلة</div>
                 </div>
                 {/* Multi-leg / Transfer Status */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                   <div style={{ fontSize: "1.1rem", fontWeight: "800", color: !routeResult.sameLine ? "var(--colorWarning, #f59e0b)" : "var(--colorSuccess)" }}>
                     {!routeResult.sameLine ? "تبديل (مترو L3)" : "مباشر"}
                   </div>
@@ -1513,18 +1513,18 @@ ${reportDetails.trim()}`;
               {!isTripActive && (
                 <div
                   style={{
-                    background: "var(--bgGlass)",
-                    border: "1px solid var(--borderGlass)",
+                    background: "var(--bg-glass)",
+                    border: "1px solid var(--border-glass)",
                     borderRadius: "var(--ra-8)",
                     padding: "14px 16px",
                   }}
                 >
-                  <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem", color: "var(--textPrimary)", fontWeight: "600" }}>
-                    <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: "var(--colorSecondary)", fontSize: "1.1rem", verticalAlign: "middle" }}></i>
+                  <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem", color: "var(--text-primary)", fontWeight: "600" }}>
+                    <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: "var(--color-secondary)", fontSize: "1.1rem", verticalAlign: "middle" }}></i>
                     {routeResult.description}
                   </p>
                   {routeResult.discountPrice && (
-                    <div style={{ marginTop: "6px", fontSize: "0.78rem", color: "var(--textMuted)" }}>
+                    <div style={{ marginTop: "6px", fontSize: "0.78rem", color: "var(--text-muted)" }}>
                       💡 تخفيض كبار السن وذوي الهمم: <strong>{routeResult.discountPrice} ج.م</strong>
                     </div>
                   )}
@@ -1570,8 +1570,8 @@ ${reportDetails.trim()}`;
                       justifyContent: "center",
                       gap: "6px",
                       background: "var(--bgSecondary)",
-                      border: "1px solid var(--borderGlass)",
-                      color: "var(--textPrimary)",
+                      border: "1px solid var(--border-glass)",
+                      color: "var(--text-primary)",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
                     }}
@@ -1612,14 +1612,14 @@ ${reportDetails.trim()}`;
                 <div
                   style={{
                     background: "var(--bgSecondary)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     borderRadius: "var(--ra-8)",
                     padding: "16px",
                   }}
                 >
                   {/* Active Trip Badge */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                    <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--colorSecondary)", background: "rgba(59, 130, 246, 0.12)", padding: "4px 10px", borderRadius: "8px" }}>
+                    <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--color-secondary)", background: "rgba(59, 130, 246, 0.12)", padding: "4px 10px", borderRadius: "8px" }}>
                       رحلة نشطة حالياً
                     </span>
                     <button
@@ -1646,10 +1646,10 @@ ${reportDetails.trim()}`;
                   {/* Current Station Info */}
                   <div style={{ fontSize: "0.92rem", fontWeight: "600", marginBottom: "6px", color: "var(--textSecondary)" }}>
                     أنت الآن في محطة:{" "}
-                    <strong style={{ color: "var(--textPrimary)", fontSize: "1.05rem" }}>
+                    <strong style={{ color: "var(--text-primary)", fontSize: "1.05rem" }}>
                       {trackerStationsList[currentStepIndex]?.name}
                     </strong>
-                    <span style={{ fontSize: "0.78rem", color: "var(--textMuted)", marginRight: "8px" }}>
+                    <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginRight: "8px" }}>
                       ({currentStepIndex + 1} من {trackerStationsList.length})
                     </span>
                   </div>
@@ -1659,7 +1659,7 @@ ${reportDetails.trim()}`;
                     const remainingCount = trackerStationsList.length - 1 - currentStepIndex;
                     const remainingMins = Math.max(0, remainingCount * 2.5);
                     return (
-                      <div style={{ fontSize: "0.82rem", color: "var(--textMuted)", marginBottom: "12px" }}>
+                      <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginBottom: "12px" }}>
                         متبقي {remainingCount} محطة للوصول إلى الوجهة (~{Math.round(remainingMins)} دقيقة)
                       </div>
                     );
@@ -1669,7 +1669,7 @@ ${reportDetails.trim()}`;
                   <div
                     style={{
                       height: "6px",
-                      background: "var(--borderGlass)",
+                      background: "var(--border-glass)",
                       borderRadius: "4px",
                       overflow: "hidden",
                       marginBottom: "16px",
@@ -1678,7 +1678,7 @@ ${reportDetails.trim()}`;
                     <div
                       style={{
                         height: "100%",
-                        background: "var(--colorSecondary)",
+                        background: "var(--color-secondary)",
                         width: `${((currentStepIndex + 1) / trackerStationsList.length) * 100}%`,
                         transition: "width 0.3s ease",
                       }}
@@ -1695,9 +1695,9 @@ ${reportDetails.trim()}`;
                         flex: 1,
                         padding: "8px",
                         borderRadius: "var(--ra-8)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         background: "var(--bgPrimary)",
-                        color: "var(--textPrimary)",
+                        color: "var(--text-primary)",
                         fontSize: "0.85rem",
                         fontWeight: "600",
                         cursor: currentStepIndex === 0 ? "not-allowed" : "pointer",
@@ -1731,12 +1731,12 @@ ${reportDetails.trim()}`;
               <div
                 style={{
                   background: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "var(--ra-8)",
                   padding: "16px",
                 }}
               >
-                <div style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "12px" }}>
+                <div style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "12px" }}>
                   تفاصيل ومسار محطات الرحلة ({routeResult.count} محطة):
                 </div>
 
@@ -1761,10 +1761,10 @@ ${reportDetails.trim()}`;
                               flexShrink: 0,
                             }}
                           />
-                          <span style={{ fontSize: "0.85rem", fontWeight: isFirst || isLast ? "700" : "500", color: "var(--textPrimary)" }}>
+                          <span style={{ fontSize: "0.85rem", fontWeight: isFirst || isLast ? "700" : "500", color: "var(--text-primary)" }}>
                             {stName}
-                            {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(محطة الركوب)</span>}
-                            {isLast && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(محطة الوصول)</span>}
+                            {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "6px" }}>(محطة الركوب)</span>}
+                            {isLast && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "6px" }}>(محطة الوصول)</span>}
                           </span>
                           {stDetails?.status === "تحت الإنشاء" && (
                             <span style={{ fontSize: "0.68rem", background: "rgba(239, 68, 68, 0.12)", color: "#ef4444", padding: "1px 5px", borderRadius: "4px", marginRight: "auto" }}>
@@ -1813,10 +1813,10 @@ ${reportDetails.trim()}`;
                 )}
 
                 {/* Report Route Issue Button */}
-                <div style={{ marginTop: "14px", paddingTop: "10px", borderTop: "1px solid var(--borderGlass)", display: "flex", justifyContent: "flex-end" }}>
+                <div style={{ marginTop: "14px", paddingTop: "10px", borderTop: "1px solid var(--border-glass)", display: "flex", justifyContent: "flex-end" }}>
                   <button
                     type="button"
-                    className="btn btn-reportProblem"
+                    className="btn btn-report"
                     onClick={() => handleOpenReportModal(null, true)}
                     style={{
                       display: "inline-flex",
@@ -1860,10 +1860,10 @@ ${reportDetails.trim()}`;
                 <i className={selectedLineObj.icon} />
               </div>
               <div>
-                <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+                <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                   {selectedLineObj.name}
                 </h2>
-                <span style={{ fontSize: "0.75rem", color: "var(--textMuted)" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
                   {currentLineStations.length} محطة — الطول: {selectedLineObj.length} — زمن الرحلة: {selectedLineObj.time}
                 </span>
               </div>
@@ -1884,7 +1884,7 @@ ${reportDetails.trim()}`;
                     cursor: "pointer",
                     background: selectedLine === line.id ? line.color : "var(--bgSecondary)",
                     color: selectedLine === line.id ? "#ffffff" : "var(--textSecondary)",
-                    border: selectedLine === line.id ? `1px solid ${line.color}` : "1px solid var(--borderGlass)",
+                    border: selectedLine === line.id ? `1px solid ${line.color}` : "1px solid var(--border-glass)",
                     transition: "all 0.2s ease",
                   }}
                 >
@@ -1903,21 +1903,21 @@ ${reportDetails.trim()}`;
               marginBottom: "16px",
             }}
           >
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
               <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>بداية الخط</div>
               <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>{selectedLineObj.from}</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
               <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>نهاية الخط</div>
               <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>{selectedLineObj.to}</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
               <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>طول المسار</div>
-              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--textPrimary)", marginTop: "2px" }}>{selectedLineObj.length}</div>
+              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>{selectedLineObj.length}</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
               <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>زمن المسار كاملاً</div>
-              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--textPrimary)", marginTop: "2px" }}>{selectedLineObj.time}</div>
+              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>{selectedLineObj.time}</div>
             </div>
           </div>
 
@@ -1941,7 +1941,7 @@ ${reportDetails.trim()}`;
                   transform: "translateY(-50%)",
                   background: "transparent",
                   border: "none",
-                  color: "var(--textMuted)",
+                  color: "var(--text-muted)",
                   cursor: "pointer",
                 }}
               >
@@ -1951,7 +1951,7 @@ ${reportDetails.trim()}`;
           </div>
 
           {/* Stations Timeline */}
-          <div style={{ background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-card)", padding: "18px 16px" }}>
+          <div style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "var(--radius-card)", padding: "18px 16px" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               {filteredCurrentLineStations.length > 0 ? (
                 filteredCurrentLineStations.map((stationObj, idx) => {
@@ -1987,7 +1987,7 @@ ${reportDetails.trim()}`;
                             style={{
                               fontSize: "0.88rem",
                               fontWeight: isFirst || isLast || isTransfer ? "700" : "500",
-                              color: isUnderConstruction ? "#ef4444" : "var(--textPrimary)",
+                              color: isUnderConstruction ? "#ef4444" : "var(--text-primary)",
                               display: "inline-flex",
                               alignItems: "center",
                               gap: "6px",
@@ -1999,7 +1999,7 @@ ${reportDetails.trim()}`;
                               className={`bx ${expandedStation === station ? "bx-chevron-up" : "bx-chevron-down"}`}
                               style={{
                                 fontSize: "0.95rem",
-                                color: expandedStation === station ? "var(--colorSecondary)" : "var(--textMuted)",
+                                color: expandedStation === station ? "var(--color-secondary)" : "var(--text-muted)",
                                 transition: "all 0.2s ease",
                               }}
                             />
@@ -2023,7 +2023,7 @@ ${reportDetails.trim()}`;
                                 style={{
                                   fontSize: "0.68rem",
                                   background: "rgba(59, 130, 246, 0.12)",
-                                  color: "var(--colorSecondary)",
+                                  color: "var(--color-secondary)",
                                   border: "1px solid rgba(59, 130, 246, 0.25)",
                                   padding: "1px 6px",
                                   borderRadius: "4px",
@@ -2033,8 +2033,8 @@ ${reportDetails.trim()}`;
                                 تشغيل تجريبي ⚡
                               </span>
                             )}
-                            {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(بدايــة الخط)</span>}
-                            {isLast && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(نهـاية الخط)</span>}
+                            {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "6px" }}>(بدايــة الخط)</span>}
+                            {isLast && <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "6px" }}>(نهـاية الخط)</span>}
                           </span>
 
                           {/* Transfer badge */}
@@ -2065,7 +2065,7 @@ ${reportDetails.trim()}`;
                             padding: "10px 14px",
                             borderRadius: "8px",
                             background: "var(--bgSecondary)",
-                            border: isUnderConstruction ? "1px dashed rgba(239, 68, 68, 0.3)" : "1px solid var(--borderGlass)",
+                            border: isUnderConstruction ? "1px dashed rgba(239, 68, 68, 0.3)" : "1px solid var(--border-glass)",
                           }}
                         >
                           {isUnderConstruction && (
@@ -2073,7 +2073,7 @@ ${reportDetails.trim()}`;
                               <span>⚠️ هذه المحطة قيد الإنشاء والتشطيب وليست في الخدمة للجمهور حالياً.</span>
                             </div>
                           )}
-                          <div style={{ fontSize: "0.75rem", color: "var(--textPrimary)", marginBottom: "6px", fontWeight: "bold" }}>
+                          <div style={{ fontSize: "0.75rem", color: "var(--text-primary)", marginBottom: "6px", fontWeight: "bold" }}>
                             المعالم والأماكن الحيوية القريبة من المحطة:
                           </div>
                           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -2084,25 +2084,25 @@ ${reportDetails.trim()}`;
                                   style={{
                                     fontSize: "0.72rem",
                                     background: "rgba(255, 255, 255, 0.05)",
-                                    color: "var(--textPrimary)",
+                                    color: "var(--text-primary)",
                                     padding: "3px 8px",
                                     borderRadius: "4px",
-                                    border: "1px solid var(--borderGlass)",
+                                    border: "1px solid var(--border-glass)",
                                   }}
                                 >
                                   {landmark}
                                 </span>
                               ))
                             ) : (
-                              <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", fontStyle: "italic" }}>
+                              <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontStyle: "italic" }}>
                                 لم يتم تسجيل معالم قريبة لهذه المحطة بعد.
                               </span>
                             )}
                           </div>
-                          <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid var(--borderGlass)", display: "flex", justifyContent: "flex-end" }}>
+                          <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid var(--border-glass)", display: "flex", justifyContent: "flex-end" }}>
                             <button
                               type="button"
-                              className="btn btn-reportProblem"
+                              className="btn btn-report"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleOpenReportModal(station);
@@ -2157,8 +2157,8 @@ ${reportDetails.trim()}`;
           <div
             style={{
               marginTop: "12px",
-              background: "var(--bgGlass)",
-              border: "1px solid var(--borderGlass)",
+              background: "var(--bg-glass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--radius-card)",
               padding: "16px",
             }}
@@ -2166,7 +2166,7 @@ ${reportDetails.trim()}`;
             <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
               <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: selectedLineObj.color, fontSize: "1.1rem", verticalAlign: "middle" }}></i>
               <strong>معلومات الخط: </strong>
-              <span style={{ color: "var(--textMuted)" }}>{selectedLineObj.desc}</span>
+              <span style={{ color: "var(--text-muted)" }}>{selectedLineObj.desc}</span>
             </p>
           </div>
         </div>
@@ -2177,7 +2177,7 @@ ${reportDetails.trim()}`;
             style={{
               fontSize: "1.25rem",
               fontWeight: "800",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               margin: "0 0 8px",
             }}
           >
@@ -2188,20 +2188,20 @@ ${reportDetails.trim()}`;
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "10px" }}>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
-              <div style={{ fontWeight: "700", color: "var(--colorSecondary)", fontSize: "0.88rem", marginBottom: "4px" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
+              <div style={{ fontWeight: "700", color: "var(--color-secondary)", fontSize: "0.88rem", marginBottom: "4px" }}>
                 ⚡ سرعة تشغيلية عالية
               </div>
-              <div style={{ fontSize: "0.78rem", color: "var(--textMuted)", lineHeight: "1.6" }}>
+              <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.6" }}>
                 سرعة تصميمية تصل إلى 80 كم/ساعة، مما يختصر زمن الرحلة بين نصر والعاصمة إلى نحو 60 دقيقة فقط.
               </div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
               <div style={{ fontWeight: "700", color: "var(--colorSuccess)", fontSize: "0.88rem", marginBottom: "4px" }}>
                 🔄 تكامل ذكي مع المترو والـ LRT
               </div>
-              <div style={{ fontSize: "0.78rem", color: "var(--textMuted)", lineHeight: "1.6" }}>
+              <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", lineHeight: "1.6" }}>
                 محطات تبادلية كبرى في الاستاد ووادي النيل مع الخط الثالث، ومدينة الفنون مع القطار الخفيف LRT.
               </div>
             </div>
@@ -2212,8 +2212,8 @@ ${reportDetails.trim()}`;
         <div
           ref={reportBannerRef}
           style={{
-            background: "var(--bgLinearAlert)",
-            border: "1px solid var(--borderSecondary)",
+            background: "var(--bg-linear-alert)",
+            border: "1px solid var(--border-secondary)",
             borderRadius: "var(--ra-8)",
             padding: "20px",
             display: "flex",
@@ -2255,7 +2255,7 @@ ${reportDetails.trim()}`;
 
           <button
             type="button"
-            className="btn btn-reportProblem"
+            className="btn btn-report"
             onClick={() => handleOpenReportModal()}
             style={{
               fontSize: "0.84rem",
@@ -2298,7 +2298,7 @@ ${reportDetails.trim()}`;
             style={{
               backgroundColor: "var(--bgPrimary)",
               borderRadius: "var(--radius-card)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               width: "100%",
               maxWidth: "520px",
               maxHeight: "90vh",
@@ -2313,14 +2313,14 @@ ${reportDetails.trim()}`;
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid var(--borderGlass)",
+                borderBottom: "1px solid var(--border-glass)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 backgroundColor: "rgba(255, 255, 255, 0.02)",
               }}
             >
-              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
                 <span>مشكلة في بيانات قطار المونوريل</span>
               </h5>
@@ -2358,7 +2358,7 @@ ${reportDetails.trim()}`;
                   >
                     <i className="bx bx-check"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontWeight: "800", color: "var(--textPrimary)" }}>تم إرسال بلاغك بنجاح!</h4>
+                  <h4 style={{ margin: "0 0 8px", fontWeight: "800", color: "var(--text-primary)" }}>تم إرسال بلاغك بنجاح!</h4>
                   <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.88rem", lineHeight: "1.6" }}>
                     شكراً جزيلاً لمساعدتك في تدقيق وتطوير شبكة المونوريل. سيقوم فريقنا بمراجعة ملاحظاتك في أقرب وقت.
                   </p>
@@ -2423,7 +2423,7 @@ ${reportDetails.trim()}`;
 
                   {/* Scope Selector */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px", display: "block" }}>
                       نطاق المشكلة:
                     </label>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px" }}>
@@ -2439,9 +2439,9 @@ ${reportDetails.trim()}`;
                           fontSize: "0.78rem",
                           fontWeight: "700",
                           cursor: "pointer",
-                          background: reportTargetScope === "general" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                          background: reportTargetScope === "general" ? "var(--color-secondary)" : "var(--bgSecondary)",
                           color: reportTargetScope === "general" ? "#ffffff" : "var(--textSecondary)",
-                          border: reportTargetScope === "general" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                          border: reportTargetScope === "general" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                         }}
                       >
                         مشكلة عامة
@@ -2457,9 +2457,9 @@ ${reportDetails.trim()}`;
                           fontSize: "0.78rem",
                           fontWeight: "700",
                           cursor: "pointer",
-                          background: reportTargetScope === "station" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                          background: reportTargetScope === "station" ? "var(--color-secondary)" : "var(--bgSecondary)",
                           color: reportTargetScope === "station" ? "#ffffff" : "var(--textSecondary)",
-                          border: reportTargetScope === "station" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                          border: reportTargetScope === "station" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                         }}
                       >
                         محطة معينة
@@ -2477,9 +2477,9 @@ ${reportDetails.trim()}`;
                           fontWeight: "700",
                           cursor: !routeResult ? "not-allowed" : "pointer",
                           opacity: !routeResult ? 0.5 : 1,
-                          background: reportTargetScope === "route" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                          background: reportTargetScope === "route" ? "var(--color-secondary)" : "var(--bgSecondary)",
                           color: reportTargetScope === "route" ? "#ffffff" : "var(--textSecondary)",
-                          border: reportTargetScope === "route" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                          border: reportTargetScope === "route" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                         }}
                       >
                         المسار الحالي
@@ -2490,7 +2490,7 @@ ${reportDetails.trim()}`;
                   {/* Station Picker if Scope is Station */}
                   {reportTargetScope === "station" && (
                     <div style={{ position: "relative" }}>
-                      <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                      <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px", display: "block" }}>
                         اختر المحطة المعنية:
                       </label>
                       <input
@@ -2506,7 +2506,7 @@ ${reportDetails.trim()}`;
                         style={{ width: "100%", direction: "rtl", fontSize: "0.85rem" }}
                       />
                       {reportSelectedStation && (
-                        <span style={{ position: "absolute", left: "10px", top: "34px", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "6px", fontWeight: "600" }}>
+                        <span style={{ position: "absolute", left: "10px", top: "34px", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--color-secondary)", padding: "2px 8px", borderRadius: "6px", fontWeight: "600" }}>
                           تم التحديد ✔
                         </span>
                       )}
@@ -2518,7 +2518,7 @@ ${reportDetails.trim()}`;
                             left: 0,
                             right: 0,
                             background: "var(--bgSecondary)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             borderRadius: "var(--radius-card)",
                             overflow: "hidden",
                             zIndex: 100,
@@ -2540,7 +2540,7 @@ ${reportDetails.trim()}`;
                                 padding: "8px 12px",
                                 cursor: "pointer",
                                 fontSize: "0.85rem",
-                                color: "var(--textPrimary)",
+                                color: "var(--text-primary)",
                                 borderBottom: "1px solid rgba(255,255,255,0.03)",
                               }}
                               onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hoverBtn)")}
@@ -2556,7 +2556,7 @@ ${reportDetails.trim()}`;
 
                   {/* Problem Type Select */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px", display: "block" }}>
                       نوع المشكلة:
                     </label>
                     <select
@@ -2577,7 +2577,7 @@ ${reportDetails.trim()}`;
 
                   {/* Details Textarea */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px", display: "block" }}>
                       تفاصيل البلاغ:
                     </label>
                     <textarea
@@ -2593,11 +2593,11 @@ ${reportDetails.trim()}`;
 
                   {/* Image Attachment Dropzone */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px", display: "block" }}>
                       إرفاق صورة توضيحية (اختياري):
                     </label>
                     {reportImagePreview ? (
-                      <div style={{ position: "relative", borderRadius: "8px", overflow: "hidden", border: "1px solid var(--borderGlass)" }}>
+                      <div style={{ position: "relative", borderRadius: "8px", overflow: "hidden", border: "1px solid var(--border-glass)" }}>
                         <img src={reportImagePreview} alt="Preview" style={{ width: "100%", maxHeight: "140px", objectFit: "cover" }} />
                         <button
                           type="button"
@@ -2636,7 +2636,7 @@ ${reportDetails.trim()}`;
                           }
                         }}
                         style={{
-                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderGlass)",
+                          border: isDraggingImage ? "2px dashed var(--color-secondary)" : "2px dashed var(--border-glass)",
                           borderRadius: "8px",
                           padding: "16px",
                           textAlign: "center",
@@ -2649,9 +2649,9 @@ ${reportDetails.trim()}`;
                           if (input) input.click();
                         }}
                       >
-                        <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "1.4rem", color: "var(--textMuted)", marginBottom: "4px" }}></i>
+                        <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "1.4rem", color: "var(--text-muted)", marginBottom: "4px" }}></i>
                         <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>اسحب الصورة هنا أو اضغط للاختيار من جهازك</div>
-                        <div style={{ fontSize: "0.68rem", color: "var(--textMuted)", marginTop: "2px" }}>PNG, JPG, WEBP بحد أقصى 5 ميجابايت</div>
+                        <div style={{ fontSize: "0.68rem", color: "var(--text-muted)", marginTop: "2px" }}>PNG, JPG, WEBP بحد أقصى 5 ميجابايت</div>
                         <input
                           id="monorail-report-img-input"
                           type="file"
@@ -2679,8 +2679,8 @@ ${reportDetails.trim()}`;
                       style={{
                         flex: 1,
                         background: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
-                        color: "var(--textPrimary)",
+                        border: "1px solid var(--border-glass)",
+                        color: "var(--text-primary)",
                         fontSize: "0.85rem",
                       }}
                     >

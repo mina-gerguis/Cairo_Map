@@ -30,7 +30,7 @@ export function Label({
   required?: boolean
 }) {
   return (
-    <label htmlFor={htmlFor} className={`field-label ${className}`} style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "4px" }}>
+    <label htmlFor={htmlFor} className={`field-label ${className}`} style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "4px" }}>
       {children}
       {required && <span style={{ color: "#ef4444" }}>*</span>}
     </label>

@@ -313,7 +313,7 @@ export default function LoginPage() {
               background: "var(--card-glass)",
               backdropFilter: "blur(100px) saturate(180%)",
               WebkitBackdropFilter: "blur(30px) saturate(180%)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "13px",
               padding: "36px 32px",
               animation: "slide-in-section 0.7s ease 0.1s both",
@@ -345,7 +345,7 @@ export default function LoginPage() {
                     <label htmlFor="email" style={{
                       fontSize: "0.85rem",
                       fontWeight: "600",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
@@ -370,11 +370,11 @@ export default function LoginPage() {
                         width: "100%",
                         minWidth: 0,
                         borderRadius: "10px",
-                        border: focusedField === "email" ? "1.5px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                        border: focusedField === "email" ? "1.5px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                         background: "transparent",
                         padding: "0 14px",
                         fontSize: "0.9rem",
-                        color: "var(--textPrimary)",
+                        color: "var(--text-primary)",
                         outline: "none",
                         transition: "all 0.2s ease",
                         boxShadow: focusedField === "email" ? "0 0 0 3px rgba(108, 99, 255, 0.12)" : "none",
@@ -389,7 +389,7 @@ export default function LoginPage() {
                     <label htmlFor="password" style={{
                       fontSize: "0.85rem",
                       fontWeight: "600",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
@@ -415,11 +415,11 @@ export default function LoginPage() {
                           width: "100%",
                           minWidth: 0,
                           borderRadius: "10px",
-                          border: focusedField === "password" ? "1.5px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                          border: focusedField === "password" ? "1.5px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                           background: "transparent",
                           padding: "0 44px 0 14px",
                           fontSize: "0.9rem",
-                          color: "var(--textPrimary)",
+                          color: "var(--text-primary)",
                           outline: "none",
                           transition: "all 0.2s ease",
                           boxShadow: focusedField === "password" ? "0 0 0 3px rgba(108, 99, 255, 0.12)" : "none",
@@ -469,11 +469,11 @@ export default function LoginPage() {
                     disabled={loading}
                     style={{
                       marginTop: "8px",
-                      padding: "var(--paddingBtn)",
+                      padding: "var(--padding-btn)",
                       fontSize: "1rem",
                       fontWeight: "700",
                       borderRadius: "var(--radiusBtn)",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "#000",
                       color: "#fff",
                       cursor: loading ? "not-allowed" : "pointer",
@@ -505,7 +505,7 @@ export default function LoginPage() {
                     <div style={{ width: "56px", height: "56px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", margin: "0 auto 16px" }}>
                       <img src="/images/icons3d/padlock.png" alt="2FA" style={{ width: "50px" }} />
                     </div>
-                    <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "var(--textPrimary)" }}>التحقق الثنائي</h2>
+                    <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)" }}>التحقق الثنائي</h2>
                     <p style={{ margin: "8px 0 0", color: "var(--textSecondary)", fontSize: "0.9rem", lineHeight: "1.5" }}>يرجى إدخال الكود المكون من 6 أرقام من تطبيق المصادقة الخاص بك</p>
                   </div>
 
@@ -531,7 +531,7 @@ export default function LoginPage() {
                           borderRadius: "12px",
                           border: "2px solid rgba(108, 99, 255, 0.2)",
                           background: "rgba(108, 99, 255, 0.05)",
-                          color: "var(--textPrimary)"
+                          color: "var(--text-primary)"
                         }}
                         maxLength={2}
                       />
@@ -543,7 +543,7 @@ export default function LoginPage() {
                     disabled={loading || mfaCode.length !== 6}
                     style={{
                       marginTop: "8px",
-                      padding: "var(--paddingBtn)",
+                      padding: "var(--padding-btn)",
                       fontSize: "1rem",
                       borderRadius: "8px",
                       border: "none",
@@ -584,7 +584,7 @@ export default function LoginPage() {
                     }}
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-                      background: "var(--cancelBtn)", border: "none", color: "var(--textSecondary)", fontSize: "1rem", cursor: "pointer", marginTop: "8px", padding: "var(--paddingBtn)", borderRadius: "var(--radiusBtn)"
+                      background: "var(--btn-cancel)", border: "none", color: "var(--textSecondary)", fontSize: "1rem", cursor: "pointer", marginTop: "8px", padding: "var(--padding-btn)", borderRadius: "var(--radiusBtn)"
                     }}
                   >
                     <i className="bx bx-arrow-back" style={{ fontSize: "1.1rem" }}></i>
@@ -595,27 +595,27 @@ export default function LoginPage() {
 
               <div style={{ marginTop: "28px", textAlign: "center" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-                  <div style={{ flex: 1, height: "1px", background: "var(--borderGlass)" }} />
+                  <div style={{ flex: 1, height: "1px", background: "var(--border-glass)" }} />
                   <span style={{ color: "var(--text-muted)", fontSize: "0.82rem", whiteSpace: "nowrap" }}>ليس لديك حساب؟</span>
-                  <div style={{ flex: 1, height: "1px", background: "var(--borderGlass)" }} />
+                  <div style={{ flex: 1, height: "1px", background: "var(--border-glass)" }} />
                 </div>
                 <Link href="/signup" style={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "8px",
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtn)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   background: "rgba(143, 143, 143, 0.06)",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   fontWeight: "700",
                   fontSize: "0.95rem",
                   fontFamily: "var(--font-sub)",
                   textDecoration: "none",
                   transition: "all 0.3s ease",
                 }}>
-                  <i className="bx bx-user-plus" style={{ fontSize: "1.2rem", color: "var(--textPrimary)" }}></i>
+                  <i className="bx bx-user-plus" style={{ fontSize: "1.2rem", color: "var(--text-primary)" }}></i>
                   إنشاء حساب جديد
                 </Link>
 

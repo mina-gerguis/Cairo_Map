@@ -267,7 +267,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
       ref={sectionRef}
       style={{
         backgroundColor: "var(--bgPrimary)",
-        border: "1px solid var(--borderGlass)",
+        border: "1px solid var(--border-glass)",
         borderRadius: "16px",
         padding: "clamp(16px, 2.5vw, 24px)",
         boxShadow: "var(--shadow-card)",
@@ -287,7 +287,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
           flexWrap: "wrap",
           gap: "12px",
           paddingBottom: "14px",
-          borderBottom: "1px solid var(--borderGlass)"
+          borderBottom: "1px solid var(--border-glass)"
         }}
       >
         <div>
@@ -295,7 +295,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
             style={{
               fontSize: "1.25rem",
               fontWeight: "800",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               margin: "0 0 4px",
               display: "flex",
               alignItems: "center",
@@ -320,7 +320,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
               padding: "4px 10px",
               background: "rgba(128,128,128,0.06)",
               borderRadius: "6px",
-              border: "1px solid var(--borderGlass)"
+              border: "1px solid var(--border-glass)"
             }}
           >
             قطار {currentIndex + 1} من {totalSlides}
@@ -335,8 +335,8 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
               height: "32px",
               borderRadius: "6px",
               background: "rgba(128,128,128,0.06)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -356,8 +356,8 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
               height: "32px",
               borderRadius: "6px",
               background: "rgba(128,128,128,0.06)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -392,9 +392,9 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                 flex: "0 0 auto",
                 padding: "7px 12px",
                 borderRadius: "8px",
-                background: isActive ? "var(--textPrimary)" : "rgba(128,128,128,0.04)",
+                background: isActive ? "var(--text-primary)" : "rgba(128,128,128,0.04)",
                 color: isActive ? "var(--bgPrimary)" : "var(--textSecondary)",
-                border: isActive ? "1px solid var(--textPrimary)" : "1px solid var(--borderGlass)",
+                border: isActive ? "1px solid var(--text-primary)" : "1px solid var(--border-glass)",
                 fontSize: "0.8rem",
                 fontWeight: isActive ? "800" : "600",
                 cursor: "pointer",
@@ -417,7 +417,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         style={{
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "12px",
           background: "rgba(128, 128, 128, 0.02)",
           padding: "clamp(14px, 2.5vw, 20px)",
@@ -435,7 +435,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
             flexWrap: "wrap",
             gap: "10px",
             paddingBottom: "12px",
-            borderBottom: "1px dashed var(--borderGlass)"
+            borderBottom: "1px dashed var(--border-glass)"
           }}
         >
           <div>
@@ -453,23 +453,23 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
               >
                 {currentTrain.badge}
               </span>
-              <span style={{ fontSize: "0.74rem", color: "var(--textMuted)", fontWeight: "600" }}>
+              <span style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontWeight: "600" }}>
                 {currentTrain.categoryBadge}
               </span>
             </div>
-            <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+            <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
               {currentTrain.name}
             </h3>
-            <span style={{ fontSize: "0.74rem", color: "var(--textMuted)", direction: "ltr", display: "block", marginTop: "2px" }}>
+            <span style={{ fontSize: "0.74rem", color: "var(--text-muted)", direction: "ltr", display: "block", marginTop: "2px" }}>
               {currentTrain.englishName}
             </span>
           </div>
 
           <div style={{ fontSize: "0.8rem", color: "var(--textSecondary)", textAlign: "left" }}>
-            <span style={{ display: "block", fontWeight: "700", color: "var(--textPrimary)" }}>
+            <span style={{ display: "block", fontWeight: "700", color: "var(--text-primary)" }}>
               {currentTrain.specs.speed}
             </span>
-            <span style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>السرعة التشغيلية</span>
+            <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>السرعة التشغيلية</span>
           </div>
         </div>
 
@@ -491,7 +491,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                 height: "230px",
                 borderRadius: "10px",
                 overflow: "hidden",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 background: "#0a0a0a",
                 cursor: "pointer"
               }}
@@ -543,12 +543,12 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
             <div
               style={{
                 background: "rgba(128,128,128,0.04)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "8px",
                 padding: "10px 12px"
               }}
             >
-              <div style={{ fontSize: "0.76rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+              <div style={{ fontSize: "0.76rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                 📍 خطوط السير المتاحة:
               </div>
               <ul style={{ margin: 0, paddingRight: "16px", fontSize: "0.75rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -569,7 +569,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
             {/* Classic Specs Table */}
             <div
               style={{
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "8px",
                 overflow: "hidden",
                 fontSize: "0.78rem"
@@ -581,11 +581,11 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                   justifyContent: "space-between",
                   padding: "8px 12px",
                   background: "rgba(128,128,128,0.04)",
-                  borderBottom: "1px solid var(--borderGlass)"
+                  borderBottom: "1px solid var(--border-glass)"
                 }}
               >
-                <span style={{ color: "var(--textMuted)", fontWeight: "600" }}>نظام التكييف:</span>
-                <span style={{ color: "var(--textPrimary)", fontWeight: "700" }}>{currentTrain.specs.cooling}</span>
+                <span style={{ color: "var(--text-muted)", fontWeight: "600" }}>نظام التكييف:</span>
+                <span style={{ color: "var(--text-primary)", fontWeight: "700" }}>{currentTrain.specs.cooling}</span>
               </div>
 
               <div
@@ -593,11 +593,11 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                   display: "flex",
                   justifyContent: "space-between",
                   padding: "8px 12px",
-                  borderBottom: "1px solid var(--borderGlass)"
+                  borderBottom: "1px solid var(--border-glass)"
                 }}
               >
-                <span style={{ color: "var(--textMuted)", fontWeight: "600" }}>البوفيه والضيافة:</span>
-                <span style={{ color: "var(--textPrimary)", fontWeight: "700" }}>{currentTrain.specs.buffet}</span>
+                <span style={{ color: "var(--text-muted)", fontWeight: "600" }}>البوفيه والضيافة:</span>
+                <span style={{ color: "var(--text-primary)", fontWeight: "700" }}>{currentTrain.specs.buffet}</span>
               </div>
 
               <div
@@ -606,11 +606,11 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                   justifyContent: "space-between",
                   padding: "8px 12px",
                   background: "rgba(128,128,128,0.04)",
-                  borderBottom: "1px solid var(--borderGlass)"
+                  borderBottom: "1px solid var(--border-glass)"
                 }}
               >
-                <span style={{ color: "var(--textMuted)", fontWeight: "600" }}>الخدمات والشواحن:</span>
-                <span style={{ color: "var(--textPrimary)", fontWeight: "700" }}>{currentTrain.specs.power}</span>
+                <span style={{ color: "var(--text-muted)", fontWeight: "600" }}>الخدمات والشواحن:</span>
+                <span style={{ color: "var(--text-primary)", fontWeight: "700" }}>{currentTrain.specs.power}</span>
               </div>
 
               <div
@@ -620,7 +620,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                   padding: "8px 12px"
                 }}
               >
-                <span style={{ color: "var(--textMuted)", fontWeight: "600" }}>فئة الأسعار:</span>
+                <span style={{ color: "var(--text-muted)", fontWeight: "600" }}>فئة الأسعار:</span>
                 <span style={{ color: currentTrain.badgeColor, fontWeight: "800" }}>{currentTrain.specs.priceTier}</span>
               </div>
             </div>
@@ -629,12 +629,12 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
             <div
               style={{
                 background: "rgba(128,128,128,0.02)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "8px",
                 padding: "10px 12px"
               }}
             >
-              <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+              <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                 ✨ أهم التجهيزات والمميزات:
               </div>
               <ul style={{ margin: 0, paddingRight: "16px", fontSize: "0.76rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -652,7 +652,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                 background: "rgba(128,128,128,0.04)",
                 borderRight: `3px solid ${themeColor}`,
                 fontSize: "0.78rem",
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 lineHeight: "1.6"
               }}
             >
@@ -695,7 +695,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
             justifyContent: "space-between",
             alignItems: "center",
             paddingTop: "12px",
-            borderTop: "1px solid var(--borderGlass)",
+            borderTop: "1px solid var(--border-glass)",
             marginTop: "6px"
           }}
         >
@@ -706,8 +706,8 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
               padding: "7px 14px",
               borderRadius: "6px",
               background: "rgba(128,128,128,0.06)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
               fontSize: "0.78rem",
               fontWeight: "700",
               cursor: "pointer",
@@ -730,7 +730,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
                   width: dotIdx === currentIndex ? "18px" : "6px",
                   height: "6px",
                   borderRadius: "3px",
-                  background: dotIdx === currentIndex ? "var(--textPrimary)" : "rgba(128,128,128,0.3)",
+                  background: dotIdx === currentIndex ? "var(--text-primary)" : "rgba(128,128,128,0.3)",
                   border: "none",
                   cursor: "pointer",
                   transition: "all 0.2s ease"
@@ -746,8 +746,8 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
               padding: "7px 14px",
               borderRadius: "6px",
               background: "rgba(128,128,128,0.06)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
               fontSize: "0.78rem",
               fontWeight: "700",
               cursor: "pointer",
@@ -783,7 +783,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
               maxWidth: "650px",
               width: "100%",
               background: "var(--bgPrimary, #000)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "12px",
               overflow: "hidden"
             }}
@@ -818,7 +818,7 @@ export default function TrainTypesSection({ sectionRef, themeColor = "#2563eb", 
             </div>
             <div style={{ padding: "14px 18px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <h4 style={{ margin: "0 0 2px", fontSize: "1rem", color: "var(--textPrimary)", fontWeight: "800" }}>
+                <h4 style={{ margin: "0 0 2px", fontSize: "1rem", color: "var(--text-primary)", fontWeight: "800" }}>
                   {activePreviewImage.title}
                 </h4>
                 <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--textSecondary)" }}>{activePreviewImage.subtitle}</p>

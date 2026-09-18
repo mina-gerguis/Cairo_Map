@@ -643,7 +643,7 @@ export default function MobileBottomNav() {
                   decoding="async"
                   style={{
                     width: "25px", height: "25px", borderRadius: "50%", objectFit: "cover",
-                    border: displayActiveIndex === 4 ? "2px solid var(--textPrimary)" : "1px solid transparent",
+                    border: displayActiveIndex === 4 ? "2px solid var(--text-primary)" : "1px solid transparent",
                     transition: "border-color 0.2s",
                   }}
                 />
@@ -684,7 +684,7 @@ export default function MobileBottomNav() {
               <button
                 className="btn"
                 onClick={() => setIsSearchOpen(false)}
-                style={{ width: "50px", padding: "15px 14px", fontSize: "0.9rem", border: "1px solid var(--borderGlass)" }}
+                style={{ width: "50px", padding: "15px 14px", fontSize: "0.9rem", border: "1px solid var(--border-glass)" }}
               >
                 <MdOutlineClose />
               </button>
@@ -703,7 +703,7 @@ export default function MobileBottomNav() {
                         gap: "8px",
                         fontSize: "0.85rem",
                         fontWeight: "700",
-                        color: "var(--colorSecondary)",
+                        color: "var(--color-secondary)",
                         padding: "6px 4px",
                         marginBottom: "6px",
                         fontFamily: "var(--font-body)"
@@ -723,11 +723,11 @@ export default function MobileBottomNav() {
                             justifyContent: "space-between",
                             padding: "10px 14px",
                             borderRadius: "12px",
-                            backgroundColor: "var(--bgGlass-card)",
-                            border: "1px solid var(--borderGlass)",
+                            backgroundColor: "var(--bg-glass-card)",
+                            border: "1px solid var(--border-glass)",
                             marginBottom: "8px",
                             textDecoration: "none",
-                            color: "var(--textPrimary)",
+                            color: "var(--text-primary)",
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -750,7 +750,7 @@ export default function MobileBottomNav() {
                             padding: "3px 10px",
                             borderRadius: "999px",
                             backgroundColor: "rgba(59, 130, 246, 0.15)",
-                            color: "var(--colorSecondary)",
+                            color: "var(--color-secondary)",
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "4px"
@@ -772,12 +772,12 @@ export default function MobileBottomNav() {
                         gap: "8px",
                         fontSize: "0.85rem",
                         fontWeight: "700",
-                        color: "var(--textPrimary)",
+                        color: "var(--text-primary)",
                         padding: "6px 4px",
                         marginBottom: "6px",
                         fontFamily: "var(--font-body)"
                       }}>
-                        <FaMapMarkerAlt style={{ color: "var(--colorSecondary)" }} />
+                        <FaMapMarkerAlt style={{ color: "var(--color-secondary)" }} />
                         <span>الأماكن والمحلات ذات الصلة ({matchedPlaces.length})</span>
                       </div>
 
@@ -792,11 +792,11 @@ export default function MobileBottomNav() {
                             justifyContent: "space-between",
                             padding: "10px 14px",
                             borderRadius: "12px",
-                            backgroundColor: "var(--bgGlass-card)",
-                            border: "1px solid var(--borderGlass)",
+                            backgroundColor: "var(--bg-glass-card)",
+                            border: "1px solid var(--border-glass)",
                             marginBottom: "8px",
                             textDecoration: "none",
-                            color: "var(--textPrimary)",
+                            color: "var(--text-primary)",
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -857,10 +857,10 @@ export default function MobileBottomNav() {
                               gap: "6px",
                               padding: "6px 14px",
                               borderRadius: "20px",
-                              backgroundColor: "var(--bgGlass-card)",
-                              border: "1px solid var(--borderGlass)",
+                              backgroundColor: "var(--bg-glass-card)",
+                              border: "1px solid var(--border-glass)",
                               textDecoration: "none",
-                              color: "var(--textPrimary)",
+                              color: "var(--text-primary)",
                               fontSize: "0.84rem",
                               fontFamily: "var(--font-body)"
                             }}
@@ -878,13 +878,13 @@ export default function MobileBottomNav() {
                     <div style={{
                       padding: "24px 16px",
                       textAlign: "center",
-                      backgroundColor: "var(--bgGlass-card)",
-                      border: "1px solid var(--borderGlass)",
+                      backgroundColor: "var(--bg-glass-card)",
+                      border: "1px solid var(--border-glass)",
                       borderRadius: "16px",
                       marginTop: "12px"
                     }}>
                       <div style={{ fontSize: "2.4rem", marginBottom: "8px" }}>🔍</div>
-                      <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px", fontFamily: "var(--font-display)" }}>
+                      <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px", fontFamily: "var(--font-display)" }}>
                         عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                       </h4>
                       <p style={{ fontSize: "0.85rem", color: "var(--textSecondary)", maxWidth: "320px", margin: "0 auto 16px auto", lineHeight: "1.6", fontFamily: "var(--font-body)" }}>
@@ -900,8 +900,8 @@ export default function MobileBottomNav() {
                             padding: "10px 16px",
                             borderRadius: "10px",
                             backgroundColor: "var(--bgSecondary)",
-                            border: "1px solid var(--borderGlass)",
-                            color: "var(--textPrimary)",
+                            border: "1px solid var(--border-glass)",
+                            color: "var(--text-primary)",
                             fontWeight: "700",
                             fontSize: "0.86rem",
                             cursor: "pointer",
@@ -943,8 +943,8 @@ export default function MobileBottomNav() {
                             padding: "10px 16px",
                             borderRadius: "10px",
                             backgroundColor: "var(--bgSecondary)",
-                            border: "1px solid var(--colorSecondary)",
-                            color: "var(--colorSecondary)",
+                            border: "1px solid var(--color-secondary)",
+                            color: "var(--color-secondary)",
                             fontWeight: "700",
                             fontSize: "0.86rem",
                             textDecoration: "none",
@@ -960,7 +960,7 @@ export default function MobileBottomNav() {
                       </div>
 
                       {/* Trending Suggestions */}
-                      <div style={{ borderTop: "1px dashed var(--borderGlass)", paddingTop: "14px", textAlign: "right" }}>
+                      <div style={{ borderTop: "1px dashed var(--border-glass)", paddingTop: "14px", textAlign: "right" }}>
                         <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "10px", fontFamily: "var(--font-display)" }}>
                           📈 عمليات بحث شائعة قد تهمك:
                         </div>
@@ -983,7 +983,7 @@ export default function MobileBottomNav() {
               ) : (
                 /* TRENDING SEARCHES */
                 <div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>
                     📈 عمليات بحث شائعة
                   </h3>
                   <div className="trending-tags" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>

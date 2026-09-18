@@ -7,6 +7,7 @@ import { RouteData, DbTransitRoute, CitySuggestion, RouteLeg, QuickRouteItem } f
 import {
   normalizeArabic,
   resolveLocationAliases,
+  calculateLocationScore,
   getStoredSearchCounts,
   recordRouteSearch,
   buildDynamicPopularRoutes
@@ -188,7 +189,7 @@ export function useDirectionsData() {
     return list;
   }, [routes]);
 
-  // Search logic matching normalized text and aliases
+  // Search logic matching normalized text and aliases with smart relevance scoring
   const searchRoute = useCallback((fromInput: string, toInput: string) => {
     if (!fromInput.trim() || !toInput.trim()) {
       return { matchedRoute: null, resolvedFrom: "", resolvedTo: "" };
@@ -197,40 +198,27 @@ export function useDirectionsData() {
     const searchFrom = resolveLocationAliases(fromInput);
     const searchTo = resolveLocationAliases(toInput);
 
-    const normFromResolved = normalizeArabic(searchFrom);
-    const normToResolved = normalizeArabic(searchTo);
-
-    let foundRoute: RouteData | null = null;
-    let resolvedFrom = "";
-    let resolvedTo = "";
+    let bestRoute: RouteData | null = null;
+    let highestScore = 0;
 
     for (const route of (routes || [])) {
-      const routeFromNorm = normalizeArabic(route.from);
-      const isFromDirectMatch = routeFromNorm === normFromResolved || routeFromNorm.includes(normFromResolved) || normFromResolved.includes(routeFromNorm);
-      const isFromAliasMatch = route.from_aliases && route.from_aliases.split(",").some(alias => {
-        const normAlias = normalizeArabic(alias);
-        return normAlias === normFromResolved || normAlias.includes(normFromResolved);
-      });
+      const fromScore = calculateLocationScore(route.from, route.from_aliases, fromInput);
+      const toScore = calculateLocationScore(route.to, route.to_aliases, toInput);
 
-      const routeToNorm = normalizeArabic(route.to);
-      const isToDirectMatch = routeToNorm === normToResolved || routeToNorm.includes(normToResolved) || normToResolved.includes(routeToNorm);
-      const isToAliasMatch = route.to_aliases && route.to_aliases.split(",").some(alias => {
-        const normAlias = normalizeArabic(alias);
-        return normAlias === normToResolved || normAlias.includes(normToResolved);
-      });
-
-      if ((isFromDirectMatch || isFromAliasMatch) && (isToDirectMatch || isToAliasMatch)) {
-        foundRoute = route;
-        resolvedFrom = route.from;
-        resolvedTo = route.to;
-        break;
+      // Both endpoints must meet minimum relevancy threshold
+      if (fromScore >= 120 && toScore >= 120) {
+        const totalScore = fromScore + toScore;
+        if (totalScore > highestScore) {
+          highestScore = totalScore;
+          bestRoute = route;
+        }
       }
     }
 
     return {
-      matchedRoute: foundRoute,
-      resolvedFrom: resolvedFrom || searchFrom,
-      resolvedTo: resolvedTo || searchTo
+      matchedRoute: bestRoute,
+      resolvedFrom: bestRoute ? bestRoute.from : searchFrom,
+      resolvedTo: bestRoute ? bestRoute.to : searchTo
     };
   }, [routes]);
 

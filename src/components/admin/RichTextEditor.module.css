@@ -1,6 +1,6 @@
 .editorContainer {
   width: 100%;
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   border-radius: 14px;
   overflow: hidden;
   background-color: var(--bgSecondary, #18181b);
@@ -15,8 +15,8 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.6rem 0.8rem;
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.8));
-  border-bottom: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.8));
+  border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   user-select: none;
 }
 
@@ -29,14 +29,14 @@
 .divider {
   width: 1px;
   height: 22px;
-  background-color: var(--borderGlass, rgba(255, 255, 255, 0.15));
+  background-color: var(--border-glass, rgba(255, 255, 255, 0.15));
   margin: 0 0.25rem;
 }
 
 .toolbarBtn {
   background: transparent;
   border: 1px solid transparent;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   border-radius: 8px;
   padding: 0.4rem 0.55rem;
   font-size: 1.1rem;
@@ -66,8 +66,8 @@
 
 .toolbarSelect {
   background-color: var(--bgSecondary, #18181b);
-  color: var(--textPrimary, #f4f4f5);
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  color: var(--text-primary, #f4f4f5);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   border-radius: 8px;
   padding: 0.35rem 0.6rem;
   font-size: 0.85rem;
@@ -87,7 +87,7 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   cursor: pointer;
   font-size: 1.1rem;
   overflow: hidden;
@@ -126,7 +126,7 @@
 /* ── Content Area ── */
 .editableContent {
   padding: 1.2rem;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   font-size: 1.05rem;
   line-height: 1.8;
   outline: none;
@@ -144,7 +144,7 @@
   height: auto;
   border-radius: 12px;
   margin: 1rem 0;
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   box-shadow: var(--shadow-sm);
 }
 
@@ -152,7 +152,7 @@
   border-right: 4px solid var(--colorPrimary, #006FEE);
   margin: 1rem 0;
   padding: 0.6rem 1.1rem;
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.7));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.7));
   border-radius: 4px 0 0 4px;
   font-style: italic;
   color: var(--textSecondary, #a1a1aa);
@@ -191,14 +191,14 @@
 }
 
 .modalBody {
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.95));
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.95));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   border-radius: 20px;
   padding: 1.75rem;
   width: 100%;
   max-width: 480px;
   box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.5));
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   backdrop-filter: blur(16px);
 }
 
@@ -209,7 +209,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
 }
 
 .modalTitle i {
@@ -226,9 +226,9 @@
   width: 100%;
   padding: 0.8rem 1rem;
   border-radius: 10px;
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   background-color: var(--bgSecondary, #18181b);
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   font-size: 0.95rem;
   outline: none;
   margin-bottom: 1.25rem;
@@ -246,10 +246,10 @@
   gap: 0.75rem;
 }
 
-.modalCancelBtn {
+.modalbtn-cancel {
   padding: 0.65rem 1.3rem;
   border-radius: 10px;
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   background: transparent;
   color: var(--textSecondary, #a1a1aa);
   cursor: pointer;
@@ -258,9 +258,9 @@
   transition: all 0.2s ease;
 }
 
-.modalCancelBtn:hover {
+.modalbtn-cancel:hover {
   background-color: var(--hoverBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .modalSubmitBtn {

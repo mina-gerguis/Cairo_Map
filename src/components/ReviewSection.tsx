@@ -222,12 +222,12 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
   return (
     <div id="reviews-section" style={{ marginTop: "40px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "24px" }}>
-      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "20px", color: "var(--textPrimary)" }}>
+      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "20px", color: "var(--text-primary)" }}>
         التقييمات والتعليقات ({filteredAndSortedReviews.length !== reviews.length ? `${filteredAndSortedReviews.length} من ${reviews.length}` : reviews.length})
       </h2>
 
       {user ? (
-        <div style={{ background: "rgba(120, 120, 120, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "16px", padding: "20px", marginBottom: "30px" }}>
+        <div style={{ background: "rgba(120, 120, 120, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "30px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
             <h5 style={{ fontSize: "1.1rem", margin: 0, fontWeight: "700" }}>
               {userReview ? "تعديل تقييمك" : "أضف تقييمك"}
@@ -263,7 +263,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
                 <span
                   key={star}
                   onClick={() => setRatingInput(star)}
-                  style={{ fontSize: "2rem", cursor: "pointer", color: star <= ratingInput ? "#ff9f0a" : "var(--borderGlass)", transition: "color 0.2s" }}
+                  style={{ fontSize: "2rem", cursor: "pointer", color: star <= ratingInput ? "#ff9f0a" : "var(--border-glass)", transition: "color 0.2s" }}
                 >
                   ★
                 </span>
@@ -282,7 +282,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
               type="submit"
               disabled={submittingReview || ratingInput === 0}
               className="btn btn-primary"
-              style={{ width: "100%", padding: "var(--paddingBtn)", borderRadius: "8px" }}
+              style={{ width: "100%", padding: "var(--padding-btn)", borderRadius: "8px" }}
             >
               {submittingReview ? "جاري الإرسال..." : <><i className="bx bx-save" style={{ fontSize: "1.2rem" }}></i> حفظ التقييم</>}
             </button>
@@ -291,7 +291,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
       ) : (
         <div style={{ textAlign: "center", padding: "20px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px", marginBottom: "30px" }}>
           <p style={{ color: "var(--textSecondary)", marginBottom: "12px" }}>سجل دخولك لتتمكن من تقييم هذا المكان</p>
-          <button className="btn btn-primary" onClick={() => router.push("/login")} style={{ padding: "var(--paddingBtn)", borderRadius: "8px" }}><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
+          <button className="btn btn-primary" onClick={() => router.push("/login")} style={{ padding: "var(--padding-btn)", borderRadius: "8px" }}><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
         </div>
       )}
 
@@ -299,7 +299,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
       <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "50px" }}>
         {displayedReviews.length > 0 ? (
           displayedReviews.map(review => (
-            <div key={review.id} style={{ background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", borderRadius: "16px", padding: "16px" }}>
+            <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "10px" }}>
                 <div>
                   <div style={{
@@ -327,7 +327,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
               </div>
               {review.comment && (
-                <p style={{ color: "var(--textPrimary)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px", paddingRight: review.branches ? "4px" : "0" }}>
+                <p style={{ color: "var(--text-primary)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px", paddingRight: review.branches ? "4px" : "0" }}>
                   {review.comment}
                 </p>
               )}
@@ -357,10 +357,10 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
               width: "100%",
               padding: "14px",
               background: "rgba(120, 120, 120, 0.08)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "14px",
               fontWeight: "600",
-              color: "var(--colorSecondary)",
+              color: "var(--color-secondary)",
               cursor: "pointer",
               transition: "all 0.2s",
               display: "flex",

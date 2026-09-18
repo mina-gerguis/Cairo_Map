@@ -518,7 +518,7 @@ function AdminAirportsInner() {
   if (authLoading || loading) {
     return (
       <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--colorSecondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
+        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
         <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة المطارات...</p>
       </div>
     );
@@ -532,10 +532,10 @@ function AdminAirportsInner() {
       {/* Header section */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
             إدارة المطارات
           </h1>
-          <p style={{ color: "var(--textMuted)", fontSize: "0.9rem", margin: 0 }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: 0 }}>
             إضافة وتعديل وحذف مطارات القاهرة ومصر وتعديل بياناتها والاتصال والرحلات.
           </p>
         </div>
@@ -585,7 +585,7 @@ function AdminAirportsInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--textMuted)",
+            color: "var(--text-muted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -599,7 +599,7 @@ function AdminAirportsInner() {
               paddingRight: "44px",
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--textSecondary)"
             }}
           />
@@ -756,8 +756,8 @@ function AdminAirportsInner() {
             maxHeight: "90vh",
             overflowY: "auto",
             padding: "30px",
-            border: "1px solid var(--borderGlass)",
-            background: "var(--bgGlass)",
+            border: "1px solid var(--border-glass)",
+            background: "var(--bg-glass)",
             borderRadius: "var(--radius-card)",
             boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
           }}>
@@ -1031,7 +1031,7 @@ function AdminAirportsInner() {
 
                 {/* Group 4: البنية التحتية */}
                 <div style={{
-                 background: "var(--bgThird)",
+                  background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
                   borderRadius: "var(--radius-card)",
                   padding: "20px",
@@ -1108,7 +1108,7 @@ function AdminAirportsInner() {
 
                 {/* Group 5: الربط وحركة الطيران */}
                 <div style={{
-                 background: "var(--bgThird)",
+                  background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
                   borderRadius: "var(--radius-card)",
                   padding: "20px",
@@ -1182,7 +1182,7 @@ function AdminAirportsInner() {
 
                 {/* Group 6: الخدمات والمواصلات والاتصال */}
                 <div style={{
-                 background: "var(--bgThird)",
+                  background: "var(--bgThird)",
                   border: "1px solid rgba(255, 255, 255, 0.06)",
                   borderRadius: "var(--radius-card)",
                   padding: "20px",
@@ -1341,7 +1341,7 @@ function AdminAirportsInner() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setAirportToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

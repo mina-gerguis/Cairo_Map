@@ -532,7 +532,7 @@ export default function ParkingPage() {
   if (authLoading || loading) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: "var(--bgPrimary)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", color: "var(--textSecondary)" }}>
-        <div style={{ width: "40px", height: "40px", border: "4px solid var(--borderGlass)", borderTop: "4px solid var(--colorSecondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+        <div style={{ width: "40px", height: "40px", border: "4px solid var(--border-glass)", borderTop: "4px solid var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
         <span>جاري التحقق من التفاصيل...</span>
         <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }` }} />
       </div>
@@ -548,7 +548,7 @@ export default function ParkingPage() {
           padding: "24px 20px 24px",
           textAlign: "center",
           position: "relative",
-          borderBottom: "1px solid var(--borderGlass)",
+          borderBottom: "1px solid var(--border-glass)",
         }}>
           {/* Back Button */}
           <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
@@ -561,9 +561,9 @@ export default function ParkingPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
-                background: "var(--bgGlass-card)",
-                border: "1px solid var(--borderGlass)",
-                color: "var(--textPrimary)",
+                background: "var(--bg-glass-card)",
+                border: "1px solid var(--border-glass)",
+                color: "var(--text-primary)",
                 textDecoration: "none"
               }}
             >
@@ -579,7 +579,7 @@ export default function ParkingPage() {
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1.5rem, 5vw, 2rem)",
               fontWeight: "600",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               letterSpacing: "-0.5px",
             }}>
               <img src="/images/icons2d/parking.png" alt="Parking" loading="lazy" decoding="async" style={{ width: "60px", marginLeft: "10px" }} />
@@ -595,7 +595,7 @@ export default function ParkingPage() {
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
           <div className="metro-animate-slide-up metro-delay-200" style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "15px",
             padding: "35px 25px",
             textAlign: "center",
@@ -609,7 +609,7 @@ export default function ParkingPage() {
               <img src="/images/icons3d/lockPage.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
             </div>
 
-            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
               دليل الجراجات يتطلب اشتراك في الباقة الفضية
             </h2>
 
@@ -620,14 +620,14 @@ export default function ParkingPage() {
             {/* Perks list */}
             <div style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "12px",
               padding: "16px 20px",
               textAlign: "right",
               margin: "0 auto 32px",
               maxWidth: "440px"
             }}>
-              <div style={{ fontWeight: "800", color: "var(--textPrimary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية:</div>
+              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية:</div>
               <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ عرض مواقع وتفاصيل الجراجات المتعددة الطوابق والذكية.</li>
                 <li>✨ معرفة أقرب محطات المترو التبادلية والخدمية لكل جراج.</li>
@@ -642,7 +642,7 @@ export default function ParkingPage() {
                 <Link
                   href="/profile?expand=subscription"
                   style={{
-                    padding: "var(--paddingBtn)",
+                    padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
                     background: "var(--bg-subscribe-button-seliver)",
                     color: "var(--color-white-50)",
@@ -660,7 +660,7 @@ export default function ParkingPage() {
                 <Link
                   href="/login"
                   style={{
-                    padding: "var(--paddingBtn)",
+                    padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
                     background: "var(--bg-subscribe-button-base)",
                     color: "#fff",
@@ -678,14 +678,14 @@ export default function ParkingPage() {
               <Link
                 href="/"
                 style={{
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtn)",
                   background: "var(--bgSecondary)",
                   color: "var(--textSecondary)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   display: "block"
                 }}
               >
@@ -721,7 +721,7 @@ export default function ParkingPage() {
         padding: "24px 20px 24px",
         textAlign: "center",
         position: "relative",
-        borderBottom: "1px solid var(--borderGlass)",
+        borderBottom: "1px solid var(--border-glass)",
       }}>
         {/* Back Button */}
         <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
@@ -734,9 +734,9 @@ export default function ParkingPage() {
               width: "40px",
               height: "40px",
               borderRadius: "50%",
-              background: "var(--bgGlass)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
+              background: "var(--bg-glass)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
               textDecoration: "none",
               transition: "transform 0.2s ease"
             }}
@@ -754,7 +754,7 @@ export default function ParkingPage() {
             justifyContent: "center",
             fontSize: "clamp(1.5rem, 5vw, 2rem)",
             fontWeight: "bold",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
             fontFamily: "var(--font-sub)"
@@ -770,7 +770,7 @@ export default function ParkingPage() {
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "#818cf8",
               borderRadius: "10px",
               padding: "4px 14px",
@@ -779,7 +779,7 @@ export default function ParkingPage() {
             }}>مغطى ومتعدد الطوابق</span>
             <span style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "#10b981",
               borderRadius: "10px",
               padding: "4px 14px",
@@ -788,7 +788,7 @@ export default function ParkingPage() {
             }}>جراج ذكي إلكتروني</span>
             <span style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "#f59e0b",
               borderRadius: "10px",
               padding: "4px 14px",
@@ -805,7 +805,7 @@ export default function ParkingPage() {
               style={{
                 background: "rgba(59, 130, 246, 0.12)",
                 border: "1px solid rgba(59, 130, 246, 0.35)",
-                color: "var(--colorSecondary, #3b82f6)",
+                color: "var(--color-secondary, #3b82f6)",
                 borderRadius: "10px",
                 padding: "6px 16px",
                 fontSize: "0.82rem",
@@ -858,7 +858,7 @@ export default function ParkingPage() {
         {/* Search Panel Card - Styled matching Metro & Monorail searchCard */}
         <div className="metro-animate-slide-up metro-delay-200" style={{
           backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "15px",
           padding: "20px",
           marginTop: "24px",
@@ -889,9 +889,9 @@ export default function ParkingPage() {
                   width: "100%",
                   padding: "10px 40px 10px 12px",
                   backgroundColor: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "10px",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   fontSize: "0.9rem",
                   fontFamily: "var(--font-cairo)",
                   outline: "none",
@@ -911,9 +911,9 @@ export default function ParkingPage() {
                   width: "100%",
                   padding: "10px 12px",
                   backgroundColor: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "10px",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   fontSize: "0.9rem",
                   fontFamily: "var(--font-cairo)",
                   outline: "none",
@@ -921,7 +921,7 @@ export default function ParkingPage() {
                 }}
               >
                 {areas.map((area) => (
-                  <option key={area} value={area} style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>
+                  <option key={area} value={area} style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>
                     {area === "all" ? "جميع المناطق" : area}
                   </option>
                 ))}
@@ -935,13 +935,13 @@ export default function ParkingPage() {
           <div style={{
             fontSize: "1.2rem",
             fontWeight: "800",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             marginBottom: "16px",
             display: "flex",
             alignItems: "center",
             gap: "8px"
           }}>
-            <i className="bx bx-parking" style={{ color: "var(--colorSecondary)", fontSize: "1.4rem" }}></i>
+            <i className="bx bx-parking" style={{ color: "var(--color-secondary)", fontSize: "1.4rem" }}></i>
             الجراجات المتاحة ({filteredParking.length})
           </div>
 
@@ -951,7 +951,7 @@ export default function ParkingPage() {
               padding: "36px 20px",
               color: "var(--textSecondary)",
               backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "15px",
               display: "flex",
               flexDirection: "column",
@@ -963,7 +963,7 @@ export default function ParkingPage() {
                 height: "60px",
                 borderRadius: "50%",
                 background: "rgba(59, 130, 246, 0.1)",
-                color: "var(--colorSecondary, #3b82f6)",
+                color: "var(--color-secondary, #3b82f6)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -972,12 +972,12 @@ export default function ParkingPage() {
                 <i className="bx bx-search-alt"></i>
               </div>
               <div>
-                <p style={{ margin: "0 0 6px", fontSize: "1.05rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                <p style={{ margin: "0 0 6px", fontSize: "1.05rem", fontWeight: "700", color: "var(--text-primary)" }}>
                   لم يتم العثور على جراجات مطابقة للبحث
                 </p>
                 {searchTerm.trim() && (
                   <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)" }}>
-                    لا يوجد جراج مسجل باسم &ldquo;<span style={{ color: "var(--colorSecondary)", fontWeight: "700" }}>{searchTerm.trim()}</span>&rdquo;
+                    لا يوجد جراج مسجل باسم &ldquo;<span style={{ color: "var(--color-secondary)", fontWeight: "700" }}>{searchTerm.trim()}</span>&rdquo;
                   </p>
                 )}
               </div>
@@ -986,7 +986,7 @@ export default function ParkingPage() {
                 marginTop: "6px",
                 padding: "14px 18px",
                 background: "var(--bgSecondary)",
-                border: "1px dashed var(--borderGlass)",
+                border: "1px dashed var(--border-glass)",
                 borderRadius: "12px",
                 maxWidth: "420px",
                 width: "100%",
@@ -995,7 +995,7 @@ export default function ParkingPage() {
                 alignItems: "center",
                 gap: "10px"
               }}>
-                <div style={{ fontSize: "0.88rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                <div style={{ fontSize: "0.88rem", color: "var(--text-primary)", fontWeight: "600" }}>
                   هل تعرف هذا الجراج أو ترغب في إضافته إلى الدليل؟
                 </div>
                 <button
@@ -1005,7 +1005,7 @@ export default function ParkingPage() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "8px",
-                    background: "var(--colorSecondary, #3b82f6)",
+                    background: "var(--color-secondary, #3b82f6)",
                     color: "#fff",
                     border: "none",
                     borderRadius: "10px",
@@ -1035,7 +1035,7 @@ export default function ParkingPage() {
                     onClick={() => handleParkingClick(parking.id)}
                     style={{
                       backgroundColor: "var(--bgPrimary)",
-                      border: isExpanded ? `1px solid var(--colorSecondary)` : "1px solid var(--borderGlass)",
+                      border: isExpanded ? `1px solid var(--color-secondary)` : "1px solid var(--border-glass)",
                       borderRadius: "var(--radius-card)",
                       padding: "16px",
                       boxShadow: "var(--shadow-sm)",
@@ -1048,7 +1048,7 @@ export default function ParkingPage() {
                   >
                     {/* Header Row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: "1.05rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                      <span style={{ fontSize: "1.05rem", fontWeight: "700", color: "var(--text-primary)" }}>
                         {parking.name}
                       </span>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1075,7 +1075,7 @@ export default function ParkingPage() {
                     {/* Expanded details block */}
                     {isExpanded && (
                       <div style={{
-                        borderTop: "1px solid var(--borderGlass)",
+                        borderTop: "1px solid var(--border-glass)",
                         paddingTop: "12px",
                         marginTop: "4px",
                         display: "flex",
@@ -1094,18 +1094,18 @@ export default function ParkingPage() {
                           <span style={{ fontSize: "0.8rem", color: "#10b981", fontWeight: "bold", display: "block", marginBottom: "4px" }}>
                             أقرب محطة مترو:
                           </span>
-                          <span style={{ fontSize: "0.85rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                          <span style={{ fontSize: "0.85rem", color: "var(--text-primary)", fontWeight: "600" }}>
                             {parking.nearestMetro}
                           </span>
                         </div>
 
                         {/* Capacity & Rates Grid */}
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
+                          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
                             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "2px" }}>السعة الإجمالية</span>
-                            <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--textPrimary)" }}>{parking.capacity} سيارة</span>
+                            <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>{parking.capacity} سيارة</span>
                           </div>
-                          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
+                          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
                             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "2px" }}>الحد الأقصى لليوم</span>
                             <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "#10b981" }}>{parking.maxDailyRate ? `${parking.maxDailyRate} ج.م` : "غير محدد"}</span>
                           </div>
@@ -1124,7 +1124,7 @@ export default function ParkingPage() {
                                 fontSize: "0.78rem",
                                 padding: "4px 10px",
                                 borderRadius: "6px",
-                                border: "1px solid var(--borderGlass)"
+                                border: "1px solid var(--border-glass)"
                               }}>
                                 ✓ {feat}
                               </span>
@@ -1133,7 +1133,7 @@ export default function ParkingPage() {
                         </div>
 
                         {/* Action Row */}
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px dashed var(--borderGlass)", paddingTop: "10px", marginTop: "4px", gap: "8px", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px dashed var(--border-glass)", paddingTop: "10px", marginTop: "4px", gap: "8px", flexWrap: "wrap" }}>
                           <span className="sub-title" style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>🕒 {parking.hours}</span>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             <button
@@ -1211,7 +1211,7 @@ export default function ParkingPage() {
           <div style={{
             backgroundColor: "var(--bgPrimary)",
             borderRadius: "var(--radius-card)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             width: "100%",
             maxWidth: "520px",
             maxHeight: "90vh",
@@ -1225,13 +1225,13 @@ export default function ParkingPage() {
             {/* Modal Header */}
             <div style={{
               padding: "16px 20px",
-              borderBottom: "1px solid var(--borderGlass)",
+              borderBottom: "1px solid var(--border-glass)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "rgba(255, 255, 255, 0.02)"
             }}>
-              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
                 <span>مشكلة في دليل الجراجات والمواقف</span>
               </h5>
@@ -1267,7 +1267,7 @@ export default function ParkingPage() {
                   }}>
                     <i className="bx bx-check"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم استلام بلاغك بنجاح!
                   </h4>
                   <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1276,7 +1276,7 @@ export default function ParkingPage() {
                 </div>
               ) : limitChecking ? (
                 <div style={{ textAlign: "center", padding: "40px" }}>
-                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--color-secondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
                   <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
                 </div>
               ) : limitReached ? (
@@ -1291,7 +1291,7 @@ export default function ParkingPage() {
                   }}>
                     <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%", objectFit: "contain" }} loading="lazy" />
                   </div>
-                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
                   </h5>
                   <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1313,7 +1313,7 @@ export default function ParkingPage() {
                     height: "56px",
                     borderRadius: "50%",
                     backgroundColor: "rgba(59, 130, 246, 0.15)",
-                    color: "var(--colorSecondary)",
+                    color: "var(--color-secondary)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1322,7 +1322,7 @@ export default function ParkingPage() {
                   }}>
                     <i className="bx bx-user"></i>
                   </div>
-                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تسجيل الدخول مطلوب
                   </h5>
                   <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -1342,7 +1342,7 @@ export default function ParkingPage() {
                 <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   {/* Scope Segmented Control */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "8px" }}>
                       نطاق المشكلة:
                     </label>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "6px" }}>
@@ -1357,9 +1357,9 @@ export default function ParkingPage() {
                         style={{
                           padding: "8px 4px",
                           borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "general" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
+                          border: `1px solid ${reportTargetScope === "general" ? "var(--color-secondary)" : "var(--border-glass)"}`,
                           background: reportTargetScope === "general" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "general" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          color: reportTargetScope === "general" ? "var(--text-primary)" : "var(--textSecondary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1378,9 +1378,9 @@ export default function ParkingPage() {
                         style={{
                           padding: "8px 4px",
                           borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "parking" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
+                          border: `1px solid ${reportTargetScope === "parking" ? "var(--color-secondary)" : "var(--border-glass)"}`,
                           background: reportTargetScope === "parking" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "parking" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          color: reportTargetScope === "parking" ? "var(--text-primary)" : "var(--textSecondary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1395,10 +1395,10 @@ export default function ParkingPage() {
                   {/* If Scope is Parking: Searchable parking garage autocomplete selector */}
                   {reportTargetScope === "parking" && (
                     <div style={{ position: "relative" }}>
-                      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         <span>اختر أو ابحث عن الجراج:</span>
                         {reportSelectedParking && (
-                          <span style={{ fontSize: "0.74rem", color: "var(--colorSecondary)", fontWeight: "700" }}>
+                          <span style={{ fontSize: "0.74rem", color: "var(--color-secondary)", fontWeight: "700" }}>
                             تم تحديد: {reportSelectedParking} ✔
                           </span>
                         )}
@@ -1423,8 +1423,8 @@ export default function ParkingPage() {
                             width: "100%",
                             padding: "10px 15px 10px 36px",
                             background: "var(--bgSecondary)",
-                            color: "var(--textPrimary)",
-                            border: reportSelectedParking ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                            color: "var(--text-primary)",
+                            border: reportSelectedParking ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                             fontFamily: "var(--font-body)",
                             fontSize: "0.9rem",
                             direction: "rtl"
@@ -1471,7 +1471,7 @@ export default function ParkingPage() {
                           left: 0,
                           right: 0,
                           background: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           borderRadius: "var(--radius-card)",
                           overflow: "hidden",
                           zIndex: 1100,
@@ -1515,7 +1515,7 @@ export default function ParkingPage() {
                                   }}
                                 >
                                   <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)" }}>
+                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--color-secondary)" : "var(--text-primary)" }}>
                                       {p.name}
                                     </span>
                                   </div>
@@ -1536,7 +1536,7 @@ export default function ParkingPage() {
 
                   {/* Problem Type dropdown */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       نوع المشكلة:
                     </label>
                     <select
@@ -1548,8 +1548,8 @@ export default function ParkingPage() {
                         padding: "10px 14px",
                         borderRadius: "10px",
                         background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
                         fontSize: "0.9rem",
                         cursor: "pointer"
@@ -1567,7 +1567,7 @@ export default function ParkingPage() {
 
                   {/* Details Textarea */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       تفاصيل المشكلة / التصحيح المقترح: <span style={{ color: "#ef4444" }}>*</span>
                     </label>
                     <textarea
@@ -1582,8 +1582,8 @@ export default function ParkingPage() {
                         padding: "12px",
                         borderRadius: "10px",
                         background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
                         fontSize: "0.9rem",
                         resize: "vertical"
@@ -1593,7 +1593,7 @@ export default function ParkingPage() {
 
                   {/* Enhanced Image File Upload */}
                   <div>
-                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       <span>صورة توضيحية للمشكلة (اختياري):</span>
                       <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal" }}>
                         JPG, PNG, WEBP (الحد الأقصى 5MB)
@@ -1615,7 +1615,7 @@ export default function ParkingPage() {
                         }}
                         style={{
                           position: "relative",
-                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "1.5px dashed var(--borderGlass)",
+                          border: isDraggingImage ? "2px dashed var(--color-secondary)" : "1.5px dashed var(--border-glass)",
                           borderRadius: "12px",
                           background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
                           padding: "20px 16px",
@@ -1661,14 +1661,14 @@ export default function ParkingPage() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          color: "var(--colorSecondary)",
+                          color: "var(--color-secondary)",
                           fontSize: "1.4rem"
                         }}>
                           <i className="bx bx-cloud-upload"></i>
                         </div>
 
                         <div>
-                          <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "3px" }}>
+                          <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
                             اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                           </div>
                           <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
@@ -1679,7 +1679,7 @@ export default function ParkingPage() {
                     ) : (
                       <div style={{
                         position: "relative",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
                         background: "var(--bgSecondary)",
                         padding: "10px 12px",
@@ -1695,7 +1695,7 @@ export default function ParkingPage() {
                           overflow: "hidden",
                           flexShrink: 0,
                           background: "#000",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -1717,7 +1717,7 @@ export default function ParkingPage() {
                           <div style={{
                             fontSize: "0.86rem",
                             fontWeight: "700",
-                            color: "var(--textPrimary)",
+                            color: "var(--text-primary)",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis"
@@ -1745,8 +1745,8 @@ export default function ParkingPage() {
                             padding: "6px 10px",
                             borderRadius: "8px",
                             background: "rgba(255, 255, 255, 0.05)",
-                            border: "1px solid var(--borderGlass)",
-                            color: "var(--textPrimary)",
+                            border: "1px solid var(--border-glass)",
+                            color: "var(--text-primary)",
                             fontSize: "0.75rem",
                             fontWeight: "600",
                             display: "flex",
@@ -1894,7 +1894,7 @@ export default function ParkingPage() {
             className="metro-animate-slide-up"
             style={{
               backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--radius-card)",
               width: "100%",
               maxWidth: "540px",
@@ -1911,7 +1911,7 @@ export default function ParkingPage() {
                 alignItems: "center",
                 justifyContent: "space-between",
                 padding: "20px 24px",
-                borderBottom: "1px solid var(--borderGlass)",
+                borderBottom: "1px solid var(--border-glass)",
                 position: "sticky",
                 top: 0,
                 backgroundColor: "var(--bgPrimary)",
@@ -1928,14 +1928,14 @@ export default function ParkingPage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "var(--colorSecondary, #3b82f6)",
+                    color: "var(--color-secondary, #3b82f6)",
                     fontSize: "1.2rem",
                   }}
                 >
                   <i className="fa-solid fa-lightbulb"></i>
                 </div>
                 <div>
-                  <h2 id="suggest-modal-title" style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h2 id="suggest-modal-title" style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     اقتراح إضافة جراج جديد
                   </h2>
                   <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
@@ -1961,8 +1961,8 @@ export default function ParkingPage() {
             <div style={{ padding: "24px" }}>
               {!user ? (
                 <div style={{ textAlign: "center", padding: "20px 0" }}>
-                  <i className="bx bx-lock-alt" style={{ fontSize: "3rem", color: "var(--colorSecondary)", marginBottom: "12px", display: "block" }}></i>
-                  <h4 style={{ margin: "0 0 8px", color: "var(--textPrimary)", fontWeight: "700" }}>تسجيل الدخول مطلوب</h4>
+                  <i className="bx bx-lock-alt" style={{ fontSize: "3rem", color: "var(--color-secondary)", marginBottom: "12px", display: "block" }}></i>
+                  <h4 style={{ margin: "0 0 8px", color: "var(--text-primary)", fontWeight: "700" }}>تسجيل الدخول مطلوب</h4>
                   <p style={{ margin: "0 0 20px", color: "var(--textSecondary)", fontSize: "0.9rem" }}>
                     يرجى تسجيل الدخول أولاً لتتمكن من تقديم اقتراحات الجراجات والمتابعة مع فريق الدعم.
                   </p>
@@ -1998,7 +1998,7 @@ export default function ParkingPage() {
                   >
                     ✓
                   </div>
-                  <h4 style={{ margin: "0 0 8px", color: "var(--textPrimary)", fontWeight: "800", fontSize: "1.2rem" }}>
+                  <h4 style={{ margin: "0 0 8px", color: "var(--text-primary)", fontWeight: "800", fontSize: "1.2rem" }}>
                     تم استلام اقتراحك بنجاح!
                   </h4>
                   <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.92rem", lineHeight: "1.6" }}>
@@ -2060,7 +2060,7 @@ export default function ParkingPage() {
 
                   {/* Garage Name */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       اسم الجراج <span style={{ color: "#ef4444" }}>*</span>
                     </label>
                     <input
@@ -2075,8 +2075,8 @@ export default function ParkingPage() {
                         padding: "10px 14px",
                         borderRadius: "10px",
                         backgroundColor: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
-                        color: "var(--textPrimary)",
+                        border: "1px solid var(--border-glass)",
+                        color: "var(--text-primary)",
                         fontSize: "0.92rem",
                         fontFamily: "var(--font-cairo)",
                         outline: "none",
@@ -2087,7 +2087,7 @@ export default function ParkingPage() {
                   {/* Area & Garage Type */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         المنطقة / الحي <span style={{ color: "#ef4444" }}>*</span>
                       </label>
                       <select
@@ -2098,8 +2098,8 @@ export default function ParkingPage() {
                           padding: "10px 12px",
                           borderRadius: "10px",
                           backgroundColor: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.9rem",
                           fontFamily: "var(--font-cairo)",
                           outline: "none",
@@ -2107,7 +2107,7 @@ export default function ParkingPage() {
                         }}
                       >
                         {areas.filter(a => a !== "all").map((a) => (
-                          <option key={a} value={a} style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>
+                          <option key={a} value={a} style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>
                             {a}
                           </option>
                         ))}
@@ -2115,7 +2115,7 @@ export default function ParkingPage() {
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         نوع الجراج
                       </label>
                       <select
@@ -2126,25 +2126,25 @@ export default function ParkingPage() {
                           padding: "10px 12px",
                           borderRadius: "10px",
                           backgroundColor: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.9rem",
                           fontFamily: "var(--font-cairo)",
                           outline: "none",
                           cursor: "pointer",
                         }}
                       >
-                        <option value="مغطى متعدد طوابق" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>مغطى متعدد طوابق</option>
-                        <option value="ذكي إلكتروني" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>ذكي إلكتروني</option>
-                        <option value="سطحي مفتوح" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>سطحي مفتوح</option>
-                        <option value="أخرى" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>أخرى</option>
+                        <option value="مغطى متعدد طوابق" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>مغطى متعدد طوابق</option>
+                        <option value="ذكي إلكتروني" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>ذكي إلكتروني</option>
+                        <option value="سطحي مفتوح" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>سطحي مفتوح</option>
+                        <option value="أخرى" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>أخرى</option>
                       </select>
                     </div>
                   </div>
 
                   {/* Address & Landmarks */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       العنوان بالتفصيل أو معالم الوصول <span style={{ color: "#ef4444" }}>*</span>
                     </label>
                     <input
@@ -2159,8 +2159,8 @@ export default function ParkingPage() {
                         padding: "10px 14px",
                         borderRadius: "10px",
                         backgroundColor: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
-                        color: "var(--textPrimary)",
+                        border: "1px solid var(--border-glass)",
+                        color: "var(--text-primary)",
                         fontSize: "0.92rem",
                         fontFamily: "var(--font-cairo)",
                         outline: "none",
@@ -2171,7 +2171,7 @@ export default function ParkingPage() {
                   {/* Nearest Metro & Price */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         أقرب محطة مترو (اختياري)
                       </label>
                       <input
@@ -2185,8 +2185,8 @@ export default function ParkingPage() {
                           padding: "10px 14px",
                           borderRadius: "10px",
                           backgroundColor: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.9rem",
                           fontFamily: "var(--font-cairo)",
                           outline: "none",
@@ -2195,7 +2195,7 @@ export default function ParkingPage() {
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         سعر الساعة التقديري (ج.م)
                       </label>
                       <input
@@ -2209,8 +2209,8 @@ export default function ParkingPage() {
                           padding: "10px 14px",
                           borderRadius: "10px",
                           backgroundColor: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.9rem",
                           fontFamily: "var(--font-cairo)",
                           outline: "none",
@@ -2222,7 +2222,7 @@ export default function ParkingPage() {
                   {/* Google Maps Link & Capacity */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         رابط خرائط جوجل (إن وجد)
                       </label>
                       <input
@@ -2236,8 +2236,8 @@ export default function ParkingPage() {
                           padding: "10px 14px",
                           borderRadius: "10px",
                           backgroundColor: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.88rem",
                           fontFamily: "var(--font-cairo)",
                           outline: "none",
@@ -2248,7 +2248,7 @@ export default function ParkingPage() {
                     </div>
 
                     <div>
-                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                      <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                         السعة التقديرية (سيارة)
                       </label>
                       <input
@@ -2262,8 +2262,8 @@ export default function ParkingPage() {
                           padding: "10px 14px",
                           borderRadius: "10px",
                           backgroundColor: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.9rem",
                           fontFamily: "var(--font-cairo)",
                           outline: "none",
@@ -2274,7 +2274,7 @@ export default function ParkingPage() {
 
                   {/* Available Features */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "8px" }}>
                       الميزات المتوفرة بالجراج:
                     </label>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -2301,9 +2301,9 @@ export default function ParkingPage() {
                               fontSize: "0.8rem",
                               fontWeight: "600",
                               cursor: "pointer",
-                              border: isSelected ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                              border: isSelected ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                               backgroundColor: isSelected ? "rgba(59, 130, 246, 0.15)" : "var(--bgSecondary)",
-                              color: isSelected ? "var(--colorSecondary)" : "var(--textSecondary)",
+                              color: isSelected ? "var(--color-secondary)" : "var(--textSecondary)",
                               transition: "all 0.2s ease",
                               display: "inline-flex",
                               alignItems: "center",
@@ -2320,7 +2320,7 @@ export default function ParkingPage() {
 
                   {/* Additional Notes */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       ملاحظات إضافية (اختياري)
                     </label>
                     <textarea
@@ -2334,8 +2334,8 @@ export default function ParkingPage() {
                         padding: "10px 14px",
                         borderRadius: "10px",
                         backgroundColor: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
-                        color: "var(--textPrimary)",
+                        border: "1px solid var(--border-glass)",
+                        color: "var(--text-primary)",
                         fontSize: "0.9rem",
                         fontFamily: "var(--font-cairo)",
                         outline: "none",
@@ -2346,7 +2346,7 @@ export default function ParkingPage() {
 
                   {/* Image Attachment */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       صورة للجراج أو اليافطة (اختياري)
                     </label>
 
@@ -2365,7 +2365,7 @@ export default function ParkingPage() {
                         }}
                         style={{
                           position: "relative",
-                          border: isDraggingSuggestImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderGlass)",
+                          border: isDraggingSuggestImage ? "2px dashed var(--color-secondary)" : "2px dashed var(--border-glass)",
                           borderRadius: "12px",
                           background: isDraggingSuggestImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
                           padding: "16px",
@@ -2402,7 +2402,7 @@ export default function ParkingPage() {
                             height: "36px",
                             borderRadius: "50%",
                             background: "rgba(59, 130, 246, 0.12)",
-                            color: "var(--colorSecondary)",
+                            color: "var(--color-secondary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -2411,7 +2411,7 @@ export default function ParkingPage() {
                         >
                           <i className="fa-solid fa-cloud-arrow-up"></i>
                         </div>
-                        <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                        <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)" }}>
                           اضغط لاختيار صورة أو اسحبها هنا
                         </div>
                         <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}>
@@ -2422,7 +2422,7 @@ export default function ParkingPage() {
                       <div
                         style={{
                           position: "relative",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           borderRadius: "12px",
                           background: "var(--bgSecondary)",
                           padding: "10px 12px",
@@ -2439,7 +2439,7 @@ export default function ParkingPage() {
                             overflow: "hidden",
                             flexShrink: 0,
                             background: "#000",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                           }}
                         >
                           <img
@@ -2453,7 +2453,7 @@ export default function ParkingPage() {
                           />
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {suggestImageFile?.name}
                           </div>
                           <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}>

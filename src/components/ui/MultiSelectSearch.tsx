@@ -154,7 +154,7 @@ export function MultiSelectSearch({
   return (
     <div ref={containerRef} style={{ position: "relative", width: "100%", textAlign: "right" }} dir="rtl">
       {label && (
-        <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--textPrimary)", display: "block" }}>
+        <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)", display: "block" }}>
           {label}
         </label>
       )}
@@ -172,8 +172,8 @@ export function MultiSelectSearch({
           cursor: "pointer",
           padding: "10px 16px",
           position: "relative",
-          background: "var(--bgGlass)",
-          border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+          background: "var(--bg-glass)",
+          border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
           borderRadius: "var(--ra-14)",
           boxShadow: isOpen ? "0 0 0 3px rgba(0, 111, 238, 0.15)" : "none",
           transition: "all 0.25s ease"
@@ -224,7 +224,7 @@ export function MultiSelectSearch({
             right: 0,
             zIndex: 999,
             marginTop: "6px",
-            background: "var(--bgGlass)",
+            background: "var(--bg-glass)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: "1px solid var(--borderPrimary)",
@@ -323,13 +323,13 @@ export function MultiSelectSearch({
                       borderRadius: "8px",
                       cursor: "pointer",
                       background: isChecked ? "rgba(0, 111, 238, 0.08)" : "transparent",
-                      color: isChecked ? "var(--textPrimary)" : "var(--textSecondary)",
+                      color: isChecked ? "var(--text-primary)" : "var(--textSecondary)",
                       transition: "all 0.15s ease"
                     }}
                     onMouseEnter={(e) => {
                       if (!isChecked) {
                         e.currentTarget.style.background = "var(--hoverBtn, rgba(39, 39, 42, 0.8))";
-                        e.currentTarget.style.color = "var(--textPrimary)";
+                        e.currentTarget.style.color = "var(--text-primary)";
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -345,7 +345,7 @@ export function MultiSelectSearch({
                         width: "20px",
                         height: "20px",
                         borderRadius: "6px",
-                        border: isChecked ? "none" : "2px solid var(--borderGlass-bright)",
+                        border: isChecked ? "none" : "2px solid var(--border-glass-bright)",
                         background: isChecked ? "var(--colorPrimary)" : "transparent",
                         display: "flex",
                         alignItems: "center",

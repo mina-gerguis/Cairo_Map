@@ -417,13 +417,13 @@ export default function PlaceDetailsPage() {
   return (
     <div className="app-container" style={{ maxWidth: "800px", paddingBottom: "100px" }}>
       {/* Navigation Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "10px 16px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "10px 16px" }}>
         {/* Left: Share */}
         <button
           onClick={handleShare}
           style={{
-            background: "var(--colorSecondary)",
-            border: "1px solid var(--borderGlass)",
+            background: "var(--color-secondary)",
+            border: "1px solid var(--border-glass)",
             color: "#ffffff",
             borderRadius: "50%",
             width: "36px",
@@ -442,7 +442,7 @@ export default function PlaceDetailsPage() {
 
         {/* Center: Centered Place Name */}
         <div style={{ textAlign: "center", flex: 1, minWidth: 0, padding: "0 10px" }}>
-          <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--textPrimary)" }}>
+          <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
             {place.name}
           </h3>
           <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
@@ -469,8 +469,8 @@ export default function PlaceDetailsPage() {
           onClick={() => router.push("/")}
           style={{
             background: "rgba(131, 131, 131, 0.14)",
-            border: "1px solid var(--borderGlass)",
-            color: "var(--textPrimary)",
+            border: "1px solid var(--border-glass)",
+            color: "var(--text-primary)",
             borderRadius: "50%",
             width: "36px",
             height: "36px",
@@ -529,7 +529,7 @@ export default function PlaceDetailsPage() {
         <div style={{ padding: "20px" }}>
           {/* Title Area */}
           <div style={{ textAlign: "center", marginBottom: "20px" }}>
-            <h1 style={{ fontFamily: "var(--font-cairo)", fontSize: "1.8rem", fontWeight: "800", color: "var(--textPrimary)", margin: "0 0 6px" }}>
+            <h1 style={{ fontFamily: "var(--font-cairo)", fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>
               {place.name}
             </h1>
             {place.name_en && (
@@ -587,7 +587,7 @@ export default function PlaceDetailsPage() {
                 href={`tel:${displayBranch.phones[0]}`}
                 style={{
                   background: "rgba(0, 45, 248, 0.05)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   color: "#007aff",
                   borderRadius: "12px",
                   padding: "5px 6px",
@@ -608,7 +608,7 @@ export default function PlaceDetailsPage() {
               <div
                 style={{
                   background: "rgba(255, 255, 255, 0.04)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   color: "var(--text-muted)",
                   borderRadius: "12px",
                   padding: "5px 6px",
@@ -631,7 +631,7 @@ export default function PlaceDetailsPage() {
               disabled={togglingFav}
               style={{
                 background: "rgba(0, 45, 248, 0.05)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 color: isFavorite ? "#ff3b30" : "#007aff",
                 borderRadius: "12px",
                 padding: "5px 6px",
@@ -697,9 +697,9 @@ export default function PlaceDetailsPage() {
                       key={b.id}
                       onClick={() => setSelectedBranchId(b.id)}
                       style={{
-                        background: isSelected ? "var(--colorSecondary)" : "rgba(120,120,120,0.1)",
-                        color: isSelected ? "#fff" : "var(--textPrimary)",
-                        border: isSelected ? "none" : "1px solid var(--borderGlass)",
+                        background: isSelected ? "var(--color-secondary)" : "rgba(120,120,120,0.1)",
+                        color: isSelected ? "#fff" : "var(--text-primary)",
+                        border: isSelected ? "none" : "1px solid var(--border-glass)",
                         borderRadius: "20px",
                         padding: "8px 16px",
                         fontSize: "0.95rem",
@@ -748,8 +748,8 @@ export default function PlaceDetailsPage() {
           )}
           {/* Description Section */}
           {place.description && (
-            <div style={{ background: "rgba(120, 120, 120, 0.03)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 20px", marginBottom: "24px" }}>
-              <h4 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "8px", color: "var(--textPrimary)" }}>نبذة عن المكان</h4>
+            <div style={{ background: "rgba(120, 120, 120, 0.03)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", marginBottom: "24px" }}>
+              <h4 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>نبذة عن المكان</h4>
               <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.8", margin: 0 }}>
                 {place.description}
               </p>
@@ -758,8 +758,8 @@ export default function PlaceDetailsPage() {
 
           {/* Good to Know Card */}
           <div style={{ marginBottom: "24px" }}>
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>معلومات مفيدة</h3>
-            <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>معلومات مفيدة</h3>
+            <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", display: "flex", flexDirection: "column", gap: "12px" }}>
               {(() => {
                 const activeFeatures = (displayBranch as any).features || (place as any).features;
                 if (activeFeatures && activeFeatures.length > 0) {
@@ -767,7 +767,7 @@ export default function PlaceDetailsPage() {
                     const feat = FEATURES_LIST.find(f => f.key === fKey);
                     if (!feat) return null;
                     return (
-                      <div key={fKey} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                      <div key={fKey} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                         <span style={{ fontSize: "1.1rem" }}>{feat.icon}</span>
                         <span>{feat.label}</span>
                       </div>
@@ -776,34 +776,34 @@ export default function PlaceDetailsPage() {
                 }
                 return place.category === "restaurant" || place.category === "cafe" ? (
                   <>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                       <span style={{ fontSize: "1.1rem" }}>🥗</span>
                       <span>خيارات نباتية متوفرة</span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                       <span style={{ fontSize: "1.1rem" }}>👥</span>
                       <span>مناسب للمجموعات والعائلات</span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                       <span style={{ fontSize: "1.1rem" }}>💳</span>
                       <span>يقبل الدفع بالبطاقات الائتمانية</span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                       <span style={{ fontSize: "1.1rem" }}>📶</span>
                       <span>شبكة واي فاي مجانية</span>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                       <span style={{ fontSize: "1.1rem" }}>✔️</span>
                       <span>مرافق مريحة للزوار</span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                       <span style={{ fontSize: "1.1rem" }}>♿</span>
                       <span>مدخل سهلة للكراسي المتحركة</span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                       <span style={{ fontSize: "1.1rem" }}>👨‍👩‍👧‍👦</span>
                       <span>مناسب لجميع الأعمار</span>
                     </div>
@@ -821,8 +821,8 @@ export default function PlaceDetailsPage() {
                         key={subCatKey}
                         style={{
                           background: "rgba(255,255,255,0.06)",
-                          color: "var(--textPrimary)",
-                          border: "1px solid var(--borderGlass)",
+                          color: "var(--text-primary)",
+                          border: "1px solid var(--border-glass)",
                           padding: "4px 12px",
                           borderRadius: "16px",
                           fontSize: "0.82rem",
@@ -873,8 +873,8 @@ export default function PlaceDetailsPage() {
 
           {/* Details Card (Phone, Website, Address) */}
           <div style={{ marginBottom: "24px" }}>
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>التفاصيل</h3>
-            <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>التفاصيل</h3>
+            <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
               {/* Phone Row */}
               {displayBranch.phones && displayBranch.phones.length > 0 && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
@@ -902,7 +902,7 @@ export default function PlaceDetailsPage() {
               {/* Address Row */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "14px 16px" }}>
                 <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>العنوان</span>
-                <div style={{ textAlign: "left", fontSize: "0.9rem", color: "var(--textPrimary)", fontWeight: "600", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
+                <div style={{ textAlign: "left", fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: "600", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
                   <span>{displayBranch.fullAddress}</span>
                   <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{displayBranch.city}، {displayBranch.governorate}</span>
                 </div>
@@ -913,8 +913,8 @@ export default function PlaceDetailsPage() {
           {/* Hours Card */}
           {displayBranch.workingHours && (
             <div style={{ marginBottom: "24px" }}>
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>ساعات العمل</h3>
-              <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 12px" }}>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>ساعات العمل</h3>
+              <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 12px" }}>
                 {(() => {
                   const parsed = parseWorkingHours(displayBranch.workingHours);
                   if (!parsed) return <div style={{ color: "var(--textSecondary)" }}>{displayBranch.workingHours}</div>;
@@ -939,10 +939,10 @@ export default function PlaceDetailsPage() {
                                 border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
                               }}
                             >
-                              <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--textPrimary)" : "var(--textSecondary)" }}>
-                                {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--colorSecondary)", marginRight: "6px" }}>(اليوم)</span>}
+                              <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--textSecondary)" }}>
+                                {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--color-secondary)", marginRight: "6px" }}>(اليوم)</span>}
                               </div>
-                              <div style={{ fontWeight: "600", color: day.isWorking ? "var(--textPrimary)" : "#ff3b30", fontSize: "0.95rem" }}>
+                              <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.95rem" }}>
                                 {day.isWorking ? ` ${day.openTime} ${day.openPeriod} : ${day.closeTime} ${day.closePeriod}` : "إجازة"}
                               </div>
                             </div>
@@ -995,10 +995,10 @@ export default function PlaceDetailsPage() {
                 style={{
                   flex: 1,
                   background: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "12px",
                   padding: "12px",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   fontWeight: "600",
                   fontSize: "0.9rem",
                   display: "flex",
@@ -1018,10 +1018,10 @@ export default function PlaceDetailsPage() {
                 style={{
                   flex: 1,
                   background: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "12px",
                   padding: "12px",
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   fontWeight: "600",
                   fontSize: "0.9rem",
                   display: "flex",
@@ -1045,12 +1045,12 @@ export default function PlaceDetailsPage() {
           {/* Photo Gallery */}
           {place.images && place.images.length > 1 && (
             <div style={{ marginBottom: "30px" }}>
-              <h4 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "14px", color: "var(--textPrimary)" }}>معرض الصور</h4>
+              <h4 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "14px", color: "var(--text-primary)" }}>معرض الصور</h4>
               <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "10px" }}>
                 {place.images.map((imgUrl, idx) => (
                   <div
                     key={idx}
-                    style={{ width: "160px", height: "107px", borderRadius: "12px", overflow: "hidden", flexShrink: 0, border: "1px solid var(--borderGlass)" }}
+                    style={{ width: "160px", height: "107px", borderRadius: "12px", overflow: "hidden", flexShrink: 0, border: "1px solid var(--border-glass)" }}
                   >
                     <img
                       src={imgUrl}

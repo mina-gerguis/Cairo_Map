@@ -368,7 +368,7 @@ export default function MobileInstallPrompt() {
             onClick={() => handleDismiss(false)}
             style={{
               width: "100%",
-              padding: "var(--paddingBtn)",
+              padding: "var(--padding-btn)",
               borderRadius: "8px",
               border: "none",
               fontSize: "0.92rem",

@@ -639,7 +639,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 }}
                 style={{
                   background: `radial-gradient(circle at 100% 0%, ${card.color}98 20%, transparent 65%), var(--bgPrimary)`,
-                  border: active ? `2px solid ${card.color}` : "1px solid var(--borderSecondary)",
+                  border: active ? `2px solid ${card.color}` : "1px solid var(--border-secondary)",
                   borderRadius: "var(--ra-8)",
                   padding: "16px 16px 14px 16px",
                   cursor: "pointer",
@@ -662,7 +662,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
                   <div
                     style={{
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontFamily: "var(--font-display)",
                       fontWeight: "700",
                       fontSize: "0.92rem",
@@ -678,7 +678,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   <div
                     style={{
                       fontSize: "0.75rem",
-                      color: "var(--textMuted)",
+                      color: "var(--text-muted)",
                       fontWeight: "500",
                       marginTop: "3px",
                       whiteSpace: "nowrap",
@@ -715,7 +715,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 padding: "10px 14px",
                 borderRadius: "var(--ra-8)",
                 background: "var(--bgSecondary)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 textDecoration: "none",
                 transition: "all 0.2s ease",
               }}
@@ -725,11 +725,11 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.borderColor = "var(--borderGlass)";
+                e.currentTarget.style.borderColor = "var(--border-glass)";
               }}
             >
               <div>
-                <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-primary)" }}>
                   {em.name}
                 </div>
                 <div style={{ fontSize: "1.05rem", fontWeight: "800", color: em.color, direction: "ltr", textAlign: "right" }}>
@@ -773,9 +773,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   fontSize: "0.75rem",
                   fontWeight: "700",
                   cursor: "pointer",
-                  background: activeMainTab === "phones" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                  background: activeMainTab === "phones" ? "var(--color-secondary)" : "var(--bgSecondary)",
                   color: activeMainTab === "phones" ? "#ffffff" : "var(--textSecondary)",
-                  border: activeMainTab === "phones" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                  border: activeMainTab === "phones" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                   transition: "all 0.2s ease",
                 }}
               >
@@ -791,9 +791,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   fontSize: "0.75rem",
                   fontWeight: "700",
                   cursor: "pointer",
-                  background: activeMainTab === "telecom" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                  background: activeMainTab === "telecom" ? "var(--color-secondary)" : "var(--bgSecondary)",
                   color: activeMainTab === "telecom" ? "#ffffff" : "var(--textSecondary)",
-                  border: activeMainTab === "telecom" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                  border: activeMainTab === "telecom" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                   transition: "all 0.2s ease",
                 }}
               >
@@ -807,7 +807,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
           <div style={{ position: "relative" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
               <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0 }}>
-                <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "6px", color: "var(--colorSecondary)" }}></i>
+                <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "6px", color: "var(--color-secondary)" }}></i>
                 ابحث بالاسم، الرقم، التخصص، أو الخدمة:
               </label>
               <VoiceInputButton
@@ -850,7 +850,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     transform: "translateY(-50%)",
                     background: "transparent",
                     border: "none",
-                    color: "var(--textMuted)",
+                    color: "var(--text-muted)",
                     cursor: "pointer",
                     fontSize: "0.9rem",
                   }}
@@ -870,7 +870,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   right: 0,
                   zIndex: 2000,
                   backgroundColor: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "var(--radius-card)",
                   boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
                   maxHeight: "280px",
@@ -899,14 +899,14 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
                         {entry.name}
                       </span>
                       {entry.specialty && (
                         <span
                           style={{
                             fontSize: "0.72rem",
-                            background: "var(--borderGlass)",
+                            background: "var(--border-glass)",
                             color: "var(--textSecondary)",
                             padding: "2px 6px",
                             borderRadius: "4px",
@@ -934,7 +934,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                       <a
                         href={getDialUrl(entry.phone_number)}
                         style={{
-                          color: "var(--colorSecondary)",
+                          color: "var(--color-secondary)",
                           fontSize: "0.85rem",
                           textDecoration: "none",
                         }}
@@ -965,9 +965,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     fontSize: "0.75rem",
                     padding: "3px 10px",
                     borderRadius: "6px",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     background: "var(--bgSecondary)",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     cursor: "pointer",
                   }}
                 >
@@ -998,10 +998,10 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
             {/* Header with Title and Specialty Filter */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "14px" }}>
               <div>
-                <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+                <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                   أرقام خدمة العملاء والخطوط الساخنة
                 </h2>
-                <span style={{ fontSize: "0.75rem", color: "var(--textMuted)" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
                   عرض {slicedEntries.length} من أصل {filteredEntries.length} جهة مسجلة
                 </span>
               </div>
@@ -1031,8 +1031,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 type="button"
                 onClick={() => setSelectedSpecialty("all")}
                 style={{
-                  background: selectedSpecialty === "all" ? "var(--colorSecondary)" : "var(--bgSecondary)",
-                  border: `1px solid ${selectedSpecialty === "all" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
+                  background: selectedSpecialty === "all" ? "var(--color-secondary)" : "var(--bgSecondary)",
+                  border: `1px solid ${selectedSpecialty === "all" ? "var(--color-secondary)" : "var(--border-glass)"}`,
                   color: selectedSpecialty === "all" ? "#ffffff" : "var(--textSecondary)",
                   padding: "4px 12px",
                   borderRadius: "6px",
@@ -1054,8 +1054,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     type="button"
                     onClick={() => setSelectedSpecialty(spec)}
                     style={{
-                      background: active ? "var(--colorSecondary)" : "var(--bgSecondary)",
-                      border: `1px solid ${active ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
+                      background: active ? "var(--color-secondary)" : "var(--bgSecondary)",
+                      border: `1px solid ${active ? "var(--color-secondary)" : "var(--border-glass)"}`,
                       color: active ? "#ffffff" : "var(--textSecondary)",
                       padding: "4px 12px",
                       borderRadius: "6px",
@@ -1078,9 +1078,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
             {/* Phone Cards Grid */}
             {slicedEntries.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "30px 10px", background: "var(--bgGlass)", borderRadius: "var(--radius-card)", border: "1px solid var(--borderGlass)" }}>
+              <div style={{ textAlign: "center", padding: "30px 10px", background: "var(--bg-glass)", borderRadius: "var(--radius-card)", border: "1px solid var(--border-glass)" }}>
                 <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🔍</div>
-                <h4 style={{ fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px" }}>
+                <h4 style={{ fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                   لم يتم العثور على أرقام مطابقة لبحثك
                 </h4>
                 <p style={{ fontSize: "0.82rem", color: "var(--textSecondary)", margin: "0 0 14px" }}>
@@ -1106,7 +1106,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                       key={entry.id}
                       style={{
                         backgroundColor: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "var(--ra-8)",
                         padding: "14px",
                         display: "flex",
@@ -1141,7 +1141,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                               borderRadius: "8px",
                               background: "rgba(59, 130, 246, 0.12)",
                               border: "1px solid rgba(59, 130, 246, 0.2)",
-                              color: "var(--colorSecondary)",
+                              color: "var(--color-secondary)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -1160,7 +1160,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                                 margin: 0,
                                 fontSize: "0.92rem",
                                 fontWeight: "700",
-                                color: "var(--textPrimary)",
+                                color: "var(--text-primary)",
                                 whiteSpace: "nowrap",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
@@ -1172,7 +1172,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                               <span
                                 style={{
                                   fontSize: "0.68rem",
-                                  background: "var(--borderGlass)",
+                                  background: "var(--border-glass)",
                                   color: "var(--textSecondary)",
                                   padding: "1px 6px",
                                   borderRadius: "4px",
@@ -1189,7 +1189,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                               style={{
                                 margin: "4px 0 0",
                                 fontSize: "0.75rem",
-                                color: "var(--textMuted)",
+                                color: "var(--text-muted)",
                                 lineHeight: "1.4",
                                 display: "-webkit-box",
                                 WebkitLineClamp: 2,
@@ -1210,7 +1210,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                           alignItems: "center",
                           justifyContent: "space-between",
                           paddingTop: "8px",
-                          borderTop: "1px solid var(--borderGlass)",
+                          borderTop: "1px solid var(--border-glass)",
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -1230,7 +1230,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                             style={{
                               background: isCopied ? "rgba(16, 185, 129, 0.15)" : "transparent",
                               border: "none",
-                              color: isCopied ? "var(--colorSuccess)" : "var(--textMuted)",
+                              color: isCopied ? "var(--colorSuccess)" : "var(--text-muted)",
                               cursor: "pointer",
                               padding: "2px 6px",
                               borderRadius: "4px",
@@ -1249,7 +1249,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                             style={{
                               background: "transparent",
                               border: "none",
-                              color: "var(--textMuted)",
+                              color: "var(--text-muted)",
                               cursor: "pointer",
                               padding: "4px",
                               fontSize: "0.78rem",
@@ -1294,8 +1294,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   className="btn"
                   style={{
                     background: "var(--bgSecondary)",
-                    border: "1px solid var(--borderGlass)",
-                    color: "var(--textPrimary)",
+                    border: "1px solid var(--border-glass)",
+                    color: "var(--text-primary)",
                     fontSize: "0.85rem",
                     fontWeight: "700",
                     padding: "8px 24px",
@@ -1314,10 +1314,10 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
             {/* Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "14px" }}>
               <div>
-                <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+                <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                   دليل أكواد وخدمات شبكات المحمول
                 </h2>
-                <span style={{ fontSize: "0.75rem", color: "var(--textMuted)" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
                   أكواد باقات الإنترنت، الرصيد، الكاش، وخدمات المكالمات
                 </span>
               </div>
@@ -1357,8 +1357,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                       alignItems: "center",
                       gap: "8px",
                       background: active ? meta.bg : "var(--bgSecondary)",
-                      border: active ? `2px solid ${meta.color}` : "1px solid var(--borderGlass)",
-                      color: active ? "var(--textPrimary)" : "var(--textSecondary)",
+                      border: active ? `2px solid ${meta.color}` : "1px solid var(--border-glass)",
+                      color: active ? "var(--text-primary)" : "var(--textSecondary)",
                       padding: "6px 14px",
                       borderRadius: "8px",
                       cursor: "pointer",
@@ -1384,9 +1384,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
             {/* Accordions of codes */}
             {Object.keys(groupedCodes).length === 0 ? (
-              <div style={{ textAlign: "center", padding: "30px 10px", background: "var(--bgGlass)", borderRadius: "var(--radius-card)", border: "1px solid var(--borderGlass)" }}>
+              <div style={{ textAlign: "center", padding: "30px 10px", background: "var(--bg-glass)", borderRadius: "var(--radius-card)", border: "1px solid var(--border-glass)" }}>
                 <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🔍</div>
-                <h4 style={{ fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px" }}>
+                <h4 style={{ fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                   لا توجد أكواد مطابقة لبحثك في شبكة {COMPANY_META[activeCompany]?.label}
                 </h4>
                 <p style={{ fontSize: "0.82rem", color: "var(--textSecondary)", margin: "0 0 14px" }}>
@@ -1412,7 +1412,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                       key={sectionName}
                       style={{
                         backgroundColor: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "var(--ra-8)",
                         overflow: "hidden",
                       }}
@@ -1422,7 +1422,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         onClick={() => toggleSection(sectionName)}
                         style={{
                           padding: "12px 16px",
-                          background: "var(--bgGlass)",
+                          background: "var(--bg-glass)",
                           cursor: "pointer",
                           display: "flex",
                           justifyContent: "space-between",
@@ -1433,12 +1433,12 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                           <i
                             className={formatBoxIcon(sectionIcons[sectionName] || "bx-folder")}
-                            style={{ fontSize: "1.1rem", color: COMPANY_META[activeCompany]?.color || "var(--colorSecondary)" }}
+                            style={{ fontSize: "1.1rem", color: COMPANY_META[activeCompany]?.color || "var(--color-secondary)" }}
                           ></i>
-                          <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                          <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
                             {sectionName}
                           </h4>
-                          <span style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>
+                          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
                             ({codeList.length} كود)
                           </span>
                         </div>
@@ -1449,7 +1449,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
                       {/* Accordion Content */}
                       {isExpanded && (
-                        <div style={{ padding: "8px 16px", background: "var(--bgPrimary)", borderTop: "1px solid var(--borderGlass)" }}>
+                        <div style={{ padding: "8px 16px", background: "var(--bgPrimary)", borderTop: "1px solid var(--border-glass)" }}>
                           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                             {codeList.map((item) => {
                               const codeParts = item.code.split(" | ");
@@ -1471,7 +1471,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                                     flexDirection: "column",
                                     gap: "6px",
                                     padding: "10px 0",
-                                    borderBottom: "1px solid var(--borderGlass)",
+                                    borderBottom: "1px solid var(--border-glass)",
                                   }}
                                 >
                                   <div
@@ -1484,13 +1484,13 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                                     }}
                                   >
                                     <div>
-                                      <div style={{ fontWeight: "700", color: "var(--textPrimary)", fontSize: "0.88rem" }}>
+                                      <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.88rem" }}>
                                         {item.title}
                                       </div>
                                       <div
                                         style={{
                                           fontSize: "0.98rem",
-                                          color: COMPANY_META[activeCompany]?.color || "var(--colorSecondary)",
+                                          color: COMPANY_META[activeCompany]?.color || "var(--color-secondary)",
                                           marginTop: "2px",
                                           direction: "ltr",
                                           textAlign: "right",
@@ -1507,8 +1507,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                                         onClick={() => handleCopyCode(finalCode, item.id)}
                                         style={{
                                           background: isCopied ? "rgba(16, 185, 129, 0.15)" : "var(--bgSecondary)",
-                                          border: isCopied ? "1px solid var(--colorSuccess)" : "1px solid var(--borderGlass)",
-                                          color: isCopied ? "var(--colorSuccess)" : "var(--textPrimary)",
+                                          border: isCopied ? "1px solid var(--colorSuccess)" : "1px solid var(--border-glass)",
+                                          color: isCopied ? "var(--colorSuccess)" : "var(--text-primary)",
                                           padding: "6px 12px",
                                           borderRadius: "6px",
                                           fontSize: "0.78rem",
@@ -1527,7 +1527,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                                       <a
                                         href={getDialUrl(finalCode)}
                                         style={{
-                                          background: COMPANY_META[activeCompany]?.color || "var(--colorSecondary)",
+                                          background: COMPANY_META[activeCompany]?.color || "var(--color-secondary)",
                                           color: "#ffffff",
                                           padding: "6px 12px",
                                           borderRadius: "6px",
@@ -1568,7 +1568,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
                                   {/* Helper Note */}
                                   {displayNote && (
-                                    <div style={{ fontSize: "0.74rem", color: "var(--textMuted)", display: "flex", alignItems: "center", gap: "5px" }}>
+                                    <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "5px" }}>
                                       <i className="bx bx-info-circle" />
                                       <span>{displayNote}</span>
                                     </div>
@@ -1591,8 +1591,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
         <div
           ref={reportBannerRef}
           style={{
-            background: "var(--bgLinearAlert)",
-            border: "1px solid var(--borderSecondary)",
+            background: "var(--bg-linear-alert)",
+            border: "1px solid var(--border-secondary)",
             borderRadius: "var(--ra-8)",
             padding: "20px",
             display: "flex",
@@ -1634,7 +1634,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
           <button
             type="button"
-            className="btn btn-reportProblem"
+            className="btn btn-report"
             onClick={() => handleOpenModal("suggest", "phone")}
             style={{
               fontSize: "0.84rem",
@@ -1677,7 +1677,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
             style={{
               backgroundColor: "var(--bgPrimary)",
               borderRadius: "var(--radius-card)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               width: "100%",
               maxWidth: "520px",
               maxHeight: "90vh",
@@ -1692,14 +1692,14 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
             <div
               style={{
                 padding: "16px 20px",
-                borderBottom: "1px solid var(--borderGlass)",
+                borderBottom: "1px solid var(--border-glass)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 backgroundColor: "rgba(255, 255, 255, 0.02)",
               }}
             >
-              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i
                   className={modalMode === "suggest" ? "fa-solid fa-lightbulb" : "fa-solid fa-triangle-exclamation"}
                   style={{ color: modalMode === "suggest" ? "#f59e0b" : "#ef4444", fontSize: "1.1rem" }}
@@ -1740,7 +1740,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   >
                     <i className="bx bx-check"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontWeight: "800", color: "var(--textPrimary)" }}>تم إرسال طلبك بنجاح!</h4>
+                  <h4 style={{ margin: "0 0 8px", fontWeight: "800", color: "var(--text-primary)" }}>تم إرسال طلبك بنجاح!</h4>
                   <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.88rem", lineHeight: "1.6" }}>
                     شكراً جزيلاً لمساعدتك في إثراء وتدقيق دليل الهاتف. سيقوم فريقنا بمراجعته وإضافته قريباً.
                   </p>
@@ -1814,9 +1814,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontSize: "0.78rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        background: modalMode === "suggest" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                        background: modalMode === "suggest" ? "var(--color-secondary)" : "var(--bgSecondary)",
                         color: modalMode === "suggest" ? "#ffffff" : "var(--textSecondary)",
-                        border: modalMode === "suggest" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                        border: modalMode === "suggest" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
                       💡 اقتراح رقم / كود جديد
@@ -1830,9 +1830,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontSize: "0.78rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        background: modalMode === "report" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                        background: modalMode === "report" ? "var(--color-secondary)" : "var(--bgSecondary)",
                         color: modalMode === "report" ? "#ffffff" : "var(--textSecondary)",
-                        border: modalMode === "report" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                        border: modalMode === "report" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
                       ⚠️ إبلاغ عن خطأ موجود
@@ -1851,8 +1851,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontWeight: "700",
                         cursor: "pointer",
                         background: modalType === "phone" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                        color: modalType === "phone" ? "var(--colorSecondary)" : "var(--textSecondary)",
-                        border: modalType === "phone" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                        color: modalType === "phone" ? "var(--color-secondary)" : "var(--textSecondary)",
+                        border: modalType === "phone" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
                       <i className="fa-solid fa-phone" style={{ marginLeft: "4px" }}></i>
@@ -1868,8 +1868,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontWeight: "700",
                         cursor: "pointer",
                         background: modalType === "code" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                        color: modalType === "code" ? "var(--colorSecondary)" : "var(--textSecondary)",
-                        border: modalType === "code" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                        color: modalType === "code" ? "var(--color-secondary)" : "var(--textSecondary)",
+                        border: modalType === "code" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
                       <i className="fa-solid fa-hashtag" style={{ marginLeft: "4px" }}></i>
@@ -1879,7 +1879,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
                   {/* Item Name */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px", display: "block" }}>
                       {modalType === "phone" ? "اسم الجهة أو الخدمة:" : "اسم الخدمة أو الغرض من الكود:"}
                     </label>
                     <input
@@ -1895,7 +1895,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
                   {/* Item Number or Code */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px", display: "block" }}>
                       {modalType === "phone" ? "رقم الهاتف / الخط الساخن:" : "الكود المطلوب:"}
                     </label>
                     <input
@@ -1912,7 +1912,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   {/* Specialty / Company Picker */}
                   {modalType === "phone" ? (
                     <div>
-                      <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px", display: "block" }}>
+                      <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px", display: "block" }}>
                         التخصص أو الفئة:
                       </label>
                       <select
@@ -1942,7 +1942,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     </div>
                   ) : (
                     <div>
-                      <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px", display: "block" }}>
+                      <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px", display: "block" }}>
                         شركة الاتصالات:
                       </label>
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "6px" }}>
@@ -1954,9 +1954,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                             style={{
                               padding: "6px",
                               borderRadius: "6px",
-                              border: itemCompany === key ? `2px solid ${meta.color}` : "1px solid var(--borderGlass)",
+                              border: itemCompany === key ? `2px solid ${meta.color}` : "1px solid var(--border-glass)",
                               background: itemCompany === key ? meta.bg : "var(--bgSecondary)",
-                              color: "var(--textPrimary)",
+                              color: "var(--text-primary)",
                               fontSize: "0.75rem",
                               fontWeight: "700",
                               cursor: "pointer",
@@ -1976,7 +1976,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
                   {/* Notes Textarea */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px", display: "block" }}>
                       ملاحظات أو تفاصيل إضافية:
                     </label>
                     <textarea
@@ -1991,11 +1991,11 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
 
                   {/* Image Attachment Dropzone */}
                   <div>
-                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px", display: "block" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px", display: "block" }}>
                       إرفاق صورة توضيحية (اختياري):
                     </label>
                     {modalImagePreview ? (
-                      <div style={{ position: "relative", borderRadius: "8px", overflow: "hidden", border: "1px solid var(--borderGlass)" }}>
+                      <div style={{ position: "relative", borderRadius: "8px", overflow: "hidden", border: "1px solid var(--border-glass)" }}>
                         <img src={modalImagePreview} alt="Preview" style={{ width: "100%", maxHeight: "120px", objectFit: "cover" }} />
                         <button
                           type="button"
@@ -2032,7 +2032,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                           if (e.dataTransfer.files?.[0]) handleModalImageSelect(e.dataTransfer.files[0]);
                         }}
                         style={{
-                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderGlass)",
+                          border: isDraggingImage ? "2px dashed var(--color-secondary)" : "2px dashed var(--border-glass)",
                           borderRadius: "8px",
                           padding: "14px",
                           textAlign: "center",
@@ -2045,7 +2045,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                           if (input) input.click();
                         }}
                       >
-                        <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "1.3rem", color: "var(--textMuted)", marginBottom: "2px" }}></i>
+                        <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "1.3rem", color: "var(--text-muted)", marginBottom: "2px" }}></i>
                         <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>اسحب الصورة هنا أو اضغط للاختيار من جهازك</div>
                         <input
                           id="directory-modal-img-input"
@@ -2072,8 +2072,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                       style={{
                         flex: 1,
                         background: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
-                        color: "var(--textPrimary)",
+                        border: "1px solid var(--border-glass)",
+                        color: "var(--text-primary)",
                         fontSize: "0.85rem",
                       }}
                     >

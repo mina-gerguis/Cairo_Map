@@ -38,7 +38,7 @@ export default function RouteResultsSection({
             style={{
               padding: "14px 16px",
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--radius-card)"
             }}
           >
@@ -46,7 +46,7 @@ export default function RouteResultsSection({
               style={{
                 fontSize: "var(--fs-sm)",
                 fontWeight: "var(--fw-medium)",
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 display: "flex",
                 alignItems: "center",
                 gap: "var(--space-8)",
@@ -56,9 +56,9 @@ export default function RouteResultsSection({
               }}
             >
               <span>المسارات من</span>
-              <span style={{ color: "var(--colorSecondary)" }}>{resolvedFrom}</span>
+              <span style={{ color: "var(--color-secondary)" }}>{resolvedFrom}</span>
               <span>إلى</span>
-              <span style={{ color: "var(--colorSecondary)" }}>{resolvedTo}</span>
+              <span style={{ color: "var(--color-secondary)" }}>{resolvedTo}</span>
             </h3>
 
             {((fromInput.trim() !== resolvedFrom) || (toInput.trim() !== resolvedTo)) && (
@@ -66,7 +66,7 @@ export default function RouteResultsSection({
                 style={{
                   margin: "6px 0 0",
                   fontSize: "0.8rem",
-                  color: "var(--textMuted)",
+                  color: "var(--text-muted)",
                   display: "flex",
                   alignItems: "center",
                   gap: "4px"

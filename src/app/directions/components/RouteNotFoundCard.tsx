@@ -65,17 +65,17 @@ export default function RouteNotFoundCard({
     <div className="details-panel" style={{ textAlign: "center", gap: "16px" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "center" }}>
         <span style={{ fontSize: "2.5rem" }}>📭</span>
-        <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+        <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
           لا يوجد مسار مباشر مسجل
         </h2>
         <p style={{ color: "var(--textSecondary)", fontSize: "0.88rem", maxWidth: "480px", margin: "0 auto", lineHeight: "1.6" }}>
-          عذراً، لم نقم بعد بإضافة المسار المباشر من <strong style={{ color: "var(--textPrimary)" }}>{fromInput}</strong> إلى <strong style={{ color: "var(--textPrimary)" }}>{toInput}</strong>.
+          عذراً، لم نقم بعد بإضافة المسار المباشر من <strong style={{ color: "var(--text-primary)" }}>{fromInput}</strong> إلى <strong style={{ color: "var(--text-primary)" }}>{toInput}</strong>.
         </p>
       </div>
 
       {/* Suggest Route Form */}
-      <div style={{ borderTop: "1px solid var(--borderGlass)", paddingTop: "16px", textAlign: "right" }}>
-        <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "4px" }}>
+      <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "16px", textAlign: "right" }}>
+        <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "4px" }}>
           هل تعرف كيف تذهب؟ ساعدنا في إضافته!
         </h3>
         <p style={{ fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "12px" }}>
@@ -128,7 +128,7 @@ export default function RouteNotFoundCard({
           <div
             style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--ra-8)",
               padding: "14px",
               textAlign: "center"

@@ -41,7 +41,7 @@ export default function PopularRoutesSlider({
             onClick={() => onSelectRoute(item.from, item.to)}
             style={{
               background: `radial-gradient(circle at 100% 0%, ${item.glowColor}98 20%, transparent 55%), var(--bgPrimary)`,
-              border: isTop ? `1px solid ${item.glowColor}` : "1px solid var(--borderSecondary)",
+              border: isTop ? `1px solid ${item.glowColor}` : "1px solid var(--border-secondary)",
               borderRadius: "var(--ra-6)",
               padding: "14px 16px",
               cursor: "pointer",
@@ -62,7 +62,7 @@ export default function PopularRoutesSlider({
             <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
               <div
                 style={{
-                  color: "var(--textPrimary)",
+                  color: "var(--text-primary)",
                   fontFamily: "var(--font-display)",
                   fontWeight: "700",
                   fontSize: "0.88rem",

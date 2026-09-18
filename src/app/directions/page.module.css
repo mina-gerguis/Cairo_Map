@@ -15,9 +15,9 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--bgGlass-card);
-  border: 1px solid var(--borderGlass);
-  color: var(--textPrimary);
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,10 +46,10 @@
   top: calc(100% + 6px);
   right: 0;
   left: 0;
-  background: var(--bgGlass);
+  background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 12px;
   box-shadow: var(--shadow-lg);
   z-index: 10;
@@ -64,7 +64,7 @@
   padding: 10px 12px;
   border: none;
   background: transparent;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   text-align: right;
   font-size: 0.9rem;
   border-radius: 8px;
@@ -74,12 +74,12 @@
 }
 
 .suggestionItem:hover {
-  background: var(--bgGlass-active);
+  background: var(--bg-glass-active);
 }
 
 .presetTag {
-  background: var(--bgGlass-card);
-  border: 1px solid var(--borderGlass);
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass);
   color: var(--textSecondary);
   padding: 6px 12px;
   border-radius: 20px;
@@ -91,7 +91,7 @@
 
 .presetTag:hover {
   background: var(--hoverBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   border-color: var(--text-muted);
 }
 
@@ -119,7 +119,7 @@
 
 .stepsWrapper {
   background: rgba(255, 255, 255, 0.01);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: 14px;
   padding: 16px;
   margin-top: 4px;

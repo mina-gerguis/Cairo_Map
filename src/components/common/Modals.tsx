@@ -79,7 +79,7 @@ export default function CustomModal({
         <div
           style={{
             backgroundColor: "var(--bgPrimary)",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             border: `1px solid ${borderColor}`,
             borderRadius: "var(--modelCardRadius)",
             padding: "32px 24px 24px 24px",
@@ -114,7 +114,7 @@ export default function CustomModal({
             </div>
           )}
 
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--textPrimary)" }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--text-primary)" }}>
             {title}
           </h2>
 
@@ -146,7 +146,7 @@ export default function CustomModal({
                   disabled={primaryButton.disabled}
                   style={{
                     flex: 1,
-                    padding: "var(--paddingBtn)",
+                    padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
                     border: primaryButton.borderColor ? `1px solid ${primaryButton.borderColor}` : "none",
                     backgroundColor: primaryButton.bgColor || "var(--mainBtn)",
@@ -173,11 +173,11 @@ export default function CustomModal({
                   disabled={secondaryButton.disabled}
                   style={{
                     flex: 1,
-                    padding: "var(--paddingBtn)",
+                    padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
-                    border: secondaryButton.borderColor || "1px solid var(--cancelBtn)",
-                    backgroundColor: secondaryButton.bgColor || "var(--cancelBtn)",
-                    color: secondaryButton.textColor || "var(--textPrimary)",
+                    border: secondaryButton.borderColor || "1px solid var(--btn-cancel)",
+                    backgroundColor: secondaryButton.bgColor || "var(--btn-cancel)",
+                    color: secondaryButton.textColor || "var(--text-primary)",
                     fontWeight: "600",
                     fontFamily: "var(--font-display)",
                     fontSize: "0.95rem",

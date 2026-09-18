@@ -7,19 +7,28 @@ import {
 } from "./constants";
 
 /**
- * Normalizes Arabic text by unifying Alif, Ta Marbouta, Ya, removing diacritics and common prefixes.
+ * Normalizes Arabic text by unifying Alif, Ta Marbouta, Ya, removing diacritics, tatweel, and punctuation.
  */
 export function normalizeArabic(text: string): string {
   if (!text) return "";
   return text
     .toLowerCase()
-    .replace(/[أإآ]/g, "ا")
+    .replace(/[أإآٱ]/g, "ا")
     .replace(/ة/g, "ه")
-    .replace(/ى/g, "ي")
-    .replace(/[\u064B-\u065F]/g, "")
-    .replace(/(موقف|محطه|محطة|مدينه|مدينة|بوابه|بوابة|مركز|جامعة|جامعه|طريق)\s+/g, "")
+    .replace(/[ىي]/g, "ي")
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+    .replace(/[()[\]{}.,\-_/\\+]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+const STOP_WORDS = new Set(["موقف", "محطه", "مدينه", "طريق", "شارع", "بوابه", "امام", "بجوار", "قرب", "ميدان", "في", "الي", "من"]);
+
+/**
+ * Splits normalized Arabic text into individual non-empty keyword tokens.
+ */
+export function getArabicTokens(str: string): string[] {
+  return normalizeArabic(str).split(" ").filter(t => t.length > 0);
 }
 
 /**
@@ -36,6 +45,119 @@ export function resolveLocationAliases(rawLocation: string): string {
   }
 
   return rawLocation.trim();
+}
+
+/**
+ * Calculates a relevance score (0-1000) for a candidate location given a search query,
+ * taking aliases and weighted token overlaps into account.
+ */
+export function calculateLocationScore(candidate: string, aliases: string | undefined, rawQuery: string): number {
+  if (!candidate || !rawQuery) return 0;
+
+  const queryCandidates = [rawQuery];
+  const resolved = resolveLocationAliases(rawQuery);
+  if (resolved && resolved !== rawQuery) {
+    queryCandidates.push(resolved);
+  }
+
+  let bestScore = 0;
+
+  for (const query of queryCandidates) {
+    const normQuery = normalizeArabic(query);
+    const normCand = normalizeArabic(candidate);
+    if (!normQuery || !normCand) continue;
+
+    // 1. Exact match with primary name
+    if (normCand === normQuery) {
+      bestScore = Math.max(bestScore, 1000);
+      continue;
+    }
+
+    // 2. Primary candidate name contains entire query
+    if (normCand.includes(normQuery)) {
+      bestScore = Math.max(bestScore, 940 + Math.round((normQuery.length / normCand.length) * 50));
+    }
+
+    // 3. Exact match with an alias
+    const aliasList = (aliases ? aliases.split(",") : []).map(a => normalizeArabic(a)).filter(Boolean);
+    for (const alias of aliasList) {
+      if (alias === normQuery) {
+        bestScore = Math.max(bestScore, 900);
+      }
+    }
+
+    // 4. Query contains candidate name
+    if (normQuery.includes(normCand)) {
+      bestScore = Math.max(bestScore, 850 + Math.round((normCand.length / normQuery.length) * 40));
+    }
+
+    // 5. Alias contains query or Query contains alias
+    for (const alias of aliasList) {
+      if (alias.includes(normQuery)) {
+        bestScore = Math.max(bestScore, 780 + Math.round((normQuery.length / alias.length) * 40));
+      }
+      if (normQuery.includes(alias)) {
+        bestScore = Math.max(bestScore, 740 + Math.round((alias.length / normQuery.length) * 40));
+      }
+    }
+
+    // 6. Token / Keyword overlap matching with stop-word penalty
+    const qTokens = getArabicTokens(query);
+    const cTokens = getArabicTokens(candidate);
+    const candTokensSet = new Set(cTokens);
+    const aliasTokensSet = new Set<string>();
+    aliasList.forEach(a => getArabicTokens(a).forEach(t => aliasTokensSet.add(t)));
+
+    let matchedWeight = 0;
+    let totalQueryWeight = 0;
+    let missingCritical = 0;
+
+    for (const qt of qTokens) {
+      const isStop = STOP_WORDS.has(qt);
+      const weight = isStop ? 1 : 4;
+      totalQueryWeight += weight;
+
+      let foundCand = false;
+      for (const ct of Array.from(candTokensSet)) {
+        if (ct === qt || (ct.length >= 3 && qt.length >= 3 && (ct.includes(qt) || qt.includes(ct)))) {
+          foundCand = true;
+          break;
+        }
+      }
+
+      if (foundCand) {
+        matchedWeight += weight;
+        continue;
+      }
+
+      let foundAlias = false;
+      for (const at of Array.from(aliasTokensSet)) {
+        if (at === qt || (at.length >= 3 && qt.length >= 3 && (at.includes(qt) || qt.includes(at)))) {
+          foundAlias = true;
+          break;
+        }
+      }
+
+      if (foundAlias) {
+        matchedWeight += weight * 0.9;
+      } else if (!isStop) {
+        missingCritical++;
+      }
+    }
+
+    if (totalQueryWeight > 0) {
+      const ratio = matchedWeight / totalQueryWeight;
+      let tokenScore = 0;
+      if (missingCritical > 0 && ratio < 0.6) {
+        tokenScore = Math.max(0, Math.round(ratio * 120) - (missingCritical * 30));
+      } else {
+        tokenScore = Math.max(0, Math.round(ratio * 650) - (missingCritical * 80));
+      }
+      bestScore = Math.max(bestScore, tokenScore);
+    }
+  }
+
+  return bestScore;
 }
 
 /**
@@ -411,7 +533,12 @@ export function getTransitOptionIconPath(option: { type?: string; icon?: string 
     return { type: "image", src: "/images/icons2d/Cairo_lrt.png" };
   }
 
-  // 7. Plane / Airport
+  // 7. BRT / Bus Rapid Transit (الأتوبيس الترددي)
+  if (t === "brt" || icon === "brt" || icon.includes("brt")) {
+    return { type: "image", src: "/images/icons2d/bus.png" };
+  }
+
+  // 8. Plane / Airport
   if (t === "plane" || icon === "plane" || icon.includes("airport")) {
     return { type: "image", src: "/images/icons2d/airport.png" };
   }

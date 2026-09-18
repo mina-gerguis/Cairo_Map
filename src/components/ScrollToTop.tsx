@@ -41,7 +41,7 @@ export default function ScrollToTop() {
         width: "44px",
         height: "44px",
         borderRadius: "50%",
-        backgroundColor: "var(--colorSecondary, #3b82f6)",
+        backgroundColor: "var(--color-secondary, #3b82f6)",
         color: "#ffffff",
         border: "1px solid rgba(255, 255, 255, 0.2)",
         boxShadow: "0 6px 16px rgba(0, 0, 0, 0.3)",

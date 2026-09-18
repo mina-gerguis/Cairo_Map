@@ -475,7 +475,7 @@ function AdminPortsInner() {
   if (authLoading || loading) {
     return (
       <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--colorSecondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
+        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
         <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة الموانئ البحرية...</p>
       </div>
     );
@@ -489,7 +489,7 @@ function AdminPortsInner() {
       {/* Header section */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
             إدارة الموانئ البحرية
           </h1>
           <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
@@ -540,7 +540,7 @@ function AdminPortsInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--textMuted)",
+            color: "var(--text-muted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -554,7 +554,7 @@ function AdminPortsInner() {
               paddingRight: "44px",
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--textSecondary)"
             }}
           />
@@ -629,12 +629,12 @@ function AdminPortsInner() {
                   <td className={styles.adminTd}>
                     <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                       <button onClick={() => handleOpenEdit(item)} title="تعديل"
-                      className="actionBtn actionBtnEdit"
+                        className="actionBtn actionBtnEdit"
                       >
                         <i className="bx bx-edit-alt" />
                       </button>
                       <button onClick={() => handleDelete(item)} title="حذف"
-                       className="actionBtn actionBtnDelete"
+                        className="actionBtn actionBtnDelete"
                       >
                         <i className="bx bx-trash" />
                       </button>
@@ -667,7 +667,7 @@ function AdminPortsInner() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setPortToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}
@@ -694,13 +694,13 @@ function AdminPortsInner() {
             maxHeight: "90vh",
             overflowY: "auto",
             padding: "30px",
-            border: "1px solid var(--borderGlass)",
-            background: "var(--bgGlass)",
+            border: "1px solid var(--border-glass)",
+            background: "var(--bg-glass)",
             borderRadius: "20px",
             boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: "12px" }}>
-              <h2 style={{ fontSize: "1.35rem", fontWeight: "900",margin: 0 }}>
+              <h2 style={{ fontSize: "1.35rem", fontWeight: "900", margin: 0 }}>
                 {editingItem ? "تعديل بيانات الميناء" : "إضافة ميناء جديد"}
               </h2>
               <button onClick={() => setShowModal(false)} className="closeBtn">
@@ -824,13 +824,13 @@ function AdminPortsInner() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                 className="btn btn-cancel"
+                  className="btn btn-cancel"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                 className="btn btn-primary"
+                  className="btn btn-primary"
                 >
                   {editingItem ? "حفظ التعديلات" : "إضافة الميناء"}
                 </button>

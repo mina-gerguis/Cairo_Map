@@ -561,7 +561,7 @@ export default function AdminCitiesPage() {
   );
 
   return (
-    <div style={{ padding: "16px 0", color: "var(--textPrimary, #fff)", maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
+    <div style={{ padding: "16px 0", color: "var(--text-primary, #fff)", maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
       {/* Toast Notification */}
       {toastMessage && (
         <div
@@ -604,7 +604,7 @@ export default function AdminCitiesPage() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 6px 0", color: "var(--textPrimary)" }}>
+          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 6px 0", color: "var(--text-primary)" }}>
             🏙️ إدارة المدن الشهيرة والمعالم السياحية
           </h1>
           <p style={{ fontSize: "0.9rem", color: "var(--text-muted, #94a3b8)", margin: 0 }}>
@@ -648,7 +648,7 @@ export default function AdminCitiesPage() {
               paddingRight: "44px",
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--textSecondary)"
             }}
           />
@@ -754,16 +754,16 @@ export default function AdminCitiesPage() {
                     marginBottom: "12px",
                   }}
                 >
-                  <div>👥 السكان: <strong style={{ color: "var(--textPrimary)" }}>{city.population || "-"}</strong></div>
-                  <div>📐 المساحة: <strong style={{ color: "var(--textPrimary)" }}>{city.area || "-"}</strong></div>
-                  <div>🏙️ الكثافة: <strong style={{ color: "var(--textPrimary)" }}>{city.density || "-"}</strong></div>
-                  <div>🌡️ الحرارة: <strong style={{ color: "var(--textPrimary)" }}>{city.temperature || "-"}</strong></div>
+                  <div>👥 السكان: <strong style={{ color: "var(--text-primary)" }}>{city.population || "-"}</strong></div>
+                  <div>📐 المساحة: <strong style={{ color: "var(--text-primary)" }}>{city.area || "-"}</strong></div>
+                  <div>🏙️ الكثافة: <strong style={{ color: "var(--text-primary)" }}>{city.density || "-"}</strong></div>
+                  <div>🌡️ الحرارة: <strong style={{ color: "var(--text-primary)" }}>{city.temperature || "-"}</strong></div>
                 </div>
 
                 <p
                   style={{
                     fontSize: "0.85rem",
-                    color: "var(--textMuted)",
+                    color: "var(--text-muted)",
                     margin: "0 0 16px 0",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
@@ -818,14 +818,14 @@ export default function AdminCitiesPage() {
           <div
             style={{
               backgroundColor: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--ra-14)",
               width: "100%",
               maxWidth: "850px",
               maxHeight: "85vh",
               overflowY: "auto",
               padding: "24px",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               position: "relative",
             }}
             onClick={(e) => e.stopPropagation()}
@@ -844,7 +844,7 @@ export default function AdminCitiesPage() {
                 <h2 style={{ fontSize: "1.4rem", fontWeight: "800", margin: 0 }}>
                   المعالم السياحية في مدينة {selectedCityForLandmarks.name}
                 </h2>
-                <span style={{ fontSize: "0.85rem", color: "var(--textMuted)" }}>
+                <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
                   إضافة وتعديل الأماكن المعروضة في الكروت المستطيلة للمدينة
                 </span>
               </div>
@@ -890,7 +890,7 @@ export default function AdminCitiesPage() {
                       alignItems: "center",
                       justifyContent: "space-between",
                       backgroundColor: "var(--bgThird)",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       borderRadius: "var(--ra-8)",
                       padding: "12px 16px",
                       gap: "16px",
@@ -904,7 +904,7 @@ export default function AdminCitiesPage() {
                       />
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                          <h5 style={{ fontSize: "1.05rem", fontWeight: "800", margin: 0, color: "var(--textPrimary)" }}>
+                          <h5 style={{ fontSize: "1.05rem", fontWeight: "800", margin: 0, color: "var(--text-primary)" }}>
                             {lm.name}
                           </h5>
                           {/* <span
@@ -937,7 +937,7 @@ export default function AdminCitiesPage() {
                         <p
                           style={{
                             fontSize: "0.82rem",
-                            color: "var(--textMuted)",
+                            color: "var(--text-muted)",
                             margin: 0,
                             display: "-webkit-box",
                             WebkitLineClamp: 1,
@@ -991,8 +991,8 @@ export default function AdminCitiesPage() {
         >
           <div
             style={{
-              backgroundColor: "var(--bgGlass)",
-              border: "1px solid var(--borderGlass)",
+              backgroundColor: "var(--bg-glass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--radius-card)",
               width: "100%",
               maxWidth: "600px",
@@ -1153,8 +1153,8 @@ export default function AdminCitiesPage() {
         >
           <div
             style={{
-              backgroundColor: "var(--bgGlass)",
-              border: "1px solid var(--borderGlass)",
+              backgroundColor: "var(--bg-glass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "var(--radius-card)",
               width: "100%",
               maxWidth: "650px",
@@ -1205,7 +1205,7 @@ export default function AdminCitiesPage() {
                       onChange={(e) => setLandmarkIsPopular(e.target.checked)}
                       style={{ width: "18px", height: "18px", accentColor: "var(--mainBtn)" }}
                     />
-                    <span style={{ fontFamily: "var(--font-sub)", color: "var(--textPrimary)", fontWeight: "700" }}>علامة "شائع" (الأكثر رواجاً)</span>
+                    <span style={{ fontFamily: "var(--font-sub)", color: "var(--text-primary)", fontWeight: "700" }}>علامة "شائع" (الأكثر رواجاً)</span>
                   </label>
                 </div>
               </div>
@@ -1259,14 +1259,14 @@ export default function AdminCitiesPage() {
                         }}
                         className="input-fields"
                       >
-                        <option value="مترو" style={{ backgroundColor: "var(--bgGlass)" }}>مترو</option>
-                        <option value="أتوبيس" style={{ backgroundColor: "var(--bgGlass)" }}>أتوبيس</option>
-                        <option value="قطار كهربائي LRT" style={{ backgroundColor: "var(--bgGlass)" }}>قطار كهربائي LRT</option>
-                        <option value="مونوريل" style={{ backgroundColor: "var(--bgGlass)" }}>مونوريل</option>
-                        <option value="ميكروباص" style={{ backgroundColor: "var(--bgGlass)" }}>ميكروباص</option>
-                        <option value="ترام" style={{ backgroundColor: "var(--bgGlass)" }}>ترام</option>
-                        <option value="قطار" style={{ backgroundColor: "var(--bgGlass)" }}>قطار</option>
-                        <option value="أخرى" style={{ backgroundColor: "var(--bgGlass)" }}>أخرى</option>
+                        <option value="مترو" style={{ backgroundColor: "var(--bg-glass)" }}>مترو</option>
+                        <option value="أتوبيس" style={{ backgroundColor: "var(--bg-glass)" }}>أتوبيس</option>
+                        <option value="قطار كهربائي LRT" style={{ backgroundColor: "var(--bg-glass)" }}>قطار كهربائي LRT</option>
+                        <option value="مونوريل" style={{ backgroundColor: "var(--bg-glass)" }}>مونوريل</option>
+                        <option value="ميكروباص" style={{ backgroundColor: "var(--bg-glass)" }}>ميكروباص</option>
+                        <option value="ترام" style={{ backgroundColor: "var(--bg-glass)" }}>ترام</option>
+                        <option value="قطار" style={{ backgroundColor: "var(--bg-glass)" }}>قطار</option>
+                        <option value="أخرى" style={{ backgroundColor: "var(--bg-glass)" }}>أخرى</option>
                       </select>
                       <input
                         type="text"
@@ -1401,7 +1401,7 @@ export default function AdminCitiesPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setLandmarkToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
         }}
@@ -1447,7 +1447,7 @@ export default function AdminCitiesPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setCityToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
         }}

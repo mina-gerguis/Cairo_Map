@@ -19,7 +19,7 @@ export default function DirectionsPaywall({
       <div
         ref={paywallRef}
         className="header-banner"
-        style={{ borderBottom: "1px solid var(--borderGlass)", direction: "rtl", textAlign: "center" }}
+        style={{ borderBottom: "1px solid var(--border-glass)", direction: "rtl", textAlign: "center" }}
       >
         <div>
           <h1 className="header-title" style={{ justifyContent: "center" }}>
@@ -43,7 +43,7 @@ export default function DirectionsPaywall({
         <div
           ref={paywallCardRef}
           style={{
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "var(--radius-card)",
             padding: "35px 25px",
             textAlign: "center",
@@ -63,7 +63,7 @@ export default function DirectionsPaywall({
             />
           </div>
 
-          <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
+          <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
             دليل خطوط ومسارات المواصلات يتطلب أشتراك في الباقة الفضية
           </h2>
 
@@ -86,7 +86,7 @@ export default function DirectionsPaywall({
               background: "rgba(128, 128, 128, 0.04)",
               padding: "18px 20px",
               borderRadius: "var(--radius-card)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               textAlign: "right",
               margin: "0 auto 28px",
               maxWidth: "420px"
@@ -95,7 +95,7 @@ export default function DirectionsPaywall({
             <div
               style={{
                 fontWeight: "800",
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 fontSize: "0.9rem",
                 marginBottom: "10px",
                 display: "flex",
@@ -160,7 +160,7 @@ export default function DirectionsPaywall({
               href="/"
               className="btn btn-cancel"
               style={{
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 textDecoration: "none",
                 fontWeight: "bold",
                 fontSize: "0.9rem",

@@ -1186,7 +1186,7 @@ export default function PlannerPage() {
           width: "40px",
           height: "40px",
           border: "4px solid rgba(255,255,255,0.1)",
-          borderTop: "4px solid var(--colorSecondary, #3b82f6)",
+          borderTop: "4px solid var(--color-secondary, #3b82f6)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           margin: "0 auto 20px"
@@ -1206,7 +1206,7 @@ export default function PlannerPage() {
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
-              color: "var(--colorSecondary, #3b82f6)",
+              color: "var(--color-secondary, #3b82f6)",
               textDecoration: "none",
               fontWeight: "600",
               fontSize: "0.95rem"
@@ -1234,7 +1234,7 @@ export default function PlannerPage() {
             <img src="images/icons3d/lockPage.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
           </div>
 
-          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--textPrimary)", marginBottom: "14px" }}>
+          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "14px" }}>
             ميزة البحث عن خطوط المواصلات تتطلب اشتراك في الباقة الذهبية
           </h2>
 
@@ -1246,12 +1246,12 @@ export default function PlannerPage() {
             background: "var(--bgSecondary)",
             padding: "16px 20px",
             borderRadius: "12px",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             textAlign: "right",
             margin: "0 auto 24px",
             maxWidth: "420px"
           }}>
-            <div style={{ fontWeight: "700", color: "var(--textPrimary)", fontSize: "0.9rem", marginBottom: "8px" }}>ميزات الباقة الذهبية :</div>
+            <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "8px" }}>ميزات الباقة الذهبية :</div>
             <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
               <li>✨ توليد خطط رحلات متكاملة بناءً على الميزانية واهتماماتك</li>
               <li>✨ ربط حي ومباشر بكافة الأماكن المضافة من الإدارة في الموقع</li>
@@ -1265,7 +1265,7 @@ export default function PlannerPage() {
               <Link
                 href="/profile?expand=subscription"
                 style={{
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtn)",
                   background: "var(--bg-subscribe-button-gold)",
                   color: "#fff",
@@ -1282,7 +1282,7 @@ export default function PlannerPage() {
               <Link
                 href="/login"
                 style={{
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtn)",
                   background: "var(--bg-subscribe-button-base)",
                   color: "#fff",
@@ -1300,14 +1300,14 @@ export default function PlannerPage() {
             <Link
               href="/"
               style={{
-                padding: "var(--paddingBtn)",
+                padding: "var(--padding-btn)",
                 borderRadius: "var(--radiusBtn)",
-                background: "var(--cancelBtn)",
-                color: "var(--textPrimary)",
+                background: "var(--btn-cancel)",
+                color: "var(--text-primary)",
                 textDecoration: "none",
                 fontWeight: "bold",
                 fontSize: "0.9rem",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 display: "block"
               }}
             >
@@ -1368,7 +1368,7 @@ export default function PlannerPage() {
 
           {/* Starting Location & Drive Zone Card */}
           <div className="glass-panel-luxury" style={{ border: "1px solid rgba(59, 130, 246, 0.35)" }}>
-            <h2 className="card-section-title" style={{ color: "var(--colorSecondary, #3b82f6)" }}>
+            <h2 className="card-section-title" style={{ color: "var(--color-secondary, #3b82f6)" }}>
               <i className="bx bx-map-pin" />
               نقطة الانطلاق ونطاق الزون 📍
             </h2>
@@ -1441,7 +1441,7 @@ export default function PlannerPage() {
               background: "rgba(59, 130, 246, 0.08)",
               border: "1px solid rgba(59, 130, 246, 0.2)",
               fontSize: "0.78rem",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               display: "flex",
               alignItems: "center",
               gap: "8px"
@@ -1460,7 +1460,7 @@ export default function PlannerPage() {
                 borderRadius: "12px",
                 background: "rgba(245, 158, 11, 0.12)",
                 border: "1px solid rgba(245, 158, 11, 0.35)",
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 fontSize: "0.82rem",
                 display: "flex",
                 flexDirection: "column",
@@ -1641,7 +1641,7 @@ export default function PlannerPage() {
                   <i className="bx bx-chip bx-spin" style={{ fontSize: "1.2rem" }} />
                   <span>معالجة الطلب الذكي:</span>
                 </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--textPrimary)", paddingRight: "8px" }}>
+                <div style={{ fontSize: "0.82rem", color: "var(--text-primary)", paddingRight: "8px" }}>
                   {aiThinkingStep}
                 </div>
               </div>
@@ -1667,7 +1667,7 @@ export default function PlannerPage() {
                   </button>
                 </div>
 
-                <p style={{ margin: "0 0 10px", fontSize: "0.85rem", color: "var(--textPrimary)", lineHeight: "1.6" }}>
+                <p style={{ margin: "0 0 10px", fontSize: "0.85rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
                   {aiExplanation.summary}
                 </p>
 
@@ -1689,8 +1689,8 @@ export default function PlannerPage() {
                 </div>
 
                 {/* Personalized Travel Tips */}
-                <div style={{ borderTop: "1px solid var(--borderGlass)", paddingTop: "8px" }}>
-                  <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px" }}>
+                <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "8px" }}>
+                  <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                     💡 إرشادات ونصائح مخصصة للرحلة:
                   </div>
                   <ul className="ai-tips-list">
@@ -1847,7 +1847,7 @@ export default function PlannerPage() {
             <button
               className="btn"
               onClick={() => setShowProfileModal(true)}
-              style={{ width: "100%", marginTop: "14px", border: "1px solid var(--borderGlass)", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+              style={{ width: "100%", marginTop: "14px", border: "1px solid var(--border-glass)", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
             >
               <i className="bx bx-user" /> تخصيص حسب اهتماماتك
             </button>
@@ -1866,7 +1866,7 @@ export default function PlannerPage() {
                     key={trip.id}
                     onClick={() => handleLoadSavedTrip(trip)}
                     className="timeline-card"
-                    style={{ padding: "12px", cursor: "pointer", border: "1px solid var(--borderGlass)" }}
+                    style={{ padding: "12px", cursor: "pointer", border: "1px solid var(--border-glass)" }}
                   >
                     <div style={{ flexGrow: 1 }}>
                       <div style={{ fontSize: "0.85rem", fontWeight: "700" }}>{trip.title}</div>
@@ -1974,7 +1974,7 @@ export default function PlannerPage() {
               </div>
 
               {/* BUDGET COUNTER */}
-              <div className="budget-progress-container" style={{ borderTop: "1px solid var(--borderGlass)", paddingTop: "14px", marginTop: "16px" }}>
+              <div className="budget-progress-container" style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "14px", marginTop: "16px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem" }}>
                   <span style={{ fontWeight: "700" }}>مؤشر استهلاك الميزانية:</span>
                   <span style={{ fontWeight: "800", color: remainingBudget < 0 ? "var(--accent-red)" : "var(--colorSuccess)" }}>
@@ -2030,7 +2030,7 @@ export default function PlannerPage() {
 
             {selectedPlaces.length === 0 ? (
               <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--textSecondary)" }}>
-                <i className="bx bx-map-pin" style={{ fontSize: "3rem", color: "var(--borderGlass-bright)", marginBottom: "12px", display: "block" }} />
+                <i className="bx bx-map-pin" style={{ fontSize: "3rem", color: "var(--border-glass-bright)", marginBottom: "12px", display: "block" }} />
                 <span>يرجى اختيار أماكن للرحلة بالبحث بالذكاء الاصطناعي أو تحديد الأماكن من القوائم لبناء جدولك الزمني.</span>
               </div>
             ) : (
@@ -2078,7 +2078,7 @@ export default function PlannerPage() {
                       <div className="timeline-card">
                         <div className="timeline-card-content">
                           <div className="timeline-card-title" style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                            <Link href={`/places/${stop.place.id}`} target="_blank" style={{ color: "var(--textPrimary)", textDecoration: "none", fontWeight: "bold" }}>
+                            <Link href={`/places/${stop.place.id}`} target="_blank" style={{ color: "var(--text-primary)", textDecoration: "none", fontWeight: "bold" }}>
                               {stop.place.name}
                             </Link>
                             <span className="meta-pill meta-pill-accent">{stop.place.categoryLabel}</span>
@@ -2138,10 +2138,10 @@ export default function PlannerPage() {
             {/* ACTION FOOTER */}
             {selectedPlaces.length > 0 && (
               <div className="action-row">
-                <button onClick={handleSaveTrip} className="btn" style={{ borderColor: "var(--borderGlass-bright)" }}>
+                <button onClick={handleSaveTrip} className="btn" style={{ borderColor: "var(--border-glass-bright)" }}>
                   <i className="bx bx-save" /> حفظ في رحلاتي
                 </button>
-                <button onClick={handleCopyLink} className="btn" style={{ borderColor: "var(--borderGlass-bright)" }}>
+                <button onClick={handleCopyLink} className="btn" style={{ borderColor: "var(--border-glass-bright)" }}>
                   <i className="bx bx-share-alt" /> مشاركة الرحلة
                 </button>
                 <button onClick={() => window.print()} className="btn btn-primary" style={{ background: "var(--colorPrimary)", color: "#fff" }}>
@@ -2257,7 +2257,7 @@ export default function PlannerPage() {
               <i className={`bx ${gpsLoading ? "bx-loader-alt bx-spin" : "bx-current-location"}`} />
             </div>
 
-            <h2 style={{ fontSize: "1.35rem", fontWeight: "800", marginBottom: "10px", color: "var(--textPrimary)" }}>
+            <h2 style={{ fontSize: "1.35rem", fontWeight: "800", marginBottom: "10px", color: "var(--text-primary)" }}>
               تفعيل موقع الـ GPS إجباري 📍
             </h2>
 

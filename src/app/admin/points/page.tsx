@@ -440,7 +440,7 @@ function AdminPointsPageInner() {
           style={{
             width: "40px",
             height: "40px",
-            border: "3px solid var(--borderGlass)",
+            border: "3px solid var(--border-glass)",
             borderTop: "3px solid var(--colorPrimary)",
             borderRadius: "50%",
             animation: "spin 1s linear infinite",
@@ -469,7 +469,7 @@ function AdminPointsPageInner() {
         >
           <i className="bx bxs-error-circle" style={{ fontSize: "3rem", color: "#ff3b30" }}></i>
         </div>
-        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--textPrimary)" }}>صلاحيات غير كافية</h2>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--text-primary)" }}>صلاحيات غير كافية</h2>
         <p style={{ color: "var(--textSecondary)", marginBottom: "32px", lineHeight: "1.6" }}>
           عفواً، حسابك لا يمتلك صلاحيات المسؤول للوصول إلى هذه الصفحة. يرجى التواصل مع الإدارة إذا كنت تعتقد أن هذا خطأ.
         </p>
@@ -482,7 +482,7 @@ function AdminPointsPageInner() {
       {/* Page Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
         <div>
-          <h1 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+          <h1 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
             إدارة النقاط والأرصدة والعمليات المالية
           </h1>
           <p style={{ color: "var(--textSecondary)", fontSize: "0.88rem", marginTop: "4px" }}>
@@ -500,7 +500,7 @@ function AdminPointsPageInner() {
           marginBottom: "24px",
           padding: "8px 12px",
           borderRadius: "14px",
-          border: "1px solid var(--borderGlass)"
+          border: "1px solid var(--border-glass)"
         }}
       >
         <button
@@ -637,7 +637,7 @@ function AdminPointsPageInner() {
                   style={{
                     width: "30px",
                     height: "30px",
-                    border: "2.5px solid var(--borderGlass)",
+                    border: "2.5px solid var(--border-glass)",
                     borderTop: "2.5px solid var(--colorPrimary)",
                     borderRadius: "50%",
                     animation: "spin 1s linear infinite",
@@ -819,7 +819,7 @@ function AdminPointsPageInner() {
                   style={{
                     width: "30px",
                     height: "30px",
-                    border: "2.5px solid var(--borderGlass)",
+                    border: "2.5px solid var(--border-glass)",
                     borderTop: "2.5px solid var(--colorPrimary)",
                     borderRadius: "50%",
                     animation: "spin 1s linear infinite",
@@ -854,7 +854,7 @@ function AdminPointsPageInner() {
                     {filteredRequests.map((req) => (
                       <tr key={req.id} className={styles.adminTr}>
                         <td className={styles.adminTd}>
-                          <div style={{ fontWeight: "700", color: "var(--textPrimary)" }}>
+                          <div style={{ fontWeight: "700", color: "var(--text-primary)" }}>
                             {req.profiles?.full_name || "اسم غير متوفر"}
                           </div>
                           <span style={{ fontSize: "0.75rem", color: "var(--colorPrimary)", display: "block" }}>
@@ -878,7 +878,7 @@ function AdminPointsPageInner() {
                             {req.type === "deposit" ? "إيداع" : "سحب"}
                           </span>
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "900", color: "var(--textPrimary)", fontSize: "0.95rem" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "900", color: "var(--text-primary)", fontSize: "0.95rem" }}>
                           {req.amount?.toFixed(2)} ج.م
                         </td>
                         <td className={styles.adminTd} style={{ fontSize: "0.78rem", lineHeight: "1.5" }}>
@@ -1022,7 +1022,7 @@ function AdminPointsPageInner() {
               width: "100%",
               padding: "24px 28px",
               borderRadius: "24px",
-              background: "var(--bgGlass-card, #ffffff)",
+              background: "var(--bg-glass-card, #ffffff)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
               boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
@@ -1034,7 +1034,7 @@ function AdminPointsPageInner() {
           >
             {/* Modal Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 تحديث النقاط والأرصدة
               </h3>
               <button
@@ -1066,7 +1066,7 @@ function AdminPointsPageInner() {
                 padding: "12px 16px",
                 borderRadius: "16px",
                 marginBottom: "20px",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
               }}
             >
               <div
@@ -1074,7 +1074,7 @@ function AdminPointsPageInner() {
                   width: "48px",
                   height: "48px",
                   borderRadius: "50%",
-                  background: "var(--borderGlass-bright)",
+                  background: "var(--border-glass-bright)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1086,7 +1086,7 @@ function AdminPointsPageInner() {
                 <i className="bx bx-user"></i>
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                <h4 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                   {selectedUser.full_name || "بدون اسم"}
                 </h4>
                 <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", direction: "ltr", textAlign: "right" }}>
@@ -1127,7 +1127,7 @@ function AdminPointsPageInner() {
                       flex: 1,
                       justifyContent: "center",
                       background: actionType === "deposit" ? "#10b981" : "transparent",
-                      borderColor: actionType === "deposit" ? "#10b981" : "var(--borderGlass)",
+                      borderColor: actionType === "deposit" ? "#10b981" : "var(--border-glass)",
                       color: actionType === "deposit" ? "#fff" : "var(--textSecondary)",
                       fontWeight: "bold",
                       padding: "10px"
@@ -1143,7 +1143,7 @@ function AdminPointsPageInner() {
                       flex: 1,
                       justifyContent: "center",
                       background: actionType === "withdraw" ? "#ef4444" : "transparent",
-                      borderColor: actionType === "withdraw" ? "#ef4444" : "var(--borderGlass)",
+                      borderColor: actionType === "withdraw" ? "#ef4444" : "var(--border-glass)",
                       color: actionType === "withdraw" ? "#fff" : "var(--textSecondary)",
                       fontWeight: "bold",
                       padding: "10px"
@@ -1168,7 +1168,7 @@ function AdminPointsPageInner() {
                       flex: 1,
                       justifyContent: "center",
                       background: assetType === "points" ? "rgba(251, 191, 36, 0.15)" : "transparent",
-                      borderColor: assetType === "points" ? "#fbbf24" : "var(--borderGlass)",
+                      borderColor: assetType === "points" ? "#fbbf24" : "var(--border-glass)",
                       color: assetType === "points" ? "#fbbf24" : "var(--textSecondary)",
                       fontWeight: "bold",
                       padding: "10px",
@@ -1185,7 +1185,7 @@ function AdminPointsPageInner() {
                       flex: 1,
                       justifyContent: "center",
                       background: assetType === "balance" ? "rgba(16, 185, 129, 0.15)" : "transparent",
-                      borderColor: assetType === "balance" ? "#10b981" : "var(--borderGlass)",
+                      borderColor: assetType === "balance" ? "#10b981" : "var(--border-glass)",
                       color: assetType === "balance" ? "#10b981" : "var(--textSecondary)",
                       fontWeight: "bold",
                       padding: "10px",
@@ -1202,7 +1202,7 @@ function AdminPointsPageInner() {
                       flex: 1,
                       justifyContent: "center",
                       background: assetType === "promo_balance" ? "rgba(59, 130, 246, 0.15)" : "transparent",
-                      borderColor: assetType === "promo_balance" ? "#3b82f6" : "var(--borderGlass)",
+                      borderColor: assetType === "promo_balance" ? "#3b82f6" : "var(--border-glass)",
                       color: assetType === "promo_balance" ? "#3b82f6" : "var(--textSecondary)",
                       fontWeight: "bold",
                       padding: "10px",
@@ -1305,7 +1305,7 @@ function AdminPointsPageInner() {
               padding: "24px 28px",
               borderRadius: "20px",
               background: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               boxShadow: "0 20px 50px rgba(0,0,0,0.4)",
               direction: "rtl",
               textAlign: "right"
@@ -1319,7 +1319,7 @@ function AdminPointsPageInner() {
               >
                 <i className="bx bx-x"></i>
               </button>
-              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--textPrimary)", fontFamily: "var(--font-heading)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
                 تحديد سبب رفض العملية
               </h3>
               <div style={{ width: "38px" }}></div>
@@ -1363,9 +1363,9 @@ function AdminPointsPageInner() {
                           padding: "6px 12px",
                           borderRadius: "20px",
                           background: "var(--bgSecondary, rgba(255,255,255,0.05))",
-                          border: "1px solid var(--borderGlass, rgba(255,255,255,0.1))",
+                          border: "1px solid var(--border-glass, rgba(255,255,255,0.1))",
                           fontSize: "0.8rem",
-                          color: "var(--textPrimary)",
+                          color: "var(--text-primary)",
                           cursor: "pointer",
                           transition: "all 0.2s ease",
                           maxWidth: "100%",
@@ -1378,7 +1378,7 @@ function AdminPointsPageInner() {
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = "var(--bgSecondary, rgba(255,255,255,0.05))";
-                          e.currentTarget.style.borderColor = "var(--borderGlass, rgba(255,255,255,0.1))";
+                          e.currentTarget.style.borderColor = "var(--border-glass, rgba(255,255,255,0.1))";
                         }}
                       >
                         <span style={{ flex: 1 }}>{reason}</span>

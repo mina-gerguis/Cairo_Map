@@ -16,8 +16,8 @@ function getAdTheme(ad: any, isLight: boolean) {
   let tagColor = ad.tagColor || (isLight ? "#2563eb" : "#93c5fd");
   let badgeBg = ad.tagBg || "rgba(59, 130, 246, 0.15)";
   let badgeColor = ad.tagColor || (isLight ? "#2563eb" : "#93c5fd");
-  let bgGradient = ad.bgGradient || "var(--bgGlass-card)";
-  let borderColor = ad.borderColor || "var(--borderGlass)";
+  let bgGradient = ad.bgGradient || "var(--bg-glass-card)";
+  let borderColor = ad.borderColor || "var(--border-glass)";
 
   if (ad.tagBg) tagBg = ad.tagBg;
   if (ad.tagColor) {
@@ -246,8 +246,8 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
         padding: "16px",
         background: adType === "sponsor"
           ? (adData.image ? "var(--bgPrimary, #0f172a)" : adTheme.bgGradient)
-          : "var(--bgGlass-card, rgba(255, 255, 255, 0.03))",
-        border: `1px solid ${adType === "sponsor" ? adTheme.borderColor : "var(--borderGlass, rgba(255, 255, 255, 0.08))"}`,
+          : "var(--bg-glass-card, rgba(255, 255, 255, 0.03))",
+        border: `1px solid ${adType === "sponsor" ? adTheme.borderColor : "var(--border-glass, rgba(255, 255, 255, 0.08))"}`,
         boxShadow: isLight ? "0 4px 20px rgba(0, 0, 0, 0.05)" : "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
         position: "relative",
         overflow: "hidden",
@@ -322,9 +322,9 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
                 fontWeight: "bold",
                 padding: "4px 8px",
                 borderRadius: "6px",
-                background: "var(--bgGlass-active, rgba(255, 255, 255, 0.08))",
+                background: "var(--bg-glass-active, rgba(255, 255, 255, 0.08))",
                 color: "var(--text-muted, #94a3b8)",
-                border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.1))",
+                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.1))",
               }}
             >
               مساحة إعلانية تجريبية 📊
@@ -356,8 +356,8 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
               borderRadius: "6px",
               cursor: "pointer",
               border: "none",
-              background: adType === "sponsor" ? "var(--bgGlass-active, rgba(255,255,255,0.1))" : "transparent",
-              color: adType === "sponsor" ? "var(--textPrimary, #fff)" : "var(--text-muted, #94a3b8)",
+              background: adType === "sponsor" ? "var(--bg-glass-active, rgba(255,255,255,0.1))" : "transparent",
+              color: adType === "sponsor" ? "var(--text-primary, #fff)" : "var(--text-muted, #94a3b8)",
               transition: "all 0.2s",
             }}
           >
@@ -371,8 +371,8 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
               borderRadius: "6px",
               cursor: "pointer",
               border: "none",
-              background: adType === "adsense" ? "var(--bgGlass-active, rgba(255,255,255,0.1))" : "transparent",
-              color: adType === "adsense" ? "var(--textPrimary, #fff)" : "var(--text-muted, #94a3b8)",
+              background: adType === "adsense" ? "var(--bg-glass-active, rgba(255,255,255,0.1))" : "transparent",
+              color: adType === "adsense" ? "var(--text-primary, #fff)" : "var(--text-muted, #94a3b8)",
               transition: "all 0.2s",
             }}
           >
@@ -385,7 +385,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
       {adType === "sponsor" && (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", zIndex: 2 }}>
           <div style={{ flex: "1 1 200px" }}>
-            <h4 style={{ margin: "0 0 6px 0", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary, #fff)", display: "flex", alignItems: "center", gap: "6px" }}>
+            <h4 style={{ margin: "0 0 6px 0", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary, #fff)", display: "flex", alignItems: "center", gap: "6px" }}>
               {adData.icon && <span>{adData.icon}</span>}
               <span>{adData.title}</span>
             </h4>
@@ -476,7 +476,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
           <div
             style={{
               padding: "16px",
-              border: "1px dashed var(--borderGlass-bright, rgba(255, 255, 255, 0.15))",
+              border: "1px dashed var(--border-glass-bright, rgba(255, 255, 255, 0.15))",
               borderRadius: "12px",
               background: "var(--hoverBtn, rgba(0, 0, 0, 0.15))",
             }}

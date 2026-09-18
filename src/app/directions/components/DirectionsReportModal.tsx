@@ -116,17 +116,16 @@ export default function DirectionsReportModal({
 
       let scopeInfo = "";
       if (reportTargetScope === "route" && resolvedFrom) {
-        scopeInfo = `📍 من: ${resolvedFrom}
-🎯 إلى: ${resolvedTo}
-🚌 وسيلة المواصلات: ${reportingOption?.typeName || "غير محدد"}
-💰 الأجرة المسجلة: ${reportingOption?.cost ? `${reportingOption.cost} ج.م` : "غير محدد"}
-⏱️ الوقت المقدر: ${reportingOption?.duration || "غير محدد"}`;
+        scopeInfo = `من: ${resolvedFrom}
+إلى: ${resolvedTo}
+وسيلة المواصلات: ${reportingOption?.typeName || "غير محدد"}
+الأجرة المسجلة: ${reportingOption?.cost ? `${reportingOption.cost} ج.م` : "غير محدد"}
+الوقت المقدر: ${reportingOption?.duration || "غير محدد"}`;
       }
 
       const contentText = `بلاغ عن مشكلة في دليل الانتقال (ازاي اروح):
-${scopeInfo ? scopeInfo + "\n\n" : ""}⚠️ نوع المشكلة: ${typeLabel}
-
-📝 تفاصيل المشكلة المبلغ عنها:
+${scopeInfo ? scopeInfo + "\n\n" : ""}نوع المشكلة: ${typeLabel}
+تفاصيل المشكلة المبلغ عنها:
 ${reportDetails.trim()}`;
 
       const reportTitle = reportTargetScope === "route" && resolvedFrom
@@ -152,7 +151,7 @@ ${reportDetails.trim()}`;
         await supabase.from("notifications").insert([
           {
             user_id: user.id,
-            title: "تم استلام بلاغك بنجاح 🚗",
+            title: "تم استلام بلاغك بنجاح ",
             message: `شكراً لمساعدتنا في تدقيق دليل مسارات المواصلات. تم تسجيل بلاغك بخصوص "${reportTitle}" وجاري مراجعته.`,
             type: "info",
             link: "/profile",
@@ -200,7 +199,7 @@ ${reportDetails.trim()}`;
         style={{
           backgroundColor: "var(--bgPrimary)",
           borderRadius: "var(--radius-card)",
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           width: "100%",
           maxWidth: "520px",
           maxHeight: "90vh",
@@ -215,14 +214,14 @@ ${reportDetails.trim()}`;
         <div
           style={{
             padding: "16px 20px",
-            borderBottom: "1px solid var(--borderGlass)",
+            borderBottom: "1px solid var(--border-glass)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             backgroundColor: "rgba(255, 255, 255, 0.02)"
           }}
         >
-          <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
+          <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
             <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
             <span>مشكلة في دليل مسارات المواصلات</span>
           </h5>
@@ -255,7 +254,7 @@ ${reportDetails.trim()}`;
               >
                 <i className="bx bx-check"></i>
               </div>
-              <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+              <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 تم استلام بلاغك بنجاح!
               </h4>
               <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -269,13 +268,13 @@ ${reportDetails.trim()}`;
                   width: "30px",
                   height: "30px",
                   border: "3px solid rgba(255,255,255,0.1)",
-                  borderTopColor: "var(--colorSecondary)",
+                  borderTopColor: "var(--color-secondary)",
                   borderRadius: "50%",
                   animation: "spin 1s linear infinite",
                   margin: "0 auto 12px"
                 }}
               />
-              <span style={{ color: "var(--textMuted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
+              <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
             </div>
           ) : limitReached ? (
             <div style={{ textAlign: "center", padding: "20px 10px" }}>
@@ -291,7 +290,7 @@ ${reportDetails.trim()}`;
               >
                 <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%", objectFit: "contain" }} loading="lazy" />
               </div>
-              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 تم الوصول للحد الأقصى من البلاغات المعلقة
               </h5>
               <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -314,7 +313,7 @@ ${reportDetails.trim()}`;
                   height: "56px",
                   borderRadius: "50%",
                   backgroundColor: "rgba(59, 130, 246, 0.15)",
-                  color: "var(--colorSecondary)",
+                  color: "var(--color-secondary)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -324,7 +323,7 @@ ${reportDetails.trim()}`;
               >
                 <i className="bx bx-user"></i>
               </div>
-              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 تسجيل الدخول مطلوب
               </h5>
               <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
@@ -344,7 +343,7 @@ ${reportDetails.trim()}`;
             <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {/* Scope Selector */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "8px" }}>
                   نطاق المشكلة:
                 </label>
                 <div
@@ -362,8 +361,8 @@ ${reportDetails.trim()}`;
                       padding: "8px 4px",
                       borderRadius: "8px",
                       border: "none",
-                      background: reportTargetScope === "general" ? "var(--textPrimary)" : "transparent",
-                      color: reportTargetScope === "general" ? "var(--bgMode)" : "var(--textPrimary)",
+                      background: reportTargetScope === "general" ? "var(--tab-active-bg)" : "transparent",
+                      color: reportTargetScope === "general" ? "var(--tab-active-color)" : "var(--text-primary)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
                       cursor: "pointer",
@@ -381,8 +380,8 @@ ${reportDetails.trim()}`;
                         padding: "8px 4px",
                         borderRadius: "8px",
                         border: "none",
-                        background: reportTargetScope === "route" ? "var(--textPrimary)" : "transparent",
-                        color: reportTargetScope === "route" ? "var(--bgMode)" : "var(--textPrimary)",
+                        background: reportTargetScope === "route" ? "var(--tab-active-bg)" : "transparent",
+                        color: reportTargetScope === "route" ? "var(--tab-active-color)" : "var(--text-primary)",
                         fontWeight: "700",
                         fontSize: "0.8rem",
                         cursor: "pointer",
@@ -404,14 +403,14 @@ ${reportDetails.trim()}`;
                     background: "rgba(59, 130, 246, 0.06)",
                     border: "1px solid rgba(59, 130, 246, 0.2)",
                     fontSize: "0.84rem",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     lineHeight: "1.6"
                   }}
                 >
-                  <div>📍 من: <strong>{resolvedFrom}</strong> ← إلى: <strong>{resolvedTo}</strong></div>
+                  <div>من: <strong>{resolvedFrom}</strong> ← إلى: <strong>{resolvedTo}</strong></div>
                   {reportingOption && (
                     <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
-                      🚌 الوسيلة: {reportingOption.typeName} • 💰 الأجرة: {reportingOption.cost} ج.م • ⏱️ الوقت: {reportingOption.duration}
+                      • الوسيلة: {reportingOption.typeName} <br />• الأجرة: {reportingOption.cost} ج.م <br />• الوقت: {reportingOption.duration}
                     </div>
                   )}
                 </div>
@@ -419,7 +418,7 @@ ${reportDetails.trim()}`;
 
               {/* Custom Problem Type Dropdown Selector */}
               <div style={{ position: "relative" }}>
-                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   <span>نوع المشكلة:</span>
                 </label>
 
@@ -434,8 +433,8 @@ ${reportDetails.trim()}`;
                         padding: "9px 12px",
                         borderRadius: "var(--radius-card)",
                         background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: showProblemTypeDropdown ? `1px solid var(--textPrimary)` : "1px solid var(--borderGlass)",
+                        color: "var(--text-primary)",
+                        border: showProblemTypeDropdown ? `1px solid var(--text-primary)` : "1px solid var(--border-glass)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -447,7 +446,7 @@ ${reportDetails.trim()}`;
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                         <div style={{ minWidth: 0, textAlign: "right" }}>
-                          <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--textPrimary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {curOpt.title}
                           </div>
                           <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -469,7 +468,7 @@ ${reportDetails.trim()}`;
                       left: 0,
                       right: 0,
                       background: "var(--bgSecondary)",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       borderRadius: "var(--radius-card)",
                       zIndex: 1200,
                       maxHeight: "360px",
@@ -511,10 +510,10 @@ ${reportDetails.trim()}`;
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
                             <div style={{ minWidth: 0, textAlign: "right" }}>
-                              <div style={{ fontSize: "0.84rem", fontWeight: isSelected ? "800" : "600", color: "var(--textPrimary)" }}>
+                              <div style={{ fontSize: "0.84rem", fontWeight: isSelected ? "800" : "600", color: "var(--text-primary)" }}>
                                 {opt.title}
                               </div>
-                              <div style={{ fontSize: "0.72rem", color: "var(--textMuted)" }}>
+                              <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
                                 {opt.desc}
                               </div>
                             </div>
@@ -528,7 +527,7 @@ ${reportDetails.trim()}`;
 
               {/* Details Textarea */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   تفاصيل المشكلة : <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <textarea
@@ -543,8 +542,8 @@ ${reportDetails.trim()}`;
                     padding: "12px",
                     borderRadius: "10px",
                     background: "var(--bgSecondary)",
-                    color: "var(--textPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     fontSize: "0.9rem",
                     resize: "vertical"
@@ -554,7 +553,7 @@ ${reportDetails.trim()}`;
 
               {/* Image Upload Area */}
               <div>
-                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   <span>صورة توضيحية (اختياري):</span>
                   <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
                     JPG, PNG, WEBP (Max~5MB)
@@ -576,7 +575,7 @@ ${reportDetails.trim()}`;
                     }}
                     style={{
                       position: "relative",
-                      border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderDashed)",
+                      border: isDraggingImage ? "2px dashed var(--color-secondary)" : "2px dashed var(--borderDashed)",
                       borderRadius: "12px",
                       background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
                       padding: "20px 16px",
@@ -623,7 +622,7 @@ ${reportDetails.trim()}`;
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        color: "var(--colorSecondary)",
+                        color: "var(--color-secondary)",
                         fontSize: "1.4rem"
                       }}
                     >
@@ -631,7 +630,7 @@ ${reportDetails.trim()}`;
                     </div>
 
                     <div>
-                      <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "3px" }}>
+                      <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
                         اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                       </div>
                       <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
@@ -643,7 +642,7 @@ ${reportDetails.trim()}`;
                   <div
                     style={{
                       position: "relative",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       borderRadius: "12px",
                       background: "var(--bgSecondary)",
                       padding: "10px 12px",
@@ -661,7 +660,7 @@ ${reportDetails.trim()}`;
                         overflow: "hidden",
                         flexShrink: 0,
                         background: "#000",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -685,7 +684,7 @@ ${reportDetails.trim()}`;
                         style={{
                           fontSize: "0.86rem",
                           fontWeight: "700",
-                          color: "var(--textPrimary)",
+                          color: "var(--text-primary)",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis"
@@ -752,7 +751,7 @@ ${reportDetails.trim()}`;
               <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
                 <button
                   type="submit"
-                  className="btn actionBtnDelete"
+                  className="btn btn-danger"
                   disabled={reportLoading || reportUploading}
                   style={{
                     flex: 1,

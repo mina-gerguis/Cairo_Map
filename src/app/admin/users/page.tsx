@@ -380,24 +380,24 @@ export default function AdminUsersPage() {
         prev.map((u) =>
           u.id === editUser.id
             ? {
-                ...u,
-                full_name: editForm.full_name,
-                username: editForm.username,
-                email: editForm.email,
-                phone: editForm.phone,
-                governorate: editForm.governorate,
-                city: editForm.city,
-                gender: editForm.gender,
-                dob: editForm.dob || null,
-                subscription_tier: editForm.subscription_tier,
-                is_admin: editForm.is_admin,
-                balance: Number(editForm.balance),
-                promo_balance: Number(editForm.promo_balance),
-                points: Number(editForm.points),
-                is_suspended: isSuspendingNow,
-                suspended_at: suspendedAtFinal,
-                suspended_reason: suspendedReasonFinal,
-              }
+              ...u,
+              full_name: editForm.full_name,
+              username: editForm.username,
+              email: editForm.email,
+              phone: editForm.phone,
+              governorate: editForm.governorate,
+              city: editForm.city,
+              gender: editForm.gender,
+              dob: editForm.dob || null,
+              subscription_tier: editForm.subscription_tier,
+              is_admin: editForm.is_admin,
+              balance: Number(editForm.balance),
+              promo_balance: Number(editForm.promo_balance),
+              points: Number(editForm.points),
+              is_suspended: isSuspendingNow,
+              suspended_at: suspendedAtFinal,
+              suspended_reason: suspendedReasonFinal,
+            }
             : u
         )
       );
@@ -407,24 +407,24 @@ export default function AdminUsersPage() {
         setViewUser((prev) =>
           prev
             ? {
-                ...prev,
-                full_name: editForm.full_name,
-                username: editForm.username,
-                email: editForm.email,
-                phone: editForm.phone,
-                governorate: editForm.governorate,
-                city: editForm.city,
-                gender: editForm.gender,
-                dob: editForm.dob || null,
-                subscription_tier: editForm.subscription_tier,
-                is_admin: editForm.is_admin,
-                balance: Number(editForm.balance),
-                promo_balance: Number(editForm.promo_balance),
-                points: Number(editForm.points),
-                is_suspended: isSuspendingNow,
-                suspended_at: suspendedAtFinal,
-                suspended_reason: suspendedReasonFinal,
-              }
+              ...prev,
+              full_name: editForm.full_name,
+              username: editForm.username,
+              email: editForm.email,
+              phone: editForm.phone,
+              governorate: editForm.governorate,
+              city: editForm.city,
+              gender: editForm.gender,
+              dob: editForm.dob || null,
+              subscription_tier: editForm.subscription_tier,
+              is_admin: editForm.is_admin,
+              balance: Number(editForm.balance),
+              promo_balance: Number(editForm.promo_balance),
+              points: Number(editForm.points),
+              is_suspended: isSuspendingNow,
+              suspended_at: suspendedAtFinal,
+              suspended_reason: suspendedReasonFinal,
+            }
             : null
         );
       }
@@ -522,8 +522,8 @@ export default function AdminUsersPage() {
         adjustAsset === "balance"
           ? "رصيد المحفظة الأساسي"
           : adjustAsset === "promo_balance"
-          ? "الرصيد الترويجي"
-          : "نقاط المكافآت";
+            ? "الرصيد الترويجي"
+            : "نقاط المكافآت";
 
       setStatusMessage({
         type: "success",
@@ -639,11 +639,11 @@ export default function AdminUsersPage() {
         prev.map((u) =>
           u.id === suspendTarget.id
             ? {
-                ...u,
-                is_suspended: willSuspend,
-                suspended_at: willSuspend ? new Date().toISOString() : null,
-                suspended_reason: finalReason,
-              }
+              ...u,
+              is_suspended: willSuspend,
+              suspended_at: willSuspend ? new Date().toISOString() : null,
+              suspended_reason: finalReason,
+            }
             : u
         )
       );
@@ -652,11 +652,11 @@ export default function AdminUsersPage() {
         setViewUser((prev) =>
           prev
             ? {
-                ...prev,
-                is_suspended: willSuspend,
-                suspended_at: willSuspend ? new Date().toISOString() : null,
-                suspended_reason: finalReason,
-              }
+              ...prev,
+              is_suspended: willSuspend,
+              suspended_at: willSuspend ? new Date().toISOString() : null,
+              suspended_reason: finalReason,
+            }
             : null
         );
       }
@@ -1052,10 +1052,10 @@ export default function AdminUsersPage() {
           u.subscription_tier === "gold"
             ? "الذهبية 🥇"
             : u.subscription_tier === "silver"
-            ? "الفضية 🥈"
-            : u.subscription_tier === "mishwar"
-            ? "المشوار ⚡"
-            : "المجانية ⚪",
+              ? "الفضية 🥈"
+              : u.subscription_tier === "mishwar"
+                ? "المشوار ⚡"
+                : "المجانية ⚪",
         "حالة الحساب": u.is_suspended ? `موقوف (السبب: ${u.suspended_reason || "بدون"})` : "نشط 🟢",
         "رصيد المحفظة (ج.م)": u.balance || 0,
         "الرصيد الترويجي (ج.م)": u.promo_balance || 0,
@@ -1104,7 +1104,7 @@ export default function AdminUsersPage() {
     return (
       <div className={styles.adminAccessDenied}>
         <i className="bx bx-lock-alt" style={{ fontSize: "4rem", color: "var(--accent-red)" }} />
-        <h2 style={{ marginTop: "16px", color: "var(--textPrimary)" }}>عفواً، الدخول غير مصرح به</h2>
+        <h2 style={{ marginTop: "16px", color: "var(--text-primary)" }}>عفواً، الدخول غير مصرح به</h2>
         <p style={{ color: "var(--textSecondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
         <button onClick={() => router.push("/")} className={styles.backBtn} style={{ marginTop: "16px" }}>
           العودة للرئيسية
@@ -1170,9 +1170,8 @@ export default function AdminUsersPage() {
             setRoleFilter("all");
             setTierFilter("all");
           }}
-          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${
-            statusFilter === "all" && roleFilter === "all" && tierFilter === "all" ? uStyles.statCardActive : ""
-          }`}
+          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${statusFilter === "all" && roleFilter === "all" && tierFilter === "all" ? uStyles.statCardActive : ""
+            }`}
           title="عرض جميع المستخدمين"
         >
           <div className={`${styles.subStatIcon} ${styles.subStatIconPrimary}`}>
@@ -1187,9 +1186,8 @@ export default function AdminUsersPage() {
         {/* Active Users */}
         <div
           onClick={() => setStatusFilter(statusFilter === "active" ? "all" : "active")}
-          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${
-            statusFilter === "active" ? uStyles.statCardActive : ""
-          }`}
+          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${statusFilter === "active" ? uStyles.statCardActive : ""
+            }`}
           title="تصفية المستخدمين النشطين"
         >
           <div className={`${styles.subStatIcon} ${styles.subStatIconSuccess}`}>
@@ -1206,9 +1204,8 @@ export default function AdminUsersPage() {
         {/* Suspended Users */}
         <div
           onClick={() => setStatusFilter(statusFilter === "suspended" ? "all" : "suspended")}
-          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${
-            statusFilter === "suspended" ? uStyles.statCardActive : ""
-          }`}
+          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${statusFilter === "suspended" ? uStyles.statCardActive : ""
+            }`}
           title="تصفية الحسابات المعلقة والموقوفة"
         >
           <div className={styles.subStatIcon} style={{ background: "rgba(239, 68, 68, 0.15)", color: "#ef4444" }}>
@@ -1231,9 +1228,8 @@ export default function AdminUsersPage() {
               setTierFilter("gold");
             }
           }}
-          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${
-            tierFilter !== "all" && tierFilter !== "free" ? uStyles.statCardActive : ""
-          }`}
+          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${tierFilter !== "all" && tierFilter !== "free" ? uStyles.statCardActive : ""
+            }`}
           title="تصفية المشتركين بالباقات المدفوعة"
         >
           <div className={`${styles.subStatIcon} ${styles.subStatIconWarning}`}>
@@ -1250,9 +1246,8 @@ export default function AdminUsersPage() {
         {/* Admins */}
         <div
           onClick={() => setRoleFilter(roleFilter === "admin" ? "all" : "admin")}
-          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${
-            roleFilter === "admin" ? uStyles.statCardActive : ""
-          }`}
+          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${roleFilter === "admin" ? uStyles.statCardActive : ""
+            }`}
           title="تصفية مسؤولي النظام"
         >
           <div className={`${styles.subStatIcon} ${styles.subStatIconDanger}`}>
@@ -1267,9 +1262,8 @@ export default function AdminUsersPage() {
         {/* Total Balances */}
         <div
           onClick={() => setBalanceFilter(balanceFilter === "positive" ? "all" : "positive")}
-          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${
-            balanceFilter === "positive" ? uStyles.statCardActive : ""
-          }`}
+          className={`${styles.subStatCard} ${uStyles.clickableStatCard} ${balanceFilter === "positive" ? uStyles.statCardActive : ""
+            }`}
           title="عرض من يملكون رصيد في المحفظة"
         >
           <div className={styles.subStatIcon} style={{ background: "rgba(16, 185, 129, 0.15)", color: "#10b981" }}>
@@ -1513,9 +1507,8 @@ export default function AdminUsersPage() {
                   return (
                     <tr
                       key={u.id}
-                      className={`${styles.adminTr} ${isSelected ? uStyles.tableRowSelected : ""} ${
-                        u.is_suspended ? uStyles.tableRowSuspended : ""
-                      }`}
+                      className={`${styles.adminTr} ${isSelected ? uStyles.tableRowSelected : ""} ${u.is_suspended ? uStyles.tableRowSuspended : ""
+                        }`}
                     >
                       {/* Multi-Select Checkbox */}
                       <td className={styles.adminTd} style={{ textAlign: "center" }}>
@@ -1542,9 +1535,8 @@ export default function AdminUsersPage() {
                             )}
                             {/* Live Dot Status */}
                             <span
-                              className={`${uStyles.statusIndicatorDot} ${
-                                u.is_suspended ? uStyles.dotSuspended : uStyles.dotActive
-                              }`}
+                              className={`${uStyles.statusIndicatorDot} ${u.is_suspended ? uStyles.dotSuspended : uStyles.dotActive
+                                }`}
                               title={u.is_suspended ? "حساب موقوف" : "حساب نشط"}
                             />
                           </div>
@@ -1646,23 +1638,22 @@ export default function AdminUsersPage() {
 
                             {/* Tier Badge */}
                             <span
-                              className={`${styles.badge} ${
-                                u.subscription_tier === "gold"
-                                  ? uStyles.tierBadgeGold
-                                  : u.subscription_tier === "silver"
+                              className={`${styles.badge} ${u.subscription_tier === "gold"
+                                ? uStyles.tierBadgeGold
+                                : u.subscription_tier === "silver"
                                   ? uStyles.tierBadgeSilver
                                   : u.subscription_tier === "mishwar"
-                                  ? uStyles.tierBadgeMishwar
-                                  : uStyles.tierBadgeFree
-                              }`}
+                                    ? uStyles.tierBadgeMishwar
+                                    : uStyles.tierBadgeFree
+                                }`}
                             >
                               {u.subscription_tier === "gold"
                                 ? "🥇 الذهبية"
                                 : u.subscription_tier === "silver"
-                                ? "🥈 الفضية"
-                                : u.subscription_tier === "mishwar"
-                                ? "⚡ المشوار"
-                                : "⚪ مجانية"}
+                                  ? "🥈 الفضية"
+                                  : u.subscription_tier === "mishwar"
+                                    ? "⚡ المشوار"
+                                    : "⚪ مجانية"}
                             </span>
                           </div>
 
@@ -1677,7 +1668,7 @@ export default function AdminUsersPage() {
 
                       {/* Location & Demographics */}
                       <td className={styles.adminTd}>
-                        <div style={{ fontWeight: "700", color: "var(--textPrimary)", fontSize: "0.88rem" }}>
+                        <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.88rem" }}>
                           📍 {u.governorate ? `${u.governorate} ${u.city ? `• ${u.city}` : ""}` : "غير محددة"}
                         </div>
                         <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
@@ -1719,7 +1710,7 @@ export default function AdminUsersPage() {
 
                       {/* Registration Date */}
                       <td className={styles.adminTd}>
-                        <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                        <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--text-primary)" }}>
                           {new Date(u.created_at).toLocaleDateString("ar-EG")}
                         </div>
                         <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", marginTop: "2px" }}>
@@ -2025,7 +2016,7 @@ export default function AdminUsersPage() {
                 )}
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                    <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)" }}>
                       {viewUser.full_name || "مستخدم بدون اسم"}
                     </h3>
                     {viewUser.is_admin && (
@@ -2165,10 +2156,10 @@ export default function AdminUsersPage() {
                   {viewUser.subscription_tier === "gold"
                     ? "🥇 الباقة الذهبية"
                     : viewUser.subscription_tier === "silver"
-                    ? "🥈 الباقة الفضية"
-                    : viewUser.subscription_tier === "mishwar"
-                    ? "⚡ باقة المشوار"
-                    : "⚪ المجانية"}
+                      ? "🥈 الباقة الفضية"
+                      : viewUser.subscription_tier === "mishwar"
+                        ? "⚡ باقة المشوار"
+                        : "⚪ المجانية"}
                 </div>
               </div>
 
@@ -2395,8 +2386,8 @@ export default function AdminUsersPage() {
                   {savingAdjust
                     ? "جاري الحفظ..."
                     : adjustType === "deposit"
-                    ? "تأكيد إضافة الرصيد"
-                    : "تأكيد خصم الرصيد"}
+                      ? "تأكيد إضافة الرصيد"
+                      : "تأكيد خصم الرصيد"}
                 </button>
                 <button
                   type="button"
@@ -3164,14 +3155,14 @@ export default function AdminUsersPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setSuspendTarget(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: suspending,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
         }}
       >
         {!suspendTarget?.is_suspended ? (
           <div style={{ marginTop: "12px", width: "100%", textAlign: "right" }}>
-            <label style={{ display: "block", fontSize: "0.86rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+            <label style={{ display: "block", fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
               سبب الإيقاف (اختياري، يظهر للمستخدم في شاشة الدخول):
             </label>
             <input
@@ -3216,7 +3207,7 @@ export default function AdminUsersPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setDeleteUser(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: deleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
         }}

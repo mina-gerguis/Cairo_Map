@@ -684,10 +684,10 @@ export default function IncomingReportsPage() {
         prev.map((f) =>
           f.id === item.id
             ? {
-                ...f,
-                admin_reply: trimmedReply,
-                status: f.status === "pending" ? "reviewed" : f.status,
-              }
+              ...f,
+              admin_reply: trimmedReply,
+              status: f.status === "pending" ? "reviewed" : f.status,
+            }
             : f
         )
       );
@@ -905,10 +905,10 @@ export default function IncomingReportsPage() {
           prev.map((f) =>
             f.id === dirModalItem.id
               ? {
-                  ...f,
-                  status: "action_taken",
-                  admin_reply: adminReplyText,
-                }
+                ...f,
+                status: "action_taken",
+                admin_reply: adminReplyText,
+              }
               : f
           )
         );
@@ -1061,10 +1061,10 @@ export default function IncomingReportsPage() {
         prev.map((f) =>
           f.id === parkingModalItem.feedbackId
             ? {
-                ...f,
-                status: "action_taken",
-                admin_reply: adminReplyText,
-              }
+              ...f,
+              status: "action_taken",
+              admin_reply: adminReplyText,
+            }
             : f
         )
       );
@@ -1084,7 +1084,7 @@ export default function IncomingReportsPage() {
   if (authLoading || !isAdmin) {
     return (
       <div style={{ textAlign: "center", padding: "100px 20px", color: "var(--textSecondary)" }}>
-        <div style={{ width: "32px", height: "32px", border: "3px solid var(--borderGlass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 16px" }} />
+        <div style={{ width: "32px", height: "32px", border: "3px solid var(--border-glass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 16px" }} />
         <span>جاري التحقق من صلاحيات الإدارة...</span>
       </div>
     );
@@ -1122,10 +1122,10 @@ export default function IncomingReportsPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "28px" }}>
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
-            <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "rgba(59, 130, 246, 0.15)", border: "1px solid rgba(59, 130, 246, 0.3)", color: "var(--colorSecondary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "rgba(59, 130, 246, 0.15)", border: "1px solid rgba(59, 130, 246, 0.3)", color: "var(--color-secondary)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem" }}>
               <i className="bx bx-inbox"></i>
             </div>
-            <h1 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+            <h1 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
               البلاغات والاقتراحات الواردة
             </h1>
           </div>
@@ -1140,8 +1140,8 @@ export default function IncomingReportsPage() {
             disabled={loading}
             style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--text-primary)",
               padding: "9px 18px",
               borderRadius: "10px",
               fontSize: "0.85rem",
@@ -1160,7 +1160,7 @@ export default function IncomingReportsPage() {
           <Link
             href="/admin/directory"
             style={{
-              background: "var(--colorSecondary)",
+              background: "var(--color-secondary)",
               color: "#fff",
               padding: "9px 18px",
               borderRadius: "10px",
@@ -1190,7 +1190,7 @@ export default function IncomingReportsPage() {
         <div
           style={{
             background: "var(--bgSecondary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "14px",
             padding: "16px 18px",
             display: "flex",
@@ -1200,7 +1200,7 @@ export default function IncomingReportsPage() {
         >
           <span style={{ fontSize: "0.82rem", color: "var(--textSecondary)", fontWeight: "600" }}>إجمالي الوارد</span>
           <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-            <span style={{ fontSize: "1.8rem", fontWeight: "900", color: "var(--textPrimary)" }}>{stats.total}</span>
+            <span style={{ fontSize: "1.8rem", fontWeight: "900", color: "var(--text-primary)" }}>{stats.total}</span>
             <span style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>طلب وبلاغ</span>
           </div>
         </div>
@@ -1264,7 +1264,7 @@ export default function IncomingReportsPage() {
       <div
         style={{
           background: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "16px",
           padding: "18px",
           marginBottom: "24px",
@@ -1293,9 +1293,9 @@ export default function IncomingReportsPage() {
               style={{
                 padding: "8px 16px",
                 borderRadius: "30px",
-                border: categoryFilter === tab.id ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                border: categoryFilter === tab.id ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                 background: categoryFilter === tab.id ? "rgba(59, 130, 246, 0.15)" : "var(--bgSecondary)",
-                color: categoryFilter === tab.id ? "var(--textPrimary)" : "var(--textSecondary)",
+                color: categoryFilter === tab.id ? "var(--text-primary)" : "var(--textSecondary)",
                 fontWeight: "700",
                 fontSize: "0.82rem",
                 cursor: "pointer",
@@ -1309,7 +1309,7 @@ export default function IncomingReportsPage() {
               <span>{tab.label}</span>
               <span
                 style={{
-                  background: categoryFilter === tab.id ? "var(--colorSecondary)" : "rgba(112, 109, 109, 0.53)",
+                  background: categoryFilter === tab.id ? "var(--color-secondary)" : "rgba(112, 109, 109, 0.53)",
                   color: "#fff",
                   padding: "2px 8px",
                   borderRadius: "12px",
@@ -1356,7 +1356,7 @@ export default function IncomingReportsPage() {
                 style={{
                   padding: "7px 14px",
                   borderRadius: "10px",
-                  border: statusFilter === st.id ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
+                  border: statusFilter === st.id ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
                   background: statusFilter === st.id ? "var(--colorPrimary)" : "var(--bgSecondary)",
                   color: statusFilter === st.id ? "#fff" : "var(--textSecondary)",
                   fontWeight: "700",
@@ -1375,7 +1375,7 @@ export default function IncomingReportsPage() {
       {/* Content List */}
       {loading ? (
         <div style={{ textAlign: "center", padding: "80px 20px", color: "var(--textSecondary)" }}>
-          <div style={{ width: "36px", height: "36px", border: "3px solid var(--borderGlass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 16px" }} />
+          <div style={{ width: "36px", height: "36px", border: "3px solid var(--border-glass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 16px" }} />
           <span>جاري تحميل البلاغات والاقتراحات...</span>
         </div>
       ) : filteredFeedbacks.length === 0 ? (
@@ -1384,13 +1384,13 @@ export default function IncomingReportsPage() {
             textAlign: "center",
             padding: "60px 20px",
             background: "var(--bgSecondary)",
-            border: "1px dashed var(--borderGlass)",
+            border: "1px dashed var(--border-glass)",
             borderRadius: "16px",
             color: "var(--textSecondary)",
           }}
         >
           <div style={{ fontSize: "2.4rem", marginBottom: "12px" }}>📭</div>
-          <h3 style={{ margin: "0 0 6px", color: "var(--textPrimary)", fontSize: "1.1rem" }}>لا توجد بلاغات أو اقتراحات تطابق خياراتك</h3>
+          <h3 style={{ margin: "0 0 6px", color: "var(--text-primary)", fontSize: "1.1rem" }}>لا توجد بلاغات أو اقتراحات تطابق خياراتك</h3>
           <p style={{ margin: 0, fontSize: "0.85rem" }}>جرب تغيير تبويب التصفية أو مسح عبارة البحث أعلاه.</p>
         </div>
       ) : (
@@ -1405,7 +1405,7 @@ export default function IncomingReportsPage() {
                 className="metro-animate-slide-up"
                 style={{
                   background: "var(--bgPrimary)",
-                  border: isOpen ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                  border: isOpen ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "20px",
                   boxShadow: "var(--shadow-sm)",
@@ -1444,7 +1444,7 @@ export default function IncomingReportsPage() {
                         margin: "0 0 8px",
                         fontSize: "1.05rem",
                         fontWeight: "800",
-                        color: "var(--textPrimary)",
+                        color: "var(--text-primary)",
                         lineHeight: "1.4",
                       }}
                     >
@@ -1454,8 +1454,8 @@ export default function IncomingReportsPage() {
                     {/* User Mini Bar */}
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "var(--textSecondary)", fontSize: "0.82rem", flexWrap: "wrap" }}>
                       <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                         <strong>{item.user_profile?.full_name || "مستخدم مسجل"}</strong>
-                        <i className="bx bx-user" style={{ color: "var(--colorSecondary)" }}></i>
+                        <strong>{item.user_profile?.full_name || "مستخدم مسجل"}</strong>
+                        <i className="bx bx-user" style={{ color: "var(--color-secondary)" }}></i>
                       </span>
 
                       {item.user_profile?.phone && (
@@ -1539,8 +1539,8 @@ export default function IncomingReportsPage() {
                       type="button"
                       style={{
                         background: isOpen ? "rgba(59, 130, 246, 0.15)" : "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
-                        color: isOpen ? "var(--colorSecondary)" : "var(--textPrimary)",
+                        border: "1px solid var(--border-glass)",
+                        color: isOpen ? "var(--color-secondary)" : "var(--text-primary)",
                         padding: "6px 14px",
                         borderRadius: "10px",
                         fontSize: "0.82rem",
@@ -1562,7 +1562,7 @@ export default function IncomingReportsPage() {
                   style={{
                     marginTop: "14px",
                     background: "var(--bgSecondary)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     borderRadius: "12px",
                     padding: "14px 16px",
                   }}
@@ -1571,7 +1571,7 @@ export default function IncomingReportsPage() {
                     style={{
                       margin: 0,
                       fontSize: "0.92rem",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       whiteSpace: "pre-line",
                       lineHeight: "1.6",
                     }}
@@ -1591,7 +1591,7 @@ export default function IncomingReportsPage() {
                           maxWidth: "180px",
                           maxHeight: "120px",
                           borderRadius: "10px",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           cursor: "pointer",
                           objectFit: "cover",
                         }}
@@ -1611,11 +1611,11 @@ export default function IncomingReportsPage() {
                       padding: "12px 16px",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--colorSecondary)", fontWeight: "700", fontSize: "0.84rem", marginBottom: "4px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--color-secondary)", fontWeight: "700", fontSize: "0.84rem", marginBottom: "4px" }}>
                       <i className="bx bx-check-circle"></i>
                       الرد السابق:
                     </div>
-                    <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--textPrimary)", lineHeight: "1.5", whiteSpace: "pre-line" }}>
+                    <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.5", whiteSpace: "pre-line" }}>
                       {item.admin_reply}
                     </p>
                   </div>
@@ -1628,7 +1628,7 @@ export default function IncomingReportsPage() {
                     style={{
                       marginTop: "18px",
                       paddingTop: "18px",
-                      borderTop: "1px solid var(--borderGlass)",
+                      borderTop: "1px solid var(--border-glass)",
                       display: "flex",
                       flexDirection: "column",
                       gap: "16px",
@@ -1638,7 +1638,7 @@ export default function IncomingReportsPage() {
                     {isDirectoryItem && (
                       <div
                         style={{
-                          background: "var(--bgGlass)",
+                          background: "var(--bg-glass)",
                           padding: "14px 18px",
                           display: "flex",
                           alignItems: "center",
@@ -1650,53 +1650,53 @@ export default function IncomingReportsPage() {
                         <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                           <div
                             style={{
-                               fontSize: "0.84rem", fontWeight: "700", color: "var(--textSecondary)"
+                              fontSize: "0.84rem", fontWeight: "700", color: "var(--textSecondary)"
                             }}
                           >
                             <i className="bx bx-book-bookmark" style={{ fontSize: "1rem", marginLeft: "6px" }}></i>
                             الأجراءات:
                           </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => handleOpenAddToDirectory(item)}
-                            style={{
-                              padding: "6px 14px",
-                              borderRadius: "10px",
-                              fontSize: "0.85rem",
-                              fontWeight: "800",
-                              cursor: "pointer",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                            }}
-                          >
-                            <i className="bx bx-plus-circle" style={{ fontSize: "1.1rem" }}></i>
-                            <span>إضافة إلى الدليل الآن </span>
-                          </button>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={() => handleOpenAddToDirectory(item)}
+                              style={{
+                                padding: "6px 14px",
+                                borderRadius: "10px",
+                                fontSize: "0.85rem",
+                                fontWeight: "800",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
+                              <i className="bx bx-plus-circle" style={{ fontSize: "1.1rem" }}></i>
+                              <span>إضافة إلى الدليل الآن </span>
+                            </button>
 
-                          <Link
-                            className="btn btn-cancel"
-                            href="/admin/directory"
-                            onClick={(e) => e.stopPropagation()}
-                            style={{
-                              border: "none",
-                              color: "var(--textSecondary)",
-                              padding: "6px 14px",
-                              borderRadius: "10px",
-                              fontSize: "0.82rem",
-                              fontWeight: "600",
-                              textDecoration: "none",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "5px",
-                            }}
-                          >
-                            <span>فتح إدارة الدليل</span>
-                            <i className="bx bx-link-external"></i>
-                          </Link>
-                        </div>
+                            <Link
+                              className="btn btn-cancel"
+                              href="/admin/directory"
+                              onClick={(e) => e.stopPropagation()}
+                              style={{
+                                border: "none",
+                                color: "var(--textSecondary)",
+                                padding: "6px 14px",
+                                borderRadius: "10px",
+                                fontSize: "0.82rem",
+                                fontWeight: "600",
+                                textDecoration: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px",
+                              }}
+                            >
+                              <span>فتح إدارة الدليل</span>
+                              <i className="bx bx-link-external"></i>
+                            </Link>
+                          </div>
                         </div>
 
                       </div>
@@ -1717,7 +1717,7 @@ export default function IncomingReportsPage() {
                           gap: "10px",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--text-primary)", fontWeight: "600" }}>
                           <i className="bx bx-train" style={{ color: "#10b981", fontSize: "1.2rem" }}></i>
                           <span>بلاغ متعلق بخدمة ومحطات مترو القاهرة</span>
                         </div>
@@ -1727,8 +1727,8 @@ export default function IncomingReportsPage() {
                             target="_blank"
                             style={{
                               background: "var(--bgSecondary)",
-                              border: "1px solid var(--borderGlass)",
-                              color: "var(--textPrimary)",
+                              border: "1px solid var(--border-glass)",
+                              color: "var(--text-primary)",
                               padding: "6px 12px",
                               borderRadius: "8px",
                               fontSize: "0.8rem",
@@ -1780,7 +1780,7 @@ export default function IncomingReportsPage() {
                           gap: "10px",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--text-primary)", fontWeight: "600" }}>
                           <i className="bx bx-train" style={{ color: "#3b82f6", fontSize: "1.2rem" }}></i>
                           <span>بلاغ متعلق بخدمة ومحطات قطار المونوريل</span>
                         </div>
@@ -1790,8 +1790,8 @@ export default function IncomingReportsPage() {
                             target="_blank"
                             style={{
                               background: "var(--bgSecondary)",
-                              border: "1px solid var(--borderGlass)",
-                              color: "var(--textPrimary)",
+                              border: "1px solid var(--border-glass)",
+                              color: "var(--text-primary)",
                               padding: "6px 12px",
                               borderRadius: "8px",
                               fontSize: "0.8rem",
@@ -1843,7 +1843,7 @@ export default function IncomingReportsPage() {
                           gap: "10px",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--text-primary)", fontWeight: "600" }}>
                           <i className="bx bx-train" style={{ color: "#06b6d4", fontSize: "1.2rem" }}></i>
                           <span>بلاغ متعلق بخدمة ومحطات القطار الكهربائي LRT</span>
                         </div>
@@ -1853,8 +1853,8 @@ export default function IncomingReportsPage() {
                             target="_blank"
                             style={{
                               background: "var(--bgSecondary)",
-                              border: "1px solid var(--borderGlass)",
-                              color: "var(--textPrimary)",
+                              border: "1px solid var(--border-glass)",
+                              color: "var(--text-primary)",
                               padding: "6px 12px",
                               borderRadius: "8px",
                               fontSize: "0.8rem",
@@ -1906,7 +1906,7 @@ export default function IncomingReportsPage() {
                           gap: "10px",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--text-primary)", fontWeight: "600" }}>
                           <i className="bx bx-train" style={{ color: "#f97316", fontSize: "1.2rem" }}></i>
                           <span>بلاغ متعلق بمواعيد وقطارات سكك حديد مصر</span>
                         </div>
@@ -1916,8 +1916,8 @@ export default function IncomingReportsPage() {
                             target="_blank"
                             style={{
                               background: "var(--bgSecondary)",
-                              border: "1px solid var(--borderGlass)",
-                              color: "var(--textPrimary)",
+                              border: "1px solid var(--border-glass)",
+                              color: "var(--text-primary)",
                               padding: "6px 12px",
                               borderRadius: "8px",
                               fontSize: "0.8rem",
@@ -1969,7 +1969,7 @@ export default function IncomingReportsPage() {
                           gap: "10px",
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.84rem", color: "var(--text-primary)", fontWeight: "600" }}>
                           <i className="bx bx-parking" style={{ color: "#f59e0b", fontSize: "1.2rem" }}></i>
                           <span>بلاغ متعلق بدليل الجراجات والمواقف</span>
                         </div>
@@ -2002,8 +2002,8 @@ export default function IncomingReportsPage() {
                             target="_blank"
                             style={{
                               background: "var(--bgSecondary)",
-                              border: "1px solid var(--borderGlass)",
-                              color: "var(--textPrimary)",
+                              border: "1px solid var(--border-glass)",
+                              color: "var(--text-primary)",
                               padding: "6px 12px",
                               borderRadius: "8px",
                               fontSize: "0.8rem",
@@ -2059,7 +2059,7 @@ export default function IncomingReportsPage() {
                           opacity: item.status === "pending" ? 0.85 : 1,
                         }}
                       >
-                        قيد الانتظار 
+                        قيد الانتظار
                       </button>
 
                       <button
@@ -2077,7 +2077,7 @@ export default function IncomingReportsPage() {
                           opacity: item.status === "reviewed" ? 0.85 : 1,
                         }}
                       >
-                        تمت المراجعة 
+                        تمت المراجعة
                       </button>
 
                       <button
@@ -2095,13 +2095,13 @@ export default function IncomingReportsPage() {
                           opacity: item.status === "action_taken" ? 0.85 : 1,
                         }}
                       >
-                        اعتماد وتنفيذ 
+                        اعتماد وتنفيذ
                       </button>
                     </div>
 
                     {/* Admin Reply Input */}
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "14px" }}>
-                      <label style={{ display: "block", fontSize: "0.84rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
+                      <label style={{ display: "block", fontSize: "0.84rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "8px" }}>
                         إرسال رد رسمي للمستخدم (سيصله إشعار مباشر في حسابه 🔔):
                       </label>
                       <textarea
@@ -2147,7 +2147,7 @@ export default function IncomingReportsPage() {
                           onClick={() => handleSendReply(item)}
                           disabled={replyingId === item.id || !replyText.trim()}
                           style={{
-                            background: "var(--colorSecondary)",
+                            background: "var(--color-secondary)",
                             color: "#ffffff",
                             padding: "8px 20px",
                             borderRadius: "10px",
@@ -2192,7 +2192,7 @@ export default function IncomingReportsPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setItemToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
         }}
@@ -2273,7 +2273,7 @@ export default function IncomingReportsPage() {
             className="metro-animate-scale-up"
             style={{
               background: "var(--bgPrimary, #111827)",
-              border: "1px solid var(--borderGlass, rgba(255,255,255,0.12))",
+              border: "1px solid var(--border-glass, rgba(255,255,255,0.12))",
               borderRadius: "20px",
               padding: "24px 28px",
               maxWidth: "560px",
@@ -2281,7 +2281,7 @@ export default function IncomingReportsPage() {
               maxHeight: "92vh",
               overflowY: "auto",
               boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               fontFamily: "var(--font-heading)",
             }}
           >
@@ -2305,7 +2305,7 @@ export default function IncomingReportsPage() {
                   <i className="bx bx-book-add"></i>
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     إضافة المقترح إلى دليل الهاتف
                   </h3>
                   <p style={{ margin: "3px 0 0", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
@@ -2319,7 +2319,7 @@ export default function IncomingReportsPage() {
                 onClick={() => !isSubmittingDir && setDirModalItem(null)}
                 style={{
                   background: "var(--bgSecondary, rgba(255,255,255,0.06))",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   color: "var(--textSecondary)",
                   borderRadius: "10px",
                   width: "32px",
@@ -2345,7 +2345,7 @@ export default function IncomingReportsPage() {
                 padding: "4px",
                 borderRadius: "12px",
                 marginBottom: "20px",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
               }}
             >
               <button
@@ -2411,9 +2411,9 @@ export default function IncomingReportsPage() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: "10px",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "var(--bgSecondary)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontSize: "0.9rem",
                       boxSizing: "border-box",
                     }}
@@ -2434,9 +2434,9 @@ export default function IncomingReportsPage() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: "10px",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "var(--bgSecondary)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontSize: "0.9rem",
                       boxSizing: "border-box",
                       textAlign: "right",
@@ -2457,9 +2457,9 @@ export default function IncomingReportsPage() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: "10px",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "var(--bgSecondary)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontSize: "0.9rem",
                       boxSizing: "border-box",
                       marginBottom: "6px",
@@ -2474,7 +2474,7 @@ export default function IncomingReportsPage() {
                         onClick={() => setDirPhoneSpecialty(s)}
                         style={{
                           background: dirPhoneSpecialty === s ? "rgba(6, 182, 212, 0.25)" : "rgba(255,255,255,0.05)",
-                          border: dirPhoneSpecialty === s ? "1px solid #06b6d4" : "1px solid var(--borderGlass)",
+                          border: dirPhoneSpecialty === s ? "1px solid #06b6d4" : "1px solid var(--border-glass)",
                           color: dirPhoneSpecialty === s ? "#38bdf8" : "var(--textSecondary)",
                           padding: "3px 10px",
                           borderRadius: "16px",
@@ -2501,9 +2501,9 @@ export default function IncomingReportsPage() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: "10px",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "var(--bgSecondary)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontSize: "0.88rem",
                       resize: "none",
                       boxSizing: "border-box",
@@ -2531,7 +2531,7 @@ export default function IncomingReportsPage() {
                         style={{
                           padding: "8px 6px",
                           borderRadius: "10px",
-                          border: dirCodeCompany === comp.id ? `2px solid ${comp.color}` : "1px solid var(--borderGlass)",
+                          border: dirCodeCompany === comp.id ? `2px solid ${comp.color}` : "1px solid var(--border-glass)",
                           background: dirCodeCompany === comp.id ? comp.bg : "var(--bgSecondary)",
                           color: dirCodeCompany === comp.id ? comp.color : "var(--textSecondary)",
                           fontWeight: "800",
@@ -2559,9 +2559,9 @@ export default function IncomingReportsPage() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: "10px",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "var(--bgSecondary)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontSize: "0.9rem",
                       boxSizing: "border-box",
                     }}
@@ -2582,9 +2582,9 @@ export default function IncomingReportsPage() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: "10px",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "var(--bgSecondary)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontSize: "0.95rem",
                       fontFamily: "monospace",
                       fontWeight: "700",
@@ -2607,9 +2607,9 @@ export default function IncomingReportsPage() {
                       width: "100%",
                       padding: "10px 14px",
                       borderRadius: "10px",
-                      border: "1px solid var(--borderGlass)",
+                      border: "1px solid var(--border-glass)",
                       background: "var(--bgSecondary)",
-                      color: "var(--textPrimary)",
+                      color: "var(--text-primary)",
                       fontSize: "0.9rem",
                       boxSizing: "border-box",
                       marginBottom: "6px",
@@ -2623,7 +2623,7 @@ export default function IncomingReportsPage() {
                         onClick={() => setDirCodeSection(sec)}
                         style={{
                           background: dirCodeSection === sec ? "rgba(168, 85, 247, 0.25)" : "rgba(255,255,255,0.05)",
-                          border: dirCodeSection === sec ? "1px solid #a855f7" : "1px solid var(--borderGlass)",
+                          border: dirCodeSection === sec ? "1px solid #a855f7" : "1px solid var(--border-glass)",
                           color: dirCodeSection === sec ? "#c084fc" : "var(--textSecondary)",
                           padding: "3px 10px",
                           borderRadius: "16px",
@@ -2659,7 +2659,7 @@ export default function IncomingReportsPage() {
                 onChange={(e) => setDirAutoActionTaken(e.target.checked)}
                 style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "#06b6d4" }}
               />
-              <label htmlFor="dirAutoActionTaken" style={{ fontSize: "0.82rem", color: "var(--textPrimary)", cursor: "pointer", fontWeight: "600" }}>
+              <label htmlFor="dirAutoActionTaken" style={{ fontSize: "0.82rem", color: "var(--text-primary)", cursor: "pointer", fontWeight: "600" }}>
                 تحديث حالة البلاغ تلقائياً إلى &quot;تم اتخاذ إجراء&quot; وإشعار المستخدم باعتماد طلبه
               </label>
             </div>
@@ -2672,7 +2672,7 @@ export default function IncomingReportsPage() {
                 disabled={isSubmittingDir}
                 style={{
                   background: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   color: "var(--textSecondary)",
                   padding: "10px 18px",
                   borderRadius: "10px",
@@ -2751,7 +2751,7 @@ export default function IncomingReportsPage() {
           <div
             style={{
               backgroundColor: "var(--bgPrimary, #0f172a)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "18px",
               width: "100%",
               maxWidth: "620px",
@@ -2763,7 +2763,7 @@ export default function IncomingReportsPage() {
             }}
           >
             {/* Modal Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "14px", marginBottom: "18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px", marginBottom: "18px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <div style={{
                   width: "40px",
@@ -2779,7 +2779,7 @@ export default function IncomingReportsPage() {
                   <i className="fa-solid fa-square-parking"></i>
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     إضافة الجراج المقترح لدليل الجراجات فوراً
                   </h3>
                   <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
@@ -2792,7 +2792,7 @@ export default function IncomingReportsPage() {
                 onClick={() => !isSubmittingParking && setParkingModalItem(null)}
                 style={{
                   background: "var(--bgSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "8px",
                   width: "32px",
                   height: "32px",
@@ -2830,7 +2830,7 @@ export default function IncomingReportsPage() {
               {/* Name & Area */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     اسم الجراج *
                   </label>
                   <input
@@ -2839,11 +2839,11 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.name}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, name: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     المنطقة / الحي *
                   </label>
                   <input
@@ -2852,14 +2852,14 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.area}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, area: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
               </div>
 
               {/* Address */}
               <div>
-                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   العنوان بالتفصيل *
                 </label>
                 <input
@@ -2868,14 +2868,14 @@ export default function IncomingReportsPage() {
                   value={parkingModalItem.address}
                   onChange={(e) => setParkingModalItem({ ...parkingModalItem, address: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                 />
               </div>
 
               {/* Metro & Type */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     أقرب محطة مترو *
                   </label>
                   <input
@@ -2884,18 +2884,18 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.nearestMetro}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, nearestMetro: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     نوع الجراج *
                   </label>
                   <select
                     value={parkingModalItem.type}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, type: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", cursor: "pointer" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", cursor: "pointer" }}
                   >
                     <option value="مغطى ومتعدد الطوابق">مغطى ومتعدد الطوابق</option>
                     <option value="جراج ذكي إلكتروني">جراج ذكي إلكتروني</option>
@@ -2907,7 +2907,7 @@ export default function IncomingReportsPage() {
               {/* Rates & Capacity */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     سعر الساعة (ج.م) *
                   </label>
                   <input
@@ -2917,11 +2917,11 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.hourlyRate}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, hourlyRate: Number(e.target.value) })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     الحد الأقصى اليومي
                   </label>
                   <input
@@ -2931,11 +2931,11 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.maxDailyRate}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, maxDailyRate: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     السعة (سيارة) *
                   </label>
                   <input
@@ -2945,7 +2945,7 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.capacity}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, capacity: Number(e.target.value) })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
               </div>
@@ -2953,7 +2953,7 @@ export default function IncomingReportsPage() {
               {/* Hours & Map Link */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     ساعات العمل *
                   </label>
                   <input
@@ -2962,11 +2962,11 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.hours}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, hours: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                     رابط خرائط جوجل
                   </label>
                   <input
@@ -2975,14 +2975,14 @@ export default function IncomingReportsPage() {
                     value={parkingModalItem.mapLocationLink}
                     onChange={(e) => setParkingModalItem({ ...parkingModalItem, mapLocationLink: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)", direction: "ltr", textAlign: "right" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", direction: "ltr", textAlign: "right" }}
                   />
                 </div>
               </div>
 
               {/* Features */}
               <div>
-                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   الميزات (مفصولة بفاصلة)
                 </label>
                 <input
@@ -2991,7 +2991,7 @@ export default function IncomingReportsPage() {
                   value={parkingModalItem.features}
                   onChange={(e) => setParkingModalItem({ ...parkingModalItem, features: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "8px", color: "var(--textPrimary)" }}
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                 />
               </div>
 

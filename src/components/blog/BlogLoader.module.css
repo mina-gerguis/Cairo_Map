@@ -17,10 +17,10 @@
   align-items: center;
   justify-content: center;
   padding: 42px 36px;
-  background: var(--bgGlass-card);
+  background: var(--bg-glass-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--borderGlass-bright);
+  border: 1px solid var(--border-glass-bright);
   border-radius: 24px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 0 0 50px rgba(59, 130, 246, 0.12);
   max-width: 440px;
@@ -62,7 +62,7 @@
   inset: 0;
   border-radius: 50%;
   border: 3px solid rgba(59, 130, 246, 0.12);
-  border-top-color: var(--colorSecondary);
+  border-top-color: var(--color-secondary);
   border-right-color: rgba(59, 130, 246, 0.6);
   animation: orbitRotate 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
   box-shadow: 0 0 16px rgba(59, 130, 246, 0.25);
@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--colorSecondary);
+  color: var(--color-secondary);
   font-size: 1.6rem;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   animation: iconBreathe 2s ease-in-out infinite alternate;
@@ -96,7 +96,7 @@
 .title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--textPrimary);
+  color: var(--text-primary);
   margin: 0 0 8px 0;
   font-family: var(--font-display, var(--font-main, sans-serif));
   letter-spacing: -0.3px;
@@ -132,9 +132,9 @@
   height: 100%;
   width: 45%;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--colorSecondary), transparent);
+  background: linear-gradient(90deg, transparent, var(--color-secondary), transparent);
   animation: shimmerMove 1.5s ease-in-out infinite;
-  box-shadow: 0 0 8px var(--colorSecondary);
+  box-shadow: 0 0 8px var(--color-secondary);
 }
 
 /* Keyframe Animations */

@@ -334,7 +334,7 @@ export default function PortsPage() {
           width: "40px",
           height: "40px",
           border: "4px solid rgba(255,255,255,0.1)",
-          borderTop: "4px solid var(--colorSecondary, #3b82f6)",
+          borderTop: "4px solid var(--color-secondary, #3b82f6)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           marginBottom: "20px"
@@ -355,7 +355,7 @@ export default function PortsPage() {
           padding: "24px 20px 24px",
           textAlign: "center",
           position: "relative",
-          borderBottom: "1px solid var(--borderGlass)",
+          borderBottom: "1px solid var(--border-glass)",
         }}>
           <div className="metro-animate-slide-up metro-delay-100">
             <h1 style={{
@@ -365,7 +365,7 @@ export default function PortsPage() {
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               margin: "0 0 10px",
               letterSpacing: "-0.5px",
             }}>
@@ -388,7 +388,7 @@ export default function PortsPage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                color: "var(--colorSecondary, #3b82f6)",
+                color: "var(--color-secondary, #3b82f6)",
                 textDecoration: "none",
                 fontWeight: "600",
                 fontSize: "0.95rem"
@@ -402,7 +402,7 @@ export default function PortsPage() {
           {/* Premium Lock Panel */}
           <div className="metro-animate-slide-up metro-delay-200" style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "15px",
             padding: "48px 32px",
             boxShadow: "var(--shadow-card)",
@@ -425,7 +425,7 @@ export default function PortsPage() {
               <img src="/images/icons3d/lockPage.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
             </div>
 
-            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
               دليل الموانئ يتطلب اشتراك في الباقة الذهبية
             </h2>
 
@@ -434,8 +434,8 @@ export default function PortsPage() {
             </p>
 
             {/* Features list */}
-            <div style={{ background: "var(--bgSecondary)", padding: "18px 24px", borderRadius: "12px", border: "1px solid var(--borderGlass)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
-              <div style={{ fontWeight: "700", color: "var(--textPrimary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
+            <div style={{ background: "var(--bgSecondary)", padding: "18px 24px", borderRadius: "12px", border: "1px solid var(--border-glass)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
+              <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
               <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ دليل الموانئ البحرية (الإسكندرية، الدخيلة، دمياط، السخنة، بورسعيد، إلخ)</li>
                 <li>✨ الطاقة الاستيعابية والقدرة التشغيلية وأرصفة التداول</li>
@@ -503,7 +503,7 @@ export default function PortsPage() {
         padding: "24px 20px 24px",
         textAlign: "center",
         position: "relative",
-        borderBottom: "1px solid var(--borderGlass)",
+        borderBottom: "1px solid var(--border-glass)",
       }}>
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 style={{
@@ -513,7 +513,7 @@ export default function PortsPage() {
             fontFamily: "var(--font-display)",
             fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "600",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
           }}>
@@ -528,7 +528,7 @@ export default function PortsPage() {
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "#14b8a6",
               borderRadius: "10px",
               padding: "4px 14px",
@@ -537,8 +537,8 @@ export default function PortsPage() {
             }}>موانئ مصر البحرية ({allPortsList.length}) ⚓</span>
             <span style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--colorSecondary)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--color-secondary)",
               borderRadius: "10px",
               padding: "4px 14px",
               fontSize: "0.78rem",
@@ -558,7 +558,7 @@ export default function PortsPage() {
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
-              color: "var(--colorSecondary, #3b82f6)",
+              color: "var(--color-secondary, #3b82f6)",
               textDecoration: "none",
               fontWeight: "600",
               fontSize: "0.95rem"
@@ -572,7 +572,7 @@ export default function PortsPage() {
         {/* Search Panel Card - Styled matching Metro searchCard & Directory searchCard */}
         <div className="metro-animate-slide-up metro-delay-200" style={{
           backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "15px",
           padding: "20px",
           marginBottom: "20px",
@@ -586,7 +586,7 @@ export default function PortsPage() {
           {/* Search Box */}
           <div ref={searchContainerRef} style={{ position: "relative" }}>
             <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "8px" }}>
-              <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--colorSecondary)" }}></i> ابحث في دليل الموانئ
+              <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--color-secondary)" }}></i> ابحث في دليل الموانئ
             </label>
             <input
               className="input-fields"
@@ -613,7 +613,7 @@ export default function PortsPage() {
                 left: 0,
                 right: 0,
                 backgroundColor: "var(--bgPrimary)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "12px",
                 boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
                 zIndex: 100,
@@ -637,7 +637,7 @@ export default function PortsPage() {
                         alignItems: "center",
                         padding: "12px 16px",
                         cursor: "pointer",
-                        borderBottom: index < searchResults.length - 1 ? "1px solid var(--borderGlass)" : "none",
+                        borderBottom: index < searchResults.length - 1 ? "1px solid var(--border-glass)" : "none",
                         transition: "background-color 0.2s ease"
                       }}
                       onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bgSecondary)"}
@@ -645,7 +645,7 @@ export default function PortsPage() {
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                         <span style={{ fontSize: "1.1rem" }}>⚓</span>
-                        <span style={{ fontWeight: "700", color: "var(--textPrimary)", fontSize: "0.95rem" }}>
+                        <span style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.95rem" }}>
                           {port.name}
                         </span>
                       </div>
@@ -675,8 +675,8 @@ export default function PortsPage() {
                 borderRadius: "10px",
                 fontSize: "0.82rem",
                 fontWeight: "700",
-                border: "1px solid var(--borderGlass)",
-                background: selectedFilter === "all" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                border: "1px solid var(--border-glass)",
+                background: selectedFilter === "all" ? "var(--color-secondary)" : "var(--bgSecondary)",
                 color: selectedFilter === "all" ? "#fff" : "var(--textSecondary)",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
@@ -692,7 +692,7 @@ export default function PortsPage() {
                 borderRadius: "10px",
                 fontSize: "0.82rem",
                 fontWeight: "700",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 background: selectedFilter === "mediterranean" ? "#3b82f6" : "var(--bgSecondary)",
                 color: selectedFilter === "mediterranean" ? "#fff" : "var(--textSecondary)",
                 cursor: "pointer",
@@ -709,7 +709,7 @@ export default function PortsPage() {
                 borderRadius: "10px",
                 fontSize: "0.82rem",
                 fontWeight: "700",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 background: selectedFilter === "redsea" ? "#ef4444" : "var(--bgSecondary)",
                 color: selectedFilter === "redsea" ? "#fff" : "var(--textSecondary)",
                 cursor: "pointer",
@@ -726,7 +726,7 @@ export default function PortsPage() {
                 borderRadius: "10px",
                 fontSize: "0.82rem",
                 fontWeight: "700",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 background: selectedFilter === "commercial" ? "#10b981" : "var(--bgSecondary)",
                 color: selectedFilter === "commercial" ? "#fff" : "var(--textSecondary)",
                 cursor: "pointer",
@@ -743,7 +743,7 @@ export default function PortsPage() {
                 borderRadius: "10px",
                 fontSize: "0.82rem",
                 fontWeight: "700",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 background: selectedFilter === "passenger" ? "#8b5cf6" : "var(--bgSecondary)",
                 color: selectedFilter === "passenger" ? "#fff" : "var(--textSecondary)",
                 cursor: "pointer",
@@ -761,7 +761,7 @@ export default function PortsPage() {
           {loading ? (
             <div style={{
               backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "15px",
               padding: "40px",
               textAlign: "center"
@@ -770,7 +770,7 @@ export default function PortsPage() {
                 width: "32px",
                 height: "32px",
                 border: "3px solid rgba(255,255,255,0.1)",
-                borderTopColor: "var(--colorSecondary)",
+                borderTopColor: "var(--color-secondary)",
                 borderRadius: "50%",
                 animation: "spin 1s linear infinite",
                 margin: "0 auto 12px"
@@ -788,7 +788,7 @@ export default function PortsPage() {
                   className="metro-animate-slide-up"
                   style={{
                     backgroundColor: "var(--bgPrimary)",
-                    border: isExpanded ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                    border: isExpanded ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                     borderRadius: "15px",
                     padding: "20px",
                     boxShadow: "var(--shadow-card)",
@@ -798,7 +798,7 @@ export default function PortsPage() {
                   {/* Card Header & Title */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", marginBottom: "12px" }}>
                     <div>
-                      <h5 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                      <h5 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                         ⚓ {port.name}
                       </h5>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
@@ -817,7 +817,7 @@ export default function PortsPage() {
                           fontSize: "0.75rem",
                           background: "var(--bgSecondary)",
                           color: "var(--textSecondary)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           padding: "2px 8px",
                           borderRadius: "8px"
                         }}>
@@ -827,7 +827,7 @@ export default function PortsPage() {
                           <span style={{
                             fontSize: "0.72rem",
                             background: "rgba(59, 130, 246, 0.12)",
-                            color: "var(--colorSecondary)",
+                            color: "var(--color-secondary)",
                             padding: "2px 8px",
                             borderRadius: "8px",
                             fontWeight: "600"
@@ -843,10 +843,10 @@ export default function PortsPage() {
                       onClick={() => toggleExpand(port.name)}
                       style={{
                         background: "var(--bgSecondary)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "10px",
                         padding: "6px 12px",
-                        color: "var(--colorSecondary)",
+                        color: "var(--color-secondary)",
                         fontSize: "0.8rem",
                         fontWeight: "700",
                         cursor: "pointer",
@@ -879,17 +879,17 @@ export default function PortsPage() {
                     background: "var(--bgSecondary)",
                     padding: "12px 14px",
                     borderRadius: "10px",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     fontSize: "0.82rem",
                     marginBottom: isExpanded ? "16px" : "14px"
                   }}>
                     <div>
                       <span style={{ color: "var(--text-muted)", display: "block", fontSize: "0.75rem" }}>⚙️ نوع الميناء:</span>
-                      <strong style={{ color: "var(--textPrimary)", fontSize: "0.85rem" }}>{port.type}</strong>
+                      <strong style={{ color: "var(--text-primary)", fontSize: "0.85rem" }}>{port.type}</strong>
                     </div>
                     <div>
                       <span style={{ color: "var(--text-muted)", display: "block", fontSize: "0.75rem" }}>📈 القدرة التشغيلية:</span>
-                      <strong style={{ color: "var(--textPrimary)", fontSize: "0.85rem" }}>{port.capacity}</strong>
+                      <strong style={{ color: "var(--text-primary)", fontSize: "0.85rem" }}>{port.capacity}</strong>
                     </div>
                   </div>
 
@@ -899,14 +899,14 @@ export default function PortsPage() {
                       display: "flex",
                       flexDirection: "column",
                       gap: "14px",
-                      borderTop: "1px solid var(--borderGlass)",
+                      borderTop: "1px solid var(--border-glass)",
                       paddingTop: "16px",
                       marginTop: "10px"
                     }}>
                       {/* Berths & Infrastructure */}
                       {port.berths_count && (
                         <div>
-                          <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px" }}>
+                          <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                             🏗️ الأرصفة والتجهيزات الفنية:
                           </div>
                           <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.5" }}>
@@ -918,7 +918,7 @@ export default function PortsPage() {
                       {/* Connections & Transportation */}
                       {port.connections && port.connections.length > 0 && (
                         <div>
-                          <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                          <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                             🚍 طرق الوصول والارتباط بالشبكة القومية:
                           </div>
                           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -927,7 +927,7 @@ export default function PortsPage() {
                                 fontSize: "0.78rem",
                                 background: "var(--bgSecondary)",
                                 color: "var(--textSecondary)",
-                                border: "1px solid var(--borderGlass)",
+                                border: "1px solid var(--border-glass)",
                                 padding: "4px 10px",
                                 borderRadius: "8px"
                               }}>
@@ -941,7 +941,7 @@ export default function PortsPage() {
                       {/* Operator & Authority */}
                       {port.operator && (
                         <div>
-                          <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "4px" }}>
+                          <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                             🏢 الهيئة المشغلة:
                           </div>
                           <span style={{ color: "var(--textSecondary)", fontSize: "0.85rem" }}>
@@ -954,7 +954,7 @@ export default function PortsPage() {
 
                   {/* Actions Footer */}
                   <div style={{
-                    borderTop: "1px solid var(--borderGlass)",
+                    borderTop: "1px solid var(--border-glass)",
                     paddingTop: "12px",
                     marginTop: "14px",
                     display: "flex",
@@ -988,7 +988,7 @@ export default function PortsPage() {
           ) : (
             <div style={{
               backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "15px",
               padding: "40px",
               textAlign: "center",

@@ -538,7 +538,7 @@ export default function SingleBlogPage({ params }: { params: Promise<{ slug: str
         <section className={`${styles.commentsSection} metro-animate-slide-up metro-delay-350`}>
           <div className={styles.commentsHeader}>
             <h2>
-              <i className="bx bx-comment-detail" style={{ color: "var(--colorSecondary)" }} /> التعليقات ({comments.length})
+              <i className="bx bx-comment-detail" style={{ color: "var(--color-secondary)" }} /> التعليقات ({comments.length})
             </h2>
           </div>
 

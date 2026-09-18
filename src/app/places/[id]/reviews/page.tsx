@@ -214,7 +214,7 @@ export default function PlaceReviewsPage() {
       {/* Place Summary Header */}
       <div className="glass-panel" style={{ padding: "24px", marginBottom: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "20px" }}>
         <div>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--textPrimary)" }}>{place.name}</h2>
+          <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--text-primary)" }}>{place.name}</h2>
           <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", marginTop: "4px" }}>
             {place.categoryLabel} • {place.city} / {place.governorate}
           </p>
@@ -244,7 +244,7 @@ export default function PlaceReviewsPage() {
         background: "rgba(120, 120, 120, 0.04)",
         padding: "16px",
         borderRadius: "16px",
-        border: "1px solid var(--borderGlass)"
+        border: "1px solid var(--border-glass)"
       }}>
         {/* Branch Filter */}
         {place.branches && place.branches.length > 0 && (
@@ -303,7 +303,7 @@ export default function PlaceReviewsPage() {
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {filteredAndSortedReviews.length > 0 ? (
           filteredAndSortedReviews.map((review) => (
-            <div key={review.id} style={{ background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", borderRadius: "16px", padding: "16px" }}>
+            <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", flexWrap: "wrap", gap: "10px" }}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -349,7 +349,7 @@ export default function PlaceReviewsPage() {
                 </div>
               </div>
               {review.comment && (
-                <p style={{ color: "var(--textPrimary)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px" }}>
+                <p style={{ color: "var(--text-primary)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px" }}>
                   {review.comment}
                 </p>
               )}

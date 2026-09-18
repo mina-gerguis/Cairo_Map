@@ -7,11 +7,12 @@ interface BottomReportBannerProps {
 export default function BottomReportBanner({ onOpenReportModal }: BottomReportBannerProps) {
   return (
     <div
+      onClick={onOpenReportModal}
       style={{
-        background: "var(--bgLinearAlert)",
-        border: "1px solid var(--borderSecondary)",
+        background: "var(--bg-linear-alert)",
+        border: "1px solid var(--border-secondary)",
         borderRadius: "var(--ra-8)",
-        padding: "20px",
+        padding: "var(--pd-20)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -50,26 +51,6 @@ export default function BottomReportBanner({ onOpenReportModal }: BottomReportBa
           هل لاحظت أي خطأ في الأسعار، خطوات الطريق، أو وسائل المواصلات؟ شاركنا ملاحظتك لمساعدتنا في تدقيق الدليل وتحديثه باستمرار.
         </p>
       </div>
-
-      <button
-        type="button"
-        className="btn btn-reportProblem"
-        onClick={onOpenReportModal}
-        style={{
-          padding: "6px 12px",
-          fontSize: "0.84rem",
-          fontWeight: "700",
-          cursor: "pointer",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          transition: "all 0.15s ease",
-          flexShrink: 0
-        }}
-      >
-        <i className="fa-solid fa-flag"></i>
-        <span>تقديم بلاغ عن خطأ</span>
-      </button>
     </div>
   );
 }

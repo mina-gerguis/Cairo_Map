@@ -1,7 +1,7 @@
 import React, { RefObject, useMemo, useState } from "react";
 import VoiceInputButton from "@/components/VoiceInputButton";
 import { CitySuggestion } from "../types";
-import { normalizeArabic } from "../utils";
+import { normalizeArabic, calculateLocationScore } from "../utils";
 
 interface RouteSearchCardProps {
   searchPanelRef: RefObject<HTMLDivElement | null>;
@@ -31,38 +31,42 @@ export default function RouteSearchCard({
   const [showFromSuggestions, setShowFromSuggestions] = useState(false);
   const [showToSuggestions, setShowToSuggestions] = useState(false);
 
-  // Filter autocomplete suggestions for "from" input
+  // Filter and rank autocomplete suggestions for "from" input
   const filteredFromCities = useMemo(() => {
-    const rawInput = fromInput.trim().toLowerCase();
-    const normInput = normalizeArabic(fromInput);
-
+    const rawInput = fromInput.trim();
     if (!rawInput) return uniqueCitiesList;
 
-    return (uniqueCitiesList || []).filter(item => {
-      if (item.name.toLowerCase() === rawInput) return false;
-      return (item.searchNames || []).some(name => {
-        const rawName = name.toLowerCase();
-        const normName = normalizeArabic(name);
-        return rawName.includes(rawInput) || (normInput !== "" && normName.includes(normInput));
-      });
-    });
+    const scored = (uniqueCitiesList || [])
+      .map(item => {
+        const score = calculateLocationScore(item.name, item.searchNames?.join(", "), rawInput);
+        return { item, score };
+      })
+      .filter(({ item, score }) => {
+        if (item.name.toLowerCase() === rawInput.toLowerCase()) return false;
+        return score >= 120;
+      })
+      .sort((a, b) => b.score - a.score);
+
+    return scored.map(s => s.item);
   }, [fromInput, uniqueCitiesList]);
 
-  // Filter autocomplete suggestions for "to" input
+  // Filter and rank autocomplete suggestions for "to" input
   const filteredToCities = useMemo(() => {
-    const rawInput = toInput.trim().toLowerCase();
-    const normInput = normalizeArabic(toInput);
-
+    const rawInput = toInput.trim();
     if (!rawInput) return uniqueCitiesList;
 
-    return (uniqueCitiesList || []).filter(item => {
-      if (item.name.toLowerCase() === rawInput) return false;
-      return (item.searchNames || []).some(name => {
-        const rawName = name.toLowerCase();
-        const normName = normalizeArabic(name);
-        return rawName.includes(rawInput) || (normInput !== "" && normName.includes(normInput));
-      });
-    });
+    const scored = (uniqueCitiesList || [])
+      .map(item => {
+        const score = calculateLocationScore(item.name, item.searchNames?.join(", "), rawInput);
+        return { item, score };
+      })
+      .filter(({ item, score }) => {
+        if (item.name.toLowerCase() === rawInput.toLowerCase()) return false;
+        return score >= 120;
+      })
+      .sort((a, b) => b.score - a.score);
+
+    return scored.map(s => s.item);
   }, [toInput, uniqueCitiesList]);
 
   const isSearchDisabled = !fromInput.trim() || !toInput.trim();
@@ -73,14 +77,14 @@ export default function RouteSearchCard({
         style={{
           fontSize: "1.15rem",
           fontWeight: "800",
-          color: "var(--textPrimary)",
+          color: "var(--text-primary)",
           margin: "0 0 4px",
           display: "flex",
           alignItems: "center",
           gap: "8px"
         }}
       >
-        <i className="fa-solid fa-compass" style={{ color: "var(--colorSecondary)" }}></i>
+        <i className="fa-solid fa-compass" style={{ color: "var(--color-secondary)" }}></i>
         <span>تحديد محطة الانطلاق والوجهة</span>
       </h2>
 
@@ -98,7 +102,7 @@ export default function RouteSearchCard({
                 title="حدد موقعك الحالي بالـ GPS"
                 style={{
                   background: "transparent",
-                  color: isLocating ? "#ef4444" : "var(--textPrimary)",
+                  color: isLocating ? "#ef4444" : "var(--text-primary)",
                   border: "none",
                   padding: "0px 8px",
                   cursor: "pointer",
@@ -167,7 +171,7 @@ export default function RouteSearchCard({
                 left: 0,
                 right: 0,
                 backgroundColor: "var(--bgSecondary)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "var(--radius-card)",
                 overflow: "hidden",
                 zIndex: 999,
@@ -191,13 +195,13 @@ export default function RouteSearchCard({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    borderBottom: "1px solid var(--borderGlass)",
+                    borderBottom: "1px solid var(--border-glass)",
                     transition: "background 0.2s",
                   }}
                   onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
-                  <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--textPrimary)" }}>
+                  <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--text-primary)" }}>
                     {item.name}
                   </span>
                 </div>
@@ -214,7 +218,7 @@ export default function RouteSearchCard({
             title="تبديل نقطة الانطلاق والوصول"
             style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               borderRadius: "50%",
               width: "38px",
               height: "38px",
@@ -229,7 +233,7 @@ export default function RouteSearchCard({
             onMouseEnter={e => {
               e.currentTarget.style.transform = "rotate(180deg)";
               e.currentTarget.style.background = "var(--hoverBtn)";
-              e.currentTarget.style.color = "var(--colorSecondary)";
+              e.currentTarget.style.color = "var(--color-secondary)";
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = "rotate(0deg)";
@@ -305,7 +309,7 @@ export default function RouteSearchCard({
                 left: 0,
                 right: 0,
                 backgroundColor: "var(--bgSecondary)",
-                border: "1px solid var(--borderGlass)",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "var(--radius-card)",
                 overflow: "hidden",
                 zIndex: 999,
@@ -329,13 +333,13 @@ export default function RouteSearchCard({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    borderBottom: "1px solid var(--borderGlass)",
+                    borderBottom: "1px solid var(--border-glass)",
                     transition: "background 0.2s",
                   }}
                   onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
-                  <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--textPrimary)" }}>
+                  <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--text-primary)" }}>
                     {item.name}
                   </span>
                 </div>

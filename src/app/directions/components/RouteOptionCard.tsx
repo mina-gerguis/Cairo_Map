@@ -45,7 +45,7 @@ export default function RouteOptionCard({
           alignItems: "center",
           flexWrap: "wrap",
           gap: "12px",
-          borderBottom: "1px solid var(--borderGlass)",
+          borderBottom: "1px solid var(--border-glass)",
           paddingBottom: "14px"
         }}
       >
@@ -55,7 +55,7 @@ export default function RouteOptionCard({
               src={iconData.src}
               loading="lazy"
               decoding="async"
-              style={{ width: "38px", height: "38px", objectFit: "contain" }}
+              style={{ width: "40px", height: "auto", objectFit: "contain" }}
               alt={option.typeName}
             />
           ) : (
@@ -65,7 +65,7 @@ export default function RouteOptionCard({
                 height: "38px",
                 borderRadius: "10px",
                 background: "rgba(59, 130, 246, 0.12)",
-                color: "var(--colorSecondary)",
+                color: "var(--color-secondary)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -76,7 +76,7 @@ export default function RouteOptionCard({
             </div>
           )}
           <div>
-            <h2 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+            <h2 style={{ margin: 0, fontSize: "var(--fs-md)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", fontFamily: "var(--font-sub)" }}>
               {option.typeName}
             </h2>
           </div>
@@ -85,29 +85,29 @@ export default function RouteOptionCard({
         <div style={{ display: "flex", gap: "8px" }}>
           <span
             style={{
-              background: "rgba(16, 185, 129, 0.12)",
-              border: "1px solid rgba(16, 185, 129, 0.25)",
-              color: "#10b981",
+              background: "var(--tab-active-bg)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--tab-active-color)",
               padding: "4px 10px",
-              borderRadius: "8px",
+              borderRadius: "var(--ra-8)",
               fontSize: "0.82rem",
               fontWeight: "700"
             }}
           >
-            💵 الإجمالي: {summary.totalCost} ج.م
+            مصاريف: {summary.totalCost} ج.م
           </span>
           <span
             style={{
-              background: "rgba(59, 130, 246, 0.12)",
-              border: "1px solid rgba(59, 130, 246, 0.25)",
-              color: "var(--colorSecondary)",
+              background: "var(--tab-active-bg)",
+              border: "1px solid var(--border-glass)",
+              color: "var(--tab-active-color)",
               padding: "4px 10px",
-              borderRadius: "8px",
+              borderRadius: "var(--ra-8)",
               fontSize: "0.82rem",
               fontWeight: "700"
             }}
           >
-            ⏱️ {summary.totalDuration}
+            الوقت: {summary.totalDuration}
           </span>
         </div>
       </div>
@@ -118,8 +118,8 @@ export default function RouteOptionCard({
       {/* Trip Summary Box */}
       <div
         style={{
-          background: "var(--bgGlass)",
-          border: "1px solid var(--borderGlass)",
+          background: "var(--bg-glass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "var(--ra-8)",
           padding: "12px 14px",
           display: "flex",
@@ -132,17 +132,17 @@ export default function RouteOptionCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "var(--bgSecondary)",
+            background: "var(--bg-glass)",
             padding: "8px 12px",
             borderRadius: "var(--ra-8)",
-            border: "1px solid var(--borderGlass)"
+            border: "1px solid var(--border-glass)"
           }}
         >
-          <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textMuted)" }}>
+          <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-muted)" }}>
             هتصرف أجرة بقيمة :
           </span>
           <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#10b981" }}>
-            💵 {summary.totalCost} ج.م
+            {summary.totalCost} جنيه
           </span>
         </div>
 
@@ -151,17 +151,17 @@ export default function RouteOptionCard({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            background: "var(--bgSecondary)",
+            background: "var(--bg-glass)",
             padding: "8px 12px",
             borderRadius: "var(--ra-8)",
-            border: "1px solid var(--borderGlass)"
+            border: "1px solid var(--border-glass)"
           }}
         >
-          <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textMuted)" }}>
+          <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-muted)" }}>
             وقت الوصول المقدر :
           </span>
-          <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--colorSecondary)" }}>
-            ⏱️ {summary.totalDuration}
+          <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--color-secondary)" }}>
+            {summary.totalDuration}
           </span>
         </div>
       </div>
@@ -170,8 +170,8 @@ export default function RouteOptionCard({
       {option.tips && (
         <div
           style={{
-            background: "var(--bgGlass)",
-            border: "1px solid var(--borderGlass)",
+            background: "var(--bg-glass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "var(--ra-8)",
             padding: "12px 14px"
           }}
@@ -179,73 +179,53 @@ export default function RouteOptionCard({
           <p style={{ margin: 0, lineHeight: "1.6", fontSize: "0.85rem" }}>
             <i
               className="bx bxs-info-circle"
-              style={{ marginLeft: "6px", color: "var(--colorSecondary)", fontSize: "1.1rem", verticalAlign: "middle" }}
+              style={{ marginLeft: "6px", color: "var(--color-secondary)", fontSize: "1.1rem", verticalAlign: "middle" }}
             />
             <strong>نصيحة الطريق: </strong>
-            <span style={{ color: "var(--textMuted)" }}>{option.tips}</span>
+            <span style={{ color: "var(--text-muted)" }}>{option.tips}</span>
           </p>
         </div>
       )}
 
       {/* Action Buttons: WhatsApp Share, Maps, Report */}
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "2px" }}>
-        <button
-          type="button"
-          onClick={handleShare}
-          style={{
-            flex: "1 1 130px",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-            height: "40px",
-            fontWeight: "700",
-            fontSize: "0.85rem",
-            borderRadius: "var(--ra-8)",
-            color: "#ffffff",
-            background: "linear-gradient(135deg, #25D366 0%, #128C7E 100%)",
-            border: "none",
-            cursor: "pointer",
-            transition: "all 0.2s ease"
-          }}
-        >
-          <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }} />
-          <span>مشاركة الخط</span>
-        </button>
-
-        {option.map_link && (
-          <a
-            href={option.map_link}
-            target="_blank"
-            rel="noopener noreferrer"
+      <div>
+        <div style={{ display: "flex", gap: "8px", margin: "var(--mg-8) 0" }}>
+          {/* Share Button */}
+          <button
+            type="button"
+            onClick={handleShare}
             className="btn btn-primary"
             style={{
-              flex: "1 1 130px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              height: "40px",
-              fontSize: "0.85rem",
+              width: "100%",
             }}
           >
-            <i className="bx bx-navigation" style={{ fontSize: "1.1rem" }} />
-            <span>خريطة Google</span>
-          </a>
-        )}
-
+            <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }} />
+            <span>مشاركة الخط</span>
+          </button>
+          {/* Map Link Button */}
+          {option.map_link && (
+            <a
+              href={option.map_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary"
+              style={{
+                width: "100%",
+              }}
+            >
+              <i className="bx bx-navigation" style={{ fontSize: "1.1rem" }} />
+              <span>خريطة Google</span>
+            </a>
+          )}
+        </div>
+        {/* Report Problem Button */}
         <button
           type="button"
-          className="btn btn-reportProblem"
+          className="btn btn-report"
           onClick={() => onOpenReportModal(option)}
           style={{
-            flex: "1 1 130px",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-            height: "40px",
-            fontSize: "0.85rem",
+            width: "100%",
+            padding: "var(--padding-btn)",
           }}
         >
           <i className="fa-solid fa-triangle-exclamation"></i>

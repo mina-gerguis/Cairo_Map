@@ -161,7 +161,7 @@ export default function Navbar() {
                           <i className={sub.icon} style={{ fontSize: "1.1rem" }} />
                         )}
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                          <span className="sub-title" style={{ fontWeight: "700", fontSize: "0.88rem", color: "var(--textPrimary)" }}>{sub.label}</span>
+                          <span className="sub-title" style={{ fontWeight: "700", fontSize: "0.88rem", color: "var(--text-primary)" }}>{sub.label}</span>
                           {sub.subtitle && (
                             <span style={{ fontSize: "0.65rem", color: "var(--textSecondary)", marginTop: "1px" }}>{sub.subtitle}</span>
                           )}
@@ -185,7 +185,7 @@ export default function Navbar() {
 
           {/* Auth Controls */}
           <div style={{ position: "relative" }} className="navbar-auth-dropdown">
-            <button className="navbar-icon-btn" title={user ? (profile?.full_name || user.user_metadata?.full_name || user.email) : "الأعدادات"} style={{ gap: "8px", padding: "0 14px", position: "relative", border: "1px solid var(--borderGlass)", background: "transparent", cursor: "pointer", outline: "none" }}>
+            <button className="navbar-icon-btn" title={user ? (profile?.full_name || user.user_metadata?.full_name || user.email) : "الأعدادات"} style={{ gap: "8px", padding: "0 14px", position: "relative", border: "1px solid var(--border-glass)", background: "transparent", cursor: "pointer", outline: "none" }}>
               {user ? (
                 <>
                   <div style={{ position: "relative" }}>
@@ -232,7 +232,7 @@ export default function Navbar() {
                 <>
                   <div className="heroui-dropdown-header">
                     <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>تم تسجيل الدخول كـ</p>
-                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--textPrimary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {profile?.username || user.user_metadata?.username || "حسابي"}
                     </p>
                   </div>
@@ -427,7 +427,7 @@ export default function Navbar() {
           label: "إلغاء",
           onClick: () => setShowLogoutModal(false),
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
         }}
       />
     </nav>

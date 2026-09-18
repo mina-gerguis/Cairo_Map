@@ -135,18 +135,18 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
         maxWidth: "400px",
         borderRadius: "24px",
         padding: "24px",
-        border: "1px solid var(--borderGlass)",
+        border: "1px solid var(--border-glass)",
         background: "var(--bgSecondary)",
         boxShadow: "0 24px 60px rgba(0,0,0,0.4)"
       }}>
 
         {/* Title */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0, fontFamily: "var(--font-cairo)" }}>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", margin: 0, fontFamily: "var(--font-cairo)" }}>
             📝 إضافة تذكير / ملاحظة
           </h3>
-          <button onClick={onClose} style={{ background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer", display: "flex", alignItems: "center", padding: "8px", borderRadius: "50%" }}>
-            <i className="bx bx-x" style={{ fontSize: "1.2rem", color: "var(--textPrimary)" }}></i>
+          <button onClick={onClose} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer", display: "flex", alignItems: "center", padding: "8px", borderRadius: "50%" }}>
+            <i className="bx bx-x" style={{ fontSize: "1.2rem", color: "var(--text-primary)" }}></i>
           </button>
         </div>
 
@@ -172,7 +172,7 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
             <h4 style={{
               fontSize: "1.15rem",
               fontWeight: "800",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               marginBottom: "10px",
               fontFamily: "var(--font-cairo)"
             }}>

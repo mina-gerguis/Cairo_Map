@@ -2,7 +2,7 @@
   padding: 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   transition: color 0.3s ease;
 }
 
@@ -55,8 +55,8 @@
   flex-wrap: wrap;
   gap: 1.25rem;
   margin-bottom: 2rem;
-  background: linear-gradient(135deg, var(--bgGlass-card, rgba(24, 24, 27, 0.7)), var(--bgSecondary, #18181b));
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  background: linear-gradient(135deg, var(--bg-glass-card, rgba(24, 24, 27, 0.7)), var(--bgSecondary, #18181b));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   border-radius: 20px;
   padding: 1.6rem 1.75rem;
   box-shadow: var(--shadow-md);
@@ -86,7 +86,7 @@
   font-size: 1.6rem;
   font-weight: 800;
   margin: 0;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
 }
 
 .pageSub {
@@ -125,8 +125,8 @@
 }
 
 .statCard {
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.7));
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.7));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   border-radius: 18px;
   padding: 1.25rem;
   display: flex;
@@ -161,7 +161,7 @@
 .statValue {
   font-size: 1.45rem;
   font-weight: 800;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
 }
 
 /* Filters */
@@ -194,9 +194,9 @@
   width: 100%;
   padding: 0.75rem 2.8rem 0.75rem 1rem;
   border-radius: 14px;
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   background-color: var(--bgSecondary, #18181b);
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   font-size: 0.95rem;
   outline: none;
   transition: all 0.25s ease;
@@ -219,9 +219,9 @@
 .filterSelect {
   padding: 0.75rem 1.1rem;
   border-radius: 14px;
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   background-color: var(--bgSecondary, #18181b);
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   font-size: 0.9rem;
   outline: none;
   cursor: pointer;
@@ -240,8 +240,8 @@
 }
 
 .articleCard {
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.7));
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.7));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   border-radius: 20px;
   overflow: hidden;
   display: flex;
@@ -302,9 +302,9 @@
   position: absolute;
   bottom: 12px;
   right: 12px;
-  background-color: var(--bgGlass, rgba(0, 0, 0, 0.75));
+  background-color: var(--bg-glass, rgba(0, 0, 0, 0.75));
   color: var(--colorPrimary, #006FEE);
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   padding: 0.3rem 0.75rem;
   border-radius: 10px;
   font-size: 0.75rem;
@@ -324,7 +324,7 @@
   font-weight: 800;
   margin: 0 0 0.5rem 0;
   line-height: 1.45;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
 }
 
 .articleExcerpt {
@@ -346,7 +346,7 @@
   color: var(--text-muted, #71717a);
   margin-top: auto;
   padding-top: 0.8rem;
-  border-top: 1px dashed var(--borderGlass, rgba(255, 255, 255, 0.1));
+  border-top: 1px dashed var(--border-glass, rgba(255, 255, 255, 0.1));
 }
 
 .articleMeta span {
@@ -358,7 +358,7 @@
 .cardFooter {
   padding: 0.85rem 1.3rem;
   background-color: var(--bgSecondary, #18181b);
-  border-top: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -433,13 +433,13 @@
 }
 
 .editorModalContainer {
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.95));
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.95));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   border-radius: 24px;
   width: 100%;
   max-width: 950px;
   box-shadow: var(--shadow-lg, 0 25px 50px -12px rgba(0, 0, 0, 0.6));
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   overflow: hidden;
   margin-bottom: 2rem;
   backdrop-filter: blur(16px);
@@ -451,7 +451,7 @@
   align-items: center;
   padding: 1.35rem 1.85rem;
   background-color: var(--bgSecondary, #18181b);
-  border-bottom: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
 }
 
 .editorModalHeader h2 {
@@ -461,7 +461,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
 }
 
 .editorModalHeader h2 i {
@@ -483,7 +483,7 @@
 }
 
 .closeModalBtn:hover {
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   background-color: var(--hoverBtn);
 }
 
@@ -524,9 +524,9 @@
   width: 100%;
   padding: 0.8rem 1rem;
   border-radius: 12px;
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   background-color: var(--bgSecondary, #18181b);
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   font-size: 0.95rem;
   outline: none;
   transition: all 0.2s ease;
@@ -550,13 +550,13 @@
   gap: 1rem;
   margin-top: 1rem;
   padding-top: 1.25rem;
-  border-top: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.1));
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
 }
 
-.cancelBtn {
+.btn-cancel {
   padding: 0.75rem 1.6rem;
   border-radius: 12px;
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   background: transparent;
   color: var(--textSecondary, #a1a1aa);
   font-weight: 600;
@@ -564,9 +564,9 @@
   transition: all 0.2s ease;
 }
 
-.cancelBtn:hover {
+.btn-cancel:hover {
   background-color: var(--hoverBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .saveBtn {
@@ -609,14 +609,14 @@
 }
 
 .deleteModalBox {
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.95));
-  border: 1px solid var(--borderGlass-bright, rgba(255, 255, 255, 0.15));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.95));
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   border-radius: 24px;
   padding: 2.25rem 2rem;
   width: 100%;
   max-width: 450px;
   text-align: center;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(16px);
 }
@@ -638,7 +638,7 @@
   font-size: 1.3rem;
   font-weight: 800;
   margin: 0 0 0.5rem 0;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
 }
 
 .deleteModalBox p {
@@ -658,7 +658,7 @@
   flex: 1;
   padding: 0.75rem;
   border-radius: 12px;
-  border: 1px solid var(--borderGlass, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   background: transparent;
   color: var(--textSecondary, #a1a1aa);
   font-weight: 600;
@@ -668,7 +668,7 @@
 
 .cancelDeleteBtn:hover {
   background-color: var(--hoverBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .confirmDeleteBtn {
@@ -696,8 +696,8 @@
 .emptyBox {
   text-align: center;
   padding: 4rem 2rem;
-  background-color: var(--bgGlass-card, rgba(24, 24, 27, 0.7));
-  border: 1px dashed var(--borderGlass, rgba(255, 255, 255, 0.15));
+  background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.7));
+  border: 1px dashed var(--border-glass, rgba(255, 255, 255, 0.15));
   border-radius: 20px;
   color: var(--textSecondary, #a1a1aa);
   backdrop-filter: blur(10px);
@@ -713,7 +713,7 @@
 .emptyBox h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--textPrimary, #f4f4f5);
+  color: var(--text-primary, #f4f4f5);
   margin-bottom: 0.5rem;
 }
 
@@ -810,7 +810,7 @@
   }
 
   .submitBtn,
-  .cancelBtn {
+  .btn-cancel {
     width: 100%;
     justify-content: center;
   }

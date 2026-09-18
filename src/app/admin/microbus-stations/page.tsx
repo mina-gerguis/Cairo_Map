@@ -447,7 +447,7 @@ function AdminMicrobusStationsInner() {
   if (authLoading || loading) {
     return (
       <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--colorSecondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
+        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
         <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة مواقف السرفيس...</p>
       </div>
     );
@@ -460,7 +460,7 @@ function AdminMicrobusStationsInner() {
       {/* Upper Title Banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
             إدارة مواقف السرفيس
           </h1>
           <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
@@ -622,7 +622,7 @@ function AdminMicrobusStationsInner() {
             maxHeight: "90vh",
             overflowY: "auto",
             padding: "30px",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             background: "#0f172a",
             borderRadius: "20px",
             boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
@@ -939,7 +939,7 @@ function AdminMicrobusStationsInner() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setItemToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

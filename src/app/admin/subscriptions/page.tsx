@@ -446,7 +446,7 @@ export default function AdminSubscriptionsPage() {
     return (
       <div className={styles.adminAccessDenied}>
         <i className="bx bx-lock-alt" style={{ fontSize: "4rem", color: "var(--accent-red)" }} />
-        <h2 style={{ marginTop: "16px", color: "var(--textPrimary)" }}>عفواً، الدخول غير مصرح به</h2>
+        <h2 style={{ marginTop: "16px", color: "var(--text-primary)" }}>عفواً، الدخول غير مصرح به</h2>
         <p style={{ color: "var(--textSecondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
         <button onClick={() => router.push("/")} className={styles.backBtn} style={{ marginTop: "16px" }}>
           العودة للرئيسية
@@ -730,7 +730,7 @@ export default function AdminSubscriptionsPage() {
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                       <h4 className={styles.planCardTitle}>{p.name}</h4>
-                      <span className={styles.badge} style={{ background: "rgba(99, 102, 241, 0.15)", color: "var(--colorSecondary)" }}>
+                      <span className={styles.badge} style={{ background: "rgba(99, 102, 241, 0.15)", color: "var(--color-secondary)" }}>
                         ID: {p.id}
                       </span>
                     </div>
@@ -746,8 +746,8 @@ export default function AdminSubscriptionsPage() {
                       </div>
                     </div>
 
-                    <div style={{ borderTop: "1px solid var(--borderGlass)", paddingTop: "14px", marginTop: "14px" }}>
-                      <div style={{ fontWeight: "800", color: "var(--textPrimary)", fontSize: "0.88rem", marginBottom: "10px" }}>
+                    <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "14px", marginTop: "14px" }}>
+                      <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.88rem", marginBottom: "10px" }}>
                         المزايا والمواصفات:
                       </div>
                       {p.features && p.features.length > 0 ? (
@@ -862,7 +862,7 @@ export default function AdminSubscriptionsPage() {
                     borderRadius: "12px",
                     background: "transparent",
                     color: "var(--textSecondary)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     cursor: "pointer",
                     fontWeight: "700",
                   }}
@@ -891,7 +891,7 @@ export default function AdminSubscriptionsPage() {
 
             <form onSubmit={handleSaveUserSubscription} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 
-              <div style={{ background: "var(--bgGlass-card)", padding: "12px 16px", borderRadius: "12px", fontSize: "0.85rem", border: "1px solid var(--borderGlass)", color: "var(--textPrimary)" }}>
+              <div style={{ background: "var(--bg-glass-card)", padding: "12px 16px", borderRadius: "12px", fontSize: "0.85rem", border: "1px solid var(--border-glass)", color: "var(--text-primary)" }}>
                 <div>اسم المستخدم: <strong>@{selectedUser.username || "بدون_يوزر"}</strong></div>
                 <div>الهاتف: <strong>{selectedUser.phone || "غير متوفر"}</strong></div>
                 <div>البريد: <strong>{selectedUser.email || "غير متوفر"}</strong></div>
@@ -1009,7 +1009,7 @@ export default function AdminSubscriptionsPage() {
                     borderRadius: "12px",
                     background: "transparent",
                     color: "var(--textSecondary)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     cursor: "pointer",
                     fontWeight: "700",
                   }}

@@ -845,7 +845,7 @@ function HomeContent() {
             className={`btn ${isProximityEnabled ? "btn-primary" : ""}`}
             onClick={handleToggleProximity}
             disabled={locationLoading}
-            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px", border: "1px solid var(--borderGlass)", fontFamily: "var(--font-sub)", width: "100%" }}
+            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px", border: "1px solid var(--border-glass)", fontFamily: "var(--font-sub)", width: "100%" }}
           >
             {locationLoading ? (
               <span style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
@@ -914,7 +914,7 @@ function HomeContent() {
           if (availableTypes.length === 0) return null;
 
           return (
-            <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "10px", marginBottom: "20px", overflowX: "auto", scrollbarWidth: "none" }}>
+            <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "10px", marginBottom: "20px", overflowX: "auto", scrollbarWidth: "none" }}>
               <button
                 onClick={() => setSelectedType(null)}
                 style={{
@@ -973,10 +973,10 @@ function HomeContent() {
               value={minRating}
               onChange={(e) => setMinRating(parseFloat(e.target.value))}
               style={{
-                background: "var(--bgGlass-card, rgba(255, 255, 255, 0.05))",
-                border: "1px solid var(--borderGlass)",
+                background: "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "10px",
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 padding: "6px 8px",
                 fontSize: "0.8rem",
                 cursor: "pointer",
@@ -984,9 +984,9 @@ function HomeContent() {
                 outline: "none"
               }}
             >
-              <option value="0" style={{ background: "var(--bgSecondary, #fff)", color: "var(--textPrimary, #000)" }}>الكل ⭐</option>
-              <option value="4" style={{ background: "var(--bgSecondary, #fff)", color: "var(--textPrimary, #000)" }}>4.0+ ⭐</option>
-              <option value="4.5" style={{ background: "var(--bgSecondary, #fff)", color: "var(--textPrimary, #000)" }}>4.5+ ⭐</option>
+              <option value="0" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>الكل ⭐</option>
+              <option value="4" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>4.0+ ⭐</option>
+              <option value="4.5" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>4.5+ ⭐</option>
             </select>
           </div>
 
@@ -999,10 +999,10 @@ function HomeContent() {
                 setActiveFeatures(val ? [val] : []);
               }}
               style={{
-                background: "var(--bgGlass-card, rgba(255, 255, 255, 0.05))",
-                border: "1px solid var(--borderGlass)",
+                background: "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
+                border: "1px solid var(--border-glass)",
                 borderRadius: "10px",
-                color: "var(--textPrimary)",
+                color: "var(--text-primary)",
                 padding: "6px 8px",
                 fontSize: "0.8rem",
                 cursor: "pointer",
@@ -1010,10 +1010,10 @@ function HomeContent() {
                 outline: "none"
               }}
             >
-              <option value="" style={{ background: "var(--bgSecondary, #fff)", color: "var(--textPrimary, #000)" }}>كل الأجواء ✨</option>
-              <option value="quiet_place" style={{ background: "var(--bgSecondary, #fff)", color: "var(--textPrimary, #000)" }}>🤫 أماكن هادئة</option>
-              <option value="kids_friendly" style={{ background: "var(--bgSecondary, #fff)", color: "var(--textPrimary, #000)" }}>🧸 مخصصة للأطفال</option>
-              <option value="family_friendly" style={{ background: "var(--bgSecondary, #fff)", color: "var(--textPrimary, #000)" }}>💑 عائلية وكابلز</option>
+              <option value="" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>كل الأجواء ✨</option>
+              <option value="quiet_place" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>🤫 أماكن هادئة</option>
+              <option value="kids_friendly" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>🧸 مخصصة للأطفال</option>
+              <option value="family_friendly" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>💑 عائلية وكابلز</option>
             </select>
           </div>
         </div>
@@ -1128,13 +1128,13 @@ function HomeContent() {
             <div className="ios-sheet-drag-handle" onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }} />
 
             {/* Apple Maps Top Bar (Fixed) */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 24px", borderBottom: "1px solid var(--borderGlass)", flexShrink: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 24px", borderBottom: "1px solid var(--border-glass)", flexShrink: 0 }}>
               {/* Left: Share */}
               <button
                 onClick={() => handleShare(selectedPlace)}
                 style={{
-                  background: "var(--colorSecondary)",
-                  border: "1px solid var(--borderGlass)",
+                  background: "var(--color-secondary)",
+                  border: "1px solid var(--border-glass)",
                   color: "#ffffff",
                   borderRadius: "50%",
                   width: "36px",
@@ -1153,7 +1153,7 @@ function HomeContent() {
 
               {/* Center: Centered Place Name */}
               <div style={{ textAlign: "center", flex: 1, minWidth: 0, padding: "0 10px" }}>
-                <h2 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--textPrimary)" }}>
+                <h2 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
                   {selectedPlace.name}
                 </h2>
                 <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", display: "flex", gap: "5px", justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
@@ -1204,7 +1204,7 @@ function HomeContent() {
 
                     {/* Title Area */}
                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", margin: "0 0 6px" }}>
+                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>
                         {selectedPlace.name}
                       </h2>
                       {selectedPlace.shortDescription && (
@@ -1249,7 +1249,7 @@ function HomeContent() {
                           href={`tel:${displayBranch.phones[0]}`}
                           style={{
                             background: "rgba(124, 124, 124, 0.11)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             color: "#007aff",
                             borderRadius: "12px",
                             padding: "8px 6px",
@@ -1270,7 +1270,7 @@ function HomeContent() {
                         <div
                           style={{
                             background: "rgba(255, 255, 255, 0.04)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             color: "var(--text-muted)",
                             borderRadius: "12px",
                             padding: "8px 6px",
@@ -1292,7 +1292,7 @@ function HomeContent() {
                         onClick={(e) => toggleFavorite(e, selectedPlace.id.toString())}
                         style={{
                           background: "rgba(124, 124, 124, 0.11)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           color: favoriteIds.has(selectedPlace.id.toString()) ? "#ff3b30" : "#007aff",
                           borderRadius: "12px",
                           padding: "8px 6px",
@@ -1349,7 +1349,7 @@ function HomeContent() {
 
                     {/* Branch Selector Chips */}
                     {selectedPlace.branches && selectedPlace.branches.length > 1 && (
-                      <div style={{ marginBottom: "24px", paddingTop: "20px", borderTop: "1px solid var(--borderGlass)" }}>
+                      <div style={{ marginBottom: "24px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--textSecondary)", fontWeight: "bold" }}>الفروع</h4>
                         <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
                           {selectedPlace.branches.map(b => {
@@ -1359,9 +1359,9 @@ function HomeContent() {
                                 key={b.id}
                                 onClick={() => setSelectedBranchId(b.id)}
                                 style={{
-                                  background: isSelected ? "var(--colorSecondary)" : "rgba(120,120,120,0.1)",
-                                  color: isSelected ? "#fff" : "var(--textPrimary)",
-                                  border: isSelected ? "none" : "1px solid var(--borderGlass)",
+                                  background: isSelected ? "var(--color-secondary)" : "rgba(120,120,120,0.1)",
+                                  color: isSelected ? "#fff" : "var(--text-primary)",
+                                  border: isSelected ? "none" : "1px solid var(--border-glass)",
                                   borderRadius: "20px",
                                   padding: "8px 16px",
                                   fontSize: "0.8rem",
@@ -1397,8 +1397,8 @@ function HomeContent() {
                     )}
                     {/* Description Section */}
                     {selectedPlace.description && (
-                      <div style={{ background: "rgba(120, 120, 120, 0.03)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 20px", marginBottom: "24px" }}>
-                        <h2 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "8px", color: "var(--textPrimary)" }}>نبذة عن المكان</h2>
+                      <div style={{ background: "rgba(120, 120, 120, 0.03)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", marginBottom: "24px" }}>
+                        <h2 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>نبذة عن المكان</h2>
                         <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.8", margin: 0 }}>
                           {selectedPlace.description}
                         </p>
@@ -1407,8 +1407,8 @@ function HomeContent() {
 
                     {/* Good to Know Card */}
                     <div style={{ marginBottom: "24px" }}>
-                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>معلومات مفيدة</h2>
-                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 20px", display: "flex", flexDirection: "column", gap: "12px" }}>
+                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>معلومات مفيدة</h2>
+                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", display: "flex", flexDirection: "column", gap: "12px" }}>
                         {(() => {
                           const activeFeatures = (displayBranch as any).features || (selectedPlace as any).features;
                           if (activeFeatures && activeFeatures.length > 0) {
@@ -1416,7 +1416,7 @@ function HomeContent() {
                               const feat = FEATURES_LIST.find(f => f.key === fKey);
                               if (!feat) return null;
                               return (
-                                <div key={fKey} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                                <div key={fKey} style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                   <span style={{ fontSize: "1.1rem" }}>{feat.icon}</span>
                                   <span>{feat.label}</span>
                                 </div>
@@ -1425,34 +1425,34 @@ function HomeContent() {
                           }
                           return selectedPlace.category === "restaurant" || selectedPlace.category === "cafe" ? (
                             <>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                 <span style={{ fontSize: "1.1rem" }}>🥗</span>
                                 <span>خيارات نباتية متوفرة</span>
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                 <span style={{ fontSize: "1.1rem" }}>👥</span>
                                 <span>مناسب للمجموعات والعائلات</span>
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                 <span style={{ fontSize: "1.1rem" }}>💳</span>
                                 <span>يقبل الدفع بالبطاقات الائتمانية</span>
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                 <span style={{ fontSize: "1.1rem" }}>📶</span>
                                 <span>شبكة واي فاي مجانية</span>
                               </div>
                             </>
                           ) : (
                             <>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                 <span style={{ fontSize: "1.1rem" }}>✔️</span>
                                 <span>مرافق مريحة للزوار</span>
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                 <span style={{ fontSize: "1.1rem" }}>♿</span>
                                 <span>مداخل سهلة للكراسي المتحركة</span>
                               </div>
-                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--textPrimary)" }}>
+                              <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                 <span style={{ fontSize: "1.1rem" }}>👨‍👩‍👧‍👦</span>
                                 <span>مناسب لجميع الأعمار</span>
                               </div>
@@ -1470,8 +1470,8 @@ function HomeContent() {
                                   key={subCatKey}
                                   style={{
                                     background: "rgba(255,255,255,0.06)",
-                                    color: "var(--textPrimary)",
-                                    border: "1px solid var(--borderGlass)",
+                                    color: "var(--text-primary)",
+                                    border: "1px solid var(--border-glass)",
                                     padding: "4px 12px",
                                     borderRadius: "16px",
                                     fontSize: "0.82rem",
@@ -1522,8 +1522,8 @@ function HomeContent() {
 
                     {/* Details Card (Phone, Website, Address) */}
                     <div style={{ marginBottom: "24px" }}>
-                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>التفاصيل</h3>
-                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>التفاصيل</h3>
+                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
                         {/* Phone Row */}
                         {displayBranch.phones && displayBranch.phones.length > 0 && (
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
@@ -1551,7 +1551,7 @@ function HomeContent() {
                         {/* Address Row */}
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "14px 16px" }}>
                           <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>العنوان</span>
-                          <div style={{ textAlign: "left", fontSize: "0.9rem", color: "var(--textPrimary)", fontWeight: "600", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
+                          <div style={{ textAlign: "left", fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: "600", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
                             <span>{displayBranch.fullAddress}</span>
                             <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{displayBranch.city}، {displayBranch.governorate}</span>
                           </div>
@@ -1562,8 +1562,8 @@ function HomeContent() {
                     {/* Hours Card */}
                     {displayBranch.workingHours && (
                       <div style={{ marginBottom: "24px" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>ساعات العمل</h3>
-                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 20px" }}>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>ساعات العمل</h3>
+                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px" }}>
                           {(() => {
                             const parsed = parseWorkingHours(displayBranch.workingHours);
                             if (!parsed) return <div style={{ color: "var(--textSecondary)" }}>{displayBranch.workingHours}</div>;
@@ -1588,10 +1588,10 @@ function HomeContent() {
                                           border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
                                         }}
                                       >
-                                        <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--textPrimary)" : "var(--textSecondary)" }}>
-                                          {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--colorSecondary)", marginRight: "6px" }}>(اليوم)</span>}
+                                        <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--textSecondary)" }}>
+                                          {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--color-secondary)", marginRight: "6px" }}>(اليوم)</span>}
                                         </div>
-                                        <div style={{ fontWeight: "600", color: day.isWorking ? "var(--textPrimary)" : "#ff3b30", fontSize: "0.95rem" }}>
+                                        <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.95rem" }}>
                                           {day.isWorking ? ` ${day.openTime} ${day.openPeriod} : ${day.closeTime} ${day.closePeriod}` : "إجازة"}
                                         </div>
                                       </div>
@@ -1645,10 +1645,10 @@ function HomeContent() {
                           style={{
                             flex: 1,
                             background: "rgba(255, 255, 255, 0.05)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             borderRadius: "12px",
                             padding: "12px",
-                            color: "var(--textPrimary)",
+                            color: "var(--text-primary)",
                             fontWeight: "600",
                             fontSize: "0.9rem",
                             fontFamily: "var(--font-cairo)",
@@ -1669,10 +1669,10 @@ function HomeContent() {
                           style={{
                             flex: 1,
                             background: "rgba(255, 255, 255, 0.05)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             borderRadius: "12px",
                             padding: "12px",
-                            color: "var(--textPrimary)",
+                            color: "var(--text-primary)",
                             fontWeight: "600",
                             fontSize: "0.9rem",
                             fontFamily: "var(--font-cairo)",
@@ -1867,7 +1867,7 @@ function ImageWithSkeleton({ src, alt, style, className, onClick, onError }: any
   return (
     <div style={{ position: "relative", ...style, overflow: "hidden" }} className={className} onClick={onClick}>
       {!loaded && (
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "var(--bgGlass-card)", animation: "pulse 1.5s infinite" }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "var(--bg-glass-card)", animation: "pulse 1.5s infinite" }} />
       )}
       <img
         src={src}
@@ -1990,7 +1990,7 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
         )}
       </div>
       <div style={{ padding: "16px 16px 18px" }}>
-        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.05rem", fontWeight: "800", marginBottom: "4px", color: "var(--textPrimary)" }}>{place.name}</h3>
+        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.05rem", fontWeight: "800", marginBottom: "4px", color: "var(--text-primary)" }}>{place.name}</h3>
         {place.name_en && (
           <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginBottom: "4px", direction: "ltr", textAlign: "right" }}>
             {place.name_en}
@@ -2013,7 +2013,7 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
           </p>
         )} */}
         {place.branches && place.branches.length > 1 && (
-          <p style={{ color: "var(--colorSecondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px", fontWeight: "600" }}>
+          <p style={{ color: "var(--color-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px", fontWeight: "600" }}>
             <span><AiOutlineBranches /></span> عدد الفروع: {place.branches.length}
           </p>
         )}

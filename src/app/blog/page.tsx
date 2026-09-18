@@ -180,7 +180,7 @@ export default function BlogPublicPage() {
       <div className={`${styles.headerBanner} metro-animate-fade`}>
         <div className="metro-animate-slide-up metro-delay-100">
           <h1 className={styles.headerTitle}>
-            <i className="bx bx-news" style={{ marginLeft: "10px", color: "var(--colorSecondary)", fontSize: "2rem" }}></i>
+            <i className="bx bx-news" style={{ marginLeft: "10px", color: "var(--color-secondary)", fontSize: "2rem" }}></i>
             مدونة خريطة القاهرة
           </h1>
           <p className={styles.headerSubtitle}>
@@ -216,7 +216,7 @@ export default function BlogPublicPage() {
         <div className={`${styles.searchCard} metro-animate-slide-up metro-delay-200`}>
           <div className={styles.searchInputWrapper}>
             <label className={styles.searchLabel}>
-              <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--colorSecondary)" }}></i>
+              <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--color-secondary)" }}></i>
               ابحث في المقالات والأدلة
             </label>
             <div style={{ position: "relative" }}>
@@ -291,7 +291,7 @@ export default function BlogPublicPage() {
                 </>
               ) : (
                 <>
-                  <i className="bx bx-grid-alt" style={{ color: "var(--colorSecondary)" }} /> المقالات المتاحة ({filteredBlogs.length})
+                  <i className="bx bx-grid-alt" style={{ color: "var(--color-secondary)" }} /> المقالات المتاحة ({filteredBlogs.length})
                 </>
               )}
             </h3>

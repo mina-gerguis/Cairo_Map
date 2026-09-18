@@ -519,7 +519,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         {!isSubComponent ? (
           <div>
-            <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary, #fff)", marginBottom: "6px" }}>
+            <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
               دليل الهاتف والأكواد
             </h1>
             <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
@@ -593,7 +593,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
       </div>
 
       {/* Tabs Selector */}
-      <div style={{ display: "flex", gap: "12px", marginBottom: "18px", borderBottom: "1px solid var(--borderGlass)", paddingBottom: "12px" }}>
+      <div style={{ display: "flex", gap: "12px", marginBottom: "18px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "12px" }}>
         <button
           onClick={() => { setActiveTab("phones"); setError(""); setSearchQuery(""); }}
           className={`category-pill ${activeTab === "phones" ? "active" : ""}`}
@@ -628,14 +628,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              padding: "var(--paddingBtn)",
+              padding: "var(--padding-btn)",
               borderRadius: "var(--radiusBtnTabs)",
               cursor: "pointer",
               fontFamily: "var(--font-sub)",
               fontSize: "0.88rem",
               fontWeight: selectedSpecialtyTab === "all" ? "700" : "500",
-              background: selectedSpecialtyTab === "all" ? "var(--colorPrimary)" : "var(--bgGlass)",
-              border: selectedSpecialtyTab === "all" ? "1px solid var(--borderGlass)" : "1px solid var(--borderGlass)",
+              background: selectedSpecialtyTab === "all" ? "var(--colorPrimary)" : "var(--bg-glass)",
+              border: selectedSpecialtyTab === "all" ? "1px solid var(--border-glass)" : "1px solid var(--border-glass)",
               color: selectedSpecialtyTab === "all" ? "#fff" : "var(--textSecondary)",
               transition: "all 0.2s ease",
               whiteSpace: "nowrap",
@@ -675,14 +675,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtnTabs)",
                   cursor: "pointer",
                   fontFamily: "var(--font-sub)",
                   fontSize: "0.88rem",
                   fontWeight: isSelected ? "700" : "500",
-                  background: isSelected ? "var(--colorPrimary)" : "var(--bgGlass)",
-                  border: isSelected ? "1px solid #6366f1" : "1px solid var(--borderGlass)",
+                  background: isSelected ? "var(--colorPrimary)" : "var(--bg-glass)",
+                  border: isSelected ? "1px solid #6366f1" : "1px solid var(--border-glass)",
                   color: isSelected ? "#fff" : "var(--textSecondary)",
                   transition: "all 0.2s ease",
                   whiteSpace: "nowrap",
@@ -720,7 +720,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                 fontSize: "0.88rem",
                 fontWeight: selectedSpecialtyTab === "__other__" ? "700" : "500",
                 background: selectedSpecialtyTab === "__other__" ? "rgba(245, 158, 11, 0.16)" : "rgba(255, 255, 255, 0.03)",
-                border: selectedSpecialtyTab === "__other__" ? "1px solid #f59e0b" : "1px solid var(--borderGlass)",
+                border: selectedSpecialtyTab === "__other__" ? "1px solid #f59e0b" : "1px solid var(--border-glass)",
                 color: selectedSpecialtyTab === "__other__" ? "#f59e0b" : "var(--textSecondary)",
                 boxShadow: selectedSpecialtyTab === "__other__" ? "0 4px 14px rgba(245, 158, 11, 0.2)" : "none",
                 transition: "all 0.2s ease",
@@ -762,14 +762,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              padding: "var(--paddingBtn)",
+              padding: "var(--padding-btn)",
               borderRadius: "var(--radiusBtnTabs)",
               cursor: "pointer",
               fontFamily: "var(--font-sub)",
               fontSize: "0.88rem",
               fontWeight: selectedCompanyTab === "all" ? "700" : "500",
-              background: selectedCompanyTab === "all" ? "var(--colorPrimary)" : "var(--bgGlass)",
-              border: selectedCompanyTab === "all" ? "1px solid var(--borderGlass)" : "1px solid var(--borderGlass)",
+              background: selectedCompanyTab === "all" ? "var(--colorPrimary)" : "var(--bg-glass)",
+              border: selectedCompanyTab === "all" ? "1px solid var(--border-glass)" : "1px solid var(--border-glass)",
               color: selectedCompanyTab === "all" ? "#fff" : "var(--textSecondary)",
               transition: "all 0.2s ease",
               whiteSpace: "nowrap",
@@ -809,15 +809,15 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  padding: "var(--paddingBtn)",
+                  padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtnTabs)",
                   cursor: "pointer",
                   fontFamily: "var(--font-sub)",
                   fontSize: "0.88rem",
                   fontWeight: isSelected ? "700" : "500",
-                  background: isSelected ? meta.activeBg : "var(--bgGlass)",
-                  border: isSelected ? `1px solid ${meta.activeBorder}` : "1px solid var(--borderGlass)",
-                  color: isSelected ? "var(--textPrimary)" : "var(--textSecondary)",
+                  background: isSelected ? meta.activeBg : "var(--bg-glass)",
+                  border: isSelected ? `1px solid ${meta.activeBorder}` : "1px solid var(--border-glass)",
+                  color: isSelected ? "var(--text-primary)" : "var(--textSecondary)",
                   transition: "all 0.2s ease",
                   whiteSpace: "nowrap",
                 }}
@@ -833,7 +833,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   padding: "2px 8px",
                   borderRadius: "20px",
                   background: isSelected ? meta.badgeBg : "rgba(255, 255, 255, 0.08)",
-                  color: isSelected ? meta.color : "var(--textMuted)",
+                  color: isSelected ? meta.color : "var(--text-muted)",
                   fontWeight: "700"
                 }}>
                   {count}
@@ -862,8 +862,8 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   ? "البحث عن جهة خدمية باسمها، تخصصها، أو رقمها..."
                   : `البحث في جهات ${selectedSpecialtyTab === "__other__" ? "أخرى" : selectedSpecialtyTab} (الاسم، الرقم أو الوصف)...`
                 : selectedCompanyTab === "all"
-                ? "البحث عن كود باسم الخدمة، القسم، الكود، أو الشركة..."
-                : `البحث في أكواد ${COMPANY_META[selectedCompanyTab]?.label || "الشركة"} (الخدمة، القسم، الكود)...`
+                  ? "البحث عن كود باسم الخدمة، القسم، الكود، أو الشركة..."
+                  : `البحث في أكواد ${COMPANY_META[selectedCompanyTab]?.label || "الشركة"} (الخدمة، القسم، الكود)...`
             }
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
@@ -873,7 +873,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               paddingRight: "44px",
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--textSecondary)"
             }}
           />
@@ -1006,8 +1006,8 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         {searchQuery.trim()
                           ? "لا توجد نتائج تطابق بحثك."
                           : selectedSpecialtyTab !== "all"
-                          ? `لا توجد جهات مسجلة في تخصص "${selectedSpecialtyTab === "__other__" ? "أخرى" : selectedSpecialtyTab}" حالياً.`
-                          : "لا توجد نتائج تطابق بحثك."}
+                            ? `لا توجد جهات مسجلة في تخصص "${selectedSpecialtyTab === "__other__" ? "أخرى" : selectedSpecialtyTab}" حالياً.`
+                            : "لا توجد نتائج تطابق بحثك."}
                       </td>
                     </tr>
                   ) : (
@@ -1028,10 +1028,10 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                             </div>
                           )}
                         </td>
-                        <td className={styles.adminTd} style={{ color: "var(--textPrimary)", fontWeight: "700" }}>
+                        <td className={styles.adminTd} style={{ color: "var(--text-primary)", fontWeight: "700" }}>
                           {entry.specialty}
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "var(--colorSecondary)", width: "20%" }}>{entry.phone_number}</td>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "var(--color-secondary)", width: "20%" }}>{entry.phone_number}</td>
                         <td className={styles.adminTd} style={{ textAlign: "right" }}>
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                             <button
@@ -1162,7 +1162,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         ) : (
                           <div>
                             <div style={{ fontSize: "1.8rem", marginBottom: "8px" }}>📱</div>
-                            <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                            <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--text-primary)", marginBottom: "6px" }}>
                               لا توجد أكواد مسجلة لشركة {COMPANY_LABELS[selectedCompanyTab] || "المحددة"} حالياً
                             </div>
                             <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", margin: "0 0 16px" }}>
@@ -1218,8 +1218,8 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                               fontSize: "0.82rem",
                               fontWeight: "700",
                               background: COMPANY_META[item.company]?.activeBg || "rgba(255, 255, 255, 0.05)",
-                              border: `1px solid ${COMPANY_META[item.company]?.activeBorder || "var(--borderGlass)"}`,
-                              color: COMPANY_META[item.company]?.color || "var(--textPrimary)",
+                              border: `1px solid ${COMPANY_META[item.company]?.activeBorder || "var(--border-glass)"}`,
+                              color: COMPANY_META[item.company]?.color || "var(--text-primary)",
                             }}
                           >
                             {COMPANY_META[item.company]?.logo && (
@@ -1232,12 +1232,12 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                             {COMPANY_LABELS[item.company] || item.company}
                           </span>
                         </td>
-                        <td className={styles.adminTd} style={{ color: "var(--textPrimary)", fontWeight: "700" }}>
+                        <td className={styles.adminTd} style={{ color: "var(--text-primary)", fontWeight: "700" }}>
                           {item.icon && <i className={formatBoxIcon(item.icon)} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
                           {item.section_name}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>{item.title}</td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "var(--colorSecondary)", fontSize: ".9rem" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "var(--color-secondary)", fontSize: ".9rem" }}>
                           {item.code.split(" | ")[0]}
                           {item.code.split(" | ")[1] && (
                             <div style={{ fontSize: "0.8rem", color: "#94a3b8", direction: "rtl", textAlign: "right", marginTop: "4px" }}>
@@ -1292,7 +1292,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setPhoneToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}
@@ -1323,7 +1323,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setCodeToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

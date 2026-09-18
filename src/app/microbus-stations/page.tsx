@@ -458,8 +458,8 @@ export default function MicrobusStationsPage() {
         <div style={{
           width: "40px",
           height: "40px",
-          border: "4px solid var(--borderGlass)",
-          borderTop: "4px solid var(--colorSecondary, #3b82f6)",
+          border: "4px solid var(--border-glass)",
+          borderTop: "4px solid var(--color-secondary, #3b82f6)",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           margin: "0 auto 20px"
@@ -482,7 +482,7 @@ export default function MicrobusStationsPage() {
           padding: "24px 20px 24px",
           textAlign: "center",
           position: "relative",
-          borderBottom: "1px solid var(--borderGlass)",
+          borderBottom: "1px solid var(--border-glass)",
           direction: "rtl"
         }}>
           {/* Back Button */}
@@ -496,9 +496,9 @@ export default function MicrobusStationsPage() {
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
-                background: "var(--bgGlass-card)",
-                border: "1px solid var(--borderGlass)",
-                color: "var(--textPrimary)",
+                background: "var(--bg-glass-card)",
+                border: "1px solid var(--border-glass)",
+                color: "var(--text-primary)",
                 textDecoration: "none"
               }}
             >
@@ -515,7 +515,7 @@ export default function MicrobusStationsPage() {
               fontFamily: "var(--font-display)",
               fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
               fontWeight: "600",
-              color: "var(--textPrimary)",
+              color: "var(--text-primary)",
               letterSpacing: "-0.5px",
             }}>
               <img src="/images/icons2d/microbus.png" alt="Cairo Microbus" loading="lazy" decoding="async" style={{ width: "75px", marginLeft: "10px" }} />
@@ -530,7 +530,7 @@ export default function MicrobusStationsPage() {
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>
           <div className="metro-animate-slide-up metro-delay-200" style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "15px",
             padding: "35px 25px",
             textAlign: "center",
@@ -546,7 +546,7 @@ export default function MicrobusStationsPage() {
               <img src="/images/icons3d/lockPage.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
             </div>
 
-            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
+            <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "14px" }}>
               دليل مواقف الميكروباص يتطلب الأشتراك في الباقة الذهبية
             </h2>
 
@@ -559,12 +559,12 @@ export default function MicrobusStationsPage() {
               background: "rgba(128, 128, 128, 0.04)",
               padding: "18px 20px",
               borderRadius: "12px",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               textAlign: "right",
               margin: "0 auto 28px",
               maxWidth: "420px"
             }}>
-              <div style={{ fontWeight: "800", color: "var(--textPrimary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bxs-award" style={{ color: "#fbbf24", fontSize: "1.1rem" }}></i>
                 <span>ميزات الباقة الذهبية :</span>
               </div>
@@ -635,7 +635,7 @@ export default function MicrobusStationsPage() {
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   display: "block"
                 }}
               >
@@ -677,7 +677,7 @@ export default function MicrobusStationsPage() {
         padding: "24px 20px 24px",
         textAlign: "center",
         position: "relative",
-        borderBottom: "1px solid var(--borderGlass)",
+        borderBottom: "1px solid var(--border-glass)",
       }}>
 
         <div className="metro-animate-slide-up metro-delay-100">
@@ -688,7 +688,7 @@ export default function MicrobusStationsPage() {
             fontFamily: "var(--font-body)",
             fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
             fontWeight: "bold",
-            color: "var(--textPrimary)",
+            color: "var(--text-primary)",
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
           }}>
@@ -702,7 +702,7 @@ export default function MicrobusStationsPage() {
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--color-blue-500)",
               borderRadius: "10px",
               padding: "4px 14px",
@@ -711,7 +711,7 @@ export default function MicrobusStationsPage() {
             }}>{stations.length} موقف سرفيس</span>
             <span style={{
               background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
+              border: "1px solid var(--border-glass)",
               color: "var(--color-gold-500)",
               borderRadius: "10px",
               padding: "4px 14px",
@@ -728,7 +728,7 @@ export default function MicrobusStationsPage() {
         {/* Search Panel Card - Styled matching profile sectionCard & Metro search card */}
         <div className="metro-animate-slide-up metro-delay-200" style={{
           backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "15px",
           padding: "20px",
           marginTop: "24px",
@@ -742,7 +742,7 @@ export default function MicrobusStationsPage() {
         }}>
           {/* Step 1: Select Starting Station */}
           <div>
-            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--textPrimary)", display: "block", marginBottom: "8px" }}>
+            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--text-primary)", display: "block", marginBottom: "8px" }}>
               <i className="bx bx-map"></i> هتركب من موقف إيه؟
             </label>
             <select
@@ -762,22 +762,22 @@ export default function MicrobusStationsPage() {
                 padding: "12px",
                 borderRadius: "10px",
                 backgroundColor: "rgba(255,255,255,0.02)",
-                color: "var(--textPrimary)",
-                border: "1px solid var(--borderGlass)",
+                color: "var(--text-primary)",
+                border: "1px solid var(--border-glass)",
                 fontFamily: "var(--font-body)",
                 height: "48px"
               }}
             >
-              <option value="all" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>اختر موقف هتركب منه ؟</option>
+              <option value="all" style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>اختر موقف هتركب منه ؟</option>
               {stations.map(s => (
-                <option key={s.id || s.name} value={s.name} style={{ backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)" }}>{s.name}</option>
+                <option key={s.id || s.name} value={s.name} style={{ backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)" }}>{s.name}</option>
               ))}
             </select>
           </div>
 
           {/* Step 2: Destination Search Input (Always Visible) */}
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--textPrimary)", display: "block" }}>
+            <label style={{ fontSize: "0.88rem", fontWeight: "800", color: "var(--text-primary)", display: "block" }}>
               <i className="bx bx-map"></i> عايز تروح فين؟
             </label>
             <div style={{ position: "relative" }}>
@@ -792,8 +792,8 @@ export default function MicrobusStationsPage() {
                   padding: "12px 14px",
                   borderRadius: "10px",
                   backgroundColor: "rgba(255,255,255,0.02)",
-                  color: "var(--textPrimary)",
-                  border: "1px solid var(--borderGlass)",
+                  color: "var(--text-primary)",
+                  border: "1px solid var(--border-glass)",
                   fontFamily: "var(--font-body)",
                   height: "48px"
                 }}
@@ -841,7 +841,7 @@ export default function MicrobusStationsPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           {loading ? (
             <div style={{ textAlign: "center", padding: "40px" }}>
-              <div style={{ width: "30px", height: "30px", border: "3px solid var(--borderGlass)", borderTopColor: "#f59e0b", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+              <div style={{ width: "30px", height: "30px", border: "3px solid var(--border-glass)", borderTopColor: "#f59e0b", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
               <span style={{ color: "var(--textSecondary)", fontSize: "0.95rem" }}>جاري تحميل البيانات...</span>
             </div>
           ) : (() => {
@@ -905,7 +905,7 @@ export default function MicrobusStationsPage() {
                 {!isSpecificStation && !hasMatches && destinationQuery.trim() !== "" && (
                   <div style={{
                     backgroundColor: "var(--bgPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     borderRadius: "15px",
                     padding: "40px",
                     textAlign: "center",
@@ -928,7 +928,7 @@ export default function MicrobusStationsPage() {
                     return (
                       <div key={station.id || sIdx} className="metro-animate-slide-up" style={{
                         backgroundColor: "var(--bgPrimary)",
-                        border: "1px solid var(--borderGlass)",
+                        border: "1px solid var(--border-glass)",
                         borderRadius: "15px",
                         padding: "20px 10px",
                         boxShadow: "var(--shadow-card)",
@@ -946,7 +946,7 @@ export default function MicrobusStationsPage() {
                             alignItems: "center",
                             cursor: "pointer",
                             paddingBottom: isStationExpanded ? "16px" : "0px",
-                            borderBottom: isStationExpanded ? "1px solid var(--borderGlass)" : "none",
+                            borderBottom: isStationExpanded ? "1px solid var(--border-glass)" : "none",
                             transition: "all 0.2s ease"
                           }}
                         >
@@ -955,7 +955,7 @@ export default function MicrobusStationsPage() {
                               margin: "0",
                               fontSize: "1.2rem",
                               fontWeight: "800",
-                              color: "var(--textPrimary)",
+                              color: "var(--text-primary)",
                               display: "flex",
                               alignItems: "center",
                               gap: "6px"
@@ -977,16 +977,16 @@ export default function MicrobusStationsPage() {
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "inline-block", alignItems: "center", gap: "6px", }}>
-                          <i className="bx bx-map" style={{ color: "var(--colorSecondary)" }}></i> يقع موقف <span style={{ color: "var(--colorSecondary)" }}>{station.name}</span> في {station.location}
+                          <i className="bx bx-map" style={{ color: "var(--color-secondary)" }}></i> يقع موقف <span style={{ color: "var(--color-secondary)" }}>{station.name}</span> في {station.location}
                         </a>
 
                         {/* Station Content: Routes List */}
                         {isStationExpanded && (
                           <div style={{ marginTop: "18px", opacity: 0, animation: "fadeIn 0.3s ease-out forwards" }}>
-                            <h4 style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "12px" }}>
+                            <h4 style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px" }}>
                               {destinationQuery.trim() !== "" && hasMatches
-                                ? <><i className="bx bx-bus" style={{ color: "var(--colorSecondary)", marginRight: "6px" }}></i> خطوط السير المتاحة للوجهة المطلوبة:</>
-                                : <><i className="bx bx-bus" style={{ color: "var(--colorSecondary)", marginRight: "6px" }}></i> جميع خطوط السير المتاحة بالموقف:</>}
+                                ? <><i className="bx bx-bus" style={{ color: "var(--color-secondary)", marginRight: "6px" }}></i> خطوط السير المتاحة للوجهة المطلوبة:</>
+                                : <><i className="bx bx-bus" style={{ color: "var(--color-secondary)", marginRight: "6px" }}></i> جميع خطوط السير المتاحة بالموقف:</>}
                             </h4>
                             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                               {Array.isArray(station.routes) && station.routes.map((route: any, rIdx) => {
@@ -1000,7 +1000,7 @@ export default function MicrobusStationsPage() {
                                     style={{
                                       borderRadius: "12px",
                                       background: "rgba(255, 255, 255, 0.01)",
-                                      border: "1px solid var(--borderGlass)",
+                                      border: "1px solid var(--border-glass)",
                                       display: "flex",
                                       flexDirection: "column",
                                       overflow: "hidden",
@@ -1031,8 +1031,8 @@ export default function MicrobusStationsPage() {
                                       }}
                                     >
                                       <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                                        <span style={{ color: "var(--textPrimary)", fontWeight: "800", fontSize: "0.8rem" }}>
-                                          <i className="bx bx-map-pin" style={{ color: "var(--colorSecondary)", marginLeft: "6px" }}></i>
+                                        <span style={{ color: "var(--text-primary)", fontWeight: "800", fontSize: "0.8rem" }}>
+                                          <i className="bx bx-map-pin" style={{ color: "var(--color-secondary)", marginLeft: "6px" }}></i>
                                           من {station.name} إلي {isOfficial ? "موقف" : "نقطة"} {route.destination}
                                         </span>
                                       </div>
@@ -1046,7 +1046,7 @@ export default function MicrobusStationsPage() {
                                     {isRouteExpanded && (
                                       <div style={{
                                         padding: "16px",
-                                        borderTop: "1px solid var(--borderGlass)",
+                                        borderTop: "1px solid var(--border-glass)",
                                         display: "flex",
                                         flexDirection: "column",
                                         gap: "14px",
@@ -1063,8 +1063,8 @@ export default function MicrobusStationsPage() {
                                         }}>
                                           {/* Vehicle Card */}
                                           <div style={{
-                                            background: "var(--bgGlass-card, rgba(24, 24, 27, 0.7))",
-                                            border: "1px solid var(--borderGlass)",
+                                            background: "var(--bg-glass-card, rgba(24, 24, 27, 0.7))",
+                                            border: "1px solid var(--border-glass)",
                                             borderRadius: "14px",
                                             padding: "12px 14px",
                                             display: "flex",
@@ -1085,7 +1085,7 @@ export default function MicrobusStationsPage() {
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                                               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>نوع المركبة</span>
-                                              <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textPrimary)" }}>
+                                              <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-primary)" }}>
                                                 {route.vehicleType || "ميكروباص"}
                                               </span>
                                             </div>
@@ -1093,8 +1093,8 @@ export default function MicrobusStationsPage() {
 
                                           {/* Duration Card */}
                                           <div style={{
-                                            background: "var(--bgGlass-card, rgba(24, 24, 27, 0.7))",
-                                            border: "1px solid var(--borderGlass)",
+                                            background: "var(--bg-glass-card, rgba(24, 24, 27, 0.7))",
+                                            border: "1px solid var(--border-glass)",
                                             borderRadius: "14px",
                                             padding: "12px 14px",
                                             display: "flex",
@@ -1115,7 +1115,7 @@ export default function MicrobusStationsPage() {
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                                               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>زمن الرحلة</span>
-                                              <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textPrimary)" }}>
+                                              <span style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-primary)" }}>
                                                 {(route.duration && route.duration + " " + "دقيقة") || "غير معروف"}
                                               </span>
                                             </div>
@@ -1124,8 +1124,8 @@ export default function MicrobusStationsPage() {
                                           {/* Fare Card - spans both columns */}
                                           <div style={{
                                             gridColumn: "span 2",
-                                            background: "var(--bgGlass-card, rgba(24, 24, 27, 0.7))",
-                                            border: "1px solid var(--borderGlass)",
+                                            background: "var(--bg-glass-card, rgba(24, 24, 27, 0.7))",
+                                            border: "1px solid var(--border-glass)",
                                             borderRadius: "14px",
                                             padding: "12px 14px",
                                             display: "flex",
@@ -1139,7 +1139,7 @@ export default function MicrobusStationsPage() {
                                               display: "flex",
                                               alignItems: "center",
                                               justifyContent: "center",
-                                              color: "var(--colorSecondary)",
+                                              color: "var(--color-secondary)",
                                               fontSize: "1.2rem",
                                               flexShrink: 0
                                             }}>
@@ -1147,7 +1147,7 @@ export default function MicrobusStationsPage() {
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                                               <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>الأجرة المقدرة</span>
-                                              <span style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--colorSecondary)", }}>
+                                              <span style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--color-secondary)", }}>
                                                 {route.fare} جنية
                                               </span>
                                             </div>
@@ -1212,7 +1212,7 @@ export default function MicrobusStationsPage() {
                                                       <span style={{
                                                         fontSize: "0.72rem",
                                                         fontWeight: isStart || isEnd ? "bold" : "normal",
-                                                        color: isStart || isEnd ? "var(--textPrimary)" : "var(--textSecondary)",
+                                                        color: isStart || isEnd ? "var(--text-primary)" : "var(--textSecondary)",
                                                         textAlign: "center",
                                                         width: "75px",
                                                         whiteSpace: "normal",
@@ -1246,7 +1246,7 @@ export default function MicrobusStationsPage() {
                                             const { likes, dislikes, userVote } = getRouteVotes(station.name, route.destination);
                                             return (
                                               <>
-                                                <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: "var(--textPrimary)", display: "block" }}>
+                                                <span style={{ fontSize: "0.75rem", fontWeight: "bold", color: "var(--text-primary)", display: "block" }}>
                                                   هل الطريق صحيح وجميع معلوماتة صحيحة؟
                                                 </span>
                                                 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
@@ -1261,7 +1261,7 @@ export default function MicrobusStationsPage() {
                                                       alignItems: "center",
                                                       gap: "6px",
                                                       background: userVote === "like" ? "rgba(16, 185, 129, 0.12)" : "rgba(128,128,128,0.05)",
-                                                      border: userVote === "like" ? "1px solid #10b981" : "1px solid var(--borderGlass)",
+                                                      border: userVote === "like" ? "1px solid #10b981" : "1px solid var(--border-glass)",
                                                       color: userVote === "like" ? "#10b981" : "var(--textSecondary)",
                                                       padding: "6px 12px",
                                                       borderRadius: "8px",
@@ -1286,7 +1286,7 @@ export default function MicrobusStationsPage() {
                                                       alignItems: "center",
                                                       gap: "6px",
                                                       background: userVote === "dislike" ? "rgba(239, 68, 68, 0.12)" : "rgba(128,128,128,0.05)",
-                                                      border: userVote === "dislike" ? "1px solid #ef4444" : "1px solid var(--borderGlass)",
+                                                      border: userVote === "dislike" ? "1px solid #ef4444" : "1px solid var(--border-glass)",
                                                       color: userVote === "dislike" ? "#ef4444" : "var(--textSecondary)",
                                                       padding: "6px 12px",
                                                       borderRadius: "8px",
@@ -1323,7 +1323,7 @@ export default function MicrobusStationsPage() {
                                               alignItems: "center",
                                               gap: "4px",
                                               background: "rgba(128,128,128,0.05)",
-                                              border: "1px solid var(--borderGlass)",
+                                              border: "1px solid var(--border-glass)",
                                               color: "var(--text-muted)",
                                               padding: "6px 12px",
                                               borderRadius: "8px",
@@ -1382,7 +1382,7 @@ export default function MicrobusStationsPage() {
         {/* Missing Route Callout Section at the bottom */}
         <div className="metro-animate-slide-up" style={{
           backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "15px",
           padding: "24px 20px",
           marginTop: "30px",
@@ -1411,7 +1411,7 @@ export default function MicrobusStationsPage() {
           </div>
 
           <div>
-            <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+            <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
               عارف خط موجود في موقف بتركب منه ومش موجود في الدليل؟
             </h3>
             <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6", maxWidth: "500px" }}>
@@ -1472,7 +1472,7 @@ export default function MicrobusStationsPage() {
         }}>
           <div className="metro-animate-slide-up" style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "18px",
             width: "100%",
             maxWidth: "460px",
@@ -1482,13 +1482,13 @@ export default function MicrobusStationsPage() {
             {/* Modal Header */}
             <div style={{
               padding: "16px 20px",
-              borderBottom: "1px solid var(--borderGlass)",
+              borderBottom: "1px solid var(--border-glass)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "rgba(255, 255, 255, 0.01)"
             }}>
-              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 إبلاغ عن مشكلة في خط السير {reportingRouteDestination}
               </h3>
               <button
@@ -1508,7 +1508,7 @@ export default function MicrobusStationsPage() {
 
               {/* Problem Type Select */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                   نوع المشكلة الملاحظة:
                 </label>
                 <select
@@ -1520,8 +1520,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px",
                     borderRadius: "8px",
                     backgroundColor: "rgba(255,255,255,0.02)",
-                    color: "var(--textPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     height: "42px"
                   }}
@@ -1535,7 +1535,7 @@ export default function MicrobusStationsPage() {
 
               {/* Comment Input */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                   تفاصيل المشكلة (اختياري):
                 </label>
                 <textarea
@@ -1548,8 +1548,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px 12px",
                     borderRadius: "8px",
                     backgroundColor: "rgba(255,255,255,0.02)",
-                    color: "var(--textPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     height: "100px",
                     resize: "none"
@@ -1566,8 +1566,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px 16px",
                     borderRadius: "8px",
                     background: "rgba(255, 0, 0, 0.16)",
-                    border: "1px solid var(--borderGlass)",
-                    color: "var(--textPrimary)",
+                    border: "1px solid var(--border-glass)",
+                    color: "var(--text-primary)",
                     cursor: "pointer",
                     fontSize: "0.85rem",
                     fontWeight: "bold"
@@ -1616,7 +1616,7 @@ export default function MicrobusStationsPage() {
         }}>
           <div className="metro-animate-slide-up" style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "18px",
             width: "100%",
             maxWidth: "480px",
@@ -1626,13 +1626,13 @@ export default function MicrobusStationsPage() {
             {/* Modal Header */}
             <div style={{
               padding: "16px 20px",
-              borderBottom: "1px solid var(--borderGlass)",
+              borderBottom: "1px solid var(--border-glass)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: "rgba(255, 255, 255, 0.01)"
             }}>
-              <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "6px" }}>
+              <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                 <i className="bx bx-plus-circle" style={{ color: "#3b82f6" }}></i>
                 إخبار الإدارة بخط ميكروباص غير مدرج
               </h3>
@@ -1652,7 +1652,7 @@ export default function MicrobusStationsPage() {
 
               {/* Station Name */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                   اسم الموقف: <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
@@ -1667,8 +1667,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px 12px",
                     borderRadius: "8px",
                     backgroundColor: "rgba(255,255,255,0.02)",
-                    color: "var(--textPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     height: "42px"
                   }}
@@ -1677,7 +1677,7 @@ export default function MicrobusStationsPage() {
 
               {/* Destination */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                   وجهة / خط الميكروباص (إلى فين؟): <span style={{ color: "#ef4444" }}>*</span>
                 </label>
                 <input
@@ -1692,8 +1692,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px 12px",
                     borderRadius: "8px",
                     backgroundColor: "rgba(255,255,255,0.02)",
-                    color: "var(--textPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     height: "42px"
                   }}
@@ -1702,7 +1702,7 @@ export default function MicrobusStationsPage() {
 
               {/* Fare */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                   الأجرة التقديرية (اختياري):
                 </label>
                 <input
@@ -1716,8 +1716,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px 12px",
                     borderRadius: "8px",
                     backgroundColor: "rgba(255,255,255,0.02)",
-                    color: "var(--textPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     height: "42px"
                   }}
@@ -1726,7 +1726,7 @@ export default function MicrobusStationsPage() {
 
               {/* Notes */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px" }}>
                   ملاحظات أو نقاط السير (اختياري):
                 </label>
                 <textarea
@@ -1739,8 +1739,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px 12px",
                     borderRadius: "8px",
                     backgroundColor: "rgba(255,255,255,0.02)",
-                    color: "var(--textPrimary)",
-                    border: "1px solid var(--borderGlass)",
+                    color: "var(--text-primary)",
+                    border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     height: "80px",
                     resize: "none"
@@ -1757,8 +1757,8 @@ export default function MicrobusStationsPage() {
                     padding: "10px 16px",
                     borderRadius: "8px",
                     background: "rgba(255, 0, 0, 0.16)",
-                    border: "1px solid var(--borderGlass)",
-                    color: "var(--textPrimary)",
+                    border: "1px solid var(--border-glass)",
+                    color: "var(--text-primary)",
                     cursor: "pointer",
                     fontSize: "0.85rem",
                     fontWeight: "bold"
@@ -1807,7 +1807,7 @@ export default function MicrobusStationsPage() {
         }}>
           <div className="metro-animate-slide-up" style={{
             backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--borderGlass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "24px",
             width: "100%",
             maxWidth: "420px",
@@ -1842,7 +1842,7 @@ export default function MicrobusStationsPage() {
               margin: "0 0 10px 0",
               fontSize: "1.3rem",
               fontWeight: "800",
-              color: "var(--textPrimary)"
+              color: "var(--text-primary)"
             }}>
               تم الإرسال بنجاح! 🎉
             </h3>

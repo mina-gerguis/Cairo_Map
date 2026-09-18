@@ -335,7 +335,7 @@ function AdminLrtInner() {
   if (authLoading || loading) {
     return (
       <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--colorSecondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
+        <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
         <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة القطار الكهربائي...</p>
       </div>
     );
@@ -349,10 +349,10 @@ function AdminLrtInner() {
       {/* Top Banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--textPrimary)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "6px" }}>
             إدارة القطار الكهربائي LRT
           </h1>
-          <p style={{ color: "var(--textMuted)", fontSize: "0.9rem", margin: 0 }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: 0 }}>
             إضافة وتعديل وحذف محطات القطار الكهربائي الخفيف (LRT) والمعالم القريبة.
           </p>
         </div>
@@ -400,7 +400,7 @@ function AdminLrtInner() {
             right: "16px",
             top: "50%",
             transform: "translateY(-50%)",
-            color: "var(--textMuted)",
+            color: "var(--text-muted)",
             fontSize: "1.2rem"
           }} />
           <input
@@ -421,7 +421,7 @@ function AdminLrtInner() {
           />
         </div>
 
-        <div style={{ fontSize: "0.9rem", color: "var(--textMuted)" }}>
+        <div style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}>
           إجمالي المحطات: {filteredRows.length}
         </div>
       </div>
@@ -442,7 +442,7 @@ function AdminLrtInner() {
       <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginBottom: "32px" }}>
 
         {/* Segmented Line Control */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", backdropFilter: "blur(10px)", padding: "12px 20px", borderRadius: "16px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", backdropFilter: "blur(10px)", padding: "12px 20px", borderRadius: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--textSecondary)" }}>عرض خط سير الرحلة:</span>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -465,7 +465,7 @@ function AdminLrtInner() {
                     cursor: "pointer",
                     transition: "all 0.25s ease",
                     border: "1px solid",
-                    borderColor: adminActiveLrtLine === opt.id ? opt.color : "var(--borderGlass)",
+                    borderColor: adminActiveLrtLine === opt.id ? opt.color : "var(--border-glass)",
                     background: adminActiveLrtLine === opt.id ? `rgba(${opt.id === "trunk" ? "59, 130, 246" : opt.id === "capital" ? "139, 92, 246" : opt.id === "ramadan" ? "236, 72, 153" : "99, 102, 241"}, 0.15)` : "var(--bgSecondary)",
                     color: adminActiveLrtLine === opt.id ? opt.color : "var(--textSecondary)"
                   }}
@@ -479,7 +479,7 @@ function AdminLrtInner() {
 
         {/* Table View */}
         {filteredRows.length === 0 ? (
-          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
+          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
             لا توجد أي محطات مطابقة لخط البحث الحالي.
           </div>
         ) : (
@@ -517,7 +517,7 @@ function AdminLrtInner() {
                           {station.station_order}
                         </span>
                       </td>
-                      <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--textPrimary)", width: "13%" }}>
+                      <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--text-primary)", width: "13%" }}>
                         {station.name}
                       </td>
                       <td className={styles.adminTd} style={{ width: "12%" }}>
@@ -541,13 +541,13 @@ function AdminLrtInner() {
                               <span key={lIdx} style={{
                                 fontSize: "0.73rem",
                                 background: "rgba(255,255,255,0.02)",
-                                color: "var(--textPrimary, #e2e8f0)",
+                                color: "var(--text-primary, #e2e8f0)",
                                 padding: "2px 6px",
                                 borderRadius: "6px",
                                 display: "inline-flex",
                                 alignItems: "center",
                                 gap: "4px",
-                                border: "1px solid var(--borderGlass)"
+                                border: "1px solid var(--border-glass)"
                               }}>
                                 <i className="bx bx-map-pin" style={{ color: lineColor, fontSize: "0.75rem" }} />
                                 {landmark}
@@ -622,8 +622,8 @@ function AdminLrtInner() {
           padding: "20px"
         }}>
           <div style={{
-            background: "var(--bgGlass)",
-            border: "1px solid var(--borderGlass)",
+            background: "var(--bg-glass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "var(--radius-card)",
             width: "100%",
             maxWidth: "520px",
@@ -636,7 +636,7 @@ function AdminLrtInner() {
               justifyContent: "space-between",
               alignItems: "center",
               padding: "20px 24px",
-              borderBottom: "1px solid var(--borderGlass)"
+              borderBottom: "1px solid var(--border-glass)"
             }}>
               <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingItem ? "تعديل محطة القطار الكهربائي" : "إضافة محطة قطار كهربائي جديدة"}
@@ -721,7 +721,7 @@ function AdminLrtInner() {
                 gap: "12px",
                 marginTop: "12px",
                 paddingTop: "16px",
-                borderTop: "1px solid var(--borderGlass)"
+                borderTop: "1px solid var(--border-glass)"
               }}>
                 <button
                   type="button"
@@ -762,7 +762,7 @@ function AdminLrtInner() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setStationToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

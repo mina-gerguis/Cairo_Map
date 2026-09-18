@@ -634,8 +634,8 @@ function AdminMetroInner() {
           {/* Header Action Row */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
             <div>
-              <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--textPrimary)" }}>إدارة محطات المترو</h2>
-              <p style={{ color: "var(--textMuted)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
+              <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--text-primary)" }}>إدارة محطات المترو</h2>
+              <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
                 إضافة وتعديل وحذف محطات مترو الأنفاق في خطوطها الستة.
               </p>
             </div>
@@ -646,7 +646,7 @@ function AdminMetroInner() {
           </div>
 
           {/* Filtering Controls */}
-          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "16px", padding: "20px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
 
             {/* Search Input bar */}
             <div style={{ position: "relative", width: "100%" }}>
@@ -664,7 +664,7 @@ function AdminMetroInner() {
             {/* Line Selection Tabs */}
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)" }}>تصفية حسب الخط:</span>
-              <div className="tabs" style={{gap: "8px", overflowX: "auto", paddingBottom: "6px", scrollbarWidth: "none", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr));" }}>
+              <div className="tabs" style={{ gap: "8px", overflowX: "auto", paddingBottom: "6px", scrollbarWidth: "none", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr));" }}>
                 {[
                   { id: "all", label: "جميع الخطوط", color: "#818cf8" },
                   { id: "line1", label: "الخط الأول (الأحمر)", color: "#ef4444" },
@@ -687,11 +687,11 @@ function AdminMetroInner() {
                       fontWeight: "400",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
-                      background: adminActiveLine === opt.id ? "var(--textPrimary)" : "transparent",
+                      background: adminActiveLine === opt.id ? "var(--text-primary)" : "transparent",
                       border: "none",
-                      color: adminActiveLine === opt.id ? "var(--bgMode)" : "var(--textPrimary)",
+                      color: adminActiveLine === opt.id ? "var(--bgMode)" : "var(--text-primary)",
                       whiteSpace: "nowrap"
-                      
+
                     }}
                   >
                     {opt.label}
@@ -703,7 +703,7 @@ function AdminMetroInner() {
 
           {/* Stations Table */}
           {filteredRows.length === 0 ? (
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
               لا توجد أي محطات مترو مطابقة للتصفية الحالية.
             </div>
           ) : (
@@ -738,7 +738,7 @@ function AdminMetroInner() {
                             {station.station_order}
                           </span>
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--textPrimary)" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--text-primary)" }}>
                           {station.name}
                         </td>
                         <td className={styles.adminTd} style={{ width: "10%" }}>
@@ -750,7 +750,7 @@ function AdminMetroInner() {
                             padding: "2px 8px",
                             borderRadius: "20px",
                             fontWeight: "bold",
-                            
+
                           }}>
                             {lineLabel}
                           </span>
@@ -762,13 +762,13 @@ function AdminMetroInner() {
                                 <span key={lIdx} style={{
                                   fontSize: "0.73rem",
                                   background: "rgba(255,255,255,0.02)",
-                                  color: "var(--textPrimary, #e2e8f0)",
+                                  color: "var(--text-primary, #e2e8f0)",
                                   padding: "2px 6px",
                                   borderRadius: "6px",
                                   display: "inline-flex",
                                   alignItems: "center",
                                   gap: "4px",
-                                  border: "1px solid var(--borderGlass)"
+                                  border: "1px solid var(--border-glass)"
                                 }}>
                                   <i className="bx bx-map-pin" style={{ color: lineColor, fontSize: "0.75rem" }} />
                                   {landmark}
@@ -783,7 +783,7 @@ function AdminMetroInner() {
                         </td>
                         <td className={styles.adminTd} style={{ width: "10%" }}>
                           <span style={{
-                            display:"inline-block",
+                            display: "inline-block",
                             fontSize: "0.75rem",
                             background: station.status === "تحت الإنشاء" ? "rgba(239, 68, 68, 0.12)" : (station.status === "تشغيل تجريبي" ? "rgba(251, 191, 36, 0.12)" : "rgba(16, 185, 129, 0.12)"),
                             color: station.status === "تحت الإنشاء" ? "#ef4444" : (station.status === "تشغيل تجريبي" ? "#fbbf24" : "#10b981"),
@@ -831,16 +831,16 @@ function AdminMetroInner() {
       {activeSection === "pricing" && (
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ marginBottom: "24px" }}>
-            <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--textPrimary)" }}>إدارة أسعار تذاكر المترو</h2>
+            <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--text-primary)" }}>إدارة أسعار تذاكر المترو</h2>
             <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
               تعديل شرائح أسعار التذاكر بناءً على عدد محطات الرحلة التي يقطعها العميل.
             </p>
           </div>
 
-          <form onSubmit={handlePricesSubmit} style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "16px", padding: "24px" }}>
+          <form onSubmit={handlePricesSubmit} style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "24px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "24px" }}>
               {ticketPrices.map((tier, idx) => (
-                <div key={tier.id || idx} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "16px", alignItems: "end", borderBottom: idx !== ticketPrices.length - 1 ? "1px solid var(--borderGlass)" : "none", paddingBottom: idx !== ticketPrices.length - 1 ? "16px" : "0" }}>
+                <div key={tier.id || idx} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "16px", alignItems: "end", borderBottom: idx !== ticketPrices.length - 1 ? "1px solid var(--border-glass)" : "none", paddingBottom: idx !== ticketPrices.length - 1 ? "16px" : "0" }}>
                   <div>
                     <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>اسم الشريحة</label>
                     <input
@@ -908,8 +908,8 @@ function AdminMetroInner() {
           padding: "20px"
         }}>
           <div style={{
-            background: "var(--bgGlass)",
-            border: "1px solid var(--borderGlass)",
+            background: "var(--bg-glass)",
+            border: "1px solid var(--border-glass)",
             borderRadius: "var(--radius-card)",
             width: "100%",
             maxWidth: "520px",
@@ -922,7 +922,7 @@ function AdminMetroInner() {
               justifyContent: "space-between",
               alignItems: "center",
               padding: "20px 24px",
-              borderBottom: "1px solid var(--borderGlass)"
+              borderBottom: "1px solid var(--border-glass)"
             }}>
               <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingStation ? "تعديل محطة مترو" : "إضافة محطة مترو جديدة"}
@@ -1015,7 +1015,7 @@ function AdminMetroInner() {
                 gap: "12px",
                 marginTop: "12px",
                 paddingTop: "16px",
-                borderTop: "1px solid var(--borderGlass)"
+                borderTop: "1px solid var(--border-glass)"
               }}>
                 <button
                   type="button"
@@ -1056,7 +1056,7 @@ function AdminMetroInner() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setStationToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isDeleting,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}

@@ -1,3 +1,16 @@
+:root {
+    --tab-active-bg: #ffffff;
+    --tab-active-color: #000000;
+    --tab-hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+html.light {
+    --tab-active-bg: #18181b;
+    --tab-active-color: #ffffff;
+    --tab-hover-bg: rgba(0, 0, 0, 0.06);
+}
+
+
 /* ============================================================
    Slider
    ============================================================ */

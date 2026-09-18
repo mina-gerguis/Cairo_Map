@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import { useAuth } from "@/context/AuthContext";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
 
-import EmergencyQuickBar from "@/components/EmergencyQuickBar";
 import TransitFAQ from "@/components/TransitFAQ";
 
 import { useDirectionsData } from "./hooks/useDirectionsData";
@@ -271,8 +270,7 @@ export default function DirectionsPage() {
         />
 
         {/* Emergency Quick Bar & FAQ */}
-        <EmergencyQuickBar />
-        <TransitFAQ />
+        {/* <TransitFAQ /> */}
 
         {/* Bottom Report Problem Banner */}
         <BottomReportBanner

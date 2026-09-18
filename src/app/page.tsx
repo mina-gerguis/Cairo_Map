@@ -829,7 +829,7 @@ export default function HomePage() {
   const categoryCards = CATEGORIES_STRUCTURE;
 
   return (
-    <main style={{ minHeight: "100vh", backgroundColor: "var(--bgPrimary)", color: "var(--textPrimary)", fontFamily: "var(--font-heading)" }}>
+    <main style={{ minHeight: "100vh", backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
       {/* ── 1. HERO SECTION ── */}
       <section style={{
         position: "relative",
@@ -846,8 +846,8 @@ export default function HomePage() {
             gap: "8px",
             padding: "8px 18px",
             borderRadius: "999px",
-            backgroundColor: "var(--bgGlass-card)",
-            border: "1px solid var(--borderGlass-bright)",
+            backgroundColor: "var(--bg-glass-card)",
+            border: "1px solid var(--border-glass-bright)",
             fontSize: "0.9rem",
             color: "var(--colorPrimary)",
             marginBottom: "24px",
@@ -893,7 +893,7 @@ export default function HomePage() {
               <div style={{
                 display: "flex",
                 alignItems: "center",
-                backgroundColor: "var(--bgGlass)",
+                backgroundColor: "var(--bg-glass)",
                 border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--colorPrimary)" : "1.5px solid var(--borderPrimary)",
                 borderRadius: "var(--ra-32)",
                 padding: "8px 15px 8px 15px",
@@ -901,7 +901,7 @@ export default function HomePage() {
                 backdropFilter: "blur(12px)",
                 transition: "border-color 0.2s ease"
               }}>
-                <FaSearch style={{ fontSize: "1.2rem", color: "var(--textMuted)", marginLeft: "12px" }} />
+                <FaSearch style={{ fontSize: "1.2rem", color: "var(--text-muted)", marginLeft: "12px" }} />
                 <input
                   ref={searchInputRef}
                   type="text"
@@ -917,7 +917,7 @@ export default function HomePage() {
                     background: "transparent",
                     border: "none",
                     outline: "none",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     fontSize: "1rem",
                     fontFamily: "var(--font-heading)"
                   }}
@@ -930,7 +930,7 @@ export default function HomePage() {
                   }}
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.07)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     backdropFilter: "blur(8px)",
                     borderRadius: "var(--ra-14)",
                     padding: "4px 8px",
@@ -948,18 +948,18 @@ export default function HomePage() {
                     fontFamily: "inherit",
                     fontSize: "0.75rem",
                     fontWeight: "bold",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     minWidth: "20px"
                   }}>K</kbd>
-                  <span style={{ color: "var(--textMuted)", fontSize: "0.75rem", fontWeight: "bold" }}>+</span>
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.75rem", fontWeight: "bold" }}>+</span>
                   <kbd style={{
                     fontFamily: "inherit",
                     fontSize: "0.75rem",
                     fontWeight: "bold",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -978,7 +978,7 @@ export default function HomePage() {
                 right: 0,
                 backgroundColor: "var(--cardGlassBg)",
                 backdropFilter: "blur(20px)",
-                border: "1px solid var(--borderGlass-bright)",
+                border: "1px solid var(--border-glass-bright)",
                 borderRadius: "var(--ra-24)",
                 boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
                 zIndex: 100,
@@ -1017,10 +1017,10 @@ export default function HomePage() {
                           padding: "10px 14px",
                           borderRadius: "var(--ra-18)",
                           backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           marginBottom: "6px",
                           textDecoration: "none",
-                          color: "var(--textPrimary)",
+                          color: "var(--text-primary)",
                           transition: "var(--transition-fast)"
                         }}
                       >
@@ -1086,10 +1086,10 @@ export default function HomePage() {
                           padding: "10px 14px",
                           borderRadius: "var(--ra-18)",
                           backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--borderGlass)",
+                          border: "1px solid var(--border-glass)",
                           marginBottom: "6px",
                           textDecoration: "none",
-                          color: "var(--textPrimary)",
+                          color: "var(--text-primary)",
                           transition: "var(--transition-fast)"
                         }}
                       >
@@ -1151,9 +1151,9 @@ export default function HomePage() {
                             padding: "6px 12px",
                             borderRadius: "var(--ra-full)",
                             backgroundColor: "var(--hoverBtn)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             textDecoration: "none",
-                            color: "var(--textPrimary)",
+                            color: "var(--text-primary)",
                             fontSize: "0.85rem"
                           }}
                         >
@@ -1176,7 +1176,7 @@ export default function HomePage() {
                     <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
                       <FaInbox style={{ fontSize: "2rem", marginBottom: "6px" }} />
                     </div>
-                    <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--textPrimary)", marginBottom: "4px" }}>
+                    <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--text-primary)", marginBottom: "4px" }}>
                       عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                     </div>
                     <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--textSecondary)" }}>
@@ -1190,8 +1190,8 @@ export default function HomePage() {
                           padding: "6px 14px",
                           borderRadius: "8px",
                           backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--borderGlass)",
-                          color: "var(--textPrimary)",
+                          border: "1px solid var(--border-glass)",
+                          color: "var(--text-primary)",
                           fontSize: "0.82rem",
                           cursor: "pointer",
                           fontFamily: "var(--font-sub)"
@@ -1243,7 +1243,7 @@ export default function HomePage() {
                   style={{
                     width: "100%",
                     marginTop: "8px",
-                    padding: "var(--paddingBtn)",
+                    padding: "var(--padding-btn)",
                     borderRadius: "var(--ra-full)",
                     backgroundColor: "var(--colorPrimary)",
                     color: "#ffffff",
@@ -1290,7 +1290,7 @@ export default function HomePage() {
                   padding: "6px 14px",
                   borderRadius: "var(--ra-full)",
                   backgroundColor: "var(--hoverBtn)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   color: "var(--textSecondary)",
                   fontSize: "0.85rem",
                   fontFamily: "var(--font-body)",
@@ -1320,7 +1320,7 @@ export default function HomePage() {
       <section style={{ padding: "60px 20px 40px 20px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
 
-          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--textPrimary)" }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--text-primary)" }}>
             المدن الشهيرة
           </h2>
           <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "1rem", maxWidth: "650px", margin: "0 auto", lineHeight: "1.6" }}>
@@ -1436,9 +1436,9 @@ export default function HomePage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "50%",
-                backgroundColor: "var(--bgGlass-card)",
-                border: "1px solid var(--borderGlass-bright)",
-                color: "var(--textPrimary)",
+                backgroundColor: "var(--bg-glass-card)",
+                border: "1px solid var(--border-glass-bright)",
+                color: "var(--text-primary)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1492,9 +1492,9 @@ export default function HomePage() {
                 width: "36px",
                 height: "36px",
                 borderRadius: "50%",
-                backgroundColor: "var(--bgGlass-card)",
-                border: "1px solid var(--borderGlass-bright)",
-                color: "var(--textPrimary)",
+                backgroundColor: "var(--bg-glass-card)",
+                border: "1px solid var(--border-glass-bright)",
+                color: "var(--text-primary)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1550,7 +1550,7 @@ export default function HomePage() {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 padding: "28px",
-                backgroundColor: "var(--bgGlass-card)",
+                backgroundColor: "var(--bg-glass-card)",
                 transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 position: "relative",
                 overflow: "hidden"
@@ -1577,7 +1577,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--textPrimary)", marginBottom: "10px" }}>
+                <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "10px" }}>
                   {service.title}
                 </h2>
                 <p style={{ fontSize: "0.95rem", color: "var(--textSecondary)", lineHeight: "1.6", marginBottom: "24px" }}>
@@ -1606,8 +1606,8 @@ export default function HomePage() {
         padding: "60px 20px",
         paddingTop: "20px",
         backgroundColor: "var(--bgSecondary)",
-        borderTop: "1px solid var(--borderGlass)",
-        borderBottom: "1px solid var(--borderGlass)"
+        borderTop: "1px solid var(--border-glass)",
+        borderBottom: "1px solid var(--border-glass)"
       }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "36px", flexWrap: "wrap", gap: "16px" }}>
@@ -1659,7 +1659,7 @@ export default function HomePage() {
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--textPrimary)", textAlign: "center" }}>
+              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--text-primary)", textAlign: "center" }}>
                 مدونة ومقالات خريطة القاهرة
               </h2>
               <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", margin: 0 }}>
@@ -1676,7 +1676,7 @@ export default function HomePage() {
                 gap: "8px",
                 padding: "10px 22px",
                 borderRadius: "var(--ra-18)",
-                backgroundColor: "var(--colorSecondary)",
+                backgroundColor: "var(--color-secondary)",
                 color: "#ffffffff",
                 fontWeight: "700",
                 fontSize: "0.9rem",
@@ -1704,7 +1704,7 @@ export default function HomePage() {
                 style={{
                   textDecoration: "none",
                   backgroundColor: "var(--bgPrimary)",
-                  border: "1px solid var(--borderGlass)",
+                  border: "1px solid var(--border-glass)",
                   borderRadius: "var(--cardGlassRadius)",
                   padding: "18px",
                   display: "flex",
@@ -1715,10 +1715,10 @@ export default function HomePage() {
                 }}
               >
                 <div>
-                  <span style={{ fontSize: "0.78rem", color: "var(--colorSecondary)", fontWeight: "700", display: "block", marginBottom: "6px", fontFamily: "var(--font-body)" }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--color-secondary)", fontWeight: "700", display: "block", marginBottom: "6px", fontFamily: "var(--font-body)" }}>
                     {post.category || "مقالات خريطة القاهرة"}
                   </span>
-                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--textPrimary)", margin: "0 0 8px 0", lineHeight: "1.45" }}>
+                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--text-primary)", margin: "0 0 8px 0", lineHeight: "1.45" }}>
                     {post.title}
                   </h2>
                   {post.excerpt && (
@@ -1727,7 +1727,7 @@ export default function HomePage() {
                     </p>
                   )}
                 </div>
-                <span className="sub-title" style={{ fontSize: "0.82rem", color: "var(--colorSecondary)", fontWeight: "700", display: "flex", alignItems: "center", gap: "4px", marginTop: "12px" }}>
+                <span className="sub-title" style={{ fontSize: "0.82rem", color: "var(--color-secondary)", fontWeight: "700", display: "flex", alignItems: "center", gap: "4px", marginTop: "12px" }}>
                   <span>قراءة المقال</span>
                   <FaChevronLeft style={{ fontSize: "0.7rem" }} />
                 </span>
@@ -1738,9 +1738,9 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. AI PLANNER BANNER ── */}
-      <section style={{ maxWidth: "100%", margin: "0 auto", backgroundColor: "var(--bgSecondary)", borderBottom: "1px solid var(--borderGlass)", }}>
+      <section style={{ maxWidth: "100%", margin: "0 auto", backgroundColor: "var(--bgSecondary)", borderBottom: "1px solid var(--border-glass)", }}>
         <div style={{
-          borderTop: "1px solid var(--borderGlass)",
+          borderTop: "1px solid var(--border-glass)",
           padding: "48px 2px",
           textAlign: "center",
           position: "relative",
@@ -1755,7 +1755,7 @@ export default function HomePage() {
             <img src="/images/icons3d/robot.png" alt="Robot" loading="lazy" decoding="async" width={80} />
           </div>
 
-          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--textPrimary)" }}>
+          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--text-primary)" }}>
             محتار تخرج فين النهاردة؟ اترك التخطيط للذكاء الاصطناعي!
           </h2>
           <p className="sub-title" style={{ fontSize: "1rem", color: "var(--textSecondary)", margin: "0 8px 28px 8px", lineHeight: "1.7", textAlign: "center" }}>
@@ -1784,7 +1784,7 @@ export default function HomePage() {
       <section style={{
         padding: "60px 20px",
         backgroundColor: "var(--bgPrimary)",
-        borderTop: "1px solid var(--borderGlass)",
+        borderTop: "1px solid var(--border-glass)",
         textAlign: "center"
       }}>
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>

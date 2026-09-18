@@ -14,14 +14,11 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-8);
-  padding: var(--paddingBtn);
-  border: 1px solid transparent;
+  padding: var(--padding-btn);
   border-radius: var(--radiusBtn);
+  border: 1px solid var(--border-glass);
   outline: none;
-  background: transparent;
-  color: var(--textPrimary);
   font-family: var(--font-sub);
-  font-size: var(--fs-);
   font-weight: var(--fw-medium);
   line-height: 1;
   text-decoration: none;
@@ -67,12 +64,12 @@
 /* --- Secondary --- */
 .btn-secondary {
   background: var(--secondBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .btn-secondary:hover {
   background: var(--secondHoverBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 /* --- Outlines --- */
@@ -104,30 +101,33 @@
 
 /* --- Cancel / Ghost --- */
 .btn-cancel {
-  background: var(--cancelBtn);
-  border: 1px solid var(--borderGlassBtn);
-  color: var(--textPrimary);
+  background: var(--btn-cancel);
+  color: var(--text-primary);
 }
 
 .btn-cancel:hover {
   background: var(--cancelHoverBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 /* --- Success & Danger --- */
 .btn-success {
   background: var(--successBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .btn-success:hover {
   background: var(--secondHoverBtn);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .btn-danger {
-  background: var(--dangerBtn);
+  background: var(--btn-danger);
   border: 1px solid rgba(255, 59, 48, 0.30);
+  color: #ffffff;
+}
+
+html.light .btn-danger {
   color: #ff0000;
 }
 
@@ -136,15 +136,19 @@
   color: #ffffff;
 }
 
-.btn-reportProblem {
+.btn-report {
   padding: var(--space-4) var(--space-8);
-  background: rgba(255, 0, 0, 0.15);
-  border: 1px solid rgba(255, 0, 0, 0.15);
+  background: var(--btn-danger);
+  border: 1px solid var(--btn-danger);
   border-radius: var(--radiusBtn);
-  color: #ff0000f5;
+  color: #ffffff;
 }
 
-.btn-reportProblem:hover {
+html.light .btn-report {
+  color: #ff0000;
+}
+
+.btn-report:hover {
   background: #ff0000;
   color: #ffffff;
 }
@@ -159,7 +163,7 @@
 }
 
 .btn-silver:hover {
-  background: var(--textPrimary);
+  background: var(--text-primary);
   color: var(--bgPrimary);
 }
 
@@ -171,7 +175,7 @@
 }
 
 .btn-gold:hover {
-  background: var(--textPrimary);
+  background: var(--text-primary);
   color: var(--bgPrimary);
 }
 
@@ -183,10 +187,10 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-6);
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-full);
   background: rgba(131, 131, 131, 0.055);
-  color: var(--textPrimary);
+  color: var(--text-primary);
   font-size: 1.2rem;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -194,7 +198,7 @@
 
 .closeBtn:hover {
   background: var(--bgPrimary);
-  color: var(--textPrimary);
+  color: var(--text-primary);
 }
 
 .btn-ra-24 {

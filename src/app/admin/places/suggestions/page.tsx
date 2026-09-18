@@ -64,7 +64,7 @@ function ImageWithSkeleton({ src, alt, style, className, onClick, onError }: any
   return (
     <div style={{ position: "relative", ...style, overflow: "hidden" }} className={className} onClick={onClick}>
       {!loaded && (
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "var(--bgGlass-card)", animation: "pulse 1.5s infinite" }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: "var(--bg-glass-card)", animation: "pulse 1.5s infinite" }} />
       )}
       <img
         src={src}
@@ -423,7 +423,7 @@ export default function PlacesSuggestionsPage() {
       {/* ─── PROPOSALS MODERATION SECTION ─── */}
       <div className="glass-panel" style={{ padding: "28px 20px", borderRadius: "15px", marginBottom: "32px", border: "1px solid rgba(108, 99, 255, 0.3)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
             <i className="bx bx-map-pin" style={{ color: "var(--colorPrimary)" }}></i> مراجعة اقتراحات الأماكن
           </h2>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -459,9 +459,9 @@ export default function PlacesSuggestionsPage() {
                 style={{
                   padding: "7px 14px",
                   fontSize: "0.85rem",
-                  background: proposalsFilter === tab.id ? "rgba(108, 99, 255, 0.25)" : "var(--bgGlass)",
+                  background: proposalsFilter === tab.id ? "rgba(108, 99, 255, 0.25)" : "var(--bg-glass)",
                   color: proposalsFilter === tab.id ? "var(--colorPrimary)" : "var(--textSecondary)",
-                  border: proposalsFilter === tab.id ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)"
+                  border: proposalsFilter === tab.id ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)"
                 }}
               >
                 {tab.label} ({tab.count})
@@ -492,8 +492,8 @@ export default function PlacesSuggestionsPage() {
                     justifyContent: "space-between",
                     overflow: "hidden",
                     borderRadius: "18px",
-                    border: "1px solid var(--borderGlass)",
-                    background: "var(--bgGlass-card)",
+                    border: "1px solid var(--border-glass)",
+                    background: "var(--bg-glass-card)",
                     transition: "transform 0.2s, background-color 0.2s",
                     minHeight: "360px"
                   }}
@@ -516,7 +516,7 @@ export default function PlacesSuggestionsPage() {
                   </div>
 
                   <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px", flexGrow: 1 }}>
-                    <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "800", margin: 0, color: "var(--textPrimary)" }}>{prop.name}</h3>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "800", margin: 0, color: "var(--text-primary)" }}>{prop.name}</h3>
 
                     {prop.description && (
                       <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", margin: 0, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
@@ -531,7 +531,7 @@ export default function PlacesSuggestionsPage() {
                     {/* Proposer Info Bar */}
                     <div
                       onClick={(e) => e.stopPropagation()}
-                      style={{ background: "rgba(108, 99, 255, 0.06)", border: "1px solid var(--borderGlass)", borderRadius: "12px", padding: "6px 10px", marginTop: "auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}
+                      style={{ background: "rgba(108, 99, 255, 0.06)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "6px 10px", marginTop: "auto", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <img
@@ -542,7 +542,7 @@ export default function PlacesSuggestionsPage() {
                           style={{ width: "26px", height: "26px", borderRadius: "50%", objectFit: "cover" }}
                         />
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                          <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                          <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-primary)" }}>
                             {prop.user_profile?.full_name || prop.user_profile?.username || "مستخدم ماب القاهرة"}
                           </span>
                         </div>
@@ -617,7 +617,7 @@ export default function PlacesSuggestionsPage() {
             <div className="ios-sheet-drag-handle" onClick={() => setSelectedProposalDetails(null)} />
 
             {/* Top Bar (Fixed) */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 24px", borderBottom: "1px solid var(--borderGlass)", flexShrink: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 24px", borderBottom: "1px solid var(--border-glass)", flexShrink: 0 }}>
               <div>
                 <span style={{ fontSize: "0.75rem", padding: "4px 10px", borderRadius: "10px", background: selectedProposalDetails.status === 'approved' ? "rgba(52, 199, 89, 0.2)" : selectedProposalDetails.status === 'rejected' ? "rgba(255, 59, 48, 0.2)" : selectedProposalDetails.status === 'retracted' ? "rgba(142, 142, 147, 0.2)" : "rgba(255, 149, 0, 0.2)", color: selectedProposalDetails.status === 'approved' ? "#34c759" : selectedProposalDetails.status === 'rejected' ? "#ff3b30" : selectedProposalDetails.status === 'retracted' ? "#8e8e93" : "#ff9500", fontWeight: "700" }}>
                   {selectedProposalDetails.status === 'approved' ? "معتمد ومقبول" : selectedProposalDetails.status === 'rejected' ? "مرفوض" : selectedProposalDetails.status === 'retracted' ? "متراجع عنه" : "قيد المراجعة"}
@@ -625,7 +625,7 @@ export default function PlacesSuggestionsPage() {
               </div>
 
               <div style={{ textAlign: "center", flex: 1, minWidth: 0, padding: "0 10px" }}>
-                <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--textPrimary)" }}>
+                <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
                   {selectedProposalDetails.name}
                 </h3>
                 <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
@@ -637,8 +637,8 @@ export default function PlacesSuggestionsPage() {
                 onClick={() => setSelectedProposalDetails(null)}
                 style={{
                   background: "rgba(109, 107, 107, 0.12)",
-                  border: "1px solid var(--borderGlass)",
-                  color: "var(--textPrimary)",
+                  border: "1px solid var(--border-glass)",
+                  color: "var(--text-primary)",
                   borderRadius: "50%",
                   width: "36px",
                   height: "36px",
@@ -672,14 +672,14 @@ export default function PlacesSuggestionsPage() {
                         ))}
                       </div>
                     ) : (
-                      <div style={{ width: "100%", height: "200px", borderRadius: "12px", background: "rgba(255,255,255,0.02)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px dashed var(--borderGlass)", marginBottom: "20px" }}>
+                      <div style={{ width: "100%", height: "200px", borderRadius: "12px", background: "rgba(255,255,255,0.02)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px dashed var(--border-glass)", marginBottom: "20px" }}>
                         <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>لا توجد صور متوفرة للمكان</span>
                       </div>
                     )}
 
                     {/* Title Area */}
                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", margin: "0 0 6px" }}>
+                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>
                         {selectedProposalDetails.name}
                       </h2>
                       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
@@ -720,7 +720,7 @@ export default function PlacesSuggestionsPage() {
                           href={`tel:${selectedProposalDetails.phone}`}
                           style={{
                             background: "rgba(0, 122, 255, 0.08)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             color: "#007aff",
                             borderRadius: "12px",
                             padding: "8px 6px",
@@ -742,7 +742,7 @@ export default function PlacesSuggestionsPage() {
                         <div
                           style={{
                             background: "rgba(255, 255, 255, 0.04)",
-                            border: "1px solid var(--borderGlass)",
+                            border: "1px solid var(--border-glass)",
                             color: "var(--text-muted)",
                             borderRadius: "12px",
                             padding: "8px 6px",
@@ -847,7 +847,7 @@ export default function PlacesSuggestionsPage() {
 
                     {/* Proposer Banner Card */}
                     <div style={{ marginBottom: "24px" }}>
-                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>صاحب الاقتراح</h3>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>صاحب الاقتراح</h3>
                       <div style={{ background: "rgba(108, 99, 255, 0.08)", border: "1px solid rgba(108, 99, 255, 0.2)", borderRadius: "14px", padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           <img
@@ -858,7 +858,7 @@ export default function PlacesSuggestionsPage() {
                             style={{ width: "42px", height: "42px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--colorPrimary)" }}
                           />
                           <div>
-                            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}>
                               {selectedProposalDetails.user_profile?.full_name || selectedProposalDetails.user_profile?.username || "مستخدم ماب القاهرة"}
                             </div>
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -883,8 +883,8 @@ export default function PlacesSuggestionsPage() {
                     {/* Description Section */}
                     {selectedProposalDetails.description && (
                       <div style={{ marginBottom: "24px" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>الوصف</h3>
-                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 20px", color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.6" }}>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>الوصف</h3>
+                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.6" }}>
                           {selectedProposalDetails.description}
                         </div>
                       </div>
@@ -893,8 +893,8 @@ export default function PlacesSuggestionsPage() {
                     {/* Services section */}
                     {selectedProposalDetails.services && selectedProposalDetails.services.length > 0 && (
                       <div style={{ marginBottom: "24px" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>الخدمات المتاحة</h3>
-                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", padding: "16px 20px" }}>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>الخدمات المتاحة</h3>
+                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px" }}>
                           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                             {selectedProposalDetails.services.map((serviceName: string) => (
                               <span
@@ -923,8 +923,8 @@ export default function PlacesSuggestionsPage() {
 
                     {/* Details Card (Phone, Maps Link, Address) */}
                     <div style={{ marginBottom: "24px" }}>
-                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--textPrimary)" }}>التفاصيل الجغرافية والاتصال</h3>
-                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--borderGlass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>التفاصيل الجغرافية والاتصال</h3>
+                      <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
                         {/* Phone Row */}
                         {selectedProposalDetails.phone && (
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
@@ -950,7 +950,7 @@ export default function PlacesSuggestionsPage() {
                         {/* Full Address Row */}
                         <div style={{ display: "flex", flexDirection: "column", padding: "14px 16px" }}>
                           <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)", marginBottom: "6px" }}>العنوان بالتفصيل</span>
-                          <span style={{ fontSize: "0.95rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                          <span style={{ fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: "600" }}>
                             {selectedProposalDetails.address || "لا يوجد عنوان تفصيلي مكتوب"}
                           </span>
                         </div>
@@ -981,12 +981,12 @@ export default function PlacesSuggestionsPage() {
       {/* Modal for Proposer Full Profile */}
       {selectedUserProfile && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div className="glass-panel" style={{ maxWidth: "480px", width: "100%", padding: "10px 28px", borderRadius: "24px", background: "var(--bgGlass-card, #ffffff)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", border: "1px solid var(--colorPrimary)" }}>
+          <div className="glass-panel" style={{ maxWidth: "480px", width: "100%", padding: "10px 28px", borderRadius: "24px", background: "var(--bg-glass-card, #ffffff)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", border: "1px solid var(--colorPrimary)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
             </div>
 
             {/* Profile Header */}
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", background: "rgba(255, 255, 255, 0.03)", padding: "16px", borderRadius: "16px", marginBottom: "20px", border: "1px solid var(--borderGlass)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", background: "rgba(255, 255, 255, 0.03)", padding: "16px", borderRadius: "16px", marginBottom: "20px", border: "1px solid var(--border-glass)" }}>
               <img
                 src={selectedUserProfile.avatar_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80"}
                 alt="Profile Avatar"
@@ -995,7 +995,7 @@ export default function PlacesSuggestionsPage() {
                 style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--colorPrimary)" }}
               />
               <div>
-                <h4 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
+                <h4 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                   {selectedUserProfile.full_name || "غير محدد"}
                 </h4>
                 <div style={{ fontSize: "0.85rem", color: "var(--colorPrimary)", direction: "ltr", textAlign: "right" }}>
@@ -1006,35 +1006,35 @@ export default function PlacesSuggestionsPage() {
 
             {/* Profile Details List */}
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--textSecondary)", marginBottom: "24px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--borderGlass)", borderRadius: "10px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                 <span>📧 البريد الإلكتروني:</span>
-                <strong style={{ color: "var(--textPrimary)" }}>{selectedUserProfile.email || "غير متوفر"}</strong>
+                <strong style={{ color: "var(--text-primary)" }}>{selectedUserProfile.email || "غير متوفر"}</strong>
               </div>
 
               {selectedUserProfile.phone && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--borderGlass)", borderRadius: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>📞 رقم الهاتف:</span>
-                  <strong style={{ color: "var(--textPrimary)", direction: "ltr" }}>{selectedUserProfile.phone}</strong>
+                  <strong style={{ color: "var(--text-primary)", direction: "ltr" }}>{selectedUserProfile.phone}</strong>
                 </div>
               )}
 
               {(selectedUserProfile.governorate || selectedUserProfile.city) && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--borderGlass)", borderRadius: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>📍 المحافظة / المدينة:</span>
-                  <strong style={{ color: "var(--textPrimary)" }}>{selectedUserProfile.governorate || ""} {selectedUserProfile.city ? `(${selectedUserProfile.city})` : ""}</strong>
+                  <strong style={{ color: "var(--text-primary)" }}>{selectedUserProfile.governorate || ""} {selectedUserProfile.city ? `(${selectedUserProfile.city})` : ""}</strong>
                 </div>
               )}
 
               {selectedUserProfile.dob && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--borderGlass)", borderRadius: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>🎂 تاريخ الميلاد:</span>
-                  <strong style={{ color: "var(--textPrimary)" }}>{selectedUserProfile.dob}</strong>
+                  <strong style={{ color: "var(--text-primary)" }}>{selectedUserProfile.dob}</strong>
                 </div>
               )}
 
               {selectedUserProfile.interests && selectedUserProfile.interests.length > 0 && (
-                <div style={{ padding: "10px 14px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--borderGlass)", borderRadius: "12px" }}>
-                  <div style={{ marginBottom: "8px", fontWeight: "700", color: "var(--textPrimary)", fontSize: "0.88rem" }}>🎯 الاهتمامات:</div>
+                <div style={{ padding: "10px 14px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "12px" }}>
+                  <div style={{ marginBottom: "8px", fontWeight: "700", color: "var(--text-primary)", fontSize: "0.88rem" }}>🎯 الاهتمامات:</div>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {selectedUserProfile.interests.map((intKey: string, i: number) => {
                       const item = getInterestObj(intKey);
@@ -1064,16 +1064,16 @@ export default function PlacesSuggestionsPage() {
               )}
 
               {selectedUserProfile.bio && (
-                <div style={{ padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--borderGlass)", borderRadius: "10px" }}>
+                <div style={{ padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <div style={{ marginBottom: "4px" }}>📝 نبذة شخصية:</div>
-                  <div style={{ color: "var(--textPrimary)", fontStyle: "italic" }}>"{selectedUserProfile.bio}"</div>
+                  <div style={{ color: "var(--text-primary)", fontStyle: "italic" }}>"{selectedUserProfile.bio}"</div>
                 </div>
               )}
 
               {selectedUserProfile.created_at && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--borderGlass)", borderRadius: "10px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>📅 تاريخ الانضمام:</span>
-                  <strong style={{ color: "var(--textPrimary)" }}>
+                  <strong style={{ color: "var(--text-primary)" }}>
                     {new Date(selectedUserProfile.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </strong>
                 </div>
@@ -1110,7 +1110,7 @@ export default function PlacesSuggestionsPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setRejectingProposal(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isProcessingProposal,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}
@@ -1151,7 +1151,7 @@ export default function PlacesSuggestionsPage() {
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setProposalToDelete(null),
-          bgColor: "var(--cancelBtn)",
+          bgColor: "var(--btn-cancel)",
           disabled: isProcessingProposal,
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
         }}
@@ -1167,8 +1167,8 @@ export default function PlacesSuggestionsPage() {
             feedbackModal.type === "success"
               ? "#34c759"
               : feedbackModal.type === "error"
-              ? "#ff3b30"
-              : "#ff9500"
+                ? "#ff3b30"
+                : "#ff9500"
           }
           iconNode={
             feedbackModal.type === "success" ? (
@@ -1200,8 +1200,8 @@ export default function PlacesSuggestionsPage() {
             feedbackModal.type === "success"
               ? "rgba(52, 199, 89, 0.3)"
               : feedbackModal.type === "error"
-              ? "rgba(255, 59, 48, 0.3)"
-              : "rgba(255, 149, 0, 0.3)"
+                ? "rgba(255, 59, 48, 0.3)"
+                : "rgba(255, 149, 0, 0.3)"
           }
           message={feedbackModal.message}
           primaryButton={{
@@ -1211,8 +1211,8 @@ export default function PlacesSuggestionsPage() {
               feedbackModal.type === "success"
                 ? "linear-gradient(135deg, #34c759, #00d4aa)"
                 : feedbackModal.type === "error"
-                ? "#ff3b30"
-                : "#ff9500",
+                  ? "#ff3b30"
+                  : "#ff9500",
             icon:
               feedbackModal.type === "success" ? (
                 <i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }} />

@@ -9,10 +9,10 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
   return (
     <div
       style={{
-        background: "var(--bgGlass)",
+        background: "var(--bg-glass)",
         padding: "16px",
         borderRadius: "var(--ra-8)",
-        border: "1px solid var(--borderGlass)"
+        border: "1px solid var(--border-glass)"
       }}
     >
       <h4
@@ -20,13 +20,14 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
           margin: "0 0 14px 0",
           fontSize: "0.92rem",
           fontWeight: "800",
-          color: "var(--textPrimary)",
+          color: "var(--text-primary)",
           display: "flex",
           alignItems: "center",
-          gap: "6px"
+          gap: "6px",
+          fontFamily: "var(--font-sub)"
         }}
       >
-        <i className="bx bx-git-repo-forked" style={{ color: "var(--colorSecondary)" }} />
+        <i className="bx bx-git-repo-forked" style={{ color: "var(--color-secondary)" }} />
         <span>خطوات ومراحل المسار:</span>
       </h4>
 
@@ -44,7 +45,7 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                     width: "24px",
                     height: "24px",
                     borderRadius: "50%",
-                    backgroundColor: "var(--colorSecondary)",
+                    backgroundColor: "var(--color-secondary)",
                     color: "#ffffff",
                     display: "flex",
                     alignItems: "center",
@@ -70,7 +71,7 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                       marginBottom: "8px"
                     }}
                   >
-                    <h5 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--textPrimary)" }}>
+                    <h5 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
                       {leg.title}
                     </h5>
 
@@ -78,10 +79,10 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                       {leg.cost !== undefined && (
                         <span
                           style={{
-                            background: "rgba(16, 185, 129, 0.1)",
-                            color: "#10b981",
+                            background: "var(--tab-active-bg)",
+                            color: "var(--tab-active-color)",
                             padding: "2px 8px",
-                            borderRadius: "6px",
+                            borderRadius: "var(--ra-6)",
                             fontSize: "0.74rem",
                             fontWeight: "700"
                           }}
@@ -92,10 +93,10 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                       {leg.duration && (
                         <span
                           style={{
-                            background: "rgba(59, 130, 246, 0.1)",
-                            color: "var(--colorSecondary)",
+                            background: "var(--tab-active-bg)",
+                            color: "var(--tab-active-color)",
                             padding: "2px 8px",
-                            borderRadius: "6px",
+                            borderRadius: "var(--ra-6)",
                             fontSize: "0.74rem",
                             fontWeight: "700"
                           }}
@@ -110,7 +111,7 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                     {(leg?.steps || []).map((stepText, sIdx) => (
                       <div key={sIdx} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-                        <span style={{ color: "var(--colorSecondary)", fontSize: "0.8rem", marginTop: "2px" }}>•</span>
+                        <span style={{ color: "var(--color-secondary)", fontSize: "0.8rem", marginTop: "2px" }}>•</span>
                         <div
                           style={{
                             fontSize: "0.86rem",
@@ -134,7 +135,7 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                     <div
                       style={{
                         width: "2px",
-                        backgroundColor: "var(--colorSecondary)",
+                        backgroundColor: "var(--color-secondary)",
                         minHeight: "14px",
                         opacity: 0.35,
                       }}

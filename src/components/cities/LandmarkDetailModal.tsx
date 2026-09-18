@@ -296,7 +296,7 @@ export default function LandmarkDetailModal({
 
         .landmark-modal-shell {
           background-color: var(--bgPrimary);
-          color: var(--textPrimary);
+          color: var(--text-primary);
           border: 1px solid var(--border-color);
         }
 
@@ -308,7 +308,7 @@ export default function LandmarkDetailModal({
         .landmark-modal-btn {
           background: var(--bgPrimary);
           border: 1px solid var(--border-color);
-          color: var(--textPrimary);
+          color: var(--text-primary);
         }
 
         .landmark-modal-card {
@@ -323,8 +323,8 @@ export default function LandmarkDetailModal({
           box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
-        .landmark-modal-textPrimary {
-          color: var(--textPrimary);
+        .landmark-modal-text-primary {
+          color: var(--text-primary);
         }
 
         .landmark-modal-textSecondary {
@@ -425,7 +425,7 @@ export default function LandmarkDetailModal({
             <div style={{ marginBottom: "20px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px" }}>
 
-                <h2 className="landmark-modal-textPrimary" style={{ fontSize: "1.8rem", fontWeight: "800", margin: "4px 0 12px 0" }}>
+                <h2 className="landmark-modal-text-primary" style={{ fontSize: "1.8rem", fontWeight: "800", margin: "4px 0 12px 0" }}>
                   {landmark.name}
                 </h2>
 
@@ -435,7 +435,7 @@ export default function LandmarkDetailModal({
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: isFav ? "#ef4444" : "var(--textPrimary)",
+                      color: isFav ? "#ef4444" : "var(--text-primary)",
                       width: "40px",
                       height: "40px",
                       display: "flex",
@@ -532,7 +532,7 @@ export default function LandmarkDetailModal({
                     fontSize: "1.1rem",
                     fontWeight: "700",
                     marginBottom: "20px",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
@@ -595,7 +595,7 @@ export default function LandmarkDetailModal({
                 marginBottom: "24px",
               }}
             >
-              <h2 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "8px", color: "var(--textPrimary)" }}>
+              <h2 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>
                 وصف المكان
               </h2>
               <p className="landmark-modal-textSecondary sub-title" style={{ fontSize: "0.98rem", lineHeight: "1.8", margin: 0 }}>
@@ -617,7 +617,7 @@ export default function LandmarkDetailModal({
                     fontSize: "1.1rem",
                     fontWeight: "700",
                     marginBottom: "14px",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
@@ -703,7 +703,7 @@ export default function LandmarkDetailModal({
                             style={{
                               fontSize: "0.68rem",
                               fontWeight: "700",
-                              color: "var(--textPrimary)",
+                              color: "var(--text-primary)",
                               lineHeight: "1.3",
                             }}
                           >
@@ -752,7 +752,7 @@ export default function LandmarkDetailModal({
                     fontSize: "1.1rem",
                     fontWeight: "700",
                     marginBottom: "14px",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
@@ -855,7 +855,7 @@ export default function LandmarkDetailModal({
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
-                          <h4 className="landmark-modal-textPrimary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <h4 className="landmark-modal-text-primary sub-title" style={{ fontSize: "1.02rem", fontWeight: "800", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {item.name}
                           </h4>
                           {item.is_popular && (

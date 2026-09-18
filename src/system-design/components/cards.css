@@ -9,9 +9,9 @@
    1. Glass Panel (Navigation, Headers, Sidebars)
    ========================================================================== */
 .glass-panel {
-  border: 1px solid var(--borderGlass);
+  border: 1px solid var(--border-glass);
   border-radius: var(--ra-10);
-  background: var(--bgGlass);
+  background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   transition: var(--transition-smooth);

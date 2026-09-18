@@ -3,12 +3,13 @@ CREATE TABLE IF NOT EXISTS public.transit_routes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     from_location TEXT NOT NULL,
     to_location TEXT NOT NULL,
-    type TEXT NOT NULL CHECK (type IN ('microbus', 'bus', 'car', 'train', 'monorail', 'metro', 'plane', 'ship', 'multi')),
+    type TEXT NOT NULL CHECK (type IN ('microbus', 'bus', 'car', 'train', 'monorail', 'metro', 'plane', 'ship', 'multi', 'lrt', 'brt')),
     type_name TEXT NOT NULL,
     icon TEXT NOT NULL DEFAULT 'bx bx-bus',
     cost INTEGER NOT NULL DEFAULT 0,
     duration TEXT NOT NULL,
     steps JSONB NOT NULL DEFAULT '[]'::jsonb,
+    legs JSONB DEFAULT '[]'::jsonb,
     tips TEXT,
     from_aliases TEXT,
     to_aliases TEXT,
@@ -34,12 +35,13 @@ CREATE POLICY "Admins can manage transit routes" ON public.transit_routes
         )
     );
 
--- Migration to update check constraint for existing tables
+-- Migration to update check constraint for existing tables (adds LRT and BRT)
 ALTER TABLE public.transit_routes DROP CONSTRAINT IF EXISTS transit_routes_type_check;
 ALTER TABLE public.transit_routes ADD CONSTRAINT transit_routes_type_check 
-    CHECK (type IN ('microbus', 'bus', 'car', 'train', 'monorail', 'metro', 'plane', 'ship', 'multi'));
+    CHECK (type IN ('microbus', 'bus', 'car', 'train', 'monorail', 'metro', 'plane', 'ship', 'multi', 'lrt', 'brt'));
 
--- Migration to add map_link column to existing tables
+-- Migration to add legs & map_link columns to existing tables
+ALTER TABLE public.transit_routes ADD COLUMN IF NOT EXISTS legs JSONB DEFAULT '[]'::jsonb;
 ALTER TABLE public.transit_routes ADD COLUMN IF NOT EXISTS map_link TEXT;
 
 

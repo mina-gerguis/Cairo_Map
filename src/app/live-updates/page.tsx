@@ -132,7 +132,7 @@ export default function LiveUpdatesPage() {
               <span className="pulse-dot" style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981" }} />
               تحديث حي ومباشر (Live)
             </div>
-            <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+            <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
               🚦 حالة الطريق والمواصلات الآن
             </h1>
             <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", marginTop: "6px", margin: 0 }}>
@@ -166,8 +166,8 @@ export default function LiveUpdatesPage() {
             style={{
               padding: "8px 18px",
               borderRadius: "14px",
-              border: activeFilter === tab.id ? "1px solid #6366f1" : "1px solid var(--borderGlass)",
-              background: activeFilter === tab.id ? "rgba(99, 102, 241, 0.2)" : "var(--bgGlass)",
+              border: activeFilter === tab.id ? "1px solid #6366f1" : "1px solid var(--border-glass)",
+              background: activeFilter === tab.id ? "rgba(99, 102, 241, 0.2)" : "var(--bg-glass)",
               color: activeFilter === tab.id ? "#818cf8" : "var(--textSecondary)",
               fontWeight: "700",
               fontSize: "0.9rem",
@@ -203,7 +203,7 @@ export default function LiveUpdatesPage() {
                   <span style={{ fontSize: "0.82rem", color: "var(--text-muted)", display: "block", marginBottom: "2px" }}>
                     📍 {report.location} • {report.timeAgo}
                   </span>
-                  <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+                  <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
                     {report.title}
                   </h3>
                 </div>
@@ -227,7 +227,7 @@ export default function LiveUpdatesPage() {
                 {report.description}
               </p>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed var(--borderGlass)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "8px", borderTop: "1px dashed var(--border-glass)" }}>
                 <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
                   تم التأكيد بواسطة الركاب
                 </span>
@@ -236,10 +236,10 @@ export default function LiveUpdatesPage() {
                   onClick={() => handleUpvote(report.id)}
                   style={{
                     background: "rgba(255, 255, 255, 0.06)",
-                    border: "1px solid var(--borderGlass)",
+                    border: "1px solid var(--border-glass)",
                     borderRadius: "10px",
                     padding: "4px 12px",
-                    color: "var(--textPrimary)",
+                    color: "var(--text-primary)",
                     fontSize: "0.82rem",
                     fontWeight: "700",
                     cursor: "pointer",
@@ -261,7 +261,7 @@ export default function LiveUpdatesPage() {
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.8)", zIndex: 100000, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
           <div className="glass-panel" style={{ width: "100%", maxWidth: "500px", padding: "28px", borderRadius: "24px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>إضافة بلاغ جديد للحالة والمرور 📢</h3>
+              <h3 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>إضافة بلاغ جديد للحالة والمرور 📢</h3>
               <button onClick={() => setShowModal(false)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer" }}>✕</button>
             </div>
 
@@ -274,7 +274,7 @@ export default function LiveUpdatesPage() {
                   placeholder="مثال: محطة مترو العتبة أو طريق الدائري"
                   value={newLocation}
                   onChange={(e) => setNewLocation(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", borderRadius: "12px", background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", color: "var(--textPrimary)", outline: "none" }}
+                  style={{ width: "100%", padding: "10px 14px", borderRadius: "12px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-primary)", outline: "none" }}
                 />
               </div>
 
@@ -284,7 +284,7 @@ export default function LiveUpdatesPage() {
                   <select
                     value={newType}
                     onChange={(e: any) => setNewType(e.target.value)}
-                    style={{ width: "100%", padding: "10px", borderRadius: "12px", background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px", borderRadius: "12px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-primary)" }}
                   >
                     <option value="metro">مترو الأنفاق</option>
                     <option value="road">طريق/دائري</option>
@@ -298,7 +298,7 @@ export default function LiveUpdatesPage() {
                   <select
                     value={newStatus}
                     onChange={(e: any) => setNewStatus(e.target.value)}
-                    style={{ width: "100%", padding: "10px", borderRadius: "12px", background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", color: "var(--textPrimary)" }}
+                    style={{ width: "100%", padding: "10px", borderRadius: "12px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-primary)" }}
                   >
                     <option value="clear">سالك 🟢</option>
                     <option value="moderate">زحام متوسط 🟡</option>
@@ -316,7 +316,7 @@ export default function LiveUpdatesPage() {
                   placeholder="مثال: تكدس في رصيف اتجاه العتبة"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", borderRadius: "12px", background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", color: "var(--textPrimary)", outline: "none" }}
+                  style={{ width: "100%", padding: "10px 14px", borderRadius: "12px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-primary)", outline: "none" }}
                 />
               </div>
 
@@ -327,7 +327,7 @@ export default function LiveUpdatesPage() {
                   placeholder="اكتب ملاحظات إضافية تساعد الركاب..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  style={{ width: "100%", padding: "10px 14px", borderRadius: "12px", background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", color: "var(--textPrimary)", outline: "none", resize: "none" }}
+                  style={{ width: "100%", padding: "10px 14px", borderRadius: "12px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-primary)", outline: "none", resize: "none" }}
                 />
               </div>
 
