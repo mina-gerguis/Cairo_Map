@@ -156,15 +156,18 @@ html.light .btn-danger:hover {
   background: var(--btn-danger);
   border: 1px solid var(--btn-danger);
   border-radius: var(--radiusBtn);
-  color: #ffffff;
-}
-
-html.light .btn-report {
-  color: #ff0000;
+  color: #fff;
 }
 
 .btn-report:hover {
   background: #ff0000;
+}
+
+html.light .btn-report {
+  color: #ff2f2f;
+}
+
+html.light .btn-report:hover {
   color: #ffffff;
 }
 

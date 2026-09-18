@@ -24,7 +24,7 @@ export default function BottomReportBanner({ onOpenReportModal }: BottomReportBa
       }}
     >
       <div style={{ flex: "1 1 300px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexDirection: "row-reverse" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexDirection: "row-reverse", justifyContent: "flex-end" }}>
           <h2
             style={{
               margin: "0 0 6px",

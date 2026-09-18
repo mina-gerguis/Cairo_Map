@@ -225,7 +225,7 @@ export default function WeatherComfortWidget() {
       <>
         <div
           style={{
-            background: "var(--bgAlert)",
+            background: "var(--bg-glass)",
             border: "1px solid var(--border-glass)",
             borderRadius: "var(--ra-4)",
             padding: "14px 18px",
@@ -282,8 +282,8 @@ export default function WeatherComfortWidget() {
                 <button
                   onClick={() => setShowHelperModal(true)}
                   style={{
-                    background: "var(--secondBtn)",
-                    border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.15))",
+                    background: "var(--btn-secondary)",
+                    border: "1px solid var(--border-glass)",
                     color: "var(--text-primary)",
                     padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
@@ -297,12 +297,6 @@ export default function WeatherComfortWidget() {
                     fontFamily: "var(--font-sub)",
                     transition: "background 0.2s",
                     width: "100%",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
                   }}
                 >
                   <FaInfoCircle style={{ color: "#6c63ff", fontSize: "0.85rem" }} />
@@ -340,8 +334,8 @@ export default function WeatherComfortWidget() {
     <>
       <div
         style={{
-          background: "linear-gradient(135deg, rgba(179, 179, 179, 0.12) 0%, rgba(95, 95, 95, 0.08) 100%)",
-          border: "1px solid rgba(136, 136, 136, 0.3)",
+          background: "var(--bg-glass)",
+          border: "1px solid var(--border-glass)",
           borderRadius: "var(--ra-4)",
           padding: "12px 16px",
           marginBottom: "20px",
