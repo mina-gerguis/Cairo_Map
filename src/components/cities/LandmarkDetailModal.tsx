@@ -328,7 +328,7 @@ export default function LandmarkDetailModal({
         }
 
         .landmark-modal-textSecondary {
-          color: var(--textSecondary);
+          color: var(--text-secondary);
         }
 
         .landmark-modal-text-muted {
@@ -690,7 +690,7 @@ export default function LandmarkDetailModal({
                             alignItems: "center",
                             justifyContent: "center",
                             flexShrink: 0,
-                            color: "var(--textSecondary)",
+                            color: "var(--text-secondary)",
                             fontSize: "1.2rem",
                           }}
                         >

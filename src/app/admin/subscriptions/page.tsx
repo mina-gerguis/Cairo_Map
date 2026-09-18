@@ -437,7 +437,7 @@ export default function AdminSubscriptionsPage() {
     return (
       <div className={styles.adminLoadingContainer}>
         <div className={styles.spinner} />
-        <p style={{ marginTop: "12px", color: "var(--textSecondary)" }}>جاري التحقق من الصلاحيات والبيانات...</p>
+        <p style={{ marginTop: "12px", color: "var(--text-secondary)" }}>جاري التحقق من الصلاحيات والبيانات...</p>
       </div>
     );
   }
@@ -447,7 +447,7 @@ export default function AdminSubscriptionsPage() {
       <div className={styles.adminAccessDenied}>
         <i className="bx bx-lock-alt" style={{ fontSize: "4rem", color: "var(--accent-red)" }} />
         <h2 style={{ marginTop: "16px", color: "var(--text-primary)" }}>عفواً، الدخول غير مصرح به</h2>
-        <p style={{ color: "var(--textSecondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
+        <p style={{ color: "var(--text-secondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
         <button onClick={() => router.push("/")} className={styles.backBtn} style={{ marginTop: "16px" }}>
           العودة للرئيسية
         </button>
@@ -608,7 +608,7 @@ export default function AdminSubscriptionsPage() {
           {loadingUsers ? (
             <div style={{ textAlign: "center", padding: "50px 0" }}>
               <div className={styles.spinner} style={{ margin: "0 auto 14px" }} />
-              <p style={{ color: "var(--textSecondary)", fontWeight: "600" }}>جاري تحميل قائمة المشتركين...</p>
+              <p style={{ color: "var(--text-secondary)", fontWeight: "600" }}>جاري تحميل قائمة المشتركين...</p>
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className={styles.adsEmptyState}>
@@ -689,7 +689,7 @@ export default function AdminSubscriptionsPage() {
                               style={{
                                 padding: "5px 5px",
                                 borderRadius: "50%",
-                                background: "var(--bgSecondary)",
+                                background: "var(--bg-secondary)",
                               }}
                             >
                               <i className="bx bx-edit" />
@@ -721,7 +721,7 @@ export default function AdminSubscriptionsPage() {
           {loadingPlans ? (
             <div style={{ textAlign: "center", padding: "50px 0" }}>
               <div className={styles.spinner} style={{ margin: "0 auto 14px" }} />
-              <p style={{ color: "var(--textSecondary)", fontWeight: "600" }}>جاري تحميل تفاصيل الباقات...</p>
+              <p style={{ color: "var(--text-secondary)", fontWeight: "600" }}>جاري تحميل تفاصيل الباقات...</p>
             </div>
           ) : (
             <div className={styles.planCardGrid}>
@@ -737,11 +737,11 @@ export default function AdminSubscriptionsPage() {
 
                     <div style={{ margin: "16px 0" }}>
                       <div style={{ marginBottom: "8px", display: "flex", alignItems: "baseline", gap: "6px" }}>
-                        <span style={{ fontSize: "0.88rem", color: "var(--textSecondary)" }}>السعر الشهري:</span>
+                        <span style={{ fontSize: "0.88rem", color: "var(--text-secondary)" }}>السعر الشهري:</span>
                         <strong className={styles.planPriceTag}>{p.price_monthly} ج.م</strong>
                       </div>
                       <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                        <span style={{ fontSize: "0.88rem", color: "var(--textSecondary)" }}>السعر السنوي:</span>
+                        <span style={{ fontSize: "0.88rem", color: "var(--text-secondary)" }}>السعر السنوي:</span>
                         <strong style={{ fontSize: "1.2rem", fontWeight: "900", color: "#3b82f6" }}>{p.price_yearly} ج.م</strong>
                       </div>
                     </div>
@@ -861,7 +861,7 @@ export default function AdminSubscriptionsPage() {
                     padding: "12px 20px",
                     borderRadius: "12px",
                     background: "transparent",
-                    color: "var(--textSecondary)",
+                    color: "var(--text-secondary)",
                     border: "1px solid var(--border-glass)",
                     cursor: "pointer",
                     fontWeight: "700",
@@ -1008,7 +1008,7 @@ export default function AdminSubscriptionsPage() {
                     padding: "12px 20px",
                     borderRadius: "12px",
                     background: "transparent",
-                    color: "var(--textSecondary)",
+                    color: "var(--text-secondary)",
                     border: "1px solid var(--border-glass)",
                     cursor: "pointer",
                     fontWeight: "700",

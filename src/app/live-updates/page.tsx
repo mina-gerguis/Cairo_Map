@@ -135,7 +135,7 @@ export default function LiveUpdatesPage() {
             <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
               🚦 حالة الطريق والمواصلات الآن
             </h1>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", marginTop: "6px", margin: 0 }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", marginTop: "6px", margin: 0 }}>
               تابع البلاغات المرورية المباشرة وازدحام محطات المترو والطرق الرئيسية من تجارب الركاب والسائقين لحظة بلحظة.
             </p>
           </div>
@@ -168,7 +168,7 @@ export default function LiveUpdatesPage() {
               borderRadius: "14px",
               border: activeFilter === tab.id ? "1px solid #6366f1" : "1px solid var(--border-glass)",
               background: activeFilter === tab.id ? "rgba(99, 102, 241, 0.2)" : "var(--bg-glass)",
-              color: activeFilter === tab.id ? "#818cf8" : "var(--textSecondary)",
+              color: activeFilter === tab.id ? "#818cf8" : "var(--text-secondary)",
               fontWeight: "700",
               fontSize: "0.9rem",
               cursor: "pointer",
@@ -223,7 +223,7 @@ export default function LiveUpdatesPage() {
                 </span>
               </div>
 
-              <p style={{ fontSize: "0.92rem", color: "var(--textSecondary)", margin: 0, lineHeight: "1.5" }}>
+              <p style={{ fontSize: "0.92rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.5" }}>
                 {report.description}
               </p>
 
@@ -267,7 +267,7 @@ export default function LiveUpdatesPage() {
 
             <form onSubmit={handleAddReport} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>الموقع / المحطة / الطريق</label>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>الموقع / المحطة / الطريق</label>
                 <input
                   type="text"
                   required
@@ -280,7 +280,7 @@ export default function LiveUpdatesPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>وسيلة النقل</label>
+                  <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>وسيلة النقل</label>
                   <select
                     value={newType}
                     onChange={(e: any) => setNewType(e.target.value)}
@@ -294,7 +294,7 @@ export default function LiveUpdatesPage() {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>حالة المرور</label>
+                  <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>حالة المرور</label>
                   <select
                     value={newStatus}
                     onChange={(e: any) => setNewStatus(e.target.value)}
@@ -309,7 +309,7 @@ export default function LiveUpdatesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>عنوان البلاغ المختصر</label>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>عنوان البلاغ المختصر</label>
                 <input
                   type="text"
                   required
@@ -321,7 +321,7 @@ export default function LiveUpdatesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>التفاصيل (اختياري)</label>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>التفاصيل (اختياري)</label>
                 <textarea
                   rows={3}
                   placeholder="اكتب ملاحظات إضافية تساعد الركاب..."

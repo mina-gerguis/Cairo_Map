@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "../directions.module.css";
 import { GroupedRoute } from "../types";
 
 interface AdminDirectionsToolbarProps {
@@ -40,7 +39,8 @@ export function AdminDirectionsToolbar({
         alignItems: "center",
         flexWrap: "wrap",
         gap: "12px",
-        padding: "0 4px"
+        padding: "0 4px",
+        marginBottom: "16px"
       }}
     >
       {/* Left Group: Select All Checkbox & Count info */}
@@ -66,28 +66,20 @@ export function AdminDirectionsToolbar({
                 width: "16px",
                 height: "16px",
                 cursor: "pointer",
-                accentColor: "var(--colorPrimary, #2563eb)"
+                accentColor: "var(--color-primary)",
               }}
             />
-            <span>تحديد الكل</span>
+            <span style={{ fontFamily: "var(--font-sub)" }}>تحديد الكل</span>
           </label>
         )}
 
-        <span style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--textSecondary, #64748b)" }}>
-          الطرق والمسارات ({totalCount})
+        <span style={{ fontSize: "0.9rem", fontWeight: "800", color: "var(--text-secondary)", fontFamily: "var(--font-sub)" }}>
+          إجمالي المسارات المطابقة ({totalCount})
         </span>
 
         {selectedCount > 0 && (
           <span
-            style={{
-              background: "rgba(0, 111, 238, 0.15)",
-              color: "#3b82f6",
-              border: "1px solid rgba(0, 111, 238, 0.3)",
-              padding: "3px 10px",
-              borderRadius: "8px",
-              fontSize: "0.8rem",
-              fontWeight: "800"
-            }}
+            className="tab"
           >
             تم تحديد ({selectedCount}) مسار
           </span>
@@ -101,7 +93,7 @@ export function AdminDirectionsToolbar({
           <>
             <button
               type="button"
-              className={styles.removeBtn}
+              className="btn btn-danger"
               onClick={onBulkDelete}
               style={{
                 padding: "6px 14px",
@@ -117,31 +109,54 @@ export function AdminDirectionsToolbar({
 
             <button
               type="button"
-              className={styles.secondaryActionBtn}
+              className="btn btn-secondary"
               onClick={onClearSelection}
-              style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+              style={{
+                padding: "6px 12px",
+                fontSize: "0.8rem",
+              }}
             >
               إلغاء التحديد
             </button>
-          </>
+          </> 
         )}
 
         {totalCount > 0 && (
           <>
             <button
               type="button"
-              className={styles.secondaryActionBtn}
+              className="btn"
               onClick={onExpandAll}
-              style={{ padding: "6px 12px", fontSize: "0.78rem" }}
+              style={{
+                padding: "6px 12px",
+                fontSize: "0.78rem",
+                background: "rgba(255, 255, 255, 0.04)",
+                border: "1px solid var(--border-glass)",
+                color: "var(--text-primary)",
+                borderRadius: "8px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px"
+              }}
             >
               <i className="bx bx-expand-vertical" />
               <span>فتح الكل</span>
             </button>
             <button
               type="button"
-              className={styles.secondaryActionBtn}
+              className="btn"
               onClick={onCollapseAll}
-              style={{ padding: "6px 12px", fontSize: "0.78rem" }}
+              style={{
+                padding: "6px 12px",
+                fontSize: "0.78rem",
+                background: "rgba(255, 255, 255, 0.04)",
+                border: "1px solid var(--border-glass)",
+                color: "var(--text-primary)",
+                borderRadius: "8px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px"
+              }}
             >
               <i className="bx bx-collapse-vertical" />
               <span>إغلاق الكل</span>

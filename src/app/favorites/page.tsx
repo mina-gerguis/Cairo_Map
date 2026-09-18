@@ -164,7 +164,7 @@ export default function FavoritesPage() {
                     alt="lock" />
                 </div>
                 <h2 style={{ margin: "0 0 10px", fontSize: "1.3rem", color: "var(--text-primary)" }}>سجل الدخول أولاً</h2>
-                <p className="sub-title" style={{ margin: "0 0 20px", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+                <p className="sub-title" style={{ margin: "0 0 20px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                   يجب عليك تسجيل الدخول لتتمكن من رؤية الأماكن المفضلة لديك وإدارتها.
                 </p>
                 <div style={{ display: "flex", gap: "12px", width: "100%" }}>
@@ -221,7 +221,7 @@ export default function FavoritesPage() {
                 }}
               >
                 الكل
-                <span className="sub-title" style={{ background: selectedFavCategory === "الكل" ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === "الكل" ? "#fff" : "var(--textSecondary)" }}>
+                <span className="sub-title" style={{ background: selectedFavCategory === "الكل" ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === "الكل" ? "#fff" : "var(--text-secondary)" }}>
                   {favorites.length}
                 </span>
               </button>
@@ -250,7 +250,7 @@ export default function FavoritesPage() {
                     }}
                   >
                     {catLabel}
-                    <span style={{ background: selectedFavCategory === catLabel ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === catLabel ? "#fff" : "var(--textSecondary)" }}>
+                    <span style={{ background: selectedFavCategory === catLabel ? "rgba(255,255,255,0.25)" : "var(--bg-glass)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.8rem", color: selectedFavCategory === catLabel ? "#fff" : "var(--text-secondary)" }}>
                       {count}
                     </span>
                   </button>
@@ -286,7 +286,7 @@ export default function FavoritesPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <h2 style={{ fontSize: "1.05rem", margin: "0 0 4px", color: "var(--text-primary)", fontWeight: "bold", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{place.name}</h2>
-                      <p className="sub-title" style={{ fontSize: "0.85rem", color: "var(--textSecondary)", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <p className="sub-title" style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {place.briefLocation}
                       </p>
                       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "8px" }}>

@@ -173,7 +173,7 @@ export function MultiSelectSearch({
           padding: "10px 16px",
           position: "relative",
           background: "var(--bg-glass)",
-          border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+          border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
           borderRadius: "var(--ra-14)",
           boxShadow: isOpen ? "0 0 0 3px rgba(0, 111, 238, 0.15)" : "none",
           transition: "all 0.25s ease"
@@ -192,7 +192,7 @@ export function MultiSelectSearch({
                 }}
                 style={{
                   background: "rgba(0, 111, 238, 0.12)",
-                  color: "var(--colorPrimary)",
+                  color: "var(--color-primary)",
                   border: "1px solid rgba(0, 111, 238, 0.2)",
                   padding: "4px 10px",
                   borderRadius: "14px",
@@ -323,7 +323,7 @@ export function MultiSelectSearch({
                       borderRadius: "8px",
                       cursor: "pointer",
                       background: isChecked ? "rgba(0, 111, 238, 0.08)" : "transparent",
-                      color: isChecked ? "var(--text-primary)" : "var(--textSecondary)",
+                      color: isChecked ? "var(--text-primary)" : "var(--text-secondary)",
                       transition: "all 0.15s ease"
                     }}
                     onMouseEnter={(e) => {
@@ -335,7 +335,7 @@ export function MultiSelectSearch({
                     onMouseLeave={(e) => {
                       if (!isChecked) {
                         e.currentTarget.style.background = "transparent";
-                        e.currentTarget.style.color = "var(--textSecondary)";
+                        e.currentTarget.style.color = "var(--text-secondary)";
                       }
                     }}
                   >
@@ -346,7 +346,7 @@ export function MultiSelectSearch({
                         height: "20px",
                         borderRadius: "6px",
                         border: isChecked ? "none" : "2px solid var(--border-glass-bright)",
-                        background: isChecked ? "var(--colorPrimary)" : "transparent",
+                        background: isChecked ? "var(--color-primary)" : "transparent",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",

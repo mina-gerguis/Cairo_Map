@@ -531,7 +531,7 @@ export default function ParkingPage() {
 
   if (authLoading || loading) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "var(--bgPrimary)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", color: "var(--textSecondary)" }}>
+      <div style={{ minHeight: "100vh", backgroundColor: "var(--bgPrimary)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", color: "var(--text-secondary)" }}>
         <div style={{ width: "40px", height: "40px", border: "4px solid var(--border-glass)", borderTop: "4px solid var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
         <span>جاري التحقق من التفاصيل...</span>
         <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }` }} />
@@ -585,7 +585,7 @@ export default function ParkingPage() {
               <img src="/images/icons2d/parking.png" alt="Parking" loading="lazy" decoding="async" style={{ width: "60px", marginLeft: "10px" }} />
               دليل الجراجات
             </h1>
-            <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
+            <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
               خريطة تفاعلية ودليل جراجات وسط البلد، روكسي، ومحطات المترو التبادلية.
             </p>
           </div>
@@ -613,13 +613,13 @@ export default function ParkingPage() {
               دليل الجراجات يتطلب اشتراك في الباقة الفضية
             </h2>
 
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
               تصفح الدليل الكامل وتفاصيل مواقع الجراجات المتعددة الطوابق والذكية وخدمة اركن واركب متاح للمشتركين بالباقة الفضية أو الذهبية.
             </p>
 
             {/* Perks list */}
             <div style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "12px",
               padding: "16px 20px",
@@ -628,7 +628,7 @@ export default function ParkingPage() {
               maxWidth: "440px"
             }}>
               <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية:</div>
-              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ عرض مواقع وتفاصيل الجراجات المتعددة الطوابق والذكية.</li>
                 <li>✨ معرفة أقرب محطات المترو التبادلية والخدمية لكل جراج.</li>
                 <li>✨ استخدام ميزة التوجيه المباشر بالخرائط لمعرفة الاتجاهات.</li>
@@ -680,8 +680,8 @@ export default function ParkingPage() {
                 style={{
                   padding: "var(--padding-btn)",
                   borderRadius: "var(--radiusBtn)",
-                  background: "var(--bgSecondary)",
-                  color: "var(--textSecondary)",
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-secondary)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
@@ -762,14 +762,14 @@ export default function ParkingPage() {
             <img src="/images/icons2d/parking.png" alt="" loading="lazy" decoding="async" style={{ width: "60px", marginLeft: "10px" }} />
             دليل الجراجات
           </h1>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6", }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6", }}>
             اعثر على أقرب جراج مغطى أو ذكي بالقرب من محطات المترو والأسواق لتفادي الازدحام وركن سيارتك بأمان.
           </p>
 
           {/* Badges indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#818cf8",
               borderRadius: "10px",
@@ -778,7 +778,7 @@ export default function ParkingPage() {
               fontWeight: "700",
             }}>مغطى ومتعدد الطوابق</span>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#10b981",
               borderRadius: "10px",
@@ -787,7 +787,7 @@ export default function ParkingPage() {
               fontWeight: "700",
             }}>جراج ذكي إلكتروني</span>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#f59e0b",
               borderRadius: "10px",
@@ -876,7 +876,7 @@ export default function ParkingPage() {
                   right: "12px",
                   top: "50%",
                   transform: "translateY(-50%)",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   fontSize: "1.2rem",
                 }}
               ></i>
@@ -888,7 +888,7 @@ export default function ParkingPage() {
                 style={{
                   width: "100%",
                   padding: "10px 40px 10px 12px",
-                  backgroundColor: "var(--bgSecondary)",
+                  backgroundColor: "var(--bg-secondary)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "10px",
                   color: "var(--text-primary)",
@@ -901,7 +901,7 @@ export default function ParkingPage() {
 
             {/* Area Filter */}
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ fontSize: "0.82rem", color: "var(--textSecondary)", fontWeight: "600" }}>
+              <label style={{ fontSize: "0.82rem", color: "var(--text-secondary)", fontWeight: "600" }}>
                 تصفية حسب المنطقة:
               </label>
               <select
@@ -910,7 +910,7 @@ export default function ParkingPage() {
                 style={{
                   width: "100%",
                   padding: "10px 12px",
-                  backgroundColor: "var(--bgSecondary)",
+                  backgroundColor: "var(--bg-secondary)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "10px",
                   color: "var(--text-primary)",
@@ -949,7 +949,7 @@ export default function ParkingPage() {
             <div style={{
               textAlign: "center",
               padding: "36px 20px",
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               backgroundColor: "var(--bgPrimary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "15px",
@@ -976,7 +976,7 @@ export default function ParkingPage() {
                   لم يتم العثور على جراجات مطابقة للبحث
                 </p>
                 {searchTerm.trim() && (
-                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)" }}>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)" }}>
                     لا يوجد جراج مسجل باسم &ldquo;<span style={{ color: "var(--color-secondary)", fontWeight: "700" }}>{searchTerm.trim()}</span>&rdquo;
                   </p>
                 )}
@@ -985,7 +985,7 @@ export default function ParkingPage() {
               <div style={{
                 marginTop: "6px",
                 padding: "14px 18px",
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 border: "1px dashed var(--border-glass)",
                 borderRadius: "12px",
                 maxWidth: "420px",
@@ -1062,12 +1062,12 @@ export default function ParkingPage() {
                         }}>
                           {parking.area}
                         </span>
-                        <i className={`bx bx-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: "var(--textSecondary)", fontSize: "1.3rem" }}></i>
+                        <i className={`bx bx-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: "var(--text-secondary)", fontSize: "1.3rem" }}></i>
                       </div>
                     </div>
 
                     {/* Summary Row */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.82rem", color: "var(--text-secondary)" }}>
                       <span>{parking.type}</span>
                       <span style={{ fontWeight: "700", color: "#10b981" }}>{parking.hourlyRate} ج.م / ساعة</span>
                     </div>
@@ -1084,7 +1084,7 @@ export default function ParkingPage() {
                         animation: "fadeIn 0.25s ease"
                       }}>
                         {/* Address */}
-                        <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "flex", alignItems: "flex-start", gap: "6px" }}>
+                        <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "flex-start", gap: "6px" }}>
                           <span style={{ fontSize: "0.95rem" }}>📍</span>
                           <span>{parking.address}</span>
                         </div>
@@ -1101,11 +1101,11 @@ export default function ParkingPage() {
 
                         {/* Capacity & Rates Grid */}
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
+                          <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
                             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "2px" }}>السعة الإجمالية</span>
                             <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>{parking.capacity} سيارة</span>
                           </div>
-                          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
+                          <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", padding: "8px", borderRadius: "8px", textAlign: "center" }}>
                             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "2px" }}>الحد الأقصى لليوم</span>
                             <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "#10b981" }}>{parking.maxDailyRate ? `${parking.maxDailyRate} ج.م` : "غير محدد"}</span>
                           </div>
@@ -1119,8 +1119,8 @@ export default function ParkingPage() {
                           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                             {parking.features.map((feat, idx) => (
                               <span key={idx} style={{
-                                background: "var(--bgSecondary)",
-                                color: "var(--textSecondary)",
+                                background: "var(--bg-secondary)",
+                                color: "var(--text-secondary)",
                                 fontSize: "0.78rem",
                                 padding: "4px 10px",
                                 borderRadius: "6px",
@@ -1243,7 +1243,7 @@ export default function ParkingPage() {
                     handleReportImageSelect(null);
                   }
                 }}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -1270,7 +1270,7 @@ export default function ParkingPage() {
                   <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم استلام بلاغك بنجاح!
                   </h4>
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     شكراً لمساهمتك في تدقيق وتحديث دليل الجراجات والمواقف. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
                   </p>
                 </div>
@@ -1294,7 +1294,7 @@ export default function ParkingPage() {
                   <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
                   </h5>
-                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
                   </p>
                   <button
@@ -1325,7 +1325,7 @@ export default function ParkingPage() {
                   <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تسجيل الدخول مطلوب
                   </h5>
-                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي مشكلة في الجراجات ومتابعة حالته وكسب نقاط المساهمة.
                   </p>
                   <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -1358,8 +1358,8 @@ export default function ParkingPage() {
                           padding: "8px 4px",
                           borderRadius: "8px",
                           border: `1px solid ${reportTargetScope === "general" ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                          background: reportTargetScope === "general" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "general" ? "var(--text-primary)" : "var(--textSecondary)",
+                          background: reportTargetScope === "general" ? "rgba(59, 130, 246, 0.12)" : "var(--bg-secondary)",
+                          color: reportTargetScope === "general" ? "var(--text-primary)" : "var(--text-secondary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1379,8 +1379,8 @@ export default function ParkingPage() {
                           padding: "8px 4px",
                           borderRadius: "8px",
                           border: `1px solid ${reportTargetScope === "parking" ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                          background: reportTargetScope === "parking" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "parking" ? "var(--text-primary)" : "var(--textSecondary)",
+                          background: reportTargetScope === "parking" ? "rgba(59, 130, 246, 0.12)" : "var(--bg-secondary)",
+                          color: reportTargetScope === "parking" ? "var(--text-primary)" : "var(--text-secondary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1422,7 +1422,7 @@ export default function ParkingPage() {
                           style={{
                             width: "100%",
                             padding: "10px 15px 10px 36px",
-                            background: "var(--bgSecondary)",
+                            background: "var(--bg-secondary)",
                             color: "var(--text-primary)",
                             border: reportSelectedParking ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                             fontFamily: "var(--font-body)",
@@ -1454,7 +1454,7 @@ export default function ParkingPage() {
                               alignItems: "center",
                               justifyContent: "center",
                               fontSize: "0.75rem",
-                              color: "var(--textSecondary)",
+                              color: "var(--text-secondary)",
                               cursor: "pointer",
                             }}
                           >
@@ -1470,7 +1470,7 @@ export default function ParkingPage() {
                           top: "100%",
                           left: 0,
                           right: 0,
-                          background: "var(--bgSecondary)",
+                          background: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           borderRadius: "var(--radius-card)",
                           overflow: "hidden",
@@ -1482,7 +1482,7 @@ export default function ParkingPage() {
                           fontFamily: "var(--font-body)"
                         }}>
                           {filteredReportParking.length === 0 ? (
-                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--text-secondary)" }}>
                               لا يوجد جراج مطابق لبحثك "{reportParkingSearchQuery}"
                             </div>
                           ) : (
@@ -1547,7 +1547,7 @@ export default function ParkingPage() {
                         width: "100%",
                         padding: "10px 14px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
@@ -1555,13 +1555,13 @@ export default function ParkingPage() {
                         cursor: "pointer"
                       }}
                     >
-                      <option value="price" style={{ background: "var(--bgSecondary)" }}>تسعيرة أو رسوم الجراج غير صحيحة</option>
-                      <option value="status" style={{ background: "var(--bgSecondary)" }}>الجراج مغلق نهائياً أو تحت الصيانة</option>
-                      <option value="capacity" style={{ background: "var(--bgSecondary)" }}>سعة الجراج غير دقيقة أو ممتلئ دائماً</option>
-                      <option value="address" style={{ background: "var(--bgSecondary)" }}>العنوان أو الموقع الجغرافي على الخريطة غير دقيق</option>
-                      <option value="metro" style={{ background: "var(--bgSecondary)" }}>أقرب محطة مترو غير صحيحة</option>
-                      <option value="app_bug" style={{ background: "var(--bgSecondary)" }}>مشكلة تقنية في صفحة الجراجات</option>
-                      <option value="other" style={{ background: "var(--bgSecondary)" }}>ملاحظة أو مشكلة أخرى</option>
+                      <option value="price" style={{ background: "var(--bg-secondary)" }}>تسعيرة أو رسوم الجراج غير صحيحة</option>
+                      <option value="status" style={{ background: "var(--bg-secondary)" }}>الجراج مغلق نهائياً أو تحت الصيانة</option>
+                      <option value="capacity" style={{ background: "var(--bg-secondary)" }}>سعة الجراج غير دقيقة أو ممتلئ دائماً</option>
+                      <option value="address" style={{ background: "var(--bg-secondary)" }}>العنوان أو الموقع الجغرافي على الخريطة غير دقيق</option>
+                      <option value="metro" style={{ background: "var(--bg-secondary)" }}>أقرب محطة مترو غير صحيحة</option>
+                      <option value="app_bug" style={{ background: "var(--bg-secondary)" }}>مشكلة تقنية في صفحة الجراجات</option>
+                      <option value="other" style={{ background: "var(--bg-secondary)" }}>ملاحظة أو مشكلة أخرى</option>
                     </select>
                   </div>
 
@@ -1581,7 +1581,7 @@ export default function ParkingPage() {
                         minHeight: "100px",
                         padding: "12px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
@@ -1595,7 +1595,7 @@ export default function ParkingPage() {
                   <div>
                     <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       <span>صورة توضيحية للمشكلة (اختياري):</span>
-                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal" }}>
+                      <span style={{ fontSize: "0.74rem", color: "var(--text-secondary)", fontWeight: "normal" }}>
                         JPG, PNG, WEBP (الحد الأقصى 5MB)
                       </span>
                     </label>
@@ -1671,7 +1671,7 @@ export default function ParkingPage() {
                           <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
                             اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                           </div>
-                          <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
+                          <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)" }}>
                             يافطة الجراج، لائحة الأسعار، أو صورة توضيحية للخطأ
                           </div>
                         </div>
@@ -1681,7 +1681,7 @@ export default function ParkingPage() {
                         position: "relative",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         padding: "10px 12px",
                         display: "flex",
                         alignItems: "center",
@@ -1724,7 +1724,7 @@ export default function ParkingPage() {
                           }}>
                             {reportImageFile?.name || "صورة توضيحية"}
                           </div>
-                          <div style={{ fontSize: "0.74rem", color: "var(--textSecondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <div style={{ fontSize: "0.74rem", color: "var(--text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                             <span>
                               {reportImageFile
                                 ? reportImageFile.size < 1024 * 1024
@@ -1938,7 +1938,7 @@ export default function ParkingPage() {
                   <h2 id="suggest-modal-title" style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     اقتراح إضافة جراج جديد
                   </h2>
-                  <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                     ساعدنا في توسيع دليل جراجات القاهرة الكبرى
                   </span>
                 </div>
@@ -1951,7 +1951,7 @@ export default function ParkingPage() {
                     handleSuggestImageSelect(null);
                   }
                 }}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -1963,7 +1963,7 @@ export default function ParkingPage() {
                 <div style={{ textAlign: "center", padding: "20px 0" }}>
                   <i className="bx bx-lock-alt" style={{ fontSize: "3rem", color: "var(--color-secondary)", marginBottom: "12px", display: "block" }}></i>
                   <h4 style={{ margin: "0 0 8px", color: "var(--text-primary)", fontWeight: "700" }}>تسجيل الدخول مطلوب</h4>
-                  <p style={{ margin: "0 0 20px", color: "var(--textSecondary)", fontSize: "0.9rem" }}>
+                  <p style={{ margin: "0 0 20px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
                     يرجى تسجيل الدخول أولاً لتتمكن من تقديم اقتراحات الجراجات والمتابعة مع فريق الدعم.
                   </p>
                   <Link
@@ -2001,14 +2001,14 @@ export default function ParkingPage() {
                   <h4 style={{ margin: "0 0 8px", color: "var(--text-primary)", fontWeight: "800", fontSize: "1.2rem" }}>
                     تم استلام اقتراحك بنجاح!
                   </h4>
-                  <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.92rem", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.92rem", lineHeight: "1.6" }}>
                     شكراً لمساهمتك القيمة. سيقوم فريقنا بمراجعة وتدقيق بيانات الجراج وإضافته للدليل قريباً.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmitSuggestion} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   {suggestLimitChecking && (
-                    <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", textAlign: "center" }}>
+                    <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", textAlign: "center" }}>
                       جاري التحقق من حالة الحساب...
                     </div>
                   )}
@@ -2074,7 +2074,7 @@ export default function ParkingPage() {
                         width: "100%",
                         padding: "10px 14px",
                         borderRadius: "10px",
-                        backgroundColor: "var(--bgSecondary)",
+                        backgroundColor: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         color: "var(--text-primary)",
                         fontSize: "0.92rem",
@@ -2097,7 +2097,7 @@ export default function ParkingPage() {
                           width: "100%",
                           padding: "10px 12px",
                           borderRadius: "10px",
-                          backgroundColor: "var(--bgSecondary)",
+                          backgroundColor: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           color: "var(--text-primary)",
                           fontSize: "0.9rem",
@@ -2125,7 +2125,7 @@ export default function ParkingPage() {
                           width: "100%",
                           padding: "10px 12px",
                           borderRadius: "10px",
-                          backgroundColor: "var(--bgSecondary)",
+                          backgroundColor: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           color: "var(--text-primary)",
                           fontSize: "0.9rem",
@@ -2158,7 +2158,7 @@ export default function ParkingPage() {
                         width: "100%",
                         padding: "10px 14px",
                         borderRadius: "10px",
-                        backgroundColor: "var(--bgSecondary)",
+                        backgroundColor: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         color: "var(--text-primary)",
                         fontSize: "0.92rem",
@@ -2184,7 +2184,7 @@ export default function ParkingPage() {
                           width: "100%",
                           padding: "10px 14px",
                           borderRadius: "10px",
-                          backgroundColor: "var(--bgSecondary)",
+                          backgroundColor: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           color: "var(--text-primary)",
                           fontSize: "0.9rem",
@@ -2208,7 +2208,7 @@ export default function ParkingPage() {
                           width: "100%",
                           padding: "10px 14px",
                           borderRadius: "10px",
-                          backgroundColor: "var(--bgSecondary)",
+                          backgroundColor: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           color: "var(--text-primary)",
                           fontSize: "0.9rem",
@@ -2235,7 +2235,7 @@ export default function ParkingPage() {
                           width: "100%",
                           padding: "10px 14px",
                           borderRadius: "10px",
-                          backgroundColor: "var(--bgSecondary)",
+                          backgroundColor: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           color: "var(--text-primary)",
                           fontSize: "0.88rem",
@@ -2261,7 +2261,7 @@ export default function ParkingPage() {
                           width: "100%",
                           padding: "10px 14px",
                           borderRadius: "10px",
-                          backgroundColor: "var(--bgSecondary)",
+                          backgroundColor: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           color: "var(--text-primary)",
                           fontSize: "0.9rem",
@@ -2302,8 +2302,8 @@ export default function ParkingPage() {
                               fontWeight: "600",
                               cursor: "pointer",
                               border: isSelected ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
-                              backgroundColor: isSelected ? "rgba(59, 130, 246, 0.15)" : "var(--bgSecondary)",
-                              color: isSelected ? "var(--color-secondary)" : "var(--textSecondary)",
+                              backgroundColor: isSelected ? "rgba(59, 130, 246, 0.15)" : "var(--bg-secondary)",
+                              color: isSelected ? "var(--color-secondary)" : "var(--text-secondary)",
                               transition: "all 0.2s ease",
                               display: "inline-flex",
                               alignItems: "center",
@@ -2333,7 +2333,7 @@ export default function ParkingPage() {
                         width: "100%",
                         padding: "10px 14px",
                         borderRadius: "10px",
-                        backgroundColor: "var(--bgSecondary)",
+                        backgroundColor: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         color: "var(--text-primary)",
                         fontSize: "0.9rem",
@@ -2414,7 +2414,7 @@ export default function ParkingPage() {
                         <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)" }}>
                           اضغط لاختيار صورة أو اسحبها هنا
                         </div>
-                        <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}>
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
                           يافطة الجراج، المدخل، أو قائمة الأسعار (حتى 5MB)
                         </div>
                       </div>
@@ -2424,7 +2424,7 @@ export default function ParkingPage() {
                           position: "relative",
                           border: "1px solid var(--border-glass)",
                           borderRadius: "12px",
-                          background: "var(--bgSecondary)",
+                          background: "var(--bg-secondary)",
                           padding: "10px 12px",
                           display: "flex",
                           alignItems: "center",
@@ -2456,7 +2456,7 @@ export default function ParkingPage() {
                           <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {suggestImageFile?.name}
                           </div>
-                          <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}>
+                          <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
                             {((suggestImageFile?.size || 0) / 1024).toFixed(0)} كيلوبايت
                           </div>
                         </div>

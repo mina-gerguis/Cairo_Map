@@ -47,16 +47,11 @@ export function AdminDirectionsList({
           <div
             key={idx}
             className={styles.routeCard}
-            style={{
-              borderColor: isSelected ? "var(--colorPrimary, #2563eb)" : undefined,
-              backgroundColor: isSelected ? "rgba(0, 111, 238, 0.04)" : undefined
-            }}
           >
             {/* Route Card Clickable Accordion Header */}
             <div
-              className={`${styles.accordionHeader} ${
-                !isExpanded ? styles.accordionHeaderCollapsed : ""
-              }`}
+              className={`${styles.accordionHeader} ${!isExpanded ? styles.accordionHeaderCollapsed : ""
+                }`}
               onClick={() => onToggleExpand(routeKey)}
             >
               <div
@@ -89,7 +84,7 @@ export function AdminDirectionsList({
                         width: "18px",
                         height: "18px",
                         cursor: "pointer",
-                        accentColor: "var(--colorPrimary, #2563eb)"
+                        accentColor: "var(--color-primary, #6366f1)"
                       }}
                       title="تحديد هذا المسار"
                     />
@@ -98,16 +93,15 @@ export function AdminDirectionsList({
                   <h3 className={styles.routeTitle}>
                     <span>من</span>
                     <span className={styles.locationBadge}>{route.from_location}</span>
-                    <i className="bx bx-left-arrow-alt" style={{ color: "#3b82f6" }} />
+                    <i className="bx bx-left-arrow-alt" style={{ color: "var(--color-primary)" }} />
                     <span>إلى</span>
                     <span className={styles.locationBadge}>{route.to_location}</span>
                   </h3>
 
                   {/* Chevron Indicator */}
                   <div
-                    className={`${styles.chevronIcon} ${
-                      isExpanded ? styles.chevronRotated : ""
-                    }`}
+                    className={`${styles.chevronIcon} ${isExpanded ? styles.chevronRotated : ""
+                      }`}
                   >
                     <i className="bx bx-chevron-down" />
                   </div>
@@ -116,19 +110,19 @@ export function AdminDirectionsList({
                 {/* Summary Info Pill Bar */}
                 <div className={styles.collapsedSummaryBar}>
                   <span className={styles.summaryPill}>
-                    <i className="bx bx-bus" style={{ color: "#3b82f6" }} />
-                    <span>{route.options.length} وسائل مواصلات</span>
+                    <i className="bx bx-bus" />
+                    <span className="sub-title">{route.options.length} وسائل مواصلات</span>
                   </span>
 
                   <span className={styles.summaryPill}>
-                    <i className="bx bx-wallet" style={{ color: "#10b981" }} />
-                    <span>الأجرة {costSummary}</span>
+                    <i className="bx bx-wallet" />
+                    <span className="sub-title">الأجرة {costSummary}</span>
                   </span>
 
                   {(route.from_aliases || route.to_aliases) && (
-                    <span className={styles.summaryPill} style={{ opacity: 0.8 }}>
+                    <span className={styles.summaryPill}>
                       <i className="bx bx-tag-alt" />
-                      <span>يتضمن كلمات بديلة للبحث</span>
+                      <span className="sub-title">يتضمن كلمات بديلة</span>
                     </span>
                   )}
                 </div>
@@ -136,9 +130,9 @@ export function AdminDirectionsList({
                 {/* Expanded Aliases Preview */}
                 {isExpanded && (route.from_aliases || route.to_aliases) && (
                   <div className={styles.aliasesBar} style={{ marginTop: "6px" }}>
-                    <span>الكلمات البديلة:</span>
+                    <span className="sub-title">الكلمات البديلة:</span>
                     {route.from_aliases && (
-                      <span>
+                      <span className="sub-title">
                         البداية (
                         {route.from_aliases.split(",").map((a, i) => (
                           <span key={i} className={styles.aliasChip}>
@@ -149,7 +143,7 @@ export function AdminDirectionsList({
                       </span>
                     )}
                     {route.to_aliases && (
-                      <span>
+                      <span className="sub-title">
                         الوجهة (
                         {route.to_aliases.split(",").map((a, i) => (
                           <span key={i} className={styles.aliasChip}>
@@ -163,30 +157,26 @@ export function AdminDirectionsList({
                 )}
               </div>
 
-              {/* Actions */}
+              {/* Actions Matching admin/metro buttons */}
               <div
-                style={{ display: "flex", gap: "8px" }}
+                style={{ display: "flex", gap: "8px", alignItems: "center" }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  className={styles.secondaryActionBtn}
-                  onClick={() => onEdit(route)}
-                  style={{ padding: "8px 16px", fontSize: "0.82rem", color: "#60a5fa" }}
-                  title="تعديل بيانات هذا الطريق"
                   type="button"
+                  className="actionBtn actionBtnEdit"
+                  onClick={() => onEdit(route)}
+                  title="تعديل هذا الطريق"
                 >
                   <i className="bx bx-edit-alt" />
-                  <span>تعديل</span>
                 </button>
                 <button
-                  className={styles.removeBtn}
-                  onClick={() => onDelete(route.from_location, route.to_location)}
-                  style={{ padding: "8px 16px", fontSize: "0.82rem" }}
-                  title="حذف هذا الطريق"
                   type="button"
+                  className="actionBtn actionBtnDelete"
+                  onClick={() => onDelete(route.from_location, route.to_location)}
+                  title="حذف هذا الطريق"
                 >
                   <i className="bx bx-trash" />
-                  <span>حذف</span>
                 </button>
               </div>
             </div>
@@ -195,7 +185,7 @@ export function AdminDirectionsList({
             {isExpanded && (
               <div
                 className={styles.optionsGrid}
-                style={{ marginTop: "12px", animation: "slideDown 0.2s ease" }}
+                style={{ marginTop: "16px" }}
               >
                 {(route.options || []).map((opt, optIdx) => (
                   <RouteCardOptionItem key={optIdx} option={opt} />

@@ -482,7 +482,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
             }}
           >
             <div style={{ fontSize: "1.8rem", marginBottom: "8px" }}>📊</div>
-            <h4 style={{ margin: "0 0 4px 0", color: "var(--colorPrimary, #6c63ff)", fontSize: "0.95rem" }}>
+            <h4 style={{ margin: "0 0 4px 0", color: "var(--color-primary, #6c63ff)", fontSize: "0.95rem" }}>
               وحدة إعلانات Google AdSense نشطة
             </h4>
             <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>

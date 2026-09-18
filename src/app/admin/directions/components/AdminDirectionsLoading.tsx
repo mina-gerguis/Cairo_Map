@@ -4,25 +4,21 @@ export function AdminDirectionsLoading() {
   return (
     <div
       style={{
+        padding: "40px",
+        textAlign: "center",
+        color: "#fff",
         display: "flex",
         flexDirection: "column",
+        gap: "12px",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "400px",
-        gap: "16px"
+        minHeight: "400px"
       }}
     >
-      <i
-        className="bx bx-loader-alt"
-        style={{
-          fontSize: "2.5rem",
-          color: "#3b82f6",
-          animation: "spin 1s linear infinite"
-        }}
-      />
-      <p style={{ color: "#94a3b8", fontWeight: "600" }}>
-        جاري تحميل لوحة إدارة المسارات والطرق...
-      </p>
+      <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "2.5rem", color: "var(--color-primary, #6366f1)" }} />
+      <span style={{ fontWeight: "bold", color: "var(--text-primary)" }}>
+        جاري تحميل إدارة خطوط المواصلات...
+      </span>
     </div>
   );
 }

@@ -714,7 +714,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 justifyContent: "space-between",
                 padding: "10px 14px",
                 borderRadius: "var(--ra-8)",
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 border: "1px solid var(--border-glass)",
                 textDecoration: "none",
                 transition: "all 0.2s ease",
@@ -773,8 +773,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   fontSize: "0.75rem",
                   fontWeight: "700",
                   cursor: "pointer",
-                  background: activeMainTab === "phones" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                  color: activeMainTab === "phones" ? "#ffffff" : "var(--textSecondary)",
+                  background: activeMainTab === "phones" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                  color: activeMainTab === "phones" ? "#ffffff" : "var(--text-secondary)",
                   border: activeMainTab === "phones" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                   transition: "all 0.2s ease",
                 }}
@@ -791,8 +791,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   fontSize: "0.75rem",
                   fontWeight: "700",
                   cursor: "pointer",
-                  background: activeMainTab === "telecom" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                  color: activeMainTab === "telecom" ? "#ffffff" : "var(--textSecondary)",
+                  background: activeMainTab === "telecom" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                  color: activeMainTab === "telecom" ? "#ffffff" : "var(--text-secondary)",
                   border: activeMainTab === "telecom" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                   transition: "all 0.2s ease",
                 }}
@@ -806,7 +806,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
           {/* Search Input Container */}
           <div style={{ position: "relative" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0 }}>
+              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
                 <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "6px", color: "var(--color-secondary)" }}></i>
                 ابحث بالاسم، الرقم، التخصص، أو الخدمة:
               </label>
@@ -869,7 +869,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   left: 0,
                   right: 0,
                   zIndex: 2000,
-                  backgroundColor: "var(--bgSecondary)",
+                  backgroundColor: "var(--bg-secondary)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "var(--radius-card)",
                   boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
@@ -907,7 +907,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                           style={{
                             fontSize: "0.72rem",
                             background: "var(--border-glass)",
-                            color: "var(--textSecondary)",
+                            color: "var(--text-secondary)",
                             padding: "2px 6px",
                             borderRadius: "4px",
                           }}
@@ -952,7 +952,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
           {/* Recent Searches Row */}
           {recentSearches.length > 0 && (
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center", marginTop: "-4px" }}>
-              <span style={{ fontSize: "0.78rem", color: "var(--textSecondary)", fontWeight: "600" }}>آخر عمليات البحث:</span>
+              <span style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontWeight: "600" }}>آخر عمليات البحث:</span>
               {recentSearches.map((term, index) => (
                 <button
                   key={index}
@@ -966,7 +966,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     padding: "3px 10px",
                     borderRadius: "6px",
                     border: "1px solid var(--border-glass)",
-                    background: "var(--bgSecondary)",
+                    background: "var(--bg-secondary)",
                     color: "var(--text-primary)",
                     cursor: "pointer",
                   }}
@@ -1031,9 +1031,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 type="button"
                 onClick={() => setSelectedSpecialty("all")}
                 style={{
-                  background: selectedSpecialty === "all" ? "var(--color-secondary)" : "var(--bgSecondary)",
+                  background: selectedSpecialty === "all" ? "var(--color-secondary)" : "var(--bg-secondary)",
                   border: `1px solid ${selectedSpecialty === "all" ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                  color: selectedSpecialty === "all" ? "#ffffff" : "var(--textSecondary)",
+                  color: selectedSpecialty === "all" ? "#ffffff" : "var(--text-secondary)",
                   padding: "4px 12px",
                   borderRadius: "6px",
                   fontSize: "0.78rem",
@@ -1054,9 +1054,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     type="button"
                     onClick={() => setSelectedSpecialty(spec)}
                     style={{
-                      background: active ? "var(--color-secondary)" : "var(--bgSecondary)",
+                      background: active ? "var(--color-secondary)" : "var(--bg-secondary)",
                       border: `1px solid ${active ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                      color: active ? "#ffffff" : "var(--textSecondary)",
+                      color: active ? "#ffffff" : "var(--text-secondary)",
                       padding: "4px 12px",
                       borderRadius: "6px",
                       fontSize: "0.78rem",
@@ -1083,7 +1083,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 <h4 style={{ fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                   لم يتم العثور على أرقام مطابقة لبحثك
                 </h4>
-                <p style={{ fontSize: "0.82rem", color: "var(--textSecondary)", margin: "0 0 14px" }}>
+                <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", margin: "0 0 14px" }}>
                   إذا كنت تعرف رقم هذه الجهة أو الخدمة، ساعدنا في إضافتها ليستفيد الجميع!
                 </p>
                 <button
@@ -1105,7 +1105,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     <div
                       key={entry.id}
                       style={{
-                        backgroundColor: "var(--bgSecondary)",
+                        backgroundColor: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "var(--ra-8)",
                         padding: "14px",
@@ -1173,7 +1173,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                                 style={{
                                   fontSize: "0.68rem",
                                   background: "var(--border-glass)",
-                                  color: "var(--textSecondary)",
+                                  color: "var(--text-secondary)",
                                   padding: "1px 6px",
                                   borderRadius: "4px",
                                   fontWeight: "600",
@@ -1293,7 +1293,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                   onClick={() => setVisibleCount((prev) => prev + 8)}
                   className="btn"
                   style={{
-                    background: "var(--bgSecondary)",
+                    background: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
                     color: "var(--text-primary)",
                     fontSize: "0.85rem",
@@ -1356,9 +1356,9 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                       display: "flex",
                       alignItems: "center",
                       gap: "8px",
-                      background: active ? meta.bg : "var(--bgSecondary)",
+                      background: active ? meta.bg : "var(--bg-secondary)",
                       border: active ? `2px solid ${meta.color}` : "1px solid var(--border-glass)",
-                      color: active ? "var(--text-primary)" : "var(--textSecondary)",
+                      color: active ? "var(--text-primary)" : "var(--text-secondary)",
                       padding: "6px 14px",
                       borderRadius: "8px",
                       cursor: "pointer",
@@ -1389,7 +1389,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                 <h4 style={{ fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                   لا توجد أكواد مطابقة لبحثك في شبكة {COMPANY_META[activeCompany]?.label}
                 </h4>
-                <p style={{ fontSize: "0.82rem", color: "var(--textSecondary)", margin: "0 0 14px" }}>
+                <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", margin: "0 0 14px" }}>
                   إذا كنت تعرف كود هذه الخدمة، اقترحه الآن على الإدارة لإضافته للدليل!
                 </p>
                 <button
@@ -1411,7 +1411,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     <div
                       key={sectionName}
                       style={{
-                        backgroundColor: "var(--bgSecondary)",
+                        backgroundColor: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "var(--ra-8)",
                         overflow: "hidden",
@@ -1442,7 +1442,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                             ({codeList.length} كود)
                           </span>
                         </div>
-                        <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>
+                        <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
                           {isExpanded ? <i className="fa-solid fa-chevron-up"></i> : <i className="fa-solid fa-chevron-down"></i>}
                         </span>
                       </div>
@@ -1506,7 +1506,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                                         type="button"
                                         onClick={() => handleCopyCode(finalCode, item.id)}
                                         style={{
-                                          background: isCopied ? "rgba(16, 185, 129, 0.15)" : "var(--bgSecondary)",
+                                          background: isCopied ? "rgba(16, 185, 129, 0.15)" : "var(--bg-secondary)",
                                           border: isCopied ? "1px solid var(--colorSuccess)" : "1px solid var(--border-glass)",
                                           color: isCopied ? "var(--colorSuccess)" : "var(--text-primary)",
                                           padding: "6px 12px",
@@ -1624,7 +1624,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
               style={{
                 margin: 0,
                 fontSize: "0.82rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 lineHeight: "1.6",
               }}
             >
@@ -1714,7 +1714,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     handleModalImageSelect(null);
                   }
                 }}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -1741,7 +1741,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                     <i className="bx bx-check"></i>
                   </div>
                   <h4 style={{ margin: "0 0 8px", fontWeight: "800", color: "var(--text-primary)" }}>تم إرسال طلبك بنجاح!</h4>
-                  <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.88rem", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem", lineHeight: "1.6" }}>
                     شكراً جزيلاً لمساعدتك في إثراء وتدقيق دليل الهاتف. سيقوم فريقنا بمراجعته وإضافته قريباً.
                   </p>
                 </div>
@@ -1814,8 +1814,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontSize: "0.78rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        background: modalMode === "suggest" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                        color: modalMode === "suggest" ? "#ffffff" : "var(--textSecondary)",
+                        background: modalMode === "suggest" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                        color: modalMode === "suggest" ? "#ffffff" : "var(--text-secondary)",
                         border: modalMode === "suggest" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
@@ -1830,8 +1830,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontSize: "0.78rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        background: modalMode === "report" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                        color: modalMode === "report" ? "#ffffff" : "var(--textSecondary)",
+                        background: modalMode === "report" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                        color: modalMode === "report" ? "#ffffff" : "var(--text-secondary)",
                         border: modalMode === "report" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
@@ -1850,8 +1850,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontSize: "0.76rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        background: modalType === "phone" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                        color: modalType === "phone" ? "var(--color-secondary)" : "var(--textSecondary)",
+                        background: modalType === "phone" ? "rgba(59, 130, 246, 0.12)" : "var(--bg-secondary)",
+                        color: modalType === "phone" ? "var(--color-secondary)" : "var(--text-secondary)",
                         border: modalType === "phone" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
@@ -1867,8 +1867,8 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         fontSize: "0.76rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        background: modalType === "code" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                        color: modalType === "code" ? "var(--color-secondary)" : "var(--textSecondary)",
+                        background: modalType === "code" ? "rgba(59, 130, 246, 0.12)" : "var(--bg-secondary)",
+                        color: modalType === "code" ? "var(--color-secondary)" : "var(--text-secondary)",
                         border: modalType === "code" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                       }}
                     >
@@ -1955,7 +1955,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                               padding: "6px",
                               borderRadius: "6px",
                               border: itemCompany === key ? `2px solid ${meta.color}` : "1px solid var(--border-glass)",
-                              background: itemCompany === key ? meta.bg : "var(--bgSecondary)",
+                              background: itemCompany === key ? meta.bg : "var(--bg-secondary)",
                               color: "var(--text-primary)",
                               fontSize: "0.75rem",
                               fontWeight: "700",
@@ -2046,7 +2046,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                         }}
                       >
                         <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "1.3rem", color: "var(--text-muted)", marginBottom: "2px" }}></i>
-                        <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>اسحب الصورة هنا أو اضغط للاختيار من جهازك</div>
+                        <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)" }}>اسحب الصورة هنا أو اضغط للاختيار من جهازك</div>
                         <input
                           id="directory-modal-img-input"
                           type="file"
@@ -2071,7 +2071,7 @@ ${modalType === "phone" ? `التخصص: ${finalSpec}` : `الشركة: ${compan
                       className="btn"
                       style={{
                         flex: 1,
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         color: "var(--text-primary)",
                         fontSize: "0.85rem",

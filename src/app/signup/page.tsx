@@ -963,7 +963,7 @@ export default function SignupPage() {
                           padding: "0 16px",
                           borderRadius: "var(--radiusBtn, 8px)",
                           border: "none",
-                          background: (!formData.email || !!fieldErrors.email || emailOtpTimer > 0) ? "#e2e8f0" : "var(--colorPrimary, #006FEE)",
+                          background: (!formData.email || !!fieldErrors.email || emailOtpTimer > 0) ? "#e2e8f0" : "var(--color-primary, #006FEE)",
                           color: (!formData.email || !!fieldErrors.email || emailOtpTimer > 0) ? "#94a3b8" : "#ffffff",
                           cursor: (!formData.email || !!fieldErrors.email || emailOtpTimer > 0) ? "not-allowed" : "pointer",
                           fontWeight: "700",
@@ -1010,7 +1010,7 @@ export default function SignupPage() {
                           height: "36px",
                           borderRadius: "50%",
                           background: "rgba(108, 99, 255, 0.1)",
-                          color: "var(--colorPrimary, #006FEE)",
+                          color: "var(--color-primary, #006FEE)",
                           fontSize: "1.2rem",
                           marginBottom: "6px"
                         }}>
@@ -1020,7 +1020,7 @@ export default function SignupPage() {
                           كود التحقق من البريد
                         </div>
                         <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "0.8rem", lineHeight: "1.4" }}>
-                          أدخل الـ 6 أرقام المرسلة إلى <span style={{ color: "var(--colorPrimary, #006FEE)", fontWeight: "700", direction: "ltr", display: "inline-block" }}>{formData.email}</span>
+                          أدخل الـ 6 أرقام المرسلة إلى <span style={{ color: "var(--color-primary, #006FEE)", fontWeight: "700", direction: "ltr", display: "inline-block" }}>{formData.email}</span>
                         </p>
                       </div>
 
@@ -1045,7 +1045,7 @@ export default function SignupPage() {
                               fontWeight: "700",
                               padding: "0",
                               borderRadius: "10px",
-                              border: digit ? "2px solid var(--colorPrimary, #006FEE)" : "2px solid rgba(108, 99, 255, 0.25)",
+                              border: digit ? "2px solid var(--color-primary, #006FEE)" : "2px solid rgba(108, 99, 255, 0.25)",
                               background: digit ? "rgba(108, 99, 255, 0.08)" : "#ffffff",
                               color: "#0f172a",
                               outline: "none",
@@ -1083,7 +1083,7 @@ export default function SignupPage() {
                           fontWeight: "700",
                           borderRadius: "8px",
                           border: "none",
-                          background: "var(--colorPrimary, #006FEE)",
+                          background: "var(--color-primary, #006FEE)",
                           color: "#ffffff",
                           cursor: (emailOtp.length !== 6 || emailOtpLoading) ? "not-allowed" : "pointer",
                           opacity: (emailOtp.length !== 6 || emailOtpLoading) ? 0.6 : 1,

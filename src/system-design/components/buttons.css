@@ -34,7 +34,7 @@
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--colorPrimary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -75,8 +75,8 @@
 /* --- Outlines --- */
 .btn-outline {
   background: var(--cardGlassBg);
-  border: 1.5px solid var(--colorPrimary);
-  color: var(--colorPrimary);
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .btn-outline:hover {
@@ -127,15 +127,30 @@
   color: #ffffff;
 }
 
+.btn-danger:hover {
+  background: #ff0000;
+}
+
 html.light .btn-danger {
   color: #ff0000;
 }
 
-.btn-danger:hover {
-  background: #ff0000;
+html.light .btn-danger:hover {
+  color: #ffffff;
+}
+/* export  */
+.btn-export {
+  background: rgb(16, 185, 129);
+  color: #ffffff;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.btn-export:hover {
+  background: #10b981;
   color: #ffffff;
 }
 
+/* report  */
 .btn-report {
   padding: var(--space-4) var(--space-8);
   background: var(--btn-danger);
@@ -182,7 +197,7 @@ html.light .btn-report {
 /* ==========================================================================
    4. Circular & Action Buttons
    ========================================================================== */
-.closeBtn {
+.btn-close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -196,7 +211,7 @@ html.light .btn-report {
   transition: var(--transition-fast);
 }
 
-.closeBtn:hover {
+.btn-close:hover {
   background: var(--bgPrimary);
   color: var(--text-primary);
 }
@@ -223,7 +238,7 @@ html.light .btn-report {
 .actionBtnEdit {
   background: rgba(59, 130, 246, 0.20);
   border: 1px solid rgba(59, 130, 246, 0.40);
-  color: var(--colorPrimary);
+  color: var(--color-primary);
 }
 
 .actionBtnEdit:hover {

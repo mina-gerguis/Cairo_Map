@@ -93,7 +93,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
         style={{
           width: "100%",
           maxWidth: "480px",
-          background: "var(--bgSecondary)",
+          background: "var(--bg-secondary)",
           border: "1px solid var(--border-glass)",
           borderRadius: "var(--cardGlassRadius)",
           padding: "24px",
@@ -113,7 +113,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
           </h2>
           <button
             onClick={onClose}
-            className="closeBtn"
+            className="btn-close"
             onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)"}
             onMouseLeave={(e) => e.currentTarget.style.background = "var(--bg-glass, rgba(255, 255, 255, 0.05))"}
           >
@@ -122,7 +122,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
         </div>
 
         {/* Notice Info */}
-        <p style={{ fontSize: "0.9rem", color: "var(--textSecondary, #9ca3af)", lineHeight: "1.6", margin: "0 0 20px" }}>
+        <p style={{ fontSize: "0.9rem", color: "var(--text-secondary, #9ca3af)", lineHeight: "1.6", margin: "0 0 20px" }}>
           يبدو أن صلاحية الوصول إلى الموقع مغلقة أو مرفوضة في جهازك. لتشغيل ميزة الأماكن القريبة، يرجى اتباع التعليمات الخاصة بنوع جهازك بالأسفل:
         </p>
 
@@ -153,8 +153,8 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
               cursor: "pointer",
               fontFamily: "var(--font-sub)",
               transition: "all 0.2s",
-              background: activeTab === "ios" ? "var(--colorPrimary)" : "transparent",
-              color: activeTab === "ios" ? "#ffffff" : "var(--textSecondary, #9ca3af)",
+              background: activeTab === "ios" ? "var(--color-primary)" : "transparent",
+              color: activeTab === "ios" ? "#ffffff" : "var(--text-secondary, #9ca3af)",
             }}
           >
             <i className="bx bxl-apple" style={{ fontSize: "1.1rem" }}></i>
@@ -175,8 +175,8 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
               cursor: "pointer",
               fontFamily: "var(--font-sub)",
               transition: "all 0.2s",
-              background: activeTab === "android" ? "var(--colorPrimary)" : "transparent",
-              color: activeTab === "android" ? "#ffffff" : "var(--textSecondary, #9ca3af)",
+              background: activeTab === "android" ? "var(--color-primary)" : "transparent",
+              color: activeTab === "android" ? "#ffffff" : "var(--text-secondary, #9ca3af)",
             }}
           >
             <i className="bx bxl-android" style={{ fontSize: "1.1rem" }}></i>
@@ -197,8 +197,8 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
               cursor: "pointer",
               fontFamily: "var(--font-sub)",
               transition: "all 0.2s",
-              background: activeTab === "desktop" ? "var(--colorPrimary)" : "transparent",
-              color: activeTab === "desktop" ? "#ffffff" : "var(--textSecondary, #9ca3af)",
+              background: activeTab === "desktop" ? "var(--color-primary)" : "transparent",
+              color: activeTab === "desktop" ? "#ffffff" : "var(--text-secondary, #9ca3af)",
             }}
           >
             <i className="bx bx-laptop" style={{ fontSize: "1.1rem" }}></i>

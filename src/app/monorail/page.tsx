@@ -1184,7 +1184,7 @@ ${reportDetails.trim()}`;
             {/* FROM STATION INPUT */}
             <div style={{ position: "relative", zIndex: showFromList ? 20 : 2 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexWrap: "wrap", gap: "6px" }}>
-                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
                   <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "var(--colorSuccess)" }}></i> من محطة:
                   {nearestDistance && selectedFrom && (
                     <span style={{ fontSize: "0.74rem", color: "var(--colorSuccess)", fontWeight: "700", marginRight: "8px", background: "rgba(16, 185, 129, 0.1)", padding: "2px 6px", borderRadius: "6px" }}>
@@ -1231,7 +1231,7 @@ ${reportDetails.trim()}`;
                     top: "100%",
                     left: 0,
                     right: 0,
-                    background: "var(--bgSecondary)",
+                    background: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
                     borderRadius: "var(--radius-card)",
                     overflow: "hidden",
@@ -1309,7 +1309,7 @@ ${reportDetails.trim()}`;
                 type="button"
                 onClick={swapStations}
                 style={{
-                  background: "var(--bgSecondary)",
+                  background: "var(--bg-secondary)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "50%",
                   width: "38px",
@@ -1318,7 +1318,7 @@ ${reportDetails.trim()}`;
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   fontSize: "1.15rem",
                   transition: "all 0.2s ease",
                 }}
@@ -1329,8 +1329,8 @@ ${reportDetails.trim()}`;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "rotate(0deg)";
-                  e.currentTarget.style.background = "var(--bgSecondary)";
-                  e.currentTarget.style.color = "var(--textSecondary)";
+                  e.currentTarget.style.background = "var(--bg-secondary)";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
                 title="تبديل محطة القيام والوصول"
               >
@@ -1341,7 +1341,7 @@ ${reportDetails.trim()}`;
             {/* TO STATION INPUT */}
             <div style={{ position: "relative", zIndex: showToList ? 20 : 1 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
                   <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "#ff0000" }}></i> إلى محطة:
                 </label>
                 <VoiceInputButton
@@ -1383,7 +1383,7 @@ ${reportDetails.trim()}`;
                     top: "100%",
                     left: 0,
                     right: 0,
-                    background: "var(--bgSecondary)",
+                    background: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
                     borderRadius: "var(--radius-card)",
                     overflow: "hidden",
@@ -1486,26 +1486,26 @@ ${reportDetails.trim()}`;
               {/* Results Details Grid */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
                 {/* Number of Stations */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                   <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-secondary)" }}>{routeResult.count}</div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>عدد المحطات</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>عدد المحطات</div>
                 </div>
                 {/* Price */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                   <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSuccess)" }}>{routeResult.price} ج.م</div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>سعر التذكرة</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>سعر التذكرة</div>
                 </div>
                 {/* Estimated Time */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                   <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-secondary)" }}>{routeResult.time} د</div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>زمن الرحلة</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>زمن الرحلة</div>
                 </div>
                 {/* Multi-leg / Transfer Status */}
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                   <div style={{ fontSize: "1.1rem", fontWeight: "800", color: !routeResult.sameLine ? "var(--colorWarning, #f59e0b)" : "var(--colorSuccess)" }}>
                     {!routeResult.sameLine ? "تبديل (مترو L3)" : "مباشر"}
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>نوع المسار</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>نوع المسار</div>
                 </div>
               </div>
 
@@ -1569,7 +1569,7 @@ ${reportDetails.trim()}`;
                       alignItems: "center",
                       justifyContent: "center",
                       gap: "6px",
-                      background: "var(--bgSecondary)",
+                      background: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
                       color: "var(--text-primary)",
                       cursor: "pointer",
@@ -1611,7 +1611,7 @@ ${reportDetails.trim()}`;
               {isTripActive && trackerStationsList.length > 0 && (
                 <div
                   style={{
-                    background: "var(--bgSecondary)",
+                    background: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
                     borderRadius: "var(--ra-8)",
                     padding: "16px",
@@ -1644,7 +1644,7 @@ ${reportDetails.trim()}`;
                   </div>
 
                   {/* Current Station Info */}
-                  <div style={{ fontSize: "0.92rem", fontWeight: "600", marginBottom: "6px", color: "var(--textSecondary)" }}>
+                  <div style={{ fontSize: "0.92rem", fontWeight: "600", marginBottom: "6px", color: "var(--text-secondary)" }}>
                     أنت الآن في محطة:{" "}
                     <strong style={{ color: "var(--text-primary)", fontSize: "1.05rem" }}>
                       {trackerStationsList[currentStepIndex]?.name}
@@ -1730,7 +1730,7 @@ ${reportDetails.trim()}`;
               {/* Detailed Path Timeline for Route */}
               <div
                 style={{
-                  background: "var(--bgSecondary)",
+                  background: "var(--bg-secondary)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "var(--ra-8)",
                   padding: "16px",
@@ -1785,7 +1785,7 @@ ${reportDetails.trim()}`;
                       <div style={{ fontSize: "0.82rem", fontWeight: "700", color: routeResult.leg1.lineColor, marginBottom: "6px" }}>
                         المرحلة الأولى: {routeResult.leg1.lineName} ({routeResult.leg1.count} محطات - {routeResult.leg1.price} ج.م)
                       </div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>
                         من <strong>{routeResult.leg1.from}</strong> إلى محطة التحويل <strong>{routeResult.leg1.to}</strong>
                       </div>
                     </div>
@@ -1795,7 +1795,7 @@ ${reportDetails.trim()}`;
                       <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--colorWarning, #f59e0b)", marginBottom: "4px" }}>
                         المرحلة الثانية: التحويل عبر الخط الثالث لمترو الأنفاق (~25 دقيقة - 12 ج.م)
                       </div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>
                         {routeResult.leg2.description}
                       </div>
                     </div>
@@ -1805,7 +1805,7 @@ ${reportDetails.trim()}`;
                       <div style={{ fontSize: "0.82rem", fontWeight: "700", color: routeResult.leg3.lineColor, marginBottom: "6px" }}>
                         المرحلة الثالثة: {routeResult.leg3.lineName} ({routeResult.leg3.count} محطات - {routeResult.leg3.price} ج.م)
                       </div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>
                         من محطة التحويل <strong>{routeResult.leg3.from}</strong> إلى الوجهة النهائية <strong>{routeResult.leg3.to}</strong>
                       </div>
                     </div>
@@ -1882,8 +1882,8 @@ ${reportDetails.trim()}`;
                     fontSize: "0.75rem",
                     fontWeight: "700",
                     cursor: "pointer",
-                    background: selectedLine === line.id ? line.color : "var(--bgSecondary)",
-                    color: selectedLine === line.id ? "#ffffff" : "var(--textSecondary)",
+                    background: selectedLine === line.id ? line.color : "var(--bg-secondary)",
+                    color: selectedLine === line.id ? "#ffffff" : "var(--text-secondary)",
                     border: selectedLine === line.id ? `1px solid ${line.color}` : "1px solid var(--border-glass)",
                     transition: "all 0.2s ease",
                   }}
@@ -1903,20 +1903,20 @@ ${reportDetails.trim()}`;
               marginBottom: "16px",
             }}
           >
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
-              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>بداية الخط</div>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>بداية الخط</div>
               <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>{selectedLineObj.from}</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
-              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>نهاية الخط</div>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>نهاية الخط</div>
               <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>{selectedLineObj.to}</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
-              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>طول المسار</div>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>طول المسار</div>
               <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>{selectedLineObj.length}</div>
             </div>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
-              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>زمن المسار كاملاً</div>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>زمن المسار كاملاً</div>
               <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>{selectedLineObj.time}</div>
             </div>
           </div>
@@ -2064,7 +2064,7 @@ ${reportDetails.trim()}`;
                             margin: "4px 16px 12px 28px",
                             padding: "10px 14px",
                             borderRadius: "8px",
-                            background: "var(--bgSecondary)",
+                            background: "var(--bg-secondary)",
                             border: isUnderConstruction ? "1px dashed rgba(239, 68, 68, 0.3)" : "1px solid var(--border-glass)",
                           }}
                         >
@@ -2146,7 +2146,7 @@ ${reportDetails.trim()}`;
                   );
                 })
               ) : (
-                <div style={{ color: "var(--textSecondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
+                <div style={{ color: "var(--text-secondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
                   لا توجد محطات مطابقة لبحثك في هذا الخط.
                 </div>
               )}
@@ -2183,12 +2183,12 @@ ${reportDetails.trim()}`;
           >
             عن مشروع مونوريل القاهرة الكبرى
           </h2>
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0 0 14px" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0 0 14px" }}>
             يعد مونوريل القاهرة أطول شبكة مونوريل بدون سائق في العالم بطول إجمالي يقارب 100 كم لخطيه (شرق وغرب النيل)، حيث ينقل ما يقارب 500 ألف راكب يومياً بوسيلة مواصلات حضارية صديقة للبيئة تعمل بقطارات Alstom Innovia 300 فائقة التطور.
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "10px" }}>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
               <div style={{ fontWeight: "700", color: "var(--color-secondary)", fontSize: "0.88rem", marginBottom: "4px" }}>
                 ⚡ سرعة تشغيلية عالية
               </div>
@@ -2197,7 +2197,7 @@ ${reportDetails.trim()}`;
               </div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
               <div style={{ fontWeight: "700", color: "var(--colorSuccess)", fontSize: "0.88rem", marginBottom: "4px" }}>
                 🔄 تكامل ذكي مع المترو والـ LRT
               </div>
@@ -2245,7 +2245,7 @@ ${reportDetails.trim()}`;
               style={{
                 margin: 0,
                 fontSize: "0.82rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 lineHeight: "1.6",
               }}
             >
@@ -2332,7 +2332,7 @@ ${reportDetails.trim()}`;
                     handleReportImageSelect(null);
                   }
                 }}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -2359,7 +2359,7 @@ ${reportDetails.trim()}`;
                     <i className="bx bx-check"></i>
                   </div>
                   <h4 style={{ margin: "0 0 8px", fontWeight: "800", color: "var(--text-primary)" }}>تم إرسال بلاغك بنجاح!</h4>
-                  <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.88rem", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem", lineHeight: "1.6" }}>
                     شكراً جزيلاً لمساعدتك في تدقيق وتطوير شبكة المونوريل. سيقوم فريقنا بمراجعة ملاحظاتك في أقرب وقت.
                   </p>
                 </div>
@@ -2439,8 +2439,8 @@ ${reportDetails.trim()}`;
                           fontSize: "0.78rem",
                           fontWeight: "700",
                           cursor: "pointer",
-                          background: reportTargetScope === "general" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "general" ? "#ffffff" : "var(--textSecondary)",
+                          background: reportTargetScope === "general" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                          color: reportTargetScope === "general" ? "#ffffff" : "var(--text-secondary)",
                           border: reportTargetScope === "general" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                         }}
                       >
@@ -2457,8 +2457,8 @@ ${reportDetails.trim()}`;
                           fontSize: "0.78rem",
                           fontWeight: "700",
                           cursor: "pointer",
-                          background: reportTargetScope === "station" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "station" ? "#ffffff" : "var(--textSecondary)",
+                          background: reportTargetScope === "station" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                          color: reportTargetScope === "station" ? "#ffffff" : "var(--text-secondary)",
                           border: reportTargetScope === "station" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                         }}
                       >
@@ -2477,8 +2477,8 @@ ${reportDetails.trim()}`;
                           fontWeight: "700",
                           cursor: !routeResult ? "not-allowed" : "pointer",
                           opacity: !routeResult ? 0.5 : 1,
-                          background: reportTargetScope === "route" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "route" ? "#ffffff" : "var(--textSecondary)",
+                          background: reportTargetScope === "route" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                          color: reportTargetScope === "route" ? "#ffffff" : "var(--text-secondary)",
                           border: reportTargetScope === "route" ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                         }}
                       >
@@ -2517,7 +2517,7 @@ ${reportDetails.trim()}`;
                             top: "100%",
                             left: 0,
                             right: 0,
-                            background: "var(--bgSecondary)",
+                            background: "var(--bg-secondary)",
                             border: "1px solid var(--border-glass)",
                             borderRadius: "var(--radius-card)",
                             overflow: "hidden",
@@ -2650,7 +2650,7 @@ ${reportDetails.trim()}`;
                         }}
                       >
                         <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "1.4rem", color: "var(--text-muted)", marginBottom: "4px" }}></i>
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>اسحب الصورة هنا أو اضغط للاختيار من جهازك</div>
+                        <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>اسحب الصورة هنا أو اضغط للاختيار من جهازك</div>
                         <div style={{ fontSize: "0.68rem", color: "var(--text-muted)", marginTop: "2px" }}>PNG, JPG, WEBP بحد أقصى 5 ميجابايت</div>
                         <input
                           id="monorail-report-img-input"
@@ -2678,7 +2678,7 @@ ${reportDetails.trim()}`;
                       className="btn"
                       style={{
                         flex: 1,
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         color: "var(--text-primary)",
                         fontSize: "0.85rem",

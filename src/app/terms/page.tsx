@@ -34,7 +34,7 @@ export default function TermsPage() {
       content: (
         <>
           <p>
-            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--colorPrimary)" }}>ماب القاهرة (Cairo Map)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
+            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--color-primary)" }}>ماب القاهرة (Cairo Map)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
           </p>
           <p style={{ marginTop: "8px" }}>
             إذا كنت لا توافق على أي بند من هذه الشروط، يرجى التوقف الفوري عن استخدام التطبيق وكافة خدمات الدليل المرتبطة به.
@@ -58,11 +58,11 @@ export default function TermsPage() {
               borderRadius: "var(--ra-14)",
               padding: "14px 16px",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--colorPrimary)", fontWeight: "700", marginBottom: "6px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-primary)", fontWeight: "700", marginBottom: "6px" }}>
                 <i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }}></i>
                 <span>دقة المعلومات</span>
               </div>
-              <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", margin: 0, lineHeight: "1.6" }}>
+              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
                 تقديم بيانات صحيحة ومحدثة عند التسجيل (مثل الاسم والبريد الإلكتروني وتاريخ الميلاد).
               </p>
             </div>
@@ -77,7 +77,7 @@ export default function TermsPage() {
                 <i className="bx bx-lock" style={{ fontSize: "1.2rem" }}></i>
                 <span>سرية الحساب</span>
               </div>
-              <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", margin: 0, lineHeight: "1.6" }}>
+              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
                 الحفاظ على سرية بيانات تسجيل الدخول، وأنت المسؤول الأول عن أي نشاط يصدر من خلال حسابك.
               </p>
             </div>
@@ -92,7 +92,7 @@ export default function TermsPage() {
                 <i className="bx bx-block" style={{ fontSize: "1.2rem" }}></i>
                 <span>حظر الانتحال</span>
               </div>
-              <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", margin: 0, lineHeight: "1.6" }}>
+              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
                 يُحظر تماماً انتحال هوية أشخاص أو علامات تجارية أخرى أو استخدام أسماء مستخدمين مضللة أو غير لائقة.
               </p>
             </div>
@@ -111,7 +111,7 @@ export default function TermsPage() {
           </p>
           <ul style={{
             paddingRight: "20px",
-            color: "var(--textSecondary)",
+            color: "var(--text-secondary)",
             display: "flex",
             flexDirection: "column",
             gap: "8px",
@@ -157,7 +157,7 @@ export default function TermsPage() {
             <i className="bx bx-info-circle" style={{ fontSize: "1.8rem", color: "#f59e0b", marginTop: "2px" }}></i>
             <div>
               <h4 style={{ margin: "0 0 4px 0", fontSize: "1rem", color: "var(--text-primary)", fontWeight: "700" }}>طبيعة البيانات الاسترشادية</h4>
-              <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+              <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                 نبذل أقصى جهودنا للتحقق من صحة ودقة البيانات دورياً، ولكننا لا نضمن عدم حدوث تغييرات طارئة في أرقام الهواتف أو مواعيد العمل أو عناوين الفروع من قبل الجهات المالكة. استخدام المعلومات يقع على مسؤولية المستخدم الخاصة.
               </p>
             </div>
@@ -206,7 +206,7 @@ export default function TermsPage() {
             transition: "var(--transition-smooth)",
           }}
         >
-          <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.3rem", color: "var(--colorPrimary)" }}></i>
+          <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.3rem", color: "var(--color-primary)" }}></i>
           <span>العودة للخلف</span>
         </Link>
 
@@ -220,7 +220,7 @@ export default function TermsPage() {
             padding: "6px 12px",
             borderRadius: "var(--ra-full)",
           }}>
-            <i className="bx bx-time-five" style={{ color: "var(--colorPrimary)" }}></i>
+            <i className="bx bx-time-five" style={{ color: "var(--color-primary)" }}></i>
             <span>تحديث:سبتمبر 2026</span>
           </span>
         </div>
@@ -302,7 +302,7 @@ export default function TermsPage() {
             position: "relative",
             zIndex: 1,
             fontSize: "clamp(0.92rem, 2vw, 1.05rem)",
-            color: "var(--textSecondary)",
+            color: "var(--text-secondary)",
             maxWidth: "580px",
             margin: "0 auto",
             lineHeight: "1.7",
@@ -354,7 +354,7 @@ export default function TermsPage() {
             <h3 style={{ fontSize: "1.05rem", fontWeight: "700", margin: 0, color: "var(--text-primary)" }}>
               {item.title}
             </h3>
-            <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", margin: 0, lineHeight: "1.6" }}>
+            <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
               {item.desc}
             </p>
           </div>
@@ -381,7 +381,7 @@ export default function TermsPage() {
                 <span style={{
                   fontSize: "0.8rem",
                   fontWeight: "800",
-                  color: "var(--colorPrimary)",
+                  color: "var(--color-primary)",
                   background: "rgba(0, 111, 238, 0.08)",
                   padding: "2px 8px",
                   borderRadius: "6px",
@@ -402,7 +402,7 @@ export default function TermsPage() {
 
             {/* Section Body */}
             <div style={{
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               fontSize: "0.95rem",
               lineHeight: "1.8",
               paddingRight: "8px",
@@ -435,7 +435,7 @@ export default function TermsPage() {
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "var(--colorPrimary)",
+            color: "var(--color-primary)",
             fontSize: "1.6rem",
             marginBottom: "12px",
           }}
@@ -445,7 +445,7 @@ export default function TermsPage() {
         <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>
           هل لديك استفسار قانوني أو ملاحظة حول الشروط؟
         </h3>
-        <p style={{ fontSize: "0.92rem", color: "var(--textSecondary)", maxWidth: "520px", margin: "0 auto 18px", lineHeight: "1.6" }}>
+        <p style={{ fontSize: "0.92rem", color: "var(--text-secondary)", maxWidth: "520px", margin: "0 auto 18px", lineHeight: "1.6" }}>
           فريقنا القانوني والدعم الفني مستعد دائماً لتوضيح أي بند ومساعدتك في أي استفسار.
         </p>
 

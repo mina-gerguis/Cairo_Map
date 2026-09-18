@@ -92,7 +92,7 @@ export default function RouteSearchCard({
         {/* FROM INPUT */}
         <div style={{ position: "relative", zIndex: showFromSuggestions ? 100 : 1 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0 }}>
+            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
               <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "#10b981" }}></i> هتتحرك منين ؟
             </label>
             <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
@@ -152,7 +152,7 @@ export default function RouteSearchCard({
                   transform: "translateY(-50%)",
                   background: "transparent",
                   border: "none",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   cursor: "pointer",
                   fontSize: "0.9rem"
                 }}
@@ -170,7 +170,7 @@ export default function RouteSearchCard({
                 top: "100%",
                 left: 0,
                 right: 0,
-                backgroundColor: "var(--bgSecondary)",
+                backgroundColor: "var(--bg-secondary)",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "var(--radius-card)",
                 overflow: "hidden",
@@ -217,7 +217,7 @@ export default function RouteSearchCard({
             onClick={onSwap}
             title="تبديل نقطة الانطلاق والوصول"
             style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "50%",
               width: "38px",
@@ -226,7 +226,7 @@ export default function RouteSearchCard({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               fontSize: "1.1rem",
               transition: "all 0.2s ease",
             }}
@@ -237,8 +237,8 @@ export default function RouteSearchCard({
             }}
             onMouseLeave={e => {
               e.currentTarget.style.transform = "rotate(0deg)";
-              e.currentTarget.style.background = "var(--bgSecondary)";
-              e.currentTarget.style.color = "var(--textSecondary)";
+              e.currentTarget.style.background = "var(--bg-secondary)";
+              e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
             ⇅
@@ -248,7 +248,7 @@ export default function RouteSearchCard({
         {/* TO INPUT */}
         <div style={{ position: "relative", zIndex: showToSuggestions ? 100 : 1 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0 }}>
+            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
               <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "#ef4444" }}></i> لفين ؟
             </label>
             <VoiceInputButton
@@ -290,7 +290,7 @@ export default function RouteSearchCard({
                   transform: "translateY(-50%)",
                   background: "transparent",
                   border: "none",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   cursor: "pointer",
                   fontSize: "0.9rem"
                 }}
@@ -308,7 +308,7 @@ export default function RouteSearchCard({
                 top: "100%",
                 left: 0,
                 right: 0,
-                backgroundColor: "var(--bgSecondary)",
+                backgroundColor: "var(--bg-secondary)",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "var(--radius-card)",
                 overflow: "hidden",

@@ -239,8 +239,6 @@ export function useAdminDirections({ isSubComponent = false }: UseAdminDirection
   };
 
   const handleDelete = async (fromVal: string, toVal: string) => {
-    if (!confirm(`هل أنت متأكد من حذف طريق (من ${fromVal} إلى ${toVal}) بجميع وسائله؟`)) return;
-
     setError("");
     setSuccess("");
 

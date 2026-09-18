@@ -163,7 +163,7 @@ export default function Navbar() {
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <span className="sub-title" style={{ fontWeight: "700", fontSize: "0.88rem", color: "var(--text-primary)" }}>{sub.label}</span>
                           {sub.subtitle && (
-                            <span style={{ fontSize: "0.65rem", color: "var(--textSecondary)", marginTop: "1px" }}>{sub.subtitle}</span>
+                            <span style={{ fontSize: "0.65rem", color: "var(--text-secondary)", marginTop: "1px" }}>{sub.subtitle}</span>
                           )}
                         </div>
                       </Link>
@@ -220,8 +220,8 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", width: "26px", height: "26px", borderRadius: "50%", background: "var(--bgSecondary)" }}>
-                    <i className="bx bx-user" style={{ fontSize: "1.2rem", color: "var(--textSecondary)" }}></i>
+                  <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", width: "26px", height: "26px", borderRadius: "50%", background: "var(--bg-secondary)" }}>
+                    <i className="bx bx-user" style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}></i>
                   </div>
                   <span style={{ fontSize: "0.85rem", fontWeight: "500", fontFamily: "var(--font-body)" }}>تسجيل الدخول</span>
                 </>
@@ -342,7 +342,7 @@ export default function Navbar() {
                         transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
                         transition: "transform 0.2s ease",
                         fontSize: "1.2rem",
-                        color: "var(--textSecondary)"
+                        color: "var(--text-secondary)"
                       }}
                     />
                   </button>
@@ -368,7 +368,7 @@ export default function Navbar() {
                           <div style={{ display: "flex", flexDirection: "column" }}>
                             <span style={{ fontWeight: "700", fontSize: "0.86rem" }}>{sub.label}</span>
                             {sub.subtitle && (
-                              <span style={{ fontSize: "0.72rem", color: "var(--textSecondary)", marginTop: "1px" }}>{sub.subtitle}</span>
+                              <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "1px" }}>{sub.subtitle}</span>
                             )}
                           </div>
                         </Link>
@@ -399,7 +399,7 @@ export default function Navbar() {
               <button onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="navbar-mobile-link" style={{ color: "#ff3f8e", textAlign: "right", background: "none", border: "none", width: "100%", fontSize: "1rem", fontWeight: "700" }}><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تسجيل الخروج</button>
             </>
           ) : (
-            <Link href="/login" className="navbar-mobile-link" style={{ color: "var(--colorPrimary)", fontWeight: "700" }} onClick={() => setMenuOpen(false)}>
+            <Link href="/login" className="navbar-mobile-link" style={{ color: "var(--color-primary)", fontWeight: "700" }} onClick={() => setMenuOpen(false)}>
               تسجيل الدخول
             </Link>
           )}

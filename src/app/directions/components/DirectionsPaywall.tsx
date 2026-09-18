@@ -69,7 +69,7 @@ export default function DirectionsPaywall({
 
           <p
             style={{
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               fontSize: "0.95rem",
               lineHeight: "1.7",
               maxWidth: "460px",
@@ -110,7 +110,7 @@ export default function DirectionsPaywall({
                 paddingRight: "16px",
                 margin: 0,
                 fontSize: "0.85rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 lineHeight: "1.6",
                 display: "flex",
                 flexDirection: "column",

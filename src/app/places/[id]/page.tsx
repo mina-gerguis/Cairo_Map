@@ -380,7 +380,7 @@ export default function PlaceDetailsPage() {
   if (loading) {
     return (
       <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", direction: "rtl" }}>
-        <div style={{ fontSize: "1.2rem", color: "var(--textSecondary)" }}>جاري تحميل البيانات...</div>
+        <div style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}>جاري تحميل البيانات...</div>
       </div>
     );
   }
@@ -390,7 +390,7 @@ export default function PlaceDetailsPage() {
       <div className="app-container" style={{ display: "flex", flexDirection: "column", height: "100vh", alignItems: "center", justifyContent: "center", gap: "20px" }}>
         <div style={{ padding: "40px", textAlign: "center" }} className="glass-panel">
           <h2 style={{ fontSize: "1.6rem", marginBottom: "10px" }}>المكان غير موجود</h2>
-          <p style={{ color: "var(--textSecondary)", marginBottom: "20px" }}>عذراً، لم نتمكن من العثور على المكان المطلوب في الدليل.</p>
+          <p style={{ color: "var(--text-secondary)", marginBottom: "20px" }}>عذراً، لم نتمكن من العثور على المكان المطلوب في الدليل.</p>
           <button className="btn btn-primary" onClick={() => router.push("/")}>
             العودة للرئيسية
           </button>
@@ -533,12 +533,12 @@ export default function PlaceDetailsPage() {
               {place.name}
             </h1>
             {place.name_en && (
-              <div style={{ fontSize: "1.05rem", color: "var(--textSecondary)", fontWeight: "600", margin: "0 0 8px", direction: "ltr" }}>
+              <div style={{ fontSize: "1.05rem", color: "var(--text-secondary)", fontWeight: "600", margin: "0 0 8px", direction: "ltr" }}>
                 {place.name_en}
               </div>
             )}
             {place.shortDescription && (
-              <p style={{ fontSize: ".9rem", color: "var(--textSecondary)", fontWeight: "500", margin: "0 0 10px" }}>
+              <p style={{ fontSize: ".9rem", color: "var(--text-secondary)", fontWeight: "500", margin: "0 0 10px" }}>
                 {place.shortDescription}
               </p>
             )}
@@ -652,7 +652,7 @@ export default function PlaceDetailsPage() {
           <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", background: "rgba(255, 255, 255, 0.04)", borderRadius: "14px", padding: "10px", marginBottom: "10px" }}>
             {/* Hours */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-              <span style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}>حالة المكان</span>
+              <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>حالة المكان</span>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                 {displayBranch.workingHours ? (
                   isCurrentlyOpen(displayBranch.workingHours) ? (
@@ -675,7 +675,7 @@ export default function PlaceDetailsPage() {
                 }}
                 style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", cursor: "pointer" }}
               >
-                <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}> التقييمات والآراء
+                <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}> التقييمات والآراء
                   <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}> ({place.reviewsCount || 0})</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
@@ -688,7 +688,7 @@ export default function PlaceDetailsPage() {
           {/* Branch Selector Chips */}
           {place.branches && place.branches.length > 1 && (
             <div style={{ marginBottom: "24px", paddingTop: "20px" }}>
-              <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--textSecondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
+              <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--text-secondary)", fontWeight: "bold" }}>اختر الفرع:</h4>
               <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
                 {place.branches.map(b => {
                   const isSelected = b.id === selectedBranchId;
@@ -750,7 +750,7 @@ export default function PlaceDetailsPage() {
           {place.description && (
             <div style={{ background: "rgba(120, 120, 120, 0.03)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", marginBottom: "24px" }}>
               <h4 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>نبذة عن المكان</h4>
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.8", margin: 0 }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.8", margin: 0 }}>
                 {place.description}
               </p>
             </div>
@@ -814,7 +814,7 @@ export default function PlaceDetailsPage() {
               {/* Sub-categories Badges inside Good to Know */}
               {place.subCategories && place.subCategories.length > 0 && (
                 <div style={{ borderTop: "1px solid rgba(120, 120, 120, 0.1)", paddingTop: "12px", marginTop: "4px" }}>
-                  <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>التصنيفات الفرعية:</span>
+                  <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>التصنيفات الفرعية:</span>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {place.subCategories.map((subCatKey) => (
                       <span
@@ -843,14 +843,14 @@ export default function PlaceDetailsPage() {
               {/* Services section inside Good to Know */}
               {((displayBranch as any)?.services || (place as any)?.services) && ((displayBranch as any)?.services || (place as any)?.services).length > 0 && (
                 <div style={{ borderTop: "1px solid rgba(120, 120, 120, 0.1)", paddingTop: "12px", marginTop: "12px" }}>
-                  <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>الخدمات المتاحة:</span>
+                  <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>الخدمات المتاحة:</span>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {((displayBranch as any)?.services || (place as any)?.services).map((serviceName: string) => (
                       <span
                         key={serviceName}
                         style={{
                           background: "rgba(0, 111, 238, 0.08)",
-                          color: "var(--colorPrimary)",
+                          color: "var(--color-primary)",
                           border: "1px solid rgba(0, 111, 238, 0.2)",
                           padding: "4px 12px",
                           borderRadius: "16px",
@@ -878,7 +878,7 @@ export default function PlaceDetailsPage() {
               {/* Phone Row */}
               {displayBranch.phones && displayBranch.phones.length > 0 && (
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
-                  <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>الهاتف</span>
+                  <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>الهاتف</span>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
                     {displayBranch.phones.map((p: string, i: number) => (
                       <a key={i} href={`tel:${p}`} style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold" }}>{p}</a>
@@ -889,7 +889,7 @@ export default function PlaceDetailsPage() {
 
               {/* Website Row */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
-                <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>الموقع الإلكتروني</span>
+                <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>الموقع الإلكتروني</span>
                 {(displayBranch as any).website_url || (place as any).website_url ? (
                   <a href={(displayBranch as any).website_url || (place as any).website_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.9rem", color: "#007aff", textDecoration: "none", fontWeight: "bold", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", direction: "ltr" }}>
                     {(displayBranch as any).website_url || (place as any).website_url}
@@ -901,7 +901,7 @@ export default function PlaceDetailsPage() {
 
               {/* Address Row */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "14px 16px" }}>
-                <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>العنوان</span>
+                <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>العنوان</span>
                 <div style={{ textAlign: "left", fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: "600", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
                   <span>{displayBranch.fullAddress}</span>
                   <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{displayBranch.city}، {displayBranch.governorate}</span>
@@ -917,7 +917,7 @@ export default function PlaceDetailsPage() {
               <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 12px" }}>
                 {(() => {
                   const parsed = parseWorkingHours(displayBranch.workingHours);
-                  if (!parsed) return <div style={{ color: "var(--textSecondary)" }}>{displayBranch.workingHours}</div>;
+                  if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
 
                   if (parsed.type === "24/7") {
                     return <div style={{ color: "var(--colorSuccess)", fontWeight: "bold", background: "rgba(52, 199, 89, 0.1)", padding: "10px", borderRadius: "8px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
@@ -939,7 +939,7 @@ export default function PlaceDetailsPage() {
                                 border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
                               }}
                             >
-                              <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--textSecondary)" }}>
+                              <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--text-secondary)" }}>
                                 {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--color-secondary)", marginRight: "6px" }}>(اليوم)</span>}
                               </div>
                               <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.95rem" }}>

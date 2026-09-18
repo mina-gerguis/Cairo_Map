@@ -48,7 +48,7 @@ CATEGORIES_STRUCTURE.forEach(main => {
 
 function getCategoryColor(cat: string) {
   const mainCat = CATEGORIES_STRUCTURE.find(m => m.name === cat || m.subCategories.some(s => s.name === cat));
-  return mainCat?.color ?? "var(--colorPrimary, #6c63ff)";
+  return mainCat?.color ?? "var(--color-primary, #6c63ff)";
 }
 
 const CATEGORY_MAP: Record<string, string> = {};
@@ -400,7 +400,7 @@ export default function PlacesSuggestionsPage() {
         <div>
           <h1 style={{ fontSize: "3rem", marginBottom: "20px" }}>🚫</h1>
           <h2 style={{ fontFamily: "var(--font-display)", color: "#ff3b30", marginBottom: "10px" }}>صلاحيات غير كافية</h2>
-          <p style={{ color: "var(--textSecondary)" }}>عذراً، هذه الصفحة مخصصة للمشرفين فقط.</p>
+          <p style={{ color: "var(--text-secondary)" }}>عذراً، هذه الصفحة مخصصة للمشرفين فقط.</p>
         </div>
       </div>
     );
@@ -424,13 +424,13 @@ export default function PlacesSuggestionsPage() {
       <div className="glass-panel" style={{ padding: "28px 20px", borderRadius: "15px", marginBottom: "32px", border: "1px solid rgba(108, 99, 255, 0.3)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
           <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-            <i className="bx bx-map-pin" style={{ color: "var(--colorPrimary)" }}></i> مراجعة اقتراحات الأماكن
+            <i className="bx bx-map-pin" style={{ color: "var(--color-primary)" }}></i> مراجعة اقتراحات الأماكن
           </h2>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <button
               onClick={fetchProposals}
               className="btn"
-              style={{ padding: "6px 14px", fontSize: "0.82rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--colorPrimary)" }}
+              style={{ padding: "6px 14px", fontSize: "0.82rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--color-primary)" }}
             >
               🔄 تحديث
             </button>
@@ -460,8 +460,8 @@ export default function PlacesSuggestionsPage() {
                   padding: "7px 14px",
                   fontSize: "0.85rem",
                   background: proposalsFilter === tab.id ? "rgba(108, 99, 255, 0.25)" : "var(--bg-glass)",
-                  color: proposalsFilter === tab.id ? "var(--colorPrimary)" : "var(--textSecondary)",
-                  border: proposalsFilter === tab.id ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)"
+                  color: proposalsFilter === tab.id ? "var(--color-primary)" : "var(--text-secondary)",
+                  border: proposalsFilter === tab.id ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)"
                 }}
               >
                 {tab.label} ({tab.count})
@@ -519,13 +519,13 @@ export default function PlacesSuggestionsPage() {
                     <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "800", margin: 0, color: "var(--text-primary)" }}>{prop.name}</h3>
 
                     {prop.description && (
-                      <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", margin: 0, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                      <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", margin: 0, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
                         {prop.description}
                       </p>
                     )}
 
-                    <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", margin: 0 }}>
-                      <span><FaMapPin style={{ color: "var(--colorPrimary)" }} /></span> {prop.city} / {prop.governorate}
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", margin: 0 }}>
+                      <span><FaMapPin style={{ color: "var(--color-primary)" }} /></span> {prop.city} / {prop.governorate}
                     </p>
 
                     {/* Proposer Info Bar */}
@@ -551,7 +551,7 @@ export default function PlacesSuggestionsPage() {
                         type="button"
                         onClick={() => setSelectedUserProfile(prop.user_profile || { id: prop.user_id })}
                         className="btn"
-                        style={{ padding: "3px 8px", fontSize: "0.7rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--colorPrimary)", border: "none", fontWeight: "700" }}
+                        style={{ padding: "3px 8px", fontSize: "0.7rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--color-primary)", border: "none", fontWeight: "700" }}
                       >
                         👤 البروفايل
                       </button>
@@ -855,7 +855,7 @@ export default function PlacesSuggestionsPage() {
                             alt="proposer avatar"
                             loading="lazy"
                             decoding="async"
-                            style={{ width: "42px", height: "42px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--colorPrimary)" }}
+                            style={{ width: "42px", height: "42px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--color-primary)" }}
                           />
                           <div>
                             <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}>
@@ -873,7 +873,7 @@ export default function PlacesSuggestionsPage() {
                             setSelectedProposalDetails(null);
                           }}
                           className="btn"
-                          style={{ padding: "6px 14px", fontSize: "0.82rem", background: "rgba(108, 99, 255, 0.2)", color: "var(--colorPrimary)", border: "none", fontWeight: "700" }}
+                          style={{ padding: "6px 14px", fontSize: "0.82rem", background: "rgba(108, 99, 255, 0.2)", color: "var(--color-primary)", border: "none", fontWeight: "700" }}
                         >
                           👤 عرض البروفايل الكامل
                         </button>
@@ -884,7 +884,7 @@ export default function PlacesSuggestionsPage() {
                     {selectedProposalDetails.description && (
                       <div style={{ marginBottom: "24px" }}>
                         <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>الوصف</h3>
-                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.6" }}>
+                        <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.6" }}>
                           {selectedProposalDetails.description}
                         </div>
                       </div>
@@ -901,7 +901,7 @@ export default function PlacesSuggestionsPage() {
                                 key={serviceName}
                                 style={{
                                   background: "rgba(0, 111, 238, 0.08)",
-                                  color: "var(--colorPrimary)",
+                                  color: "var(--color-primary)",
                                   border: "1px solid rgba(0, 111, 238, 0.2)",
                                   padding: "6px 14px",
                                   borderRadius: "20px",
@@ -928,7 +928,7 @@ export default function PlacesSuggestionsPage() {
                         {/* Phone Row */}
                         {selectedProposalDetails.phone && (
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
-                            <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>رقم الهاتف المعتمد للمقترح</span>
+                            <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>رقم الهاتف المعتمد للمقترح</span>
                             <a href={`tel:${selectedProposalDetails.phone}`} style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold", direction: "ltr" }}>
                               {selectedProposalDetails.phone}
                             </a>
@@ -937,7 +937,7 @@ export default function PlacesSuggestionsPage() {
 
                         {/* Location Link Row */}
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
-                          <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>موقع Google Maps</span>
+                          <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>موقع Google Maps</span>
                           {selectedProposalDetails.location_url ? (
                             <a href={selectedProposalDetails.location_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", direction: "ltr" }}>
                               رابط الموقع الجغرافي
@@ -949,7 +949,7 @@ export default function PlacesSuggestionsPage() {
 
                         {/* Full Address Row */}
                         <div style={{ display: "flex", flexDirection: "column", padding: "14px 16px" }}>
-                          <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)", marginBottom: "6px" }}>العنوان بالتفصيل</span>
+                          <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "6px" }}>العنوان بالتفصيل</span>
                           <span style={{ fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: "600" }}>
                             {selectedProposalDetails.address || "لا يوجد عنوان تفصيلي مكتوب"}
                           </span>
@@ -965,7 +965,7 @@ export default function PlacesSuggestionsPage() {
                             ⚠️ سبب رفض هذا المقترح
                           </span>
                         </div>
-                        <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "16px 20px", fontSize: "0.92rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+                        <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "16px 20px", fontSize: "0.92rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                           {selectedProposalDetails.rejection_reason}
                         </div>
                       </div>
@@ -981,7 +981,7 @@ export default function PlacesSuggestionsPage() {
       {/* Modal for Proposer Full Profile */}
       {selectedUserProfile && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div className="glass-panel" style={{ maxWidth: "480px", width: "100%", padding: "10px 28px", borderRadius: "24px", background: "var(--bg-glass-card, #ffffff)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", border: "1px solid var(--colorPrimary)" }}>
+          <div className="glass-panel" style={{ maxWidth: "480px", width: "100%", padding: "10px 28px", borderRadius: "24px", background: "var(--bg-glass-card, #ffffff)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", boxShadow: "0 24px 60px rgba(0,0,0,0.35)", border: "1px solid var(--color-primary)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
             </div>
 
@@ -992,20 +992,20 @@ export default function PlacesSuggestionsPage() {
                 alt="Profile Avatar"
                 loading="lazy"
                 decoding="async"
-                style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--colorPrimary)" }}
+                style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--color-primary)" }}
               />
               <div>
                 <h4 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                   {selectedUserProfile.full_name || "غير محدد"}
                 </h4>
-                <div style={{ fontSize: "0.85rem", color: "var(--colorPrimary)", direction: "ltr", textAlign: "right" }}>
+                <div style={{ fontSize: "0.85rem", color: "var(--color-primary)", direction: "ltr", textAlign: "right" }}>
                   @{selectedUserProfile.username || "بدون_اسم_مستخدم"}
                 </div>
               </div>
             </div>
 
             {/* Profile Details List */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--textSecondary)", marginBottom: "24px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                 <span>📧 البريد الإلكتروني:</span>
                 <strong style={{ color: "var(--text-primary)" }}>{selectedUserProfile.email || "غير متوفر"}</strong>
@@ -1044,7 +1044,7 @@ export default function PlacesSuggestionsPage() {
                           style={{
                             fontSize: "0.82rem",
                             background: "rgba(108, 99, 255, 0.15)",
-                            color: "var(--colorPrimary)",
+                            color: "var(--color-primary)",
                             border: "1px solid rgba(108, 99, 255, 0.3)",
                             padding: "5px 12px",
                             borderRadius: "20px",
@@ -1116,7 +1116,7 @@ export default function PlacesSuggestionsPage() {
         }}
       >
         <div style={{ textAlign: "right" }}>
-          <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", marginBottom: "12px", lineHeight: "1.5" }}>
+          <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "12px", lineHeight: "1.5" }}>
             يرجى توضيح سبب الرفض بالتفصيل للمستخدم. سيتم إرسال إشعار له يوضح السبب مع إمكانية تعديل الاقتراح.
           </p>
           <textarea

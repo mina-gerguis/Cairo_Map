@@ -1,7 +1,6 @@
 export * from "./AdminDirectionsLoading";
 export * from "./AdminDirectionsUnauthorized";
 export * from "./AdminDirectionsHeader";
-export * from "./AdminDirectionsStats";
 export * from "./AdminDirectionsSqlBanner";
 export * from "./AdminDirectionsNotifications";
 export * from "./AdminDirectionsFilters";
@@ -15,3 +14,4 @@ export * from "./RouteCardLegTimeline";
 export * from "./RouteCardOptionItem";
 export * from "./AdminDirectionsList";
 export * from "./AdminDirectionsExcelModal";
+export * from "./AdminTransitTypesCheatsheet";

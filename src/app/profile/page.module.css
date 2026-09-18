@@ -81,7 +81,7 @@
 
 .guestSubtitle {
   margin: 0;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   font-family: var(--font-sub);
 }
@@ -136,7 +136,7 @@
 
 .profileAvatarIcon {
   font-size: 1.8rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .profileInfoText {
@@ -156,7 +156,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.78rem;
   max-width: 90%;
   direction: ltr;
@@ -164,7 +164,7 @@
 
 .profileChevron {
   font-size: 1.5rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 /* Expanded Profile Content */
@@ -239,7 +239,7 @@
 
 .formAvatarIcon {
   font-size: 2.5rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .avatarOverlay {
@@ -263,7 +263,7 @@
   cursor: pointer;
   background: rgba(108, 99, 255, 0.15);
   border: 1px solid rgba(108, 99, 255, 0.3);
-  color: var(--colorPrimary);
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -333,7 +333,7 @@
 }
 
 .dobWarningLink {
-  color: var(--colorPrimary);
+  color: var(--color-primary);
   text-decoration: underline;
   font-weight: 600;
 }
@@ -370,7 +370,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   z-index: 1;
   direction: ltr;
 }
@@ -431,7 +431,7 @@
 }
 
 .infoLabel {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -447,7 +447,7 @@
 }
 
 .interestsDisplayTitle {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 8px;
   font-weight: 600;
@@ -461,7 +461,7 @@
 }
 
 .noInterestsCard {
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
   padding: 16px;
   border-radius: 12px;
   text-align: center;
@@ -470,7 +470,7 @@
 
 .noInterestsText {
   font-size: 0.85rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 12px;
   line-height: 1.6;
 }
@@ -529,7 +529,7 @@
 
 .chevronIcon {
   font-size: 1.1rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .dividerDashed {
@@ -547,7 +547,7 @@
 
 .favBadge {
   font-size: 0.85rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-weight: bold;
 }
 
@@ -574,7 +574,7 @@
 
 .notifChevron {
   font-size: 1.5rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   transition: transform 0.3s;
 }
 
@@ -687,7 +687,7 @@
 }
 
 .notifItemTitleRead {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .notifItemTitleUnread {
@@ -766,7 +766,7 @@
 
 .securitySubtitle {
   margin: 4px 0 0;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.82rem;
 }
 
@@ -799,7 +799,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .mfaCheckIcon {
@@ -835,7 +835,7 @@
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-family: var(--font-cairo);
   font-weight: 500;
   font-size: 0.9rem;
@@ -899,14 +899,14 @@
 }
 
 .faqToggleIcon {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 
 .faqAnswerText {
   margin: 8px 0 0;
   font-size: 0.88rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -1023,7 +1023,7 @@
 }
 
 .contactSuccessMsg {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.85rem;
   margin: 0 0 16px;
 }
@@ -1118,7 +1118,7 @@
 
 .logoutSubtitle {
   margin: 4px 0 0;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.82rem;
 }
 
@@ -1241,7 +1241,7 @@
 
 .deleteModalHeaderSub {
   font-size: 0.85rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin: 8px 0 0;
   line-height: 1.5;
 }
@@ -1252,7 +1252,7 @@
 
 .deleteModalPromptText {
   font-size: 0.88rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 16px;
   line-height: 1.6;
   text-align: center;
@@ -1330,7 +1330,7 @@
 
 .mfaStepText {
   font-size: 0.95rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 24px;
   text-align: center;
   line-height: 1.6;
@@ -1369,7 +1369,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .mfaOptionTitle {
@@ -1383,7 +1383,7 @@
   background: var(--border-glass);
   padding: 4px 8px;
   border-radius: 8px;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .mfaOptionItemActive {
@@ -1438,7 +1438,7 @@
 .mfaOptionSubInactive {
   margin: 0;
   font-size: 0.8rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .mfaSpinnerActive {
@@ -1554,7 +1554,7 @@
   right: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 1.2rem;
 }
@@ -1589,7 +1589,7 @@
 
 .passwordModalSubtitle {
   font-size: 0.95rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 20px;
   text-align: center;
 }
@@ -1621,7 +1621,7 @@
   border: none;
   cursor: pointer;
   font-size: 1.4rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
 }
@@ -1724,7 +1724,7 @@
   animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.notifModalCloseBtn {
+.notifModalbtn-close {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -1815,7 +1815,7 @@
 .footerLink {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1857,7 +1857,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   transition: transform 0.2s, color 0.2s, background-color 0.2s;
   text-decoration: none;
 }
@@ -1876,7 +1876,7 @@
 
 .versionText {
   font-size: 0.78rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 6px;
   text-align: center;
   font-family: var(--font-cairo);
@@ -1922,7 +1922,7 @@
 .modalCloseIconBtn {
   background: none;
   border: none;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 4px;
   display: flex;
@@ -1937,7 +1937,7 @@
 
 .devicesModalSubtitle {
   font-size: 0.88rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 20px;
   line-height: 1.5;
 }
@@ -1955,7 +1955,7 @@
   justify-content: center;
   padding: 40px 0;
   gap: 12px;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -2009,7 +2009,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .currentDeviceItem .deviceIconBox {
@@ -2050,7 +2050,7 @@
 
 .activeDeviceBadge {
   font-size: 0.72rem;
-  background: var(--colorPrimary);
+  background: var(--color-primary);
   color: white;
   padding: 2px 8px;
   border-radius: 50px;
@@ -2062,7 +2062,7 @@
   align-items: center;
   gap: 6px;
   font-size: 0.78rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   flex-wrap: wrap;
 }
 

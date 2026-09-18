@@ -290,7 +290,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
         </div>
       ) : (
         <div style={{ textAlign: "center", padding: "20px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px", marginBottom: "30px" }}>
-          <p style={{ color: "var(--textSecondary)", marginBottom: "12px" }}>سجل دخولك لتتمكن من تقييم هذا المكان</p>
+          <p style={{ color: "var(--text-secondary)", marginBottom: "12px" }}>سجل دخولك لتتمكن من تقييم هذا المكان</p>
           <button className="btn btn-primary" onClick={() => router.push("/login")} style={{ padding: "var(--padding-btn)", borderRadius: "8px" }}><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
         </div>
       )}
@@ -311,7 +311,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
                     <div>
                       {review.branches && (
-                        <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "flex", alignItems: "center", gap: "6px", background: "rgba(120,120,120,0.1)", padding: "4px 8px", borderRadius: "8px" }}>
+                        <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px", background: "rgba(120,120,120,0.1)", padding: "4px 8px", borderRadius: "8px" }}>
                           <span style={{ opacity: 0.8 }}>فرع {review.branches.city}</span>
                         </div>
                       )}
@@ -341,7 +341,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
             </div>
           ))
         ) : (
-          <div style={{ textAlign: "center", color: "var(--textSecondary)", padding: "40px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px" }}>
+          <div style={{ textAlign: "center", color: "var(--text-secondary)", padding: "40px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px" }}>
             {reviews.length > 0 ? "لا توجد تعليقات تطابق خيارات التصفية المحددة." : "لا توجد تقييمات حتى الآن. كن أول من يقيّم!"}
           </div>
         )}

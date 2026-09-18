@@ -228,7 +228,7 @@ ${reportDetails.trim()}`;
           <button
             type="button"
             onClick={handleClose}
-            className="closeBtn"
+            className="btn-close"
           >
             <i className="bx bx-x"></i>
           </button>
@@ -257,7 +257,7 @@ ${reportDetails.trim()}`;
               <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 تم استلام بلاغك بنجاح!
               </h4>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                 شكراً لمساهمتك في تدقيق وتحديث أسعار ومسارات المواصلات. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
               </p>
             </div>
@@ -293,7 +293,7 @@ ${reportDetails.trim()}`;
               <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 تم الوصول للحد الأقصى من البلاغات المعلقة
               </h5>
-              <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+              <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                 لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
               </p>
               <button
@@ -326,7 +326,7 @@ ${reportDetails.trim()}`;
               <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                 تسجيل الدخول مطلوب
               </h5>
-              <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+              <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                 يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي مشكلة ومتابعة حالته وكسب نقاط المساهمة.
               </p>
               <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -409,7 +409,7 @@ ${reportDetails.trim()}`;
                 >
                   <div>من: <strong>{resolvedFrom}</strong> ← إلى: <strong>{resolvedTo}</strong></div>
                   {reportingOption && (
-                    <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
+                    <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "4px" }}>
                       • الوسيلة: {reportingOption.typeName} <br />• الأجرة: {reportingOption.cost} ج.م <br />• الوقت: {reportingOption.duration}
                     </div>
                   )}
@@ -432,7 +432,7 @@ ${reportDetails.trim()}`;
                         width: "100%",
                         padding: "9px 12px",
                         borderRadius: "var(--radius-card)",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: showProblemTypeDropdown ? `1px solid var(--text-primary)` : "1px solid var(--border-glass)",
                         display: "flex",
@@ -449,13 +449,13 @@ ${reportDetails.trim()}`;
                           <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {curOpt.title}
                           </div>
-                          <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                             {curOpt.desc}
                           </div>
                         </div>
                       </div>
 
-                      <i className={showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"} style={{ fontSize: "1.25rem", color: "var(--textSecondary)", marginRight: "8px", flexShrink: 0 }} />
+                      <i className={showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"} style={{ fontSize: "1.25rem", color: "var(--text-secondary)", marginRight: "8px", flexShrink: 0 }} />
                     </button>
                   );
                 })()}
@@ -467,7 +467,7 @@ ${reportDetails.trim()}`;
                       top: "100%",
                       left: 0,
                       right: 0,
-                      background: "var(--bgSecondary)",
+                      background: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
                       borderRadius: "var(--radius-card)",
                       zIndex: 1200,
@@ -541,7 +541,7 @@ ${reportDetails.trim()}`;
                     minHeight: "100px",
                     padding: "12px",
                     borderRadius: "10px",
-                    background: "var(--bgSecondary)",
+                    background: "var(--bg-secondary)",
                     color: "var(--text-primary)",
                     border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
@@ -555,7 +555,7 @@ ${reportDetails.trim()}`;
               <div>
                 <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                   <span>صورة توضيحية (اختياري):</span>
-                  <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
+                  <span style={{ fontSize: "0.74rem", color: "var(--text-secondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
                     JPG, PNG, WEBP (Max~5MB)
                   </span>
                 </label>
@@ -633,7 +633,7 @@ ${reportDetails.trim()}`;
                       <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
                         اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                       </div>
-                      <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
+                      <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)" }}>
                         أرسل صورة الخطأ أو موقف المواصلات إن وُجد
                       </div>
                     </div>
@@ -644,7 +644,7 @@ ${reportDetails.trim()}`;
                       position: "relative",
                       border: "1px solid var(--border-glass)",
                       borderRadius: "12px",
-                      background: "var(--bgSecondary)",
+                      background: "var(--bg-secondary)",
                       padding: "10px 12px",
                       display: "flex",
                       alignItems: "center",
@@ -692,7 +692,7 @@ ${reportDetails.trim()}`;
                       >
                         {reportImageFile?.name || "صورة توضيحية"}
                       </div>
-                      <div style={{ fontSize: "0.74rem", color: "var(--textSecondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <div style={{ fontSize: "0.74rem", color: "var(--text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                         <span>
                           {reportImageFile
                             ? reportImageFile.size < 1024 * 1024

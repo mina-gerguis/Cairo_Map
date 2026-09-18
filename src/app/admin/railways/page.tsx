@@ -601,7 +601,7 @@ function AdminRailwaysInner() {
   };
 
   if (authLoading || loading || !isAdmin) {
-    return <div style={{ padding: "2rem", color: "var(--textSecondary)", textAlign: "center" }}>جاري تحميل البيانات...</div>;
+    return <div style={{ padding: "2rem", color: "var(--text-secondary)", textAlign: "center" }}>جاري تحميل البيانات...</div>;
   }
 
   const filteredLines = routes.filter(r =>
@@ -616,7 +616,7 @@ function AdminRailwaysInner() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
         <div>
           <h1 style={{ margin: 0, fontSize: "1.6rem", fontWeight: "900", color: "var(--text-primary)" }}>إدارة سكك حديد مصر (ENR)</h1>
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.9rem", marginTop: "4px" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginTop: "4px" }}>
             إضافة وتعديل خطوط ومحطات القطار، والتحكم في حالة التشغيل للخطوط الرئيسية.
           </p>
         </div>
@@ -649,7 +649,7 @@ function AdminRailwaysInner() {
           style={{
             padding: "8px 16px",
             background: activeSection === "lines" ? "var(--text-primary)" : "transparent",
-            color: activeSection === "lines" ? "var(--bgPrimary)" : "var(--textSecondary)",
+            color: activeSection === "lines" ? "var(--bgPrimary)" : "var(--text-secondary)",
             border: activeSection === "lines" ? "1px solid var(--bgPrimary)" : "1px solid transparent",
             borderRadius: "8px",
             fontWeight: "bold",
@@ -664,7 +664,7 @@ function AdminRailwaysInner() {
           style={{
             padding: "8px 16px",
             background: activeSection === "stations" ? "var(--text-primary)" : "transparent",
-            color: activeSection === "stations" ? "var(--bgPrimary)" : "var(--textSecondary)",
+            color: activeSection === "stations" ? "var(--bgPrimary)" : "var(--text-secondary)",
             border: activeSection === "stations" ? "1px solid var(--bgPrimary)" : "1px solid transparent",
             borderRadius: "8px",
             fontWeight: "bold",
@@ -695,7 +695,7 @@ function AdminRailwaysInner() {
           {/* Search And Add New line */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
             <div style={{ position: "relative", width: "100%", maxWidth: "360px" }}>
-              <i className="bx bx-search" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--textSecondary)", fontSize: "1.1rem" }} />
+              <i className="bx bx-search" style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--text-secondary)", fontSize: "1.1rem" }} />
               <input
                 type="text"
                 placeholder="ابحث باسم الخط..."
@@ -761,7 +761,7 @@ function AdminRailwaysInner() {
                 ))}
                 {filteredLines.length === 0 && (
                   <tr className={styles.adminTr}>
-                    <td colSpan={7} className={styles.adminTd} style={{ textAlign: "center", color: "var(--textSecondary)" }}>
+                    <td colSpan={7} className={styles.adminTd} style={{ textAlign: "center", color: "var(--text-secondary)" }}>
                       لا توجد خطوط مسجلة.
                     </td>
                   </tr>
@@ -783,8 +783,8 @@ function AdminRailwaysInner() {
             </button>
           </div>
           {/* Dropdown To Choose Route */}
-          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "24px" }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold", color: "var(--textSecondary)", fontFamily: "var(--font-sub)" }}>اختر خط سكة الحديد لإدارته:</label>
+          <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "24px" }}>
+            <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold", color: "var(--text-secondary)", fontFamily: "var(--font-sub)" }}>اختر خط سكة الحديد لإدارته:</label>
             <select
               value={selectedRouteId}
               onChange={e => { setSelectedRouteId(e.target.value); setError(""); setSuccess(""); }}
@@ -801,7 +801,7 @@ function AdminRailwaysInner() {
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
                 <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)", width: "50%" }}>
-                  محطات التوقف لخط: <span style={{ color: "var(--colorPrimary)" }}>{activeRoute.name}</span>
+                  محطات التوقف لخط: <span style={{ color: "var(--color-primary)" }}>{activeRoute.name}</span>
                 </h3>
               </div>
 
@@ -847,7 +847,7 @@ function AdminRailwaysInner() {
                                 className="btn"
                                 style={{
                                   padding: "4px 8px",
-                                  background: "var(--bgSecondary)",
+                                  background: "var(--bg-secondary)",
                                   color: "var(--text-primary)",
                                   fontSize: "0.8rem",
                                   opacity: isFirst ? 0.3 : 1,
@@ -861,7 +861,7 @@ function AdminRailwaysInner() {
                                 disabled={isLast}
                                 className="btn"
                                 style={{
-                                  background: "var(--bgSecondary)",
+                                  background: "var(--bg-secondary)",
                                   color: "var(--text-primary)",
                                   padding: "4px 8px",
                                   fontSize: "0.8rem",
@@ -898,7 +898,7 @@ function AdminRailwaysInner() {
                     })}
                     {activeRoute.stops.length === 0 && (
                       <tr className={styles.adminTr}>
-                        <td colSpan={5} className={styles.adminTd} style={{ textAlign: "center", color: "var(--textSecondary)" }}>
+                        <td colSpan={5} className={styles.adminTd} style={{ textAlign: "center", color: "var(--text-secondary)" }}>
                           لا توجد محطات تابعة لهذا الخط. أضف بعض المحطات!
                         </td>
                       </tr>
@@ -941,7 +941,7 @@ function AdminRailwaysInner() {
               <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingLine ? "تعديل خط سكة الحديد" : "إضافة خط سكة حديد جديد"}
               </h2>
-              <button onClick={() => setShowLineModal(false)} className="closeBtn">
+              <button onClick={() => setShowLineModal(false)} className="btn-close">
                 <i className="bx bx-x" />
               </button>
             </div>
@@ -1064,7 +1064,7 @@ function AdminRailwaysInner() {
               <h2 className="color-white-100" style={{ margin: 0, fontSize: "1.2rem", fontWeight: "900" }}>
                 {editingStation ? "تعديل محطة توقف" : "إضافة محطة جديدة للخط"}
               </h2>
-              <button onClick={() => setShowStationModal(false)} className="closeBtn">
+              <button onClick={() => setShowStationModal(false)} className="btn-close">
                 <i className="bx bx-x" />
               </button>
             </div>

@@ -153,7 +153,7 @@ export default function IntercityBusesPage() {
             <h1 style={{ fontSize: "1.8rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
               دليل أتوبيسات الأقاليم والسفر بين المحافظات
             </h1>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", marginTop: "6px", margin: 0 }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", marginTop: "6px", margin: 0 }}>
               استعلم عن مواعيد وأسعار رحلات جو باص، السوبرجيت، بلو باص، وأهم محطات الانطلاق بالقاهرة.
             </p>
           </div>
@@ -287,7 +287,7 @@ export default function IntercityBusesPage() {
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.88rem", color: "var(--textSecondary)" }}>
+            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.88rem", color: "var(--text-secondary)" }}>
               <span>📍 <strong>محطة المغادرة:</strong> {route.departureStation}</span>
               <span>💺 <strong>الفئة:</strong> {route.classType}</span>
             </div>

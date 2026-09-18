@@ -331,7 +331,7 @@ ${reportDetails.trim()}`;
           animation: "spin 1s linear infinite",
           margin: "0 auto 24px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل ...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -388,7 +388,7 @@ ${reportDetails.trim()}`;
               <img src="/images/icons2d/bus.png" alt="Cairo Bus" loading="lazy" decoding="async" style={{ width: "45px", marginLeft: "10px" }} />
               مواقف الأتوبيسات
             </h1>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
               دليلك لمعرفة مواقف السفر البري الإقليمي في القاهرة الكبرى.
             </p>
           </div>
@@ -416,13 +416,13 @@ ${reportDetails.trim()}`;
               مواقف الأتوبيسات يتطلب اشتراك في الباقة الذهبية
             </h2>
 
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
               تصفح دليل مواقف أتوبيسات السفر بين المدن والشركات العاملة بها والوجهات متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
             </p>
 
             {/* Perks list */}
             <div style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "12px",
               padding: "16px 20px",
@@ -431,7 +431,7 @@ ${reportDetails.trim()}`;
               maxWidth: "440px"
             }}>
               <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
-              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ تفاصيل مواقف الأتوبيسات الرئيسية (ألماظة، الترجمان، المنيب، عبود، إلخ)</li>
                 <li>✨ دليل الشركات المتاحة (السوبر جيت، جو باص، غرب ووسط الدلتا، إلخ)</li>
                 <li>✨ أرقام التليفونات والخطوط الساخنة ووجهات السفر</li>
@@ -546,7 +546,7 @@ ${reportDetails.trim()}`;
             <img src="/images/icons2d/bus.png" alt="Cairo Bus" style={{ width: "40px", marginLeft: "10px" }} />
             مواقف الأتوبيسات
           </h1>
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
             دليلك لمعرفة مواقف السفر البري الإقليمي في القاهرة الكبرى.
           </p>
         </div>
@@ -566,7 +566,7 @@ ${reportDetails.trim()}`;
           position: "relative",
           zIndex: 20,
         }}>
-          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "8px" }}>
+          <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "8px" }}>
             🔍 ابحث عن موقف أو وجهة سفر
           </label>
           <div style={{ position: "relative" }}>
@@ -580,7 +580,7 @@ ${reportDetails.trim()}`;
                 width: "100%",
                 padding: "14px 44px 14px 16px",
                 borderRadius: "12px",
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 color: "var(--text-primary)",
                 border: "1px solid var(--border-glass)",
                 fontFamily: "var(--font-cairo)",
@@ -625,7 +625,7 @@ ${reportDetails.trim()}`;
               borderRadius: "8px",
               padding: "8px 12px",
               fontSize: "0.78rem",
-              color: "var(--textSecondary)"
+              color: "var(--text-secondary)"
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                 <i className="bx bx-info-circle" style={{ color: "var(--color-secondary)", fontSize: "0.95rem" }} />
@@ -677,7 +677,7 @@ ${reportDetails.trim()}`;
                       style={{
                         border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         overflow: "hidden",
                         transition: "all 0.3s ease"
                       }}
@@ -714,7 +714,7 @@ ${reportDetails.trim()}`;
                             <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "700", color: "var(--text-primary)" }}>
                               {station.name}
                             </h3>
-                            <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginTop: "2px" }}>
+                            <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginTop: "2px" }}>
                               <i className="bx bxs-location-plus" style={{ color: "var(--color-red-600)" }}></i> {station.location}
                             </span>
                           </div>
@@ -747,7 +747,7 @@ ${reportDetails.trim()}`;
                         <div style={{
                           padding: "20px",
                           borderTop: "1px solid var(--border-glass)",
-                          background: "var(--bgSecondary)",
+                          background: "var(--bg-secondary)",
                           display: "flex",
                           flexDirection: "column",
                           gap: "16px",
@@ -755,7 +755,7 @@ ${reportDetails.trim()}`;
                         }}>
                           {/* Description */}
                           <div>
-                            <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.9rem", lineHeight: "1.6" }}>
+                            <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: "1.6" }}>
                               {station.description}
                             </p>
                           </div>
@@ -811,7 +811,7 @@ ${reportDetails.trim()}`;
                                         <span style={{ color: "var(--text-primary)", fontWeight: "700", fontSize: "0.85rem", display: "block" }}>
                                           {company.name}
                                         </span>
-                                        <span style={{ color: "var(--textSecondary)", fontSize: "0.75rem" }}>
+                                        <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>
                                           {company.type}
                                         </span>
                                       </div>
@@ -950,7 +950,7 @@ ${reportDetails.trim()}`;
                   color: "var(--text-muted)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "12px",
-                  background: "var(--bgSecondary)"
+                  background: "var(--bg-secondary)"
                 }}>
                   لا توجد مواقف أتوبيسات مطابقة لبحثك. يرجى تعديل الكلمات والمحاولة مجدداً.
                 </div>
@@ -1013,7 +1013,7 @@ ${reportDetails.trim()}`;
               <button
                 type="button"
                 onClick={() => !reportLoading && setReportModalOpen(false)}
-                className="closeBtn"
+                className="btn-close"
                 style={{
                   background: "none",
                   border: "none",
@@ -1049,7 +1049,7 @@ ${reportDetails.trim()}`;
                   <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم استلام بلاغك بنجاح!
                   </h4>
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     شكراً لمساهمتك القيمة في تحسين وتدقيق بيانات مواقف الأتوبيسات. سيتم مراجعة التقرير وتحديث البيانات في أقرب وقت.
                   </p>
                 </div>
@@ -1077,7 +1077,7 @@ ${reportDetails.trim()}`;
                   <h4 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
                   </h4>
-                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
                   </p>
                   <button
@@ -1116,7 +1116,7 @@ ${reportDetails.trim()}`;
                   <h4 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تسجيل الدخول مطلوب
                   </h4>
-                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن خطأ في البيانات وكسب نقاط المساهمة.
                   </p>
                   <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -1141,7 +1141,7 @@ ${reportDetails.trim()}`;
                         padding: "8px 16px",
                         borderRadius: "8px",
                         background: "rgba(255, 255, 255, 0.05)",
-                        color: "var(--textSecondary)",
+                        color: "var(--text-secondary)",
                         border: "1px solid var(--border-glass)",
                         fontSize: "0.85rem",
                         cursor: "pointer"
@@ -1176,7 +1176,7 @@ ${reportDetails.trim()}`;
                         width: "100%",
                         padding: "10px 14px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
@@ -1185,11 +1185,11 @@ ${reportDetails.trim()}`;
                       }}
                     >
                       {stations.map((s, idx) => (
-                        <option key={s.id || idx} value={s.name} style={{ background: "var(--bgSecondary)" }}>
+                        <option key={s.id || idx} value={s.name} style={{ background: "var(--bg-secondary)" }}>
                           {s.name} ({s.governorate})
                         </option>
                       ))}
-                      <option value="other_custom" style={{ background: "var(--bgSecondary)" }}>
+                      <option value="other_custom" style={{ background: "var(--bg-secondary)" }}>
                         ➕ موقف آخر / غير مسجل بالدليل
                       </option>
                     </select>
@@ -1212,7 +1212,7 @@ ${reportDetails.trim()}`;
                           width: "100%",
                           padding: "10px 14px",
                           borderRadius: "10px",
-                          background: "var(--bgSecondary)",
+                          background: "var(--bg-secondary)",
                           color: "var(--text-primary)",
                           border: "1px solid var(--border-glass)",
                           fontFamily: "var(--font-cairo)",
@@ -1235,7 +1235,7 @@ ${reportDetails.trim()}`;
                         width: "100%",
                         padding: "10px 14px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
@@ -1243,13 +1243,13 @@ ${reportDetails.trim()}`;
                         cursor: "pointer"
                       }}
                     >
-                      <option value="phone" style={{ background: "var(--bgSecondary)" }}>📞 رقم هاتف / خط ساخن لإحدى الشركات غير صحيح</option>
-                      <option value="company" style={{ background: "var(--bgSecondary)" }}>🏢 شركة سفر غير موجودة أو ملغية أو ناقصة</option>
-                      <option value="destinations" style={{ background: "var(--bgSecondary)" }}>🚌 وجهة سفر غير صحيحة أو غير متوفرة من هذا الموقف</option>
-                      <option value="location" style={{ background: "var(--bgSecondary)" }}>📍 الموقع الجغرافي أو العنوان أو رابط الخريطة غير دقيق</option>
-                      <option value="closed" style={{ background: "var(--bgSecondary)" }}>🚫 الموقف مغلق أو تم نقله لمكان آخر</option>
-                      <option value="missing_station" style={{ background: "var(--bgSecondary)" }}>➕ موقف جديد غير مسجل في الدليل</option>
-                      <option value="other" style={{ background: "var(--bgSecondary)" }}>📝 خطأ أو ملاحظة أخرى في البيانات</option>
+                      <option value="phone" style={{ background: "var(--bg-secondary)" }}>📞 رقم هاتف / خط ساخن لإحدى الشركات غير صحيح</option>
+                      <option value="company" style={{ background: "var(--bg-secondary)" }}>🏢 شركة سفر غير موجودة أو ملغية أو ناقصة</option>
+                      <option value="destinations" style={{ background: "var(--bg-secondary)" }}>🚌 وجهة سفر غير صحيحة أو غير متوفرة من هذا الموقف</option>
+                      <option value="location" style={{ background: "var(--bg-secondary)" }}>📍 الموقع الجغرافي أو العنوان أو رابط الخريطة غير دقيق</option>
+                      <option value="closed" style={{ background: "var(--bg-secondary)" }}>🚫 الموقف مغلق أو تم نقله لمكان آخر</option>
+                      <option value="missing_station" style={{ background: "var(--bg-secondary)" }}>➕ موقف جديد غير مسجل في الدليل</option>
+                      <option value="other" style={{ background: "var(--bg-secondary)" }}>📝 خطأ أو ملاحظة أخرى في البيانات</option>
                     </select>
                   </div>
 
@@ -1269,7 +1269,7 @@ ${reportDetails.trim()}`;
                         minHeight: "110px",
                         padding: "12px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
@@ -1281,7 +1281,7 @@ ${reportDetails.trim()}`;
 
                   {/* Optional Image Upload */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "6px" }}>
+                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", marginBottom: "6px" }}>
                       صورة توضيحية (اختياري - جدول مواعيد، لافتة، إلخ):
                     </label>
                     <input
@@ -1295,7 +1295,7 @@ ${reportDetails.trim()}`;
                       }}
                       style={{
                         fontSize: "0.8rem",
-                        color: "var(--textSecondary)",
+                        color: "var(--text-secondary)",
                         width: "100%"
                       }}
                     />
@@ -1329,7 +1329,7 @@ ${reportDetails.trim()}`;
                         borderRadius: "8px",
                         background: "rgba(255, 255, 255, 0.05)",
                         border: "1px solid var(--border-glass)",
-                        color: "var(--textSecondary)",
+                        color: "var(--text-secondary)",
                         cursor: "pointer",
                         fontSize: "0.85rem",
                         fontWeight: "700"

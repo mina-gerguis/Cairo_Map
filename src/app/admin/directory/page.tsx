@@ -634,9 +634,9 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               fontFamily: "var(--font-sub)",
               fontSize: "0.88rem",
               fontWeight: selectedSpecialtyTab === "all" ? "700" : "500",
-              background: selectedSpecialtyTab === "all" ? "var(--colorPrimary)" : "var(--bg-glass)",
+              background: selectedSpecialtyTab === "all" ? "var(--color-primary)" : "var(--bg-glass)",
               border: selectedSpecialtyTab === "all" ? "1px solid var(--border-glass)" : "1px solid var(--border-glass)",
-              color: selectedSpecialtyTab === "all" ? "#fff" : "var(--textSecondary)",
+              color: selectedSpecialtyTab === "all" ? "#fff" : "var(--text-secondary)",
               transition: "all 0.2s ease",
               whiteSpace: "nowrap",
             }}
@@ -681,9 +681,9 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   fontFamily: "var(--font-sub)",
                   fontSize: "0.88rem",
                   fontWeight: isSelected ? "700" : "500",
-                  background: isSelected ? "var(--colorPrimary)" : "var(--bg-glass)",
+                  background: isSelected ? "var(--color-primary)" : "var(--bg-glass)",
                   border: isSelected ? "1px solid #6366f1" : "1px solid var(--border-glass)",
-                  color: isSelected ? "#fff" : "var(--textSecondary)",
+                  color: isSelected ? "#fff" : "var(--text-secondary)",
                   transition: "all 0.2s ease",
                   whiteSpace: "nowrap",
                 }}
@@ -721,7 +721,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                 fontWeight: selectedSpecialtyTab === "__other__" ? "700" : "500",
                 background: selectedSpecialtyTab === "__other__" ? "rgba(245, 158, 11, 0.16)" : "rgba(255, 255, 255, 0.03)",
                 border: selectedSpecialtyTab === "__other__" ? "1px solid #f59e0b" : "1px solid var(--border-glass)",
-                color: selectedSpecialtyTab === "__other__" ? "#f59e0b" : "var(--textSecondary)",
+                color: selectedSpecialtyTab === "__other__" ? "#f59e0b" : "var(--text-secondary)",
                 boxShadow: selectedSpecialtyTab === "__other__" ? "0 4px 14px rgba(245, 158, 11, 0.2)" : "none",
                 transition: "all 0.2s ease",
                 whiteSpace: "nowrap",
@@ -768,9 +768,9 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               fontFamily: "var(--font-sub)",
               fontSize: "0.88rem",
               fontWeight: selectedCompanyTab === "all" ? "700" : "500",
-              background: selectedCompanyTab === "all" ? "var(--colorPrimary)" : "var(--bg-glass)",
+              background: selectedCompanyTab === "all" ? "var(--color-primary)" : "var(--bg-glass)",
               border: selectedCompanyTab === "all" ? "1px solid var(--border-glass)" : "1px solid var(--border-glass)",
-              color: selectedCompanyTab === "all" ? "#fff" : "var(--textSecondary)",
+              color: selectedCompanyTab === "all" ? "#fff" : "var(--text-secondary)",
               transition: "all 0.2s ease",
               whiteSpace: "nowrap",
             }}
@@ -817,7 +817,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   fontWeight: isSelected ? "700" : "500",
                   background: isSelected ? meta.activeBg : "var(--bg-glass)",
                   border: isSelected ? `1px solid ${meta.activeBorder}` : "1px solid var(--border-glass)",
-                  color: isSelected ? "var(--text-primary)" : "var(--textSecondary)",
+                  color: isSelected ? "var(--text-primary)" : "var(--text-secondary)",
                   transition: "all 0.2s ease",
                   whiteSpace: "nowrap",
                 }}
@@ -874,7 +874,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
               border: "1px solid var(--border-glass)",
-              color: "var(--textSecondary)"
+              color: "var(--text-secondary)"
             }}
           />
           <i className="bx bx-search" style={{
@@ -1023,7 +1023,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         <td className={styles.adminTd} style={{ fontWeight: "700" }}>
                           <div>{entry.name}</div>
                           {entry.description && (
-                            <div style={{ fontSize: "0.8rem", color: "var(--textSecondary)", fontWeight: "normal", marginTop: "4px" }}>
+                            <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "normal", marginTop: "4px" }}>
                               {entry.description}
                             </div>
                           )}

@@ -339,7 +339,7 @@ export default function PortsPage() {
           animation: "spin 1s linear infinite",
           marginBottom: "20px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1rem", fontFamily: "var(--font-cairo)" }}>جاري التحقق من التفاصيل ...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem", fontFamily: "var(--font-cairo)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }` }} />
       </div>
     );
@@ -372,7 +372,7 @@ export default function PortsPage() {
               <img src="/images/icons2d/arab_republice.png" alt="arab_republice" loading="lazy" decoding="async" style={{ width: "35px", height: "35px", marginLeft: "10px" }} />
               دليل الموانئ البحرية
             </h1>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
               استكشف الموانئ المصرية على البحر المتوسط والبحر الأحمر.
             </p>
           </div>
@@ -429,14 +429,14 @@ export default function PortsPage() {
               دليل الموانئ يتطلب اشتراك في الباقة الذهبية
             </h2>
 
-            <p style={{ color: "var(--textSecondary)", fontSize: "1rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "1rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
               تصفح دليل الموانئ البحرية التجارية، اللوجستية، والسياحية وطاقتها الاستيعابية متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
             </p>
 
             {/* Features list */}
-            <div style={{ background: "var(--bgSecondary)", padding: "18px 24px", borderRadius: "12px", border: "1px solid var(--border-glass)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
+            <div style={{ background: "var(--bg-secondary)", padding: "18px 24px", borderRadius: "12px", border: "1px solid var(--border-glass)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
               <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
-              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ دليل الموانئ البحرية (الإسكندرية، الدخيلة، دمياط، السخنة، بورسعيد، إلخ)</li>
                 <li>✨ الطاقة الاستيعابية والقدرة التشغيلية وأرصفة التداول</li>
                 <li>✨ الربط مع شبكات الطرق والسكك الحديدية والقطار السريع</li>
@@ -520,14 +520,14 @@ export default function PortsPage() {
             <img src="/images/icons2d/arab_republice.png" alt="arab_republice" loading="lazy" decoding="async" style={{ width: "55px", marginLeft: "10px" }} />
             دليل الموانئ البحرية
           </h1>
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
             استكشف الموانئ المصرية على البحرين المتوسط والأحمر. تعرف على التخصص، القدرات التشغيلية، الأرصفة المتاحة، وسبل الوصول.
           </p>
 
           {/* Badges indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#14b8a6",
               borderRadius: "10px",
@@ -536,7 +536,7 @@ export default function PortsPage() {
               fontWeight: "700",
             }}>موانئ مصر البحرية ({allPortsList.length}) ⚓</span>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "var(--color-secondary)",
               borderRadius: "10px",
@@ -585,7 +585,7 @@ export default function PortsPage() {
         }}>
           {/* Search Box */}
           <div ref={searchContainerRef} style={{ position: "relative" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "8px" }}>
+            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "8px" }}>
               <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--color-secondary)" }}></i> ابحث في دليل الموانئ
             </label>
             <input
@@ -623,7 +623,7 @@ export default function PortsPage() {
                 padding: "8px 0"
               }}>
                 {searchResults.length === 0 ? (
-                  <div style={{ padding: "16px", textAlign: "center", color: "var(--textSecondary)", fontSize: "0.9rem" }}>
+                  <div style={{ padding: "16px", textAlign: "center", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
                     لم يتم العثور على موانئ مطابقة لبحثك
                   </div>
                 ) : (
@@ -640,7 +640,7 @@ export default function PortsPage() {
                         borderBottom: index < searchResults.length - 1 ? "1px solid var(--border-glass)" : "none",
                         transition: "background-color 0.2s ease"
                       }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bgSecondary)"}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-secondary)"}
                       onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -676,8 +676,8 @@ export default function PortsPage() {
                 fontSize: "0.82rem",
                 fontWeight: "700",
                 border: "1px solid var(--border-glass)",
-                background: selectedFilter === "all" ? "var(--color-secondary)" : "var(--bgSecondary)",
-                color: selectedFilter === "all" ? "#fff" : "var(--textSecondary)",
+                background: selectedFilter === "all" ? "var(--color-secondary)" : "var(--bg-secondary)",
+                color: selectedFilter === "all" ? "#fff" : "var(--text-secondary)",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 transition: "all 0.2s ease"
@@ -693,8 +693,8 @@ export default function PortsPage() {
                 fontSize: "0.82rem",
                 fontWeight: "700",
                 border: "1px solid var(--border-glass)",
-                background: selectedFilter === "mediterranean" ? "#3b82f6" : "var(--bgSecondary)",
-                color: selectedFilter === "mediterranean" ? "#fff" : "var(--textSecondary)",
+                background: selectedFilter === "mediterranean" ? "#3b82f6" : "var(--bg-secondary)",
+                color: selectedFilter === "mediterranean" ? "#fff" : "var(--text-secondary)",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 transition: "all 0.2s ease"
@@ -710,8 +710,8 @@ export default function PortsPage() {
                 fontSize: "0.82rem",
                 fontWeight: "700",
                 border: "1px solid var(--border-glass)",
-                background: selectedFilter === "redsea" ? "#ef4444" : "var(--bgSecondary)",
-                color: selectedFilter === "redsea" ? "#fff" : "var(--textSecondary)",
+                background: selectedFilter === "redsea" ? "#ef4444" : "var(--bg-secondary)",
+                color: selectedFilter === "redsea" ? "#fff" : "var(--text-secondary)",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 transition: "all 0.2s ease"
@@ -727,8 +727,8 @@ export default function PortsPage() {
                 fontSize: "0.82rem",
                 fontWeight: "700",
                 border: "1px solid var(--border-glass)",
-                background: selectedFilter === "commercial" ? "#10b981" : "var(--bgSecondary)",
-                color: selectedFilter === "commercial" ? "#fff" : "var(--textSecondary)",
+                background: selectedFilter === "commercial" ? "#10b981" : "var(--bg-secondary)",
+                color: selectedFilter === "commercial" ? "#fff" : "var(--text-secondary)",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 transition: "all 0.2s ease"
@@ -744,8 +744,8 @@ export default function PortsPage() {
                 fontSize: "0.82rem",
                 fontWeight: "700",
                 border: "1px solid var(--border-glass)",
-                background: selectedFilter === "passenger" ? "#8b5cf6" : "var(--bgSecondary)",
-                color: selectedFilter === "passenger" ? "#fff" : "var(--textSecondary)",
+                background: selectedFilter === "passenger" ? "#8b5cf6" : "var(--bg-secondary)",
+                color: selectedFilter === "passenger" ? "#fff" : "var(--text-secondary)",
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 transition: "all 0.2s ease"
@@ -775,7 +775,7 @@ export default function PortsPage() {
                 animation: "spin 1s linear infinite",
                 margin: "0 auto 12px"
               }} />
-              <span style={{ color: "var(--textSecondary)", fontSize: "0.9rem" }}>جاري تحميل بيانات الموانئ...</span>
+              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>جاري تحميل بيانات الموانئ...</span>
             </div>
           ) : filteredPorts.length > 0 ? (
             filteredPorts.map((port, idx) => {
@@ -815,8 +815,8 @@ export default function PortsPage() {
                         </span>
                         <span style={{
                           fontSize: "0.75rem",
-                          background: "var(--bgSecondary)",
-                          color: "var(--textSecondary)",
+                          background: "var(--bg-secondary)",
+                          color: "var(--text-secondary)",
                           border: "1px solid var(--border-glass)",
                           padding: "2px 8px",
                           borderRadius: "8px"
@@ -842,7 +842,7 @@ export default function PortsPage() {
                     <button
                       onClick={() => toggleExpand(port.name)}
                       style={{
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "10px",
                         padding: "6px 12px",
@@ -864,7 +864,7 @@ export default function PortsPage() {
                   {/* Short Summary */}
                   <p style={{
                     margin: "0 0 14px 0",
-                    color: "var(--textSecondary)",
+                    color: "var(--text-secondary)",
                     fontSize: "0.9rem",
                     lineHeight: "1.6"
                   }}>
@@ -876,7 +876,7 @@ export default function PortsPage() {
                     display: "grid",
                     gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
                     gap: "10px",
-                    background: "var(--bgSecondary)",
+                    background: "var(--bg-secondary)",
                     padding: "12px 14px",
                     borderRadius: "10px",
                     border: "1px solid var(--border-glass)",
@@ -909,7 +909,7 @@ export default function PortsPage() {
                           <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                             🏗️ الأرصفة والتجهيزات الفنية:
                           </div>
-                          <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.5" }}>
+                          <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: "1.5" }}>
                             {port.berths_count}
                           </p>
                         </div>
@@ -925,8 +925,8 @@ export default function PortsPage() {
                             {port.connections.map((conn, cIdx) => (
                               <span key={cIdx} style={{
                                 fontSize: "0.78rem",
-                                background: "var(--bgSecondary)",
-                                color: "var(--textSecondary)",
+                                background: "var(--bg-secondary)",
+                                color: "var(--text-secondary)",
                                 border: "1px solid var(--border-glass)",
                                 padding: "4px 10px",
                                 borderRadius: "8px"
@@ -944,7 +944,7 @@ export default function PortsPage() {
                           <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
                             🏢 الهيئة المشغلة:
                           </div>
-                          <span style={{ color: "var(--textSecondary)", fontSize: "0.85rem" }}>
+                          <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
                             {port.operator}
                           </span>
                         </div>
@@ -992,7 +992,7 @@ export default function PortsPage() {
               borderRadius: "15px",
               padding: "40px",
               textAlign: "center",
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               boxShadow: "var(--shadow-card)"
             }}>
               لا توجد موانئ مطابقة لخيارات البحث المحددة. يرجى تعديل كلمات البحث أو الفلتر.

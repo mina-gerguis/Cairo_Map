@@ -464,7 +464,7 @@ export default function MicrobusStationsPage() {
           animation: "spin 1s linear infinite",
           margin: "0 auto 20px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل ...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-heading)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -520,7 +520,7 @@ export default function MicrobusStationsPage() {
             }}>
               <img src="/images/icons2d/microbus.png" alt="Cairo Microbus" loading="lazy" decoding="async" style={{ width: "75px", marginLeft: "10px" }} />
               مواقف الميكروباص</h1>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto", lineHeight: "1.6" }}>
               دليل القاهرة الكبرى الشعبي لمعرفة مواقف السرفيس والميكروباص.
             </p>
           </div>
@@ -550,7 +550,7 @@ export default function MicrobusStationsPage() {
               دليل مواقف الميكروباص يتطلب الأشتراك في الباقة الذهبية
             </h2>
 
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
               تصفح دليل مواقف الميكروباص والسرفيس في القاهرة والجيزة والتعرفة الرسمية للخطوط متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
             </p>
 
@@ -572,7 +572,7 @@ export default function MicrobusStationsPage() {
                 paddingRight: "16px",
                 margin: 0,
                 fontSize: "0.85rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 lineHeight: "1.6",
                 display: "flex",
                 flexDirection: "column",
@@ -631,7 +631,7 @@ export default function MicrobusStationsPage() {
                   padding: "12px",
                   borderRadius: "10px",
                   background: "rgba(255, 255, 255, 0.04)",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
@@ -694,14 +694,14 @@ export default function MicrobusStationsPage() {
           }}>
             <img src="/images/icons2d/microbus.png" alt="Cairo Microbus" loading="lazy" decoding="async" style={{ width: "65px", marginLeft: "10px", objectFit: "contain" }} />
             دليل مواقف الميكروباص</h1>
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto 20px", lineHeight: "1.6" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "5px auto 20px", lineHeight: "1.6" }}>
             دليل القاهرة الكبرى الشعبي لمعرفة مواقف السرفيس والميكروباص. تصفح جميع المواقف والخطوط المتاحة، أو اختر موقفاً محدداً لبدء رحلتك.
           </p>
 
           {/* Badges indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "var(--color-blue-500)",
               borderRadius: "10px",
@@ -710,7 +710,7 @@ export default function MicrobusStationsPage() {
               fontWeight: "700",
             }}>{stations.length} موقف سرفيس</span>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "var(--color-gold-500)",
               borderRadius: "10px",
@@ -842,7 +842,7 @@ export default function MicrobusStationsPage() {
           {loading ? (
             <div style={{ textAlign: "center", padding: "40px" }}>
               <div style={{ width: "30px", height: "30px", border: "3px solid var(--border-glass)", borderTopColor: "#f59e0b", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
-              <span style={{ color: "var(--textSecondary)", fontSize: "0.95rem" }}>جاري تحميل البيانات...</span>
+              <span style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>جاري تحميل البيانات...</span>
             </div>
           ) : (() => {
             const isSpecificStation = selectedStation && selectedStation !== "all";
@@ -870,7 +870,7 @@ export default function MicrobusStationsPage() {
                       <i className="bx bx-error-circle" style={{ fontSize: "1.3rem" }}></i>
                       <span>لا تتوفر ميكروباصات مباشرة من هذا الموقف للوجهة المطلوبة</span>
                     </div>
-                    <p style={{ fontSize: "0.85rem", color: "var(--textSecondary)", margin: 0, lineHeight: "1.6" }}>
+                    <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
                       عذراً، لا تتوفر سيارات مباشرة من <strong>{selectedStation}</strong> متجهة إلى <strong>"{destinationQuery}"</strong> حالياً في دليلنا.
                     </p>
                     <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
@@ -909,7 +909,7 @@ export default function MicrobusStationsPage() {
                     borderRadius: "15px",
                     padding: "40px",
                     textAlign: "center",
-                    color: "var(--textSecondary)",
+                    color: "var(--text-secondary)",
                     boxShadow: "var(--shadow-card)"
                   }}>
                     لا توجد مواقف أو خطوط ميكروباص متجهة إلى <strong>"{destinationQuery}"</strong> حالياً في دليلنا. نعمل على التحديث المستمر لإضافة المزيد.
@@ -976,7 +976,7 @@ export default function MicrobusStationsPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "inline-block", alignItems: "center", gap: "6px", }}>
+                          style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "inline-block", alignItems: "center", gap: "6px", }}>
                           <i className="bx bx-map" style={{ color: "var(--color-secondary)" }}></i> يقع موقف <span style={{ color: "var(--color-secondary)" }}>{station.name}</span> في {station.location}
                         </a>
 
@@ -1038,7 +1038,7 @@ export default function MicrobusStationsPage() {
                                       </div>
                                       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
 
-                                        <i className={`bx bx-chevron-${isRouteExpanded ? "up" : "down"}`} style={{ fontSize: "1.2rem", color: "var(--textSecondary)" }}></i>
+                                        <i className={`bx bx-chevron-${isRouteExpanded ? "up" : "down"}`} style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}></i>
                                       </div>
                                     </div>
 
@@ -1212,7 +1212,7 @@ export default function MicrobusStationsPage() {
                                                       <span style={{
                                                         fontSize: "0.72rem",
                                                         fontWeight: isStart || isEnd ? "bold" : "normal",
-                                                        color: isStart || isEnd ? "var(--text-primary)" : "var(--textSecondary)",
+                                                        color: isStart || isEnd ? "var(--text-primary)" : "var(--text-secondary)",
                                                         textAlign: "center",
                                                         width: "75px",
                                                         whiteSpace: "normal",
@@ -1262,7 +1262,7 @@ export default function MicrobusStationsPage() {
                                                       gap: "6px",
                                                       background: userVote === "like" ? "rgba(16, 185, 129, 0.12)" : "rgba(128,128,128,0.05)",
                                                       border: userVote === "like" ? "1px solid #10b981" : "1px solid var(--border-glass)",
-                                                      color: userVote === "like" ? "#10b981" : "var(--textSecondary)",
+                                                      color: userVote === "like" ? "#10b981" : "var(--text-secondary)",
                                                       padding: "6px 12px",
                                                       borderRadius: "8px",
                                                       fontSize: "0.8rem",
@@ -1287,7 +1287,7 @@ export default function MicrobusStationsPage() {
                                                       gap: "6px",
                                                       background: userVote === "dislike" ? "rgba(239, 68, 68, 0.12)" : "rgba(128,128,128,0.05)",
                                                       border: userVote === "dislike" ? "1px solid #ef4444" : "1px solid var(--border-glass)",
-                                                      color: userVote === "dislike" ? "#ef4444" : "var(--textSecondary)",
+                                                      color: userVote === "dislike" ? "#ef4444" : "var(--text-secondary)",
                                                       padding: "6px 12px",
                                                       borderRadius: "8px",
                                                       fontSize: "0.8rem",
@@ -1344,7 +1344,7 @@ export default function MicrobusStationsPage() {
                                         {(route.description || route.notes) && (
                                           <div style={{
                                             fontSize: "0.8rem",
-                                            color: "var(--textSecondary)",
+                                            color: "var(--text-secondary)",
                                             fontStyle: "italic",
                                             background: "rgba(255, 255, 255, 0.02)",
                                             padding: "8px 12px",
@@ -1414,7 +1414,7 @@ export default function MicrobusStationsPage() {
             <h3 style={{ margin: "0 0 6px 0", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
               عارف خط موجود في موقف بتركب منه ومش موجود في الدليل؟
             </h3>
-            <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6", maxWidth: "500px" }}>
+            <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6", maxWidth: "500px" }}>
               برجاء إخبار الإدارة! ساعدنا في تحسين وتغطية جميع خطوط القاهرة والجيزة لخدمة بقية الركاب. سنقوم بمراجعة بيانات الخط وإضافتها فوراً.
             </p>
           </div>
@@ -1493,7 +1493,7 @@ export default function MicrobusStationsPage() {
               </h3>
               <button
                 onClick={() => setReportModalOpen(false)}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -1501,7 +1501,7 @@ export default function MicrobusStationsPage() {
 
             {/* Modal Form */}
             <form onSubmit={handleReportSubmit} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", background: "rgba(255, 255, 255, 0.02)", padding: "10px 12px", }}>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", background: "rgba(255, 255, 255, 0.02)", padding: "10px 12px", }}>
                 <div><strong>الموقف:</strong> {reportingStationName}</div>
                 <div style={{ marginTop: "4px" }}><strong>الوجهة:</strong> {reportingRouteDestination}</div>
               </div>
@@ -1638,7 +1638,7 @@ export default function MicrobusStationsPage() {
               </h3>
               <button
                 onClick={() => setMissingRouteModalOpen(false)}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -1646,7 +1646,7 @@ export default function MicrobusStationsPage() {
 
             {/* Modal Form */}
             <form onSubmit={handleMissingRouteSubmit} style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "14px" }}>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                 أدخل تفاصيل الخط الموجود في الموقف الذي تركب منه لمساعدة الإدارة في مراجعته وإضافته للدليل.
               </p>
 
@@ -1851,7 +1851,7 @@ export default function MicrobusStationsPage() {
             <p style={{
               margin: "0 0 24px 0",
               fontSize: "0.95rem",
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               lineHeight: "1.6",
               fontFamily: "var(--font-body)"
             }}>

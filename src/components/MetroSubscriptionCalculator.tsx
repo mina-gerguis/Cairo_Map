@@ -87,7 +87,7 @@ export default function MetroSubscriptionCalculator() {
         </div>
         <div>
           <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)" }}>حاسبة توفير اشتراكات المترو</h3>
-          <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--textSecondary)" }}>احسب مقدار التوفير المالي بين شراء التذاكر يومياً كاش أم عمل اشتراك مترو رسمي</p>
+          <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)" }}>احسب مقدار التوفير المالي بين شراء التذاكر يومياً كاش أم عمل اشتراك مترو رسمي</p>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export default function MetroSubscriptionCalculator() {
 
         {/* User Category */}
         <div>
-          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>فئة الراكب:</label>
+          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>فئة الراكب:</label>
           <select
             value={userCategory}
             onChange={(e) => setUserCategory(e.target.value as any)}
@@ -105,7 +105,7 @@ export default function MetroSubscriptionCalculator() {
               height: "44px",
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               color: "var(--text-primary)",
               padding: "0 12px",
               fontSize: "0.88rem",
@@ -121,7 +121,7 @@ export default function MetroSubscriptionCalculator() {
 
         {/* Subscription Period */}
         <div>
-          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>مدة الاشتراك:</label>
+          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>مدة الاشتراك:</label>
           <select
             value={subscriptionPeriod}
             onChange={(e) => setSubscriptionPeriod(e.target.value as any)}
@@ -130,7 +130,7 @@ export default function MetroSubscriptionCalculator() {
               height: "44px",
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               color: "var(--text-primary)",
               padding: "0 12px",
               fontSize: "0.88rem",
@@ -144,7 +144,7 @@ export default function MetroSubscriptionCalculator() {
 
         {/* Stages / Stations */}
         <div>
-          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>عدد المحطات (المرحلة):</label>
+          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>عدد المحطات (المرحلة):</label>
           <select
             value={stages}
             onChange={(e) => setStages(Number(e.target.value))}
@@ -153,7 +153,7 @@ export default function MetroSubscriptionCalculator() {
               height: "44px",
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               color: "var(--text-primary)",
               padding: "0 12px",
               fontSize: "0.88rem",
@@ -169,7 +169,7 @@ export default function MetroSubscriptionCalculator() {
 
         {/* Trips Per Week */}
         <div>
-          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>عدد الرحلات الأسبوعية (ذهاب وإياد):</label>
+          <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>عدد الرحلات الأسبوعية (ذهاب وإياد):</label>
           <select
             value={tripsPerWeek}
             onChange={(e) => setTripsPerWeek(Number(e.target.value))}
@@ -178,7 +178,7 @@ export default function MetroSubscriptionCalculator() {
               height: "44px",
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               color: "var(--text-primary)",
               padding: "0 12px",
               fontSize: "0.88rem",
@@ -207,12 +207,12 @@ export default function MetroSubscriptionCalculator() {
         alignItems: "center"
       }}>
         <div style={{ textAlign: "center", padding: "10px", background: "var(--bgPrimary)", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-          <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", fontWeight: "600" }}>تكلفة التذاكر الكاش</div>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontWeight: "600" }}>تكلفة التذاكر الكاش</div>
           <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#ef4444", marginTop: "4px" }}>{cashTotalCost} ج.م</div>
         </div>
 
         <div style={{ textAlign: "center", padding: "10px", background: "var(--bgPrimary)", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-          <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", fontWeight: "600" }}>تكلفة الاشتراك المترو الرسمية</div>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontWeight: "600" }}>تكلفة الاشتراك المترو الرسمية</div>
           <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-secondary)", marginTop: "4px" }}>{subscriptionCost} ج.م</div>
         </div>
 
@@ -227,7 +227,7 @@ export default function MetroSubscriptionCalculator() {
         </div>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "12px", fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "12px", fontSize: "0.78rem", color: "var(--text-secondary)" }}>
         <FaCheckCircle style={{ color: "#10b981" }} />
         <span>الاشتراك يُتيح لك عدد رحلات غير محدود أو حتى 180 رحلة خلال الفترة المقررة.</span>
       </div>
@@ -242,14 +242,14 @@ export default function MetroSubscriptionCalculator() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "12px", marginBottom: "16px" }}>
           <div style={{ background: "rgba(255,255,255,0.03)", padding: "14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
             <h5 style={{ margin: "0 0 6px 0", color: "#6366f1", fontSize: "0.92rem", fontWeight: "700" }}>📲 كارت المحفظة الإلكترونية</h5>
-            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
               يمكن شراؤه بقيمة 50 ج.م من أي شباك تذاكر، وتشحنه برصيد ينزل منه سعر الرحلة تلقائياً بدون الانتظار في طوابير التذاكر.
             </p>
           </div>
 
           <div style={{ background: "rgba(255,255,255,0.03)", padding: "14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
             <h5 style={{ margin: "0 0 6px 0", color: "#10b981", fontSize: "0.92rem", fontWeight: "700" }}>💸 طرق الشحن المتاحة</h5>
-            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+            <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
               عبر ماكينات التذاكر الذكية TVM بالمحطات، منافذ فوري وأمان، أو من خلال محفظة فودافون كاش والأهلي فون.
             </p>
           </div>
@@ -260,7 +260,7 @@ export default function MetroSubscriptionCalculator() {
           <h5 style={{ margin: "0 0 8px 0", color: "var(--text-primary)", fontSize: "0.88rem", fontWeight: "800" }}>
             📍 أهم مكاتب عمل الاشتراكات ومواعيدها:
           </h5>
-          <ul style={{ margin: 0, paddingRight: "18px", fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+          <ul style={{ margin: 0, paddingRight: "18px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
             <li><strong>الخط الأول:</strong> محطات (الشهداء، حلوان، عين شمس، المعادي، المرج الجديدة).</li>
             <li><strong>الخط الثاني:</strong> محطات (الشهداء، العتبة، شبرا الخيمة، جامعة القاهرة، كلية الزراعة).</li>
             <li><strong>الخط الثالث:</strong> محطات (العدلي منصور، العباسية، الكيت كات، العتبة).</li>

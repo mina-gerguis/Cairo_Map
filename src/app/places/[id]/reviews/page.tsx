@@ -176,7 +176,7 @@ export default function PlaceReviewsPage() {
   if (loading) {
     return (
       <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", direction: "rtl" }}>
-        <div style={{ fontSize: "1.2rem", color: "var(--textSecondary)" }}>جاري تحميل البيانات...</div>
+        <div style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}>جاري تحميل البيانات...</div>
       </div>
     );
   }
@@ -186,7 +186,7 @@ export default function PlaceReviewsPage() {
       <div className="app-container" style={{ display: "flex", flexDirection: "column", height: "100vh", alignItems: "center", justifyContent: "center", gap: "20px" }}>
         <div style={{ padding: "40px", textAlign: "center" }} className="glass-panel">
           <h2 style={{ fontSize: "1.6rem", marginBottom: "10px" }}>المكان غير موجود</h2>
-          <p style={{ color: "var(--textSecondary)", marginBottom: "20px" }}>عذراً، لم نتمكن من العثور على المكان المطلوب.</p>
+          <p style={{ color: "var(--text-secondary)", marginBottom: "20px" }}>عذراً، لم نتمكن من العثور على المكان المطلوب.</p>
           <button className="btn btn-primary" onClick={() => router.push("/")}>
             العودة للرئيسية
           </button>
@@ -215,7 +215,7 @@ export default function PlaceReviewsPage() {
       <div className="glass-panel" style={{ padding: "24px", marginBottom: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "20px" }}>
         <div>
           <h2 style={{ fontSize: "1.5rem", fontWeight: "800", color: "var(--text-primary)" }}>{place.name}</h2>
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", marginTop: "4px" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", marginTop: "4px" }}>
             {place.categoryLabel} • {place.city} / {place.governorate}
           </p>
         </div>
@@ -227,7 +227,7 @@ export default function PlaceReviewsPage() {
             <div style={{ color: "#ff9f0a", fontSize: "1.1rem" }}>
               {"★".repeat(Math.round(place.rating || 0)) + "☆".repeat(5 - Math.round(place.rating || 0))}
             </div>
-            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginTop: "2px" }}>
+            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginTop: "2px" }}>
               بناءً على {place.reviewsCount || 0} تقييم
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function PlaceReviewsPage() {
         {/* Branch Filter */}
         {place.branches && place.branches.length > 0 && (
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 180px" }}>
-            <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "600", whiteSpace: "nowrap" }}>📍 الفرع:</span>
+            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600", whiteSpace: "nowrap" }}>📍 الفرع:</span>
             <select
               className="input-fields help-select"
               value={branchFilter}
@@ -266,7 +266,7 @@ export default function PlaceReviewsPage() {
 
         {/* Rating Filter */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 180px" }}>
-          <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "600", whiteSpace: "nowrap" }}>⭐ التقييم:</span>
+          <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600", whiteSpace: "nowrap" }}>⭐ التقييم:</span>
           <select
             className="input-fields help-select"
             value={ratingFilter}
@@ -284,7 +284,7 @@ export default function PlaceReviewsPage() {
 
         {/* Sort Order */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 180px" }}>
-          <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "600", whiteSpace: "nowrap" }}>⇅ الترتيب:</span>
+          <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600", whiteSpace: "nowrap" }}>⇅ الترتيب:</span>
           <select
             className="input-fields help-select"
             value={sortBy}
@@ -332,7 +332,7 @@ export default function PlaceReviewsPage() {
                     )}
                   </div>
                   {review.branches && (
-                    <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "flex", alignItems: "center", gap: "6px", background: "rgba(120,120,120,0.1)", padding: "4px 8px", borderRadius: "8px", width: "fit-content", marginTop: "6px" }}>
+                    <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px", background: "rgba(120,120,120,0.1)", padding: "4px 8px", borderRadius: "8px", width: "fit-content", marginTop: "6px" }}>
                       <span>🏢</span>
                       <span style={{ fontWeight: "600" }}>{review.branches.name}</span>
                       <span>-</span>
@@ -356,7 +356,7 @@ export default function PlaceReviewsPage() {
             </div>
           ))
         ) : (
-          <div style={{ textAlign: "center", color: "var(--textSecondary)", padding: "40px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px" }}>
+          <div style={{ textAlign: "center", color: "var(--text-secondary)", padding: "40px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px" }}>
             لا توجد تقييمات تطابق خيارات التصفية المحددة.
           </div>
         )}

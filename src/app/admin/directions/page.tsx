@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import styles from "./directions.module.css";
 import { useAdminDirections } from "./hooks/useAdminDirections";
+import CustomModal from "@/components/common/Modals";
 import {
   AdminDirectionsHeader,
-  AdminDirectionsStats,
   AdminDirectionsSqlBanner,
   AdminDirectionsNotifications,
   AdminDirectionsForm,
@@ -15,11 +15,16 @@ import {
   AdminDirectionsList,
   AdminDirectionsLoading,
   AdminDirectionsUnauthorized,
-  AdminDirectionsExcelModal
+  AdminDirectionsExcelModal,
+  AdminTransitTypesCheatsheet
 } from "./components";
 
 export default function AdminDirectionsPage(props: any) {
   const isSubComponent = props?.isSubComponent ?? false;
+  const [showCheatsheetModal, setShowCheatsheetModal] = useState(false);
+  const [routeToDelete, setRouteToDelete] = useState<{ from: string; to: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const {
     authLoading,
     loading,
@@ -27,7 +32,6 @@ export default function AdminDirectionsPage(props: any) {
     dbMissing,
     error,
     success,
-    stats,
     searchQuery,
     setSearchQuery,
     filterType,
@@ -81,6 +85,21 @@ export default function AdminDirectionsPage(props: any) {
     return <AdminDirectionsUnauthorized />;
   }
 
+  const handleDeleteClick = (from: string, to: string) => {
+    setRouteToDelete({ from, to });
+  };
+
+  const confirmDelete = async () => {
+    if (!routeToDelete) return;
+    setIsDeleting(true);
+    try {
+      await handleDelete(routeToDelete.from, routeToDelete.to);
+    } finally {
+      setIsDeleting(false);
+      setRouteToDelete(null);
+    }
+  };
+
   // 3. Main Admin Workspace View
   return (
     <div className={styles.directionsContainer}>
@@ -96,13 +115,7 @@ export default function AdminDirectionsPage(props: any) {
         }}
         onOpenExcelModal={() => setShowExcelModal(true)}
         onExportExcel={handleExcelExport}
-      />
-
-      {/* Real-time Statistics Summary */}
-      <AdminDirectionsStats
-        totalConnectionsCount={stats.totalConnectionsCount}
-        totalOptionsCount={stats.totalOptionsCount}
-        totalMultiLegCount={stats.totalMultiLegCount}
+        onOpenCheatsheet={() => setShowCheatsheetModal(true)}
       />
 
       {/* SQL Setup Banner (if DB or legs column missing) */}
@@ -111,7 +124,7 @@ export default function AdminDirectionsPage(props: any) {
       {/* Notifications (Error / Success) */}
       <AdminDirectionsNotifications error={error} success={success} />
 
-      {/* Add / Edit Form Modal / Drawer */}
+      {/* Add / Edit Form Modal */}
       {showAddForm && (
         <AdminDirectionsForm
           editingConnection={editingConnection}
@@ -168,7 +181,7 @@ export default function AdminDirectionsPage(props: any) {
         onToggleExpand={toggleRouteExpand}
         onToggleSelect={toggleSelectRoute}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={handleDeleteClick}
       />
 
       {/* Excel Sheet Import Modal */}
@@ -177,6 +190,45 @@ export default function AdminDirectionsPage(props: any) {
         onClose={() => setShowExcelModal(false)}
         onImportSuccess={handleExcelImport}
       />
+
+      {/* Standalone Transit Types Cheatsheet Modal */}
+      {showCheatsheetModal && (
+        <AdminTransitTypesCheatsheet
+          isModal={true}
+          onClose={() => setShowCheatsheetModal(false)}
+        />
+      )}
+
+      {/* Custom Delete Confirmation Modal */}
+      <CustomModal
+        isOpen={Boolean(routeToDelete)}
+        onClose={() => !isDeleting && setRouteToDelete(null)}
+        title="تأكيد الحذف"
+        titleColor="#ff3b30"
+        iconSrc="/images/icons3d/trash.png"
+        borderColor="rgba(255, 59, 48, 0.25)"
+        message="هل أنت متأكد من حذف هذا المسار بجميع وسائل المواصلات الخاصة به؟"
+        primaryButton={{
+          label: isDeleting ? "جاري الحذف..." : "نعم، احذف",
+          onClick: confirmDelete,
+          bgColor: "#ff3b30",
+          disabled: isDeleting,
+          icon: <i className="bx bx-trash" style={{ fontSize: "1.2rem" }} />
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setRouteToDelete(null),
+          bgColor: "var(--btn-cancel)",
+          disabled: isDeleting,
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
+        }}
+      >
+        {routeToDelete && (
+          <p style={{ margin: "0", color: "#ff4d4d", fontSize: "1.05rem", fontWeight: "bold", textAlign: "center" }}>
+            « من {routeToDelete.from} إلى {routeToDelete.to} »
+          </p>
+        )}
+      </CustomModal>
     </div>
   );
 }

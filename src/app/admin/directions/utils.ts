@@ -317,7 +317,7 @@ export function mapConnectionToFormOptions(conn: GroupedRoute): FormOption[] {
           steps:
             opt.steps && Array.isArray(opt.steps) && opt.steps.length > 0
               ? opt.steps
-              : ["اركب...", "اوصل...", "انزل..."]
+              : [""]
         }
       ];
     }
@@ -346,61 +346,91 @@ export interface TransitIconResult {
 /**
  * Resolves 2D image asset or BoxIcon class for transit options in admin views.
  */
-export function getTransitOptionIconPath(option: { type?: string; icon?: string }): TransitIconResult {
-  const t = (option.type || "").toLowerCase();
+export function getTransitOptionIconPath(option: { type?: string; icon?: string; vehicleType?: string }): TransitIconResult {
+  const t = (option.type || option.vehicleType || "").toLowerCase();
   const icon = (option.icon || "").toLowerCase();
 
-  // 1. Metro
-  if (t === "metro" || icon === "metro" || icon.includes("subway") || icon.includes("metro")) {
+  // 1. Metro (مترو الأنفاق)
+  if (t === "metro" || icon === "metro" || icon.includes("subway") || icon.includes("metro") || t.includes("مترو")) {
     return { type: "image", src: "/images/icons2d/metro.png" };
   }
 
-  // 2. Microbus
-  if (t === "microbus" || icon === "microbus") {
+  // 2. Microbus (ميكروباص)
+  if (t === "microbus" || icon === "microbus" || t.includes("ميكروباص") || t.includes("سرفيس")) {
     return { type: "image", src: "/images/icons2d/microbus.png" };
   }
 
-  // 3. Public Bus
-  if (t === "bus" || icon === "bus") {
+  // 3. BRT (الأتوبيس الترددي السريع)
+  if (t === "brt" || icon === "brt" || icon.includes("brt") || t.includes("ترددي") || t.includes("brt")) {
+    return { type: "image", src: "/images/icons2d/brt.png" };
+  }
+
+  // 4. Public Bus / Superjet / Minibus (أتوبيس النقل العام)
+  if (
+    t === "bus" ||
+    icon === "bus" ||
+    icon.includes("bus") ||
+    t.includes("أتوبيس") ||
+    t.includes("اتوبيس") ||
+    t.includes("باص") ||
+    t.includes("ميني باص") ||
+    t.includes("سوبر جيت") ||
+    t.includes("جو باص")
+  ) {
     return { type: "image", src: "/images/icons2d/bus.png" };
   }
 
-  // 4. Railways
-  if (t === "train" || icon === "train" || icon.includes("railway") || icon.includes("cairo_train")) {
+  // 5. Railways / Train (قطار السكك الحديدية)
+  if (t === "train" || icon === "train" || icon.includes("railway") || icon.includes("cairo_train") || t.includes("قطار") || t.includes("قطارات") || t.includes("سكك حديد")) {
     return { type: "image", src: "/images/icons2d/Cairo_train.png" };
   }
 
-  // 5. Monorail
-  if (t === "monorail" || icon === "monorail" || icon.includes("cairo_monorail")) {
+  // 6. Monorail (مونوريل)
+  if (t === "monorail" || icon === "monorail" || icon.includes("cairo_monorail") || icon.includes("monorail") || t.includes("مونوريل")) {
     return { type: "image", src: "/images/icons2d/Cairo_monorail_east.png" };
   }
 
-  // 6. LRT (Light Rail Transit)
-  if (t === "lrt" || icon === "lrt" || icon.includes("cairo_lrt") || icon.includes("lrt")) {
+  // 7. LRT (Light Rail Transit / القطار الكهربائي الخفيف)
+  if (t === "lrt" || icon === "lrt" || icon.includes("cairo_lrt") || icon.includes("lrt") || t.includes("lrt") || t.includes("كهربائي")) {
     return { type: "image", src: "/images/icons2d/Cairo_lrt.png" };
   }
 
-  // 7. BRT (Bus Rapid Transit / الأتوبيس الترددي)
-  if (t === "brt" || icon === "brt" || icon.includes("brt")) {
-    return { type: "image", src: "/images/icons2d/bus.png" };
-  }
-
-  // 8. Airport / Plane
-  if (t === "plane" || icon === "plane" || icon.includes("airport") || icon.includes("flight")) {
+  // 8. Airport / Plane (طيران / مطار)
+  if (t === "plane" || icon === "plane" || icon.includes("airport") || icon.includes("flight") || t.includes("طائر") || t.includes("طيران") || t.includes("مطار")) {
     return { type: "image", src: "/images/icons2d/airport.png" };
   }
 
-  // 7. Car / Parking
-  if (t === "car" || icon === "car") {
-    return { type: "image", src: "/images/icons2d/parking.png" };
+  // 9. Ship / Ferry / Nile Bus (سفينة / معدية / أتوبيس نهري)
+  if (t === "ship" || icon === "ship" || icon.includes("ferry") || icon.includes("boat") || t.includes("سفين") || t.includes("عبار") || t.includes("نهري") || t.includes("مركب")) {
+    return { type: "image", src: "/images/icons2d/ship.png" };
   }
 
-  // 8. BoxIcon string fallback
-  if (icon.includes("bx") || icon.includes("fa-")) {
+  // 10. Taxi / Cab (تاكسي / أوبر)
+  if (t === "taxi" || icon === "taxi" || icon.includes("taxi") || t.includes("تاكسي") || t.includes("اوبر") || t.includes("كريم")) {
+    return { type: "image", src: "/images/icons2d/taxi.png" };
+  }
+
+  // 11. Car / Private vehicle (سيارة خاصة)
+  if (t === "car" || icon === "car" || icon.includes("car") || t.includes("سيار") || t.includes("عربي")) {
+    return { type: "image", src: "/images/icons2d/car.png" };
+  }
+
+  // 12. Walking / Pedestrian (مشي / سير على الأقدام)
+  if (t === "walk" || icon === "walk" || icon.includes("walk") || t.includes("مشي") || t.includes("اقدام") || t.includes("أقدام")) {
+    return { type: "image", src: "/images/icons2d/walk.png" };
+  }
+
+  // 13. Multi-modal / Transfer (مواصلات متعددة)
+  if (t === "multi" || t === "transfer" || icon === "multi" || icon === "transfer" || icon.includes("transfer") || t.includes("متعدد") || t.includes("تحويل")) {
+    return { type: "image", src: "/images/icons2d/multi.png" };
+  }
+
+  // 14. BoxIcon string fallback
+  if (icon.includes("bx") || icon.startsWith("fa-")) {
     return { type: "fontIcon", iconClass: option.icon };
   }
 
-  // 9. Standard 2D icon fallback
+  // 15. Standard 2D icon fallback
   return { type: "image", src: `/images/icons2d/${option.icon || "microbus"}.png` };
 }
 

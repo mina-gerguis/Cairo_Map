@@ -131,7 +131,7 @@ export default function TransitFAQ() {
           <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)" }}>
             الأسئلة الشائعة وإرشادات شبكة المواصلات
           </h3>
-          <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+          <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)" }}>
             إجابات سريعة وروابط مباشرة لكافة خدمات المترو والقطارات والمونوريل والمواقف
           </p>
         </div>
@@ -145,7 +145,7 @@ export default function TransitFAQ() {
             <div
               key={idx}
               style={{
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 border: "1px solid var(--borderGlass)",
                 borderRadius: "var(--radius-xs)",
                 overflow: "hidden",
@@ -172,7 +172,7 @@ export default function TransitFAQ() {
                 }}
               >
                 <span>{item.question}</span>
-                <span style={{ color: "var(--textSecondary)", fontSize: "0.8rem", marginRight: "8px" }}>
+                <span style={{ color: "var(--text-secondary)", fontSize: "0.8rem", marginRight: "8px" }}>
                   {isOpen ? <FaChevronUp /> : <FaChevronDown />}
                 </span>
               </button>
@@ -182,7 +182,7 @@ export default function TransitFAQ() {
                   style={{
                     padding: "0 16px 14px 16px",
                     fontSize: "0.85rem",
-                    color: "var(--textSecondary)",
+                    color: "var(--text-secondary)",
                     lineHeight: "1.6",
                     borderTop: "1px solid var(--borderGlass)"
                   }}

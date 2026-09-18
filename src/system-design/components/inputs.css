@@ -29,7 +29,7 @@
 }
 
 .input-fields:focus {
-  border-color: var(--colorPrimary);
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.15);
 }
 
@@ -37,7 +37,7 @@
 .input-fields[aria-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
 }
 
 /* ==========================================================================

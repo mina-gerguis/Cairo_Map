@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "../directions.module.css";
 import { OriginTabItem } from "../types";
 
 interface AdminDirectionsOriginTabsProps {
@@ -16,33 +15,73 @@ export function AdminDirectionsOriginTabs({
   uniqueOrigins
 }: AdminDirectionsOriginTabsProps) {
   return (
-    <div className={styles.originTabsContainer}>
-      <button
-        type="button"
-        className={`${styles.originTab} ${
-          selectedOrigin === "all" ? styles.originTabActive : ""
-        }`}
-        onClick={() => onSelectOrigin("all")}
+    <div
+      style={{
+        background: "var(--bg-secondary)",
+        border: "1px solid var(--border-glass)",
+        borderRadius: "16px",
+        padding: "16px 20px",
+        marginBottom: "24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px"
+      }}
+    >
+      <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)" }}>
+        تصفية حسب منطقة الانطلاق:
+      </span>
+      <div
+        className="tabs"
+        style={{
+          gap: "8px",
+          overflowX: "auto",
+          paddingBottom: "6px",
+          scrollbarWidth: "none"
+        }}
       >
-        <i className="bx bx-grid-alt" />
-        <span>كل مناطق الانطلاق</span>
-        <span className={styles.tabBadge}>{totalRoutesCount}</span>
-      </button>
-
-      {uniqueOrigins.map((orig, i) => (
         <button
-          key={i}
           type="button"
-          className={`${styles.originTab} ${
-            selectedOrigin === orig.name ? styles.originTabActive : ""
-          }`}
-          onClick={() => onSelectOrigin(orig.name)}
+          onClick={() => onSelectOrigin("all")}
+          className="btn"
+          style={{
+            padding: "6px 14px",
+            borderRadius: "8px",
+            fontSize: "0.82rem",
+            fontWeight: selectedOrigin === "all" ? "700" : "400",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            background: selectedOrigin === "all" ? "var(--text-primary)" : "transparent",
+            border: "none",
+            color: selectedOrigin === "all" ? "var(--bgMode)" : "var(--text-primary)",
+            whiteSpace: "nowrap"
+          }}
         >
-          <i className="bx bx-map-pin" />
-          <span>منطقة {orig.name}</span>
-          <span className={styles.tabBadge}>{orig.count}</span>
+          جميع المناطق ({totalRoutesCount})
         </button>
-      ))}
+
+        {uniqueOrigins.map((orig, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onSelectOrigin(orig.name)}
+            className="btn"
+            style={{
+              padding: "6px 14px",
+              borderRadius: "8px",
+              fontSize: "0.82rem",
+              fontWeight: selectedOrigin === orig.name ? "700" : "400",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              background: selectedOrigin === orig.name ? "var(--text-primary)" : "transparent",
+              border: "none",
+              color: selectedOrigin === orig.name ? "var(--bgMode)" : "var(--text-primary)",
+              whiteSpace: "nowrap"
+            }}
+          >
+            {orig.name} ({orig.count})
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

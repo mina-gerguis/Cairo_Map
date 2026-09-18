@@ -21,6 +21,11 @@ export const TRANSIT_VEHICLE_CONFIG: Record<
     defaultIcon: "car",
     label: "عربية خاص (سيارة)"
   },
+  taxi: {
+    defaultName: "تاكسي / أوبر",
+    defaultIcon: "taxi",
+    label: "تاكسي / أوبر"
+  },
   train: {
     defaultName: "القطار المباشر",
     defaultIcon: "train",
@@ -38,7 +43,7 @@ export const TRANSIT_VEHICLE_CONFIG: Record<
   },
   brt: {
     defaultName: "الأتوبيس الترددي (BRT)",
-    defaultIcon: "bus",
+    defaultIcon: "brt",
     label: "الأتوبيس الترددي (BRT)"
   },
   metro: {
@@ -48,7 +53,7 @@ export const TRANSIT_VEHICLE_CONFIG: Record<
   },
   plane: {
     defaultName: "طائرة / طيران",
-    defaultIcon: "plane",
+    defaultIcon: "airport",
     label: "طائرة"
   },
   ship: {
@@ -58,8 +63,13 @@ export const TRANSIT_VEHICLE_CONFIG: Record<
   },
   multi: {
     defaultName: "مواصلات متعددة",
-    defaultIcon: "transfer",
+    defaultIcon: "multi",
     label: "مواصلات متعددة"
+  },
+  walk: {
+    defaultName: "سير على الأقدام",
+    defaultIcon: "walk",
+    label: "سير على الأقدام (مشي)"
   }
 };
 
@@ -74,11 +84,11 @@ export const createDefaultLeg = (stageNumber: number = 1): FormLeg => {
       : `${stageNumber}`;
 
   return {
-    title: `المرحلة ${stageNameArabic}: تفاصيل المرحلة`,
+    title: ``,
     vehicleType: "ميكروباص",
     cost: "",
     duration: "",
-    steps: ["اركب...", "اوصل...", "انزل..."]
+    steps: ["", "", ""]
   };
 };
 

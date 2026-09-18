@@ -31,14 +31,14 @@
   align-items: center;
   gap: 6px;
   font-size: 0.82rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 20px;
   flex-wrap: wrap;
   font-family: var(--font-body);
 }
 
 .breadcrumb a {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -68,7 +68,7 @@
   display: inline-block;
   padding: 4px 14px;
   border-radius: 10px;
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
   color: var(--color-secondary);
   border: 1px solid var(--border-glass);
   font-size: 0.8rem;
@@ -123,7 +123,7 @@
 
 .postDate {
   font-size: 0.78rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-family: var(--font-body);
 }
 
@@ -131,7 +131,7 @@
   display: flex;
   gap: 14px;
   font-size: 0.8rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-family: var(--font-body);
 }
 
@@ -191,7 +191,7 @@
   padding: 8px 14px;
   border-radius: 10px;
   border: 1px solid var(--border-glass);
-  background-color: var(--bgSecondary);
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 0.84rem;
   font-weight: 700;
@@ -225,7 +225,7 @@
 
 .shareLabel {
   font-size: 0.8rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-weight: 700;
 }
 
@@ -234,7 +234,7 @@
   height: 36px;
   border-radius: 10px;
   border: 1px solid var(--border-glass);
-  background-color: var(--bgSecondary);
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   display: flex;
   align-items: center;
@@ -317,7 +317,7 @@
 
 .articleBody blockquote {
   border-right: 4px solid var(--color-secondary);
-  background-color: var(--bgSecondary);
+  background-color: var(--bg-secondary);
   border-top: 1px solid var(--border-glass);
   border-left: 1px solid var(--border-glass);
   border-bottom: 1px solid var(--border-glass);
@@ -326,7 +326,7 @@
   margin: 1.6rem 0;
   font-size: 0.95rem;
   font-style: italic;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .articleBody img {
@@ -351,7 +351,7 @@
 .tagsLabel {
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -366,7 +366,7 @@
 .tagPill {
   padding: 4px 10px;
   border-radius: 8px;
-  background-color: var(--bgSecondary);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-glass);
   font-size: 0.78rem;
   color: var(--color-secondary);
@@ -409,7 +409,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .commentUserAvatar {
@@ -424,7 +424,7 @@
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid var(--border-glass);
-  background-color: var(--bgSecondary);
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 0.9rem;
   outline: none;
@@ -465,9 +465,9 @@
   gap: 14px;
   padding: 16px;
   border-radius: 12px;
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.86rem;
 }
 
@@ -497,7 +497,7 @@
 .noComments {
   text-align: center;
   padding: 24px;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.88rem;
 }
 
@@ -512,7 +512,7 @@
   gap: 12px;
   padding: 14px;
   border-radius: 12px;
-  background-color: var(--bgSecondary);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-glass);
 }
 
@@ -542,7 +542,7 @@
 
 .commentTime {
   font-size: 0.74rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-right: auto;
 }
 
@@ -570,7 +570,7 @@
   margin: 40px auto;
   background-color: transparent;
   border: none;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .loadingBox i,

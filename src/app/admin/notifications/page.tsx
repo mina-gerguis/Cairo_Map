@@ -82,8 +82,8 @@ export default function AdminNotificationsPage() {
   if (authLoading || authChecking) {
     return (
       <div style={{ textAlign: "center", padding: "50px", marginTop: "100px" }}>
-        <div style={{ width: "40px", height: "40px", border: "3px solid var(--border-glass)", borderTop: "3px solid var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
-        <p style={{ color: "var(--textSecondary)" }}>جاري التحقق من الصلاحيات...</p>
+        <div style={{ width: "40px", height: "40px", border: "3px solid var(--border-glass)", borderTop: "3px solid var(--color-primary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
+        <p style={{ color: "var(--text-secondary)" }}>جاري التحقق من الصلاحيات...</p>
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default function AdminNotificationsPage() {
           <i className="bx bxs-error-circle" style={{ fontSize: "3rem", color: "#ff3b30" }}></i>
         </div>
         <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--text-primary)" }}>صلاحيات غير كافية</h2>
-        <p style={{ color: "var(--textSecondary)", marginBottom: "32px", lineHeight: "1.6" }}>
+        <p style={{ color: "var(--text-secondary)", marginBottom: "32px", lineHeight: "1.6" }}>
           عفواً، حسابك لا يمتلك صلاحيات المسؤول للوصول إلى هذه الصفحة. يرجى التواصل مع الإدارة إذا كنت تعتقد أن هذا خطأ.
         </p>
         <Link href="/" className="btn btn-primary" style={{ padding: "14px 24px" }}><i className="bx bx-home" style={{ fontSize: "1.2rem" }}></i><i className="bx bx-home" style={{ fontSize: "1.2rem" }}></i> العودة للرئيسية</Link>

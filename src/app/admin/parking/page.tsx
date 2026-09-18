@@ -404,7 +404,7 @@ function AdminParkingInner() {
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
               border: "1px solid var(--border-glass)",
-              color: "var(--textSecondary)"
+              color: "var(--text-secondary)"
             }}
           />
         </div>

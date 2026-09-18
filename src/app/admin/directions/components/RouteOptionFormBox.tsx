@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../directions.module.css";
 import { FormLeg, FormOption, TransitVehicleType } from "../types";
-import { TRANSIT_VEHICLE_CONFIG, createDefaultLeg } from "../constants";
+import { TRANSIT_VEHICLE_CONFIG } from "../constants";
 import { formatMinutesToArabic, parseMinutesFromArabic, getTransitOptionIconPath } from "../utils";
 import { RouteOptionLegEditor } from "./RouteOptionLegEditor";
 
@@ -51,8 +51,8 @@ export function RouteOptionFormBox({
     calculatedMins > 0
       ? formatMinutesToArabic(calculatedMins)
       : option.legs && option.legs.length > 0 && option.legs[0].duration
-      ? option.legs[0].duration
-      : "لم يحدد بعد";
+        ? option.legs[0].duration
+        : "لم يحدد بعد";
 
   const handleTypeChange = (newType: TransitVehicleType) => {
     const config = TRANSIT_VEHICLE_CONFIG[newType];
@@ -68,38 +68,38 @@ export function RouteOptionFormBox({
       <div className={styles.optionHeader}>
         <span className={styles.optionTag}>
           <i className="bx bx-bus" />
-          <span>وسيلة المواصلات رقم {optionIndex + 1}</span>
+          <span className="sub-title">وسيلة المواصلات رقم {optionIndex + 1}</span>
         </span>
         {totalOptions > 1 && (
-          <button type="button" className={styles.removeBtn} onClick={onRemoveOption}>
+          <button
+            type="button"
+            className="actionBtn actionBtnDelete"
+            onClick={onRemoveOption}
+            title="حذف هذه الوسيلة"
+          >
             <i className="bx bx-trash" style={{ marginLeft: "4px" }} />
-            حذف الوسيلة
           </button>
         )}
       </div>
 
       {/* Type, Name, Icon Grid */}
       <div className={styles.formGrid}>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>نوع وسيلة المواصلات *</label>
+        <div>
+          <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>
+            نوع وسيلة المواصلات *
+          </label>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <select
-              className={styles.input}
+              className="input-fields"
               value={option.type}
               onChange={(e) => handleTypeChange(e.target.value as TransitVehicleType)}
               style={{ flex: 1 }}
             >
-              <option value="microbus">ميكروباص</option>
-              <option value="bus">أتوبيس</option>
-              <option value="brt">الأتوبيس الترددي (BRT)</option>
-              <option value="metro">مترو</option>
-              <option value="lrt">القطار الكهربائي (LRT)</option>
-              <option value="train">قطار</option>
-              <option value="monorail">مونوريل</option>
-              <option value="car">عربية خاص (سيارة)</option>
-              <option value="plane">طائرة</option>
-              <option value="ship">سفينة</option>
-              <option value="multi">مواصلات متعددة</option>
+              {Object.entries(TRANSIT_VEHICLE_CONFIG).map(([key, cfg]) => (
+                <option key={key} value={key}>
+                  {cfg.label}
+                </option>
+              ))}
             </select>
             <div className={styles.vehicleIcon}>
               {(() => {
@@ -109,7 +109,7 @@ export function RouteOptionFormBox({
                     <img
                       src={iconRes.src}
                       alt=""
-                      style={{ width: "24px", height: "auto", objectFit: "contain" }}
+                      style={{ width: "22px", height: "auto", objectFit: "contain" }}
                     />
                   );
                 }
@@ -119,12 +119,15 @@ export function RouteOptionFormBox({
           </div>
         </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>اسم وسيلة المواصلات المخصص *</label>
+        <div>
+          <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>
+            اسم وسيلة المواصلات *
+          </label>
           <input
             type="text"
             required
-            className={styles.input}
+            className="input-fields"
+            style={{ width: "100%" }}
             placeholder="مثال: ميكروباص مباشر"
             value={option.type_name}
             onChange={(e) => onUpdateOptionField("type_name", e.target.value)}
@@ -137,32 +140,33 @@ export function RouteOptionFormBox({
         style={{
           display: "flex",
           gap: "16px",
-          marginTop: "4px",
-          marginBottom: "12px",
-          padding: "8px 12px",
-          backgroundColor: "rgba(30, 41, 59, 0.5)",
-          border: "1px solid #334155",
-          borderRadius: "6px",
-          fontSize: "0.85rem"
+          padding: "8px 14px",
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "8px",
+          fontSize: "0.85rem",
+          flexWrap: "wrap",
+          alignItems: "center"
         }}
       >
-        <span style={{ color: "#94a3b8" }}>الإجمالي التلقائي للوسيلة:</span>
-        <span style={{ color: "#34d399", fontWeight: "bold" }}>
-          💰 التكلفة: {calculatedCost} ج.م
+        <span style={{ color: "var(--text-secondary)" }}>الإجمالي التلقائي للوسيلة:</span>
+        <span className="tab" style={{ padding: "0 var(--space-6)", borderRadius: "var(--ra-6)" }}>
+          التكلفة: {calculatedCost} ج.م
         </span>
-        <span style={{ color: "#60a5fa", fontWeight: "bold" }}>⏱️ الوقت: {formattedTime}</span>
+        <span className="tab" style={{ padding: "0 var(--space-6)", borderRadius: "var(--ra-6)" }}>الزمن : {formattedTime}</span>
       </div>
 
       {/* Map Link / Google Maps URL */}
-      <div className={styles.inputGroup}>
-        <label className={styles.label}>
-          <span>رابط بدء الرحلة ومسار خريطة Google </span>
+      <div>
+        <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>
+          رابط بدء الرحلة ومسار خريطة Google (اختياري)
         </label>
         <input
           type="text"
-          className={styles.input}
+          className="input-fields"
+          style={{ width: "100%" }}
           placeholder="https://www.google.com/maps/dir/..."
-          value={option.map_link}
+          value={option.map_link || ""}
           onChange={(e) => onUpdateOptionField("map_link", e.target.value)}
         />
       </div>
@@ -176,12 +180,11 @@ export function RouteOptionFormBox({
             alignItems: "center"
           }}
         >
-          <h4
+          <h5
             style={{
               margin: 0,
-              fontSize: "0.95rem",
+              fontSize: "0.92rem",
               fontWeight: "800",
-              color: "#38bdf8",
               display: "flex",
               alignItems: "center",
               gap: "6px"
@@ -189,18 +192,13 @@ export function RouteOptionFormBox({
           >
             <i className="bx bx-git-repo-forked" />
             <span>مراحل الرحلة والخطوات التفصيلية (المرحلة الأولى، الثانية...)</span>
-          </h4>
+          </h5>
           <button
             type="button"
-            className={styles.secondaryActionBtn}
+            className="btn btn-primary"
             onClick={onAddLeg}
-            style={{
-              padding: "4px 12px",
-              fontSize: "0.8rem",
-              fontFamily: "var(--font-heading)"
-            }}
           >
-            + إضافة مرحلة جديدة
+            + إضافة مرحلة
           </button>
         </div>
 
@@ -220,12 +218,15 @@ export function RouteOptionFormBox({
       </div>
 
       {/* Tips */}
-      <div className={styles.inputGroup}>
-        <label className={styles.label}>نصيحة ذهبية للمسافرين (اختياري)</label>
+      <div>
+        <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>
+          نصيحة للمسافرين
+        </label>
         <textarea
-          className={styles.textarea}
+          className="input-fields"
+          style={{ width: "100%", minHeight: "64px", resize: "vertical" }}
           placeholder="اكتب أي نصيحة إضافية..."
-          value={option.tips}
+          value={option.tips || ""}
           onChange={(e) => onUpdateOptionField("tips", e.target.value)}
         />
       </div>

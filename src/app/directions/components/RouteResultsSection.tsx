@@ -37,7 +37,7 @@ export default function RouteResultsSection({
           <div
             style={{
               padding: "14px 16px",
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "var(--radius-card)"
             }}

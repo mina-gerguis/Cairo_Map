@@ -123,7 +123,7 @@ export default function CustomModal({
               style={{
                 fontSize: "0.95rem",
                 lineHeight: "1.6",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 margin: "0 0 24px 0",
               }}
             >

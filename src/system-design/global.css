@@ -20,3 +20,14 @@ html.light {
     margin-bottom: var(--mb-10);
     font-family: var(--font-sub);
 }
+
+/* ============================================================
+   tab button
+   ============================================================ */
+.tab {
+    background-color: var(--tab-active-bg);
+    color: var(--tab-active-color);
+    padding: var(--pd-2) var(--pd-12);
+    border-radius: var(--ra-8);
+    font-size: var(--fs-xs);
+}

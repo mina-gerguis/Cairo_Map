@@ -219,12 +219,12 @@
   align-items: center;
   gap: 8px;
   font-size: 0.76rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-top: 2px;
 }
 
 .contactLink {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -407,7 +407,7 @@
 
 .paginationInfo {
   font-size: 0.86rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -442,7 +442,7 @@
   font-size: 0.85rem;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.04);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   transition: all 0.2s ease;

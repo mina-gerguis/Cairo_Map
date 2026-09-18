@@ -78,7 +78,7 @@ export default function VoiceInputButton({ onTranscript, className = "" }: Voice
       style={{
         border: "none",
         background: "transparent",
-        color: isListening ? "var(--colorMuted)" : "var(--colorPrimary)",
+        color: isListening ? "var(--colorMuted)" : "var(--color-primary)",
         cursor: "pointer",
         display: "inline-flex",
         alignItems: "center",

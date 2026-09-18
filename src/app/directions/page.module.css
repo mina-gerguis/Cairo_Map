@@ -80,7 +80,7 @@
 .presetTag {
   background: var(--bg-glass-card);
   border: 1px solid var(--border-glass);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.82rem;

@@ -174,7 +174,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
           </div>
           <div style={{ flex: 1 }}>
             <h4 style={{ margin: "0 0 4px", fontSize: "1rem", color: "#fff" }}>{toast.title}</h4>
-            <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.4" }}>
+            <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.4" }}>
               {toast.message}
             </p>
           </div>

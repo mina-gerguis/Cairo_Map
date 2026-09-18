@@ -153,7 +153,7 @@ export default function AirportsPage() {
           animation: "spin 1s linear infinite",
           marginBottom: "20px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1rem", fontFamily: "var(--font-display)" }}>جاري التحقق من التفاصيل ...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem", fontFamily: "var(--font-display)" }}>جاري التحقق من التفاصيل ...</p>
       </div>
     );
   }
@@ -183,7 +183,7 @@ export default function AirportsPage() {
               <img src="/images/icons2d/airport.png" alt="" loading="lazy" decoding="async" style={{ width: "40px", height: "40px", marginRight: "10px" }} />
               دليل المطارات المصرية
             </h1>
-            <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+            <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
               دليلك الشامل للمطارات الدولية والمحلية في مصر.
             </p>
           </div>
@@ -242,14 +242,14 @@ export default function AirportsPage() {
               دليل المطارات ميزة تتطلب اشتراك في الباقة الذهبية
             </h2>
 
-            <p style={{ color: "var(--textSecondary)", fontSize: "1rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "1rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px" }}>
               تصفح دليل المطارات المصرية والصالات والخدمات وشركات الطيران العاملة بها متاح حصرياً للمشتركين في الباقة الذهبية المميزة.
             </p>
 
             {/* Features list */}
-            <div style={{ background: "var(--bgSecondary)", padding: "18px 24px", borderRadius: "12px", border: "1px solid var(--border-glass)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
+            <div style={{ background: "var(--bg-secondary)", padding: "18px 24px", borderRadius: "12px", border: "1px solid var(--border-glass)", textAlign: "right", margin: "0 auto 32px", maxWidth: "420px" }}>
               <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الذهبية:</div>
-              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                 <li>✨ دليل المطارات المصرية (القاهرة، برج العرب، سفنكس، الغردقة، إلخ)</li>
                 <li>✨ تفاصيل الصالات والخدمات المتاحة للمسافرين</li>
                 <li>✨ دليل شركات الطيران العاملة وأرقام الهواتف الرسمية</li>
@@ -300,8 +300,8 @@ export default function AirportsPage() {
                 style={{
                   padding: "12px",
                   borderRadius: "10px",
-                  background: "var(--bgSecondary)",
-                  color: "var(--textSecondary)",
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-secondary)",
                   textDecoration: "none",
                   fontWeight: "bold",
                   fontSize: "0.9rem",
@@ -342,14 +342,14 @@ export default function AirportsPage() {
             <img src="/images/icons2d/airport.png" alt="" loading="lazy" decoding="async" style={{ width: "40px", height: "40px", marginRight: "10px" }} />
             دليل المطارات المصرية
           </h1>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
             دليلك الشامل للمطارات الدولية والمحلية في مصر. ابحث عن معلومات الصالات، شركات الطيران المتاحة، أرقام الهواتف، والخدمات والوصول المباشر.
           </p>
 
           {/* Badges indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#af7e02ff",
               borderRadius: "10px",
@@ -358,7 +358,7 @@ export default function AirportsPage() {
               fontWeight: "700",
             }}>مطارات مصر ({airports.length}) ✈️</span>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "var(--color-secondary)",
               borderRadius: "10px",
@@ -394,7 +394,7 @@ export default function AirportsPage() {
         {/* Tabs Selector */}
         <div style={{
           display: "flex",
-          background: "var(--bgSecondary)",
+          background: "var(--bg-secondary)",
           padding: "4px",
           borderRadius: "12px",
           marginBottom: "20px",
@@ -408,7 +408,7 @@ export default function AirportsPage() {
               borderRadius: "8px",
               border: "none",
               background: activeTab === "list" ? "var(--bg-glass-active, rgba(39, 39, 42, 0.9))" : "transparent",
-              color: activeTab === "list" ? "var(--text-primary)" : "var(--textSecondary)",
+              color: activeTab === "list" ? "var(--text-primary)" : "var(--text-secondary)",
               fontFamily: "var(--font-cairo)",
               fontWeight: "700",
               fontSize: "0.9rem",
@@ -426,7 +426,7 @@ export default function AirportsPage() {
               borderRadius: "8px",
               border: "none",
               background: activeTab === "guide" ? "var(--bg-glass-active, rgba(39, 39, 42, 0.9))" : "transparent",
-              color: activeTab === "guide" ? "var(--text-primary)" : "var(--textSecondary)",
+              color: activeTab === "guide" ? "var(--text-primary)" : "var(--text-secondary)",
               fontFamily: "var(--font-cairo)",
               fontWeight: "700",
               fontSize: "0.9rem",
@@ -452,7 +452,7 @@ export default function AirportsPage() {
             gap: "16px",
           }}>
             <div style={{ position: "relative" }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "8px" }}>
+              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "8px" }}>
                 <i className="bx bx-search" style={{ marginLeft: "5px", color: "var(--color-secondary)" }}></i> ابحث في المطارات المصرية
               </label>
               <div style={{ position: "relative" }}>
@@ -523,7 +523,7 @@ export default function AirportsPage() {
                       <h3 className="sub-title" style={{ margin: "0 0 4px 0", fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)" }}>
                         {airport.name_ar}
                       </h3>
-                      <div className="sub-title" style={{ fontSize: "0.82rem", color: "var(--textSecondary)", direction: "ltr", textAlign: "right", marginBottom: "6px" }}>
+                      <div className="sub-title" style={{ fontSize: "0.82rem", color: "var(--text-secondary)", direction: "ltr", textAlign: "right", marginBottom: "6px" }}>
                         {airport.name_en}
                       </div>
                       <div className="sub-title" style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
@@ -544,7 +544,7 @@ export default function AirportsPage() {
                             fontSize: "0.72rem",
                             color: "var(--text-muted)",
                             fontWeight: "700",
-                            background: "var(--bgSecondary)",
+                            background: "var(--bg-secondary)",
                             padding: "2px 8px",
                             borderRadius: "50px",
                             border: "1px solid var(--border-glass)",
@@ -562,14 +562,14 @@ export default function AirportsPage() {
                       <span style={{ color: "var(--text-primary)", fontSize: "0.85rem", fontWeight: "700" }}>
                         📍 {airport.city_ar}، {airport.governorate_ar}
                       </span>
-                      <span style={{ display: "block", color: "var(--textSecondary)", fontSize: "0.72rem", marginTop: "2px" }}>
+                      <span style={{ display: "block", color: "var(--text-secondary)", fontSize: "0.72rem", marginTop: "2px" }}>
                         {airport.area_ar}
                       </span>
                     </div>
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.85rem", lineHeight: "1.6" }}>
-                    <div className="sub-title" style={{ margin: 0, color: "var(--textSecondary)" }}>{airport.short_description}</div>
+                    <div className="sub-title" style={{ margin: 0, color: "var(--text-secondary)" }}>{airport.short_description}</div>
                   </div>
 
                   {/* Collapsible Details Panel */}
@@ -589,14 +589,14 @@ export default function AirportsPage() {
                           <i className="bx bx-detail" style={{ color: "var(--color-secondary)", fontSize: "1.1rem" }}></i>
                           <span>الوصف التفصيلي:</span>
                         </div>
-                        <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.85rem" }}>{airport.description}</p>
+                        <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem" }}>{airport.description}</p>
                       </div>
 
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
                         {/* Infrastructure */}
-                        <div style={{ background: "var(--bgSecondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
+                        <div style={{ background: "var(--bg-secondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
                           <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.85rem", marginBottom: "8px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "4px" }}>📐 البنية التحتية والسعة</div>
-                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
                             <li>🚪 <strong>مباني الركاب:</strong> {airport.terminals_count || "غير محدد"}</li>
                             <li>👥 <strong>الطاقة الاستيعابية:</strong> {airport.capacity || "غير محدد"}</li>
                             <li>🛣️ <strong>المدارج:</strong> {airport.runways_count || "1 مدرج"} {airport.runways_length ? `(طول: ${airport.runways_length})` : ""}</li>
@@ -604,9 +604,9 @@ export default function AirportsPage() {
                         </div>
 
                         {/* Location & Coordinates */}
-                        <div style={{ background: "var(--bgSecondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
+                        <div style={{ background: "var(--bg-secondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
                           <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.85rem", marginBottom: "8px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "4px" }}>🌐 الموقع والعنوان</div>
-                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
                             <li>📍 <strong>العنوان بالتفصيل:</strong> {airport.address || `${airport.area_ar}، ${airport.city_ar}`}</li>
                             <li>🗺️ <strong>الإحداثيات الجغرافية:</strong> <span style={{ direction: "ltr", display: "inline-block" }}>{airport.latitude.toFixed(6)}° N, {airport.longitude.toFixed(6)}° E</span></li>
                             {airport.nearby_landmarks && airport.nearby_landmarks.length > 0 && (
@@ -618,9 +618,9 @@ export default function AirportsPage() {
 
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
                         {/* Connections / Flight lines */}
-                        <div style={{ background: "var(--bgSecondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
+                        <div style={{ background: "var(--bg-secondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
                           <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.85rem", marginBottom: "8px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "4px" }}>✈️ الرحلات والربط</div>
-                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
                             {airport.connections && airport.connections.length > 0 && (
                               <li>🔄 <strong>ربط المطارات:</strong> {airport.connections.join("، ")}</li>
                             )}
@@ -630,9 +630,9 @@ export default function AirportsPage() {
                         </div>
 
                         {/* Transit & Parking */}
-                        <div style={{ background: "var(--bgSecondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
+                        <div style={{ background: "var(--bg-secondary)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
                           <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.85rem", marginBottom: "8px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "4px" }}>🚗 المواصلات والوصول</div>
-                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <ul style={{ paddingRight: "14px", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "6px" }}>
                             {airport.transportation && airport.transportation.length > 0 && (
                               <li>🚌 <strong>وسائل النقل المتاحة:</strong> {airport.transportation.join("، ")}</li>
                             )}
@@ -648,7 +648,7 @@ export default function AirportsPage() {
                             <i className="bx bx-buildings" style={{ color: "var(--color-secondary)", fontSize: "1.1rem" }}></i>
                             <span>شركات الطيران العاملة بالمطار:</span>
                           </div>
-                          <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.85rem" }}>{airport.airlines}</p>
+                          <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem" }}>{airport.airlines}</p>
                         </div>
                       )}
 
@@ -663,11 +663,11 @@ export default function AirportsPage() {
                             {airport.services.map((srv, sIdx) => (
                               <span key={sIdx} style={{
                                 fontSize: "0.75rem",
-                                background: "var(--bgSecondary)",
+                                background: "var(--bg-secondary)",
                                 border: "1px solid var(--border-glass)",
                                 padding: "4px 10px",
                                 borderRadius: "6px",
-                                color: "var(--textSecondary)"
+                                color: "var(--text-secondary)"
                               }}>
                                 ✨ {srv}
                               </span>
@@ -687,9 +687,9 @@ export default function AirportsPage() {
                       padding: "8px",
                       marginTop: "8px",
                       borderRadius: "8px",
-                      background: "var(--bgSecondary)",
+                      background: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--textSecondary)",
+                      color: "var(--text-secondary)",
                       fontSize: "0.82rem",
                       fontWeight: "700",
                       cursor: "pointer",
@@ -700,7 +700,7 @@ export default function AirportsPage() {
                       transition: "all 0.2s"
                     }}
                     onMouseEnter={e => e.currentTarget.style.color = "var(--color-secondary)"}
-                    onMouseLeave={e => e.currentTarget.style.color = "var(--textSecondary)"}
+                    onMouseLeave={e => e.currentTarget.style.color = "var(--text-secondary)"}
                   >
                     <span>{expandedId === airport.id ? "عرض تفاصيل أقل" : "عرض التفاصيل الكاملة للمطار"}</span>
                     <i className={`bx ${expandedId === airport.id ? "bx-chevron-up" : "bx-chevron-down"}`} style={{ fontSize: "1.1rem" }}></i>
@@ -740,7 +740,7 @@ export default function AirportsPage() {
                       style={{
                         padding: "6px 14px",
                         borderRadius: "8px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         border: "1px solid var(--border-glass)",
                         color: "var(--color-secondary)",
                         textDecoration: "none",
@@ -756,7 +756,7 @@ export default function AirportsPage() {
                         e.currentTarget.style.color = "#ffffff";
                       }}
                       onMouseLeave={e => {
-                        e.currentTarget.style.background = "var(--bgSecondary)";
+                        e.currentTarget.style.background = "var(--bg-secondary)";
                         e.currentTarget.style.color = "var(--color-secondary)";
                       }}
                     >
@@ -806,7 +806,7 @@ export default function AirportsPage() {
 
               <div>
                 <h4 className="sub-title" style={{ color: "var(--color-secondary)", fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px" }}>🎒 طرق الحجز المتاحة:</h4>
-                <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
+                <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
                   <li>💻 <strong>المواقع والتطبيقات الرسمية لشركات الطيران:</strong> مثل <a href="https://www.egyptair.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>مصر للطيران</a>، و<a href="https://www.nileair.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>طيران النيل</a>، و<a href="https://www.airarabia.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>العربية للطيران</a>، إلخ. وهي الأضمن للحصول على أفضل سعر ودعم مباشر.</li>
                   <li>🌐 <strong>محركات البحث ومنصات المقارنة:</strong> مثل <a href="https://www.google.com/flights" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>Google Flights</a> و <a href="https://www.skyscanner.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>Skyscanner</a> و <a href="https://www.wego.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>Wego</a> لمقارنة الأسعار بين مختلف الشركات واختيار الرحلة الأنسب.</li>
                   <li>📱 <strong>تطبيقات وكالات السفر عبر الإنترنت:</strong> مثل <a href="https://www.booking.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>Booking.com</a> و <a href="https://www.expedia.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>Expedia</a> و <a href="https://www.trip.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>Trip.com</a> و <a href="https://www.almosafer.com" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>Almosafer</a> للبحث عن عروض تشمل الطيران والفنادق.</li>
@@ -816,7 +816,7 @@ export default function AirportsPage() {
 
               <div style={{ marginTop: "8px", borderTop: "1px dashed var(--border-glass)", paddingTop: "12px" }}>
                 <h4 className="sub-title" style={{ color: "var(--color-secondary)", fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px" }}>📝 خطوات حجز التذكرة إلكترونياً:</h4>
-                <ol style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
+                <ol style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
                   <li>1️⃣ <strong>تحديد مسار الرحلة:</strong> اختر مدينة المغادرة (مثلاً القاهرة) ووجهة الوصول، وحدد نوع الرحلة (ذهاب فقط / ذهاب وعودة).</li>
                   <li>2️⃣ <strong>اختيار التواريخ والدرجة:</strong> حدد موعد السفر المفضل ودرجة السفر (اقتصادية، رجال أعمال، درجة أولى).</li>
                   <li>3️⃣ <strong>اختيار الرحلة المناسبة:</strong> قارن بين مواعيد الرحلات، وعدد محطات التوقف (ترانزيت)، وسياسة الأمتعة المتاحة لكل تذكرة.</li>
@@ -847,7 +847,7 @@ export default function AirportsPage() {
 
               <div>
                 <h4 className="sub-title" style={{ color: "var(--color-secondary)", fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px" }}>🛂 المستندات اللازمة والضرورية (اللازم منه):</h4>
-                <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
+                <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
                   <li>📄 <strong>جواز السفر:</strong> يجب أن يكون صالحاً لمدة لا تقل عن 6 أشهر من تاريخ السفر.</li>
                   <li>🎫 <strong>تأشيرة الدخول (الفيزا):</strong> تأشيرة صالحة لوجهة الوصول (سواء إلكترونية، أو من السفارة، أو عند الوصول إن كانت متاحة).</li>
                   <li>🎟️ <strong>تذكرة الطيران وحجز الفندق:</strong> تأكيد حجز تذكرة العودة وحجز الفندق يطلب أحياناً في مطارات الوصول للتأكد من غرض الزيارة.</li>
@@ -858,7 +858,7 @@ export default function AirportsPage() {
 
               <div style={{ marginTop: "8px", borderTop: "1px dashed var(--border-glass)", paddingTop: "12px" }}>
                 <h4 className="sub-title" style={{ color: "var(--color-secondary)", fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px" }}>🚶‍♂️ الخطوات والتعليمات داخل المطار:</h4>
-                <ol style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
+                <ol style={{ paddingRight: "16px", margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.7" }}>
                   <li>1️⃣ <strong>الحضور مبكراً:</strong> ينصح بالوصول للمطار قبل 3 ساعات من موعد الرحلات الدولية، وقبل ساعتين للرحلات الداخلية.</li>
                   <li>2️⃣ <strong>التفتيش الأمني الأول:</strong> عند بوابات الدخول، يتم تمرير جميع الحقائب عبر أجهزة الفحص الأمنية وإظهار جواز السفر وتذكرة الطيران للأمن.</li>
                   <li>3️⃣ <strong>الوزن والحصول على البوردنج (Check-in):</strong> توجه إلى كاونتر شركة الطيران الخاصة برحلتك لوزن الحقائب الكبيرة واستلام بطاقة صعود الطائرة (Boarding Pass).</li>
@@ -890,28 +890,28 @@ export default function AirportsPage() {
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 <div style={{ background: "rgba(245, 158, 11, 0.05)", border: "1px solid rgba(245, 158, 11, 0.2)", padding: "12px", borderRadius: "10px" }}>
                   <strong style={{ color: "var(--accent-warning)", fontSize: "0.88rem", display: "block", marginBottom: "4px" }}>⚠️ قواعد حقيبة اليد (Carry-on):</strong>
-                  <span style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <span style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     لا تضع أي سوائل أو معجون يزيد حجم العبوة الواحدة فيها عن 100 مل في حقيبة اليد. يمنع تماماً حمل الأدوات الحادة (كالمقصات وقصاصات الأظافر والمفكات).
                   </span>
                 </div>
 
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "12px", borderRadius: "10px" }}>
+                <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", padding: "12px", borderRadius: "10px" }}>
                   <strong style={{ color: "var(--text-primary)", fontSize: "0.88rem", display: "block", marginBottom: "4px" }}>💼 متعلقاتك الشخصية الثمينة:</strong>
-                  <span style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <span style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     احتفظ دائماً بجواز السفر، التذاكر، الأموال، الأجهزة الإلكترونية (لابتوب، كاميرا، باوربنك) والأدوية اليومية في حقيبة يدك المصاحبة لك داخل الطائرة، وتجنب وضعها في حقيبة الشحن الكبيرة.
                   </span>
                 </div>
 
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "12px", borderRadius: "10px" }}>
+                <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", padding: "12px", borderRadius: "10px" }}>
                   <strong style={{ color: "var(--text-primary)", fontSize: "0.88rem", display: "block", marginBottom: "4px" }}>🏢 تأكد من مبنى الركاب (Terminal):</strong>
-                  <span style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <span style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     بعض المطارات الكبيرة (مثل مطار القاهرة الدولي) تحتوي على مباني ركاب متباعدة. تحقق جيداً من تذكرتك لتعرف من أي مبنى (Terminal 1, 2, or 3) تقلع رحلتك لتتوجه إليه مباشرة وتفادي إضاعة الوقت.
                   </span>
                 </div>
 
-                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "12px", borderRadius: "10px" }}>
+                <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", padding: "12px", borderRadius: "10px" }}>
                   <strong style={{ color: "var(--text-primary)", fontSize: "0.88rem", display: "block", marginBottom: "4px" }}>📱 تفعيل التجوال أو شراء شريحة اتصال:</strong>
-                  <span style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <span style={{ fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     قبل مغادرتك، تأكد من تفعيل خدمة التجوال لخطك الهاتفي أو خطط لشراء شريحة اتصال محلي من مطار الوصول لتسهيل التواصل وحجز السيارات أو تصفح الخرائط عند الهبوط.
                   </span>
                 </div>

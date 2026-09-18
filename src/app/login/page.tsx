@@ -303,7 +303,7 @@ export default function LoginPage() {
               }}>
                 أهلاً بك مجدداً
               </h1>
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
                 سجّل دخولك للوصول لأماكنك المفضلة وتجربة مخصصة
               </p>
             </div>
@@ -370,7 +370,7 @@ export default function LoginPage() {
                         width: "100%",
                         minWidth: 0,
                         borderRadius: "10px",
-                        border: focusedField === "email" ? "1.5px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                        border: focusedField === "email" ? "1.5px solid var(--color-primary)" : "1px solid var(--border-glass)",
                         background: "transparent",
                         padding: "0 14px",
                         fontSize: "0.9rem",
@@ -415,7 +415,7 @@ export default function LoginPage() {
                           width: "100%",
                           minWidth: 0,
                           borderRadius: "10px",
-                          border: focusedField === "password" ? "1.5px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                          border: focusedField === "password" ? "1.5px solid var(--color-primary)" : "1px solid var(--border-glass)",
                           background: "transparent",
                           padding: "0 44px 0 14px",
                           fontSize: "0.9rem",
@@ -457,9 +457,9 @@ export default function LoginPage() {
                       id="keepSignedIn"
                       checked={keepSignedIn}
                       onChange={(e) => setKeepSignedIn(e.target.checked)}
-                      style={{ accentColor: "var(--colorPrimary)", width: "16px", height: "16px", cursor: "pointer" }}
+                      style={{ accentColor: "var(--color-primary)", width: "16px", height: "16px", cursor: "pointer" }}
                     />
-                    <label htmlFor="keepSignedIn" style={{ color: "var(--textSecondary)", fontSize: "0.85rem", cursor: "pointer", userSelect: "none", fontFamily: "var(--font-heading)" }}>
+                    <label htmlFor="keepSignedIn" style={{ color: "var(--text-secondary)", fontSize: "0.85rem", cursor: "pointer", userSelect: "none", fontFamily: "var(--font-heading)" }}>
                       البقاء مسجل الدخول
                     </label>
                   </div>
@@ -506,7 +506,7 @@ export default function LoginPage() {
                       <img src="/images/icons3d/padlock.png" alt="2FA" style={{ width: "50px" }} />
                     </div>
                     <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)" }}>التحقق الثنائي</h2>
-                    <p style={{ margin: "8px 0 0", color: "var(--textSecondary)", fontSize: "0.9rem", lineHeight: "1.5" }}>يرجى إدخال الكود المكون من 6 أرقام من تطبيق المصادقة الخاص بك</p>
+                    <p style={{ margin: "8px 0 0", color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: "1.5" }}>يرجى إدخال الكود المكون من 6 أرقام من تطبيق المصادقة الخاص بك</p>
                   </div>
 
                   <div style={{ display: "flex", gap: "8px", justifyContent: "center", direction: "ltr", padding: "0 40px" }}>
@@ -547,7 +547,7 @@ export default function LoginPage() {
                       fontSize: "1rem",
                       borderRadius: "8px",
                       border: "none",
-                      background: "var(--colorPrimary)",
+                      background: "var(--color-primary)",
                       color: "#fff",
                       cursor: (loading || mfaCode.length !== 6) ? "not-allowed" : "pointer",
                       opacity: (loading || mfaCode.length !== 6) ? 0.7 : 1,
@@ -584,7 +584,7 @@ export default function LoginPage() {
                     }}
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-                      background: "var(--btn-cancel)", border: "none", color: "var(--textSecondary)", fontSize: "1rem", cursor: "pointer", marginTop: "8px", padding: "var(--padding-btn)", borderRadius: "var(--radiusBtn)"
+                      background: "var(--btn-cancel)", border: "none", color: "var(--text-secondary)", fontSize: "1rem", cursor: "pointer", marginTop: "8px", padding: "var(--padding-btn)", borderRadius: "var(--radiusBtn)"
                     }}
                   >
                     <i className="bx bx-arrow-back" style={{ fontSize: "1.1rem" }}></i>
@@ -628,7 +628,7 @@ export default function LoginPage() {
                   borderRadius: "16px",
                   border: "none",
                   background: "transparent",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   fontWeight: "700",
                   fontSize: "0.92rem",
                   textDecoration: "none",
@@ -644,9 +644,9 @@ export default function LoginPage() {
             {/* Bottom note */}
             <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.8rem", marginTop: "24px", animation: "fade-in 0.8s ease 0.5s both" }}>
               بالدخول أنت توافق على{" "}
-              <a href="/terms" style={{ color: "var(--colorPrimary)", cursor: "pointer" }}>الشروط والأحكام</a>
+              <a href="/terms" style={{ color: "var(--color-primary)", cursor: "pointer" }}>الشروط والأحكام</a>
               {" "}و{" "}
-              <a href="/privacy" style={{ color: "var(--colorPrimary)", cursor: "pointer" }}>سياسة الخصوصية</a>
+              <a href="/privacy" style={{ color: "var(--color-primary)", cursor: "pointer" }}>سياسة الخصوصية</a>
             </p>
           </div>
         </div>

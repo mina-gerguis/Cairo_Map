@@ -374,7 +374,7 @@ export default function MobileInstallPrompt() {
               fontSize: "0.92rem",
               fontWeight: "700",
               cursor: "pointer",
-              background: "var(--colorPrimary)",
+              background: "var(--color-primary)",
               color: "#ffffff",
               transition: "transform 0.2s ease, filter 0.2s ease",
             }}

@@ -6,74 +6,71 @@ interface AdminDirectionsHeaderProps {
   onToggleForm: () => void;
   onOpenExcelModal: () => void;
   onExportExcel: () => void;
+  onOpenCheatsheet: () => void;
 }
 
 export function AdminDirectionsHeader({
   showAddForm,
   onToggleForm,
   onOpenExcelModal,
-  onExportExcel
+  onExportExcel,
+  onOpenCheatsheet
 }: AdminDirectionsHeaderProps) {
   return (
-    <div className={styles.pageHeader}>
-      <div className={styles.headerInfo}>
-        <div className={styles.headerTitleGroup}>
-          <div className={styles.headerIcon}>
-            <i className="bx bx-compass" />
-          </div>
-          <div>
-            <h1 className={styles.pageTitle}>إدارة خطوط ومسارات المواصلات</h1>
-            <p className={styles.pageSubtitle}>
-              إضافة وتعديل خطوط مواصلات الانتقال بين المدن، المراحل، والأجرة والخطوات التفصيلية.
-            </p>
-          </div>
-        </div>
+    <div className={styles.headerRow}>
+      <div>
+        <h2 className={styles.pageTitle}>إدارة خطوط المواصلات</h2>
+        <p className={styles.pageSubtitle}>
+          إضافة وتعديل خطوط مواصلات الانتقال بين المدن، المراحل، والأجرة والخطوات التفصيلية.
+        </p>
       </div>
 
-      <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+        {/* Transit Types Cheatsheet */}
+        <button
+          type="button"
+          className="btn tab"
+          onClick={onOpenCheatsheet}
+          title="دليل كتابة أنواع ورموز المواصلات في الإكسل"
+        style={{padding: "var(--padding-btn)"}}
+        >
+          <i className="bx bx-book-bookmark" style={{ marginLeft: "6px" }} />
+          <span>دليل الأنواع </span>
+        </button>
+
         {/* Export to Excel */}
         <button
           type="button"
-          className={styles.secondaryActionBtn}
+          className="btn btn-export"
           onClick={onExportExcel}
           title="تصدير جميع المسارات إلى ملف Excel"
-          style={{
-            borderColor: "rgba(16, 185, 129, 0.3)",
-            color: "#34d399",
-            background: "rgba(16, 185, 129, 0.08)"
-          }}
         >
-          <i className="bx bx-export" style={{ fontSize: "1.15rem" }} />
-          <span>تصدير إكسل</span>
+          <i className="bx bx-export" style={{ marginLeft: "6px" }} />
+          <span>تصدير</span>
         </button>
 
         {/* Import from Excel */}
         <button
           type="button"
-          className={styles.secondaryActionBtn}
+          className="btn btn-primary"
           onClick={onOpenExcelModal}
           title="استيراد مسارات وخطوات من ملف Excel"
-          style={{
-            borderColor: "rgba(59, 130, 246, 0.3)",
-            color: "#60a5fa",
-            background: "rgba(59, 130, 246, 0.08)"
-          }}
         >
-          <i className="bx bx-import" style={{ fontSize: "1.15rem" }} />
-          <span>استيراد من إكسل</span>
+          <i className="bx bx-import" style={{ marginLeft: "6px" }} />
+          <span>استيراد</span>
         </button>
 
         {/* Add Route Button */}
         <button
-          className={showAddForm ? styles.secondaryActionBtn : styles.primaryActionBtn}
           onClick={onToggleForm}
+          className={showAddForm ? "btn btn-cancel" : "btn btn-secondary"}
           type="button"
         >
           <i
             className={`bx ${showAddForm ? "bx-x" : "bx-plus-circle"}`}
-            style={{ fontSize: "1.2rem" }}
+            style={{ fontSize: "1.15rem", marginLeft: "6px" }}
           />
-          <span>{showAddForm ? "إلغاء الإضافة" : "+ إضافة طريق جديد"}</span>
+          <span>{showAddForm ? "إلغاء الإضافة" : "إضافة طريق جديد"}</span>
         </button>
       </div>
     </div>

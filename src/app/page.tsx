@@ -849,7 +849,7 @@ export default function HomePage() {
             backgroundColor: "var(--bg-glass-card)",
             border: "1px solid var(--border-glass-bright)",
             fontSize: "0.9rem",
-            color: "var(--colorPrimary)",
+            color: "var(--color-primary)",
             marginBottom: "24px",
             fontFamily: "var(--font-display)",
             fontWeight: "500"
@@ -874,7 +874,7 @@ export default function HomePage() {
             className="sub-title"
             style={{
               fontSize: "clamp(1rem, 2vw, 1.25rem)",
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               maxWidth: "780px",
               margin: "0 auto 36px auto",
               lineHeight: "1.7",
@@ -894,7 +894,7 @@ export default function HomePage() {
                 display: "flex",
                 alignItems: "center",
                 backgroundColor: "var(--bg-glass)",
-                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--colorPrimary)" : "1.5px solid var(--borderPrimary)",
+                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--color-primary)" : "1.5px solid var(--borderPrimary)",
                 borderRadius: "var(--ra-32)",
                 padding: "8px 15px 8px 15px",
                 boxShadow: "0 10px 30px var(--shadow-card)",
@@ -997,7 +997,7 @@ export default function HomePage() {
                       gap: "8px",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--colorPrimary)",
+                      color: "var(--color-primary)",
                       padding: "6px 12px",
                       marginBottom: "6px"
                     }}>
@@ -1044,7 +1044,7 @@ export default function HomePage() {
                           padding: "3px 10px",
                           borderRadius: "999px",
                           backgroundColor: "rgba(0, 111, 238, 0.15)",
-                          color: "var(--colorPrimary)",
+                          color: "var(--color-primary)",
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "4px"
@@ -1170,7 +1170,7 @@ export default function HomePage() {
                   <div style={{
                     padding: "20px 16px",
                     textAlign: "center",
-                    color: "var(--textSecondary)",
+                    color: "var(--text-secondary)",
                     fontFamily: "var(--font-body)"
                   }}>
                     <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
@@ -1179,7 +1179,7 @@ export default function HomePage() {
                     <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--text-primary)", marginBottom: "4px" }}>
                       عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                     </div>
-                    <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--textSecondary)" }}>
+                    <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }}>
                       لم نجد نتائج مطابقة مباشرة في الدليل. يمكنك تجربة التالي:
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
@@ -1222,8 +1222,8 @@ export default function HomePage() {
                           padding: "6px 14px",
                           borderRadius: "8px",
                           backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--colorPrimary)",
-                          color: "var(--colorPrimary)",
+                          border: "1px solid var(--color-primary)",
+                          color: "var(--color-primary)",
                           fontSize: "0.82rem",
                           textDecoration: "none",
                           fontWeight: "700",
@@ -1245,7 +1245,7 @@ export default function HomePage() {
                     marginTop: "8px",
                     padding: "var(--padding-btn)",
                     borderRadius: "var(--ra-full)",
-                    backgroundColor: "var(--colorPrimary)",
+                    backgroundColor: "var(--color-primary)",
                     color: "#ffffff",
                     border: "none",
                     fontWeight: "700",
@@ -1291,7 +1291,7 @@ export default function HomePage() {
                   borderRadius: "var(--ra-full)",
                   backgroundColor: "var(--hoverBtn)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   fontSize: "0.85rem",
                   fontFamily: "var(--font-body)",
                   cursor: "pointer",
@@ -1323,7 +1323,7 @@ export default function HomePage() {
           <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--text-primary)" }}>
             المدن الشهيرة
           </h2>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "1rem", maxWidth: "650px", margin: "0 auto", lineHeight: "1.6" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1rem", maxWidth: "650px", margin: "0 auto", lineHeight: "1.6" }}>
             اسحب أفقياً أو انقر على النقط بالأسفل لاستكشاف المدن ومعالمها السياحية القريبة.
           </p>
         </div>
@@ -1471,7 +1471,7 @@ export default function HomePage() {
                       width: idx === activeIndex ? "20px" : "8px",
                       height: "8px",
                       borderRadius: "999px",
-                      backgroundColor: idx === activeIndex ? "var(--colorPrimary)" : "var(--text-muted)",
+                      backgroundColor: idx === activeIndex ? "var(--color-primary)" : "var(--text-muted)",
                       border: "none",
                       cursor: "pointer",
                       transition: "all 0.3s ease",
@@ -1529,7 +1529,7 @@ export default function HomePage() {
           <h2 style={{ fontSize: "2rem", fontWeight: "500", marginBottom: "12px" }}>
             جميع خدمات ماب القاهرة بين يديك
           </h2>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto" }}>
             اختر الخدمة التي تحتاجها للوصول السريع إلى أدق التفاصيل والمؤشرات الحية.
           </p>
         </div>
@@ -1580,7 +1580,7 @@ export default function HomePage() {
                 <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "10px" }}>
                   {service.title}
                 </h2>
-                <p style={{ fontSize: "0.95rem", color: "var(--textSecondary)", lineHeight: "1.6", marginBottom: "24px" }}>
+                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "24px" }}>
                   {service.desc}
                 </p>
               </div>
@@ -1591,7 +1591,7 @@ export default function HomePage() {
                 gap: "8px",
                 fontSize: "0.95rem",
                 fontWeight: "700",
-                color: "var(--colorPrimary)",
+                color: "var(--color-primary)",
               }}>
                 <span style={{ fontFamily: "var(--font-display)" }}>الانتقال للخدمة</span>
                 <FaArrowLeft style={{ fontSize: "0.8rem" }} />
@@ -1605,7 +1605,7 @@ export default function HomePage() {
       <section style={{
         padding: "60px 20px",
         paddingTop: "20px",
-        backgroundColor: "var(--bgSecondary)",
+        backgroundColor: "var(--bg-secondary)",
         borderTop: "1px solid var(--border-glass)",
         borderBottom: "1px solid var(--border-glass)"
       }}>
@@ -1615,7 +1615,7 @@ export default function HomePage() {
               <h2 style={{ fontSize: "1.8rem", fontWeight: "500", marginBottom: "8px", textAlign: "center" }}>
                 تصفّح حسب الفئة في دليل الأماكن و المرافق
               </h2>
-              <p className="sub-title" style={{ fontSize: "0.95rem", color: "var(--textSecondary)", textAlign: "center" }}>
+              <p className="sub-title" style={{ fontSize: "0.95rem", color: "var(--text-secondary)", textAlign: "center" }}>
                 اختر الفئة للاطلاع على كافة الفروع، المواعيد، وتقييمات الزوار
               </p>
             </div>
@@ -1662,7 +1662,7 @@ export default function HomePage() {
               <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--text-primary)", textAlign: "center" }}>
                 مدونة ومقالات خريطة القاهرة
               </h2>
-              <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", margin: 0 }}>
+              <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>
                 استكشف نصائح الترانزيت، خطوط السفر اليومية، وأفضل أماكن الخروج المحدثة.
               </p>
             </div>
@@ -1722,7 +1722,7 @@ export default function HomePage() {
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p style={{ fontSize: "0.83rem", color: "var(--textSecondary)", margin: "0 0 8px 0", lineHeight: "1.5", opacity: 0.9, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    <p style={{ fontSize: "0.83rem", color: "var(--text-secondary)", margin: "0 0 8px 0", lineHeight: "1.5", opacity: 0.9, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {post.excerpt}
                     </p>
                   )}
@@ -1738,7 +1738,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. AI PLANNER BANNER ── */}
-      <section style={{ maxWidth: "100%", margin: "0 auto", backgroundColor: "var(--bgSecondary)", borderBottom: "1px solid var(--border-glass)", }}>
+      <section style={{ maxWidth: "100%", margin: "0 auto", backgroundColor: "var(--bg-secondary)", borderBottom: "1px solid var(--border-glass)", }}>
         <div style={{
           borderTop: "1px solid var(--border-glass)",
           padding: "48px 2px",
@@ -1758,7 +1758,7 @@ export default function HomePage() {
           <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--text-primary)" }}>
             محتار تخرج فين النهاردة؟ اترك التخطيط للذكاء الاصطناعي!
           </h2>
-          <p className="sub-title" style={{ fontSize: "1rem", color: "var(--textSecondary)", margin: "0 8px 28px 8px", lineHeight: "1.7", textAlign: "center" }}>
+          <p className="sub-title" style={{ fontSize: "1rem", color: "var(--text-secondary)", margin: "0 8px 28px 8px", lineHeight: "1.7", textAlign: "center" }}>
             حدد ميزانيتك، عدد الأفراد، والمنطقة المفضلة، وسيقوم المساعد الذكي بتنسيق برنامج يومك بالكامل مع أماكن الأكل والكافيهات والمواصلات المناسبة.
           </p>
 
@@ -1791,7 +1791,7 @@ export default function HomePage() {
           <h2 style={{ fontSize: "1.6rem", fontWeight: "800", marginBottom: "12px" }}>
             هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد؟
           </h2>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", marginBottom: "24px" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", marginBottom: "24px" }}>
             ساهم معنا في تحديث دليل ماب القاهرة وأضف محلّك أو مكانك المفضّل مجاناً ليصل إلى آلاف الزوار.
           </p>
           <Link

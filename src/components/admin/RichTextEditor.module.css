@@ -3,7 +3,7 @@
   border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   border-radius: 14px;
   overflow: hidden;
-  background-color: var(--bgSecondary, #18181b);
+  background-color: var(--bg-secondary, #18181b);
   display: flex;
   flex-direction: column;
   transition: all 0.25s ease;
@@ -50,13 +50,13 @@
 
 .toolbarBtn:hover {
   background-color: var(--hoverBtn, rgba(39, 39, 42, 0.8));
-  color: var(--colorPrimary, #006FEE);
+  color: var(--color-primary, #006FEE);
 }
 
 .toolbarBtn.active {
   background-color: rgba(0, 111, 238, 0.15);
   border-color: rgba(0, 111, 238, 0.4);
-  color: var(--colorPrimary, #006FEE);
+  color: var(--color-primary, #006FEE);
 }
 
 .btnLabel {
@@ -65,7 +65,7 @@
 }
 
 .toolbarSelect {
-  background-color: var(--bgSecondary, #18181b);
+  background-color: var(--bg-secondary, #18181b);
   color: var(--text-primary, #f4f4f5);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   border-radius: 8px;
@@ -76,7 +76,7 @@
 }
 
 .toolbarSelect:focus {
-  border-color: var(--colorPrimary, #006FEE);
+  border-color: var(--color-primary, #006FEE);
 }
 
 .colorPickerWrapper {
@@ -149,17 +149,17 @@
 }
 
 .editableContent blockquote {
-  border-right: 4px solid var(--colorPrimary, #006FEE);
+  border-right: 4px solid var(--color-primary, #006FEE);
   margin: 1rem 0;
   padding: 0.6rem 1.1rem;
   background-color: var(--bg-glass-card, rgba(24, 24, 27, 0.7));
   border-radius: 4px 0 0 4px;
   font-style: italic;
-  color: var(--textSecondary, #a1a1aa);
+  color: var(--text-secondary, #a1a1aa);
 }
 
 .editableContent a {
-  color: var(--colorPrimary, #006FEE);
+  color: var(--color-primary, #006FEE);
   text-decoration: underline;
 }
 
@@ -167,7 +167,7 @@
   width: 100%;
   padding: 1.2rem;
   background-color: var(--bgPrimary, #000000);
-  color: var(--colorPrimary, #006FEE);
+  color: var(--color-primary, #006FEE);
   font-family: monospace, monospace;
   font-size: 0.95rem;
   line-height: 1.6;
@@ -213,12 +213,12 @@
 }
 
 .modalTitle i {
-  color: var(--colorPrimary, #006FEE);
+  color: var(--color-primary, #006FEE);
 }
 
 .modalSubtitle {
   font-size: 0.85rem;
-  color: var(--textSecondary, #a1a1aa);
+  color: var(--text-secondary, #a1a1aa);
   margin: 0 0 1.2rem 0;
 }
 
@@ -227,7 +227,7 @@
   padding: 0.8rem 1rem;
   border-radius: 10px;
   border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
-  background-color: var(--bgSecondary, #18181b);
+  background-color: var(--bg-secondary, #18181b);
   color: var(--text-primary, #f4f4f5);
   font-size: 0.95rem;
   outline: none;
@@ -236,7 +236,7 @@
 }
 
 .modalInput:focus {
-  border-color: var(--colorPrimary, #006FEE);
+  border-color: var(--color-primary, #006FEE);
   box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.2);
 }
 
@@ -251,7 +251,7 @@
   border-radius: 10px;
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   background: transparent;
-  color: var(--textSecondary, #a1a1aa);
+  color: var(--text-secondary, #a1a1aa);
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
@@ -267,7 +267,7 @@
   padding: 0.65rem 1.5rem;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, var(--colorPrimary, #006FEE), #0284c7);
+  background: linear-gradient(135deg, var(--color-primary, #006FEE), #0284c7);
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;

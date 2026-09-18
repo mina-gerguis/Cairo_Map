@@ -199,7 +199,7 @@ export default function WeatherComfortWidget() {
           alignItems: "center",
           gap: "12px",
           direction: "rtl",
-          color: "var(--textSecondary)",
+          color: "var(--text-secondary)",
           fontSize: "0.85rem",
         }}
       >
@@ -251,7 +251,7 @@ export default function WeatherComfortWidget() {
               <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-sub)" }}>
                 <span>درجة الحرارة غير متاحة (الموقع غير مفعل)</span>
               </div>
-              <p style={{ margin: "4px 0 10px", fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+              <p style={{ margin: "4px 0 10px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                 لعرض درجة الحرارة وحالة الطقس الخاصة بموقعك الحالي، يرجى تفعيل السماح بالوصول للموقع الجغرافي (GPS) في متصفحك.
               </p>
 
@@ -407,7 +407,7 @@ export default function WeatherComfortWidget() {
               </span>
 
             </div>
-            <p style={{ margin: "3px 0 0", fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.4" }}>
+            <p style={{ margin: "3px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.4" }}>
               {weather.tip}
             </p>
           </div>

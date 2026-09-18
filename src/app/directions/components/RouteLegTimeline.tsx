@@ -1,5 +1,6 @@
 import React from "react";
 import { RouteLeg } from "../types";
+import { getTransitOptionIconPath } from "../utils";
 
 interface RouteLegTimelineProps {
   legs: RouteLeg[];
@@ -34,6 +35,10 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
       <div style={{ display: "flex", flexDirection: "column" }}>
         {legs.map((leg, legIdx) => {
           const isLastLeg = legIdx === legs.length - 1;
+          const legIconData = getTransitOptionIconPath({
+            vehicleType: leg.vehicleType || leg.title,
+            type: leg.vehicleType
+          });
 
           return (
             <div key={legIdx} style={{ display: "flex", flexDirection: "column" }}>
@@ -71,8 +76,30 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                       marginBottom: "8px"
                     }}
                   >
-                    <h5 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
-                      {leg.title}
+                    <h5
+                      style={{
+                        margin: 0,
+                        fontSize: "0.92rem",
+                        fontWeight: "700",
+                        color: "var(--text-primary)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      {legIconData.type === "image" && legIconData.src ? (
+                        <img
+                          src={legIconData.src}
+                          alt=""
+                          style={{ width: "20px", height: "auto", objectFit: "contain" }}
+                        />
+                      ) : (
+                        <i
+                          className={legIconData.iconClass || "bx bx-right-arrow-alt"}
+                          style={{ color: "var(--color-secondary)", fontSize: "1rem" }}
+                        />
+                      )}
+                      <span>{leg.title}</span>
                     </h5>
 
                     <div style={{ display: "flex", gap: "6px" }}>
@@ -115,7 +142,7 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                         <div
                           style={{
                             fontSize: "0.86rem",
-                            color: "var(--textSecondary)",
+                            color: "var(--text-secondary)",
                             lineHeight: "1.5",
                             fontFamily: "var(--font-body)"
                           }}

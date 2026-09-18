@@ -769,8 +769,8 @@ export default function AdminReportsPage() {
   if (authLoading || authChecking) {
     return (
       <div style={{ textAlign: "center", padding: "50px", marginTop: "100px" }}>
-        <div style={{ width: "40px", height: "40px", border: "3px solid var(--border-glass)", borderTop: "3px solid var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
-        <p style={{ color: "var(--textSecondary)" }}>جاري التحقق من الصلاحيات...</p>
+        <div style={{ width: "40px", height: "40px", border: "3px solid var(--border-glass)", borderTop: "3px solid var(--color-primary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }}></div>
+        <p style={{ color: "var(--text-secondary)" }}>جاري التحقق من الصلاحيات...</p>
       </div>
     );
   }
@@ -782,7 +782,7 @@ export default function AdminReportsPage() {
           <i className="bx bxs-error-circle" style={{ fontSize: "3rem", color: "#ff3b30" }}></i>
         </div>
         <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--text-primary)" }}>صلاحيات غير كافية</h2>
-        <p style={{ color: "var(--textSecondary)", marginBottom: "32px", lineHeight: "1.6" }}>
+        <p style={{ color: "var(--text-secondary)", marginBottom: "32px", lineHeight: "1.6" }}>
           عفواً، حسابك لا يمتلك صلاحيات المسؤول للوصول إلى هذه الصفحة.
         </p>
       </div>
@@ -950,7 +950,7 @@ export default function AdminReportsPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
         <div>
           <h1 style={{ fontFamily: "var(--font-display)", fontSize: "1.64rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>البلاغات</h1>
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", margin: 0 }}>مراجعة التواصل وبلاغات الأماكن والمواقف والاقتراحات والشكاوى</p>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>مراجعة التواصل وبلاغات الأماكن والمواقف والاقتراحات والشكاوى</p>
         </div>
         <button
           onClick={() => {
@@ -980,8 +980,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "places" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "places" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "places" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "places" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1005,8 +1005,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "suggestions" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "suggestions" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "suggestions" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "suggestions" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1031,8 +1031,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "bugs" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "bugs" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "bugs" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "bugs" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1056,8 +1056,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "metro" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "metro" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "metro" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "metro" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1081,8 +1081,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "monorail" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "monorail" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "monorail" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "monorail" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1106,8 +1106,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "lrt" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "lrt" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "lrt" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "lrt" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1131,8 +1131,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "railways" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "railways" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "railways" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "railways" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1156,8 +1156,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "parking" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "parking" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "parking" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "parking" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1180,8 +1180,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "contacts" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "contacts" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "contacts" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "contacts" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1204,8 +1204,8 @@ export default function AdminReportsPage() {
             padding: "10px 14px",
             borderRadius: "10px",
             border: "none",
-            background: activeReportTab === "microbus" ? "var(--colorPrimary)" : "transparent",
-            color: activeReportTab === "microbus" ? "#fff" : "var(--textSecondary)",
+            background: activeReportTab === "microbus" ? "var(--color-primary)" : "transparent",
+            color: activeReportTab === "microbus" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             fontSize: "0.9rem",
             cursor: "pointer",
@@ -1240,7 +1240,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -1284,7 +1284,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s"
                     }}
                   >
@@ -1304,7 +1304,7 @@ export default function AdminReportsPage() {
                           {getStatusBadge(report.status)}
                         </div>
 
-                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
                           <span>المشكلة: <strong>{getProblemLabel(report.problem_type, report.details)}</strong></span>
                           <span>بواسطة: <strong>{report.user_profile?.full_name || "مستخدم غير مسجل الاسم"}</strong></span>
                           <span>التاريخ: {new Date(report.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
@@ -1315,7 +1315,7 @@ export default function AdminReportsPage() {
                         <button className="btn" style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
                           {isOpen ? "إخفاء التفاصيل" : "عرض والرد"}
                         </button>
-                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--textSecondary)" }}></i>
+                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--text-secondary)" }}></i>
                       </div>
                     </div>
 
@@ -1327,7 +1327,7 @@ export default function AdminReportsPage() {
 
                           {/* Left Column: Report Details */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>تفاصيل البلاغ</h4>
+                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>تفاصيل البلاغ</h4>
 
                             {/* Render details based on type */}
                             <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
@@ -1335,7 +1335,7 @@ export default function AdminReportsPage() {
                               {/* name incorrect */}
                               {report.problem_type === "name" && (
                                 <div>
-                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>الاسم المقترح الجديد:</span>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>الاسم المقترح الجديد:</span>
                                   <strong style={{ fontSize: "1.1rem", color: "var(--colorSuccess)" }}>{report.details.newName}</strong>
                                 </div>
                               )}
@@ -1344,18 +1344,18 @@ export default function AdminReportsPage() {
                               {report.problem_type === "address" && (
                                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                   <div>
-                                    <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)" }}>العنوان المقترح:</span>
+                                    <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>العنوان المقترح:</span>
                                     <strong>{report.details.newAddress || "غير محدد"}</strong>
                                   </div>
                                   {report.details.newMapsUrl && (
                                     <div>
-                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)" }}>رابط الخريطة المقترح:</span>
-                                      <a href={report.details.newMapsUrl} target="_blank" rel="noreferrer" style={{ color: "var(--colorPrimary)", wordBreak: "break-all", fontSize: "0.85rem" }}>{report.details.newMapsUrl}</a>
+                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>رابط الخريطة المقترح:</span>
+                                      <a href={report.details.newMapsUrl} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)", wordBreak: "break-all", fontSize: "0.85rem" }}>{report.details.newMapsUrl}</a>
                                     </div>
                                   )}
                                   {(report.details.newLatitude && report.details.newLongitude) && (
                                     <div>
-                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)" }}>الإحداثيات الجغرافية:</span>
+                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>الإحداثيات الجغرافية:</span>
                                       <code style={{ fontSize: "0.85rem" }}>{report.details.newLatitude}, {report.details.newLongitude}</code>
                                     </div>
                                   )}
@@ -1367,14 +1367,14 @@ export default function AdminReportsPage() {
                                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                   {report.details.newPhones && report.details.newPhones.length > 0 && (
                                     <div>
-                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)" }}>أرقام الهاتف المقترحة:</span>
+                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>أرقام الهاتف المقترحة:</span>
                                       <strong>{report.details.newPhones.join(" - ")}</strong>
                                     </div>
                                   )}
                                   {report.details.newWebsite && (
                                     <div>
-                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)" }}>موقع الويب المقترح:</span>
-                                      <a href={report.details.newWebsite} target="_blank" rel="noreferrer" style={{ color: "var(--colorPrimary)" }}>{report.details.newWebsite}</a>
+                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)" }}>موقع الويب المقترح:</span>
+                                      <a href={report.details.newWebsite} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)" }}>{report.details.newWebsite}</a>
                                     </div>
                                   )}
                                 </div>
@@ -1383,7 +1383,7 @@ export default function AdminReportsPage() {
                               {/* working hours incorrect */}
                               {report.problem_type === "working_hours" && report.details.workingHours && (
                                 <div>
-                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px" }}>مواعيد العمل المقترحة:</span>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>مواعيد العمل المقترحة:</span>
                                   {report.details.workingHours.type === "24/7" ? (
                                     <strong style={{ color: "#34c759" }}>🟢 مفتوح 24/7</strong>
                                   ) : (
@@ -1402,7 +1402,7 @@ export default function AdminReportsPage() {
                               {/* closed */}
                               {report.problem_type === "closed" && (
                                 <div>
-                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>حالة الإغلاق المبلّغ عنها:</span>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>حالة الإغلاق المبلّغ عنها:</span>
                                   <strong style={{ color: "#ff3b30" }}>
                                     {report.details.closureStatus === "permanently_closed" && "مغلق نهائياً 🔴"}
                                     {report.details.closureStatus === "temporarily_closed" && "مغلق مؤقتاً ⚠️"}
@@ -1416,7 +1416,7 @@ export default function AdminReportsPage() {
                                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                                   {report.details?.selectedIssues && report.details.selectedIssues.length > 0 && (
                                     <div style={{ marginBottom: "6px" }}>
-                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px" }}>الأقسام المحددة للتعديل:</span>
+                                      <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الأقسام المحددة للتعديل:</span>
                                       <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                                         {report.details.selectedIssues.map((issueId: string) => (
                                           <span key={issueId} style={{ background: "rgba(0, 122, 255, 0.12)", color: "var(--color-secondary)", padding: "4px 10px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "bold", border: "1px solid rgba(0, 122, 255, 0.2)" }}>
@@ -1430,7 +1430,7 @@ export default function AdminReportsPage() {
                                   {/* Sub-issue: Name */}
                                   {report.details?.name?.newName && (
                                     <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
-                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "2px" }}>الاسم المقترح الجديد:</span>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "2px" }}>الاسم المقترح الجديد:</span>
                                       <strong style={{ fontSize: "1rem", color: "var(--colorSuccess)" }}>{report.details.name.newName}</strong>
                                     </div>
                                   )}
@@ -1438,12 +1438,12 @@ export default function AdminReportsPage() {
                                   {/* Sub-issue: Address */}
                                   {report.details?.address && (
                                     <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "4px" }}>
-                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)" }}>العنوان المقترح:</span>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)" }}>العنوان المقترح:</span>
                                       <strong>{report.details.address.newAddress || "غير محدد"}</strong>
                                       {report.details.address.newMapsUrl && (
                                         <div>
                                           <span style={{ display: "block", fontSize: "0.78rem", color: "var(--text-muted)" }}>رابط الخريطة:</span>
-                                          <a href={report.details.address.newMapsUrl} target="_blank" rel="noreferrer" style={{ color: "var(--colorPrimary)", wordBreak: "break-all", fontSize: "0.8rem" }}>{report.details.address.newMapsUrl}</a>
+                                          <a href={report.details.address.newMapsUrl} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)", wordBreak: "break-all", fontSize: "0.8rem" }}>{report.details.address.newMapsUrl}</a>
                                         </div>
                                       )}
                                       {(report.details.address.newLatitude && report.details.address.newLongitude) && (
@@ -1460,14 +1460,14 @@ export default function AdminReportsPage() {
                                     <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)", display: "flex", flexDirection: "column", gap: "4px" }}>
                                       {report.details.phone_website.newPhones && report.details.phone_website.newPhones.length > 0 && (
                                         <div>
-                                          <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)" }}>أرقام الهاتف المقترحة:</span>
+                                          <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)" }}>أرقام الهاتف المقترحة:</span>
                                           <strong>{report.details.phone_website.newPhones.join(" - ")}</strong>
                                         </div>
                                       )}
                                       {report.details.phone_website.newWebsite && (
                                         <div>
-                                          <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)" }}>موقع الويب المقترح:</span>
-                                          <a href={report.details.phone_website.newWebsite} target="_blank" rel="noreferrer" style={{ color: "var(--colorPrimary)", fontSize: "0.8rem" }}>{report.details.phone_website.newWebsite}</a>
+                                          <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)" }}>موقع الويب المقترح:</span>
+                                          <a href={report.details.phone_website.newWebsite} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)", fontSize: "0.8rem" }}>{report.details.phone_website.newWebsite}</a>
                                         </div>
                                       )}
                                     </div>
@@ -1476,7 +1476,7 @@ export default function AdminReportsPage() {
                                   {/* Sub-issue: Working Hours */}
                                   {report.details?.working_hours?.workingHours && (
                                     <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
-                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "4px" }}>مواعيد العمل المقترحة:</span>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "4px" }}>مواعيد العمل المقترحة:</span>
                                       {report.details.working_hours.workingHours.type === "24/7" ? (
                                         <strong style={{ color: "#34c759" }}>🟢 مفتوح 24/7</strong>
                                       ) : (
@@ -1495,7 +1495,7 @@ export default function AdminReportsPage() {
                                   {/* Sub-issue: Closed */}
                                   {report.details?.closed?.closureStatus && (
                                     <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
-                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "2px" }}>حالة الإغلاق المبلّغ عنها:</span>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "2px" }}>حالة الإغلاق المبلّغ عنها:</span>
                                       <strong style={{ color: "#ff3b30" }}>
                                         {report.details.closed.closureStatus === "permanently_closed" && "مغلق نهائياً 🔴"}
                                         {report.details.closed.closureStatus === "temporarily_closed" && "مغلق مؤقتاً ⚠️"}
@@ -1507,7 +1507,7 @@ export default function AdminReportsPage() {
                                   {/* Sub-issue: Category */}
                                   {report.details?.category?.newCategoryLabel && (
                                     <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
-                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--textSecondary)", marginBottom: "2px" }}>التصنيف المقترح:</span>
+                                      <span style={{ display: "block", fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "2px" }}>التصنيف المقترح:</span>
                                       <strong>{report.details.category.newCategoryLabel} ({report.details.category.newCategory})</strong>
                                     </div>
                                   )}
@@ -1517,7 +1517,7 @@ export default function AdminReportsPage() {
                               {/* category incorrect */}
                               {report.problem_type === "category" && (
                                 <div>
-                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>التصنيف المقترح:</span>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>التصنيف المقترح:</span>
                                   <strong>{report.details.newCategoryLabel} ({report.details.newCategory})</strong>
                                 </div>
                               )}
@@ -1525,7 +1525,7 @@ export default function AdminReportsPage() {
                               {/* comment */}
                               {report.comment && (
                                 <div style={{ marginTop: "12px", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "8px" }}>
-                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>تعليق وتوضيح المستخدم:</span>
+                                  <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>تعليق وتوضيح المستخدم:</span>
                                   <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-primary)", whiteSpace: "pre-line" }}>"{report.comment}"</p>
                                 </div>
                               )}
@@ -1534,7 +1534,7 @@ export default function AdminReportsPage() {
                             {/* Image URL preview */}
                             {report.image_url && (
                               <div>
-                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px" }}>الصورة المرفقة بالبلاغ:</span>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الصورة المرفقة بالبلاغ:</span>
                                 <a href={report.image_url} target="_blank" rel="noreferrer">
                                   <img
                                     src={report.image_url}
@@ -1551,7 +1551,7 @@ export default function AdminReportsPage() {
 
                             {/* Profile Info */}
                             <div>
-                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
+                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
                               {report.user_profile ? (
                                 <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                   <div>الاسم الكامل: <strong>{report.user_profile.full_name || "غير محدد"}</strong></div>
@@ -1707,7 +1707,7 @@ export default function AdminReportsPage() {
                                       <div style={{ fontWeight: "700", fontSize: "0.92rem", color: "var(--text-primary)" }}>
                                         {report.status === "accepted" ? "تم قبول البلاغ والموافقة عليه" : "تم رفض البلاغ"}
                                       </div>
-                                      <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", marginTop: "2px" }}>
+                                      <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginTop: "2px" }}>
                                         {report.place_name === "مكان محذوف أو غير معروف"
                                           ? "هذا المكان تم مسحه بالفعل من قاعدة البيانات."
                                           : "يمكنك الآن مسح هذا المكان نهائياً من قاعدة البيانات (الداتا بيز)."}
@@ -1768,7 +1768,7 @@ export default function AdminReportsPage() {
                                   style={{
                                     background: report.place_name === "مكان محذوف أو غير معروف" ? "rgba(255, 255, 255, 0.04)" : "rgba(255, 59, 48, 0.1)",
                                     border: `1px solid ${report.place_name === "مكان محذوف أو غير معروف" ? "var(--border-glass)" : "rgba(255, 59, 48, 0.25)"}`,
-                                    color: report.place_name === "مكان محذوف أو غير معروف" ? "var(--textSecondary)" : "#ff3b30",
+                                    color: report.place_name === "مكان محذوف أو غير معروف" ? "var(--text-secondary)" : "#ff3b30",
                                     fontSize: "0.85rem",
                                     fontWeight: "bold",
                                     padding: "8px 16px",
@@ -1803,7 +1803,7 @@ export default function AdminReportsPage() {
         <>
           {/* Status Filter Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-            <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+            <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
               تصفية حسب الحالة:
             </div>
             <div style={{
@@ -1841,7 +1841,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -1885,7 +1885,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -1907,7 +1907,7 @@ export default function AdminReportsPage() {
                           {getAppStatusBadge(feedback.status)}
                         </div>
 
-                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
                           <span>بواسطة: <strong>{feedback.user_profile?.full_name || "مستخدم غير مسجل الاسم"}</strong></span>
                           <span>التاريخ: {new Date(feedback.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
                         </div>
@@ -1917,7 +1917,7 @@ export default function AdminReportsPage() {
                         <button className="btn" style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
                           {isOpen ? "إخفاء التفاصيل" : "عرض والرد"}
                         </button>
-                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--textSecondary)" }}></i>
+                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--text-secondary)" }}></i>
                       </div>
                     </div>
 
@@ -1928,11 +1928,11 @@ export default function AdminReportsPage() {
 
                           {/* Left: Feedback Details */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>التفاصيل ومحتوى الاقتراح</h4>
+                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>التفاصيل ومحتوى الاقتراح</h4>
 
                             <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
-                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>نص الاقتراح:</span>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>نص الاقتراح:</span>
                                 <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
                                   {feedback.content}
                                 </p>
@@ -1941,7 +1941,7 @@ export default function AdminReportsPage() {
 
                             {feedback.image_url && (
                               <div>
-                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px" }}>الصورة المرفقة:</span>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الصورة المرفقة:</span>
                                 <a href={feedback.image_url} target="_blank" rel="noreferrer">
                                   <img
                                     src={feedback.image_url}
@@ -1956,7 +1956,7 @@ export default function AdminReportsPage() {
                           {/* Right: Profile & Actions */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <div>
-                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب الاقتراح</h4>
+                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب الاقتراح</h4>
                               {feedback.user_profile ? (
                                 <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                   <div>الاسم الكامل: <strong>{feedback.user_profile.full_name || "غير محدد"}</strong></div>
@@ -2090,7 +2090,7 @@ export default function AdminReportsPage() {
         <>
           {/* Solved Count Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-            <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+            <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
               تصفية حسب الحالة:
             </div>
             <div style={{
@@ -2128,7 +2128,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -2155,7 +2155,7 @@ export default function AdminReportsPage() {
           </div>
 
           {/* Filter Tabs for Bug Category */}
-          <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "12px" }}>
+          <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "12px" }}>
             تصفية حسب نوع البلاغ:
           </div>
           <div style={{ display: "flex", gap: "10px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
@@ -2173,7 +2173,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -2221,7 +2221,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -2256,7 +2256,7 @@ export default function AdminReportsPage() {
                           {getAppStatusBadge(feedback.status)}
                         </div>
 
-                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
                           <span>بواسطة: <strong>{feedback.user_profile?.full_name || "مستخدم غير مسجل الاسم"}</strong></span>
                           <span>التاريخ: {new Date(feedback.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
                         </div>
@@ -2266,7 +2266,7 @@ export default function AdminReportsPage() {
                         <button className="btn" style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
                           {isOpen ? "إخفاء التفاصيل" : "عرض والرد"}
                         </button>
-                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--textSecondary)" }}></i>
+                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--text-secondary)" }}></i>
                       </div>
                     </div>
 
@@ -2277,11 +2277,11 @@ export default function AdminReportsPage() {
 
                           {/* Left: Feedback Details */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>التفاصيل ومحتوى البلاغ</h4>
+                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>التفاصيل ومحتوى البلاغ</h4>
 
                             <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
-                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>تفاصيل الخطأ المبلغ عنه:</span>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>تفاصيل الخطأ المبلغ عنه:</span>
                                 <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
                                   {feedback.content}
                                 </p>
@@ -2290,7 +2290,7 @@ export default function AdminReportsPage() {
 
                             {feedback.image_url && (
                               <div>
-                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px" }}>الصورة المرفقة للبلاغ:</span>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px" }}>الصورة المرفقة للبلاغ:</span>
                                 <a href={feedback.image_url} target="_blank" rel="noreferrer">
                                   <img
                                     src={feedback.image_url}
@@ -2305,7 +2305,7 @@ export default function AdminReportsPage() {
                           {/* Right: Profile & Actions */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <div>
-                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
+                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>بيانات صاحب البلاغ</h4>
                               {feedback.user_profile ? (
                                 <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                   <div>الاسم الكامل: <strong>{feedback.user_profile.full_name || "غير محدد"}</strong></div>
@@ -2440,7 +2440,7 @@ export default function AdminReportsPage() {
           {/* Solved Count Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+              <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
                 تصفية حسب الحالة:
               </div>
               <Link
@@ -2498,7 +2498,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -2527,7 +2527,7 @@ export default function AdminReportsPage() {
           {loadingAppFeedbacks ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل بلاغات المترو...</div>
           ) : filteredMetroReports.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", color: "var(--textSecondary)" }}>
+            <div style={{ textAlign: "center", padding: "60px", color: "var(--text-secondary)" }}>
               لا توجد بلاغات مسجلة للمترو في هذا القسم حالياً 🎉
             </div>
           ) : (
@@ -2542,7 +2542,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -2576,7 +2576,7 @@ export default function AdminReportsPage() {
                         </div>
 
                         {/* User Profile Mini Details */}
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "var(--textSecondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "var(--text-secondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                             <i className="bx bx-user" style={{ color: "var(--color-secondary)" }} />
                             <span>المُبلِغ: <strong>{feedback.user_profile?.full_name || "مستخدم مجهول"}</strong></span>
@@ -2619,8 +2619,8 @@ export default function AdminReportsPage() {
                       <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                          <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
                             <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
@@ -2630,8 +2630,8 @@ export default function AdminReportsPage() {
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                            <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
                               <a href={feedback.image_url} target="_blank" rel="noopener noreferrer">
@@ -2777,7 +2777,7 @@ export default function AdminReportsPage() {
           {/* Solved Count Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+              <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
                 تصفية حسب الحالة:
               </div>
               <Link
@@ -2835,7 +2835,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -2864,7 +2864,7 @@ export default function AdminReportsPage() {
           {loadingAppFeedbacks ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل بلاغات المونوريل...</div>
           ) : filteredMonorailReports.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", color: "var(--textSecondary)" }}>
+            <div style={{ textAlign: "center", padding: "60px", color: "var(--text-secondary)" }}>
               لا توجد بلاغات مسجلة للمونوريل في هذا القسم حالياً 🎉
             </div>
           ) : (
@@ -2879,7 +2879,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -2920,7 +2920,7 @@ export default function AdminReportsPage() {
                           {getAppStatusBadge(feedback.status)}
                         </div>
 
-                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
                           <span>المستخدم: <strong>{feedback.user_profile?.full_name || feedback.user_profile?.username || "مستخدم مجهول"}</strong></span>
                           {feedback.user_profile?.phone && <span>الهاتف: <strong dir="ltr">{feedback.user_profile.phone}</strong></span>}
                           <span>التاريخ: {new Date(feedback.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
@@ -2936,7 +2936,7 @@ export default function AdminReportsPage() {
                             fontSize: "0.85rem",
                             fontWeight: "bold",
                             borderRadius: "10px",
-                            background: isOpen ? "var(--colorPrimary)" : "rgba(255,255,255,0.06)",
+                            background: isOpen ? "var(--color-primary)" : "rgba(255,255,255,0.06)",
                             color: isOpen ? "#fff" : "var(--text-primary)",
                             border: "1px solid var(--border-glass)"
                           }}
@@ -2948,7 +2948,7 @@ export default function AdminReportsPage() {
                           style={{
                             background: "transparent",
                             border: "none",
-                            color: "var(--textSecondary)",
+                            color: "var(--text-secondary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -2965,8 +2965,8 @@ export default function AdminReportsPage() {
                       <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                          <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
                             <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
@@ -2976,8 +2976,8 @@ export default function AdminReportsPage() {
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                            <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
                               <a href={feedback.image_url} target="_blank" rel="noopener noreferrer">
@@ -3123,7 +3123,7 @@ export default function AdminReportsPage() {
           {/* Solved Count Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+              <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
                 تصفية حسب الحالة:
               </div>
               <Link
@@ -3181,7 +3181,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -3210,7 +3210,7 @@ export default function AdminReportsPage() {
           {loadingAppFeedbacks ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل بلاغات القطار الكهربائي LRT...</div>
           ) : filteredLrtReports.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", color: "var(--textSecondary)" }}>
+            <div style={{ textAlign: "center", padding: "60px", color: "var(--text-secondary)" }}>
               لا توجد بلاغات مسجلة للقطار الكهربائي LRT في هذا القسم حالياً 🎉
             </div>
           ) : (
@@ -3225,7 +3225,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -3266,7 +3266,7 @@ export default function AdminReportsPage() {
                           {getAppStatusBadge(feedback.status)}
                         </div>
 
-                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
                           <span>المستخدم: <strong>{feedback.user_profile?.full_name || feedback.user_profile?.username || "مستخدم مجهول"}</strong></span>
                           {feedback.user_profile?.phone && <span>الهاتف: <strong dir="ltr">{feedback.user_profile.phone}</strong></span>}
                           <span>التاريخ: {new Date(feedback.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
@@ -3282,7 +3282,7 @@ export default function AdminReportsPage() {
                             fontSize: "0.85rem",
                             fontWeight: "bold",
                             borderRadius: "10px",
-                            background: isOpen ? "var(--colorPrimary)" : "rgba(255,255,255,0.06)",
+                            background: isOpen ? "var(--color-primary)" : "rgba(255,255,255,0.06)",
                             color: isOpen ? "#fff" : "var(--text-primary)",
                             border: "1px solid var(--border-glass)"
                           }}
@@ -3294,7 +3294,7 @@ export default function AdminReportsPage() {
                           style={{
                             background: "transparent",
                             border: "none",
-                            color: "var(--textSecondary)",
+                            color: "var(--text-secondary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -3311,8 +3311,8 @@ export default function AdminReportsPage() {
                       <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                          <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
                             <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
@@ -3322,8 +3322,8 @@ export default function AdminReportsPage() {
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                            <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
                               <a href={feedback.image_url} target="_blank" rel="noopener noreferrer">
@@ -3469,7 +3469,7 @@ export default function AdminReportsPage() {
           {/* Solved Count Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+              <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
                 تصفية حسب الحالة:
               </div>
               <Link
@@ -3527,7 +3527,7 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
                     color: isActive ? "#fff" : "var(--text-primary)",
                     fontWeight: "600",
                     fontSize: "0.7rem",
@@ -3556,7 +3556,7 @@ export default function AdminReportsPage() {
           {loadingAppFeedbacks ? (
             <div style={{ textAlign: "center", padding: "60px" }}>جاري تحميل بلاغات سكك حديد مصر...</div>
           ) : filteredRailwayReports.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "60px", color: "var(--textSecondary)" }}>
+            <div style={{ textAlign: "center", padding: "60px", color: "var(--text-secondary)" }}>
               لا توجد بلاغات مسجلة لسكك حديد مصر في هذا القسم حالياً 🎉
             </div>
           ) : (
@@ -3571,7 +3571,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -3612,7 +3612,7 @@ export default function AdminReportsPage() {
                           {getAppStatusBadge(feedback.status)}
                         </div>
 
-                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.85rem", flexWrap: "wrap" }}>
                           <span>المستخدم: <strong>{feedback.user_profile?.full_name || feedback.user_profile?.username || "مستخدم مجهول"}</strong></span>
                           {feedback.user_profile?.phone && <span>الهاتف: <strong dir="ltr">{feedback.user_profile.phone}</strong></span>}
                           <span>التاريخ: {new Date(feedback.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
@@ -3628,7 +3628,7 @@ export default function AdminReportsPage() {
                             fontSize: "0.85rem",
                             fontWeight: "bold",
                             borderRadius: "10px",
-                            background: isOpen ? "var(--colorPrimary)" : "rgba(255,255,255,0.06)",
+                            background: isOpen ? "var(--color-primary)" : "rgba(255,255,255,0.06)",
                             color: isOpen ? "#fff" : "var(--text-primary)",
                             border: "1px solid var(--border-glass)"
                           }}
@@ -3640,7 +3640,7 @@ export default function AdminReportsPage() {
                           style={{
                             background: "transparent",
                             border: "none",
-                            color: "var(--textSecondary)",
+                            color: "var(--text-secondary)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -3657,8 +3657,8 @@ export default function AdminReportsPage() {
                       <div style={{ marginTop: "20px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "16px", marginBottom: "20px" }}>
                           {/* Content / Details */}
-                          <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                          <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                               تفاصيل البلاغ:
                             </div>
                             <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", lineHeight: "1.7", whiteSpace: "pre-wrap" }}>
@@ -3668,8 +3668,8 @@ export default function AdminReportsPage() {
 
                           {/* Image if available */}
                           {feedback.image_url && (
-                            <div style={{ background: "var(--bgSecondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold", marginBottom: "8px" }}>
+                            <div style={{ background: "var(--bg-secondary)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "8px" }}>
                                 الصورة المرفقة:
                               </div>
                               <a href={feedback.image_url} target="_blank" rel="noopener noreferrer">
@@ -3815,7 +3815,7 @@ export default function AdminReportsPage() {
           {/* Solved Count Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{ fontSize: "0.95rem", color: "var(--textSecondary)", fontWeight: "bold" }}>
+              <div style={{ fontSize: "0.95rem", color: "var(--text-secondary)", fontWeight: "bold" }}>
                 تصفية حسب الحالة:
               </div>
               <Link
@@ -3873,8 +3873,8 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textSecondary)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
+                    color: isActive ? "#fff" : "var(--text-secondary)",
                     fontWeight: "bold",
                     fontSize: "0.85rem",
                     cursor: "pointer",
@@ -3992,7 +3992,7 @@ export default function AdminReportsPage() {
                         </span>
                         <i
                           className={`bx bx-chevron-${isOpen ? "up" : "down"}`}
-                          style={{ fontSize: "1.4rem", color: "var(--textSecondary)" }}
+                          style={{ fontSize: "1.4rem", color: "var(--text-secondary)" }}
                         ></i>
                       </div>
                     </div>
@@ -4014,14 +4014,14 @@ export default function AdminReportsPage() {
                             border: "1px solid var(--border-glass)"
                           }}>
                             <div>
-                              <span style={{ color: "var(--textSecondary)" }}>المستخدم: </span>
+                              <span style={{ color: "var(--text-secondary)" }}>المستخدم: </span>
                               <span style={{ fontWeight: "bold", color: "var(--text-primary)" }}>
                                 {feedback.user_profile?.full_name || "مستخدم مجهول"}
                               </span>
                             </div>
                             {feedback.user_profile?.phone && (
                               <div>
-                                <span style={{ color: "var(--textSecondary)" }}>الهاتف: </span>
+                                <span style={{ color: "var(--text-secondary)" }}>الهاتف: </span>
                                 <a href={`tel:${feedback.user_profile.phone}`} style={{ color: "var(--colorSuccess)", textDecoration: "none", direction: "ltr" }}>
                                   {feedback.user_profile.phone}
                                 </a>
@@ -4029,7 +4029,7 @@ export default function AdminReportsPage() {
                             )}
                             {feedback.user_profile?.email && (
                               <div>
-                                <span style={{ color: "var(--textSecondary)" }}>البريد: </span>
+                                <span style={{ color: "var(--text-secondary)" }}>البريد: </span>
                                 <span style={{ color: "var(--text-primary)" }}>{feedback.user_profile.email}</span>
                               </div>
                             )}
@@ -4037,7 +4037,7 @@ export default function AdminReportsPage() {
 
                           {/* Problem Details */}
                           <div>
-                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px", fontWeight: "bold" }}>
                               تفاصيل البلاغ:
                             </div>
                             <div style={{
@@ -4057,7 +4057,7 @@ export default function AdminReportsPage() {
                           {/* Image Attachment */}
                           {feedback.image_url && (
                             <div>
-                              <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                              <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px", fontWeight: "bold" }}>
                                 الصورة المرفقة مع البلاغ:
                               </div>
                               <a
@@ -4103,7 +4103,7 @@ export default function AdminReportsPage() {
 
                           {/* Admin Reply & Status Actions Form */}
                           <div style={{ marginTop: "10px" }}>
-                            <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "6px", fontWeight: "bold" }}>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "6px", fontWeight: "bold" }}>
                               إضافة رد الإدارة أو اتخاذ إجراء:
                             </div>
                             <textarea
@@ -4115,7 +4115,7 @@ export default function AdminReportsPage() {
                                 minHeight: "80px",
                                 padding: "12px",
                                 borderRadius: "10px",
-                                background: "var(--bgSecondary)",
+                                background: "var(--bg-secondary)",
                                 border: "1px solid var(--border-glass)",
                                 color: "var(--text-primary)",
                                 fontFamily: "var(--font-heading)",
@@ -4264,8 +4264,8 @@ export default function AdminReportsPage() {
                     padding: "8px 16px",
                     borderRadius: "20px",
                     border: "none",
-                    background: isActive ? "var(--colorPrimary)" : "rgba(255,255,255,0.05)",
-                    color: isActive ? "#fff" : "var(--textSecondary)",
+                    background: isActive ? "var(--color-primary)" : "rgba(255,255,255,0.05)",
+                    color: isActive ? "#fff" : "var(--text-secondary)",
                     fontWeight: "bold",
                     fontSize: "0.85rem",
                     cursor: "pointer",
@@ -4299,7 +4299,7 @@ export default function AdminReportsPage() {
                     style={{
                       padding: "20px",
                       borderRadius: "16px",
-                      border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                      border: isOpen ? "1px solid var(--color-primary)" : "1px solid var(--border-glass)",
                       transition: "all 0.2s",
                       background: "rgba(255, 255, 255, 0.02)"
                     }}
@@ -4330,7 +4330,7 @@ export default function AdminReportsPage() {
                           </span>
                         </div>
 
-                        <div style={{ display: "flex", gap: "16px", color: "var(--textSecondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "16px", color: "var(--text-secondary)", fontSize: "0.88rem", flexWrap: "wrap" }}>
                           <span>البريد: <strong>{contact.email}</strong></span>
                           <span>الهاتف: <strong>{contact.phone}</strong></span>
                           <span>التاريخ: {new Date(contact.created_at).toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short" })}</span>
@@ -4341,7 +4341,7 @@ export default function AdminReportsPage() {
                         <button className="btn" style={{ padding: "6px 12px", fontSize: "0.85rem" }}>
                           {isOpen ? "إخفاء التفاصيل" : "عرض والرد"}
                         </button>
-                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--textSecondary)" }}></i>
+                        <i className={`bx bx-chevron-${isOpen ? "up" : "down"}`} style={{ fontSize: "1.4rem", color: "var(--text-secondary)" }}></i>
                       </div>
                     </div>
 
@@ -4352,11 +4352,11 @@ export default function AdminReportsPage() {
 
                           {/* Left: Message Details */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>محتوى رسالة التواصل</h4>
+                            <h4 style={{ margin: "0 0 4px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>محتوى رسالة التواصل</h4>
 
                             <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px" }}>
                               <div>
-                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "4px" }}>نص الرسالة:</span>
+                                <span style={{ display: "block", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "4px" }}>نص الرسالة:</span>
                                 <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--text-primary)", whiteSpace: "pre-line", lineHeight: "1.6" }}>
                                   {contact.message}
                                 </p>
@@ -4367,7 +4367,7 @@ export default function AdminReportsPage() {
                           {/* Right: Actions & Reply */}
                           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <div>
-                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--colorPrimary)", paddingBottom: "6px", width: "fit-content" }}>بيانات التواصل</h4>
+                              <h4 style={{ margin: "0 0 10px", fontSize: "1rem", fontWeight: "800", borderBottom: "2px solid var(--color-primary)", paddingBottom: "6px", width: "fit-content" }}>بيانات التواصل</h4>
                               <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "0.88rem" }}>
                                 <div>الاسم الكامل: <strong>{contact.first_name} {contact.last_name}</strong></div>
                                 <div>البريد الإلكتروني: <strong>{contact.email}</strong></div>
@@ -4454,7 +4454,7 @@ export default function AdminReportsPage() {
         <div style={{ animation: "fadeIn 0.3s ease-out" }}>
           {loadingMicrobus ? (
             <div style={{ textAlign: "center", padding: "40px" }}>
-              <div style={{ width: "30px", height: "30px", border: "3px solid var(--border-glass)", borderTopColor: "var(--colorPrimary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
+              <div style={{ width: "30px", height: "30px", border: "3px solid var(--border-glass)", borderTopColor: "var(--color-primary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
               <span>جاري تحميل بلاغات السرفيس...</span>
             </div>
           ) : microbusReports.length > 0 ? (
@@ -4487,7 +4487,7 @@ export default function AdminReportsPage() {
                         <h4 style={{ margin: "0 0 4px 0", color: "var(--text-primary)", fontSize: "1rem", fontWeight: "bold" }}>
                           🚌 {report.station_name}
                         </h4>
-                        <span style={{ fontSize: "0.85rem", color: "var(--colorPrimary)", fontWeight: "bold" }}>
+                        <span style={{ fontSize: "0.85rem", color: "var(--color-primary)", fontWeight: "bold" }}>
                           🔀 الخط المتجه إلى: {report.route_destination}
                         </span>
                       </div>
@@ -4512,7 +4512,7 @@ export default function AdminReportsPage() {
                         padding: "8px 12px",
                         borderRadius: "4px",
                         fontSize: "0.85rem",
-                        color: "var(--textSecondary)",
+                        color: "var(--text-secondary)",
                         lineHeight: "1.5"
                       }}>
                         <strong>تفاصيل الإبلاغ:</strong> {report.comment}
@@ -4526,7 +4526,7 @@ export default function AdminReportsPage() {
                         style={{
                           background: "none",
                           border: "none",
-                          color: "var(--colorPrimary)",
+                          color: "var(--color-primary)",
                           fontSize: "0.8rem",
                           cursor: "pointer",
                           display: "inline-flex",
@@ -4548,7 +4548,7 @@ export default function AdminReportsPage() {
                           borderRadius: "8px",
                           padding: "10px 12px",
                           fontSize: "0.8rem",
-                          color: "var(--textSecondary)",
+                          color: "var(--text-secondary)",
                           display: "flex",
                           flexDirection: "column",
                           gap: "4px",
@@ -4616,7 +4616,7 @@ export default function AdminReportsPage() {
               borderRadius: "12px",
               padding: "40px",
               textAlign: "center",
-              color: "var(--textSecondary)"
+              color: "var(--text-secondary)"
             }}>
               لا توجد بلاغات معلقة بخصوص مواقف السرفيس.
             </div>
@@ -4848,7 +4848,7 @@ export default function AdminReportsPage() {
                   <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     إضافة الجراج المقترح مباشرة لدليل الجراجات
                   </h3>
-                  <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                     تم استخراج البيانات تلقائياً من اقتراح المستخدم ويمكنك مراجعتها وتعديلها
                   </span>
                 </div>
@@ -4857,7 +4857,7 @@ export default function AdminReportsPage() {
                 type="button"
                 onClick={() => !isAddingGarage && setSuggestedGarageModal(null)}
                 style={{
-                  background: "var(--bgSecondary)",
+                  background: "var(--bg-secondary)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "8px",
                   width: "32px",
@@ -4865,7 +4865,7 @@ export default function AdminReportsPage() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   cursor: "pointer",
                   fontSize: "1.1rem"
                 }}
@@ -4905,7 +4905,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.name}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, name: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
@@ -4918,7 +4918,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.area}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, area: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
               </div>
@@ -4934,7 +4934,7 @@ export default function AdminReportsPage() {
                   value={suggestedGarageModal.address}
                   onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, address: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                 />
               </div>
 
@@ -4950,7 +4950,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.nearestMetro}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, nearestMetro: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
@@ -4961,7 +4961,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.type}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, type: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", cursor: "pointer" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", cursor: "pointer" }}
                   >
                     <option value="مغطى ومتعدد الطوابق">مغطى ومتعدد الطوابق</option>
                     <option value="جراج ذكي إلكتروني">جراج ذكي إلكتروني</option>
@@ -4983,7 +4983,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.hourlyRate}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, hourlyRate: Number(e.target.value) })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
@@ -4997,7 +4997,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.maxDailyRate}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, maxDailyRate: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
@@ -5011,7 +5011,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.capacity}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, capacity: Number(e.target.value) })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
               </div>
@@ -5028,7 +5028,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.hours}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, hours: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                   />
                 </div>
                 <div>
@@ -5041,7 +5041,7 @@ export default function AdminReportsPage() {
                     value={suggestedGarageModal.mapLocationLink}
                     onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, mapLocationLink: e.target.value })}
                     className="input-fields"
-                    style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", direction: "ltr", textAlign: "right" }}
+                    style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)", direction: "ltr", textAlign: "right" }}
                   />
                 </div>
               </div>
@@ -5057,7 +5057,7 @@ export default function AdminReportsPage() {
                   value={suggestedGarageModal.features}
                   onChange={(e) => setSuggestedGarageModal({ ...suggestedGarageModal, features: e.target.value })}
                   className="input-fields"
-                  style={{ width: "100%", padding: "10px 12px", background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
+                  style={{ width: "100%", padding: "10px 12px", background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "8px", color: "var(--text-primary)" }}
                 />
               </div>
 
@@ -5068,7 +5068,7 @@ export default function AdminReportsPage() {
                 borderRadius: "10px",
                 padding: "10px 14px",
                 fontSize: "0.82rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 lineHeight: "1.5"
               }}>
                 ℹ️ <strong>ملاحظة:</strong> بالضغط على &ldquo;تأكيد وإضافة الجراج&rdquo;، سيتم حفظ الجراج في قاعدة بيانات الجراجات فوراً، وتحديث حالة الاقتراح تلقائياً إلى <strong>تم القبول وتطبيق الإجراء ✅</strong>، وإرسال إشعار شكر للمستخدم في حسابه.

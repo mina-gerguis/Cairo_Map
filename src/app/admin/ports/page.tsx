@@ -476,7 +476,7 @@ function AdminPortsInner() {
     return (
       <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة الموانئ البحرية...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة الموانئ البحرية...</p>
       </div>
     );
   }
@@ -555,7 +555,7 @@ function AdminPortsInner() {
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
               border: "1px solid var(--border-glass)",
-              color: "var(--textSecondary)"
+              color: "var(--text-secondary)"
             }}
           />
         </div>
@@ -703,7 +703,7 @@ function AdminPortsInner() {
               <h2 style={{ fontSize: "1.35rem", fontWeight: "900", margin: 0 }}>
                 {editingItem ? "تعديل بيانات الميناء" : "إضافة ميناء جديد"}
               </h2>
-              <button onClick={() => setShowModal(false)} className="closeBtn">
+              <button onClick={() => setShowModal(false)} className="btn-close">
                 <i className="bx bx-x" style={{ fontSize: "1.5rem" }} />
               </button>
             </div>

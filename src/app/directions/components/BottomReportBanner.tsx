@@ -44,7 +44,7 @@ export default function BottomReportBanner({ onOpenReportModal }: BottomReportBa
           style={{
             margin: 0,
             fontSize: "0.82rem",
-            color: "var(--textSecondary)",
+            color: "var(--text-secondary)",
             lineHeight: "1.6"
           }}
         >

@@ -374,7 +374,7 @@ function ProposePlaceContent() {
       <div style={{ minHeight: "100vh", background: "var(--bg-main)", color: "var(--text-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ textAlign: "center" }}>
           <div className="spinner" style={{ width: "40px", height: "40px", margin: "0 auto 16px" }} />
-          <p style={{ color: "var(--textSecondary)" }}>جاري تحميل الصفحة...</p>
+          <p style={{ color: "var(--text-secondary)" }}>جاري تحميل الصفحة...</p>
         </div>
       </div>
     );
@@ -387,7 +387,7 @@ function ProposePlaceContent() {
       <main style={{ flex: 1, padding: "60px 20px 60px", maxWidth: "800px", margin: "0 auto", width: "100%" }}>
         {/* Page Header */}
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div style={{ display: "inline-flex", padding: "12px 20px", borderRadius: "30px", background: "rgba(108, 99, 255, 0.12)", border: "1px solid rgba(108, 99, 255, 0.25)", color: "var(--colorPrimary)", fontSize: "0.9rem", fontWeight: "700", gap: "8px", alignItems: "center", marginBottom: "16px" }}>
+          <div style={{ display: "inline-flex", padding: "12px 20px", borderRadius: "30px", background: "rgba(108, 99, 255, 0.12)", border: "1px solid rgba(108, 99, 255, 0.25)", color: "var(--color-primary)", fontSize: "0.9rem", fontWeight: "700", gap: "8px", alignItems: "center", marginBottom: "16px" }}>
             <i className="bx bx-map-pin" style={{ fontSize: "1.2rem" }}></i>
             {editId ? "تعديل وإعادة إرسال اقتراح مكان" : "اقتراح مكان جديد"}
           </div>
@@ -396,7 +396,7 @@ function ProposePlaceContent() {
             {editId ? "تعديل بيانات المكان المقترح" : "ساهم معنا في إضافة مكان جديد"}
           </h1>
 
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: 1.6, maxWidth: "600px", margin: "0 auto" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6, maxWidth: "600px", margin: "0 auto" }}>
             يمكنك اقتراح أي مكان متميز (مطعم، كافيه، حديقة، الخ). سيقوم فريق الإدارة بمراجعة التفاصيل ونشره فور الاعتماد!
           </p>
         </div>
@@ -419,7 +419,7 @@ function ProposePlaceContent() {
         {/* Active Edit Mode Banner */}
         {editId && (
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(108, 99, 255, 0.1)", padding: "14px 20px", borderRadius: "18px", border: "1px solid rgba(108, 99, 255, 0.25)", marginBottom: "24px", flexWrap: "wrap", gap: "10px" }}>
-            <span style={{ fontWeight: "700", color: "var(--colorPrimary)", fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontWeight: "700", color: "var(--color-primary)", fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "8px" }}>
               ✏️ أنت الآن تقوم بتعديل: <span style={{ color: "var(--text-primary)" }}>{formData.name || "المكان المقترح"}</span>
             </span>
             <button
@@ -465,7 +465,7 @@ function ProposePlaceContent() {
             <h2 style={{ fontSize: "1.5rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "12px" }}>
               {editId ? "تمت إعادة إرسال الاقتراح بنجاح!" : "تم إرسال اقتراحك بنجاح!"}
             </h2>
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "28px" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "28px" }}>
               شكراً لمساهمتك! ستقوم الإدارة بمراجعة تفاصيل المكان قريباً، وسوف يصلك إشعار فور اتخاذ القرار.
             </p>
             <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
@@ -499,7 +499,7 @@ function ProposePlaceContent() {
 
             {/* Section 1: Basic Info */}
             <div style={{ borderBottom: "1px solid var(--border-glass)", paddingBottom: "20px" }}>
-              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--colorPrimary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-primary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bx-info-circle"></i> البيانات الأساسية للمكان
               </h2>
 
@@ -564,7 +564,7 @@ function ProposePlaceContent() {
                               });
                             }}
                             style={{
-                              background: isSelected ? "var(--colorPrimary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                              background: isSelected ? "var(--color-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
                               color: isSelected ? "#fff" : "var(--text-primary)",
                               border: isSelected ? "none" : "1px solid var(--border-glass)",
                               padding: "6px 14px",
@@ -594,7 +594,7 @@ function ProposePlaceContent() {
                     </label>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}>
                       <div>
-                        <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>اسم النوع:</label>
+                        <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اسم النوع:</label>
                         <input
                           className="input-fields"
                           placeholder="مثال: سوري، صيني، إيطالي..."
@@ -624,7 +624,7 @@ function ProposePlaceContent() {
                             setFormData({ ...formData, features: next });
                           }}
                           style={{
-                            background: isSelected ? "var(--colorPrimary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                            background: isSelected ? "var(--color-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
                             color: isSelected ? "#fff" : "var(--text-primary)",
                             border: isSelected ? "none" : "1px solid var(--border-glass)",
                             padding: "6px 14px",
@@ -660,7 +660,7 @@ function ProposePlaceContent() {
 
             {/* Section 2: Location & Address */}
             <div style={{ borderBottom: "1px solid var(--border-glass)", paddingBottom: "20px" }}>
-              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--colorPrimary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-primary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bx-map"></i> الموقع والعنوان التفصيلي
               </h2>
 
@@ -733,7 +733,7 @@ function ProposePlaceContent() {
 
             {/* Section 3: Contact & Hours */}
             <div style={{ borderBottom: "1px solid var(--border-glass)", paddingBottom: "20px" }}>
-              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--colorPrimary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-primary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bx-phone-call"></i> التواصل وساعات العمل
               </h2>
 
@@ -777,7 +777,7 @@ function ProposePlaceContent() {
 
             {/* Section 4: Images & Media */}
             <div style={{ borderBottom: "1px solid var(--border-glass)", paddingBottom: "20px" }}>
-              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--colorPrimary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h2 style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-primary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="bx bx-image"></i> صور المكان
               </h2>
 
@@ -832,7 +832,7 @@ function ProposePlaceContent() {
                     onClick={handleAddImage}
                     className="btn"
                     disabled={!newImgInput.trim()}
-                    style={{ background: "rgba(108, 99, 255, 0.2)", color: "var(--colorPrimary)", fontWeight: "700", padding: "10px 18px" }}
+                    style={{ background: "rgba(108, 99, 255, 0.2)", color: "var(--color-primary)", fontWeight: "700", padding: "10px 18px" }}
                   >
                     🔗 إضافة رابط
                   </button>
@@ -906,10 +906,10 @@ function ProposePlaceContent() {
         <div style={{ marginTop: "50px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
             <h2 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
-              <i className="bx bx-list-ul" style={{ color: "var(--colorPrimary)", fontSize: "1.5rem" }}></i>
+              <i className="bx bx-list-ul" style={{ color: "var(--color-primary)", fontSize: "1.5rem" }}></i>
               أماكني المقترحة
               {userProposals.length > 0 && (
-                <span style={{ fontSize: "0.85rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--colorPrimary)", padding: "2px 10px", borderRadius: "12px", fontWeight: "700" }}>
+                <span style={{ fontSize: "0.85rem", background: "rgba(108, 99, 255, 0.15)", color: "var(--color-primary)", padding: "2px 10px", borderRadius: "12px", fontWeight: "700" }}>
                   {userProposals.length}
                 </span>
               )}
@@ -919,19 +919,19 @@ function ProposePlaceContent() {
               type="button"
               onClick={fetchUserProposals}
               disabled={proposalsLoading}
-              style={{ background: "transparent", border: "1px solid var(--border-glass)", color: "var(--textSecondary)", padding: "6px 14px", borderRadius: "12px", fontSize: "0.85rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
+              style={{ background: "transparent", border: "1px solid var(--border-glass)", color: "var(--text-secondary)", padding: "6px 14px", borderRadius: "12px", fontSize: "0.85rem", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
             >
               <i className={`bx bx-refresh ${proposalsLoading ? "bx-spin" : ""}`}></i> تحديث القائمة
             </button>
           </div>
 
           {proposalsLoading ? (
-            <div className="glass-panel" style={{ padding: "30px", textAlign: "center", color: "var(--textSecondary)" }}>
+            <div className="glass-panel" style={{ padding: "30px", textAlign: "center", color: "var(--text-secondary)" }}>
               <div className="spinner" style={{ width: "30px", height: "30px", margin: "0 auto 12px" }} />
               جاري تحميل أماكنك المقترحة...
             </div>
           ) : userProposals.length === 0 ? (
-            <div className="glass-panel" style={{ padding: "30px", textAlign: "center", color: "var(--textSecondary)" }}>
+            <div className="glass-panel" style={{ padding: "30px", textAlign: "center", color: "var(--text-secondary)" }}>
               <i className="bx bx-map-pin" style={{ fontSize: "2.5rem", color: "var(--text-muted)", marginBottom: "10px", display: "block" }}></i>
               لم تقم باقتراح أي أماكن حتى الآن.
             </div>
@@ -950,7 +950,7 @@ function ProposePlaceContent() {
                     style={{
                       padding: "20px",
                       border: isCurrentEditing
-                        ? "2px solid var(--colorPrimary, #6c63ff)"
+                        ? "2px solid var(--color-primary, #6c63ff)"
                         : "1px solid var(--border-glass)",
                       boxShadow: isCurrentEditing ? "0 0 15px rgba(108, 99, 255, 0.25)" : "none",
                       transition: "all 0.3s ease",
@@ -994,15 +994,15 @@ function ProposePlaceContent() {
                           )}
 
                           {isCurrentEditing && (
-                            <span style={{ background: "var(--colorPrimary)", color: "#fff", padding: "3px 8px", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "700" }}>
+                            <span style={{ background: "var(--color-primary)", color: "#fff", padding: "3px 8px", borderRadius: "10px", fontSize: "0.75rem", fontWeight: "700" }}>
                               ✏️ جاري التعديل
                             </span>
                           )}
                         </div>
 
-                        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "8px" }}>
-                          <span><i className="bx bx-folder" style={{ color: "var(--colorPrimary)" }}></i> {prop.category_label || prop.category}</span>
-                          {prop.governorate && <span><i className="bx bx-map-pin" style={{ color: "var(--colorPrimary)" }}></i> {prop.governorate} - {prop.city}</span>}
+                        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "8px" }}>
+                          <span><i className="bx bx-folder" style={{ color: "var(--color-primary)" }}></i> {prop.category_label || prop.category}</span>
+                          {prop.governorate && <span><i className="bx bx-map-pin" style={{ color: "var(--color-primary)" }}></i> {prop.governorate} - {prop.city}</span>}
                           {prop.created_at && (
                             <span style={{ color: "var(--text-muted)" }}>
                               <i className="bx bx-calendar"></i> {new Date(prop.created_at).toLocaleDateString("ar-EG")}
@@ -1029,8 +1029,8 @@ function ProposePlaceContent() {
                             }}
                             className="btn"
                             style={{
-                              background: isCurrentEditing ? "var(--colorPrimary)" : "rgba(108, 99, 255, 0.12)",
-                              color: isCurrentEditing ? "#fff" : "var(--colorPrimary)",
+                              background: isCurrentEditing ? "var(--color-primary)" : "rgba(108, 99, 255, 0.12)",
+                              color: isCurrentEditing ? "#fff" : "var(--color-primary)",
                               border: "1px solid rgba(108, 99, 255, 0.3)",
                               padding: "10px 18px",
                               borderRadius: "14px",

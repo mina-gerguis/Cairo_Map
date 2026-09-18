@@ -460,7 +460,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   // Helper renderers for input forms
   const renderNameInput = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
-      <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>مطلوب: اسم المكان</label>
+      <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>مطلوب: اسم المكان</label>
       <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
         <input
           type="text"
@@ -486,7 +486,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   const renderAddressInput = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
       <div>
-        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>موقع</label>
+        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>موقع</label>
         <iframe
           src={`https://maps.google.com/maps?q=${newLatitude},${newLongitude}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
           style={{ width: "100%", height: "200px", borderRadius: "12px", border: "none", marginBottom: "6px" }}
@@ -498,7 +498,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>العنوان</label>
+        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>العنوان</label>
         <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
           <input
             type="text"
@@ -513,7 +513,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>رابط خرائط جوجل (إن وجد)</label>
+        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>رابط خرائط جوجل (إن وجد)</label>
         <input
           type="text"
           className="input-fields"
@@ -535,7 +535,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   const renderPhoneWebsiteInput = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "20px" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>رقم الهاتف (لفصل أرقام متعددة استخدم الفاصلة ,)</label>
+        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>رقم الهاتف (لفصل أرقام متعددة استخدم الفاصلة ,)</label>
         <input
           type="text"
           className="input-fields"
@@ -546,7 +546,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>موقع الويب</label>
+        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>موقع الويب</label>
         <input
           type="text"
           className="input-fields"
@@ -560,7 +560,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
 
   const renderWorkingHoursInput = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
-      <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>ساعات العمل</label>
+      <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>ساعات العمل</label>
 
       <div style={{ display: "flex", gap: "10px" }}>
         <button
@@ -661,7 +661,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
 
   const renderClosedInput = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
-      <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>حالة المكان</label>
+      <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>حالة المكان</label>
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", background: "rgba(255, 255, 255, 0.03)", padding: "12px", borderRadius: "10px", border: "1px solid var(--border-glass)" }}>
           <input
@@ -702,7 +702,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
   const renderCategoryInput = () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>اختر القسم الرئيسي</label>
+        <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>اختر القسم الرئيسي</label>
         <select
           value={selectedMainCategory}
           onChange={(e) => handleMainCategoryChange(e.target.value)}
@@ -718,9 +718,9 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
             cursor: "pointer"
           }}
         >
-          <option value="" style={{ color: "var(--text-primary)", background: "var(--bgSecondary)" }}>-- اختر القسم الرئيسي --</option>
+          <option value="" style={{ color: "var(--text-primary)", background: "var(--bg-secondary)" }}>-- اختر القسم الرئيسي --</option>
           {CATEGORIES_STRUCTURE.map(main => (
-            <option key={main.name} value={main.name} style={{ background: "var(--bgSecondary)", color: "var(--text-primary)" }}>
+            <option key={main.name} value={main.name} style={{ background: "var(--bg-secondary)", color: "var(--text-primary)" }}>
               {main.emoji ? `${main.emoji} ` : ''}{main.label}
             </option>
           ))}
@@ -735,7 +735,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
 
             return (
               <>
-                <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>
                   اختر الفئة الفرعية (التابعة لـ {activeMain.label})
                 </label>
                 <select
@@ -753,9 +753,9 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                     cursor: "pointer"
                   }}
                 >
-                  <option value="" style={{ background: "var(--bgSecondary)", color: "var(--text-primary)" }}>-- اختر الفئة الفرعية (اختياري) --</option>
+                  <option value="" style={{ background: "var(--bg-secondary)", color: "var(--text-primary)" }}>-- اختر الفئة الفرعية (اختياري) --</option>
                   {activeMain.subCategories.map(sub => (
-                    <option key={sub.name} value={sub.name} style={{ background: "var(--bgSecondary)", color: "var(--text-primary)" }}>
+                    <option key={sub.name} value={sub.name} style={{ background: "var(--bg-secondary)", color: "var(--text-primary)" }}>
                       {sub.label}
                     </option>
                   ))}
@@ -834,7 +834,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
           borderBottom: "1px solid var(--border-glass)",
           position: "sticky",
           top: 0,
-          background: "var(--bgSecondary)",
+          background: "var(--bg-secondary)",
           zIndex: 10
         }}>
           {/* Submit Button (Left) */}
@@ -874,7 +874,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
           {/* Close Button (Right) */}
           <button
             onClick={onClose}
-            className="closeBtn"
+            className="btn-close"
             style={{
               width: "36px",
               height: "36px",
@@ -896,12 +896,12 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                 <i className="bx bx-check-shield"></i>
               </div>
               <h3 style={{ fontSize: "1.3rem", fontWeight: "700", marginBottom: "8px" }}>تم إرسال بلاغك بنجاح</h3>
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem" }}>شكراً لك على مساعدتنا في تحسين جودة البيانات.</p>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>شكراً لك على مساعدتنا في تحسين جودة البيانات.</p>
             </div>
           ) : limitChecking ? (
             <div style={{ textAlign: "center", padding: "60px 20px" }}>
               <div className="bx bx-loader-alt bx-spin" style={{ fontSize: "2.2rem", color: "var(--color-secondary)", marginBottom: "12px" }}></div>
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem" }}>جاري التحقق من حدود الإرسال...</p>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>جاري التحقق من حدود الإرسال...</p>
             </div>
           ) : limitReached ? (
             <div style={{ textAlign: "center", padding: "40px 20px" }}>
@@ -909,7 +909,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                 <i className="bx bx-error"></i>
               </div>
               <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>لقد وصلت للحد الأقصى (5 طلبات معلقة)</h3>
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
                 لا يمكنك تقديم بلاغات جديدة حالياً. يرجى الانتظار حتى تقوم الإدارة بمراجعة واعتماد أو رفض طلباتك السابقة.
               </p>
             </div>
@@ -1131,7 +1131,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
 
                   {/* Comment Textarea */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--textSecondary)" }}>إضافة تعليق</label>
+                    <label style={{ fontSize: "0.85rem", fontWeight: "bold", color: "var(--text-secondary)" }}>إضافة تعليق</label>
                     <textarea
                       className="input-fields"
                       style={{ width: "100%", minHeight: "80px", padding: "12px", resize: "vertical", fontFamily: "var(--font-cairo)" }}

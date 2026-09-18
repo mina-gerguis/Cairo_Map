@@ -1191,7 +1191,7 @@ export default function PlannerPage() {
           animation: "spin 1s linear infinite",
           margin: "0 auto 20px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري التحقق من تفاصيل الاشتراك...</p>
       </div>
     );
   }
@@ -1238,12 +1238,12 @@ export default function PlannerPage() {
             ميزة البحث عن خطوط المواصلات تتطلب اشتراك في الباقة الذهبية
           </h2>
 
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.6", maxWidth: "460px", margin: "0 auto 24px" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.6", maxWidth: "460px", margin: "0 auto 24px" }}>
             استخدم الذكاء الاصطناعي لتخطيط رحلاتك وجولاتك الترفيهية وحساب التكلفة والمسارات بدقة. هذه الميزة متاحة حصرياً لمشتركي الباقة الذهبية.
           </p>
 
           <div style={{
-            background: "var(--bgSecondary)",
+            background: "var(--bg-secondary)",
             padding: "16px 20px",
             borderRadius: "12px",
             border: "1px solid var(--border-glass)",
@@ -1375,7 +1375,7 @@ export default function PlannerPage() {
 
             {/* Start Location Dropdown + GPS button */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>
+              <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
                 📍 موقع الانطلاق (نقطة البداية)
               </label>
 
@@ -1399,7 +1399,7 @@ export default function PlannerPage() {
                   onClick={() => handleGetGpsLocation(true)}
                   className="btn"
                   disabled={gpsLoading}
-                  style={{ height: "42px", padding: "0 14px", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.82rem", background: "rgba(59, 130, 246, 0.12)", borderColor: "rgba(59, 130, 246, 0.3)", color: "var(--colorPrimary)" }}
+                  style={{ height: "42px", padding: "0 14px", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "6px", fontSize: "0.82rem", background: "rgba(59, 130, 246, 0.12)", borderColor: "rgba(59, 130, 246, 0.3)", color: "var(--color-primary)" }}
                   title="تحديد موقعك الحالي عبر الـ GPS"
                 >
                   <i className={`bx ${gpsLoading ? "bx-loader-alt bx-spin" : "bx-target-lock"}`} style={{ fontSize: "1.1rem" }} />
@@ -1411,8 +1411,8 @@ export default function PlannerPage() {
             {/* Max Drive Time Range Slider (15 mins to 60 mins max) */}
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "6px" }}>
-                <span style={{ color: "var(--textSecondary)" }}>أقصى وقت قيادة بالسيارة</span>
-                <span style={{ fontWeight: "800", color: "var(--colorPrimary)" }}>{maxDriveMinutes} دقيقة (~{Math.round(maxDriveMinutes * 0.5)} كم)</span>
+                <span style={{ color: "var(--text-secondary)" }}>أقصى وقت قيادة بالسيارة</span>
+                <span style={{ fontWeight: "800", color: "var(--color-primary)" }}>{maxDriveMinutes} دقيقة (~{Math.round(maxDriveMinutes * 0.5)} كم)</span>
               </div>
 
               <input
@@ -1422,7 +1422,7 @@ export default function PlannerPage() {
                 step="15"
                 value={maxDriveMinutes}
                 onChange={(e) => setMaxDriveMinutes(parseInt(e.target.value))}
-                style={{ width: "100%", accentColor: "var(--colorPrimary)" }}
+                style={{ width: "100%", accentColor: "var(--color-primary)" }}
               />
 
               <div className="planner-slider-labels">
@@ -1446,7 +1446,7 @@ export default function PlannerPage() {
               alignItems: "center",
               gap: "8px"
             }}>
-              <i className="bx bx-radar" style={{ color: "var(--colorPrimary)", fontSize: "1.2rem" }} />
+              <i className="bx bx-radar" style={{ color: "var(--color-primary)", fontSize: "1.2rem" }} />
               <span>
                 محيط الرحلة: محصورة في زون لا يتعدى <strong>{maxDriveMinutes} دقيقة قيادة</strong> من <strong>{getActiveStartLocation().name}</strong> ({getPlacesCountInActiveZone()} مكان ترفيهي متوفر).
               </span>
@@ -1470,7 +1470,7 @@ export default function PlannerPage() {
                   <i className="bx bx-error-circle" style={{ fontSize: "1.3rem" }} />
                   <span>⚠️ لا توجد أماكن كافية في نطاق {maxDriveMinutes} دقيقة!</span>
                 </div>
-                <p style={{ color: "var(--textSecondary)", fontSize: "0.8rem", lineHeight: "1.5" }}>
+                <p style={{ color: "var(--text-secondary)", fontSize: "0.8rem", lineHeight: "1.5" }}>
                   المسافة المختارة صغيرة جداً بالنسبة لموقع الانطلاق. يرجى زيادة وقت القيادة أو اختيار مسافة أكبر (مثلاً 45 أو 60 دقيقة) لتوسيع نطاق البحث وإتاحة خيارات أفضل.
                 </p>
                 <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
@@ -1486,7 +1486,7 @@ export default function PlannerPage() {
                     type="button"
                     onClick={() => setMaxDriveMinutes(60)}
                     className="btn"
-                    style={{ flex: 1, height: "34px", fontSize: "0.78rem", background: "var(--colorPrimary)", color: "#fff", border: "none", fontWeight: "bold" }}
+                    style={{ flex: 1, height: "34px", fontSize: "0.78rem", background: "var(--color-primary)", color: "#fff", border: "none", fontWeight: "bold" }}
                   >
                     60 دقيقة (ساعة)
                   </button>
@@ -1500,7 +1500,7 @@ export default function PlannerPage() {
             {/* Header with AI Badge & Engine indicator */}
             <div className="ai-badge-header">
               <h2 className="card-section-title" style={{ margin: 0, padding: 0, border: "none" }}>
-                <i className="bx bx-bot" style={{ color: "var(--colorPrimary)", fontSize: "1.4rem" }} />
+                <i className="bx bx-bot" style={{ color: "var(--color-primary)", fontSize: "1.4rem" }} />
                 <span>اسأل الذكاء الاصطناعي 🤖</span>
               </h2>
               <div className="ai-engine-pill">
@@ -1536,7 +1536,7 @@ export default function PlannerPage() {
 
             {/* Vibe Selection Filter */}
             <div style={{ marginBottom: "10px" }}>
-              <label style={{ fontSize: "0.76rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>
+              <label style={{ fontSize: "0.76rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>
                 🎭 اختر جو الخروجة المطلوب (Vibe):
               </label>
               <div className="ai-vibes-row">
@@ -1558,7 +1558,7 @@ export default function PlannerPage() {
 
             {/* Time Slot Selection */}
             <div style={{ marginBottom: "14px" }}>
-              <label style={{ fontSize: "0.76rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>
+              <label style={{ fontSize: "0.76rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px", fontWeight: "700" }}>
                 ⏰ التوقيت المفضل لبدء اليوم:
               </label>
               <div className="ai-vibes-row">
@@ -1610,7 +1610,7 @@ export default function PlannerPage() {
                 style={{
                   width: "100%",
                   marginTop: "12px",
-                  background: aiIsGenerating ? "rgba(0, 111, 238, 0.6)" : "var(--colorPrimary)",
+                  background: aiIsGenerating ? "rgba(0, 111, 238, 0.6)" : "var(--color-primary)",
                   color: "#fff",
                   display: "flex",
                   alignItems: "center",
@@ -1637,7 +1637,7 @@ export default function PlannerPage() {
             {/* AI Thinking Step Visual Card */}
             {aiIsGenerating && (
               <div className="ai-thinking-card">
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--colorPrimary)", fontWeight: "700", fontSize: "0.85rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-primary)", fontWeight: "700", fontSize: "0.85rem" }}>
                   <i className="bx bx-chip bx-spin" style={{ fontSize: "1.2rem" }} />
                   <span>معالجة الطلب الذكي:</span>
                 </div>
@@ -1651,7 +1651,7 @@ export default function PlannerPage() {
             {aiExplanation && !aiIsGenerating && (
               <div className="ai-insights-box">
                 <div className="ai-insights-header">
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--colorPrimary)", fontWeight: "800", fontSize: "0.88rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-primary)", fontWeight: "800", fontSize: "0.88rem" }}>
                     <i className="bx bx-brain" style={{ fontSize: "1.2rem" }} />
                     <span>تقرير وتحليل المساعد الذكي:</span>
                   </div>
@@ -1680,7 +1680,7 @@ export default function PlannerPage() {
                       borderRadius: "12px",
                       padding: "2px 8px",
                       fontSize: "0.72rem",
-                      color: "var(--colorPrimary)",
+                      color: "var(--color-primary)",
                       fontWeight: "600"
                     }}>
                       {tag}
@@ -1733,7 +1733,7 @@ export default function PlannerPage() {
 
             {/* Advanced Search & Manual Place Selector */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{ fontSize: "0.82rem", color: "var(--textSecondary)", display: "block", marginBottom: "8px", fontWeight: "700" }}>
+              <label style={{ fontSize: "0.82rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "700" }}>
                 🔍 بحث وتصفية متقدمة للأماكن
               </label>
 
@@ -1776,12 +1776,12 @@ export default function PlannerPage() {
               </div>
 
               {/* Zone Filter Checkbox Toggle */}
-              <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.76rem", color: "var(--textSecondary)", marginBottom: "8px", cursor: "pointer" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "0.76rem", color: "var(--text-secondary)", marginBottom: "8px", cursor: "pointer" }}>
                 <input
                   type="checkbox"
                   checked={searchZoneOnly}
                   onChange={(e) => setSearchZoneOnly(e.target.checked)}
-                  style={{ accentColor: "var(--colorPrimary)" }}
+                  style={{ accentColor: "var(--color-primary)" }}
                 />
                 <span>📍 تقييد نتائج البحث بأماكن زون ({maxDriveMinutes} دقيقة) فقط</span>
               </label>
@@ -1800,8 +1800,8 @@ export default function PlannerPage() {
             {/* Budget range slider */}
             <div style={{ marginBottom: "16px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "6px" }}>
-                <span style={{ color: "var(--textSecondary)" }}>الميزانية المقدرة اليوم</span>
-                <span style={{ fontWeight: "700", color: "var(--colorPrimary)" }}>{budget} جنيه</span>
+                <span style={{ color: "var(--text-secondary)" }}>الميزانية المقدرة اليوم</span>
+                <span style={{ fontWeight: "700", color: "var(--color-primary)" }}>{budget} جنيه</span>
               </div>
               <input
                 type="range"
@@ -1810,14 +1810,14 @@ export default function PlannerPage() {
                 step="100"
                 value={budget}
                 onChange={(e) => setBudget(parseInt(e.target.value))}
-                style={{ width: "100%", accentColor: "var(--colorPrimary)" }}
+                style={{ width: "100%", accentColor: "var(--color-primary)" }}
               />
             </div>
 
             <div className="input-row">
               {/* Transport mode selector */}
               <div>
-                <label style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>🚇 وسيلة المواصلات</label>
+                <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>🚇 وسيلة المواصلات</label>
                 <select
                   className="input-fields"
                   value={transitMode}
@@ -1832,7 +1832,7 @@ export default function PlannerPage() {
 
               {/* Start Outing time */}
               <div>
-                <label style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>⏰ وقت التحرك</label>
+                <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>⏰ وقت التحرك</label>
                 <input
                   type="time"
                   className="input-fields"
@@ -1870,12 +1870,12 @@ export default function PlannerPage() {
                   >
                     <div style={{ flexGrow: 1 }}>
                       <div style={{ fontSize: "0.85rem", fontWeight: "700" }}>{trip.title}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", marginTop: "4px" }}>
+                      <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "4px" }}>
                         🗓️ {trip.date} • 📍 {trip.stopsCount} محطات • 💵 {trip.totalCost} ج.م
                       </div>
                     </div>
                     <button
-                      className="closeBtn"
+                      className="btn-close"
                       onClick={(e) => handleDeleteSavedTrip(trip.id, e)}
                       style={{ padding: "4px", fontSize: "0.95rem" }}
                       title="حذف الرحلة"
@@ -1902,8 +1902,8 @@ export default function PlannerPage() {
 
             {/* Optimization Button and indicators */}
             <div className="map-actions-row">
-              <div style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "flex", alignItems: "center", gap: "6px" }}>
-                <i className="bx bx-info-circle" style={{ fontSize: "1.1rem", color: "var(--colorPrimary)" }} />
+              <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px" }}>
+                <i className="bx bx-info-circle" style={{ fontSize: "1.1rem", color: "var(--color-primary)" }} />
                 <span>الخطوط المنقطة تمثل مسارات التنقل الموصى بها.</span>
               </div>
 
@@ -2024,12 +2024,12 @@ export default function PlannerPage() {
           {/* TIMELINE DISPLAY */}
           <div className="glass-panel-luxury">
             <h2 className="card-section-title">
-              <i className="bx bx-time-five" style={{ color: "var(--colorPrimary)" }} />
+              <i className="bx bx-time-five" style={{ color: "var(--color-primary)" }} />
               الجدول الزمني للرحلة
             </h2>
 
             {selectedPlaces.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--textSecondary)" }}>
+              <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-secondary)" }}>
                 <i className="bx bx-map-pin" style={{ fontSize: "3rem", color: "var(--border-glass-bright)", marginBottom: "12px", display: "block" }} />
                 <span>يرجى اختيار أماكن للرحلة بالبحث بالذكاء الاصطناعي أو تحديد الأماكن من القوائم لبناء جدولك الزمني.</span>
               </div>
@@ -2105,7 +2105,7 @@ export default function PlannerPage() {
                           </button>
 
                           <button
-                            className="closeBtn"
+                            className="btn-close"
                             onClick={() => handleRemoveStop(idx)}
                             title="إزالة المكان"
                           >
@@ -2144,7 +2144,7 @@ export default function PlannerPage() {
                 <button onClick={handleCopyLink} className="btn" style={{ borderColor: "var(--border-glass-bright)" }}>
                   <i className="bx bx-share-alt" /> مشاركة الرحلة
                 </button>
-                <button onClick={() => window.print()} className="btn btn-primary" style={{ background: "var(--colorPrimary)", color: "#fff" }}>
+                <button onClick={() => window.print()} className="btn btn-primary" style={{ background: "var(--color-primary)", color: "#fff" }}>
                   <i className="bx bx-printer" /> طباعة / تحميل PDF
                 </button>
               </div>
@@ -2159,17 +2159,17 @@ export default function PlannerPage() {
       {showProfileModal && (
         <div className="planner-modal-overlay">
           <div className="glass-panel-luxury planner-modal-content" style={{ border: "1px solid rgba(0, 111, 238, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}>
-            <h3 style={{ fontSize: "1.25rem", color: "var(--colorPrimary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+            <h3 style={{ fontSize: "1.25rem", color: "var(--color-primary)", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
               <i className="bx bx-user-circle" /> الملف الشخصي لتخصيص الرحلات
             </h3>
-            <p style={{ fontSize: "0.85rem", color: "var(--textSecondary)", marginBottom: "20px", lineHeight: "1.5" }}>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "20px", lineHeight: "1.5" }}>
               يتعلم النظام من تفضيلاتك الشخصية ليقترح عليك كافيهات ومطاعم وأماكن خروج تناسب ميزانيتك وذوقك المفضل تلقائياً.
             </p>
 
             <form onSubmit={handleSavePrefs}>
               <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                 <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>نوع الأكل المفضل</label>
+                  <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>نوع الأكل المفضل</label>
                   <select
                     className="input-fields"
                     value={userPrefs.foodType}
@@ -2184,7 +2184,7 @@ export default function PlannerPage() {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>المواصلات المفضلة</label>
+                  <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>المواصلات المفضلة</label>
                   <select
                     className="input-fields"
                     value={userPrefs.transit}
@@ -2198,7 +2198,7 @@ export default function PlannerPage() {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>أقصى مسافة للمشي (متر)</label>
+                  <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>أقصى مسافة للمشي (متر)</label>
                   <input
                     type="number"
                     className="input-fields"
@@ -2209,7 +2209,7 @@ export default function PlannerPage() {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: "0.8rem", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>الوقت المعتاد للخروج</label>
+                  <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>الوقت المعتاد للخروج</label>
                   <input
                     type="time"
                     className="input-fields"
@@ -2224,7 +2224,7 @@ export default function PlannerPage() {
                 <button type="button" className="btn" onClick={() => setShowProfileModal(false)} style={{ flex: 1, height: "44px" }}>
                   إلغاء
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1, height: "44px", background: "var(--colorPrimary)", color: "#fff" }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1, height: "44px", background: "var(--color-primary)", color: "#fff" }}>
                   حفظ التفضيلات
                 </button>
               </div>
@@ -2246,13 +2246,13 @@ export default function PlannerPage() {
               height: "64px",
               borderRadius: "50%",
               background: "rgba(59, 130, 246, 0.15)",
-              border: "2px solid var(--colorPrimary)",
+              border: "2px solid var(--color-primary)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 16px",
               fontSize: "2rem",
-              color: "var(--colorPrimary)"
+              color: "var(--color-primary)"
             }}>
               <i className={`bx ${gpsLoading ? "bx-loader-alt bx-spin" : "bx-current-location"}`} />
             </div>
@@ -2261,7 +2261,7 @@ export default function PlannerPage() {
               تفعيل موقع الـ GPS إجباري 📍
             </h2>
 
-            <p style={{ fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6", marginBottom: "20px" }}>
+            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "20px" }}>
               لتخطيط رحلة دقيقة ومحصورة في زون قيادة لا يتعدى ساعة من مكانك الفعلي، يرجى السماح بالوصول لموقعك المباشر.
             </p>
 
@@ -2287,7 +2287,7 @@ export default function PlannerPage() {
                 style={{
                   width: "100%",
                   height: "46px",
-                  background: "var(--colorPrimary)",
+                  background: "var(--color-primary)",
                   color: "#fff",
                   fontWeight: "800",
                   fontSize: "0.95rem",
@@ -2304,7 +2304,7 @@ export default function PlannerPage() {
               <button
                 onClick={() => setShowGpsModal(false)}
                 className="btn"
-                style={{ width: "100%", height: "40px", fontSize: "0.85rem", color: "var(--textSecondary)" }}
+                style={{ width: "100%", height: "40px", fontSize: "0.85rem", color: "var(--text-secondary)" }}
               >
                 إلغاء
               </button>

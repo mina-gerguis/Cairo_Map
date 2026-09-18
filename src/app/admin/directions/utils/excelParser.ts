@@ -79,7 +79,7 @@ export function normalizeVehicleType(rawType: string): {
 } {
   const norm = (rawType || "").trim().toLowerCase();
 
-  // 1. Microbus (Check first because "ميكروباص" and "ميكوباص" end with "باص")
+  // 1. Microbus (ميكروباص / سرفيس)
   if (
     norm.includes("ميكرو") ||
     norm.includes("ميكو") ||
@@ -91,14 +91,14 @@ export function normalizeVehicleType(rawType: string): {
     return { type: "microbus", defaultName: "ميكروباص", icon: "microbus" };
   }
 
-  // 2. Metro
+  // 2. Metro (مترو الأنفاق)
   if (norm.includes("مترو") || norm.includes("metro") || norm.includes("subway")) {
     return { type: "metro", defaultName: "مترو الأنفاق", icon: "metro" };
   }
 
-  // 3. Monorail (Check before train to prevent confusion)
+  // 3. Monorail (مونوريل شرق وغرب النيل)
   if (norm.includes("مونوريل") || norm.includes("monorail")) {
-    return { type: "monorail", defaultName: "قطار المونوريل", icon: "monorail" };
+    return { type: "monorail", defaultName: "قطار المونوريل", icon: "Cairo_monorail_east" };
   }
 
   // 4. LRT (Light Rail Transit / القطار الكهربائي الخفيف)
@@ -112,7 +112,7 @@ export function normalizeVehicleType(rawType: string): {
     return { type: "lrt", defaultName: "القطار الكهربائي الخفيف (LRT)", icon: "Cairo_lrt" };
   }
 
-  // 5. BRT (Bus Rapid Transit / الأتوبيس الترددي)
+  // 5. BRT (Bus Rapid Transit / الأتوبيس الترددي السريع)
   if (
     norm.includes("brt") ||
     norm.includes("ترددي") ||
@@ -122,33 +122,50 @@ export function normalizeVehicleType(rawType: string): {
     norm.includes("باص ترددي") ||
     norm.includes("bus rapid")
   ) {
-    return { type: "brt", defaultName: "الأتوبيس الترددي (BRT)", icon: "bus" };
+    return { type: "brt", defaultName: "الأتوبيس الترددي (BRT)", icon: "brt" };
   }
 
-  // 6. Railways / Trains
+  // 6. Railways / Trains (قطار السكك الحديدية)
   if (
     norm.includes("قطار") ||
     norm.includes("قطارات") ||
     norm.includes("train") ||
     norm.includes("سكة حديد") ||
     norm.includes("سكه حديد") ||
-    norm.includes("سكك حديد")
+    norm.includes("سكك حديد") ||
+    norm.includes("railway")
   ) {
-    return { type: "train", defaultName: "قطار السكك الحديدية", icon: "train" };
+    return { type: "train", defaultName: "قطار السكك الحديدية", icon: "Cairo_train" };
   }
 
-  // 7. Public Bus
+  // 7. Public Bus / Superjet (أتوبيس النقل العام)
   if (
     norm.includes("أتوبيس") ||
     norm.includes("اتوبيس") ||
     norm.includes("نقل عام") ||
     norm === "bus" ||
-    norm.includes("باص")
+    norm.includes("باص") ||
+    norm.includes("سوبر جيت") ||
+    norm.includes("جو باص")
   ) {
     return { type: "bus", defaultName: "أتوبيس النقل العام", icon: "bus" };
   }
 
-  // 6. Car / Private
+  // 8. Taxi / Ride Hailing (تاكسي / أوبر / كريم)
+  if (
+    norm.includes("تاكسي") ||
+    norm.includes("تاكس") ||
+    norm.includes("اوبر") ||
+    norm.includes("أوبر") ||
+    norm.includes("كريم") ||
+    norm.includes("taxi") ||
+    norm.includes("cab") ||
+    norm.includes("uber")
+  ) {
+    return { type: "car", defaultName: "تاكسي / أوبر", icon: "taxi" };
+  }
+
+  // 9. Car / Private (سيارة خاصة / ملاكي)
   if (
     norm.includes("عربية") ||
     norm.includes("عربيه") ||
@@ -156,24 +173,25 @@ export function normalizeVehicleType(rawType: string): {
     norm.includes("سياره") ||
     norm.includes("car") ||
     norm.includes("خاص") ||
-    norm.includes("تاكسي")
+    norm.includes("ملاكي")
   ) {
     return { type: "car", defaultName: "سيارة خاصة", icon: "car" };
   }
 
-  // 7. Plane / Airport
+  // 10. Plane / Flight / Airport (طائرة / طيران / مطار)
   if (
     norm.includes("طيران") ||
     norm.includes("طائرة") ||
     norm.includes("طائره") ||
     norm.includes("plane") ||
     norm.includes("flight") ||
-    norm.includes("مطار")
+    norm.includes("مطار") ||
+    norm.includes("airport")
   ) {
-    return { type: "plane", defaultName: "طائرة / طيران", icon: "plane" };
+    return { type: "plane", defaultName: "طائرة / طيران", icon: "airport" };
   }
 
-  // 8. Ship / Ferry
+  // 11. Ship / Ferry / Nile Bus (سفينة / عبارة / أتوبيس نهري)
   if (
     norm.includes("سفينة") ||
     norm.includes("سفينه") ||
@@ -181,19 +199,32 @@ export function normalizeVehicleType(rawType: string): {
     norm.includes("عباره") ||
     norm.includes("ship") ||
     norm.includes("ferry") ||
-    norm.includes("مركب")
+    norm.includes("مركب") ||
+    norm.includes("نهري")
   ) {
     return { type: "ship", defaultName: "سفينة / عبارة", icon: "ship" };
   }
 
-  // 9. Multi Transit
+  // 12. Walking / Pedestrian (سير على الأقدام / مشي)
+  if (
+    norm.includes("مشي") ||
+    norm.includes("سير") ||
+    norm.includes("اقدام") ||
+    norm.includes("أقدام") ||
+    norm.includes("walk")
+  ) {
+    return { type: "car", defaultName: "سير على الأقدام", icon: "walk" };
+  }
+
+  // 13. Multi Transit / Transfer (مواصلات متعددة)
   if (
     norm.includes("متعدد") ||
     norm.includes("تحويل") ||
+    norm.includes("تبديل") ||
     norm.includes("multi") ||
     norm.includes("transfer")
   ) {
-    return { type: "multi", defaultName: "مواصلات متعددة", icon: "transfer" };
+    return { type: "multi", defaultName: "مواصلات متعددة", icon: "multi" };
   }
 
   // Default fallback: microbus
@@ -555,8 +586,112 @@ export function generateDirectionsExcelTemplate() {
     { wch: 25 }  // map
   ];
 
+  const guideData = [
+    {
+      "الرمز الإنجليزي (type)": "microbus",
+      "اسم الوسيلة بالعربية": "ميكروباص",
+      "الكلمات والمرادفات المقبولة": "ميكروباص، ميكوباص، مكروباص، سرفيس، microbus",
+      "الأيقونة المعروضة": "سيارة ميكروباص حديثة مفرغة",
+      "أمثلة للاستخدام": "ميكروباص موقف السلام، سرفيس الهرم، ميكروباص رمسيس"
+    },
+    {
+      "الرمز الإنجليزي (type)": "metro",
+      "اسم الوسيلة بالعربية": "مترو الأنفاق",
+      "الكلمات والمرادفات المقبولة": "مترو، مترو الأنفاق، subway، metro",
+      "الأيقونة المعروضة": "شعار مترو القاهرة الكبرى الرسمي",
+      "أمثلة للاستخدام": "مترو الخط الثالث، مترو الشهداء، مترو العتبة"
+    },
+    {
+      "الرمز الإنجليزي (type)": "bus",
+      "اسم الوسيلة بالعربية": "أتوبيس النقل العام",
+      "الكلمات والمرادفات المقبولة": "أتوبيس، اتوبيس، باص، نقل عام، ميني باص، سوبر جيت، جو باص، bus",
+      "الأيقونة المعروضة": "أتوبيس هيئة النقل العام CTA",
+      "أمثلة للاستخدام": "أتوبيس هيئة النقل العام خط 111، ميني باص المطار"
+    },
+    {
+      "الرمز الإنجليزي (type)": "brt",
+      "اسم الوسيلة بالعربية": "الأتوبيس الترددي (BRT)",
+      "الكلمات والمرادفات المقبولة": "ترددي، الأتوبيس الترددي، اتوبيس ترددي، brt",
+      "الأيقونة المعروضة": "حافلة BRT الكهربائية السريعة",
+      "أمثلة للاستخدام": "الأتوبيس الترددي على الطريق الدائري"
+    },
+    {
+      "الرمز الإنجليزي (type)": "train",
+      "اسم الوسيلة بالعربية": "قطار السكك الحديدية",
+      "الكلمات والمرادفات المقبولة": "قطار، قطارات، سكة حديد، سكك حديد، train",
+      "الأيقونة المعروضة": "شعار سكك حديد مصر (س.ح.م)",
+      "أمثلة للاستخدام": "قطار روسي مكيف، قطار تالجو إسكندرية، قطار الصعيد"
+    },
+    {
+      "الرمز الإنجليزي (type)": "monorail",
+      "اسم الوسيلة بالعربية": "قطار المونوريل",
+      "الكلمات والمرادفات المقبولة": "مونوريل، المونوريل، monorail",
+      "الأيقونة المعروضة": "شعار مونوريل شرق وغرب النيل",
+      "أمثلة للاستخدام": "مونوريل شرق النيل (العاصمة الإدارية)، مونوريل أكتوبر"
+    },
+    {
+      "الرمز الإنجليزي (type)": "lrt",
+      "اسم الوسيلة بالعربية": "القطار الكهربائي الخفيف (LRT)",
+      "الكلمات والمرادفات المقبولة": "lrt، كهربائي، القطار الكهربائي، light rail",
+      "الأيقونة المعروضة": "شعار القطار الكهربائي الخفيف LRT",
+      "أمثلة للاستخدام": "قطار LRT من عدلي منصور للعاشر من رمضان والعاصمة الإدارية"
+    },
+    {
+      "الرمز الإنجليزي (type)": "car",
+      "اسم الوسيلة بالعربية": "سيارة خاصة",
+      "الكلمات والمرادفات المقبولة": "سيارة، سياره، عربية، ملاكي، خاص، car",
+      "الأيقونة المعروضة": "سيارة سيدان خاصة حديثة",
+      "أمثلة للاستخدام": "السفر بالسيارة الملاكي عبر طريق الإسماعيلية الصحراوي"
+    },
+    {
+      "الرمز الإنجليزي (type)": "taxi",
+      "اسم الوسيلة بالعربية": "تاكسي / أوبر / كريم",
+      "الكلمات والمرادفات المقبولة": "تاكسي، اوبر، أوبر، كريم، taxi، uber",
+      "الأيقونة المعروضة": "تاكسي مع لافتة مضيئة",
+      "أمثلة للاستخدام": "تاكسي أبيض من ميدان التحرير، سيارة أوبر المباشرة"
+    },
+    {
+      "الرمز الإنجليزي (type)": "plane",
+      "اسم الوسيلة بالعربية": "طائرة / طيران",
+      "الكلمات والمرادفات المقبولة": "طيران، طائرة، طائره، مطار، plane، flight",
+      "الأيقونة المعروضة": "شعار الطيران وصقر مصر للطيران",
+      "أمثلة للاستخدام": "رحلة طيران داخلي من مطار القاهرة إلى شرم الشيخ"
+    },
+    {
+      "الرمز الإنجليزي (type)": "ship",
+      "اسم الوسيلة بالعربية": "سفينة / أتوبيس نهري",
+      "الكلمات والمرادفات المقبولة": "سفينة، عبارة، مركب، نهري، أتوبيس نهري، ship",
+      "الأيقونة المعروضة": "سفينة / مركب نهري",
+      "أمثلة للاستخدام": "الأتوبيس النهري من ماسبيرو إلى القناطر الخيرية"
+    },
+    {
+      "الرمز الإنجليزي (type)": "multi",
+      "اسم الوسيلة بالعربية": "مواصلات متعددة",
+      "الكلمات والمرادفات المقبولة": "متعدد، تحويل، تبديل، multi، transfer",
+      "الأيقونة المعروضة": "أيقونة تبديل وتحويل المواصلات المتعددة",
+      "أمثلة للاستخدام": "مترو ثم ميكروباص، قطار ثم أتوبيس"
+    },
+    {
+      "الرمز الإنجليزي (type)": "walk",
+      "اسم الوسيلة بالعربية": "سير على الأقدام",
+      "الكلمات والمرادفات المقبولة": "مشي، سير، اقدام، أقدام، walk",
+      "الأيقونة المعروضة": "أيقونة المشي سيراً على الأقدام",
+      "أمثلة للاستخدام": "مشي 5 دقائق من المحطة إلى بوابة الدخول"
+    }
+  ];
+
+  const guideWorksheet = XLSX.utils.json_to_sheet(guideData);
+  guideWorksheet["!cols"] = [
+    { wch: 22 }, // type key
+    { wch: 25 }, // arabic name
+    { wch: 45 }, // accepted synonyms
+    { wch: 30 }, // icon
+    { wch: 45 }  // examples
+  ];
+
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "نموذج_مسارات_المواصلات");
+  XLSX.utils.book_append_sheet(workbook, guideWorksheet, "دليل_أنواع_المواصلات");
 
   XLSX.writeFile(workbook, "Directions_Routes_Template.xlsx");
 }

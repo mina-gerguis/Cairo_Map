@@ -1095,7 +1095,7 @@ export default function AdminUsersPage() {
     return (
       <div className={styles.adminLoadingContainer}>
         <div className={styles.spinner} />
-        <p style={{ marginTop: "12px", color: "var(--textSecondary)" }}>جاري التحقق من الصلاحيات وقاعدة البيانات...</p>
+        <p style={{ marginTop: "12px", color: "var(--text-secondary)" }}>جاري التحقق من الصلاحيات وقاعدة البيانات...</p>
       </div>
     );
   }
@@ -1105,7 +1105,7 @@ export default function AdminUsersPage() {
       <div className={styles.adminAccessDenied}>
         <i className="bx bx-lock-alt" style={{ fontSize: "4rem", color: "var(--accent-red)" }} />
         <h2 style={{ marginTop: "16px", color: "var(--text-primary)" }}>عفواً، الدخول غير مصرح به</h2>
-        <p style={{ color: "var(--textSecondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
+        <p style={{ color: "var(--text-secondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
         <button onClick={() => router.push("/")} className={styles.backBtn} style={{ marginTop: "16px" }}>
           العودة للرئيسية
         </button>
@@ -1327,7 +1327,7 @@ export default function AdminUsersPage() {
             <span
               style={{
                 fontSize: "0.82rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 background: "rgba(255, 255, 255, 0.06)",
                 padding: "3px 10px",
                 borderRadius: "20px",
@@ -1450,7 +1450,7 @@ export default function AdminUsersPage() {
         {loadingUsers ? (
           <div style={{ textAlign: "center", padding: "60px 0" }}>
             <div className={styles.spinner} style={{ margin: "0 auto 16px" }} />
-            <p style={{ color: "var(--textSecondary)", fontWeight: "600", fontSize: "0.95rem" }}>
+            <p style={{ color: "var(--text-secondary)", fontWeight: "600", fontSize: "0.95rem" }}>
               جاري تحميل حسابات المستخدمين...
             </p>
           </div>
@@ -1671,7 +1671,7 @@ export default function AdminUsersPage() {
                         <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.88rem" }}>
                           📍 {u.governorate ? `${u.governorate} ${u.city ? `• ${u.city}` : ""}` : "غير محددة"}
                         </div>
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
+                        <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "4px" }}>
                           {u.gender ? (u.gender === "ذكر" || u.gender === "male" ? "♂️ ذكر" : "♀️ أنثى") : "الجنس: —"}
                           {age !== null ? ` • 🎂 ${age} سنة` : ""}
                         </div>
@@ -2189,7 +2189,7 @@ export default function AdminUsersPage() {
                   ⛔ تم إيقاف الحساب
                   {viewUser.suspended_at && ` في: ${new Date(viewUser.suspended_at).toLocaleDateString("ar-EG")}`}
                 </div>
-                <div style={{ color: "var(--textSecondary)", fontSize: "0.82rem", marginTop: "4px" }}>
+                <div style={{ color: "var(--text-secondary)", fontSize: "0.82rem", marginTop: "4px" }}>
                   سبب الإيقاف: {viewUser.suspended_reason || "لم يُحدد سبب"}
                 </div>
               </div>
@@ -2289,7 +2289,7 @@ export default function AdminUsersPage() {
                       border: "1px solid",
                       borderColor: adjustType === "deposit" ? "#10b981" : "rgba(255,255,255,0.1)",
                       background: adjustType === "deposit" ? "rgba(16, 185, 129, 0.2)" : "rgba(255,255,255,0.03)",
-                      color: adjustType === "deposit" ? "#4ade80" : "var(--textSecondary)",
+                      color: adjustType === "deposit" ? "#4ade80" : "var(--text-secondary)",
                       fontWeight: "700",
                       cursor: "pointer",
                       display: "flex",
@@ -2311,7 +2311,7 @@ export default function AdminUsersPage() {
                       border: "1px solid",
                       borderColor: adjustType === "withdraw" ? "#ef4444" : "rgba(255,255,255,0.1)",
                       background: adjustType === "withdraw" ? "rgba(239, 68, 68, 0.2)" : "rgba(255,255,255,0.03)",
-                      color: adjustType === "withdraw" ? "#f87171" : "var(--textSecondary)",
+                      color: adjustType === "withdraw" ? "#f87171" : "var(--text-secondary)",
                       fontWeight: "700",
                       cursor: "pointer",
                       display: "flex",
@@ -3033,7 +3033,7 @@ export default function AdminUsersPage() {
                 <h3 className={styles.subModalTitle}>
                   📜 سجل نشاط: {activityUser.full_name || activityUser.username}
                 </h3>
-                <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
+                <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                   يتضمن الشحن، السحب، البلاغات، والرسائل المسجلة لهذا المستخدم.
                 </span>
               </div>
@@ -3073,7 +3073,7 @@ export default function AdminUsersPage() {
             {loadingTimeline ? (
               <div style={{ textAlign: "center", padding: "40px 0" }}>
                 <div className={styles.spinner} style={{ margin: "0 auto 12px" }} />
-                <p style={{ color: "var(--textSecondary)", fontWeight: "600" }}>جاري تجميع سجل الحركات...</p>
+                <p style={{ color: "var(--text-secondary)", fontWeight: "600" }}>جاري تجميع سجل الحركات...</p>
               </div>
             ) : userTimeline.filter((ev) => timelineFilter === "all" || ev.type === timelineFilter).length === 0 ? (
               <div className={styles.adsEmptyState} style={{ padding: "30px" }}>

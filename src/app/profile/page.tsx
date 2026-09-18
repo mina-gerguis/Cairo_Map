@@ -2402,7 +2402,7 @@ export default function ProfilePage() {
         >
           <div className={styles.cardContent}>
             {/* Icon */}
-            <div style={{ color: "var(--colorPrimary)" }}>
+            <div style={{ color: "var(--color-primary)" }}>
               <i className={`bx ${theme === 'dark' ? 'bx-sun' : 'bx-moon'} ${styles.cardIcon}`}></i>
             </div>
             {/* Title */}
@@ -2605,7 +2605,7 @@ export default function ProfilePage() {
             >
               <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
                 <div className={styles.notifHeaderLeft}>
-                  <div style={{ color: "var(--colorPrimary)" }}>
+                  <div style={{ color: "var(--color-primary)" }}>
                     <i className={`bx bx-history ${styles.cardIcon}`}></i>
                   </div>
                   <div>
@@ -2614,7 +2614,7 @@ export default function ProfilePage() {
                 </div>
                 <div className={styles.badgeRight}>
                   {(userProposals.filter(p => p.status === "pending").length + userReports.filter(r => r.status === "pending").length + userAppFeedbacks.filter(f => f.status === "pending").length) > 0 && (
-                    <span className={styles.notifBadgeRed} style={{ background: "var(--colorPrimary)" }}>
+                    <span className={styles.notifBadgeRed} style={{ background: "var(--color-primary)" }}>
                       {userProposals.filter(p => p.status === "pending").length + userReports.filter(r => r.status === "pending").length + userAppFeedbacks.filter(f => f.status === "pending").length}
                     </span>
                   )}
@@ -2638,8 +2638,8 @@ export default function ProfilePage() {
                         fontWeight: "600",
                         borderRadius: "8px",
                         border: "none",
-                        background: activeRequestsTab === "proposals" ? "var(--colorPrimary)" : "transparent",
-                        color: activeRequestsTab === "proposals" ? "#fff" : "var(--textSecondary)",
+                        background: activeRequestsTab === "proposals" ? "var(--color-primary)" : "transparent",
+                        color: activeRequestsTab === "proposals" ? "#fff" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s"
                       }}
@@ -2657,8 +2657,8 @@ export default function ProfilePage() {
                         fontWeight: "600",
                         borderRadius: "8px",
                         border: "none",
-                        background: activeRequestsTab === "reports" ? "var(--colorPrimary)" : "transparent",
-                        color: activeRequestsTab === "reports" ? "#fff" : "var(--textSecondary)",
+                        background: activeRequestsTab === "reports" ? "var(--color-primary)" : "transparent",
+                        color: activeRequestsTab === "reports" ? "#fff" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s"
                       }}
@@ -2676,8 +2676,8 @@ export default function ProfilePage() {
                         fontWeight: "600",
                         borderRadius: "8px",
                         border: "none",
-                        background: activeRequestsTab === "app_feedback" ? "var(--colorPrimary)" : "transparent",
-                        color: activeRequestsTab === "app_feedback" ? "#fff" : "var(--textSecondary)",
+                        background: activeRequestsTab === "app_feedback" ? "var(--color-primary)" : "transparent",
+                        color: activeRequestsTab === "app_feedback" ? "#fff" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s"
                       }}
@@ -2752,11 +2752,11 @@ export default function ProfilePage() {
                               <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>{report.place_name}</strong>
                               {getReportStatusBadge(report.status)}
                             </div>
-                            <div style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
+                            <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                               المشكلة: {getProblemLabelAr(report.problem_type)}
                             </div>
                             {report.admin_reply && (
-                              <div style={{ fontSize: "0.78rem", color: "var(--colorPrimary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
+                              <div style={{ fontSize: "0.78rem", color: "var(--color-primary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
                                 <TbMessageCircleStar /> {report.admin_reply}
                               </div>
                             )}
@@ -2803,7 +2803,7 @@ export default function ProfilePage() {
                               <strong style={{ fontSize: "0.95rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px" }}>
                                 {fb.type === "suggestion" ? (
                                   <>
-                                    <BsStars size={20} style={{ color: "var(--colorPrimary)" }} />
+                                    <BsStars size={20} style={{ color: "var(--color-primary)" }} />
                                     <span>{fb.category}</span>
                                   </>
                                 ) : (
@@ -2819,16 +2819,16 @@ export default function ProfilePage() {
                               {fb.status === "reviewed" && <span style={{ background: "rgba(0, 122, 255, 0.15)", color: "#007aff", padding: "2px 8px", borderRadius: "8px", fontSize: "0.7rem", fontWeight: "bold" }}>تمت المراجعة</span>}
                               {fb.status === "action_taken" && <span style={{ background: "rgba(52, 199, 89, 0.15)", color: "#34c759", padding: "2px 8px", borderRadius: "8px", fontSize: "0.75rem", fontWeight: "bold" }}>تم اتخاذ إجراء</span>}
                             </div>
-                            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--textSecondary)", whiteSpace: "pre-line" }}>
+                            <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-secondary)", whiteSpace: "pre-line" }}>
                               {fb.content}
                             </p>
                             {fb.image_url && (
-                              <a href={fb.image_url} target="_blank" rel="noreferrer" style={{ fontSize: "0.75rem", color: "var(--colorPrimary)", textDecoration: "underline", alignSelf: "flex-start" }}>
+                              <a href={fb.image_url} target="_blank" rel="noreferrer" style={{ fontSize: "0.75rem", color: "var(--color-primary)", textDecoration: "underline", alignSelf: "flex-start" }}>
                                 🖼️ عرض الصورة المرفقة
                               </a>
                             )}
                             {fb.admin_reply && (
-                              <div style={{ fontSize: "0.78rem", color: "var(--colorPrimary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
+                              <div style={{ fontSize: "0.78rem", color: "var(--color-primary)", background: "rgba(108, 99, 255, 0.08)", padding: "6px 10px", borderRadius: "8px" }}>
                                 <TbMessageCircleStar /> {fb.admin_reply}
                               </div>
                             )}
@@ -2954,7 +2954,7 @@ export default function ProfilePage() {
             }}
           >
             <div className={styles.cardContent}>
-              <div style={{ color: "var(--colorPrimary)" }}>
+              <div style={{ color: "var(--color-primary)" }}>
                 <i className={`bx bx-message-square-detail ${styles.cardIcon}`}></i>
               </div>
               <div>
@@ -3000,7 +3000,7 @@ export default function ProfilePage() {
         >
           <div className={styles.cardContent} style={{ justifyContent: "space-between", }}>
             <div className={styles.helpHeaderLeft}>
-              <div style={{ color: "var(--colorPrimary)" }}>
+              <div style={{ color: "var(--color-primary)" }}>
                 <i className={`bx bx-help-circle ${styles.cardIcon}`}></i>
               </div>
               <h3 className={styles.cardTitle}>التواصل والمساعدة</h3>
@@ -3770,7 +3770,7 @@ export default function ProfilePage() {
           bgColor: "var(--btn-cancel)",
         }}
       >
-        <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
+        <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
           سيتم حذف هذا الطلب نهائياً من سجلاتك ولا يمكن التراجع عن هذه الخطوة.
         </p>
       </CustomModal>
@@ -3816,7 +3816,7 @@ export default function ProfilePage() {
           bgColor: "var(--btn-cancel)",
         }}
       >
-        <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
+        <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
           سيتم سحب اقتراح هذا المكان ولن يعود معروضاً للمراجعة من قِبل المشرفين.
         </p>
       </CustomModal>
@@ -3862,7 +3862,7 @@ export default function ProfilePage() {
           bgColor: "var(--btn-cancel)",
         }}
       >
-        <p style={{ fontSize: "0.88rem", color: "var(--textSecondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
+        <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", textAlign: "center", lineHeight: "1.6", margin: 0 }}>
           سيتم إغلاق وسحب هذا البلاغ ولن تتخذه الإدارة بعين الاعتبار.
         </p>
       </CustomModal>
@@ -3918,7 +3918,7 @@ export default function ProfilePage() {
               </h4>
               <p style={{
                 fontSize: "0.85rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 lineHeight: "1.6",
                 marginBottom: "8px",
                 fontFamily: "var(--font-cairo)"
@@ -3955,7 +3955,7 @@ export default function ProfilePage() {
                           <div className={styles.deviceNameRow}>
                             <span className={styles.deviceName}>{rem.placeName}</span>
                           </div>
-                          <p style={{ margin: "4px 0", fontSize: "0.88rem", color: "var(--textSecondary)", whiteSpace: "pre-wrap" }}>
+                          <p style={{ margin: "4px 0", fontSize: "0.88rem", color: "var(--text-secondary)", whiteSpace: "pre-wrap" }}>
                             {rem.note}
                           </p>
                           <div className={styles.deviceMetaRow}>
@@ -4031,7 +4031,7 @@ export default function ProfilePage() {
                     ? "#ff3b30"
                     : selectedNotification?.type === "success"
                       ? "#34c759"
-                      : "var(--colorPrimary)",
+                      : "var(--color-primary)",
               boxShadow: "0 8px 24px rgba(0,0,0,0.15)"
             }}
           >
@@ -4083,7 +4083,7 @@ export default function ProfilePage() {
             <div
               style={{
                 fontSize: "0.82rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 marginBottom: "14px",
                 display: "inline-flex",
                 alignItems: "center",
@@ -4108,7 +4108,7 @@ export default function ProfilePage() {
 
             <div
               style={{
-                background: "var(--bgSecondary, rgba(255, 255, 255, 0.03))",
+                background: "var(--bg-secondary, rgba(255, 255, 255, 0.03))",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "14px",
                 padding: "16px",
@@ -4158,7 +4158,7 @@ export default function ProfilePage() {
       >
         <div style={{ textAlign: "right" }}>
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold" }}>نوع الاقتراح</label>
+            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>نوع الاقتراح</label>
             <select
               value={suggestionType}
               onChange={e => setSuggestionType(e.target.value)}
@@ -4172,7 +4172,7 @@ export default function ProfilePage() {
           </div>
 
           <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold" }}>رسالة الاقتراح</label>
+            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>رسالة الاقتراح</label>
             <textarea
               className="input-fields"
               style={{ width: "100%", minHeight: "120px", padding: "12px", resize: "vertical", fontFamily: "var(--font-cairo)" }}
@@ -4225,7 +4225,7 @@ export default function ProfilePage() {
       >
         <div style={{ textAlign: "right" }}>
           <div style={{ marginBottom: "12px" }}>
-            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold" }}>نوع المشكلة</label>
+            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>نوع المشكلة</label>
             <input
               type="text"
               className="input-fields"
@@ -4237,7 +4237,7 @@ export default function ProfilePage() {
           </div>
 
           <div style={{ marginBottom: "12px" }}>
-            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold" }}>تفاصيل المشكلة</label>
+            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>تفاصيل المشكلة</label>
             <textarea
               className="input-fields"
               style={{ width: "100%", minHeight: "100px", padding: "12px", resize: "vertical", fontFamily: "var(--font-cairo)" }}
@@ -4249,7 +4249,7 @@ export default function ProfilePage() {
 
           {/* Upload Image Section */}
           <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "bold" }}>إرفاق صورة للمشكلة (اختياري)</label>
+            <label style={{ display: "block", marginBottom: "6px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "bold" }}>إرفاق صورة للمشكلة (اختياري)</label>
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px dashed var(--border-glass)",
@@ -4322,7 +4322,7 @@ export default function ProfilePage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <button
                 onClick={() => setShowPointsModal(false)}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -4351,7 +4351,7 @@ export default function ProfilePage() {
                   height={100}
                   style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none" }} />
               </div>
-              <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+              <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
                 الرصيد الحالي
               </span>
               <h2 style={{ fontSize: "2.4rem", fontWeight: "700", color: "#cc9303c4", margin: "4px 0", fontFamily: "var(--font-tenor-sans)" }}>
@@ -4480,7 +4480,7 @@ export default function ProfilePage() {
                   <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
                   ما هي عملة ماب القاهرة؟
                 </h4>
-                <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                   هي عملة رقمية تكافئية خاصة بمجتمع ماب القاهرة، صُممت لتشجيع المستخدمين على إثراء محتوى الدليل وتحسين جودة البيانات ومساعدة الآخرين، ويمكن الاستفادة منها عبر تحويلها مباشرة إلى كاش أو استخدامها في خدمات الموقع المختلفة.
                 </p>
               </div>
@@ -4491,11 +4491,11 @@ export default function ProfilePage() {
                   <i className="bx bx-plus-circle" style={{ fontSize: "1.1rem" }}></i>
                   كيف تكسب النقاط؟
                 </h4>
-                <ul style={{ margin: 0, paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px", fontFamily: "var(--font-body)" }}>
+                <ul style={{ margin: 0, paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px", fontFamily: "var(--font-body)" }}>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-plus-circle" style={{ color: "#0025f7ff", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <Link href="/propose-place" onClick={() => setShowPointsModal(false)} style={{ color: "var(--colorPrimary)", fontWeight: "bold" }}>
+                      <Link href="/propose-place" onClick={() => setShowPointsModal(false)} style={{ color: "var(--color-primary)", fontWeight: "bold" }}>
                         إضافة الأماكن:
                       </Link>{" "}
                       عند اقتراح إضافة مكان جديد للدليل.
@@ -4504,7 +4504,7 @@ export default function ProfilePage() {
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-error-alt" style={{ color: "#ff3b30", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--colorPrimary)", fontWeight: "bold" }}>
+                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--color-primary)", fontWeight: "bold" }}>
                         الإبلاغ عن المشاكل:
                       </Link>{" "}
                       عند الإبلاغ عن بيانات خاطئة أو مكان مغلق ويتم اتخاذ إجراء لتعديله.
@@ -4513,7 +4513,7 @@ export default function ProfilePage() {
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-edit-alt" style={{ color: "#10b981", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
-                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--colorPrimary)", fontWeight: "bold" }}>
+                      <Link href="/directory" onClick={() => setShowPointsModal(false)} style={{ color: "var(--color-primary)", fontWeight: "bold" }}>
                         تحسين وتدقيق البيانات:
                       </Link>{" "}
                       المساعدة في جعل ماب القاهرة أكثر دقة وتحديثاً.
@@ -4534,7 +4534,7 @@ export default function ProfilePage() {
                   <i className="bx bx-help-circle" style={{ fontSize: "1.1rem" }}></i>
                   كيف تستخدم النقاط؟
                 </h4>
-                <ul style={{ margin: "0 0 30px 0", paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px", fontFamily: "var(--font-body)" }}>
+                <ul style={{ margin: "0 0 30px 0", paddingRight: "0", listStyle: "none", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "10px", fontFamily: "var(--font-body)" }}>
                   <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <i className="bx bx-transfer-alt" style={{ color: "#10b981", fontSize: "1.05rem", marginTop: "3px" }}></i>
                     <div>
@@ -4606,7 +4606,7 @@ export default function ProfilePage() {
                 </h3>
                 <button
                   onClick={() => setShowSubModal(false)}
-                  className="closeBtn"
+                  className="btn-close"
                 >
                   <i className="bx bx-x"></i>
                 </button>
@@ -4617,7 +4617,7 @@ export default function ProfilePage() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 padding: "14px 20px",
                 borderRadius: "12px",
                 marginBottom: "24px",
@@ -4741,7 +4741,7 @@ export default function ProfilePage() {
 
                 {/* Card 1: Free */}
                 <div style={{
-                  background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                   border: effectiveTier === "free" ? "2px solid var(--border-glass)" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
@@ -4764,7 +4764,7 @@ export default function ProfilePage() {
 
                     <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
-                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
                       {(getPlan("free").features || []).map((feature: string, idx: number) => (
                         <li key={idx}>{feature}</li>
                       ))}
@@ -4797,7 +4797,7 @@ export default function ProfilePage() {
 
                 {/* Card 1.5: Mishwar */}
                 <div style={{
-                  background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                   border: effectiveTier === "mishwar" ? "2px solid #10b981" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
@@ -4824,7 +4824,7 @@ export default function ProfilePage() {
 
                     <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
-                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.82rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px", lineHeight: "1.5", listStyleType: "disc" }}>
                       {(getPlan("mishwar").features || []).map((feature: string, idx: number) => (
                         <li key={idx} style={idx === 0 ? { color: "var(--mainBtn)", fontWeight: "bold" } : undefined}>
                           {feature}
@@ -4857,7 +4857,7 @@ export default function ProfilePage() {
 
                 {/* Card 2: Silver */}
                 <div style={{
-                  background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                   border: effectiveTier === "silver" ? "2px solid #6366f1" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
@@ -4885,7 +4885,7 @@ export default function ProfilePage() {
 
                     <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
-                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
                       {(getPlan("silver").features || []).map((feature: string, idx: number) => {
                         const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
                         return (
@@ -4924,7 +4924,7 @@ export default function ProfilePage() {
 
                 {/* Card 3: Gold */}
                 <div style={{
-                  background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                  background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                   border: effectiveTier === "gold" ? "2px solid #eab308" : "1px solid var(--border-glass)",
                   borderRadius: "16px",
                   padding: "24px",
@@ -4956,7 +4956,7 @@ export default function ProfilePage() {
 
                     <hr style={{ border: "none", borderTop: "1px solid var(--border-glass)", margin: "16px 0" }} />
 
-                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "var(--textSecondary)", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
+                    <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "6px", lineHeight: "1.4", listStyleType: "disc" }}>
                       {(getPlan("gold").features || []).map((feature: string, idx: number) => {
                         const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
                         return (
@@ -5122,7 +5122,7 @@ export default function ProfilePage() {
             </h3>
 
             {/* Message */}
-            <p style={{ fontSize: "0.92rem", color: "var(--textSecondary)", lineHeight: "1.6", margin: "0 0 28px", fontFamily: "var(--font-cairo)" }}>
+            <p style={{ fontSize: "0.92rem", color: "var(--text-secondary)", lineHeight: "1.6", margin: "0 0 28px", fontFamily: "var(--font-cairo)" }}>
               {subConfirmData.message}
             </p>
 
@@ -5160,7 +5160,7 @@ export default function ProfilePage() {
                   fontWeight: "bold",
                   justifyContent: "center",
                   background: "rgba(255, 255, 255, 0.05)",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   border: "1px solid var(--border-glass)",
                   cursor: "pointer",
                   fontFamily: "var(--font-cairo)"
@@ -5200,7 +5200,7 @@ export default function ProfilePage() {
               {walletTab !== "main" ? (
                 <button
                   onClick={() => setWalletTab("main")}
-                  className="closeBtn"
+                  className="btn-close"
                   style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                 >
                   <i className="bx bx-arrow-back" style={{ fontSize: "1.2rem", transform: "scaleX(-1)" }}></i>
@@ -5208,7 +5208,7 @@ export default function ProfilePage() {
               ) : (
                 <button
                   onClick={() => setShowWalletModal(false)}
-                  className="closeBtn"
+                  className="btn-close"
                 >
                   <i className="bx bx-x"></i>
                 </button>
@@ -5243,7 +5243,7 @@ export default function ProfilePage() {
                       height={100}
                       style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none" }} />
                   </div>
-                  <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
+                  <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>
                     رصيد المحفظة الحالي
                   </span>
                   <span style={{ fontSize: "2.4rem", fontWeight: "900", color: "#10b981", margin: "4px 0" }}>
@@ -5331,7 +5331,7 @@ export default function ProfilePage() {
                 <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem" }}>
                   <h5 style={{ margin: "0 0 8px", color: "var(--color-secondary)", fontWeight: "bold" }}>تعليمات التحويل:</h5>
                   {depositMethod === "instapay" && (
-                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                       قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي: <br />
                       العنوان: <strong style={{ color: "var(--text-primary)" }}>cairomap@instapay</strong>
                       <br />
@@ -5341,21 +5341,21 @@ export default function ProfilePage() {
                     </p>
                   )}
                   {depositMethod === "telda" && (
-                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                       قم بالتحويل عبر تطبيق تيلدا إلى التاج (Tag) التالي:<br />
                       التاج: <strong style={{ color: "var(--text-primary)" }}>@minagerguis</strong><br />
                       الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina Gerguis</strong>
                     </p>
                   )}
                   {depositMethod === "vodafone_cash" && (
-                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                       قم بتحويل رصيد كاش إلى رقم المحفظة التالي:<br />
                       الرقم: <strong style={{ color: "var(--text-primary)" }}>01020372317</strong><br />
                       الاسم: <strong style={{ color: "var(--text-primary)" }}>مينا جرجس</strong>
                     </p>
                   )}
                   {depositMethod === "bank_transfer" && (
-                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)" }}>
+                    <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                       قم بالتحويل البنكي المباشر للحساب التالي:<br />
                       البنك: <strong style={{ color: "var(--text-primary)" }}>بنك قطر الوطني الأهلي (QNB)</strong><br />
                       رقم الحساب: <strong style={{ color: "var(--text-primary)" }}>1020670700235</strong><br />
@@ -5422,7 +5422,7 @@ export default function ProfilePage() {
 
                 <div style={{ marginTop: "16px" }}>
 
-                  <p style={{ margin: 0, lineHeight: "1.6", color: "var(--textSecondary)", fontSize: "0.85rem" }}>
+                  <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)", fontSize: "0.85rem" }}>
                     لتسريع عملية الشحن، يرجى إرفاق صورة إيصال التحويل. <br />
                     سيتم مراجعة طلب الشحن الخاص بك من قبل الإدارة وسيتم شحن رصيدك في أقرب وقت ممكن.
                   </p>
@@ -5502,7 +5502,7 @@ export default function ProfilePage() {
                   </div>
                 )}
                 <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px 16px", fontSize: "0.8rem", textAlign: "center" }}>
-                  <span style={{ color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>الرصيد المتاح للسحب</span>
+                  <span style={{ color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>الرصيد المتاح للسحب</span>
                   <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "#10b981" }}>{formatNumber(profile?.balance ?? 0, 2)} ج.م</h4>
                   <p style={{ margin: "6px 0 0 0", color: "var(--text-muted)", fontSize: "0.72rem" }}>* الحد الأدنى لأي عملية سحب هو 100 ج.م</p>
                 </div>
@@ -5607,8 +5607,8 @@ export default function ProfilePage() {
                       color: "var(--text-muted, #8e8e93)",
                       borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))"
                     } : {
-                      background: "var(--colorPrimary)",
-                      borderColor: "var(--colorPrimary)"
+                      background: "var(--color-primary)",
+                      borderColor: "var(--color-primary)"
                     })
                   }}
                 >
@@ -5629,13 +5629,13 @@ export default function ProfilePage() {
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px", maxHeight: "50vh", overflowY: "auto", paddingLeft: "4px" }}>
                 {loadingTransactions ? (
                   <div style={{ textAlign: "center", padding: "30px 0" }}>
-                    <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "1.8rem", color: "var(--colorPrimary)" }}></i>
-                    <p style={{ color: "var(--textSecondary)", fontSize: "0.8rem", marginTop: "8px" }}>جاري تحميل كشف الحساب...</p>
+                    <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "1.8rem", color: "var(--color-primary)" }}></i>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.8rem", marginTop: "8px" }}>جاري تحميل كشف الحساب...</p>
                   </div>
                 ) : userTransactions.length === 0 ? (
                   <div style={{ textAlign: "center", padding: "40px 0", border: "1px dashed var(--border-glass)", borderRadius: "12px" }}>
                     <i className="bx bx-receipt" style={{ fontSize: "2.4rem", color: "var(--text-muted)", marginBottom: "8px" }}></i>
-                    <p style={{ color: "var(--textSecondary)", fontSize: "0.82rem", margin: 0 }}>لا توجد معاملات سابقة حالياً.</p>
+                    <p style={{ color: "var(--text-secondary)", fontSize: "0.82rem", margin: 0 }}>لا توجد معاملات سابقة حالياً.</p>
                   </div>
                 ) : (
                   userTransactions.map((tx) => (
@@ -5707,7 +5707,7 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
-                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.03)", paddingTop: "8px", display: "flex", flexWrap: "wrap", gap: "10px", fontSize: "0.72rem", color: "var(--textSecondary)" }}>
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.03)", paddingTop: "8px", display: "flex", flexWrap: "wrap", gap: "10px", fontSize: "0.72rem", color: "var(--text-secondary)" }}>
                         <span>وسيلة الدفع: <strong>
                           {tx.method === "instapay" && "انستا باي"}
                           {tx.method === "vodafone_cash" && "محفظة كاش"}
@@ -5743,7 +5743,7 @@ export default function ProfilePage() {
                     <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
                     ما هو رصيد المحفظة؟
                   </h4>
-                  <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     هو رصيد مالي حقيقي بالجنيه المصري (EGP) يتم شحنه في حسابك، أو تحويل النقاط المكتسبة إليه. يمكنك استخدامه في شراء المنتجات المميزة، دفع اشتراكات الدليل، أو سحبه نقداً.
                   </p>
                 </div>

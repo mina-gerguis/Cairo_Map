@@ -132,7 +132,7 @@
 }
 
 .sidebarNavLinkActive {
-  background: var(--bgSecondary) !important;
+  background: var(--bg-secondary) !important;
 }
 
 .linkLeftGroup {
@@ -2961,7 +2961,7 @@
 
 .adsSubtitle {
   margin: 0;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.95rem;
 }
 

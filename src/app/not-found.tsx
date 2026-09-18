@@ -450,13 +450,13 @@ export default function NotFound() {
             transition: border-color 0.3s;
           }
           .compass-container:hover {
-            border-color: var(--colorPrimary) !important;
+            border-color: var(--color-primary) !important;
           }
           .shortcut-card {
             transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s, background-color 0.25s, box-shadow 0.25s;
           }
           .shortcut-card:hover {
-            border-color: var(--colorPrimary) !important;
+            border-color: var(--color-primary) !important;
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
           }
           html.light .shortcut-card {
@@ -470,7 +470,7 @@ export default function NotFound() {
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
           }
           .search-form:focus-within {
-            border-color: var(--colorPrimary) !important;
+            border-color: var(--color-primary) !important;
             box-shadow: 0 10px 30px var(--shadow-card), 0 0 0 3px rgba(0, 111, 238, 0.15) !important;
           }
           .action-btn {
@@ -531,10 +531,10 @@ export default function NotFound() {
           }}
         >
           {/* Compass cardinal points (Arabic layout) */}
-          <span style={{ position: "absolute", top: "8px", left: "50%", transform: "translateX(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--colorPrimary)" }}>ش</span>
-          <span style={{ position: "absolute", bottom: "8px", left: "50%", transform: "translateX(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--textSecondary)" }}>ج</span>
-          <span style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--textSecondary)" }}>ق</span>
-          <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--textSecondary)" }}>غ</span>
+          <span style={{ position: "absolute", top: "8px", left: "50%", transform: "translateX(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--color-primary)" }}>ش</span>
+          <span style={{ position: "absolute", bottom: "8px", left: "50%", transform: "translateX(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--text-secondary)" }}>ج</span>
+          <span style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--text-secondary)" }}>ق</span>
+          <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.8rem", fontWeight: 800, color: "var(--text-secondary)" }}>غ</span>
 
           {/* Inside grid circles */}
           <div style={{
@@ -562,13 +562,13 @@ export default function NotFound() {
             }}
           >
             {/* Top Blue-gradient Pointer */}
-            <path d="M12 2L20 32H12V2Z" fill="var(--colorPrimary)" />
+            <path d="M12 2L20 32H12V2Z" fill="var(--color-primary)" />
             <path d="M12 2L4 32H12V2Z" fill="#3b82f6" />
             {/* Bottom Grey Pointer */}
             <path d="M12 62L20 32H12V62Z" fill="#a1a1aa" />
             <path d="M12 62L4 32H12V62Z" fill="#71717a" />
             {/* Center Pivot Point */}
-            <circle cx="12" cy="32" r="3.5" fill="#ffffff" stroke="var(--colorPrimary)" strokeWidth="1.5" />
+            <circle cx="12" cy="32" r="3.5" fill="#ffffff" stroke="var(--color-primary)" strokeWidth="1.5" />
           </svg>
         </div>
 
@@ -587,7 +587,7 @@ export default function NotFound() {
         <p
           style={{
             fontSize: "1.15rem",
-            color: "var(--textSecondary)",
+            color: "var(--text-secondary)",
             maxWidth: "600px",
             margin: "0 auto 2.25rem",
             lineHeight: 1.6,
@@ -613,7 +613,7 @@ export default function NotFound() {
                 display: "flex",
                 alignItems: "center",
                 backgroundColor: "var(--bg-glass)",
-                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--colorPrimary)" : "1.5px solid var(--borderPrimary)",
+                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--color-primary)" : "1.5px solid var(--borderPrimary)",
                 borderRadius: "var(--ra-32)",
                 padding: "8px 15px 8px 15px",
                 boxShadow: "0 10px 30px var(--shadow-card)",
@@ -718,7 +718,7 @@ export default function NotFound() {
                     gap: "8px",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--colorPrimary)",
+                    color: "var(--color-primary)",
                     padding: "6px 12px",
                     marginBottom: "6px"
                   }}>
@@ -765,7 +765,7 @@ export default function NotFound() {
                         padding: "3px 10px",
                         borderRadius: "999px",
                         backgroundColor: "rgba(0, 111, 238, 0.15)",
-                        color: "var(--colorPrimary)",
+                        color: "var(--color-primary)",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "4px"
@@ -891,7 +891,7 @@ export default function NotFound() {
                 <div style={{
                   padding: "20px 16px",
                   textAlign: "center",
-                  color: "var(--textSecondary)",
+                  color: "var(--text-secondary)",
                   fontFamily: "var(--font-body)"
                 }}>
                   <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
@@ -900,7 +900,7 @@ export default function NotFound() {
                   <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--text-primary)", marginBottom: "4px" }}>
                     عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                   </div>
-                  <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--textSecondary)" }}>
+                  <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }}>
                     لم نجد نتائج مطابقة مباشرة في الدليل. يمكنك تجربة التالي:
                   </div>
                   <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
@@ -941,8 +941,8 @@ export default function NotFound() {
                         padding: "6px 14px",
                         borderRadius: "8px",
                         backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
-                        border: "1px solid var(--colorPrimary)",
-                        color: "var(--colorPrimary)",
+                        border: "1px solid var(--color-primary)",
+                        color: "var(--color-primary)",
                         fontSize: "0.82rem",
                         textDecoration: "none",
                         fontWeight: "700"
@@ -963,7 +963,7 @@ export default function NotFound() {
                   marginTop: "8px",
                   padding: "var(--padding-btn)",
                   borderRadius: "var(--ra-full)",
-                  backgroundColor: "var(--colorPrimary)",
+                  backgroundColor: "var(--color-primary)",
                   color: "#ffffff",
                   border: "none",
                   fontWeight: "700",
@@ -1002,7 +1002,7 @@ export default function NotFound() {
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
-              background: "var(--colorPrimary)",
+              background: "var(--color-primary)",
               color: "#ffffff",
               padding: "var(--padding-btn)",
               borderRadius: "var(--ra-full)",
@@ -1066,7 +1066,7 @@ export default function NotFound() {
             style={{
               fontSize: "1.05rem",
               fontWeight: 800,
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               marginBottom: "1.5rem",
               textAlign: "right",
               display: "flex",
@@ -1074,7 +1074,7 @@ export default function NotFound() {
               gap: "10px",
             }}
           >
-            <FaRoute style={{ color: "var(--colorPrimary)" }} />
+            <FaRoute style={{ color: "var(--color-primary)" }} />
             <span>ربما تكون تبحث عن إحدى هذه الوجهات:</span>
           </h2>
 
@@ -1095,7 +1095,7 @@ export default function NotFound() {
                 alignItems: "center",
                 gap: "12px",
                 padding: "14px 18px",
-                background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
@@ -1115,7 +1115,7 @@ export default function NotFound() {
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>خريطة المترو</div>
-                <p style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "2px" }}>المحطات والاشتراكات</p>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px" }}>المحطات والاشتراكات</p>
               </div>
             </Link>
 
@@ -1128,7 +1128,7 @@ export default function NotFound() {
                 alignItems: "center",
                 gap: "12px",
                 padding: "14px 18px",
-                background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
@@ -1148,7 +1148,7 @@ export default function NotFound() {
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>مواقف الأتوبيس</div>
-                <p style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "2px" }}>خطوط الأتوبيس والسرفيس</p>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px" }}>خطوط الأتوبيس والسرفيس</p>
               </div>
             </Link>
 
@@ -1161,7 +1161,7 @@ export default function NotFound() {
                 alignItems: "center",
                 gap: "12px",
                 padding: "14px 18px",
-                background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
@@ -1181,7 +1181,7 @@ export default function NotFound() {
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>دليل الخدمـات</div>
-                <p style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "2px" }}>مطاعم، مستشفيات، بنوك</p>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px" }}>مطاعم، مستشفيات، بنوك</p>
               </div>
             </Link>
 
@@ -1194,7 +1194,7 @@ export default function NotFound() {
                 alignItems: "center",
                 gap: "12px",
                 padding: "14px 18px",
-                background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
@@ -1214,7 +1214,7 @@ export default function NotFound() {
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>أماكن الانتظار</div>
-                <p style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "2px" }}>جراجات ومواقف السيارات</p>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px" }}>جراجات ومواقف السيارات</p>
               </div>
             </Link>
 
@@ -1227,7 +1227,7 @@ export default function NotFound() {
                 alignItems: "center",
                 gap: "12px",
                 padding: "14px 18px",
-                background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
@@ -1247,7 +1247,7 @@ export default function NotFound() {
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>المطارات والموانئ</div>
-                <p style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "2px" }}>مطار القاهرة والسفر</p>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px" }}>مطار القاهرة والسفر</p>
               </div>
             </Link>
 
@@ -1260,7 +1260,7 @@ export default function NotFound() {
                 alignItems: "center",
                 gap: "12px",
                 padding: "14px 18px",
-                background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
+                background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
                 borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
@@ -1280,7 +1280,7 @@ export default function NotFound() {
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>المساعدة</div>
-                <p style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "2px" }}>التواصل والمساعدة</p>
+                <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px" }}>التواصل والمساعدة</p>
               </div>
             </Link>
           </div>

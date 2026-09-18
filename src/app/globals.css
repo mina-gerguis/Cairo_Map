@@ -30,7 +30,7 @@
   /* Zinc 400 */
   --text-muted: #71717a;
   /* HeroUI Vibrant Colors */
-  --colorPrimary: #006FEE;
+  --color-primary: #006FEE;
   /* HeroUI Blue */
   --accent-secondary: #10b981;
   /* Soft green */
@@ -41,11 +41,11 @@
   --accent-red: #ef4444;
 
   /* Flat layout constants */
-  --gradient-primary: var(--colorPrimary);
+  --gradient-primary: var(--color-primary);
   --gradient-hero: var(--bgPrimary);
   --gradient-card: var(--bg-glass-card);
   --gradient-text: var(--text-primary);
-  --gradient-cta: var(--colorPrimary);
+  --gradient-cta: var(--color-primary);
 
 
 
@@ -410,7 +410,7 @@ html.light .logo-img-light {
 .navbar-link {
   padding: 8px 18px;
   border-radius: var(--ra-14);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.93rem;
   font-weight: 500;
   transition: var(--transition-smooth);
@@ -429,7 +429,7 @@ html.light .logo-img-light {
 }
 
 .navbar-link.active {
-  color: var(--colorPrimary);
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -445,7 +445,7 @@ html.light .logo-img-light {
   border-radius: var(--ra-full);
   border: 1px solid var(--border-glass);
   background: var(--bg-glass-card);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -655,7 +655,7 @@ html.light .navbar-dropdown-menu {
 .navbar-mobile-link {
   padding: 12px 18px;
   border-radius: var(--ra-14);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 1rem;
   font-weight: 500;
   text-decoration: none;
@@ -665,7 +665,7 @@ html.light .navbar-dropdown-menu {
 
 .navbar-mobile-link:hover,
 .navbar-mobile-link.active {
-  color: var(--colorPrimary);
+  color: var(--color-primary);
   background: var(--hoverBtn);
 }
 
@@ -769,7 +769,7 @@ html.light .navbar-dropdown-menu {
   padding: 8px 20px;
   font-size: 0.88rem;
   font-weight: 500;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 28px;
   animation: pop-in 0.6s ease 0.2s both;
   backdrop-filter: blur(10px);
@@ -779,7 +779,7 @@ html.light .navbar-dropdown-menu {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--colorPrimary);
+  background: var(--color-primary);
 }
 
 .hero-title {
@@ -823,7 +823,7 @@ html.light .navbar-dropdown-menu {
   gap: 10px;
   padding: 10px 36px;
   border-radius: 8px;
-  background: var(--colorPrimary);
+  background: var(--color-primary);
   color: #fff;
   font-size: 1.05rem;
   font-weight: 600;
@@ -1006,7 +1006,7 @@ html.light .footer {
 }
 
 .footer-text strong {
-  color: var(--textSecondary);
+  color: var(--text-secondary);
 }
 
 .footer-sep {
@@ -1237,7 +1237,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .card-info {
   font-size: 0.9rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1273,7 +1273,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   width: 100%;
   max-width: 90%;
   height: 90vh;
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
   border-top-left-radius: var(--ra-32);
   border-top-right-radius: var(--ra-32);
   display: flex;
@@ -1283,7 +1283,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 html.light .ios-sheet {
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
 }
 
 .ios-sheet-drag-handle {
@@ -1297,7 +1297,7 @@ html.light .ios-sheet {
 }
 
 .ios-sheet-drag-handle:hover {
-  background: var(--textSecondary);
+  background: var(--text-secondary);
 }
 
 .ios-sheet-content {
@@ -1539,7 +1539,7 @@ html.light .ios-sheet {
   .mobile-search-modal {
     width: 100%;
     height: 85vh;
-    background: var(--bgSecondary);
+    background: var(--bg-secondary);
     border-top-left-radius: var(--ra-32);
     border-top-right-radius: var(--ra-32);
     display: flex;
@@ -1549,7 +1549,7 @@ html.light .ios-sheet {
   }
 
   html.light .mobile-search-modal {
-    background: var(--bgSecondary);
+    background: var(--bg-secondary);
   }
 
   .mobile-search-handle {
@@ -1604,7 +1604,7 @@ html.light .ios-sheet {
   width: 48px;
   height: 48px;
   border-radius: var(--ra-18);
-  background: var(--colorPrimary);
+  background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1642,8 +1642,8 @@ html.light .hero-search-input {
 }
 
 .hero-search-input:focus {
-  border-color: var(--colorPrimary);
-  background: var(--bgSecondary);
+  border-color: var(--color-primary);
+  background: var(--bg-secondary);
 }
 
 .hero-search-icon {
@@ -1669,7 +1669,7 @@ html.light .hero-search-input {
 .auth-card {
   width: 100%;
   max-width: 480px;
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
   border-radius: var(--ra-32);
   padding: 48px 40px;
@@ -1677,7 +1677,7 @@ html.light .hero-search-input {
 }
 
 html.light .auth-card {
-  background: var(--bgSecondary);
+  background: var(--bg-secondary);
 }
 
 @media (max-width: 500px) {
@@ -1732,7 +1732,7 @@ html.light .auth-card {
   width: 24px;
   height: 24px;
   border: 3px solid var(--border-glass);
-  border-top-color: var(--colorPrimary);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -1767,15 +1767,15 @@ html.light .auth-card {
 
 .pagination-btn:hover:not(:disabled) {
   background: rgba(108, 99, 255, 0.1);
-  color: var(--colorPrimary);
+  color: var(--color-primary);
   border-color: rgba(108, 99, 255, 0.3);
 }
 
 .pagination-btn.active {
-  background: var(--colorPrimary);
+  background: var(--color-primary);
   color: #fff;
   font-weight: 700;
-  border-color: var(--colorPrimary);
+  border-color: var(--color-primary);
   box-shadow: 0 4px 14px rgba(108, 99, 255, 0.3);
 }
 
@@ -1814,7 +1814,7 @@ html.light .auth-card {
 
 .accordion-icon {
   font-size: 1.5rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1835,7 +1835,7 @@ html.light .auth-card {
 .accordion-inner {
   overflow: hidden;
   padding: 0 8px;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.6;
 }
@@ -2031,14 +2031,14 @@ html.light .suggestion-item.active {
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
   font-size: 1.25rem;
-  color: var(--colorPrimary, #6c63ff);
+  color: var(--color-primary, #6c63ff);
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 .suggestion-item:hover .suggestion-icon,
 .suggestion-item.active .suggestion-icon {
-  background: var(--colorPrimary, #6c63ff);
+  background: var(--color-primary, #6c63ff);
   color: #fff;
 }
 
@@ -2067,7 +2067,7 @@ html.light .suggestion-icon {
 .suggestion-subtitle {
   font-family: var(--font-cairo), sans-serif;
   font-size: 0.8rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2235,7 +2235,7 @@ html.light .suggestion-icon {
 .tabs {
   display: inline-grid;
   grid-auto-flow: column;
-  background-color: var(--bgSecondary);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-glass);
   border-radius: var(--ra-8);
   padding: 4px 2px;

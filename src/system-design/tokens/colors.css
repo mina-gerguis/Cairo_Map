@@ -11,7 +11,7 @@
    ========================================================================== */
 :root {
   /* --- Brand & Accent Palettes --- */
-  --colorPrimary: #2727ff;
+  --color-primary: #2727ff;
   --color-secondary: #3b82f6;
   --colorAccent: #1a3eff;
   --colorMuted: #a1a1aa;
@@ -25,7 +25,7 @@
   /* --- Canvas & Background Layers --- */
   --bgMode: #000000;
   --bgPrimary: #000000;
-  --bgSecondary: #070707;
+  --bg-secondary: #070707;
   --bgThird: #121212;
   --bg-glass: rgba(0, 0, 0, 0.70);
   --bg-glass-active: rgba(39, 39, 42, 0.90);
@@ -39,7 +39,7 @@
 
   /* --- Typography Colors --- */
   --text-primary: #f4f4f5;
-  --textSecondary: #a1a1aa;
+  --text-secondary: #a1a1aa;
   --text-muted: #71717a;
   --text-muted: #71717a;
 
@@ -53,7 +53,7 @@
   --border-break: rgba(39, 39, 39, 0.66);
 
   /* --- Button Component Tokens --- */
-  --mainBtn: var(--colorPrimary);
+  --mainBtn: var(--color-primary);
   --mainBtnBorder: #2563eb;
   --secondBtn: rgb(48, 48, 48);
   --secondHoverBtn: rgb(78, 78, 78);
@@ -108,7 +108,7 @@ html.light {
   /* --- Canvas & Background Layers --- */
   --bgMode: #ffffff;
   --bgPrimary: #ffffff;
-  --bgSecondary: #f4f4f5;
+  --bg-secondary: #f4f4f5;
   --bgThird: #f8f8f8;
   --bg-glass: rgba(255, 255, 255, 0.80);
   --bg-glass-active: rgba(228, 228, 231, 0.90);
@@ -122,7 +122,7 @@ html.light {
 
   /* --- Typography Colors --- */
   --text-primary: #18181b;
-  --textSecondary: #52525b;
+  --text-secondary: #52525b;
   --text-muted: #7a7771;
   --text-muted: #7a7771;
 

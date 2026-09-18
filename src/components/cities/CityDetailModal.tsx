@@ -152,7 +152,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
         }
 
         .city-modal-textSecondary {
-          color: var(--textSecondary);
+          color: var(--text-secondary);
         }
 
         .city-modal-text-muted {
@@ -336,7 +336,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                 >
                   <div
                     style={{
-                      color: "var(--textSecondary)",
+                      color: "var(--text-secondary)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -371,7 +371,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                 >
                   <div
                     style={{
-                      color: "var(--textSecondary)",
+                      color: "var(--text-secondary)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -406,7 +406,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                 >
                   <div
                     style={{
-                      color: "var(--textSecondary)",
+                      color: "var(--text-secondary)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -441,7 +441,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                 >
                   <div
                     style={{
-                      color: "var(--textSecondary)",
+                      color: "var(--text-secondary)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

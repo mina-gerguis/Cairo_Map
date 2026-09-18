@@ -49,7 +49,7 @@
   font-family: var(--font-display);
   font-size: 2.2rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--colorPrimary) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 12px;
@@ -61,7 +61,7 @@
 
 .planner-subtitle {
   font-size: 1.05rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -173,7 +173,7 @@
 }
 
 .ios-textarea:focus {
-  border-color: var(--colorPrimary);
+  border-color: var(--color-primary);
   background: rgba(0, 0, 0, 0.4);
   box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.15);
 }
@@ -218,7 +218,7 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.72rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-top: 4px;
   width: 100%;
   box-sizing: border-box;
@@ -262,7 +262,7 @@
 
 .preset-pill.active {
   background: rgba(0, 111, 238, 0.15);
-  border-color: var(--colorPrimary);
+  border-color: var(--color-primary);
   box-shadow: 0 0 12px rgba(0, 111, 238, 0.2);
 }
 
@@ -296,7 +296,7 @@
   bottom: 8px;
   right: 9px;
   width: 3px;
-  background: linear-gradient(to bottom, var(--colorPrimary) 0%, var(--accent-secondary) 100%);
+  background: linear-gradient(to bottom, var(--color-primary) 0%, var(--accent-secondary) 100%);
   border-radius: var(--ra-full);
   opacity: 0.6;
 }
@@ -320,8 +320,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--bgSecondary);
-  border: 3px solid var(--colorPrimary);
+  background: var(--bg-secondary);
+  border: 3px solid var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -332,8 +332,8 @@
 }
 
 .timeline-item.active .timeline-badge {
-  background: var(--colorPrimary);
-  box-shadow: 0 0 10px var(--colorPrimary);
+  background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
   transform: scale(1.15);
 }
 
@@ -341,7 +341,7 @@
   font-family: var(--font-display);
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--colorPrimary);
+  color: var(--color-primary);
   margin-bottom: 6px;
   display: flex;
   align-items: center;
@@ -392,7 +392,7 @@
 
 .timeline-card-desc {
   font-size: 0.85rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   line-height: 1.5;
   margin-bottom: 10px;
   word-break: break-word;
@@ -411,7 +411,7 @@
   padding: 4px 8px;
   border-radius: var(--ra-8);
   background: rgba(131, 131, 131, 0.1);
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -423,7 +423,7 @@
 
 .meta-pill-accent {
   background: rgba(0, 111, 238, 0.12);
-  color: var(--colorPrimary);
+  color: var(--color-primary);
 }
 
 /* Transit Connection Indicator */
@@ -435,7 +435,7 @@
   align-items: center;
   gap: 10px;
   font-size: 0.8rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -525,7 +525,7 @@
 
 .budget-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--colorPrimary), var(--accent-secondary));
+  background: linear-gradient(90deg, var(--color-primary), var(--accent-secondary));
   border-radius: var(--ra-full);
   transition: width 0.4s ease;
 }
@@ -559,7 +559,7 @@
 
 .budget-item-title {
   font-size: 0.7rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
@@ -780,7 +780,7 @@
   border-radius: 20px;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--colorPrimary);
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -810,7 +810,7 @@
 .ai-quick-prompts-title {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -847,8 +847,8 @@
 
 .ai-prompt-chip:hover {
   background: rgba(0, 111, 238, 0.15);
-  border-color: var(--colorPrimary);
-  color: var(--colorPrimary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
   transform: translateY(-2px);
 }
 
@@ -877,7 +877,7 @@
   padding: 5px 10px;
   font-size: 0.74rem;
   font-weight: 600;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s ease;
@@ -891,8 +891,8 @@
 
 .ai-vibe-btn.active {
   background: rgba(0, 111, 238, 0.18);
-  border-color: var(--colorPrimary);
-  color: var(--colorPrimary);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
   font-weight: 700;
 }
 
@@ -941,7 +941,7 @@
   margin-top: 10px;
   padding-right: 18px;
   font-size: 0.8rem;
-  color: var(--textSecondary);
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -1062,7 +1062,7 @@
     height: 38px;
   }
 
-  .timeline-card-actions .closeBtn {
+  .timeline-card-actions .btn-close {
     padding: 8px 12px;
     background: rgba(239, 68, 68, 0.1);
     border-radius: var(--ra-8);

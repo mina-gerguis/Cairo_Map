@@ -2,7 +2,7 @@
     /* ==================== Global Colors ==================== */
     --bgMode: #000000;
 
-    --colorPrimary: #2727ff;
+    --color-primary: #2727ff;
     --color-secondary: #3b82f6;
     --colorAccent: #1a3eff;
     --colorMuted: #a1a1aa;
@@ -12,7 +12,7 @@
     --colorInfo: #0000ff;
     /* Background Global */
     --bgPrimary: #000000;
-    --bgSecondary: #070707;
+    --bg-secondary: #070707;
     --bgThird: #121212;
     --bg-glass: rgba(0, 0, 0, 0.7);
     --bgAlert: linear-gradient(135deg, rgba(117, 117, 117, 0.08) 0%, rgba(32, 32, 32, 0.08) 100%);
@@ -24,7 +24,7 @@
     --bgLinearAlert: var(--bg-linear-alert);
     /* Text Global */
     --text-primary: #f4f4f5;
-    --textSecondary: #a1a1aa;
+    --text-secondary: #a1a1aa;
     --text-muted: #71717a;
     /* Radius Global */
     --ra-4: 4px;
@@ -49,7 +49,7 @@
     --shadow-md: 0 2px 4px 0 rgba(0, 0, 0, 0.02), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
 
     /* Buttons */
-    --mainBtn: var(--colorPrimary);
+    --mainBtn: var(--color-primary);
     --mainBtnBorder: #2563eb;
     --secondBtn: rgb(48, 48, 48);
     --btn-cancel: rgba(157, 159, 161, 0.267);
@@ -107,7 +107,7 @@ html.light {
     /* Global Variables */
     --bgMode: #ffffff;
     --bgPrimary: #ffffff;
-    --bgSecondary: #f4f4f5;
+    --bg-secondary: #f4f4f5;
     --bgAlert: linear-gradient(135deg, rgba(85, 85, 85, 0.11) 0%, rgba(32, 32, 32, 0.205) 100%);
     --bg-glass: rgba(255, 255, 255, 0.8);
     --bgThird: #f8f8f8;
@@ -118,7 +118,7 @@ html.light {
         linear-gradient(180deg, #ffffff 0%, #fcfcfc 100%);
     --bgLinearAlert: var(--bg-linear-alert);
     --text-primary: #18181b;
-    --textSecondary: #52525b;
+    --text-secondary: #52525b;
     /* Buttons */
     --secondBtn: rgb(224, 224, 224);
     --accentBtn: #000000;
@@ -183,8 +183,8 @@ html.light {
 
 .btn-outline {
     background: var(--bg-glass-card);
-    border: 1.5px solid var(--colorPrimary);
-    color: var(--colorPrimary);
+    border: 1.5px solid var(--color-primary);
+    color: var(--color-primary);
 }
 
 .btn-outline:hover {
@@ -264,7 +264,7 @@ html.light {
     color: var(--bgPrimary);
 }
 
-.closeBtn {
+.btn-close {
     background: rgba(131, 131, 131, 0.055);
     border: 1px solid var(--border-glass);
     color: var(--text-primary);
@@ -278,7 +278,7 @@ html.light {
     transition: all 0.2s;
 }
 
-.closeBtn:hover {
+.btn-close:hover {
     background: var(--bgPrimary);
     color: var(--text-primary);
 }
@@ -306,7 +306,7 @@ html.light {
 .actionBtnEdit {
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.4);
-    color: var(--colorPrimary);
+    color: var(--color-primary);
 }
 
 .actionBtnEdit:hover {
@@ -376,7 +376,7 @@ html.light {
 }
 
 .input-fields:focus {
-    border-color: var(--colorPrimary);
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.15);
 }
 

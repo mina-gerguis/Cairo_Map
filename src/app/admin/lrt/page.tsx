@@ -336,7 +336,7 @@ function AdminLrtInner() {
     return (
       <div className={styles.adminShell} style={{ minHeight: "80vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         <div style={{ width: "50px", height: "50px", border: "5px solid rgba(255,255,255,0.05)", borderTopColor: "var(--color-secondary, #3b82f6)", borderRadius: "50%", animation: "spin 1s linear infinite", marginBottom: "20px" }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة القطار الكهربائي...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>جاري تحميل إدارة القطار الكهربائي...</p>
       </div>
     );
   }
@@ -444,7 +444,7 @@ function AdminLrtInner() {
         {/* Segmented Line Control */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)", backdropFilter: "blur(10px)", padding: "12px 20px", borderRadius: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--textSecondary)" }}>عرض خط سير الرحلة:</span>
+            <span style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-secondary)" }}>عرض خط سير الرحلة:</span>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {[
                 { id: "all", label: "جميع المحطات", color: "#818cf8" },
@@ -466,8 +466,8 @@ function AdminLrtInner() {
                     transition: "all 0.25s ease",
                     border: "1px solid",
                     borderColor: adminActiveLrtLine === opt.id ? opt.color : "var(--border-glass)",
-                    background: adminActiveLrtLine === opt.id ? `rgba(${opt.id === "trunk" ? "59, 130, 246" : opt.id === "capital" ? "139, 92, 246" : opt.id === "ramadan" ? "236, 72, 153" : "99, 102, 241"}, 0.15)` : "var(--bgSecondary)",
-                    color: adminActiveLrtLine === opt.id ? opt.color : "var(--textSecondary)"
+                    background: adminActiveLrtLine === opt.id ? `rgba(${opt.id === "trunk" ? "59, 130, 246" : opt.id === "capital" ? "139, 92, 246" : opt.id === "ramadan" ? "236, 72, 153" : "99, 102, 241"}, 0.15)` : "var(--bg-secondary)",
+                    color: adminActiveLrtLine === opt.id ? opt.color : "var(--text-secondary)"
                   }}
                 >
                   {opt.label}
@@ -479,7 +479,7 @@ function AdminLrtInner() {
 
         {/* Table View */}
         {filteredRows.length === 0 ? (
-          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
+          <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
             لا توجد أي محطات مطابقة لخط البحث الحالي.
           </div>
         ) : (
@@ -643,7 +643,7 @@ function AdminLrtInner() {
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x" />
               </button>

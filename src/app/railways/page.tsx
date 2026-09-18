@@ -716,7 +716,7 @@ ${reportDetails.trim()}`;
           animation: "spin 1s linear infinite",
           marginBottom: "24px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-sub)" }}>جاري التحقق من التفاصيل ...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-sub)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -751,7 +751,7 @@ ${reportDetails.trim()}`;
             }}>
               <img src="/images/icons2d/Cairo_train.png" alt="Cairo Train" loading="lazy" decoding="async" style={{ width: "35px", height: "35px", marginLeft: "10px" }} />
               سكك حديد مصر</h1>
-            <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
+            <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
               مواعيد وأسعار قطارات السفر بين المحافظات.
             </p>
           </div>
@@ -779,7 +779,7 @@ ${reportDetails.trim()}`;
               دليل سكك حديد مصر يتطلب أشتراك في الباقة الفضية
             </h2>
 
-            <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
+            <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
               تصفح مواعيد وأسعار قطارات السفر بين المحافظات المختلفة متاح حصرياً للمشتركين في الباقة الفضية أو الذهبية.
             </p>
 
@@ -800,7 +800,7 @@ ${reportDetails.trim()}`;
                 paddingRight: "16px",
                 margin: 0,
                 fontSize: "0.85rem",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 lineHeight: "1.6",
                 display: "flex",
                 flexDirection: "column",
@@ -977,25 +977,25 @@ ${reportDetails.trim()}`;
 
           {/* Details Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[0]?.name?.replace(" (رمسيس)", "")?.replace(" (محطة رمسيس)", "") || currentRoute?.from || "القاهرة"}
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>البداية</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>البداية</div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[currentRoute.stops.length - 1]?.name?.replace(" (محطة سيدي جابر / مصر)", "") || currentRoute?.to || "الوصول"}
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>النهاية</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>النهاية</div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.duration || "غير معددة"}
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>وقت السفر</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>وقت السفر</div>
             </div>
           </div>
 
@@ -1035,7 +1035,7 @@ ${reportDetails.trim()}`;
                         <span style={{
                           fontSize: "0.88rem",
                           fontWeight: isFirst || isLast ? "700" : "500",
-                          color: isUnderConstruction ? "#ef4444" : (isFirst || isLast ? "var(--text-primary)" : "var(--textSecondary)"),
+                          color: isUnderConstruction ? "#ef4444" : (isFirst || isLast ? "var(--text-primary)" : "var(--text-secondary)"),
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "8px"
@@ -1077,7 +1077,7 @@ ${reportDetails.trim()}`;
                   );
                 })
               ) : (
-                <div className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
+                <div className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
                   لا توجد محطات مضافة لهذا الخط بعد.
                 </div>
               )}
@@ -1143,7 +1143,7 @@ ${reportDetails.trim()}`;
             <i className="bx bxs-book-open" style={{ marginLeft: "8px", color: color, fontSize: "1.3rem", verticalAlign: "middle" }}></i>
             كيف يمكنني حجز التذاكر ؟
           </h2>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0" }}>
             يمكنك الحجز بسهولة عبر عدة طرق معتمدة رسمياً من الهيئة القومية لسكك حديد مصر لمنع التكدس أمام شبابيك التذاكر:
           </p>
 
@@ -1199,7 +1199,7 @@ ${reportDetails.trim()}`;
                   <h3 className="sub-title" style={{ margin: "0 0 6px 0", color: "var(--text-primary)", fontWeight: "700", fontSize: "0.92rem", display: "flex", alignItems: "center", gap: "6px" }}>
                     {item.title}
                   </h3>
-                  <p className="sub-title" style={{ margin: 0, fontSize: "0.8rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+                  <p className="sub-title" style={{ margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                     {item.desc}
                   </p>
                 </div>
@@ -1282,7 +1282,7 @@ ${reportDetails.trim()}`;
             <p style={{
               margin: 0,
               fontSize: "0.82rem",
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               lineHeight: "1.6"
             }}>
               هل لاحظت أي خطأ في المواعيد، الأسعار، أو محطات التوقف؟ شاركنا ملاحظتك لمساعدتنا في تدقيق وتحديث جدول الرحلات باستمرار.
@@ -1363,7 +1363,7 @@ ${reportDetails.trim()}`;
                     handleReportImageSelect(null);
                   }
                 }}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -1390,7 +1390,7 @@ ${reportDetails.trim()}`;
                   <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم استلام بلاغك بنجاح!
                   </h4>
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     شكراً لمساهمتك في تحسين وتدقيق مواعيد وبيانات قطارات سكك حديد مصر. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
                   </p>
                 </div>
@@ -1414,7 +1414,7 @@ ${reportDetails.trim()}`;
                   <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
                   </h5>
-                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
                   </p>
                   <button
@@ -1445,7 +1445,7 @@ ${reportDetails.trim()}`;
                   <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تسجيل الدخول مطلوب
                   </h5>
-                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي مشكلة في قطارات سكك حديد مصر ومتابعة حالته وكسب نقاط المساهمة.
                   </p>
                   <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -1568,7 +1568,7 @@ ${reportDetails.trim()}`;
                             width: "100%",
                             padding: "10px 36px 10px 36px",
                             borderRadius: "10px",
-                            background: "var(--bgSecondary)",
+                            background: "var(--bg-secondary)",
                             color: "var(--text-primary)",
                             border: reportSelectedStation ? `1px solid var(--text-primary)` : "1px solid var(--border-glass)",
                             fontSize: "0.9rem",
@@ -1580,7 +1580,7 @@ ${reportDetails.trim()}`;
                           right: "12px",
                           top: "50%",
                           transform: "translateY(-50%)",
-                          color: "var(--textSecondary)",
+                          color: "var(--text-secondary)",
                           pointerEvents: "none",
                           fontSize: "0.85rem",
                           display: "flex",
@@ -1613,7 +1613,7 @@ ${reportDetails.trim()}`;
                               alignItems: "center",
                               justifyContent: "center",
                               fontSize: "0.75rem",
-                              color: "var(--textSecondary)",
+                              color: "var(--text-secondary)",
                               cursor: "pointer",
                             }}
                           >
@@ -1629,7 +1629,7 @@ ${reportDetails.trim()}`;
                           top: "100%",
                           left: 0,
                           right: 0,
-                          background: "var(--bgSecondary)",
+                          background: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           borderRadius: "var(--radius-card)",
                           overflow: "hidden",
@@ -1640,7 +1640,7 @@ ${reportDetails.trim()}`;
                           padding: "4px"
                         }}>
                           {filteredReportStations.length === 0 ? (
-                            <div style={{ padding: "14px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                            <div style={{ padding: "14px", textAlign: "center", fontSize: "0.82rem", color: "var(--text-secondary)" }}>
                               <i className="bx bx-search" style={{ fontSize: "1.2rem", display: "block", marginBottom: "4px" }} />
                               لا توجد محطة مطابقة لبحثك "{reportStationSearchQuery}"
                             </div>
@@ -1676,7 +1676,7 @@ ${reportDetails.trim()}`;
                                   }}
                                 >
                                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                    <i className="bx bx-map-pin" style={{ color: isSelected ? "var(--color-secondary)" : "var(--textSecondary)", fontSize: "1rem" }} />
+                                    <i className="bx bx-map-pin" style={{ color: isSelected ? "var(--color-secondary)" : "var(--text-secondary)", fontSize: "1rem" }} />
                                     <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--color-secondary)" : "var(--text-primary)" }}>
                                       {st.name}
                                     </span>
@@ -1688,7 +1688,7 @@ ${reportDetails.trim()}`;
                                       padding: "2px 8px",
                                       borderRadius: "6px",
                                       background: "rgba(128, 128, 128, 0.1)",
-                                      color: "var(--textSecondary)",
+                                      color: "var(--text-secondary)",
                                       fontWeight: "bold",
                                       border: "1px solid var(--border-glass)"
                                     }}>
@@ -1719,7 +1719,7 @@ ${reportDetails.trim()}`;
                       lineHeight: "1.6"
                     }}>
                       <div><strong>الخط:</strong> {currentRoute.name}</div>
-                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
+                      <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "4px" }}>
                         من: {currentRoute.from} ← إلى: {currentRoute.to} • المدة: {currentRoute.duration}
                       </div>
                     </div>
@@ -1742,7 +1742,7 @@ ${reportDetails.trim()}`;
                             width: "100%",
                             padding: "9px 12px",
                             borderRadius: "var(--radius-card)",
-                            background: "var(--bgSecondary)",
+                            background: "var(--bg-secondary)",
                             color: "var(--text-primary)",
                             border: showProblemTypeDropdown ? `1px solid var(--text-primary)` : "1px solid var(--border-glass)",
                             display: "flex",
@@ -1759,13 +1759,13 @@ ${reportDetails.trim()}`;
                               <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                 {curOpt.title}
                               </div>
-                              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                 {curOpt.desc}
                               </div>
                             </div>
                           </div>
 
-                          <i className={showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"} style={{ fontSize: "1.25rem", color: "var(--textSecondary)", marginRight: "8px", flexShrink: 0 }} />
+                          <i className={showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"} style={{ fontSize: "1.25rem", color: "var(--text-secondary)", marginRight: "8px", flexShrink: 0 }} />
                         </button>
                       );
                     })()}
@@ -1778,7 +1778,7 @@ ${reportDetails.trim()}`;
                           top: "100%",
                           left: 0,
                           right: 0,
-                          background: "var(--bgSecondary)",
+                          background: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           borderRadius: "var(--radius-card)",
                           zIndex: 1200,
@@ -1852,7 +1852,7 @@ ${reportDetails.trim()}`;
                         minHeight: "100px",
                         padding: "12px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-body)",
@@ -1866,7 +1866,7 @@ ${reportDetails.trim()}`;
                   <div>
                     <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       <span>صورة توضيحية (اختياري):</span>
-                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
+                      <span style={{ fontSize: "0.74rem", color: "var(--text-secondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
                         JPG, PNG, WEBP (Max~5MB)
                       </span>
                     </label>
@@ -1942,7 +1942,7 @@ ${reportDetails.trim()}`;
                           <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
                             اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                           </div>
-                          <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
+                          <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)" }}>
                             أرسل صورة الخطأ إن وُجد لتوضيح المشكلة بدقة
                           </div>
                         </div>
@@ -1952,7 +1952,7 @@ ${reportDetails.trim()}`;
                         position: "relative",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         padding: "10px 12px",
                         display: "flex",
                         alignItems: "center",
@@ -1995,7 +1995,7 @@ ${reportDetails.trim()}`;
                           }}>
                             {reportImageFile?.name || "صورة توضيحية"}
                           </div>
-                          <div style={{ fontSize: "0.74rem", color: "var(--textSecondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <div style={{ fontSize: "0.74rem", color: "var(--text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                             <span>
                               {reportImageFile
                                 ? reportImageFile.size < 1024 * 1024

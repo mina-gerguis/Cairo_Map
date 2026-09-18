@@ -619,7 +619,7 @@ ${reportDetails.trim()}`;
           animation: "spin 1s linear infinite",
           margin: "0 auto 24px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-display)" }}>جاري التحقق من التفاصيل ...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-display)" }}>جاري التحقق من التفاصيل ...</p>
         <style dangerouslySetInnerHTML={{
           __html: `
           @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -676,7 +676,7 @@ ${reportDetails.trim()}`;
                 <img src="/images/icons2d/Cairo_lrt.png" alt="Cairo Lrt" loading="lazy" decoding="async" style={{ width: "35px", marginLeft: "10px" }} />
                 القطار الكهربائي
               </h1>
-              <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "10px auto", lineHeight: "1.6" }}>
+              <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "10px auto", lineHeight: "1.6" }}>
                 خريطة تفاعلية تفصيلية لشبكة القطار الكهربائي الخفيف الجديدة.
               </p>
             </div>
@@ -704,13 +704,13 @@ ${reportDetails.trim()}`;
                 دليل القطار الكهربائي يتطلب أشتراك في الباقة الفضية
               </h2>
 
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
                 تصفح الخريطة التفصيلية والمسارات الزمنية وحاسبة التذاكر لخط القطار الكهربائي LRT متاح للمشتركين بالباقة الفضية أو الذهبية.
               </p>
 
               {/* Perks list */}
               <div style={{
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "12px",
                 padding: "16px 20px",
@@ -719,7 +719,7 @@ ${reportDetails.trim()}`;
                 maxWidth: "440px"
               }}>
                 <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.92rem", marginBottom: "10px" }}>ميزات الباقة الفضية</div>
-                <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
+                <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
                   <li>✨ تصفح جميع محطات LRT (التفريعة الرئيسية وتفريعات العاصمة ورمضان)</li>
                   <li>✨ حساب أسعار التذاكر بناء على عدد المحطات تلقائياً</li>
                   <li>✨ مسارات تفصيلية ومواعيد الرحلات الرسمية</li>
@@ -771,8 +771,8 @@ ${reportDetails.trim()}`;
                   style={{
                     padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
-                    background: "var(--bgSecondary)",
-                    color: "var(--textSecondary)",
+                    background: "var(--bg-secondary)",
+                    color: "var(--text-secondary)",
                     textDecoration: "none",
                     fontWeight: "bold",
                     fontSize: "0.9rem",
@@ -802,7 +802,7 @@ ${reportDetails.trim()}`;
           animation: "spin 1s linear infinite",
           margin: "0 auto 20px"
         }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1rem" }}>جاري تحميل البيانات...</p>
+        <p style={{ color: "var(--text-secondary)", fontSize: "1rem" }}>جاري تحميل البيانات...</p>
       </div>
     );
   }
@@ -839,14 +839,14 @@ ${reportDetails.trim()}`;
             <img src="/images/icons2d/Cairo_lrt.png" alt="" loading="lazy" decoding="async" style={{ width: "40px", height: "40px", marginLeft: "10px", objectFit: "contain" }} />
             دليل القطار الكهربائي LRT
           </h1>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
             استكشف المحطات والاتجاهات والمعالم الهامة لخط القطار الكهربائي الخفيف.
           </p>
 
           {/* Badges indicators */}
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#06b6d4",
               borderRadius: "10px",
@@ -855,7 +855,7 @@ ${reportDetails.trim()}`;
               fontWeight: "700",
             }}>عدلي منصور - بدر</span>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#a855f7",
               borderRadius: "10px",
@@ -864,7 +864,7 @@ ${reportDetails.trim()}`;
               fontWeight: "700",
             }}>تفريعة العاصمة</span>
             <span style={{
-              background: "var(--bgSecondary)",
+              background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               color: "#10b981",
               borderRadius: "10px",
@@ -922,7 +922,7 @@ ${reportDetails.trim()}`;
           zIndex: 30,
         }}>
           <div style={{ position: "relative" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "8px" }}>
+            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "8px" }}>
               <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--color-secondary)" }}></i> ابحث في محطات القطار الكهربائي LRT
             </label>
             <input
@@ -964,7 +964,7 @@ ${reportDetails.trim()}`;
                   <div style={{
                     padding: "16px",
                     textAlign: "center",
-                    color: "var(--textSecondary)",
+                    color: "var(--text-secondary)",
                     fontSize: "0.9rem"
                   }}>
                     لم يتم العثور على محطات مطابقة
@@ -989,7 +989,7 @@ ${reportDetails.trim()}`;
                           transition: "background-color 0.2s ease",
                           borderBottom: index < searchResults.length - 1 ? "1px solid var(--border-glass)" : "none"
                         }}
-                        onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bgSecondary)"}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bg-secondary)"}
                         onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -1045,7 +1045,7 @@ ${reportDetails.trim()}`;
           <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
             {/* FROM STATION INPUT */}
             <div style={{ position: "relative", zIndex: showFromList ? 10 : 1 }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>
+              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
                 من محطة:
               </label>
               <div style={{ position: "relative" }}>
@@ -1070,7 +1070,7 @@ ${reportDetails.trim()}`;
               {showFromList && filteredFrom.length > 0 && (
                 <div style={{
                   position: "absolute", top: "100%", left: 0, right: 0,
-                  background: "var(--bgSecondary)", border: "1px solid var(--border-glass)",
+                  background: "var(--bg-secondary)", border: "1px solid var(--border-glass)",
                   borderRadius: "12px", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
                   boxShadow: "var(--shadow-lg)", marginTop: "6px"
                 }}>
@@ -1093,7 +1093,7 @@ ${reportDetails.trim()}`;
             {/* SWAP BUTTON */}
             <div style={{ display: "flex", justifyContent: "center", margin: "-8px 0" }}>
               <button onClick={swapStations} style={{
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "50%",
                 width: "40px",
@@ -1102,7 +1102,7 @@ ${reportDetails.trim()}`;
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "var(--textSecondary)",
+                color: "var(--text-secondary)",
                 fontSize: "1.2rem",
                 transition: "all 0.2s ease",
                 marginTop: "10px",
@@ -1114,8 +1114,8 @@ ${reportDetails.trim()}`;
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.transform = "rotate(0deg)";
-                  e.currentTarget.style.background = "var(--bgSecondary)";
-                  e.currentTarget.style.color = "var(--textSecondary)";
+                  e.currentTarget.style.background = "var(--bg-secondary)";
+                  e.currentTarget.style.color = "var(--text-secondary)";
                 }}
               >
                 ⇅
@@ -1124,7 +1124,7 @@ ${reportDetails.trim()}`;
 
             {/* TO STATION INPUT */}
             <div style={{ position: "relative", zIndex: showToList ? 10 : 1 }}>
-              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>
+              <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", display: "block", marginBottom: "6px" }}>
                 إلى محطة:
               </label>
               <div style={{ position: "relative" }}>
@@ -1149,7 +1149,7 @@ ${reportDetails.trim()}`;
               {showToList && filteredTo.length > 0 && (
                 <div style={{
                   position: "absolute", top: "100%", left: 0, right: 0,
-                  background: "var(--bgSecondary)", border: "1px solid var(--border-glass)",
+                  background: "var(--bg-secondary)", border: "1px solid var(--border-glass)",
                   borderRadius: "12px", overflow: "hidden", zIndex: 100, maxHeight: "220px", overflowY: "auto",
                   boxShadow: "var(--shadow-lg)", marginTop: "6px"
                 }}>
@@ -1201,13 +1201,13 @@ ${reportDetails.trim()}`;
 
             {/* Grid Summary Cards */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: "10px", marginBottom: "20px" }}>
-              <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
+              <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
                 <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--colorSuccess)" }}>{result.price} ج.م</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "2px" }}>سعر التذكرة</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>سعر التذكرة</div>
               </div>
-              <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
+              <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "12px", padding: "12px", textAlign: "center" }}>
                 <div style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--color-secondary)" }}>{result.estimatedTime} د</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "2px" }}>الوقت التقريبي</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "2px" }}>الوقت التقريبي</div>
               </div>
             </div>
 
@@ -1237,7 +1237,7 @@ ${reportDetails.trim()}`;
             {/* Active Trip Tracker Card */}
             {isTripActive && (
               <div style={{
-                background: "var(--bgSecondary)",
+                background: "var(--bg-secondary)",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "12px",
                 padding: "20px",
@@ -1269,7 +1269,7 @@ ${reportDetails.trim()}`;
                   </button>
                 </div>
 
-                <div style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "8px", color: "var(--textSecondary)" }}>
+                <div style={{ fontSize: "0.95rem", fontWeight: "600", marginBottom: "8px", color: "var(--text-secondary)" }}>
                   أنت الآن في محطة: <span style={{ color: "var(--text-primary)", fontSize: "1.1rem", fontWeight: "800" }}>{result.stations[currentStepIndex]}</span>
                   <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginRight: "8px" }}>
                     ({currentStepIndex + 1} من {result.stations.length})
@@ -1280,7 +1280,7 @@ ${reportDetails.trim()}`;
                   const remainingStops = result.stations.length - 1 - currentStepIndex;
                   const remainingTime = Math.max(0, remainingStops * 4);
                   return (
-                    <div style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "16px", color: "var(--textSecondary)" }}>
+                    <div style={{ fontSize: "0.9rem", fontWeight: "600", marginBottom: "16px", color: "var(--text-secondary)" }}>
                       ⏱️ الوقت المتبقي للوصول: <span style={{ color: "var(--color-secondary)", fontSize: "1rem", fontWeight: "800" }}>{remainingTime} دقيقة</span>
                     </div>
                   );
@@ -1314,7 +1314,7 @@ ${reportDetails.trim()}`;
                   }}>
                     <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🎉</div>
                     <h4 style={{ color: "var(--colorSuccess)", fontWeight: "800", margin: "0 0 6px" }}>حمد لله على السلامة!</h4>
-                    <p style={{ fontSize: "0.85rem", color: "var(--textSecondary)", margin: "0 0 12px" }}>لقد وصلت إلى وجهتك محطة <span style={{ color: "var(--color-secondary)", fontSize: "1rem", fontWeight: "800" }}>{result.stations[currentStepIndex]}</span>.</p>
+                    <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 12px" }}>لقد وصلت إلى وجهتك محطة <span style={{ color: "var(--color-secondary)", fontSize: "1rem", fontWeight: "800" }}>{result.stations[currentStepIndex]}</span>.</p>
                     <button
                       onClick={() => {
                         setIsTripActive(false);
@@ -1340,7 +1340,7 @@ ${reportDetails.trim()}`;
             )}
 
             {/* Station sequence timeline */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", background: "var(--bgSecondary)", padding: "14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center", background: "var(--bg-secondary)", padding: "14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
               {result.stations.map((s: string, idx: number) => {
                 const isFirst = idx === 0;
                 const isLast = idx === result.stations.length - 1;
@@ -1459,7 +1459,7 @@ ${reportDetails.trim()}`;
             marginBottom: "6px",
             textAlign: "center"
           }}>محطات القطار الكهربائي LRT</h2>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.9rem", textAlign: "center", marginBottom: "20px" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.9rem", textAlign: "center", marginBottom: "20px" }}>
             اختر المسار لاستعراض المحطات والمعالم المحيطة بها تفصيلياً.
           </p>
 
@@ -1492,7 +1492,7 @@ ${reportDetails.trim()}`;
                   onMouseEnter={e => { if (!active) e.currentTarget.style.background = "var(--hoverBtn)"; }}
                   onMouseLeave={e => { if (!active) e.currentTarget.style.background = "var(--bgPrimary)"; }}
                 >
-                  <div className="sub-title" style={{ color: active ? "var(--text-primary)" : "var(--textSecondary)", fontWeight: "700", fontSize: "0.8rem" }}>
+                  <div className="sub-title" style={{ color: active ? "var(--text-primary)" : "var(--text-secondary)", fontWeight: "700", fontSize: "0.8rem" }}>
                     {tab.label}
                   </div>
                 </button>
@@ -1512,7 +1512,7 @@ ${reportDetails.trim()}`;
               <h3 className="sub-title" style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "4px" }}>
                 {activeLine === "all" ? "جميع محطات القطار الكهربائي الخفيف" : activeLine === "trunk" ? "الجذع الرئيسي (عدلي منصور - بدر)" : activeLine === "capital" ? "تفريعة العاصمة الإدارية (بدر - الفنون والثقافة)" : "تفريعة العاشر من رمضان (بدر - مدينة المعرفة)"}
               </h3>
-              <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.82rem", margin: 0 }}>
+              <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.82rem", margin: 0 }}>
                 {activeLine === "all" && "تصفح شبكة القطار بالكامل بجميع تفريعاتها الشمالية والجنوبية"}
                 {activeLine === "trunk" && "محطات الجذع الرئيسي لربط القاهرة الكبرى بالمدن الجديدة وصولاً لـ بدر التبادلية"}
                 {activeLine === "capital" && "فرعة العاصمة الإدارية الجديدة لربط محطة بدر بمدينة الفنون والثقافة"}
@@ -1606,7 +1606,7 @@ ${reportDetails.trim()}`;
                             <span style={{
                               fontSize: "1.02rem",
                               fontWeight: "700",
-                              color: details?.status === "تحت الإنشاء" ? "var(--textSecondary)" : "var(--text-primary)",
+                              color: details?.status === "تحت الإنشاء" ? "var(--text-secondary)" : "var(--text-primary)",
                             }}>
                               {station.name}
                             </span>
@@ -1640,7 +1640,7 @@ ${reportDetails.trim()}`;
                                 تبادلية
                               </span>
                             )}
-                            <i className={`bx bx-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: "var(--textSecondary)", fontSize: "1.3rem" }}></i>
+                            <i className={`bx bx-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: "var(--text-secondary)", fontSize: "1.3rem" }}></i>
                           </div>
                         </div>
 
@@ -1665,8 +1665,8 @@ ${reportDetails.trim()}`;
                                   <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                                     {details.landmarks.map((landmark, idx) => (
                                       <span key={idx} style={{
-                                        background: "var(--bgSecondary)",
-                                        color: "var(--textSecondary)",
+                                        background: "var(--bg-secondary)",
+                                        color: "var(--text-secondary)",
                                         fontSize: "0.78rem",
                                         padding: "4px 10px",
                                         borderRadius: "6px",
@@ -1680,7 +1680,7 @@ ${reportDetails.trim()}`;
 
                                 {/* Connection Type */}
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: "14px", marginTop: "4px" }}>
-                                  <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+                                  <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>
                                     🔗 نوع المحطة: <strong style={{ color: "var(--text-primary)" }}>{details.type}</strong>
                                   </div>
                                 </div>
@@ -1749,27 +1749,27 @@ ${reportDetails.trim()}`;
         {/* Prices Legend Footer */}
         <div style={{
           padding: "12px 16px",
-          background: "var(--bgSecondary)",
+          background: "var(--bg-secondary)",
           border: "1px solid var(--border-glass)",
           borderRadius: "var(--radius-card)",
           fontSize: "0.78rem",
-          color: "var(--textSecondary)",
+          color: "var(--text-secondary)",
           lineHeight: "1.5",
           marginTop: "16px"
         }}>
           <i className="fa-regular fa-lightbulb" style={{ color: "var(--accent-warning)", marginLeft: "5px" }}></i>
           <strong>تسعير تذاكر القطار الكهربائي LRT المعتمد:</strong> <br />
           البيانات مبنية على الأسعار الرسمية لوزارة النقل
-          <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", marginTop: "8px", textAlign: "right", direction: "rtl" }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", marginTop: "8px", textAlign: "right", direction: "rtl" }}>
             • <strong style={{ color: "var(--colorSuccess)" }}>حتى 3 محطات:</strong> 10 جنيهات.
           </div>
-          <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
             • <strong style={{ color: "var(--colorSuccess)" }}>من 4 إلى 7 محطات:</strong> 15 جنيهاً.
           </div>
-          <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
             • <strong style={{ color: "var(--accent-warning)" }}>من 8 إلى 12 محطة:</strong> 20 جنيهاً.
           </div>
-          <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
+          <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", lineHeight: "1.5", textAlign: "right", direction: "rtl" }}>
             • <strong style={{ color: "var(--accent-danger)" }}>13 محطة فأكثر:</strong> 25 جنيهاً.
           </div>
         </div>
@@ -1827,7 +1827,7 @@ ${reportDetails.trim()}`;
                     handleReportImageSelect(null);
                   }
                 }}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x"></i>
               </button>
@@ -1854,7 +1854,7 @@ ${reportDetails.trim()}`;
                   <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم استلام بلاغك بنجاح!
                   </h4>
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     شكراً لمساهمتك في تحسين وتدقيق خدمة القطار الكهربائي LRT. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
                   </p>
                 </div>
@@ -1878,7 +1878,7 @@ ${reportDetails.trim()}`;
                   <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تم الوصول للحد الأقصى من البلاغات المعلقة
                   </h5>
-                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
                   </p>
                   <button
@@ -1909,7 +1909,7 @@ ${reportDetails.trim()}`;
                   <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
                     تسجيل الدخول مطلوب
                   </h5>
-                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                     يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي مشكلة في القطار الكهربائي LRT ومتابعة حالته وكسب نقاط المساهمة.
                   </p>
                   <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
@@ -1942,8 +1942,8 @@ ${reportDetails.trim()}`;
                           padding: "8px 4px",
                           borderRadius: "8px",
                           border: `1px solid ${reportTargetScope === "general" ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                          background: reportTargetScope === "general" ? "rgba(6, 182, 212, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "general" ? "var(--text-primary)" : "var(--textSecondary)",
+                          background: reportTargetScope === "general" ? "rgba(6, 182, 212, 0.12)" : "var(--bg-secondary)",
+                          color: reportTargetScope === "general" ? "var(--text-primary)" : "var(--text-secondary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1963,8 +1963,8 @@ ${reportDetails.trim()}`;
                           padding: "8px 4px",
                           borderRadius: "8px",
                           border: `1px solid ${reportTargetScope === "station" ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                          background: reportTargetScope === "station" ? "rgba(6, 182, 212, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "station" ? "var(--text-primary)" : "var(--textSecondary)",
+                          background: reportTargetScope === "station" ? "rgba(6, 182, 212, 0.12)" : "var(--bg-secondary)",
+                          color: reportTargetScope === "station" ? "var(--text-primary)" : "var(--text-secondary)",
                           fontWeight: "700",
                           fontSize: "0.8rem",
                           cursor: "pointer",
@@ -1987,8 +1987,8 @@ ${reportDetails.trim()}`;
                             padding: "8px 4px",
                             borderRadius: "8px",
                             border: `1px solid ${reportTargetScope === "route" ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                            background: reportTargetScope === "route" ? "rgba(6, 182, 212, 0.12)" : "var(--bgSecondary)",
-                            color: reportTargetScope === "route" ? "var(--text-primary)" : "var(--textSecondary)",
+                            background: reportTargetScope === "route" ? "rgba(6, 182, 212, 0.12)" : "var(--bg-secondary)",
+                            color: reportTargetScope === "route" ? "var(--text-primary)" : "var(--text-secondary)",
                             fontWeight: "700",
                             fontSize: "0.8rem",
                             cursor: "pointer",
@@ -2032,7 +2032,7 @@ ${reportDetails.trim()}`;
                             width: "100%",
                             padding: "10px 36px 10px 36px",
                             borderRadius: "10px",
-                            background: "var(--bgSecondary)",
+                            background: "var(--bg-secondary)",
                             color: "var(--text-primary)",
                             border: reportSelectedStation ? "1px solid var(--color-secondary)" : "1px solid var(--border-glass)",
                             fontFamily: "var(--font-cairo)",
@@ -2045,7 +2045,7 @@ ${reportDetails.trim()}`;
                           right: "12px",
                           top: "50%",
                           transform: "translateY(-50%)",
-                          color: "var(--textSecondary)",
+                          color: "var(--text-secondary)",
                           pointerEvents: "none",
                           fontSize: "0.85rem"
                         }}>
@@ -2075,7 +2075,7 @@ ${reportDetails.trim()}`;
                               alignItems: "center",
                               justifyContent: "center",
                               fontSize: "0.75rem",
-                              color: "var(--textSecondary)",
+                              color: "var(--text-secondary)",
                               cursor: "pointer",
                             }}
                           >
@@ -2091,7 +2091,7 @@ ${reportDetails.trim()}`;
                           top: "100%",
                           left: 0,
                           right: 0,
-                          background: "var(--bgSecondary)",
+                          background: "var(--bg-secondary)",
                           border: "1px solid var(--border-glass)",
                           borderRadius: "10px",
                           overflow: "hidden",
@@ -2103,7 +2103,7 @@ ${reportDetails.trim()}`;
                           fontFamily: "var(--font-cairo)"
                         }}>
                           {filteredReportStations.length === 0 ? (
-                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
+                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--text-secondary)" }}>
                               لا توجد محطة مطابقة لبحثك "{reportStationSearchQuery}"
                             </div>
                           ) : (
@@ -2151,7 +2151,7 @@ ${reportDetails.trim()}`;
                                       </span>
                                     ) : (
                                       details?.landmarks && details.landmarks.length > 0 && (
-                                        <span style={{ fontSize: "0.7rem", color: "var(--textSecondary)" }}>
+                                        <span style={{ fontSize: "0.7rem", color: "var(--text-secondary)" }}>
                                           📍 {details.landmarks.slice(0, 2).join("، ")}
                                         </span>
                                       )
@@ -2196,7 +2196,7 @@ ${reportDetails.trim()}`;
                     }}>
                       <div>📍 <strong>من:</strong> {selectedFrom} ← <strong>إلى:</strong> {selectedTo}</div>
                       {result && (
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
+                        <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "4px" }}>
                           السعر: {result.price} ج.م • المحطات: {result.count} • الوقت المقدر: {result.estimatedTime} د
                         </div>
                       )}
@@ -2216,7 +2216,7 @@ ${reportDetails.trim()}`;
                         width: "100%",
                         padding: "10px 14px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
@@ -2224,13 +2224,13 @@ ${reportDetails.trim()}`;
                         cursor: "pointer"
                       }}
                     >
-                      <option value="route_error" style={{ background: "var(--bgSecondary)" }}>خطأ في حساب مسار الرحلة أو زمن الوصول</option>
-                      <option value="price" style={{ background: "var(--bgSecondary)" }}>سعر التذكرة غير صحيح أو عدد المحطات غير دقيق</option>
-                      <option value="transfer" style={{ background: "var(--bgSecondary)" }}>خطأ في محطة التبديل (عدلي منصور أو بدر)</option>
-                      <option value="station_info" style={{ background: "var(--bgSecondary)" }}>اسم المحطة أو المعالم القريبة غير دقيقة</option>
-                      <option value="construction" style={{ background: "var(--bgSecondary)" }}>محطة مغلقة أو تغيرت حالة تشغيلها</option>
-                      <option value="app_bug" style={{ background: "var(--bgSecondary)" }}>مشكلة تقنية أو زر لا يستجيب في الصفحة</option>
-                      <option value="other" style={{ background: "var(--bgSecondary)" }}>ملاحظة أو مشكلة أخرى</option>
+                      <option value="route_error" style={{ background: "var(--bg-secondary)" }}>خطأ في حساب مسار الرحلة أو زمن الوصول</option>
+                      <option value="price" style={{ background: "var(--bg-secondary)" }}>سعر التذكرة غير صحيح أو عدد المحطات غير دقيق</option>
+                      <option value="transfer" style={{ background: "var(--bg-secondary)" }}>خطأ في محطة التبديل (عدلي منصور أو بدر)</option>
+                      <option value="station_info" style={{ background: "var(--bg-secondary)" }}>اسم المحطة أو المعالم القريبة غير دقيقة</option>
+                      <option value="construction" style={{ background: "var(--bg-secondary)" }}>محطة مغلقة أو تغيرت حالة تشغيلها</option>
+                      <option value="app_bug" style={{ background: "var(--bg-secondary)" }}>مشكلة تقنية أو زر لا يستجيب في الصفحة</option>
+                      <option value="other" style={{ background: "var(--bg-secondary)" }}>ملاحظة أو مشكلة أخرى</option>
                     </select>
                   </div>
 
@@ -2250,7 +2250,7 @@ ${reportDetails.trim()}`;
                         minHeight: "100px",
                         padding: "12px",
                         borderRadius: "10px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         color: "var(--text-primary)",
                         border: "1px solid var(--border-glass)",
                         fontFamily: "var(--font-cairo)",
@@ -2264,7 +2264,7 @@ ${reportDetails.trim()}`;
                   <div>
                     <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
                       <span>صورة توضيحية للمشكلة (اختياري):</span>
-                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal" }}>
+                      <span style={{ fontSize: "0.74rem", color: "var(--text-secondary)", fontWeight: "normal" }}>
                         JPG, PNG, WEBP (الحد الأقصى 5MB)
                       </span>
                     </label>
@@ -2340,7 +2340,7 @@ ${reportDetails.trim()}`;
                           <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
                             اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                           </div>
-                          <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
+                          <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)" }}>
                             لقطة شاشة للخطأ، أو صورة للمحطة لتوضيح المشكلة بدقة
                           </div>
                         </div>
@@ -2350,7 +2350,7 @@ ${reportDetails.trim()}`;
                         position: "relative",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
-                        background: "var(--bgSecondary)",
+                        background: "var(--bg-secondary)",
                         padding: "10px 12px",
                         display: "flex",
                         alignItems: "center",
@@ -2393,7 +2393,7 @@ ${reportDetails.trim()}`;
                           }}>
                             {reportImageFile?.name || "صورة توضيحية"}
                           </div>
-                          <div style={{ fontSize: "0.74rem", color: "var(--textSecondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <div style={{ fontSize: "0.74rem", color: "var(--text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
                             <span>
                               {reportImageFile
                                 ? reportImageFile.size < 1024 * 1024

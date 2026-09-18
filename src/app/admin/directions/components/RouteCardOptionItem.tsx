@@ -21,7 +21,7 @@ export function RouteCardOptionItem({ option }: RouteCardOptionItemProps) {
               <img
                 src={iconRes.src}
                 alt=""
-                style={{ width: "24px", height: "auto", objectFit: "contain" }}
+                style={{ width: "22px", height: "auto", objectFit: "contain" }}
               />
             ) : (
               <i className={iconRes.iconClass || "bx bx-bus"} />
@@ -31,11 +31,11 @@ export function RouteCardOptionItem({ option }: RouteCardOptionItemProps) {
         </div>
 
         <div style={{ display: "flex", gap: "8px" }}>
-          <span className={`${styles.badgePill} ${styles.badgeCost}`}>
+          <span className="tab">
             <i className="bx bx-wallet" />
             <span>{option.cost} ج.م</span>
           </span>
-          <span className={`${styles.badgePill} ${styles.badgeDuration}`}>
+          <span className="tab">
             <i className="bx bx-time-five" />
             <span>{option.duration}</span>
           </span>

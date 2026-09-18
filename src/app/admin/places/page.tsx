@@ -59,7 +59,7 @@ CATEGORIES_STRUCTURE.forEach(main => {
 
 function getCategoryColor(cat: string) {
   const mainCat = CATEGORIES_STRUCTURE.find(m => m.name === cat || m.subCategories.some(s => s.name === cat));
-  return mainCat?.color ?? "var(--colorPrimary, #6c63ff)";
+  return mainCat?.color ?? "var(--color-primary, #6c63ff)";
 }
 
 const CATEGORY_MAP: Record<string, string> = {};
@@ -2286,7 +2286,7 @@ export default function AdminDashboard() {
         <div>
           <h1 style={{ fontSize: "3rem", marginBottom: "20px" }}>🚫</h1>
           <h2 style={{ fontFamily: "var(--font-display)", color: "#ff3b30", marginBottom: "10px" }}>صلاحيات غير كافية</h2>
-          <p style={{ color: "var(--textSecondary)" }}>عذراً، هذه الصفحة مخصصة للمشرفين فقط.</p>
+          <p style={{ color: "var(--text-secondary)" }}>عذراً، هذه الصفحة مخصصة للمشرفين فقط.</p>
         </div>
         {/* ── نافذة إضافة تصنيف جديد وتحديد الأيقونة من Boxicons ── */}
         {showAddCategoryModal && (
@@ -2333,17 +2333,17 @@ export default function AdminDashboard() {
 
                   {/* Live Icon Preview */}
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", background: "rgba(108, 99, 255, 0.1)", padding: "12px 16px", borderRadius: "14px", border: "1px solid rgba(108, 99, 255, 0.2)", marginBottom: "14px" }}>
-                    <div style={{ width: "42px", height: "42px", borderRadius: "12px", background: "var(--colorPrimary)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "1.4rem" }}>
+                    <div style={{ width: "42px", height: "42px", borderRadius: "12px", background: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "1.4rem" }}>
                       <i className={newCatIcon}></i>
                     </div>
                     <div>
                       <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>الأيقونة المحددة:</div>
-                      <code style={{ fontSize: "0.8rem", color: "var(--colorPrimary)", direction: "ltr" }}>{newCatIcon}</code>
+                      <code style={{ fontSize: "0.8rem", color: "var(--color-primary)", direction: "ltr" }}>{newCatIcon}</code>
                     </div>
                   </div>
 
                   {/* Popular Presets Picker */}
-                  <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", marginBottom: "8px", fontWeight: "600" }}>أيقونات شائعة للاختيار السريع:</div>
+                  <div style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "8px", fontWeight: "600" }}>أيقونات شائعة للاختيار السريع:</div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: "8px", maxHeight: "180px", overflowY: "auto", padding: "6px", background: "rgba(108, 99, 255, 0.08)", borderRadius: "14px", border: "1px solid var(--border-glass)", marginBottom: "14px" }}>
                     {PRESET_BOXICONS.map((item) => (
                       <button
@@ -2356,7 +2356,7 @@ export default function AdminDashboard() {
                           gap: "6px",
                           padding: "8px 10px",
                           borderRadius: "10px",
-                          border: newCatIcon === item.icon ? "2px solid var(--colorPrimary)" : "1px solid var(--border-glass)",
+                          border: newCatIcon === item.icon ? "2px solid var(--color-primary)" : "1px solid var(--border-glass)",
                           background: newCatIcon === item.icon ? "rgba(108, 99, 255, 0.2)" : "rgba(255,255,255,0.03)",
                           color: "var(--text-primary)",
                           fontSize: "0.8rem",
@@ -2364,7 +2364,7 @@ export default function AdminDashboard() {
                           transition: "all 0.2s ease"
                         }}
                       >
-                        <i className={item.icon} style={{ fontSize: "1.1rem", color: "var(--colorPrimary)" }}></i>
+                        <i className={item.icon} style={{ fontSize: "1.1rem", color: "var(--color-primary)" }}></i>
                         <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{item.name}</span>
                       </button>
                     ))}
@@ -2458,8 +2458,8 @@ export default function AdminDashboard() {
             </summary>
             <div style={{ marginTop: "14px", display: "flex", flexDirection: "column", gap: "16px" }}>
               <div>
-                <h4 style={{ fontSize: "0.88rem", color: "var(--colorPrimary)", marginBottom: "8px", fontWeight: "700" }}>⏰ طرق إدخال مواعيد العمل المتغيرة في Excel:</h4>
-                <ul style={{ paddingRight: "20px", margin: 0, color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.6", backgroundColor: "var(--secondBtn)", padding: "6px 14px", borderRadius: "8px" }}>
+                <h4 style={{ fontSize: "0.88rem", color: "var(--color-primary)", marginBottom: "8px", fontWeight: "700" }}>⏰ طرق إدخال مواعيد العمل المتغيرة في Excel:</h4>
+                <ul style={{ paddingRight: "20px", margin: 0, color: "var(--text-secondary)", fontSize: "0.85rem", lineHeight: "1.6", backgroundColor: "var(--secondBtn)", padding: "6px 14px", borderRadius: "8px" }}>
                   <li style={{ paddingTop: "5px" }}><strong>خيار 1 (24/7):</strong> اكتب <code>24/7</code> في عمود <i>مواعيد العمل</i>.</li>
                   <li style={{ paddingTop: "5px" }}><strong>خيار 2 (مواعيد متغيرة لكل يوم في عمود واحد):</strong> اكتب <code>السبت - الأربعاء: 09:00 ص - 11:00 م | الخميس: 09:00 ص - 12:00 م | الجمعة: إجازة</code></li>
                   <li style={{ paddingTop: "5px" }}><strong>خيار 3 (أعمدة يومية مستقلة في الشيت):</strong> أضف أعمدة باسم <code>مواعيد الأحد</code>، <code>مواعيد الإثنين</code>، ... <code>مواعيد الجمعة</code> واكتب الوقت (مثال: <code>09:00 ص - 11:00 م</code> أو <code>إجازة</code>).</li>
@@ -2467,12 +2467,12 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <h4 style={{ fontSize: "0.88rem", color: "var(--colorPrimary)", marginBottom: "8px", fontWeight: "700" }}>📂 أسماء التصنيفات الفرعية المتاحة لكل قسم رئيسي:</h4>
+                <h4 style={{ fontSize: "0.88rem", color: "var(--color-primary)", marginBottom: "8px", fontWeight: "700" }}>📂 أسماء التصنيفات الفرعية المتاحة لكل قسم رئيسي:</h4>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px", fontSize: "0.85rem" }}>
                   {CATEGORIES_STRUCTURE.map(main => (
                     <div key={main.name} style={{ background: "var(--secondBtn)", padding: "10px 12px", borderRadius: "8px", border: "1px solid var(--borderPrimary)" }}>
-                      <div style={{ fontWeight: "700", color: "var(--colorPrimary)", marginBottom: "6px" }}>{main.emoji} {main.label}</div>
-                      <div style={{ color: "var(--textSecondary)", lineHeight: "1.5" }}>
+                      <div style={{ fontWeight: "700", color: "var(--color-primary)", marginBottom: "6px" }}>{main.emoji} {main.label}</div>
+                      <div style={{ color: "var(--text-secondary)", lineHeight: "1.5" }}>
                         {main.subCategories.map(s => s.label).join(" • ")}
                       </div>
                     </div>
@@ -2485,7 +2485,7 @@ export default function AdminDashboard() {
           <div style={{ border: "2px dashed rgba(52, 199, 89, 0.25)", borderRadius: "12px", padding: "30px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", background: "rgba(52, 199, 89, 0.02)", marginBottom: "20px", cursor: "pointer", transition: "all 0.2s" }}>
             <i className="bx bx-cloud-upload" style={{ fontSize: "3rem", color: "#34c759" }}></i>
             <span style={{ fontSize: "0.95rem", fontWeight: "600" }}>اختر ملف Excel أو اسحبه إلى هنا</span>
-            <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>يدعم الملفات بصيغة .xlsx, .xls, .csv</span>
+            <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>يدعم الملفات بصيغة .xlsx, .xls, .csv</span>
             <input
               id="excel-file-input"
               type="file"
@@ -2651,7 +2651,7 @@ export default function AdminDashboard() {
                     )}
                   </div>
                   {parsedPlacesSearch && (
-                    <span style={{ fontSize: "0.8rem", color: "var(--textSecondary)" }}>
+                    <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                       نتائج البحث: <strong>{visiblePlacesWithIdx.length}</strong> من {parsedPlaces.length}
                     </span>
                   )}
@@ -2662,7 +2662,7 @@ export default function AdminDashboard() {
                     <i className="bx bx-sync" style={{ fontSize: "1.4rem", flexShrink: 0 }}></i>
                     <div>
                       <strong>تحديث بيانات: تم العثور على {updatePlacesCount} مكان مسجل مسبقاً مع وجود بيانات معدلة.</strong>
-                      <div style={{ fontSize: "0.8rem", color: "var(--textSecondary)", marginTop: "2px" }}>
+                      <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "2px" }}>
                         سيتم تحديث هذه الأماكن تلقائياً في قاعدة البيانات (بما في ذلك مواعيد العمل، الهواتف، الصور، موقع الويب... إلخ) عند حفظ الأماكن بدلاً من اعتبارها مكررة.
                       </div>
                     </div>
@@ -2675,7 +2675,7 @@ export default function AdminDashboard() {
                       <i className="bx bx-error" style={{ fontSize: "1.3rem" }}></i>
                       <strong>تحذير: تم اكتشاف {duplicates.length} مكان مكرر دون أي تعديل في البيانات!</strong>
                     </div>
-                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--textSecondary)", lineHeight: "1.5" }}>
+                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                       تم العثور على أسطر مكررة داخل ملف الإكسل نفسه أو أنها متطابقة تماماً وبكافة تفاصيلها مع أماكن مسجلة مسبقاً بالموقع دون أي تغيير. يمكنك النقر على زر "حذف المتكرر" لتصفيتها تلقائياً.
                     </p>
                     <div>
@@ -2694,14 +2694,14 @@ export default function AdminDashboard() {
                 <div style={{ overflowX: "auto", borderRadius: "8px", border: "1px solid var(--border-color, rgba(255,255,255,0.1))", maxHeight: "600px", overflowY: "auto" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", textAlign: "right" }}>
                     <thead>
-                      <tr style={{ background: "var(--bgSecondary, rgba(255,255,255,0.05))", borderBottom: "1px solid var(--border-color, rgba(255,255,255,0.1))", position: "sticky", top: 0, zIndex: 2 }}>
+                      <tr style={{ background: "var(--bg-secondary, rgba(255,255,255,0.05))", borderBottom: "1px solid var(--border-color, rgba(255,255,255,0.1))", position: "sticky", top: 0, zIndex: 2 }}>
                         <th style={{ padding: "10px 10px", width: "40px", textAlign: "center" }}>
                           <input
                             type="checkbox"
                             checked={allVisibleSelected}
                             onChange={() => toggleSelectAllParsedPlaces(visibleIndices)}
                             title="تحديد الكل"
-                            style={{ cursor: "pointer", width: "16px", height: "16px", accentColor: "var(--colorPrimary, #6c63ff)" }}
+                            style={{ cursor: "pointer", width: "16px", height: "16px", accentColor: "var(--color-primary, #6c63ff)" }}
                           />
                         </th>
                         <th style={{ padding: "10px 14px" }}>الاسم</th>
@@ -2733,7 +2733,7 @@ export default function AdminDashboard() {
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={() => toggleSelectParsedPlace(originalIdx)}
-                                style={{ cursor: "pointer", width: "16px", height: "16px", accentColor: "var(--colorPrimary, #6c63ff)" }}
+                                style={{ cursor: "pointer", width: "16px", height: "16px", accentColor: "var(--color-primary, #6c63ff)" }}
                               />
                             </td>
                             <td style={{ padding: "8px 14px", fontWeight: "600", width: "70%" }}>
@@ -2749,7 +2749,7 @@ export default function AdminDashboard() {
                                     🔄 سيتم تحديث البيانات
                                   </span>
                                   {p.changedFields && p.changedFields.length > 0 && (
-                                    <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", marginTop: "2px", fontWeight: "normal" }}>
+                                    <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "2px", fontWeight: "normal" }}>
                                       تعديل في: <span style={{ color: "var(--text-primary)", fontWeight: "600" }}>{p.changedFields.join("، ")}</span>
                                     </div>
                                   )}
@@ -2766,7 +2766,7 @@ export default function AdminDashboard() {
                                 </span>
                               )}
                             </td>
-                            <td style={{ padding: "8px 14px", width: "5%" }}><span className="badge-ios" style={{ background: "rgba(108, 99, 255, 0.15)", color: "var(--colorPrimary)" }}>{p.category_label}</span></td>
+                            <td style={{ padding: "8px 14px", width: "5%" }}><span className="badge-ios" style={{ background: "rgba(108, 99, 255, 0.15)", color: "var(--color-primary)" }}>{p.category_label}</span></td>
                             <td style={{ padding: "8px 14px", width: "10%" }}>{p.city}</td>
                             <td style={{ padding: "8px 14px", width: "5%" }}>{p.phones.join(", ") || "-"}</td>
                             <td style={{ padding: "8px 14px", textAlign: "center", width: "5%" }}>
@@ -2898,7 +2898,7 @@ export default function AdminDashboard() {
                         }
                       }}
                       style={{
-                        background: isSelected ? "var(--colorPrimary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                        background: isSelected ? "var(--color-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
                         color: isSelected ? "#fff" : "var(--text-primary)",
                         border: isSelected ? "none" : "1px solid var(--border-glass)",
                         padding: "6px 14px",
@@ -2935,7 +2935,7 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
                       {existingTypes.length > 0 && (
                         <div>
-                          <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>اختر من الأنواع المضافة مسبقاً لهذا التصنيف:</label>
+                          <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اختر من الأنواع المضافة مسبقاً لهذا التصنيف:</label>
                           <select
                             className="input-fields help-select"
                             value={formData.place_type}
@@ -2964,7 +2964,7 @@ export default function AdminDashboard() {
                       {(existingTypes.length === 0 || !existingTypes.includes(formData.place_type)) && (
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                           <div>
-                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>اسم النوع الجديد:</label>
+                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اسم النوع الجديد:</label>
                             <input
                               className="input-fields"
                               placeholder="مثال: سوري، صيني، إيطالي..."
@@ -2973,7 +2973,7 @@ export default function AdminDashboard() {
                             />
                           </div>
                           <div>
-                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>أيقونة Boxicon مناسبة:</label>
+                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>أيقونة Boxicon مناسبة:</label>
                             <input
                               className="input-fields"
                               placeholder="مثال: bx bx-dish أو bx bx-coffee"
@@ -3117,7 +3117,7 @@ export default function AdminDashboard() {
 
                       {dayData.isWorking && (
                         <div style={{ display: "flex", gap: "10px", alignItems: "center", flex: 1, flexWrap: "wrap" }}>
-                          <span style={{ color: "var(--textSecondary)", fontSize: "0.9rem" }}>من</span>
+                          <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>من</span>
                           <select className="input-fields help-select" style={{ width: "90px", padding: "6px" }} value={dayData.openTime} onChange={e => { const newData = [...scheduleData]; newData[index].openTime = e.target.value; setScheduleData(newData); }}>
                             {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                           </select>
@@ -3125,7 +3125,7 @@ export default function AdminDashboard() {
                             <option value="ص">ص</option><option value="م">م</option>
                           </select>
 
-                          <span style={{ color: "var(--textSecondary)", fontSize: "0.9rem", margin: "0 5px" }}>حتي</span>
+                          <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem", margin: "0 5px" }}>حتي</span>
                           <select className="input-fields help-select" style={{ width: "90px", padding: "6px" }} value={dayData.closeTime} onChange={e => { const newData = [...scheduleData]; newData[index].closeTime = e.target.value; setScheduleData(newData); }}>
                             {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                           </select>
@@ -3185,7 +3185,7 @@ export default function AdminDashboard() {
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
               border: "1px solid var(--border-glass)",
-              color: "var(--textSecondary)"
+              color: "var(--text-secondary)"
             }}
           />
           <i className="bx bx-search" style={{
@@ -3237,7 +3237,7 @@ export default function AdminDashboard() {
             animation: "fadeIn 0.2s ease"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "var(--text-primary)", fontSize: "0.92rem", fontWeight: "600" }}>
-              <i className="bx bx-check-square" style={{ fontSize: "1.3rem", color: "var(--colorPrimary)" }} />
+              <i className="bx bx-check-square" style={{ fontSize: "1.3rem", color: "var(--color-primary)" }} />
               <span>تم تحديد <strong>{selectedPlaceIds.length}</strong> {selectedPlaceIds.length === 1 ? "مكان" : "أماكن"}</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", minWidth: 0 }}>
@@ -3298,7 +3298,7 @@ export default function AdminDashboard() {
                         width: "18px",
                         height: "18px",
                         cursor: "pointer",
-                        accentColor: "var(--colorPrimary, #6c63ff)"
+                        accentColor: "var(--color-primary, #6c63ff)"
                       }}
                       title={isAllSelected ? "إلغاء تحديد الكل" : "تحديد الكل"}
                     />
@@ -3335,7 +3335,7 @@ export default function AdminDashboard() {
                             width: "18px",
                             height: "18px",
                             cursor: "pointer",
-                            accentColor: "var(--colorPrimary, #6c63ff)"
+                            accentColor: "var(--color-primary, #6c63ff)"
                           }}
                           title="تحديد المكان"
                         />
@@ -3397,7 +3397,7 @@ export default function AdminDashboard() {
                             style={{
                               padding: "5px 5px",
                               borderRadius: "50%",
-                              background: "var(--bgSecondary)",
+                              background: "var(--bg-secondary)",
                             }}
                           >
                             <i className="bx bx-edit-alt" />
@@ -3409,7 +3409,7 @@ export default function AdminDashboard() {
                             style={{
                               padding: "5px 5px",
                               borderRadius: "50%",
-                              background: "var(--bgSecondary)",
+                              background: "var(--bg-secondary)",
                             }}
                           >
                             <i className="bx bx-buildings" />
@@ -3456,7 +3456,7 @@ export default function AdminDashboard() {
                 onClick={() => setEditingPlace(null)}
                 title="إغلاق"
                 aria-label="إغلاق النافذة"
-                className="closeBtn"
+                className="btn-close"
               >
                 <IoMdClose />
               </button>
@@ -3500,7 +3500,7 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
-                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--textSecondary)", display: "block" }}>
+                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-secondary)", display: "block" }}>
                   التصنيفات الفرعية التابعة للقسم الرئيسي (تحدد نوع ومكان ظهور المحتوى بالتفصيل)
                 </label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -3521,7 +3521,7 @@ export default function AdminDashboard() {
                           });
                         }}
                         style={{
-                          background: isSelected ? "var(--colorPrimary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
+                          background: isSelected ? "var(--color-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
                           color: isSelected ? "#fff" : "var(--text-primary)",
                           border: isSelected ? "none" : "1px solid var(--border-glass)",
                           padding: "6px 14px",
@@ -3559,7 +3559,7 @@ export default function AdminDashboard() {
                       <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "8px" }}>
                         {existingTypes.length > 0 && (
                           <div>
-                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>اختر من الأنواع المضافة مسبقاً لهذا التصنيف:</label>
+                            <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اختر من الأنواع المضافة مسبقاً لهذا التصنيف:</label>
                             <select
                               className="input-fields help-select"
                               value={editPlaceFormData.place_type}
@@ -3586,7 +3586,7 @@ export default function AdminDashboard() {
                         {(existingTypes.length === 0 || !existingTypes.includes(editPlaceFormData.place_type)) && (
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                             <div>
-                              <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>اسم النوع الجديد:</label>
+                              <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>اسم النوع الجديد:</label>
                               <input
                                 className="input-fields"
                                 placeholder="مثال: سوري، صيني، إيطالي..."
@@ -3595,7 +3595,7 @@ export default function AdminDashboard() {
                               />
                             </div>
                             <div>
-                              <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>أيقونة Boxicon مناسبة:</label>
+                              <label className="help-label" style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>أيقونة Boxicon مناسبة:</label>
                               <input
                                 className="input-fields"
                                 placeholder="مثال: bx bx-dish أو bx bx-coffee"
@@ -3612,7 +3612,7 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
-                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--textSecondary)", display: "block" }}>
+                <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-secondary)", display: "block" }}>
                   معلومات مفيدة (المميزات والخدمات المتاحة بالمكان)
                 </label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -3741,7 +3741,7 @@ export default function AdminDashboard() {
                         </select>
                         {dayData.isWorking && (
                           <div style={{ display: "flex", gap: "8px", alignItems: "center", flex: 1, flexWrap: "wrap" }}>
-                            <span style={{ color: "var(--textSecondary)", fontSize: "0.85rem" }}>من</span>
+                            <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>من</span>
                             <select className="input-fields help-select" style={{ width: "90px", padding: "6px" }} value={dayData.openTime} onChange={e => { const newData = [...editScheduleData]; newData[index].openTime = e.target.value; setEditScheduleData(newData); }}>
                               {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
@@ -3749,7 +3749,7 @@ export default function AdminDashboard() {
                               <option value="ص">ص</option><option value="م">م</option>
                             </select>
 
-                            <span style={{ color: "var(--textSecondary)", fontSize: "0.85rem", margin: "0 4px" }}>حتي</span>
+                            <span style={{ color: "var(--text-secondary)", fontSize: "0.85rem", margin: "0 4px" }}>حتي</span>
                             <select className="input-fields help-select" style={{ width: "90px", padding: "6px" }} value={dayData.closeTime} onChange={e => { const newData = [...editScheduleData]; newData[index].closeTime = e.target.value; setEditScheduleData(newData); }}>
                               {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
@@ -3800,13 +3800,13 @@ export default function AdminDashboard() {
 
             {/* Existing Branches List */}
             <div style={{ marginBottom: "30px" }}>
-              <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: "600", fontSize: "1rem", marginBottom: "14px", color: "var(--textSecondary)" }}>الفروع الحالية ({selectedPlaceForBranch.branches?.length || 0})</h3>
+              <h3 style={{ fontFamily: "var(--font-heading)", fontWeight: "600", fontSize: "1rem", marginBottom: "14px", color: "var(--text-secondary)" }}>الفروع الحالية ({selectedPlaceForBranch.branches?.length || 0})</h3>
               <div style={{ display: "grid", gap: "10px" }}>
                 {(selectedPlaceForBranch.branches || []).map(b => (
                   <div key={b.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", background: "rgba(120,120,120,0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                     <div>
                       <div style={{ fontWeight: "bold", fontSize: "1.05rem" }}>{b.name} {b.is_main ? <span style={{ color: "var(--colorSuccess)", fontSize: "0.8rem", marginLeft: "8px" }}>(فرع رئيسي)</span> : ""}</div>
-                      <div style={{ fontSize: "0.85rem", color: "var(--textSecondary)" }}>{b.city} / {b.governorate}</div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>{b.city} / {b.governorate}</div>
                     </div>
                     <div style={{ display: "flex", gap: "10px" }}>
                       <button
@@ -3901,7 +3901,7 @@ export default function AdminDashboard() {
 
                           {dayData.isWorking && (
                             <div style={{ display: "flex", gap: "10px", alignItems: "center", flex: 1, flexWrap: "wrap" }}>
-                              <span style={{ color: "var(--textSecondary)", fontSize: "0.9rem" }}>من</span>
+                              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>من</span>
                               <select className="input-fields help-select" style={{ width: "90px", padding: "6px" }} value={dayData.openTime} onChange={e => { const newData = [...branchScheduleData]; newData[index].openTime = e.target.value; setBranchScheduleData(newData); }}>
                                 {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                               </select>
@@ -3909,7 +3909,7 @@ export default function AdminDashboard() {
                                 <option value="ص">ص</option><option value="م">م</option>
                               </select>
 
-                              <span style={{ color: "var(--textSecondary)", fontSize: "0.9rem", margin: "0 5px" }}>حتي</span>
+                              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem", margin: "0 5px" }}>حتي</span>
                               <select className="input-fields help-select" style={{ width: "90px", padding: "6px" }} value={dayData.closeTime} onChange={e => { const newData = [...branchScheduleData]; newData[index].closeTime = e.target.value; setBranchScheduleData(newData); }}>
                                 {generateTimeOptions().map(t => <option key={t} value={t}>{t}</option>)}
                               </select>
@@ -3997,8 +3997,8 @@ export default function AdminDashboard() {
           isOpen={deleteAlertModal.isOpen}
           onClose={() => setDeleteAlertModal(null)}
           title={deleteAlertModal.title}
-          titleColor={deleteAlertModal.type === "success" ? "var(--colorPrimary)" : "var(--colorDanger)"}
-          borderColor={deleteAlertModal.type === "success" ? "var(--colorPrimary)" : "var(--colorDanger)"}
+          titleColor={deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--colorDanger)"}
+          borderColor={deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--colorDanger)"}
           iconNode={
             deleteAlertModal.type === "success" ? (
               <div
@@ -4037,12 +4037,12 @@ export default function AdminDashboard() {
           primaryButton={{
             label: "حسناً",
             onClick: () => setDeleteAlertModal(null),
-            bgColor: deleteAlertModal.type === "success" ? "var(--colorPrimary)" : "var(--colorDanger)",
+            bgColor: deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--colorDanger)",
             icon: <i className={deleteAlertModal.type === "success" ? "bx bx-check" : "bx bx-x"} style={{ fontSize: "1.2rem" }} />,
           }}
         >
           {deleteAlertModal.placeName && (
-            <p style={{ margin: "-8px 0 16px 0", color: "var(--colorPrimary)", fontSize: "1.05rem", fontWeight: "bold", textAlign: "center" }}>
+            <p style={{ margin: "-8px 0 16px 0", color: "var(--color-primary)", fontSize: "1.05rem", fontWeight: "bold", textAlign: "center" }}>
               « {deleteAlertModal.placeName} »
             </p>
           )}

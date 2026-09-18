@@ -5,26 +5,30 @@ export function AdminDirectionsSqlBanner() {
     <div
       style={{
         background: "rgba(245, 158, 11, 0.08)",
-        border: "1px solid rgba(245, 158, 11, 0.3)",
+        border: "1px solid rgba(245, 158, 11, 0.2)",
         borderRadius: "14px",
-        padding: "18px 22px"
+        padding: "16px 20px",
+        marginBottom: "24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "10px"
       }}
     >
-      <h4
+      <div
         style={{
-          color: "#fbbf24",
-          margin: "0 0 8px",
-          fontSize: "1.05rem",
-          fontWeight: "800",
+          color: "#f59e0b",
+          margin: 0,
+          fontSize: "1rem",
+          fontWeight: "bold",
           display: "flex",
           alignItems: "center",
           gap: "8px"
         }}
       >
-        <i className="bx bx-error" style={{ fontSize: "1.3rem" }} />
-        <span>⚠️ تنبيه: تحديث هيكل قاعدة بيانات المسارات (Supabase SQL)</span>
-      </h4>
-      <p style={{ fontSize: "0.86rem", color: "#cbd5e1", lineHeight: "1.6", margin: 0 }}>
+        <i className="bx bx-warning" style={{ fontSize: "1.3rem" }} />
+        <span>تنبيه: تحديث هيكل قاعدة بيانات المسارات (Supabase SQL)</span>
+      </div>
+      <p style={{ fontSize: "0.86rem", color: "var(--text-secondary)", lineHeight: "1.6", margin: 0 }}>
         لدعم وسائل المواصلات الجديدة (القطار الكهربائي LRT والأتوبيس الترددي BRT) وتفعيل تقسيم المراحل والروابط، يرجى تشغيل الأوامر التالية في <strong>Supabase SQL Editor</strong>:
       </p>
       <pre
@@ -34,11 +38,11 @@ export function AdminDirectionsSqlBanner() {
           borderRadius: "10px",
           fontSize: "0.82rem",
           overflowX: "auto",
-          marginTop: "10px",
+          marginTop: "6px",
           direction: "ltr",
           textAlign: "left",
           color: "#a7f3d0",
-          border: "1px solid rgba(255,255,255,0.06)",
+          border: "1px solid var(--border-glass)",
           lineHeight: "1.5"
         }}
       >

@@ -28,17 +28,17 @@ export function RouteOptionLegEditor({
       <div className={styles.legHeader}>
         <span className={styles.legTitle}>
           <i className="bx bx-current-location" />
-          <span>المرحلة رقم {legIndex + 1}</span>
+          <span className="sub-title" style={{ color: "var(--text-primary)" }}>المرحلة رقم {legIndex + 1}</span>
         </span>
         {totalLegs > 1 && (
           <button
             type="button"
-            className={styles.removeBtn}
+            className="actionBtn actionBtnDelete"
             onClick={onRemoveLeg}
+            title="حذف هذه المرحلة"
             style={{
-              padding: "3px 10px",
-              fontSize: "0.75rem",
-              fontFamily: "var(--font-heading)"
+              padding: "2px 8px",
+              fontSize: "0.75rem"
             }}
           >
             <i className="bx bx-trash" />
@@ -48,33 +48,42 @@ export function RouteOptionLegEditor({
 
       {/* Leg Title, Cost, Duration */}
       <div className={styles.formGrid}>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>عنوان المرحلة *</label>
+        <div>
+          <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>
+            عنوان المرحلة *
+          </label>
           <input
             type="text"
             required
-            className={styles.input}
+            className="input-fields"
+            style={{ width: "100%" }}
             placeholder="مثال: المرحلة الأولى: ميكروباص من الزقازيق للسلام"
             value={leg.title}
             onChange={(e) => onUpdateField("title", e.target.value)}
           />
         </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>أجرة هذه المرحلة (ج.م)</label>
+        <div>
+          <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>
+            أجرة هذه المرحلة (ج.م)
+          </label>
           <input
             type="number"
             min="0"
-            className={styles.input}
+            className="input-fields"
+            style={{ width: "100%" }}
             placeholder="20"
             value={leg.cost}
             onChange={(e) => onUpdateField("cost", e.target.value)}
           />
         </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>وقت هذه المرحلة</label>
+        <div>
+          <label className="help-label" style={{ display: "block", marginBottom: "6px" }}>
+            وقت هذه المرحلة
+          </label>
           <input
             type="text"
-            className={styles.input}
+            className="input-fields"
+            style={{ width: "100%" }}
             placeholder="50 دقيقة"
             value={leg.duration}
             onChange={(e) => onUpdateField("duration", e.target.value)}
@@ -83,21 +92,22 @@ export function RouteOptionLegEditor({
       </div>
 
       {/* Leg Sub-Steps */}
-      <div className={styles.inputGroup}>
+      <div>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "6px"
+            marginBottom: "8px"
           }}
         >
-          <label className={styles.label}>خطوات هذه المرحلة بالتفصيل *</label>
+          <label className="help-label" style={{ margin: 0 }}>
+            خطوات هذه المرحلة بالتفصيل *
+          </label>
           <button
             type="button"
-            className={styles.secondaryActionBtn}
+            className="btn btn-primary"
             onClick={onAddStep}
-            style={{ padding: "2px 10px", fontSize: "0.75rem" }}
           >
             + إضافة خطوة
           </button>
@@ -108,7 +118,7 @@ export function RouteOptionLegEditor({
             <div key={stepIdx} style={{ display: "flex", gap: "8px", alignItems: "center" }}>
               <span
                 style={{
-                  color: "#64748b",
+                  color: "var(--text-secondary)",
                   fontSize: "0.85rem",
                   fontWeight: "700",
                   minWidth: "22px",
@@ -120,7 +130,7 @@ export function RouteOptionLegEditor({
               <input
                 type="text"
                 required
-                className={styles.input}
+                className="input-fields"
                 placeholder="اكتب تفاصيل هذه الخطوة..."
                 value={stepVal}
                 onChange={(e) => onUpdateStep(stepIdx, e.target.value)}
@@ -128,10 +138,11 @@ export function RouteOptionLegEditor({
               />
               <button
                 type="button"
-                className={styles.removeBtn}
+                className="actionBtn actionBtnDelete"
                 onClick={() => onRemoveStep(stepIdx)}
-                style={{ padding: "8px 12px" }}
+                style={{ padding: "6px 10px" }}
                 disabled={(leg.steps || []).length === 1}
+                title="حذف الخطوة"
               >
                 <i className="bx bx-trash" />
               </button>

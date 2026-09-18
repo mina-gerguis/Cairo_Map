@@ -568,8 +568,8 @@ function AdminMetroInner() {
           onClick={() => { setActiveSection("stations"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
-            background: activeSection === "stations" ? "var(--colorPrimary)" : "transparent",
-            color: activeSection === "stations" ? "#fff" : "var(--textSecondary)",
+            background: activeSection === "stations" ? "var(--color-primary)" : "transparent",
+            color: activeSection === "stations" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             padding: "10px 20px"
           }}
@@ -581,8 +581,8 @@ function AdminMetroInner() {
           onClick={() => { setActiveSection("pricing"); setError(""); setSuccess(""); }}
           className="btn"
           style={{
-            background: activeSection === "pricing" ? "var(--colorPrimary)" : "transparent",
-            color: activeSection === "pricing" ? "#fff" : "var(--textSecondary)",
+            background: activeSection === "pricing" ? "var(--color-primary)" : "transparent",
+            color: activeSection === "pricing" ? "#fff" : "var(--text-secondary)",
             fontWeight: "bold",
             padding: "10px 20px"
           }}
@@ -646,7 +646,7 @@ function AdminMetroInner() {
           </div>
 
           {/* Filtering Controls */}
-          <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "20px", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
 
             {/* Search Input bar */}
             <div style={{ position: "relative", width: "100%" }}>
@@ -663,7 +663,7 @@ function AdminMetroInner() {
 
             {/* Line Selection Tabs */}
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)" }}>تصفية حسب الخط:</span>
+              <span style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)" }}>تصفية حسب الخط:</span>
               <div className="tabs" style={{ gap: "8px", overflowX: "auto", paddingBottom: "6px", scrollbarWidth: "none", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr));" }}>
                 {[
                   { id: "all", label: "جميع الخطوط", color: "#818cf8" },
@@ -703,7 +703,7 @@ function AdminMetroInner() {
 
           {/* Stations Table */}
           {filteredRows.length === 0 ? (
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", padding: "48px", borderRadius: "16px", textAlign: "center", color: "var(--text-muted, #94a3b8)" }}>
               لا توجد أي محطات مترو مطابقة للتصفية الحالية.
             </div>
           ) : (
@@ -837,7 +837,7 @@ function AdminMetroInner() {
             </p>
           </div>
 
-          <form onSubmit={handlePricesSubmit} style={{ background: "var(--bgSecondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "24px" }}>
+          <form onSubmit={handlePricesSubmit} style={{ background: "var(--bg-secondary)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "24px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "24px" }}>
               {ticketPrices.map((tier, idx) => (
                 <div key={tier.id || idx} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: "16px", alignItems: "end", borderBottom: idx !== ticketPrices.length - 1 ? "1px solid var(--border-glass)" : "none", paddingBottom: idx !== ticketPrices.length - 1 ? "16px" : "0" }}>
@@ -848,7 +848,7 @@ function AdminMetroInner() {
                       disabled
                       value={tier.tier_name || ""}
                       className="input-fields"
-                      style={{ width: "100%", background: "rgba(255,255,255,0.02)", color: "var(--textSecondary)" }}
+                      style={{ width: "100%", background: "rgba(255,255,255,0.02)", color: "var(--text-secondary)" }}
                     />
                   </div>
                   <div>
@@ -929,7 +929,7 @@ function AdminMetroInner() {
               </h3>
               <button
                 onClick={() => setShowStationModal(false)}
-                className="closeBtn"
+                className="btn-close"
               >
                 <i className="bx bx-x" />
               </button>

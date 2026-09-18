@@ -920,7 +920,7 @@ function HomeContent() {
                 style={{
                   background: selectedType === null ? "rgba(108, 99, 255, 0.15)" : "none",
                   border: "none",
-                  color: selectedType === null ? "var(--colorPrimary, #6c63ff)" : "var(--textSecondary)",
+                  color: selectedType === null ? "var(--color-primary, #6c63ff)" : "var(--text-secondary)",
                   padding: "6px 12px",
                   borderRadius: "8px",
                   cursor: "pointer",
@@ -942,7 +942,7 @@ function HomeContent() {
                     style={{
                       background: selectedType === tName ? "rgba(108, 99, 255, 0.15)" : "none",
                       border: "none",
-                      color: selectedType === tName ? "var(--colorPrimary, #6c63ff)" : "var(--textSecondary)",
+                      color: selectedType === tName ? "var(--color-primary, #6c63ff)" : "var(--text-secondary)",
                       padding: "6px 12px",
                       borderRadius: "8px",
                       cursor: "pointer",
@@ -965,7 +965,7 @@ function HomeContent() {
 
         {/* ── Filters Bar ── */}
         <div style={{ display: "flex", alignItems: "center", gap: "15px", flexWrap: "wrap", marginBottom: "32px", background: "rgba(255, 255, 255, 0.02)", borderRadius: "14px", padding: "12px 0px" }}>
-          <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>تصفية حسب:</span>
+          <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "700", fontFamily: "var(--font-cairo)" }}>تصفية حسب:</span>
 
           {/* Rating Filter Dropdown */}
           <div style={{ position: "relative" }}>
@@ -984,9 +984,9 @@ function HomeContent() {
                 outline: "none"
               }}
             >
-              <option value="0" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>الكل ⭐</option>
-              <option value="4" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>4.0+ ⭐</option>
-              <option value="4.5" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>4.5+ ⭐</option>
+              <option value="0" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>الكل ⭐</option>
+              <option value="4" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>4.0+ ⭐</option>
+              <option value="4.5" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>4.5+ ⭐</option>
             </select>
           </div>
 
@@ -1010,10 +1010,10 @@ function HomeContent() {
                 outline: "none"
               }}
             >
-              <option value="" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>كل الأجواء ✨</option>
-              <option value="quiet_place" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>🤫 أماكن هادئة</option>
-              <option value="kids_friendly" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>🧸 مخصصة للأطفال</option>
-              <option value="family_friendly" style={{ background: "var(--bgSecondary, #fff)", color: "var(--text-primary, #000)" }}>💑 عائلية وكابلز</option>
+              <option value="" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>كل الأجواء ✨</option>
+              <option value="quiet_place" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>🤫 أماكن هادئة</option>
+              <option value="kids_friendly" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>🧸 مخصصة للأطفال</option>
+              <option value="family_friendly" style={{ background: "var(--bg-secondary, #fff)", color: "var(--text-primary, #000)" }}>💑 عائلية وكابلز</option>
             </select>
           </div>
         </div>
@@ -1114,7 +1114,7 @@ function HomeContent() {
                 <div style={{ fontSize: "3.5rem", marginBottom: "16px" }}>
                   <Image src="/images/404.jpg" alt="Not Found" width={250} height={250} style={{ width: '250px', height: 'auto' }} />
                 </div>
-                <p style={{ color: "var(--textSecondary)", fontSize: "1.05rem" }}>لم يُعثر على نتائج — جرّب كلمة بحث أخرى</p>
+                <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem" }}>لم يُعثر على نتائج — جرّب كلمة بحث أخرى</p>
               </div>
             )}
           </>
@@ -1176,7 +1176,7 @@ function HomeContent() {
               {/* Right: Close X */}
               <button
                 onClick={() => { setSelectedPlace(null); setSelectedBranchId(null); }}
-                className="closeBtn"
+                className="btn-close"
                 title="إغلاق"
               >
                 <IoMdClose />
@@ -1208,7 +1208,7 @@ function HomeContent() {
                         {selectedPlace.name}
                       </h2>
                       {selectedPlace.shortDescription && (
-                        <p style={{ fontSize: ".7rem", color: "var(--textSecondary)", fontWeight: "500", margin: "0 0 10px" }}>
+                        <p style={{ fontSize: ".7rem", color: "var(--text-secondary)", fontWeight: "500", margin: "0 0 10px" }}>
                           {selectedPlace.shortDescription}
                         </p>
                       )}
@@ -1314,7 +1314,7 @@ function HomeContent() {
                     <div style={{ display: "flex", justifyContent: "space-evenly", alignItems: "center", padding: "10px", marginBottom: "10px" }}>
                       {/* Hours */}
                       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-                        <span style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}>حالة المكان</span>
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>حالة المكان</span>
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                           {displayBranch.workingHours ? (
                             isCurrentlyOpen(displayBranch.workingHours) ? (
@@ -1337,7 +1337,7 @@ function HomeContent() {
                           }}
                           style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", cursor: "pointer" }}
                         >
-                          <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }}> التقييمات والآراء
+                          <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}> التقييمات والآراء
                             <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}> ({selectedPlace.reviewsCount || 0}) </span>
                           </div>
                           <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
@@ -1350,7 +1350,7 @@ function HomeContent() {
                     {/* Branch Selector Chips */}
                     {selectedPlace.branches && selectedPlace.branches.length > 1 && (
                       <div style={{ marginBottom: "24px", paddingTop: "20px", borderTop: "1px solid var(--border-glass)" }}>
-                        <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--textSecondary)", fontWeight: "bold" }}>الفروع</h4>
+                        <h4 style={{ fontSize: "1rem", marginBottom: "12px", color: "var(--text-secondary)", fontWeight: "bold" }}>الفروع</h4>
                         <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", msOverflowStyle: "none", scrollbarWidth: "none" }} className="hide-scrollbar">
                           {selectedPlace.branches.map(b => {
                             const isSelected = b.id === displayBranch.id;
@@ -1399,7 +1399,7 @@ function HomeContent() {
                     {selectedPlace.description && (
                       <div style={{ background: "rgba(120, 120, 120, 0.03)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", marginBottom: "24px" }}>
                         <h2 style={{ fontSize: "1.05rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>نبذة عن المكان</h2>
-                        <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.8", margin: 0 }}>
+                        <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.8", margin: 0 }}>
                           {selectedPlace.description}
                         </p>
                       </div>
@@ -1463,7 +1463,7 @@ function HomeContent() {
                         {/* Sub-categories Badges inside Good to Know */}
                         {selectedPlace.subCategories && selectedPlace.subCategories.length > 0 && (
                           <div style={{ borderTop: "1px solid rgba(120, 120, 120, 0.1)", paddingTop: "12px", marginTop: "4px" }}>
-                            <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>التصنيفات الفرعية:</span>
+                            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>التصنيفات الفرعية:</span>
                             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                               {selectedPlace.subCategories.map((subCatKey) => (
                                 <span
@@ -1492,14 +1492,14 @@ function HomeContent() {
                         {/* Services section inside Good to Know */}
                         {((displayBranch as any)?.services || (selectedPlace as any)?.services) && ((displayBranch as any)?.services || (selectedPlace as any)?.services).length > 0 && (
                           <div style={{ borderTop: "1px solid rgba(120, 120, 120, 0.1)", paddingTop: "12px", marginTop: "12px" }}>
-                            <span style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>الخدمات المتاحة:</span>
+                            <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "600" }}>الخدمات المتاحة:</span>
                             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                               {((displayBranch as any)?.services || (selectedPlace as any)?.services).map((serviceName: string) => (
                                 <span
                                   key={serviceName}
                                   style={{
                                     background: "rgba(0, 111, 238, 0.08)",
-                                    color: "var(--colorPrimary)",
+                                    color: "var(--color-primary)",
                                     border: "1px solid rgba(0, 111, 238, 0.2)",
                                     padding: "4px 12px",
                                     borderRadius: "16px",
@@ -1527,7 +1527,7 @@ function HomeContent() {
                         {/* Phone Row */}
                         {displayBranch.phones && displayBranch.phones.length > 0 && (
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
-                            <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>الهاتف</span>
+                            <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>الهاتف</span>
                             <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
                               {displayBranch.phones.map((p: string, i: number) => (
                                 <a key={i} href={`tel:${p}`} style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold" }}>{p}</a>
@@ -1538,7 +1538,7 @@ function HomeContent() {
 
                         {/* Website Row */}
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", borderBottom: "1px solid rgba(120, 120, 120, 0.1)" }}>
-                          <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>الموقع الإلكتروني</span>
+                          <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>الموقع الإلكتروني</span>
                           {(displayBranch as any).website_url || (selectedPlace as any).website_url ? (
                             <a href={(displayBranch as any).website_url || (selectedPlace as any).website_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.92rem", color: "#007aff", textDecoration: "none", fontWeight: "bold", maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", direction: "ltr" }}>
                               {(displayBranch as any).website_url || (selectedPlace as any).website_url}
@@ -1550,7 +1550,7 @@ function HomeContent() {
 
                         {/* Address Row */}
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "14px 16px" }}>
-                          <span style={{ fontSize: "0.9rem", color: "var(--textSecondary)" }}>العنوان</span>
+                          <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)" }}>العنوان</span>
                           <div style={{ textAlign: "left", fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: "600", maxWidth: "220px", display: "flex", flexDirection: "column", gap: "2px", alignItems: "flex-end" }}>
                             <span>{displayBranch.fullAddress}</span>
                             <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{displayBranch.city}، {displayBranch.governorate}</span>
@@ -1566,7 +1566,7 @@ function HomeContent() {
                         <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px" }}>
                           {(() => {
                             const parsed = parseWorkingHours(displayBranch.workingHours);
-                            if (!parsed) return <div style={{ color: "var(--textSecondary)" }}>{displayBranch.workingHours}</div>;
+                            if (!parsed) return <div style={{ color: "var(--text-secondary)" }}>{displayBranch.workingHours}</div>;
 
                             if (parsed.type === "24/7") {
                               return <div style={{ color: "var(--colorSuccess)", fontWeight: "bold", padding: "0px", textAlign: "center" }}>مفتوح طول أيام الأسبوع 24 ساعة</div>;
@@ -1588,7 +1588,7 @@ function HomeContent() {
                                           border: isToday ? "1px solid rgba(47, 128, 237, 0.3)" : "1px solid transparent"
                                         }}
                                       >
-                                        <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--textSecondary)" }}>
+                                        <div style={{ fontWeight: isToday ? "bold" : "normal", color: isToday ? "var(--text-primary)" : "var(--text-secondary)" }}>
                                           {day.day} {isToday && <span style={{ fontSize: "0.75rem", color: "var(--color-secondary)", marginRight: "6px" }}>(اليوم)</span>}
                                         </div>
                                         <div style={{ fontWeight: "600", color: day.isWorking ? "var(--text-primary)" : "#ff3b30", fontSize: "0.95rem" }}>
@@ -1852,7 +1852,7 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <React.Suspense fallback={<div style={{ padding: "40px", textAlign: "center", color: "var(--textSecondary)" }}>جاري التحميل...</div>}>
+    <React.Suspense fallback={<div style={{ padding: "40px", textAlign: "center", color: "var(--text-secondary)" }}>جاري التحميل...</div>}>
       <HomeContent />
     </React.Suspense>
   );
@@ -1970,7 +1970,7 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
             {favoriteIds.has(place.id.toString()) ? (
               <i className="bx bxs-heart" style={{ color: "#ff3b30", fontSize: "1.2rem" }}></i>
             ) : (
-              <i className="bx bx-heart" style={{ color: "var(--textSecondary)", fontSize: "1.2rem" }}></i>
+              <i className="bx bx-heart" style={{ color: "var(--text-secondary)", fontSize: "1.2rem" }}></i>
             )}
           </button>
         )}
@@ -1997,18 +1997,18 @@ function PlaceCardContent({ place, getCategoryColor, showRating, toggleFavorite,
           </div>
         )}
         {place.shortDescription && (
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", marginBottom: "6px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginBottom: "6px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {place.shortDescription}
           </p>
         )}
-        <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginBottom: "2px" }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginBottom: "2px" }}>
           <span><FaMapPin /></span> {place.city} / {place.governorate}
         </p>
         <p style={{ color: "var(--text-muted)", fontSize: "0.76rem", opacity: 0.7, margin: "0 0 4px", display: "flex", alignItems: "center", gap: "5px" }}>
           {/* <span>🔑</span> كود المكان: #{place.id} */}
         </p>
         {/* {place.workingHours && (
-          <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "5px", marginTop: "4px" }}>
             <span>🕐</span> {getTodayWorkingHoursText(place.workingHours)}
           </p>
         )} */}

@@ -25,7 +25,7 @@ export default function DirectionsLoading() {
           marginBottom: "24px"
         }}
       />
-      <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-sub)" }}>
+      <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem", fontFamily: "var(--font-sub)" }}>
         جاري التحقق من التفاصيل ...
       </p>
       <style

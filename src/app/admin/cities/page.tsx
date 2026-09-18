@@ -649,7 +649,7 @@ export default function AdminCitiesPage() {
               borderRadius: "12px",
               background: "rgba(255,255,255,0.03)",
               border: "1px solid var(--border-glass)",
-              color: "var(--textSecondary)"
+              color: "var(--text-secondary)"
             }}
           />
           <i className="bx bx-search" style={{
@@ -817,7 +817,7 @@ export default function AdminCitiesPage() {
         >
           <div
             style={{
-              backgroundColor: "var(--bgSecondary)",
+              backgroundColor: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "var(--ra-14)",
               width: "100%",
@@ -868,7 +868,7 @@ export default function AdminCitiesPage() {
                 </button>
                 <button
                   onClick={() => setSelectedCityForLandmarks(null)}
-                  className="closeBtn"
+                  className="btn-close"
                 >
                   <i className="bx bx-x"></i>
                 </button>
@@ -1008,7 +1008,7 @@ export default function AdminCitiesPage() {
 
             <form onSubmit={handleSaveCity} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   اسم المدينة *
                 </label>
                 <input
@@ -1022,7 +1022,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   الـ Slug (رابط مختصر بالإنجليزية)
                 </label>
                 <input
@@ -1035,7 +1035,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   رابط صورة الغلاف (Cover Image URL) *
                 </label>
                 <input
@@ -1050,7 +1050,7 @@ export default function AdminCitiesPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                     عدد السكان (السكان)
                   </label>
                   <input
@@ -1062,7 +1062,7 @@ export default function AdminCitiesPage() {
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                     المساحة (المساحة)
                   </label>
                   <input
@@ -1077,7 +1077,7 @@ export default function AdminCitiesPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                     الكثافة السكانية (الكثافة)
                   </label>
                   <input
@@ -1089,7 +1089,7 @@ export default function AdminCitiesPage() {
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                     درجة الحرارة الحالية
                   </label>
                   <input
@@ -1103,7 +1103,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   نبذة عن المدينة (الوصف التعريفى)
                 </label>
                 <textarea
@@ -1170,7 +1170,7 @@ export default function AdminCitiesPage() {
 
             <form onSubmit={handleSaveLandmark} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   اسم المكان / المعلم السياحي *
                 </label>
                 <input
@@ -1185,7 +1185,7 @@ export default function AdminCitiesPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                 <div>
-                  <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                  <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                     نوع المكان (مثلاً: معلم سياحي، متحف، حديقة)
                   </label>
                   <input
@@ -1211,7 +1211,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   رابط صورة الغلاف للمعلم *
                 </label>
                 <input
@@ -1225,7 +1225,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   وصف المكان
                 </label>
                 <textarea
@@ -1238,7 +1238,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "8px", fontWeight: "700" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "8px", fontWeight: "700" }}>
                   🚇 المحطات القريبة والمسافة بينها وبين المكان
                 </label>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "10px" }}>
@@ -1337,7 +1337,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   الأنشطة وماذا تفعل هناك ("واقدر اعمل اي في المكان ده" - اكتب كل نشاط في سطر)
                 </label>
                 <textarea
@@ -1350,7 +1350,7 @@ export default function AdminCitiesPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.85rem", color: "var(--textSecondary)", display: "block", marginBottom: "4px" }}>
+                <label style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                   ألبوم صور المكان (روابط إضافية، اكتب كل رابط في سطر)
                 </label>
                 <textarea

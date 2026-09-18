@@ -136,7 +136,7 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
         borderRadius: "24px",
         padding: "24px",
         border: "1px solid var(--border-glass)",
-        background: "var(--bgSecondary)",
+        background: "var(--bg-secondary)",
         boxShadow: "0 24px 60px rgba(0,0,0,0.4)"
       }}>
 
@@ -180,7 +180,7 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
             </h4>
             <p style={{
               fontSize: "0.85rem",
-              color: "var(--textSecondary)",
+              color: "var(--text-secondary)",
               lineHeight: "1.6",
               marginBottom: "24px",
               fontFamily: "var(--font-cairo)",
@@ -218,7 +218,7 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
           </div>
         ) : (
           <div>
-            <p style={{ fontSize: "0.85rem", color: "var(--textSecondary)", margin: "0 0 16px", lineHeight: "1.4" }}>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 16px", lineHeight: "1.4" }}>
               اكتب ملاحظة خاصة بك حول <strong>{placeName}</strong> (مثل: جرب طبق السوشي الجديد، أو اسأل عن العرض الخاص). لن يراها أحد غيرك.
             </p>
 

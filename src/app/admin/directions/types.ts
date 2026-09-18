@@ -2,6 +2,7 @@ export type TransitVehicleType =
   | "microbus"
   | "bus"
   | "car"
+  | "taxi"
   | "train"
   | "monorail"
   | "lrt"
@@ -9,7 +10,8 @@ export type TransitVehicleType =
   | "metro"
   | "plane"
   | "ship"
-  | "multi";
+  | "multi"
+  | "walk";
 
 export interface RouteLeg {
   title: string;

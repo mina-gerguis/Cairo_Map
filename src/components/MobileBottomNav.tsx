@@ -740,7 +740,7 @@ export default function MobileBottomNav() {
                             />
                             <div>
                               <div style={{ fontWeight: "700", fontSize: "0.9rem", fontFamily: "var(--font-body)" }}>{service.label}</div>
-                              <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", fontFamily: "var(--font-body)" }}>{service.subtitle}</div>
+                              <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontFamily: "var(--font-body)" }}>{service.subtitle}</div>
                             </div>
                           </div>
 
@@ -816,12 +816,12 @@ export default function MobileBottomNav() {
                                   </span>
                                 )}
                               </div>
-                              <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)", fontFamily: "var(--font-body)" }}>
+                              <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)", fontFamily: "var(--font-body)" }}>
                                 {place.categoryLabel} {place.briefLocation ? `• ${place.briefLocation}` : ""}
                               </div>
                             </div>
                           </div>
-                          <IoChevronBack style={{ fontSize: "0.75rem", color: "var(--textSecondary)" }} />
+                          <IoChevronBack style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }} />
                         </Link>
                       ))}
                     </div>
@@ -887,7 +887,7 @@ export default function MobileBottomNav() {
                       <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px", fontFamily: "var(--font-display)" }}>
                         عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                       </h4>
-                      <p style={{ fontSize: "0.85rem", color: "var(--textSecondary)", maxWidth: "320px", margin: "0 auto 16px auto", lineHeight: "1.6", fontFamily: "var(--font-body)" }}>
+                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", maxWidth: "320px", margin: "0 auto 16px auto", lineHeight: "1.6", fontFamily: "var(--font-body)" }}>
                         لم نجد أي مكان أو خدمة بهذا الاسم في الدليل حالياً. يمكنك مسح البحث أو تجربة الاقتراحات التفاعلية التالية:
                       </p>
 
@@ -899,7 +899,7 @@ export default function MobileBottomNav() {
                           style={{
                             padding: "10px 16px",
                             borderRadius: "10px",
-                            backgroundColor: "var(--bgSecondary)",
+                            backgroundColor: "var(--bg-secondary)",
                             border: "1px solid var(--border-glass)",
                             color: "var(--text-primary)",
                             fontWeight: "700",
@@ -942,7 +942,7 @@ export default function MobileBottomNav() {
                           style={{
                             padding: "10px 16px",
                             borderRadius: "10px",
-                            backgroundColor: "var(--bgSecondary)",
+                            backgroundColor: "var(--bg-secondary)",
                             border: "1px solid var(--color-secondary)",
                             color: "var(--color-secondary)",
                             fontWeight: "700",
@@ -961,7 +961,7 @@ export default function MobileBottomNav() {
 
                       {/* Trending Suggestions */}
                       <div style={{ borderTop: "1px dashed var(--border-glass)", paddingTop: "14px", textAlign: "right" }}>
-                        <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--textSecondary)", marginBottom: "10px", fontFamily: "var(--font-display)" }}>
+                        <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--text-secondary)", marginBottom: "10px", fontFamily: "var(--font-display)" }}>
                           📈 عمليات بحث شائعة قد تهمك:
                         </div>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
