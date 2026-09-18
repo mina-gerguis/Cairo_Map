@@ -1,0 +1,80 @@
+/**
+ * ====================================================================
+ * DESIGN SYSTEM — PRIMITIVE TOKENS (Base Values)
+ * ====================================================================
+ * هذه القيم خام (Raw Values) وغير مرتبطة بحالة أو Theme معين.
+ * لا تُستخدم مباشرة في المكونات، بل تُمرر إلى الـ Semantic Tokens.
+ */
+
+:root {
+  /* --- Color Palette: Primary (Blue / Brand) --- */
+  --palette-blue-50:  #eff6ff;
+  --palette-blue-100: #dbeafe;
+  --palette-blue-200: #bfdbfe;
+  --palette-blue-300: #93c5fd;
+  --palette-blue-400: #60a5fa;
+  --palette-blue-500: #3b82f6;
+  --palette-blue-600: #2563eb;
+  --palette-blue-700: #1d4ed8;
+  --palette-blue-800: #1e40af;
+  --palette-blue-900: #1e3a8a;
+  --palette-blue-950: #172554;
+  --palette-blue-core: #006FEE;
+  --palette-blue-electric: #2727ff;
+
+  /* --- Color Palette: Neutrals & Zinc (Grayscale) --- */
+  --palette-neutral-white: #ffffff;
+  --palette-neutral-black: #000000;
+  --palette-zinc-50:  #fafafa;
+  --palette-zinc-100: #f4f4f5;
+  --palette-zinc-200: #e4e4e7;
+  --palette-zinc-300: #d4d4d8;
+  --palette-zinc-400: #a1a1aa;
+  --palette-zinc-500: #71717a;
+  --palette-zinc-600: #52525b;
+  --palette-zinc-700: #3f3f46;
+  --palette-zinc-800: #27272a;
+  --palette-zinc-900: #18181b;
+  --palette-zinc-950: #09090b;
+
+  /* --- Color Palette: Feedback & Status --- */
+  /* Success */
+  --palette-green-50:  #ecfdf5;
+  --palette-green-500: #10b981;
+  --palette-green-600: #059669;
+  --palette-green-700: #047857;
+
+  /* Warning */
+  --palette-amber-50:  #fffbeb;
+  --palette-amber-400: #fbbf24;
+  --palette-amber-500: #f59e0b;
+  --palette-amber-600: #d97706;
+  --palette-gold:      #ffdd00;
+  --palette-gold-dark: #d4b500;
+
+  /* Danger / Error */
+  --palette-red-50:  #fef2f2;
+  --palette-red-500: #ef4444;
+  --palette-red-600: #dc2626;
+  --palette-red-700: #b91c1c;
+
+  /* Info */
+  --palette-cyan-500: #06b6d4;
+  --palette-cyan-600: #0891b2;
+
+  /* --- Spacing Scale --- */
+  --space-0:   0px;
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-7:   28px;
+  --space-8:   32px;
+  --space-9:   36px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-14:  56px;
+  --space-16:  64px;
+}

@@ -1,0 +1,100 @@
+import { QuickRouteItem, ReportProblemOption } from "./types";
+
+export const LOCATION_ALIASES_MAP: Record<string, string> = {
+  "معرض الكتاب": "أرض المعارض",
+  "معرض القاهره": "أرض المعارض",
+  "مركز مصر للمعارض": "أرض المعارض",
+  "ارض المعارض": "أرض المعارض",
+  "محطة مصر": "القاهرة (رمسيس)",
+  "محطه مصر": "القاهرة (رمسيس)",
+  "رمسيس": "القاهرة (رمسيس)",
+  "عدلي منصور": "القاهرة (عدلي منصور - موقف السلام)",
+  "موقف السلام": "القاهرة (عدلي منصور - موقف السلام)",
+  "عبود": "القاهرة (عبود)",
+  "طلخا": "المنصورة",
+  "موقف الاحرار": "الزقازيق",
+  "موقف الاحرار الجديد": "الزقازيق",
+  "الاحرار": "الزقازيق",
+  "جامعة الزقازيق": "الزقازيق"
+};
+
+export const POPULAR_ROUTE_COLOR_PALETTE = [
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#8b5cf6",
+  "#ef4444",
+  "#06b6d4",
+  "#ec4899",
+  "#f97316",
+  "#14b8a6",
+  "#6366f1",
+];
+
+// Baseline seed popular searches to ensure rich initial display before user searches
+export const DEFAULT_POPULAR_ROUTES: QuickRouteItem[] = [
+  { from: "الزقازيق", to: "العاشر من رمضان", label: "الزقازيق ⇆ العاشر", glowColor: "#3b82f6", searchCount: 84, isTrending: true },
+  { from: "موقف الأحرار", to: "معرض الكتاب", label: "موقف الأحرار ⇆ معرض الكتاب", glowColor: "#10b981", searchCount: 76, isTrending: true },
+  { from: "المنصورة", to: "محطة مصر", label: "المنصورة ⇆ محطة مصر", glowColor: "#f59e0b", searchCount: 65, isTrending: true },
+  { from: "العاشر من رمضان", to: "معرض الكتاب", label: "العاشر ⇆ معرض الكتاب", glowColor: "#8b5cf6", searchCount: 58 },
+  { from: "القاهرة (رمسيس)", to: "التجمع الخامس", label: "رمسيس ⇆ التجمع الخامس", glowColor: "#ef4444", searchCount: 52 },
+  { from: "الجيزة", to: "6 أكتوبر", label: "الجيزة ⇆ 6 أكتوبر", glowColor: "#06b6d4", searchCount: 47 },
+  { from: "القاهرة (رمسيس)", to: "الإسكندرية", label: "رمسيس ⇆ الإسكندرية", glowColor: "#ec4899", searchCount: 43 },
+  { from: "القاهرة (عبود)", to: "بنها", label: "عبود ⇆ بنها", glowColor: "#f97316", searchCount: 39 },
+  { from: "الزقازيق", to: "المنصورة", label: "الزقازيق ⇆ المنصورة", glowColor: "#14b8a6", searchCount: 34 },
+  { from: "القاهرة (رمسيس)", to: "مدينة نصر", label: "رمسيس ⇆ مدينة نصر", glowColor: "#6366f1", searchCount: 31 },
+];
+
+export const REPORT_PROBLEM_OPTIONS: ReportProblemOption[] = [
+  {
+    id: "pricing",
+    title: "خطأ في الأجرة أو تسعير المواصلة",
+    desc: "أجرة المواصلة تغيرت أو غير مطابقة للواقع",
+    icon: "fa-solid fa-tags",
+    badge: "أسعار",
+    badgeColor: "#10b981"
+  },
+  {
+    id: "route_steps",
+    title: "خطأ في خطوات السير أو محطات الركوب",
+    desc: "خطوة غير دقيقة، مكان نزول/ركوب مختلف أو مفقود",
+    icon: "fa-solid fa-route",
+    badge: "مسارات",
+    badgeColor: "#3b82f6"
+  },
+  {
+    id: "duration",
+    title: "خطأ في الوقت المقدر للرحلة",
+    desc: "مدة الوصول الفعلية تختلف كثيراً عن المكتوب",
+    icon: "fa-regular fa-clock",
+    badge: "وقت",
+    badgeColor: "#f59e0b"
+  },
+  {
+    id: "transit_type",
+    title: "خطأ في نوع وسيلة المواصلات",
+    desc: "الوسيلة (ميكروباص، أتوبيس، مترو، قطار) غير دقيقة",
+    icon: "fa-solid fa-bus",
+    badge: "وسيلة",
+    badgeColor: "#8b5cf6"
+  },
+  {
+    id: "app_bug",
+    title: "مشكلة تقنية أو خلل في الصفحة",
+    desc: "أزرار أو محرك البحث لا يستجيب بالشكل المطلوب",
+    icon: "fa-solid fa-bug",
+    badge: "تقني",
+    badgeColor: "#ef4444"
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو اقتراح مسار بديل",
+    desc: "أي ملاحظة أخرى أو طريقة أسرع للوصول",
+    icon: "fa-regular fa-comment-dots",
+    badge: "عام",
+    badgeColor: "#64748b"
+  }
+];
+
+export const MAX_UPLOAD_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+export const SEARCH_STATS_STORAGE_KEY = "cairo_map_directions_search_stats_v1";

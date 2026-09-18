@@ -535,7 +535,7 @@ function AdminMonorailInner() {
                         <span style={{
                           background: lineColor + "15",
                           color: lineColor,
-                          borderRadius: "var(--radius-full)",
+                          borderRadius: "var(--ra-full)",
                           fontSize: "0.85rem",
                           border: `1px solid ${lineColor}25`,
                           width: "25px",

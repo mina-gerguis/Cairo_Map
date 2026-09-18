@@ -878,8 +878,8 @@ export default function AdminDashboard() {
 
     let obj1: any = null;
     let obj2: any = null;
-    try { obj1 = JSON.parse(s1); } catch {}
-    try { obj2 = JSON.parse(s2); } catch {}
+    try { obj1 = JSON.parse(s1); } catch { }
+    try { obj2 = JSON.parse(s2); } catch { }
 
     if (obj1 && obj2 && typeof obj1 === "object" && typeof obj2 === "object") {
       if (obj1.type !== obj2.type) return false;
@@ -2779,7 +2779,7 @@ export default function AdminDashboard() {
                                   background: "rgba(255, 59, 48, 0.12)",
                                   color: "#ff3b30",
                                   border: "1px solid rgba(255, 59, 48, 0.25)",
-                                  borderRadius: "var(--radius-full)",
+                                  borderRadius: "var(--ra-full)",
                                   padding: "6px",
                                   fontSize: "0.95rem",
                                   cursor: "pointer",
@@ -3880,7 +3880,7 @@ export default function AdminDashboard() {
                     <option value="custom">مواعيد مخصصة</option>
                   </select>
                   {branchScheduleType === "custom" && (
-                    <div style={{ background: "rgba(120,120,120,0.05)", borderRadius: "var(--radius-md)", padding: "16px", border: "1px solid var(--borderGlass)" }}>
+                    <div style={{ background: "rgba(120,120,120,0.05)", borderRadius: "var(--ra-18)", padding: "16px", border: "1px solid var(--borderGlass)" }}>
                       {branchScheduleData.map((dayData, index) => (
                         <div key={dayData.day} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 0", borderBottom: index < branchScheduleData.length - 1 ? "1px solid rgba(120,120,120,0.1)" : "none", flexWrap: "wrap" }}>
                           <div style={{ width: "80px", fontWeight: "bold" }}>{dayData.day}</div>

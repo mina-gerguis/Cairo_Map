@@ -1,0 +1,23 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — ROOT ENTRY POINT
+ * ============================================================================
+ * Aggregates all token definitions, component styles, and atomic utilities
+ * in the strict, correct cascade order.
+ */
+
+/* --- 1. Design Tokens Layer --- */
+@import url("./tokens/colors.css");
+@import url("./tokens/spacing.css");
+@import url("./tokens/shadows.css");
+@import url("./tokens/transition.css");
+@import url("./tokens/typography.css");
+
+/* --- 2. Base Components Layer --- */
+@import url("./components/buttons.css");
+@import url("./components/inputs.css");
+@import url("./components/cards.css");
+
+/* --- 3. Atomic Utilities Layer --- */
+@import url("./utilities/typography.css");
+@import url("./utilities/spacing.css");

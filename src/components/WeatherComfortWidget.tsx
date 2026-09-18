@@ -192,7 +192,7 @@ export default function WeatherComfortWidget() {
         style={{
           background: "var(--bgAlert)",
           border: "1px solid var(--borderGlass)",
-          borderRadius: "14px",
+          borderRadius: "var(--ra-8)",
           padding: "14px 18px",
           marginBottom: "20px",
           display: "flex",
@@ -227,7 +227,7 @@ export default function WeatherComfortWidget() {
           style={{
             background: "var(--bgAlert)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "var(--radius-xs)",
+            borderRadius: "var(--ra-4)",
             padding: "14px 18px",
             marginBottom: "20px",
             direction: "rtl",
@@ -342,7 +342,7 @@ export default function WeatherComfortWidget() {
         style={{
           background: "linear-gradient(135deg, rgba(179, 179, 179, 0.12) 0%, rgba(95, 95, 95, 0.08) 100%)",
           border: "1px solid rgba(136, 136, 136, 0.3)",
-          borderRadius: "8px",
+          borderRadius: "var(--ra-4)",
           padding: "12px 16px",
           marginBottom: "20px",
           display: "flex",
@@ -403,7 +403,6 @@ export default function WeatherComfortWidget() {
                       : weather.icon === "cold" || weather.icon === "cool"
                         ? "rgba(0, 188, 221, 1)"
                         : "#f50b0bff",
-                  fontSize: "0.75rem"
                 }}>{weather.text} </span>: <strong>{weather.temp}° م</strong>
               </span>
 

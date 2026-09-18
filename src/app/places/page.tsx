@@ -845,7 +845,7 @@ function HomeContent() {
             className={`btn ${isProximityEnabled ? "btn-primary" : ""}`}
             onClick={handleToggleProximity}
             disabled={locationLoading}
-            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px", border: "1px solid var(--borderGlass)", fontFamily: "var(--font-sub)", width:"100%" }}
+            style={{ padding: "10px 16px", fontSize: "0.9rem", flexShrink: 0, gap: "6px", border: "1px solid var(--borderGlass)", fontFamily: "var(--font-sub)", width: "100%" }}
           >
             {locationLoading ? (
               <span style={{ width: "16px", height: "16px", border: "2px solid rgba(255,255,255,0.4)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
@@ -1196,7 +1196,7 @@ function HomeContent() {
                       <div style={{ display: "flex", gap: "10px", overflowX: "auto", margin: "20px 0", scrollbarWidth: "none" }}>
                         {selectedPlace.images.map((img, i) => (
                           <ImageWithSkeleton key={i} src={img} alt={`${selectedPlace.name} ${i + 1}`}
-                            style={{ width: "100%", minWidth: "100%", height: "230px", objectFit: "cover", borderRadius: "var(--radius-md)", flexShrink: 0 }}
+                            style={{ width: "100%", minWidth: "100%", height: "230px", objectFit: "cover", borderRadius: "var(--ra-18)", flexShrink: 0 }}
                             onError={(e: any) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800"; }} />
                         ))}
                       </div>
@@ -1754,7 +1754,7 @@ function HomeContent() {
               src={((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!)[activeMenuIndex]}
               alt="ميديا"
               onClick={(e: any) => e.stopPropagation()}
-              style={{ maxWidth: "80vw", maxHeight: "95vh", height: "50%", borderRadius: "var(--radius-md)", objectFit: "fill", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }}
+              style={{ maxWidth: "80vw", maxHeight: "95vh", height: "50%", borderRadius: "var(--ra-18)", objectFit: "fill", boxShadow: "0 10px 40px rgba(0,0,0,0.6)" }}
             />
 
             {((displayBranch?.media && displayBranch.media.length > 0) ? displayBranch.media : selectedPlace!.menuImages!).length > 1 && (

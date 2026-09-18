@@ -27,15 +27,15 @@
     --textSecondary: #a1a1aa;
     --textMuted: #71717a;
     /* Radius Global */
-    --radius-xss: 4px;
-    --radius-xs: 8px;
-    --radius-sm2: 10px;
-    --radius-sm: 14px;
-    --radius-md: 18px;
-    --radius-lg: 24px;
-    --radius-xl: 32px;
-    --radius-full: 999px;
-    --radius-card: var(--radius-xs);
+    --ra-4: 4px;
+    --ra-8: 8px;
+    --ra-10: 10px;
+    --ra-14: 14px;
+    --ra-18: 18px;
+    --ra-24: 24px;
+    --ra-32: 32px;
+    --ra-full: 999px;
+    --radius-card: var(--ra-8);
     /* Borders Global */
     --borderGlass: var(--borderGlassBtn);
     --borderPrimary: #7c7c7c36;
@@ -61,33 +61,33 @@
     --accentBtn: #fff;
     --hoverBtn: rgba(39, 39, 42, 0.8);
     --paddingBtn: 10px 16px;
-    --radiusBtn: var(--radius-xs);
-    --radiusBtnLg: var(--radius-sm);
+    --radiusBtn: var(--ra-8);
+    --radiusBtnLg: var(--ra-14);
     --borderGlassBtn: rgba(255, 255, 255, 0.1);
-    --radiusBtnTabs: var(--radius-full);
+    --radiusBtnTabs: var(--ra-full);
 
     /* Input Fields */
     --inputBorder: rgba(255, 255, 255, 0.1);
     --inputBg: rgba(24, 24, 27, 0.7);
     --inputShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --inputRadius: var(--radius-xs);
+    --inputRadius: var(--ra-8);
 
     /* Card Glass */
     --cardGlassBg: rgba(24, 24, 27, 0.7);
     --cardGlassBorder: rgba(255, 255, 255, 0.1);
     --cardGlassShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --cardGlassRadius: var(--radius-sm);
+    --cardGlassRadius: var(--ra-14);
 
     /* Card Model */
     --modelCardBg: #fff;
     --modelCardBorder: rgb(34, 31, 31);
     --modelCardShadow: 0 25px 60px rgba(0, 0, 0, 0.1);
-    --modelCardRadius: var(--radius-xs);
+    --modelCardRadius: var(--ra-8);
     /* Container */
     --containerBorder: rgba(255, 255, 255, 0.158);
     --containerBg: rgba(2, 2, 2, 0.7);
     --containerShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --containerRadius: var(--radius-xs);
+    --containerRadius: var(--ra-8);
 
     /* Transitions */
     --transition-fast: all 0.15s ease-out;
@@ -201,180 +201,10 @@ html.light {
     --containerBorder: rgba(0, 0, 0, 0.158);
     --containerBg: rgba(255, 255, 255, 0.7);
     --containerShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --containerRadius: var(--radius-sm);
+    --containerRadius: var(--ra-14);
 }
 
-/* ==================== Style Global ==================== */
-.text-xss {
-    font-size: var(--fs-xss);
-}
 
-.text-xs {
-    font-size: var(--fs-xs);
-}
-
-.text-sm {
-    font-size: var(--fs-sm);
-}
-
-.text-md {
-    font-size: var(--fs-md);
-}
-
-.text-lg {
-    font-size: var(--fs-lg);
-}
-
-.text-xl {
-    font-size: var(--fs-xl);
-}
-
-.text-2xl {
-    font-size: var(--fs-2xl);
-}
-
-.text-3xl {
-    font-size: var(--fs-3xl);
-}
-
-.text-4xl {
-    font-size: var(--fs-4xl);
-}
-
-.text-5xl {
-    font-size: var(--fs-5xl);
-}
-
-.text-6xl {
-    font-size: var(--fs-6xl);
-}
-
-.text-7xl {
-    font-size: var(--fs-7xl);
-}
-
-.fw-light {
-    font-weight: var(--fw-light);
-}
-
-.fw-normal {
-    font-weight: var(--fw-normal);
-}
-
-.fw-medium {
-    font-weight: var(--fw-medium);
-}
-
-.fw-semibold {
-    font-weight: var(--fw-semibold);
-}
-
-.fw-bold {
-    font-weight: var(--fw-bold);
-}
-
-.fw-extra-bold {
-    font-weight: var(--fw-extra-bold);
-}
-
-.fw-black {
-    font-weight: var(--fw-black);
-}
-
-/*===== Margin ===== */
-/* Button */
-.mb-4 {
-    margin-bottom: var(--mb-4);
-}
-
-.mb-8 {
-    margin-bottom: var(--mb-8);
-}
-
-.mb-12 {
-    margin-bottom: var(--mb-12);
-}
-
-.mb-16 {
-    margin-bottom: var(--mb-16);
-}
-
-.mb-20 {
-    margin-bottom: var(--mb-20);
-}
-
-.mb-24 {
-    margin-bottom: var(--mb-24);
-}
-
-.mb-28 {
-    margin-bottom: var(--mb-28);
-}
-
-.mb-32 {
-    margin-bottom: var(--mb-32);
-}
-
-.mb-36 {
-    margin-bottom: var(--mb-36);
-}
-
-.mb-40 {
-    margin-bottom: var(--mb-40);
-}
-
-.mb-48 {
-    margin-bottom: var(--mb-48);
-}
-
-.mb-56 {
-    margin-bottom: var(--mb-56);
-}
-
-/* Padding */
-.pd-4 {
-    padding-top: var(--pt-4);
-}
-
-.pd-8 {
-    padding-top: var(--pt-8);
-}
-
-.pd-12 {
-    padding-top: var(--pt-12);
-}
-
-.pd-16 {
-    padding-top: var(--pt-16);
-}
-
-.pd-20 {
-    padding-top: var(--pt-20);
-}
-
-.pt-24 {
-    padding-top: var(--pt-24);
-}
-
-.pt-28 {
-    padding-top: var(--pt-28);
-}
-
-.pt-32 {
-    padding-top: var(--pt-32);
-}
-
-.pt-36 {
-    padding-top: var(--pt-36);
-}
-
-.pt-40 {
-    padding-top: var(--pt-40);
-}
-
-.pt-48 {
-    margin: var(--m-lg);
-}
 
 /* ============================================================
    Buttons — Premium
@@ -523,14 +353,14 @@ html.light {
     color: var(--textPrimary);
 }
 
-.btn-radius-lg {
+.btn-ra-24 {
     border-radius: var(--radiusBtnLg);
 }
 
 .actionBtn {
     background: transparent;
     border: 1px solid transparent;
-    border-radius: var(--radius-full);
+    border-radius: var(--ra-full);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -571,7 +401,7 @@ html.light {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--borderGlass);
-    border-radius: var(--radius-sm2);
+    border-radius: var(--ra-10);
     transition: var(--transition-smooth);
 }
 
@@ -604,7 +434,7 @@ html.light {
    ============================================================ */
 .input-fields {
     width: 100%;
-    padding: 10px 20px;
+    padding: 100px 20px;
     border-radius: var(--inputRadius);
     border: 1px solid var(--borderGlass);
     background: var(--inputBg);

@@ -55,7 +55,7 @@ export default function TermsPage() {
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               padding: "14px 16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--colorPrimary)", fontWeight: "700", marginBottom: "6px" }}>
@@ -70,7 +70,7 @@ export default function TermsPage() {
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               padding: "14px 16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#10b981", fontWeight: "700", marginBottom: "6px" }}>
@@ -85,7 +85,7 @@ export default function TermsPage() {
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               padding: "14px 16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#ef4444", fontWeight: "700", marginBottom: "6px" }}>
@@ -148,7 +148,7 @@ export default function TermsPage() {
           <div style={{
             background: "rgba(245, 158, 11, 0.08)",
             border: "1px solid rgba(245, 158, 11, 0.25)",
-            borderRadius: "var(--radius-sm)",
+            borderRadius: "var(--ra-14)",
             padding: "16px 20px",
             display: "flex",
             alignItems: "flex-start",
@@ -218,7 +218,7 @@ export default function TermsPage() {
             fontSize: "0.8rem",
             color: "var(--textMuted)",
             padding: "6px 12px",
-            borderRadius: "var(--radius-full)",
+            borderRadius: "var(--ra-full)",
           }}>
             <i className="bx bx-time-five" style={{ color: "var(--colorPrimary)" }}></i>
             <span>تحديث:سبتمبر 2026</span>
@@ -327,7 +327,7 @@ export default function TermsPage() {
             className="glass-panel"
             style={{
               padding: "20px 18px",
-              borderRadius: "var(--radius-md)",
+              borderRadius: "var(--ra-18)",
               display: "flex",
               flexDirection: "column",
               gap: "10px",
@@ -339,7 +339,7 @@ export default function TermsPage() {
               style={{
                 width: "42px",
                 height: "42px",
-                borderRadius: "var(--radius-sm)",
+                borderRadius: "var(--ra-14)",
                 background: `${item.color}15`,
                 border: `1px solid ${item.color}35`,
                 display: "flex",
@@ -370,7 +370,7 @@ export default function TermsPage() {
             className="glass-panel"
             style={{
               padding: "24px 22px",
-              borderRadius: "var(--radius-md)",
+              borderRadius: "var(--ra-18)",
               border: "1px solid var(--borderGlass)",
               transition: "var(--transition-smooth)",
             }}
@@ -420,7 +420,7 @@ export default function TermsPage() {
         style={{
           marginTop: "28px",
           padding: "28px 24px",
-          borderRadius: "var(--radius-md)",
+          borderRadius: "var(--ra-18)",
           textAlign: "center",
           background: "linear-gradient(180deg, var(--bgGlass) 0%, rgba(0, 111, 238, 0.04) 100%)",
           border: "1px solid var(--borderGlass)",
@@ -455,7 +455,7 @@ export default function TermsPage() {
             className="btn btn-primary"
             style={{
               padding: "10px 22px",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--ra-full)",
               fontSize: "0.92rem",
               fontWeight: "600",
               textDecoration: "none",
@@ -474,7 +474,7 @@ export default function TermsPage() {
             className="btn btn-secondary"
             style={{
               padding: "10px 20px",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--ra-full)",
               fontSize: "0.92rem",
               fontWeight: "600",
               textDecoration: "none",

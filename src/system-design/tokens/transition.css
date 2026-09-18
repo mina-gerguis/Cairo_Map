@@ -1,0 +1,7 @@
+:root {
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.15s ease-out;
+    --transition-smooth: all 0.25s ease-out;
+    --transition-spring: all 0.60s var(--ease-spring);
+    --transition-bounce: all 0.30s var(--ease-spring);
+}

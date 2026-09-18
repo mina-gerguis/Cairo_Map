@@ -819,7 +819,7 @@ export default function AdminCitiesPage() {
             style={{
               backgroundColor: "var(--bgSecondary)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               width: "100%",
               maxWidth: "850px",
               maxHeight: "85vh",
@@ -891,7 +891,7 @@ export default function AdminCitiesPage() {
                       justifyContent: "space-between",
                       backgroundColor: "var(--bgThird)",
                       border: "1px solid var(--borderGlass)",
-                      borderRadius: "var(--radius-xs)",
+                      borderRadius: "var(--ra-8)",
                       padding: "12px 16px",
                       gap: "16px",
                     }}
@@ -1119,7 +1119,7 @@ export default function AdminCitiesPage() {
                 <button
                   type="button"
                   onClick={() => setIsCityModalOpen(false)}
-                 className="btn btn-cancle"
+                  className="btn btn-cancle"
                 >
                   إلغاء
                 </button>
@@ -1283,7 +1283,7 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                       className="input-fields"
+                        className="input-fields"
                       />
                       <input
                         type="text"
@@ -1300,7 +1300,7 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                       className="input-fields"
+                        className="input-fields"
                       />
                       <button
                         type="button"
@@ -1314,7 +1314,7 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                       className="actionBtn actionBtnDelete"
+                        className="actionBtn actionBtnDelete"
                         title="حذف المحطة"
                       >
                         <i className="bx bx-trash"></i>
@@ -1358,7 +1358,7 @@ export default function AdminCitiesPage() {
                   placeholder="https://...&#10;https://..."
                   value={landmarkImages}
                   onChange={(e) => setLandmarkImages(e.target.value)}
-                 className="input-fields"
+                  className="input-fields"
                 />
               </div>
 
@@ -1372,7 +1372,7 @@ export default function AdminCitiesPage() {
                 </button>
                 <button
                   type="submit"
-                 className="btn btn-primary"
+                  className="btn btn-primary"
                 >
                   حفظ المعلم
                 </button>

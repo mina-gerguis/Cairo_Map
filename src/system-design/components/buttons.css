@@ -1,0 +1,239 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — BUTTON COMPONENTS
+ * ============================================================================
+ * Comprehensive styling for base buttons, color variants, subscription tiers,
+ * action icons, and interactive states.
+ */
+
+/* ==========================================================================
+   1. Base Button
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--paddingBtn);
+  border: 1px solid transparent;
+  border-radius: var(--radiusBtn);
+  outline: none;
+  background: transparent;
+  color: var(--textPrimary);
+  font-family: var(--font-sub);
+  font-size: var(--fs-);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  transition: var(--transition-spring);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--colorPrimary);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   2. Button Variants
+   ========================================================================== */
+
+/* --- Primary --- */
+.btn-primary {
+  background: var(--mainBtn);
+  border-color: var(--mainBtnBorder);
+  color: #ffffff !important;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+  filter: brightness(1.05);
+}
+
+/* --- Secondary --- */
+.btn-secondary {
+  background: var(--secondBtn);
+  color: var(--textPrimary);
+}
+
+.btn-secondary:hover {
+  background: var(--secondHoverBtn);
+  color: var(--textPrimary);
+}
+
+/* --- Outlines --- */
+.btn-outline {
+  background: var(--cardGlassBg);
+  border: 1.5px solid var(--colorPrimary);
+  color: var(--colorPrimary);
+}
+
+.btn-outline:hover {
+  background: var(--mainBtn);
+  color: #ffffff;
+  backdrop-filter: blur(20px) saturate(15);
+  -webkit-backdrop-filter: blur(20px) saturate(15);
+}
+
+.btn-outline-blue {
+  background: rgba(0, 111, 238, 0.15);
+  border: 1px solid rgba(0, 111, 238, 0.30);
+  color: #3b82f6;
+}
+
+.btn-outline-blue:hover {
+  background: var(--mainBtn);
+  color: #ffffff;
+  backdrop-filter: blur(20px) saturate(15);
+  -webkit-backdrop-filter: blur(20px) saturate(15);
+}
+
+/* --- Cancel / Ghost --- */
+.btn-cancel {
+  background: var(--cancelBtn);
+  border: 1px solid var(--borderGlassBtn);
+  color: var(--textPrimary);
+}
+
+.btn-cancel:hover {
+  background: var(--cancelHoverBtn);
+  color: var(--textPrimary);
+}
+
+/* --- Success & Danger --- */
+.btn-success {
+  background: var(--successBtn);
+  color: var(--textPrimary);
+}
+
+.btn-success:hover {
+  background: var(--secondHoverBtn);
+  color: var(--textPrimary);
+}
+
+.btn-danger {
+  background: var(--dangerBtn);
+  border: 1px solid rgba(255, 59, 48, 0.30);
+  color: #ff0000;
+}
+
+.btn-danger:hover {
+  background: #ff0000;
+  color: #ffffff;
+}
+
+.btn-reportProblem {
+  padding: var(--space-4) var(--space-8);
+  background: rgba(255, 0, 0, 0.15);
+  border: 1px solid rgba(255, 0, 0, 0.15);
+  border-radius: var(--radiusBtn);
+  color: #ff0000f5;
+}
+
+.btn-reportProblem:hover {
+  background: #ff0000;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   3. Subscription Tier Buttons
+   ========================================================================== */
+.btn-silver {
+  background: var(--bg-subscribe-button-seliver);
+  border: 1px solid var(--br-subscribe-button-seliver);
+  color: #ffffff;
+}
+
+.btn-silver:hover {
+  background: var(--textPrimary);
+  color: var(--bgPrimary);
+}
+
+.btn-gold {
+  background: var(--bg-subscribe-button-gold);
+  border: 1px solid var(--br-subscribe-button-gold);
+  box-shadow: var(--bs-subscribe-button-gold);
+  color: #000000;
+}
+
+.btn-gold:hover {
+  background: var(--textPrimary);
+  color: var(--bgPrimary);
+}
+
+/* ==========================================================================
+   4. Circular & Action Buttons
+   ========================================================================== */
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  border: 1px solid var(--borderGlass);
+  border-radius: var(--ra-full);
+  background: rgba(131, 131, 131, 0.055);
+  color: var(--textPrimary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.closeBtn:hover {
+  background: var(--bgPrimary);
+  color: var(--textPrimary);
+}
+
+.btn-ra-24 {
+  border-radius: var(--radiusBtnLg);
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: var(--space-8);
+  border: 1px solid transparent;
+  border-radius: var(--ra-full);
+  background: transparent;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.actionBtnEdit {
+  background: rgba(59, 130, 246, 0.20);
+  border: 1px solid rgba(59, 130, 246, 0.40);
+  color: var(--colorPrimary);
+}
+
+.actionBtnEdit:hover {
+  background: var(--mainBtn);
+  color: #ffffff;
+}
+
+.actionBtnDelete {
+  background: rgba(255, 0, 0, 0.15);
+  border: 1px solid rgba(255, 0, 0, 0.15);
+  color: #ff0000f5;
+}
+
+.actionBtnDelete:hover {
+  background: #ff0000;
+  color: #ffffff;
+}

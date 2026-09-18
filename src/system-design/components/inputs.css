@@ -1,0 +1,55 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — INPUT FIELDS COMPONENT
+ * ============================================================================
+ * Text fields, search boxes, textarea controls with smooth transitions,
+ * focus states, and validation feedback.
+ */
+
+/* ==========================================================================
+   1. Base Input Fields
+   ========================================================================== */
+.input-fields {
+  width: 100%;
+  padding: 10px 20px;
+  border: 1px solid var(--borderGlass);
+  border-radius: var(--inputRadius);
+  outline: none;
+  background: var(--inputBg);
+  color: var(--textPrimary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: var(--transition-smooth);
+}
+
+.input-fields::placeholder {
+  color: var(--textMuted);
+  opacity: 1;
+}
+
+.input-fields:focus {
+  border-color: var(--colorPrimary);
+  box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.15);
+}
+
+.input-fields:disabled,
+.input-fields[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--bgSecondary);
+}
+
+/* ==========================================================================
+   2. Validation Error States
+   ========================================================================== */
+.input-fields[aria-invalid="true"],
+.input-fields.has-error {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.05) !important;
+}
+
+.input-fields[aria-invalid="true"]:focus,
+.input-fields.has-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.20) !important;
+}

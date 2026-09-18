@@ -1,0 +1,9 @@
+/* ============================================================
+   Slider
+   ============================================================ */
+.slider-title {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-bold);
+    margin-bottom: var(--mb-10);
+    font-family: var(--font-sub);
+}

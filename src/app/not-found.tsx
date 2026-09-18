@@ -141,7 +141,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon: "metro.svg",
+    icon: "metro.png",
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },
@@ -186,7 +186,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "ازاي اروح؟",
     subtitle: "دليل الوصول لأي مكان في مصر",
     href: "/directions",
-    icon: "Cairo_directions.svg",
+    icon: "arab_republic _of_egypt.png",
     badge: "اتجاهات ومسارات",
     keywords: ["ازاي اروح", "ازاي اوصل", "اروح ازاي", "مواصلات", "طريق", "مسار", "اتجاهات"]
   },
@@ -614,7 +614,7 @@ export default function NotFound() {
                 alignItems: "center",
                 backgroundColor: "var(--bgGlass)",
                 border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--colorPrimary)" : "1.5px solid var(--borderPrimary)",
-                borderRadius: "var(--radius-xl)",
+                borderRadius: "var(--ra-32)",
                 padding: "8px 15px 8px 15px",
                 boxShadow: "0 10px 30px var(--shadow-card)",
                 backdropFilter: "blur(12px)",
@@ -653,7 +653,7 @@ export default function NotFound() {
                   backgroundColor: "rgba(255, 255, 255, 0.07)",
                   border: "1px solid var(--borderGlass)",
                   backdropFilter: "blur(8px)",
-                  borderRadius: "var(--radius-sm)",
+                  borderRadius: "var(--ra-14)",
                   padding: "4px 8px",
                   display: "flex",
                   alignItems: "center",
@@ -700,7 +700,7 @@ export default function NotFound() {
               backgroundColor: "var(--card-glass, rgba(17, 17, 17, 0.986))",
               backdropFilter: "blur(20px)",
               border: "1px solid var(--borderGlass-bright)",
-              borderRadius: "var(--radius-lg)",
+              borderRadius: "var(--ra-24)",
               boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
               zIndex: 100,
               maxHeight: "450px",
@@ -736,7 +736,7 @@ export default function NotFound() {
                         alignItems: "center",
                         justifyContent: "space-between",
                         padding: "10px 14px",
-                        borderRadius: "var(--radius-md)",
+                        borderRadius: "var(--ra-18)",
                         backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
                         border: "1px solid var(--borderGlass)",
                         marginBottom: "6px",
@@ -805,7 +805,7 @@ export default function NotFound() {
                         alignItems: "center",
                         justifyContent: "space-between",
                         padding: "10px 14px",
-                        borderRadius: "var(--radius-md)",
+                        borderRadius: "var(--ra-18)",
                         backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
                         border: "1px solid var(--borderGlass)",
                         marginBottom: "6px",
@@ -870,7 +870,7 @@ export default function NotFound() {
                           alignItems: "center",
                           gap: "6px",
                           padding: "6px 12px",
-                          borderRadius: "var(--radius-full)",
+                          borderRadius: "var(--ra-full)",
                           backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
                           border: "1px solid var(--borderGlass)",
                           textDecoration: "none",
@@ -962,7 +962,7 @@ export default function NotFound() {
                   width: "100%",
                   marginTop: "8px",
                   padding: "var(--paddingBtn)",
-                  borderRadius: "var(--radius-full)",
+                  borderRadius: "var(--ra-full)",
                   backgroundColor: "var(--colorPrimary)",
                   color: "#ffffff",
                   border: "none",
@@ -1005,7 +1005,7 @@ export default function NotFound() {
               background: "var(--colorPrimary)",
               color: "#ffffff",
               padding: "var(--paddingBtn)",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--ra-full)",
               fontWeight: 700,
               fontSize: "0.95rem",
               cursor: "pointer",
@@ -1022,7 +1022,7 @@ export default function NotFound() {
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--ra-full)",
               fontWeight: 700,
               fontSize: "0.95rem",
               backdropFilter: "blur(8px)",
@@ -1039,7 +1039,7 @@ export default function NotFound() {
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--ra-full)",
               fontWeight: 600,
               fontSize: "0.95rem",
               cursor: "pointer",
@@ -1055,7 +1055,7 @@ export default function NotFound() {
           style={{
             background: "var(--bgGlass)",
             border: "1px solid var(--borderPrimary)",
-            borderRadius: "var(--radius-lg)",
+            borderRadius: "var(--ra-24)",
             padding: "1.75rem",
             backdropFilter: "blur(16px)",
             width: "100%",
@@ -1096,7 +1096,7 @@ export default function NotFound() {
                 gap: "12px",
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                borderRadius: "var(--radius-sm, 14px)",
+                borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
@@ -1111,7 +1111,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/icons2d/metro.svg" alt=" metro " width="42" />
+                <img src="/images/icons2d/metro.png" alt=" metro " width="42" />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>خريطة المترو</div>
@@ -1129,7 +1129,7 @@ export default function NotFound() {
                 gap: "12px",
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                borderRadius: "var(--radius-sm, 14px)",
+                borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
@@ -1162,7 +1162,7 @@ export default function NotFound() {
                 gap: "12px",
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                borderRadius: "var(--radius-sm, 14px)",
+                borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
@@ -1195,7 +1195,7 @@ export default function NotFound() {
                 gap: "12px",
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                borderRadius: "var(--radius-sm, 14px)",
+                borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
@@ -1228,7 +1228,7 @@ export default function NotFound() {
                 gap: "12px",
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                borderRadius: "var(--radius-sm, 14px)",
+                borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}
@@ -1261,7 +1261,7 @@ export default function NotFound() {
                 gap: "12px",
                 padding: "14px 18px",
                 background: "var(--bgSecondary, rgba(255, 255, 255, 0.02))",
-                borderRadius: "var(--radius-sm, 14px)",
+                borderRadius: "var(--ra-14, 14px)",
                 border: "1px solid var(--borderGlass, rgba(255, 255, 255, 0.08))",
                 textAlign: "right",
               }}

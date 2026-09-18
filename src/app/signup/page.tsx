@@ -285,7 +285,7 @@ const OnboardingSlider = ({ onStartSignup }: { onStartSignup: () => void }) => {
           </div>
         </div>
       </div>
-      </>
+    </>
   );
 };
 
@@ -404,7 +404,7 @@ export default function SignupPage() {
           setEmailOtpLoading(false);
           return;
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     try {
@@ -724,7 +724,7 @@ export default function SignupPage() {
   );
 
   const fieldInputStyle = (name: string, hasError?: boolean): React.CSSProperties => ({
-    height: "44px", width: "100%", minWidth: 0, borderRadius: "var(--radius-sm)",
+    height: "44px", width: "100%", minWidth: 0, borderRadius: "var(--ra-14)",
     border: hasError ? "1.5px solid #ef4444" : focusedField === name ? "1.5px solid #6c63ff" : "1px solid #cbd5e1",
     background: "#f8fafc", padding: "0 14px", fontSize: "0.9rem", fontFamily: "var(--font-heading)",
     color: "#0f172a", outline: "none", transition: "all 0.2s ease",

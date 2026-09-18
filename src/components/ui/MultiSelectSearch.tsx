@@ -174,7 +174,7 @@ export function MultiSelectSearch({
           position: "relative",
           background: "var(--bgGlass)",
           border: isOpen ? "1px solid var(--colorPrimary)" : "1px solid var(--borderGlass)",
-          borderRadius: "var(--radius-sm)",
+          borderRadius: "var(--ra-14)",
           boxShadow: isOpen ? "0 0 0 3px rgba(0, 111, 238, 0.15)" : "none",
           transition: "all 0.25s ease"
         }}
@@ -228,7 +228,7 @@ export function MultiSelectSearch({
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: "1px solid var(--borderPrimary)",
-            borderRadius: "var(--radius-xs)",
+            borderRadius: "var(--ra-8)",
             boxShadow: "var(--shadow-xs)",
             padding: "12px",
             display: "flex",

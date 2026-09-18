@@ -2518,12 +2518,12 @@ export default function ProfilePage() {
                     <h4 className={styles.notifExpandedTitle}>السجل</h4>
                     <div className={styles.notifActions}>
                       {unreadCount > 0 && (
-                        <button onClick={(e) => { e.stopPropagation(); markAllAsRead(); }} className={`btn btn-radius-lg ${styles.notifBtnSmall}`}>
+                        <button onClick={(e) => { e.stopPropagation(); markAllAsRead(); }} className={`btn btn-ra-24 ${styles.notifBtnSmall}`}>
                           قراءة الكل
                         </button>
                       )}
                       {notifications.length > 0 && (
-                        <button onClick={(e) => { e.stopPropagation(); deleteAll(); }} className={`btn btn-danger btn-radius-lg ${styles.notifBtnDeleteAll}`}>
+                        <button onClick={(e) => { e.stopPropagation(); deleteAll(); }} className={`btn btn-danger btn-ra-24 ${styles.notifBtnDeleteAll}`}>
                           حذف الكل
                         </button>
                       )}
@@ -3989,15 +3989,15 @@ export default function ProfilePage() {
           selectedNotification?.type === "warning"
             ? "#ff9500"
             : selectedNotification?.type === "error"
-            ? "#ff3b30"
-            : "var(--textPrimary)"
+              ? "#ff3b30"
+              : "var(--textPrimary)"
         }
         borderColor={
           selectedNotification?.type === "warning"
             ? "rgba(255, 149, 0, 0.3)"
             : selectedNotification?.type === "error"
-            ? "rgba(255, 59, 48, 0.3)"
-            : "var(--modelCardBorder)"
+              ? "rgba(255, 59, 48, 0.3)"
+              : "var(--modelCardBorder)"
         }
         iconNode={
           <div
@@ -4009,18 +4009,18 @@ export default function ProfilePage() {
                 selectedNotification?.type === "warning"
                   ? "linear-gradient(135deg, rgba(255, 149, 0, 0.2) 0%, rgba(255, 149, 0, 0.05) 100%)"
                   : selectedNotification?.type === "error"
-                  ? "linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.05) 100%)"
-                  : selectedNotification?.type === "success"
-                  ? "linear-gradient(135deg, rgba(52, 199, 89, 0.2) 0%, rgba(52, 199, 89, 0.05) 100%)"
-                  : "linear-gradient(135deg, rgba(0, 111, 238, 0.2) 0%, rgba(0, 111, 238, 0.05) 100%)",
+                    ? "linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.05) 100%)"
+                    : selectedNotification?.type === "success"
+                      ? "linear-gradient(135deg, rgba(52, 199, 89, 0.2) 0%, rgba(52, 199, 89, 0.05) 100%)"
+                      : "linear-gradient(135deg, rgba(0, 111, 238, 0.2) 0%, rgba(0, 111, 238, 0.05) 100%)",
               border:
                 selectedNotification?.type === "warning"
                   ? "2px solid rgba(255, 149, 0, 0.4)"
                   : selectedNotification?.type === "error"
-                  ? "2px solid rgba(255, 59, 48, 0.4)"
-                  : selectedNotification?.type === "success"
-                  ? "2px solid rgba(52, 199, 89, 0.4)"
-                  : "2px solid rgba(0, 111, 238, 0.4)",
+                    ? "2px solid rgba(255, 59, 48, 0.4)"
+                    : selectedNotification?.type === "success"
+                      ? "2px solid rgba(52, 199, 89, 0.4)"
+                      : "2px solid rgba(0, 111, 238, 0.4)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -4028,23 +4028,22 @@ export default function ProfilePage() {
                 selectedNotification?.type === "warning"
                   ? "#ff9500"
                   : selectedNotification?.type === "error"
-                  ? "#ff3b30"
-                  : selectedNotification?.type === "success"
-                  ? "#34c759"
-                  : "var(--colorPrimary)",
+                    ? "#ff3b30"
+                    : selectedNotification?.type === "success"
+                      ? "#34c759"
+                      : "var(--colorPrimary)",
               boxShadow: "0 8px 24px rgba(0,0,0,0.15)"
             }}
           >
             <i
-              className={`bx ${
-                selectedNotification?.type === "warning"
+              className={`bx ${selectedNotification?.type === "warning"
                   ? "bx-error"
                   : selectedNotification?.type === "error"
-                  ? "bx-error-circle"
-                  : selectedNotification?.type === "success"
-                  ? "bx-check-circle"
-                  : "bxs-bell-ring"
-              }`}
+                    ? "bx-error-circle"
+                    : selectedNotification?.type === "success"
+                      ? "bx-check-circle"
+                      : "bxs-bell-ring"
+                }`}
               style={{ fontSize: "2.3rem" }}
             />
           </div>
@@ -4052,30 +4051,30 @@ export default function ProfilePage() {
         primaryButton={
           selectedNotification?.link
             ? {
-                label: "فتح الرابط",
-                onClick: () => {
-                  const link = selectedNotification.link;
-                  setSelectedNotification(null);
-                  router.push(link);
-                },
-                bgColor: "var(--mainBtn)",
-                icon: <i className="bx bx-link-external" style={{ fontSize: "1.2rem" }} />
-              }
+              label: "فتح الرابط",
+              onClick: () => {
+                const link = selectedNotification.link;
+                setSelectedNotification(null);
+                router.push(link);
+              },
+              bgColor: "var(--mainBtn)",
+              icon: <i className="bx bx-link-external" style={{ fontSize: "1.2rem" }} />
+            }
             : {
-                label: "إغلاق",
-                onClick: () => setSelectedNotification(null),
-                bgColor: "var(--mainBtn)",
-                icon: <i className="bx bx-check" style={{ fontSize: "1.2rem" }} />
-              }
+              label: "إغلاق",
+              onClick: () => setSelectedNotification(null),
+              bgColor: "var(--mainBtn)",
+              icon: <i className="bx bx-check" style={{ fontSize: "1.2rem" }} />
+            }
         }
         secondaryButton={
           selectedNotification?.link
             ? {
-                label: "إلغاء",
-                onClick: () => setSelectedNotification(null),
-                bgColor: "var(--cancelBtn)",
-                icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
-              }
+              label: "إلغاء",
+              onClick: () => setSelectedNotification(null),
+              bgColor: "var(--cancelBtn)",
+              icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />
+            }
             : undefined
         }
       >

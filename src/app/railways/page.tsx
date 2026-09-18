@@ -703,7 +703,7 @@ ${reportDetails.trim()}`;
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
-// ========================= Loading screen
+  // ========================= Loading screen
   if (authLoading) {
     return (
       <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", direction: "rtl" }}>
@@ -867,7 +867,7 @@ ${reportDetails.trim()}`;
 
   const activeIndex = activeRoutesList.findIndex(r => r.id === selectedRouteId);
   const color = getRouteColor(selectedRouteId, activeIndex >= 0 ? activeIndex : 0);
-// ================== Main Container 
+  // ================== Main Container 
   return (
     //================================== START MAIN CONTAINER =================================
     <div className="main-container">
@@ -915,7 +915,7 @@ ${reportDetails.trim()}`;
                 style={{
                   background: `radial-gradient(circle at 100% 0%, ${iconData.glowColor}98 20%, transparent 65%), var(--bgPrimary)`,
                   border: "1px solid var(--borderSecondary)",
-                  borderRadius: "var(--radius-xs)",
+                  borderRadius: "var(--ra-8)",
                   padding: "16px 16px 14px 16px",
                   cursor: "pointer",
                   transition: "all 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -977,21 +977,21 @@ ${reportDetails.trim()}`;
 
           {/* Details Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[0]?.name?.replace(" (رمسيس)", "")?.replace(" (محطة رمسيس)", "") || currentRoute?.from || "القاهرة"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>البداية</div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.stops?.[currentRoute.stops.length - 1]?.name?.replace(" (محطة سيدي جابر / مصر)", "") || currentRoute?.to || "الوصول"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>النهاية</div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--textPrimary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentRoute?.duration || "غير معددة"}
               </div>
@@ -1003,7 +1003,7 @@ ${reportDetails.trim()}`;
           <div style={{
             background: "var(--bgGlass)",
             padding: "20px 16px",
-            borderRadius: "var(--radius-xs)",
+            borderRadius: "var(--ra-8)",
             border: "1px solid var(--borderGlass)"
           }}>
             <h2 className="text-md fw-bold mb-4">
@@ -1089,7 +1089,7 @@ ${reportDetails.trim()}`;
             marginTop: "12px",
             background: "var(--bgGlass)",
             border: "1px solid var(--borderGlass)",
-            borderRadius: "var(--radius-xs)",
+            borderRadius: "var(--ra-8)",
             padding: "16px"
           }}>
             <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
@@ -1253,7 +1253,7 @@ ${reportDetails.trim()}`;
         <div style={{
           background: "var(--bgLinearAlert)",
           border: "1px solid var(--borderSecondary)",
-          borderRadius: "var(--radius-xs)",
+          borderRadius: "var(--ra-8)",
           padding: "20px",
           display: "flex",
           justifyContent: "space-between",
@@ -1276,7 +1276,7 @@ ${reportDetails.trim()}`;
               }}>
                 الإبلاغ عن مشكلة أو تحديث في بيانات القطارات
               </h2>
-              <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px"}} />
+              <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px" }} />
             </div>
 
             <p style={{

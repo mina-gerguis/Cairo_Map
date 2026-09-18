@@ -84,7 +84,7 @@ export default function Navbar() {
         { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.png" },
         { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.png" },
         { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.png" },
-        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.svg" },
+        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.png" },
         { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: "Cairo_monorail_east.png" },
         { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: "Cairo_lrt.png" },
         { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: "Cairo_train.png" },
@@ -92,7 +92,7 @@ export default function Navbar() {
         { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: "arab_republice.png" },
         { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: "bus.png" },
         { href: "/microbus-stations", label: "مواقف الميكروباص", subtitle: "خطوط السرفيس بين المحافظات", imgLogo: "microbus.png" },
-        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: "Cairo_directions.svg" },
+        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: "arab_republic _of_egypt.png" },
         { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: "ai.webp" },
         { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: "Cairo_logo.png" },
       ]

@@ -1,0 +1,66 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — CARDS, PANELS & CONTAINERS
+ * ============================================================================
+ * Glassmorphic panels, elevation cards, modal dialog containers, and boxes.
+ */
+
+/* ==========================================================================
+   1. Glass Panel (Navigation, Headers, Sidebars)
+   ========================================================================== */
+.glass-panel {
+  border: 1px solid var(--borderGlass);
+  border-radius: var(--ra-10);
+  background: var(--bgGlass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: var(--transition-smooth);
+}
+
+/* ==========================================================================
+   2. Glass Card (Content Cards, Grid Items)
+   ========================================================================== */
+.glass-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--cardGlassBorder);
+  border-radius: var(--cardGlassRadius);
+  background: var(--cardGlassBg);
+  box-shadow: var(--cardGlassShadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: var(--transition-spring);
+}
+
+.glass-card::before {
+  content: none;
+}
+
+.glass-card:hover {
+  background: var(--hoverBtn);
+}
+
+.glass-card:active {
+  transform: scale(0.97);
+}
+
+/* ==========================================================================
+   3. Modal Card / Model Dialogs
+   ========================================================================== */
+.model-card,
+.modal-card {
+  border: 1px solid var(--modelCardBorder);
+  border-radius: var(--modelCardRadius);
+  background: var(--modelCardBg);
+  box-shadow: var(--modelCardShadow);
+}
+
+/* ==========================================================================
+   4. Surface Container Box
+   ========================================================================== */
+.container-box {
+  border: 1px solid var(--containerBorder);
+  border-radius: var(--containerRadius);
+  background: var(--containerBg);
+  box-shadow: var(--containerShadow);
+}

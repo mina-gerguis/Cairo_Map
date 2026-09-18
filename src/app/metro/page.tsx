@@ -1392,7 +1392,7 @@ ${reportDetails.trim()}`;
                 style={{
                   background: `radial-gradient(circle at 100% 0%, ${line.color}98 20%, transparent 65%), var(--bgPrimary)`,
                   border: active ? `2px solid ${line.color}` : "1px solid var(--borderSecondary)",
-                  borderRadius: "var(--radius-xs)",
+                  borderRadius: "var(--ra-8)",
                   padding: "16px 16px 14px 16px",
                   cursor: "pointer",
                   transition: "all 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -1687,22 +1687,22 @@ ${reportDetails.trim()}`;
                   {/* Results Details Grid */}
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
                     {/* Number of Stations */}
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                       <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{result.stationCount}</div>
                       <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>عدد المحطات</div>
                     </div>
                     {/* Price */}
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                       <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSuccess)" }}>{result.price} ج.م</div>
                       <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>سعر التذكرة</div>
                     </div>
                     {/* Estimated Time */}
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                       <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{result.estimatedTime} د</div>
                       <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>وقت الوصول</div>
                     </div>
                     {/* Number of Transfers */}
-                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+                    <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
                       <div style={{ fontSize: "1.1rem", fontWeight: "800", color: result.needsTransfer ? "var(--colorWarning, #f59e0b)" : "var(--colorSuccess)" }}>
                         {result.needsTransfer ? `${result.transfers.length} تبديل` : "مباشر"}
                       </div>
@@ -1715,7 +1715,7 @@ ${reportDetails.trim()}`;
                     <div style={{
                       background: "var(--bgGlass)",
                       border: "1px solid var(--borderGlass)",
-                      borderRadius: "var(--radius-xs)",
+                      borderRadius: "var(--ra-8)",
                       padding: "14px 16px"
                     }}>
                       <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem", color: "var(--textPrimary)", fontWeight: "600" }}>
@@ -1805,7 +1805,7 @@ ${reportDetails.trim()}`;
                     <div style={{
                       background: "var(--bgSecondary)",
                       border: "1px solid var(--borderGlass)",
-                      borderRadius: "var(--radius-xs)",
+                      borderRadius: "var(--ra-8)",
                       padding: "16px",
                     }}>
                       {/* Active Trip Badge */}
@@ -1918,7 +1918,7 @@ ${reportDetails.trim()}`;
                   <div style={{
                     background: "var(--bgGlass)",
                     padding: "20px 16px",
-                    borderRadius: "var(--radius-xs)",
+                    borderRadius: "var(--ra-8)",
                     border: "1px solid var(--borderGlass)"
                   }}>
                     <h2 className="text-md fw-bold mb-4">
@@ -2061,7 +2061,7 @@ ${reportDetails.trim()}`;
         <div ref={detailsPanelRef} className="details-panel">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
             <h5 className="text-lg fw-bold" style={{ margin: 0 }}>
-               {selectedLineObj.name}
+              {selectedLineObj.name}
             </h5>
 
             {/* Line 3 sub-branches tabs */}
@@ -2102,19 +2102,19 @@ ${reportDetails.trim()}`;
 
           {/* Details Grid */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentExplorerStations[0]?.name || selectedLineObj.from}
               </div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "1rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentExplorerStations[currentExplorerStations.length - 1]?.name || selectedLineObj.to}
               </div>
             </div>
 
-            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-xs)", padding: "12px", textAlign: "center" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
               <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--textPrimary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {currentExplorerStations.length > 0 ? `${currentExplorerStations.length} محطة` : "تحت الإنشاء"}
               </div>
@@ -2358,7 +2358,7 @@ ${reportDetails.trim()}`;
 
           <div style={{
             position: "relative",
-            borderRadius: "var(--radius-xs)",
+            borderRadius: "var(--ra-8)",
             overflow: "hidden",
             border: "1px solid var(--borderGlass)",
             height: "220px",
@@ -2427,7 +2427,7 @@ ${reportDetails.trim()}`;
         <div ref={reportBannerRef} style={{
           background: "var(--bgLinearAlert)",
           border: "1px solid var(--borderSecondary)",
-          borderRadius: "var(--radius-xs)",
+          borderRadius: "var(--ra-8)",
           padding: "20px",
           display: "flex",
           justifyContent: "space-between",

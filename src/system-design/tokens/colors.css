@@ -1,0 +1,166 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — COLOR TOKENS
+ * ============================================================================
+ * Defines global color palettes, canvas backgrounds, text hierarchies, borders,
+ * and contextual UI states for both Dark Mode (default) and Light Mode.
+ */
+
+/* ==========================================================================
+   1. DARK THEME (Default Canvas)
+   ========================================================================== */
+:root {
+  /* --- Brand & Accent Palettes --- */
+  --colorPrimary: #2727ff;
+  --colorSecondary: #3b82f6;
+  --colorAccent: #1a3eff;
+  --colorMuted: #a1a1aa;
+
+  /* --- Status & Feedback Palettes --- */
+  --colorSuccess: #10b981;
+  --colorWarning: #ffa500;
+  --colorDanger: #ff0000;
+  --colorInfo: #0000ff;
+
+  /* --- Canvas & Background Layers --- */
+  --bgMode: #000000;
+  --bgPrimary: #000000;
+  --bgSecondary: #070707;
+  --bgThird: #121212;
+  --bgGlass: rgba(0, 0, 0, 0.70);
+  --bgGlass-active: rgba(39, 39, 42, 0.90);
+  --bgAlert: linear-gradient(135deg, rgba(117, 117, 117, 0.08) 0%, rgba(32, 32, 32, 0.08) 100%);
+  
+  /* --- Complex Gradients --- */
+  --bgLinear: radial-gradient(ellipse 85% 42% at 85% 24%, rgba(17, 64, 253, 0.88) 0%, rgba(48, 45, 205, 0.45) 35%, transparent 70%),
+              linear-gradient(180deg, var(--bgMode) 100%);
+  --bgLinearAlert: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(255, 56, 56, 0.88) 0%, rgba(255, 0, 0, 0.87) 35%, transparent 70%),
+                   linear-gradient(180deg, var(--bgMode) 100%);
+
+  /* --- Typography Colors --- */
+  --textPrimary: #f4f4f5;
+  --textSecondary: #a1a1aa;
+  --textMuted: #71717a;
+  --text-muted: #71717a;
+
+  /* --- Border Tokens --- */
+  --borderGlassBtn: rgba(255, 255, 255, 0.10);
+  --borderGlass: var(--borderGlassBtn);
+  --borderPrimary: rgba(124, 124, 124, 0.21);
+  --borderSecondary: rgb(32, 32, 32);
+  --borderDashed: rgba(255, 255, 255, 0.44);
+  --borderGlass-bright: rgba(255, 255, 255, 0.15);
+  --border-break: rgba(39, 39, 39, 0.66);
+
+  /* --- Button Component Tokens --- */
+  --mainBtn: var(--colorPrimary);
+  --mainBtnBorder: #2563eb;
+  --secondBtn: rgb(48, 48, 48);
+  --secondHoverBtn: rgb(78, 78, 78);
+  --cancelBtn: rgba(157, 159, 161, 0.27);
+  --cancelHoverBtn: rgb(78, 78, 78);
+  --successBtn: rgba(0, 219, 18, 0.23);
+  --warningBtn: #ffa500;
+  --dangerBtn: rgba(255, 0, 0, 0.15);
+  --accentBtn: #ffffff;
+  --hoverBtn: rgba(39, 39, 42, 0.80);
+  --paddingBtn: 10px 16px;
+
+  /* --- Form Inputs Tokens --- */
+  --inputBorder: rgba(255, 255, 255, 0.10);
+  --inputBg: rgba(24, 24, 27, 0.70);
+  --inputShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+
+  /* --- Glass Surface & Card Tokens --- */
+  --cardGlassBg: rgba(24, 24, 27, 0.70);
+  --cardGlassBorder: rgba(255, 255, 255, 0.10);
+  --cardGlassShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+
+  /* --- Modal & Dialog Tokens --- */
+  --modelCardBg: #ffffff;
+  --modelCardBorder: rgb(34, 31, 31);
+  --modelCardShadow: 0 25px 60px rgba(0, 0, 0, 0.10);
+
+  /* --- Containers & Overlays --- */
+  --containerBorder: rgba(255, 255, 255, 0.16);
+  --containerBg: rgba(2, 2, 2, 0.70);
+  --containerShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+  --overlay: rgba(0, 0, 0, 0.75);
+
+  /* --- Subscription Plan Tiers --- */
+  --bg-subscribe-button-base: linear-gradient(135deg, var(--mainBtn) 0%, #2563eb 100%);
+  --br-subscribe-button-base: #3b82f6;
+  --bs-subscribe-button-base: 0 4px 15px rgba(59, 130, 246, 0.38);
+
+  --bg-subscribe-button-seliver: linear-gradient(135deg, rgba(26, 25, 25, 0.54) 0%, #818181 100%);
+  --br-subscribe-button-seliver: #727272;
+  --bg-subscribe-button-silver: var(--bg-subscribe-button-seliver);
+  --br-subscribe-button-silver: var(--br-subscribe-button-seliver);
+
+  --bg-subscribe-button-gold: linear-gradient(135deg, #ffdd00 0%, #d4b500 100%);
+  --br-subscribe-button-gold: #ffdd00;
+  --bs-subscribe-button-gold: 0 4px 15px rgba(255, 221, 0, 0.38);
+}
+
+/* ==========================================================================
+   2. LIGHT THEME OVERRIDES
+   ========================================================================== */
+html.light {
+  /* --- Canvas & Background Layers --- */
+  --bgMode: #ffffff;
+  --bgPrimary: #ffffff;
+  --bgSecondary: #f4f4f5;
+  --bgThird: #f8f8f8;
+  --bgGlass: rgba(255, 255, 255, 0.80);
+  --bgGlass-active: rgba(228, 228, 231, 0.90);
+  --bgAlert: linear-gradient(135deg, rgba(85, 85, 85, 0.11) 0%, rgba(32, 32, 32, 0.20) 100%);
+
+  /* --- Complex Gradients --- */
+  --bgLinear: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(115, 141, 250, 0.88) 0%, rgba(45, 184, 205, 0.45) 35%, transparent 70%),
+              linear-gradient(180deg, var(--bgMode) 100%);
+  --bgLinearAlert: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(255, 0, 0, 0.73) 0%, rgba(255, 0, 0, 0.76) 35%, transparent 70%),
+                   linear-gradient(180deg, var(--bgMode) 100%);
+
+  /* --- Typography Colors --- */
+  --textPrimary: #18181b;
+  --textSecondary: #52525b;
+  --textMuted: #7a7771;
+  --text-muted: #7a7771;
+
+  /* --- Border Tokens --- */
+  --borderGlassBtn: rgba(0, 0, 0, 0.08);
+  --borderGlass: var(--borderGlassBtn);
+  --borderPrimary: rgba(151, 151, 151, 0.38);
+  --borderSecondary: rgba(228, 228, 228, 0.86);
+  --borderDashed: rgba(0, 0, 0, 0.31);
+  --borderGlass-bright: rgba(0, 0, 0, 0.15);
+  --border-break: rgba(114, 114, 114, 0.14);
+
+  /* --- Button Component Tokens --- */
+  --secondBtn: rgb(224, 224, 224);
+  --secondHoverBtn: rgb(182, 182, 182);
+  --cancelHoverBtn: rgb(205, 199, 199);
+  --dangerBtn: rgba(255, 0, 0, 0.12);
+  --accentBtn: #000000;
+  --hoverBtn: rgba(244, 244, 245, 0.90);
+
+  /* --- Form Inputs Tokens --- */
+  --inputBorder: rgba(151, 151, 151, 0.38);
+  --inputBg: rgb(250, 250, 250);
+  --inputShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+
+  /* --- Glass Surface & Card Tokens --- */
+  --cardGlassBg: rgba(255, 255, 255, 0.80);
+  --cardGlassBorder: rgba(105, 95, 95, 0.14);
+  --cardGlassShadow: var(--shadow-card);
+
+  /* --- Modal & Dialog Tokens --- */
+  --modelCardBg: #ffffff;
+  --modelCardBorder: rgb(211, 211, 211);
+
+  /* --- Containers & Overlays --- */
+  --containerBorder: rgba(0, 0, 0, 0.16);
+  --containerBg: rgba(255, 255, 255, 0.70);
+  --containerShadow: 0 4px 6px -1px rgba(0, 0, 0, 0.10);
+  --overlay: rgba(14, 13, 13, 0.60);
+}

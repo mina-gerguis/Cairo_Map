@@ -57,7 +57,7 @@ export default function PrivacyPage() {
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               padding: "16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", color: "var(--colorPrimary)", fontWeight: "700" }}>
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               padding: "16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", color: "#10b981", fontWeight: "700" }}>
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               padding: "16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", color: "#f59e0b", fontWeight: "700" }}>
@@ -102,7 +102,7 @@ export default function PrivacyPage() {
             <div style={{
               background: "rgba(255, 255, 255, 0.03)",
               border: "1px solid var(--borderGlass)",
-              borderRadius: "var(--radius-sm)",
+              borderRadius: "var(--ra-14)",
               padding: "16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", color: "#8b5cf6", fontWeight: "700" }}>
@@ -160,7 +160,7 @@ export default function PrivacyPage() {
           <div style={{
             background: "linear-gradient(135deg, rgba(0, 111, 238, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%)",
             border: "1px solid rgba(0, 111, 238, 0.2)",
-            borderRadius: "var(--radius-sm)",
+            borderRadius: "var(--ra-14)",
             padding: "16px 20px",
             display: "flex",
             alignItems: "flex-start",
@@ -254,7 +254,7 @@ export default function PrivacyPage() {
             fontSize: "0.8rem",
             color: "var(--textMuted)",
             padding: "6px 12px",
-            borderRadius: "var(--radius-full)",
+            borderRadius: "var(--ra-full)",
           }}>
             <span>تحديث: سبتمبر /2026</span>
           </span>
@@ -270,8 +270,8 @@ export default function PrivacyPage() {
           textAlign: "center",
           position: "relative",
           overflow: "hidden",
-          borderRadius: "var(--radius-lg)",
-          border:"none"
+          borderRadius: "var(--ra-24)",
+          border: "none"
         }}
       >
         {/* Ambient Glow */}
@@ -364,7 +364,7 @@ export default function PrivacyPage() {
             className="glass-panel"
             style={{
               padding: "20px 18px",
-              borderRadius: "var(--radius-md)",
+              borderRadius: "var(--ra-18)",
               display: "flex",
               flexDirection: "column",
               gap: "10px",
@@ -376,7 +376,7 @@ export default function PrivacyPage() {
               style={{
                 width: "42px",
                 height: "42px",
-                borderRadius: "var(--radius-sm)",
+                borderRadius: "var(--ra-14)",
                 background: `${item.color}15`,
                 border: `1px solid ${item.color}35`,
                 display: "flex",
@@ -407,7 +407,7 @@ export default function PrivacyPage() {
             className="glass-panel"
             style={{
               padding: "24px 22px",
-              borderRadius: "var(--radius-md)",
+              borderRadius: "var(--ra-18)",
               border: "1px solid var(--borderGlass)",
               transition: "var(--transition-smooth)",
             }}
@@ -458,7 +458,7 @@ export default function PrivacyPage() {
         style={{
           marginTop: "28px",
           padding: "28px 24px",
-          borderRadius: "var(--radius-md)",
+          borderRadius: "var(--ra-18)",
           textAlign: "center",
           background: "linear-gradient(180deg, var(--bgGlass) 0%, rgba(0, 111, 238, 0.04) 100%)",
           border: "1px solid var(--borderGlass)",
@@ -493,7 +493,7 @@ export default function PrivacyPage() {
             className="btn btn-primary"
             style={{
               padding: "10px 22px",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--ra-full)",
               fontSize: "0.92rem",
               fontWeight: "600",
               textDecoration: "none",
@@ -512,7 +512,7 @@ export default function PrivacyPage() {
             className="btn btn-secondary"
             style={{
               padding: "10px 20px",
-              borderRadius: "var(--radius-full)",
+              borderRadius: "var(--ra-full)",
               fontSize: "0.92rem",
               fontWeight: "600",
               textDecoration: "none",

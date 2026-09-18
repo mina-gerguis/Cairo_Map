@@ -542,7 +542,7 @@ function ProposePlaceContent() {
 
                 {/* Sub-categories */}
                 {formData.category && (
-                  <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "var(--radius-xs)", border: "1px solid var(--borderGlass)" }}>
+                  <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "var(--ra-8)", border: "1px solid var(--borderGlass)" }}>
                     <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--textPrimary)", display: "block" }}>
                       التصنيفات الفرعية التابعة للقسم الرئيسي
                     </label>
@@ -646,7 +646,7 @@ function ProposePlaceContent() {
                 </div>
 
                 {/* Services Selection */}
-                <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.03)", padding: "16px", borderRadius: "var(--radius-sm)", border: "1px solid var(--borderGlass)" }}>
+                <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.03)", padding: "16px", borderRadius: "var(--ra-14)", border: "1px solid var(--borderGlass)" }}>
                   <MultiSelectSearch
                     label="الخدمات المتاحة بالمكان"
                     options={SERVICES_LIST}
@@ -664,7 +664,7 @@ function ProposePlaceContent() {
                 <i className="bx bx-map"></i> الموقع والعنوان التفصيلي
               </h2>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", fontFamily:"var(--font-body)" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", fontFamily: "var(--font-body)" }}>
                 {/* Governorate */}
                 <div>
                   <label className="help-label">المحافظة <span style={{ color: "#ff3b30" }}>*</span></label>
@@ -796,7 +796,7 @@ function ProposePlaceContent() {
                       padding: "var(--paddingBtn)",
                       borderRadius: "var(--radiusBtn)",
                       cursor: isUploadingImg ? "not-allowed" : "pointer",
-                      width:"100%"
+                      width: "100%"
                     }}
                   >
                     <i className={isUploadingImg ? "bx bx-loader-alt bx-spin" : "bx bx-cloud-upload"} style={{ fontSize: "1.3rem" }}></i>
@@ -825,7 +825,7 @@ function ProposePlaceContent() {
                         handleAddImage();
                       }
                     }}
-                    style={{ flex: 1, direction: "ltr", textAlign: "left", borderRadius:"var(--radiusBtn)" }}
+                    style={{ flex: 1, direction: "ltr", textAlign: "left", borderRadius: "var(--radiusBtn)" }}
                   />
                   <button
                     type="button"

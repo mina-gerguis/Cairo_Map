@@ -1,12 +1,312 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
+import gsap from "gsap";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/context/AuthContext";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
+import VoiceInputButton from "@/components/VoiceInputButton";
 
-const DEFAULT_MONORAIL: any[] = [
+/* ============================================================
+   Cairo Monorail Data — East & West Lines
+   ============================================================ */
+export type MonorailLineId = "east" | "west";
+
+export interface MonorailStation {
+  name: string;
+  line_type: MonorailLineId;
+  station_order: number;
+  landmarks?: string[];
+  status?: "تشغيل تجريبي" | "تحت الإنشاء";
+  type?: string;
+  timeFromStart?: number;
+}
+
+export const MONORAIL_LINES_CONFIG: {
+  id: MonorailLineId;
+  name: string;
+  shortName: string;
+  color: string;
+  icon: string;
+  from: string;
+  to: string;
+  desc: string;
+  length: string;
+  time: string;
+}[] = [
+    {
+      id: "east",
+      name: "مونوريل شرق النيل (العاصمة الإدارية)",
+      shortName: "شرق النيل (العاصمة)",
+      color: "#3b82f6",
+      icon: "fa-solid fa-train",
+      from: "الاستاد",
+      to: "مدينة الفنون والثقافة",
+      desc: "يربط محطة الاستاد بمدينة نصر بالعاصمة الإدارية الجديدة، مروراً بالقاهرة الجديدة والتجمع الخامس وبيت الوطن، بطول 56.5 كم ويضم 22 محطة.",
+      length: "56.5 كم",
+      time: "60 دقيقة",
+    },
+    {
+      id: "west",
+      name: "مونوريل غرب النيل (السادس من أكتوبر)",
+      shortName: "غرب النيل (أكتوبر)",
+      color: "#10b981",
+      icon: "fa-solid fa-train",
+      from: "وادي النيل",
+      to: "أكتوبر الجديدة",
+      desc: "يربط محطة وادي النيل بالمهندسين بمدينة السادس من أكتوبر والشيخ زايد والمنطقة الصناعية، بطول 42 كم ويضم 16 محطة.",
+      length: "42 كم",
+      time: "45 دقيقة",
+    },
+  ];
+
+export const MONORAIL_STATION_DETAILS: Record<
+  string,
+  {
+    landmarks: string[];
+    type: string;
+    timeFromStart: number;
+    status: "تشغيل تجريبي" | "تحت الإنشاء";
+  }
+> = {
+  // East Line
+  "الاستاد": {
+    landmarks: ["ستاد القاهرة الدولي", "مسجد آل رشدان", "نادي الزهور الرياضي", "شارع الفنجري"],
+    type: "تبادلية مع الخط الثالث للمترو",
+    timeFromStart: 0,
+    status: "تشغيل تجريبي",
+  },
+  "هشام بركات": {
+    landmarks: ["شارع الطيران", "سوق السيارات الجديد", "محور شينزو آبي", "مستشفى السلام التخصصي"],
+    type: "تبادلية مع الأتوبيس الترددي BRT",
+    timeFromStart: 4,
+    status: "تشغيل تجريبي",
+  },
+  "نوري خطاب": {
+    landmarks: ["حي الواحة بمدينة نصر", "عمارات الفتح", "محور المشير طنطاوي", "موقف الحي العاشر"],
+    type: "عادية",
+    timeFromStart: 8,
+    status: "تشغيل تجريبي",
+  },
+  "الحي السابع": {
+    landmarks: ["المنطقة الحرة بمدينة نصر", "عمارات عثمان", "شارع مصطفى النحاس", "سوق السيارات"],
+    type: "عادية",
+    timeFromStart: 11,
+    status: "تشغيل تجريبي",
+  },
+  "ذاكر حسين": {
+    landmarks: ["شارع ذاكر حسين الرئيسي", "سوق السيارات القديم", "طريق الوفاء والأمل", "ميدان إنبي"],
+    type: "عادية",
+    timeFromStart: 15,
+    status: "تشغيل تجريبي",
+  },
+  "المنطقة الحرة": {
+    landmarks: ["المنطقة الاستثمارية الحرة بمصر الجديدة", "محور المشير طنطاوي", "بوابات الاستثمار"],
+    type: "عادية",
+    timeFromStart: 18,
+    status: "تشغيل تجريبي",
+  },
+  "المشير طنطاوي": {
+    landmarks: ["مركز مصر للمعارض الدولية (EIEC)", "مسجد المشير طنطاوي", "استاد الدفاع الجوي", "فندق التوليب"],
+    type: "تبادلية مع الأتوبيس الترددي BRT",
+    timeFromStart: 22,
+    status: "تشغيل تجريبي",
+  },
+  "وان قطامية": {
+    landmarks: ["الطريق الدائري بمحيط المعادي", "مجمع وان قطامية الإداري", "توكيل مرسيدس", "كارفور المعادي"],
+    type: "عادية",
+    timeFromStart: 27,
+    status: "تشغيل تجريبي",
+  },
+  "المستثمرين": {
+    landmarks: ["منطقة المستثمرين الشمالية بالتجمع", "شارع التسعين الشمالي", "مجمع البنوك بالتجمع"],
+    type: "عادية",
+    timeFromStart: 32,
+    status: "تحت الإنشاء",
+  },
+  "النسيم": {
+    landmarks: ["محيط كمبوند ديار والتسعين الجنوبي", "المنطقة التجارية بالتجمع الخامس", "مستشفى الجوي التخصصي"],
+    type: "عادية",
+    timeFromStart: 36,
+    status: "تحت الإنشاء",
+  },
+  "الجامعة الأمريكية": {
+    landmarks: ["حرم الجامعة الأمريكية الجديد بالتجمع (AUC)", "بوينت 90 مول", "شارع التسعين الجنوبي", "ميدان الجامعة"],
+    type: "تبادلية",
+    timeFromStart: 40,
+    status: "تحت الإنشاء",
+  },
+  "إعمار": {
+    landmarks: ["كمبوند إعمار ميفيدا", "كمبوند هايد بارك التجمع", "شارع التسعين الجنوبي"],
+    type: "عادية",
+    timeFromStart: 44,
+    status: "تحت الإنشاء",
+  },
+  "ميدان النافورة": {
+    landmarks: ["ميدان النافورة الشهير بالتجمع", "منطقة البنوك والأعمال بالمستثمرين", "مجمع المطاعم"],
+    type: "عادية",
+    timeFromStart: 48,
+    status: "تحت الإنشاء",
+  },
+  "البروة": {
+    landmarks: ["محور محمد بن زايد الشمالي", "النادي الأهلي بالتجمع الخامس", "مشروع البروة العقاري"],
+    type: "عادية",
+    timeFromStart: 52,
+    status: "تحت الإنشاء",
+  },
+  "بيت الوطن": {
+    landmarks: ["مدخل منطقة بيت الوطن بالتجمع", "طريق السويس الصحراوي", "كمبوندات شمال بيت الوطن"],
+    type: "عادية",
+    timeFromStart: 56,
+    status: "تحت الإنشاء",
+  },
+  "مسجد الفتاح العليم": {
+    landmarks: ["مسجد الفتاح العليم الشهير", "مدخل العاصمة الإدارية الجديد من طريق السويس", "البوابة الغربية للعاصمة"],
+    type: "عادية",
+    timeFromStart: 60,
+    status: "تحت الإنشاء",
+  },
+  "الحي السكني R2": {
+    landmarks: ["الحي السكني الثاني R2 بالعاصمة", "المدينة الرياضية بالعاصمة الإدارية", "كمبوند المقصد"],
+    type: "عادية",
+    timeFromStart: 65,
+    status: "تحت الإنشاء",
+  },
+  "الدائري الإقليمي": {
+    landmarks: ["الطريق الدائري الإقليمي بمحيط العاصمة", "بوابات العاصمة الإدارية الرئيسية", "تقاطع طريق السخنة"],
+    type: "عادية",
+    timeFromStart: 69,
+    status: "تحت الإنشاء",
+  },
+  "فندق الماسة": {
+    landmarks: ["فندق الماسة كابيتال الشهير", "منطقة حي المال والأعمال (CBD)", "البرج الأيقوني بالعاصمة"],
+    type: "عادية",
+    timeFromStart: 73,
+    status: "تحت الإنشاء",
+  },
+  "الحي الحكومي": {
+    landmarks: ["مجلس النواب ومجلس الوزراء بالعاصمة", "الحي الوزاري", "ساحة الشعب", "مبنى البنك المركزي"],
+    type: "عادية",
+    timeFromStart: 77,
+    status: "تحت الإنشاء",
+  },
+  "حي السفارات": {
+    landmarks: ["حي السفارات والبعثات الدبلوماسية", "الكاتدرائية الكبرى بالعاصمة (ميلاد المسيح)", "الحي الدبلوماسي"],
+    type: "عادية",
+    timeFromStart: 80,
+    status: "تحت الإنشاء",
+  },
+  "مدينة الفنون والثقافة": {
+    landmarks: ["مدينة الفنون والثقافة بالعاصمة", "محطة القطار الكهربائي الخفيف LRT", "دار الأوبرا الجديدة", "النهر الأخضر الكبير"],
+    type: "تبادلية مع القطار الكهربائي الخفيف LRT",
+    timeFromStart: 84,
+    status: "تشغيل تجريبي",
+  },
+
+  // West Line
+  "أكتوبر الجديدة": {
+    landmarks: ["منطقة حدائق أكتوبر الجديدة", "أحياء أكتوبر السكنية الغربية", "المنطقة الصناعية بأكتوبر"],
+    type: "نهائية",
+    timeFromStart: 0,
+    status: "تحت الإنشاء",
+  },
+  "المنطقة الصناعية": {
+    landmarks: ["المنطقة الصناعية الكبرى بالسادس من أكتوبر", "مجمع المصانع والمعارض", "طريق الواحات"],
+    type: "عادية",
+    timeFromStart: 5,
+    status: "تحت الإنشاء",
+  },
+  "السادات": {
+    landmarks: ["محور السادات الرئيسي بأكتوبر", "محيط الأحياء السكنية (الثاني والثالث)", "ميدان الحصري القريب"],
+    type: "عادية",
+    timeFromStart: 10,
+    status: "تحت الإنشاء",
+  },
+  "جهاز مدينة 6 أكتوبر": {
+    landmarks: ["مقر جهاز مدينة 6 أكتوبر", "أكتوبر سيتي سنتر", "شارع المحور المركزي", "مستشفى 6 أكتوبر الجامعي"],
+    type: "عادية",
+    timeFromStart: 14,
+    status: "تحت الإنشاء",
+  },
+  "نقابة المهندسين": {
+    landmarks: ["كمبوند جمعية المهندسين بأكتوبر", "محور جمال عبد الناصر الرئيسي", "نادي نقابة المهندسين"],
+    type: "تبادلية مع القطار الكهربائي السريع (HSR)",
+    timeFromStart: 18,
+    status: "تحت الإنشاء",
+  },
+  "جامعة النيل": {
+    landmarks: ["جامعة النيل الأهلية", "مول العرب الشهير", "ميدان جهينة محور 26 يوليو", "مستشفى دار الفؤاد"],
+    type: "عادية",
+    timeFromStart: 22,
+    status: "تحت الإنشاء",
+  },
+  "هايبر وان": {
+    landmarks: ["هايبر وان الشيخ زايد", "المدخل الرئيسي للشيخ زايد", "جامعة القاهرة فرع زايد", "محور 26 يوليو"],
+    type: "عادية",
+    timeFromStart: 26,
+    status: "تحت الإنشاء",
+  },
+  "الصحراوي": {
+    landmarks: ["طريق مصر إسكندرية الصحراوي", "القرية الذكية (Smart Village)", "داندي مول"],
+    type: "عادية",
+    timeFromStart: 30,
+    status: "تحت الإنشاء",
+  },
+  "المنصورية": {
+    landmarks: ["طريق المنصورية الريفي والسياحي", "منطقة أبو رواش الأثرية", "مزارع المنصورية"],
+    type: "عادية",
+    timeFromStart: 35,
+    status: "تحت الإنشاء",
+  },
+  "المريوطية": {
+    landmarks: ["ترعة المريوطية السياحية", "منطقة الهرم السياحية", "فنادق المريوطية", "طريق سقارة السياحي"],
+    type: "عادية",
+    timeFromStart: 39,
+    status: "تحت الإنشاء",
+  },
+  "الطريق الدائري": {
+    landmarks: ["الطريق الدائري الغربي حول الجيزة", "منطقة المنيب والمريوطية", "محور صفط اللبن"],
+    type: "تبادلية مع الأتوبيس الترددي BRT",
+    timeFromStart: 43,
+    status: "تحت الإنشاء",
+  },
+  "العريش": {
+    landmarks: ["شارع الهرم الرئيسي (تقاطع العريش)", "سينما رادوبيس والمنطقة التجارية", "مستشفى الهرم"],
+    type: "عادية",
+    timeFromStart: 47,
+    status: "تحت الإنشاء",
+  },
+  "المطبغة": {
+    landmarks: ["شارع الملك فيصل الرئيسي (منطقة المطبغة)", "حي بولاق الدكرور الجنوبي", "سوق فيصل"],
+    type: "عادية",
+    timeFromStart: 51,
+    status: "تحت الإنشاء",
+  },
+  "بولاق الدكرور": {
+    landmarks: ["شارع همفرس بولاق الدكرور", "محطة مترو بولاق الدكرور (الخط الثالث)", "جامعة القاهرة فرع الدقي"],
+    type: "تبادلية مع الخط الثالث للمترو",
+    timeFromStart: 55,
+    status: "تحت الإنشاء",
+  },
+  "جامعة الدول العربية": {
+    landmarks: ["شارع جامعة الدول العربية بالمهندسين", "ميدان مصطفى محمود", "نادي الصيد المصري", "شارع البطل أحمد عبد العزيز"],
+    type: "عادية",
+    timeFromStart: 59,
+    status: "تحت الإنشاء",
+  },
+  "وادي النيل": {
+    landmarks: ["شارع وادي النيل بالمهندسين", "محطة مترو وادي النيل (الخط الثالث)", "تقاطع المهندسين والعجوزة", "مستشفى ابن سينا"],
+    type: "تبادلية مع الخط الثالث للمترو",
+    timeFromStart: 63,
+    status: "تشغيل تجريبي",
+  },
+};
+
+export const STATION_DETAILS = MONORAIL_STATION_DETAILS;
+
+const DEFAULT_MONORAIL_STATIONS: MonorailStation[] = [
+  // East Line
   { name: "الاستاد", line_type: "east", station_order: 1 },
   { name: "هشام بركات", line_type: "east", station_order: 2 },
   { name: "نوري خطاب", line_type: "east", station_order: 3 },
@@ -29,11 +329,13 @@ const DEFAULT_MONORAIL: any[] = [
   { name: "الحي الحكومي", line_type: "east", station_order: 20 },
   { name: "حي السفارات", line_type: "east", station_order: 21 },
   { name: "مدينة الفنون والثقافة", line_type: "east", station_order: 22 },
+
+  // West Line
   { name: "أكتوبر الجديدة", line_type: "west", station_order: 1 },
   { name: "المنطقة الصناعية", line_type: "west", station_order: 2 },
   { name: "السادات", line_type: "west", station_order: 3 },
   { name: "جهاز مدينة 6 أكتوبر", line_type: "west", station_order: 4 },
-  { name: "جمعية المهندسين", line_type: "west", station_order: 5 },
+  { name: "نقابة المهندسين", line_type: "west", station_order: 5 },
   { name: "جامعة النيل", line_type: "west", station_order: 6 },
   { name: "هايبر وان", line_type: "west", station_order: 7 },
   { name: "الصحراوي", line_type: "west", station_order: 8 },
@@ -44,51 +346,24 @@ const DEFAULT_MONORAIL: any[] = [
   { name: "المطبغة", line_type: "west", station_order: 13 },
   { name: "بولاق الدكرور", line_type: "west", station_order: 14 },
   { name: "جامعة الدول العربية", line_type: "west", station_order: 15 },
-  { name: "وادي النيل", line_type: "west", station_order: 16 }
+  { name: "وادي النيل", line_type: "west", station_order: 16 },
 ];
 
-export const STATION_DETAILS: Record<string, { landmarks: string[]; type: string; timeFromStart: number; status: "تشغيل تجريبي" | "تحت الإنشاء" }> = {
-  // East Line
-  "الاستاد": { landmarks: ["ستاد القاهرة الدولي", "مسجد آل رشدان", "نادي الزهور الرياضي"], type: "تبادلية مع الخط الثالث للمترو", timeFromStart: 0, status: "تشغيل تجريبي" },
-  "هشام بركات": { landmarks: ["شارع الطيران", "سوق السيارات الجديد", "محور شينزو آبي"], type: "تبادلية مع الأتوبيس الترددي BRT", timeFromStart: 4, status: "تشغيل تجريبي" },
-  "نوري خطاب": { landmarks: ["حي الواحة بمدينة نصر", "عمارات الفتح", "محور المشير طنطاوي"], type: "عادية", timeFromStart: 8, status: "تشغيل تجريبي" },
-  "الحي السابع": { landmarks: ["المنطقة الحرة بمدينة نصر", "عمارات عثمان", "شارع مصطفى النحاس"], type: "عادية", timeFromStart: 11, status: "تشغيل تجريبي" },
-  "ذاكر حسين": { landmarks: ["شارع ذاكر حسين الرئيسي", "سوق السيارات القديم", "طريق الوفاء والأمل"], type: "عادية", timeFromStart: 15, status: "تشغيل تجريبي" },
-  "المنطقة الحرة": { landmarks: ["المنطقة الاستثمارية الحرة بمصر الجديدة", "محور المشير طنطاوي"], type: "عادية", timeFromStart: 18, status: "تشغيل تجريبي" },
-  "المشير طنطاوي": { landmarks: ["مركز مصر للمعارض الدولية (EIEC)", "مسجد المشير طنطاوي", "استاد الدفاع الجوي"], type: "تبادلية مع الأتوبيس الترددي BRT", timeFromStart: 22, status: "تشغيل تجريبي" },
-  "وان قطامية": { landmarks: ["الطريق الدائري بمحيط المعادي", "مجمع وان قطامية الإداري", "توكيل مرسيدس"], type: "عادية", timeFromStart: 27, status: "تشغيل تجريبي" },
-  "المستثمرين": { landmarks: ["منطقة المستثمرين الشمالية بالتجمع", "شارع التسعين الشمالي"], type: "عادية", timeFromStart: 32, status: "تحت الإنشاء" },
-  "النسيم": { landmarks: ["محيط كمبوند ديار والتسعين الجنوبي", "المنطقة التجارية بالتجمع الخامس"], type: "عادية", timeFromStart: 36, status: "تحت الإنشاء" },
-  "الجامعة الأمريكية": { landmarks: ["حرم الجامعة الأمريكية الجديد بالتجمع", "بوينت 90 مول", "شارع التسعين الجنوبي"], type: "تبادلية", timeFromStart: 40, status: "تحت الإنشاء" },
-  "إعمار": { landmarks: ["كمبوند إعمار ميفيدا", "كمبوند هايد بارك التجمع", "شارع التسعين الجنوبي"], type: "عادية", timeFromStart: 44, status: "تحت الإنشاء" },
-  "ميدان النافورة": { landmarks: ["ميدان النافورة الشهير بالتجمع", "منطقة البنوك والأعمال بالمستثمرين"], type: "عادية", timeFromStart: 48, status: "تحت الإنشاء" },
-  "البروة": { landmarks: ["محور محمد بن زايد الشمالي", "النادي الأهلي بالتجمع الخامس"], type: "عادية", timeFromStart: 52, status: "تحت الإنشاء" },
-  "بيت الوطن": { landmarks: ["مدخل منطقة بيت الوطن بالتجمع", "طريق السويس الصحراوي"], type: "عادية", timeFromStart: 56, status: "تحت الإنشاء" },
-  "مسجد الفتاح العليم": { landmarks: ["مسجد الفتاح العليم الشهير", "مدخل العاصمة الإدارية الجديد من طريق السويس"], type: "عادية", timeFromStart: 60, status: "تحت الإنشاء" },
-  "الحي السكني R2": { landmarks: ["الحي السكني الثاني R2 بالعاصمة", "المدينة الرياضية بالعاصمة الإدارية"], type: "عادية", timeFromStart: 65, status: "تحت الإنشاء" },
-  "الدائري الإقليمي": { landmarks: ["الطريق الدائري الإقليمي بمحيط العاصمة", "بوابات العاصمة الإدارية الرئيسية"], type: "عادية", timeFromStart: 69, status: "تحت الإنشاء" },
-  "فندق الماسة": { landmarks: ["فندق الماسة كابيتال الشهير", "منطقة السي آي دي (حي المال والأعمال)"], type: "عادية", timeFromStart: 73, status: "تحت الإنشاء" },
-  "الحي الحكومي": { landmarks: ["مجلس النواب ومجلس الوزراء بالعاصمة", "الحي الوزاري", "ساحة الشعب"], type: "عادية", timeFromStart: 77, status: "تحت الإنشاء" },
-  "حي السفارات": { landmarks: ["حي السفارات والبعثات الدبلوماسية", "الكاتدرائية الكبرى بالعاصمة"], type: "عادية", timeFromStart: 80, status: "تحت الإنشاء" },
-  "مدينة الفنون والثقافة": { landmarks: ["مدينة الفنون والثقافة بالعاصمة", "محطة القطار الكهربائي LRT", "النهر الأخضر الكبير"], type: "تبادلية مع القطار الكهربائي الخفيف LRT", timeFromStart: 84, status: "تشغيل تجريبي" },
-
-  // West Line
-  "أكتوبر الجديدة": { landmarks: ["منطقة حدائق أكتوبر الجديدة", "أحياء أكتوبر السكنية الغربية", "المنطقة الصناعية"], type: "نهائية", timeFromStart: 0, status: "تحت الإنشاء" },
-  "المنطقة الصناعية": { landmarks: ["المنطقة الصناعية الكبرى بالسادس من أكتوبر", "مجمع المصانع والمعارض"], type: "عادية", timeFromStart: 5, status: "تحت الإنشاء" },
-  "السادات": { landmarks: ["محور السادات الرئيسي بأكتوبر", "محيط الأحياء السكنية (الثاني والثالث)"], type: "عادية", timeFromStart: 10, status: "تحت الإنشاء" },
-  "جهاز مدينة 6 أكتوبر": { landmarks: ["مقر جهاز مدينة 6 أكتوبر", "أكتوبر سيتي سنتر", "شارع المحور المركزي"], type: "عادية", timeFromStart: 14, status: "تحت الإنشاء" },
-  "نقابة المهندسين": { landmarks: ["كمبوند جمعية المهندسين بأكتوبر", "محور جمال عبد الناصر الرئيسي"], type: "تبادلية مع القطار الكهربائي السريع (HSR)", timeFromStart: 18, status: "تحت الإنشاء" },
-  "جامعة النيل": { landmarks: ["جامعة النيل الأهلية", "مول العرب الشهير", "ميدان جهينة محور 26 يوليو"], type: "عادية", timeFromStart: 22, status: "تحت الإنشاء" },
-  "هايبر وان": { landmarks: ["هايبر وان الشيخ زايد", "المدخل الرئيسي للشيخ زايد", "جامعة القاهرة فرع زايد"], type: "عادية", timeFromStart: 26, status: "تحت الإنشاء" },
-  "الصحراوي": { landmarks: ["طريق مصر إسكندرية الصحراوي", "القرية الذكية بالتجمع الغربي", "داندي مول"], type: "عادية", timeFromStart: 30, status: "تحت الإنشاء" },
-  "المنصورية": { landmarks: ["طريق المنصورية الريفي والسياحي", "منطقة أبو رواش الأثرية"], type: "عادية", timeFromStart: 35, status: "تحت الإنشاء" },
-  "المريوطية": { landmarks: ["ترعة المريوطية السياحية", "منطقة الهرم السياحية", "فنادق المريوطية"], type: "عادية", timeFromStart: 39, status: "تحت الإنشاء" },
-  "الطريق الدائري": { landmarks: ["الطريق الدائري الغربي حول الجيزة", "منطقة المنيب والمريوطية"], type: "تبادلية مع الأتوبيس الترددي BRT", timeFromStart: 43, status: "تحت الإنشاء" },
-  "العريش": { landmarks: ["شارع الهرم الرئيسي (تقاطع العريش)", "سينما رادوبيس والمنطقة التجارية"], type: "عادية", timeFromStart: 47, status: "تحت الإنشاء" },
-  "المطبغة": { landmarks: ["شارع الملك فيصل الرئيسي (منطقة المطبغة)", "حي بولاق الدكرور الجنوبي"], type: "عادية", timeFromStart: 51, status: "تحت الإنشاء" },
-  "بولاق الدكرور": { landmarks: ["شارع همفرس بولاق الدكرور", "محطة مترو بولاق الدكرور (الخط الثالث)"], type: "تبادلية", timeFromStart: 55, status: "تحت الإنشاء" },
-  "جامعة الدول العربية": { landmarks: ["شارع جامعة الدول العربية بالمهندسين", "ميدان مصطفى محمود", "نادي الصيد المصري"], type: "عادية", timeFromStart: 59, status: "تحت الإنشاء" },
-  "وادي النيل": { landmarks: ["شارع وادي النيل بالمهندسين", "محطة مترو وادي النيل (الخط الثالث)", "تقاطع المهندسين والعجوزة"], type: "تبادلية مع الخط الثالث للمترو", timeFromStart: 63, status: "تشغيل تجريبي" }
+const MONORAIL_STATION_COORDINATES: Record<string, { lat: number; lng: number }> = {
+  // East Line key stations
+  "الاستاد": { lat: 30.0694, lng: 31.3122 },
+  "هشام بركات": { lat: 30.0612, lng: 31.3325 },
+  "المشير طنطاوي": { lat: 30.0162, lng: 31.3789 },
+  "الجامعة الأمريكية": { lat: 30.0187, lng: 31.4983 },
+  "مسجد الفتاح العليم": { lat: 30.0125, lng: 31.6214 },
+  "مدينة الفنون والثقافة": { lat: 29.9856, lng: 31.7345 },
+  // West Line key stations
+  "وادي النيل": { lat: 30.0615, lng: 31.2005 },
+  "جامعة الدول العربية": { lat: 30.0525, lng: 31.1985 },
+  "هايبر وان": { lat: 30.0425, lng: 31.0256 },
+  "جامعة النيل": { lat: 30.0125, lng: 30.9754 },
+  "جهاز مدينة 6 أكتوبر": { lat: 29.9756, lng: 30.9425 },
+  "أكتوبر الجديدة": { lat: 29.8956, lng: 30.8654 },
 };
 
 function normalizeArabic(text: string) {
@@ -97,20 +372,46 @@ function normalizeArabic(text: string) {
     .replace(/[أإآ]/g, "ا")
     .replace(/ة/g, "ه")
     .replace(/ى/g, "ي")
-    .replace(/ـ/g, ""); // remove kashida
+    .replace(/ـ/g, "");
+}
+
+function getDistanceInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+    Math.cos((lat2 * Math.PI) / 180) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
 }
 
 export default function MonorailPage() {
-  const { user, profile, loading: authLoading } = useAuth();
-  const [stations, setStations] = useState<any[]>([]);
-  const [activeLine, setActiveLine] = useState<"east" | "west">("east");
-  const [loadingStations, setLoadingStations] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuth();
+
+  // State
+  const [stations, setStations] = useState<MonorailStation[]>(DEFAULT_MONORAIL_STATIONS);
+  const [selectedLine, setSelectedLine] = useState<MonorailLineId>("east");
+  const [selectedFrom, setSelectedFrom] = useState<string | null>(null);
+  const [selectedTo, setSelectedTo] = useState<string | null>(null);
+  const [fromQuery, setFromQuery] = useState("");
+  const [toQuery, setToQuery] = useState("");
+  const [showFromList, setShowFromList] = useState(false);
+  const [showToList, setShowToList] = useState(false);
+  const [lineSearchQuery, setLineSearchQuery] = useState("");
   const [expandedStation, setExpandedStation] = useState<string | null>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-  const [calcFrom, setCalcFrom] = useState("");
-  const [calcTo, setCalcTo] = useState("");
+
+  // GPS Nearest Station State
+  const [locatingNearest, setLocatingNearest] = useState(false);
+  const [nearestDistance, setNearestDistance] = useState<string | null>(null);
+
+  // Trip tracking state
+  const [isTripActive, setIsTripActive] = useState(false);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [copiedRoute, setCopiedRoute] = useState(false);
 
   // Report Problem State
   const [reportModalOpen, setReportModalOpen] = useState(false);
@@ -130,208 +431,24 @@ export default function MonorailPage() {
   const [limitChecking, setLimitChecking] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
 
-  const allStationsList = stations.length > 0 ? stations : DEFAULT_MONORAIL;
-  const eastStations = allStationsList.filter(s => s.line_type === "east").sort((a, b) => a.station_order - b.station_order);
-  const westStations = allStationsList.filter(s => s.line_type === "west").sort((a, b) => a.station_order - b.station_order);
+  // GSAP Animation Refs
+  const headerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const searchPanelRef = useRef<HTMLDivElement>(null);
+  const detailsPanelRef = useRef<HTMLDivElement>(null);
+  const mapPanelRef = useRef<HTMLDivElement>(null);
+  const reportBannerRef = useRef<HTMLDivElement>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
 
-  const filteredReportStations = React.useMemo(() => {
-    const q = normalizeArabic(reportStationSearchQuery.trim());
-    if (!q) return allStationsList;
-    return allStationsList.filter((s: any) => {
-      const nameMatch = normalizeArabic(s.name).includes(q);
-      const details = STATION_DETAILS[s.name];
-      const landmarkMatch = details?.landmarks?.some((l: string) => normalizeArabic(l).includes(q));
-      return nameMatch || landmarkMatch;
-    });
-  }, [reportStationSearchQuery, allStationsList]);
-
-  const routeResult = React.useMemo(() => {
-    if (!calcFrom || !calcTo) return null;
-    if (calcFrom === calcTo) return null;
-
-    const fromStationObj = allStationsList.find(s => s.name === calcFrom);
-    const toStationObj = allStationsList.find(s => s.name === calcTo);
-
-    if (!fromStationObj || !toStationObj) return null;
-
-    // Check if on the same line
-    if (fromStationObj.line_type === toStationObj.line_type) {
-      const lineStationsObj = allStationsList
-        .filter(s => s.line_type === fromStationObj.line_type)
-        .sort((a, b) => a.station_order - b.station_order);
-
-      const fromIndex = lineStationsObj.findIndex(s => s.name === calcFrom);
-      const toIndex = lineStationsObj.findIndex(s => s.name === calcTo);
-
-      const count = Math.abs(fromStationObj.station_order - toStationObj.station_order);
-
-      // Calculate path
-      const min = Math.min(fromIndex, toIndex);
-      const max = Math.max(fromIndex, toIndex);
-      const path = lineStationsObj.slice(min, max + 1).map(s => s.name);
-      const pathOrdered = fromIndex <= toIndex ? path : [...path].reverse();
-
-      // Fare calculation
-      // up to 5: 20 EGP, 6-10: 40 EGP, 11-15: 55 EGP, 16-22: 80 EGP
-      let price = 20;
-      let discountPrice = 10;
-      let zoneName = "منطقة واحدة (حتى 5 محطات)";
-      if (count > 15) {
-        price = 80;
-        discountPrice = 40;
-        zoneName = "أربع مناطق (أكثر من 15 محطة)";
-      } else if (count > 10) {
-        price = 55;
-        discountPrice = 27.5;
-        zoneName = "ثلاث مناطق (من 11 إلى 15 محطة)";
-      } else if (count > 5) {
-        price = 40;
-        discountPrice = 20;
-        zoneName = "منطقتان (من 6 إلى 10 محطات)";
-      }
-
-      // Calculate estimated time
-      const fromDetails = STATION_DETAILS[calcFrom];
-      const toDetails = STATION_DETAILS[calcTo];
-      const time = (fromDetails && toDetails) ? Math.abs(fromDetails.timeFromStart - toDetails.timeFromStart) : count * 2.5;
-
-      return {
-        sameLine: true,
-        count,
-        price,
-        discountPrice,
-        zoneName,
-        time,
-        stations: pathOrdered,
-        lineType: fromStationObj.line_type
-      };
-    } else {
-      // Different lines!
-      const fromConnectorName = fromStationObj.line_type === "east" ? "الاستاد" : "وادي النيل";
-      const toConnectorName = toStationObj.line_type === "east" ? "الاستاد" : "وادي النيل";
-
-      const lineStationsFrom = allStationsList
-        .filter(s => s.line_type === fromStationObj.line_type)
-        .sort((a, b) => a.station_order - b.station_order);
-      const fromIndex = lineStationsFrom.findIndex(s => s.name === calcFrom);
-      const fromConnectorIndex = lineStationsFrom.findIndex(s => s.name === fromConnectorName);
-      const leg1Count = Math.abs(fromIndex - fromConnectorIndex);
-      const min1 = Math.min(fromIndex, fromConnectorIndex);
-      const max1 = Math.max(fromIndex, fromConnectorIndex);
-      const path1 = lineStationsFrom.slice(min1, max1 + 1).map(s => s.name);
-      const path1Ordered = fromIndex <= fromConnectorIndex ? path1 : [...path1].reverse();
-
-      // Leg 1 price
-      let leg1Price = 20;
-      let leg1Discount = 10;
-      if (leg1Count > 15) { leg1Price = 80; leg1Discount = 40; }
-      else if (leg1Count > 10) { leg1Price = 55; leg1Discount = 27.5; }
-      else if (leg1Count > 5) { leg1Price = 40; leg1Discount = 20; }
-
-      const fromDetails = STATION_DETAILS[calcFrom];
-      const fromConnectorDetails = STATION_DETAILS[fromConnectorName];
-      const leg1Time = (fromDetails && fromConnectorDetails) ? Math.abs(fromDetails.timeFromStart - fromConnectorDetails.timeFromStart) : leg1Count * 2.5;
-
-      // Leg 2: Metro Line 3 from fromConnector to toConnector
-      const metroPrice = 10;
-      const metroTime = 30; // ~30 minutes
-
-      // Leg 3: toConnector to toStation
-      const lineStationsTo = allStationsList
-        .filter(s => s.line_type === toStationObj.line_type)
-        .sort((a, b) => a.station_order - b.station_order);
-      const toConnectorIndex = lineStationsTo.findIndex(s => s.name === toConnectorName);
-      const toIndex = lineStationsTo.findIndex(s => s.name === calcTo);
-      const leg3Count = Math.abs(toConnectorIndex - toIndex);
-      const min3 = Math.min(toConnectorIndex, toIndex);
-      const max3 = Math.max(toConnectorIndex, toIndex);
-      const path3 = lineStationsTo.slice(min3, max3 + 1).map(s => s.name);
-      const path3Ordered = toConnectorIndex <= toIndex ? path3 : [...path3].reverse();
-
-      // Leg 3 price
-      let leg3Price = 20;
-      let leg3Discount = 10;
-      if (leg3Count > 15) { leg3Price = 80; leg3Discount = 40; }
-      else if (leg3Count > 10) { leg3Price = 55; leg3Discount = 27.5; }
-      else if (leg3Count > 5) { leg3Price = 40; leg3Discount = 20; }
-
-      const toConnectorDetails = STATION_DETAILS[toConnectorName];
-      const toDetails = STATION_DETAILS[calcTo];
-      const leg3Time = (toConnectorDetails && toDetails) ? Math.abs(toConnectorDetails.timeFromStart - toDetails.timeFromStart) : leg3Count * 2.5;
-
-      return {
-        sameLine: false,
-        leg1: {
-          from: calcFrom,
-          to: fromConnectorName,
-          count: leg1Count,
-          price: leg1Price,
-          discountPrice: leg1Discount,
-          time: leg1Time,
-          stations: path1Ordered,
-          lineType: fromStationObj.line_type
-        },
-        leg2: {
-          from: fromConnectorName,
-          to: toConnectorName,
-          price: metroPrice,
-          time: metroTime,
-        },
-        leg3: {
-          from: toConnectorName,
-          to: calcTo,
-          count: leg3Count,
-          price: leg3Price,
-          discountPrice: leg3Discount,
-          time: leg3Time,
-          stations: path3Ordered,
-          lineType: toStationObj.line_type
-        },
-        totalPrice: leg1Price + metroPrice + leg3Price,
-        totalDiscountPrice: leg1Discount + metroPrice + leg3Discount,
-        totalTime: leg1Time + metroTime + leg3Time
-      };
-    }
-  }, [calcFrom, calcTo, allStationsList]);
-
+  // Load stations from Supabase or LocalStorage
   useEffect(() => {
-    if (user) {
-      loadStations();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    document.title = "ماب القاهرة - مونو رايل";
-    function handleClickOutside(event: MouseEvent) {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    document.title = "ماب القاهرة - مونوريل العاصمة وأكتوبر";
+    loadStations();
   }, []);
 
-  const handleSelectSearchStation = (station: any) => {
-    setActiveLine(station.line_type);
-    setExpandedStation(station.name);
-    setSearchQuery("");
-    setIsDropdownOpen(false);
-
-    setTimeout(() => {
-      const el = document.getElementById(`station-${station.name}`);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    }, 100);
-  };
-
   const loadStations = async () => {
-    setLoadingStations(true);
     if (!supabase) {
       setStations(getLocalStations());
-      setLoadingStations(false);
       return;
     }
 
@@ -341,32 +458,379 @@ export default function MonorailPage() {
         .select("*")
         .order("station_order", { ascending: true });
 
-      if (error) {
+      if (error || !data || data.length === 0) {
         setStations(getLocalStations());
       } else {
-        setStations(data || []);
+        setStations(data);
       }
-    } catch (err) {
+    } catch {
       setStations(getLocalStations());
-    } finally {
-      setLoadingStations(false);
     }
   };
 
-  const getLocalStations = () => {
-    if (typeof window === "undefined") return DEFAULT_MONORAIL;
+  const getLocalStations = (): MonorailStation[] => {
+    if (typeof window === "undefined") return DEFAULT_MONORAIL_STATIONS;
     const local = localStorage.getItem("local_monorail");
     if (local) {
       try {
         return JSON.parse(local);
       } catch {
-        return DEFAULT_MONORAIL;
+        return DEFAULT_MONORAIL_STATIONS;
       }
     }
-    localStorage.setItem("local_monorail", JSON.stringify(DEFAULT_MONORAIL));
-    return DEFAULT_MONORAIL;
+    localStorage.setItem("local_monorail", JSON.stringify(DEFAULT_MONORAIL_STATIONS));
+    return DEFAULT_MONORAIL_STATIONS;
   };
 
+  // GSAP Animations
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.5 } });
+
+      if (headerRef.current) {
+        tl.fromTo(headerRef.current, { opacity: 0, y: -20 }, { opacity: 1, y: 0 });
+      }
+      if (sliderRef.current) {
+        tl.fromTo(sliderRef.current.children, { opacity: 0, y: 15, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, stagger: 0.08 }, "-=0.2");
+      }
+      if (searchPanelRef.current) {
+        tl.fromTo(searchPanelRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
+      }
+      if (detailsPanelRef.current) {
+        tl.fromTo(detailsPanelRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
+      }
+      if (mapPanelRef.current) {
+        tl.fromTo(mapPanelRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
+      }
+      if (reportBannerRef.current) {
+        tl.fromTo(reportBannerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  // Animate Modal Open
+  useEffect(() => {
+    if (reportModalOpen && modalBoxRef.current) {
+      gsap.fromTo(
+        modalBoxRef.current,
+        { opacity: 0, scale: 0.95, y: 15 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out" }
+      );
+    }
+  }, [reportModalOpen]);
+
+  // Unique list of all stations for search
+  const allStationsList = useMemo(() => {
+    const map = new Map<string, MonorailStation>();
+    stations.forEach((s) => {
+      if (!map.has(s.name)) {
+        map.set(s.name, s);
+      }
+    });
+    return Array.from(map.values());
+  }, [stations]);
+
+  // Filtered station list for inputs
+  const filteredFromStations = useMemo(() => {
+    if (!fromQuery.trim()) return allStationsList;
+    const q = normalizeArabic(fromQuery.trim());
+    return allStationsList.filter((s) => {
+      const nameMatch = normalizeArabic(s.name).includes(q);
+      const details = MONORAIL_STATION_DETAILS[s.name];
+      const landmarkMatch = details?.landmarks?.some((l) => normalizeArabic(l).includes(q));
+      return nameMatch || landmarkMatch;
+    });
+  }, [allStationsList, fromQuery]);
+
+  const filteredToStations = useMemo(() => {
+    if (!toQuery.trim()) return allStationsList;
+    const q = normalizeArabic(toQuery.trim());
+    return allStationsList.filter((s) => {
+      const nameMatch = normalizeArabic(s.name).includes(q);
+      const details = MONORAIL_STATION_DETAILS[s.name];
+      const landmarkMatch = details?.landmarks?.some((l) => normalizeArabic(l).includes(q));
+      return nameMatch || landmarkMatch;
+    });
+  }, [allStationsList, toQuery]);
+
+  const filteredReportStations = useMemo(() => {
+    if (!reportStationSearchQuery.trim()) return allStationsList;
+    const q = normalizeArabic(reportStationSearchQuery.trim());
+    return allStationsList.filter((s) => {
+      const nameMatch = normalizeArabic(s.name).includes(q);
+      const details = MONORAIL_STATION_DETAILS[s.name];
+      const landmarkMatch = details?.landmarks?.some((l) => normalizeArabic(l).includes(q));
+      return nameMatch || landmarkMatch;
+    });
+  }, [allStationsList, reportStationSearchQuery]);
+
+  // Trip calculation result
+  const routeResult = useMemo(() => {
+    if (!selectedFrom || !selectedTo || selectedFrom === selectedTo) return null;
+
+    const fromObj = stations.find((s) => s.name === selectedFrom);
+    const toObj = stations.find((s) => s.name === selectedTo);
+
+    if (!fromObj || !toObj) return null;
+
+    // Helper for Monorail Fare
+    const getFare = (count: number) => {
+      if (count <= 5) return { price: 20, discountPrice: 10, zone: "منطقة واحدة (حتى 5 محطات)" };
+      if (count <= 10) return { price: 40, discountPrice: 20, zone: "منطقتان (من 6 إلى 10 محطات)" };
+      if (count <= 15) return { price: 55, discountPrice: 27.5, zone: "ثلاث مناطق (من 11 إلى 15 محطة)" };
+      return { price: 80, discountPrice: 40, zone: "أربع مناطق (أكثر من 15 محطة)" };
+    };
+
+    // Case 1: Same Line
+    if (fromObj.line_type === toObj.line_type) {
+      const lineStations = stations
+        .filter((s) => s.line_type === fromObj.line_type)
+        .sort((a, b) => a.station_order - b.station_order);
+
+      const fromIndex = lineStations.findIndex((s) => s.name === selectedFrom);
+      const toIndex = lineStations.findIndex((s) => s.name === selectedTo);
+
+      if (fromIndex === -1 || toIndex === -1) return null;
+
+      const count = Math.abs(fromObj.station_order - toObj.station_order);
+      const min = Math.min(fromIndex, toIndex);
+      const max = Math.max(fromIndex, toIndex);
+      const path = lineStations.slice(min, max + 1).map((s) => s.name);
+      const pathOrdered = fromIndex <= toIndex ? path : [...path].reverse();
+
+      const fare = getFare(count);
+      const fromDetails = MONORAIL_STATION_DETAILS[selectedFrom];
+      const toDetails = MONORAIL_STATION_DETAILS[selectedTo];
+      const time = fromDetails && toDetails ? Math.abs(fromDetails.timeFromStart - toDetails.timeFromStart) : count * 2.5;
+
+      const lineConfig = MONORAIL_LINES_CONFIG.find((l) => l.id === fromObj.line_type);
+
+      return {
+        sameLine: true,
+        count,
+        price: fare.price,
+        discountPrice: fare.discountPrice,
+        zoneName: fare.zone,
+        time: Math.max(2, Math.round(time)),
+        stations: pathOrdered,
+        lineType: fromObj.line_type,
+        lineName: lineConfig?.name || "",
+        lineColor: lineConfig?.color || "#3b82f6",
+        description: `رحلة مباشرة على ${lineConfig?.name}، تمر عبر ${count} محطات في زمن تقديري حوالي ${Math.max(2, Math.round(time))} دقيقة.`,
+      };
+    }
+
+    // Case 2: Multi-leg transfer between East and West Lines via Metro Line 3
+    const fromConnector = fromObj.line_type === "east" ? "الاستاد" : "وادي النيل";
+    const toConnector = toObj.line_type === "east" ? "الاستاد" : "وادي النيل";
+
+    // Leg 1: From Station -> FromConnector
+    const lineStationsFrom = stations
+      .filter((s) => s.line_type === fromObj.line_type)
+      .sort((a, b) => a.station_order - b.station_order);
+    const fromIndex = lineStationsFrom.findIndex((s) => s.name === selectedFrom);
+    const fromConnIndex = lineStationsFrom.findIndex((s) => s.name === fromConnector);
+    const leg1Count = Math.abs(fromIndex - fromConnIndex);
+    const min1 = Math.min(fromIndex, fromConnIndex);
+    const max1 = Math.max(fromIndex, fromConnIndex);
+    const path1 = lineStationsFrom.slice(min1, max1 + 1).map((s) => s.name);
+    const path1Ordered = fromIndex <= fromConnIndex ? path1 : [...path1].reverse();
+    const leg1Fare = getFare(leg1Count);
+    const fromDetails = MONORAIL_STATION_DETAILS[selectedFrom];
+    const fromConnDetails = MONORAIL_STATION_DETAILS[fromConnector];
+    const leg1Time = fromDetails && fromConnDetails ? Math.abs(fromDetails.timeFromStart - fromConnDetails.timeFromStart) : leg1Count * 2.5;
+
+    // Leg 2: Metro Line 3 Transfer (الاستاد ⇆ وادي النيل)
+    const metroPrice = 12;
+    const metroTime = 25; // Approx 25 mins
+
+    // Leg 3: ToConnector -> To Station
+    const lineStationsTo = stations
+      .filter((s) => s.line_type === toObj.line_type)
+      .sort((a, b) => a.station_order - b.station_order);
+    const toConnIndex = lineStationsTo.findIndex((s) => s.name === toConnector);
+    const toIndex = lineStationsTo.findIndex((s) => s.name === selectedTo);
+    const leg3Count = Math.abs(toConnIndex - toIndex);
+    const min3 = Math.min(toConnIndex, toIndex);
+    const max3 = Math.max(toConnIndex, toIndex);
+    const path3 = lineStationsTo.slice(min3, max3 + 1).map((s) => s.name);
+    const path3Ordered = toConnIndex <= toIndex ? path3 : [...path3].reverse();
+    const leg3Fare = getFare(leg3Count);
+    const toConnDetails = MONORAIL_STATION_DETAILS[toConnector];
+    const toDetails = MONORAIL_STATION_DETAILS[selectedTo];
+    const leg3Time = toConnDetails && toDetails ? Math.abs(toConnDetails.timeFromStart - toDetails.timeFromStart) : leg3Count * 2.5;
+
+    const totalStationsCount = leg1Count + leg3Count;
+    const totalPrice = leg1Fare.price + metroPrice + leg3Fare.price;
+    const totalDiscount = leg1Fare.discountPrice + metroPrice + leg3Fare.discountPrice;
+    const totalTime = Math.round(leg1Time + metroTime + leg3Time);
+
+    const fromLineConfig = MONORAIL_LINES_CONFIG.find((l) => l.id === fromObj.line_type);
+    const toLineConfig = MONORAIL_LINES_CONFIG.find((l) => l.id === toObj.line_type);
+
+    return {
+      sameLine: false,
+      count: totalStationsCount,
+      price: totalPrice,
+      discountPrice: totalDiscount,
+      time: totalTime,
+      leg1: {
+        from: selectedFrom,
+        to: fromConnector,
+        count: leg1Count,
+        price: leg1Fare.price,
+        discountPrice: leg1Fare.discountPrice,
+        time: Math.round(leg1Time),
+        stations: path1Ordered,
+        lineType: fromObj.line_type,
+        lineName: fromLineConfig?.name || "",
+        lineColor: fromLineConfig?.color || "#3b82f6",
+      },
+      leg2: {
+        from: fromConnector,
+        to: toConnector,
+        price: metroPrice,
+        time: metroTime,
+        description: `التبديل عبر الخط الثالث لمترو الأنفاق من محطة [${fromConnector}] إلى محطة [${toConnector}].`,
+      },
+      leg3: {
+        from: toConnector,
+        to: selectedTo,
+        count: leg3Count,
+        price: leg3Fare.price,
+        discountPrice: leg3Fare.discountPrice,
+        time: Math.round(leg3Time),
+        stations: path3Ordered,
+        lineType: toObj.line_type,
+        lineName: toLineConfig?.name || "",
+        lineColor: toLineConfig?.color || "#10b981",
+      },
+      description: `رحلة تبادلية تربط ${fromLineConfig?.shortName} بـ ${toLineConfig?.shortName} عبر الخط الثالث للمترو.`,
+    };
+  }, [selectedFrom, selectedTo, stations]);
+
+  // Combined path stations for step tracking
+  const trackerStationsList = useMemo(() => {
+    if (!routeResult) return [];
+    if (routeResult.sameLine && routeResult.stations) {
+      return routeResult.stations.map((name) => ({
+        name,
+        lineColor: routeResult.lineColor,
+        isTransfer: false,
+      }));
+    }
+    if (!routeResult.sameLine && routeResult.leg1 && routeResult.leg3) {
+      const leg1Items = routeResult.leg1.stations.map((name) => ({
+        name,
+        lineColor: routeResult.leg1.lineColor,
+        isTransfer: name === routeResult.leg1.to,
+      }));
+      const leg3Items = routeResult.leg3.stations.slice(1).map((name) => ({
+        name,
+        lineColor: routeResult.leg3.lineColor,
+        isTransfer: false,
+      }));
+      return [...leg1Items, ...leg3Items];
+    }
+    return [];
+  }, [routeResult]);
+
+  // Swap Stations
+  const swapStations = () => {
+    const tempFrom = selectedFrom;
+    const tempTo = selectedTo;
+    setSelectedFrom(tempTo);
+    setSelectedTo(tempFrom);
+    setFromQuery(tempTo || "");
+    setToQuery(tempFrom || "");
+    setIsTripActive(false);
+    setCurrentStepIndex(0);
+  };
+
+  // GPS Nearest Station
+  const findNearestStation = () => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      alert("خاصية تحديد الموقع الجغرافي غير مدعومة في متصفحك");
+      return;
+    }
+    setLocatingNearest(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+        let closestStation: string | null = null;
+        let minDistance = Infinity;
+
+        for (const [name, coords] of Object.entries(MONORAIL_STATION_COORDINATES)) {
+          const dist = getDistanceInKm(userLat, userLng, coords.lat, coords.lng);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestStation = name;
+          }
+        }
+
+        if (closestStation) {
+          setSelectedFrom(closestStation);
+          setFromQuery(closestStation);
+          setShowFromList(false);
+          setNearestDistance(
+            minDistance < 1
+              ? `${Math.round(minDistance * 1000)} متر`
+              : `${minDistance.toFixed(1)} كم`
+          );
+        }
+        setLocatingNearest(false);
+      },
+      (error) => {
+        console.error("GPS Error:", error);
+        alert("تعذر تحديد موقعك الحالي. يرجى التأكد من تشغيل الـ GPS والسماح للخرائط.");
+        setLocatingNearest(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  // Share Route
+  const handleShareRoute = async () => {
+    if (!routeResult || !selectedFrom || !selectedTo) return;
+
+    const shareText = `🚝 مسار رحلة المونوريل عبر تطبيق ماب القاهرة:
+من: ${selectedFrom}
+إلى: ${selectedTo}
+⏱️ زمن الرحلة التقريبي: ${routeResult.time} دقيقة
+💰 سعر التذكرة: ${routeResult.price} ج.م
+🚉 عدد المحطات: ${routeResult.count}
+${routeResult.description}
+
+تصفح المزيد واحسب رحلتك عبر:
+${typeof window !== "undefined" ? window.location.href : "https://cairomap.vercel.app/monorail"}`;
+
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        setCopiedRoute(true);
+        setTimeout(() => setCopiedRoute(false), 2500);
+      } catch {
+        // fallback
+      }
+    }
+  };
+
+  // WhatsApp Share URL
+  const whatsappShareUrl = useMemo(() => {
+    if (!routeResult || !selectedFrom || !selectedTo) return "";
+    const text = encodeURIComponent(`🚝 مسار رحلة المونوريل عبر ماب القاهرة:
+من: ${selectedFrom}
+إلى: ${selectedTo}
+⏱️ الزمن: ${routeResult.time} دقيقة
+💰 التذكرة: ${routeResult.price} ج.م
+${routeResult.description}`);
+    return `https://api.whatsapp.com/send?text=${text}`;
+  }, [routeResult, selectedFrom, selectedTo]);
+
+  // Report Modal Handlers
   const handleReportImageSelect = (file: File | null) => {
     if (reportImagePreview) {
       URL.revokeObjectURL(reportImagePreview);
@@ -405,7 +869,7 @@ export default function MonorailPage() {
       setReportSelectedStation(stationName);
       setReportStationSearchQuery(stationName);
       setReportProblemType("station_info");
-    } else if (fromRoute && routeResult && calcFrom && calcTo) {
+    } else if (fromRoute && routeResult && selectedFrom && selectedTo) {
       setReportTargetScope("route");
       setReportSelectedStation("");
       setReportStationSearchQuery("");
@@ -452,21 +916,23 @@ export default function MonorailPage() {
 
     try {
       if (!supabase) {
-        throw new Error("Supabase client is not initialized.");
+        throw new Error("تعذر الاتصال بقاعدة البيانات.");
       }
 
       let finalImageUrl = "";
       if (reportImageFile) {
         setReportUploading(true);
-        const fileExt = reportImageFile.name.split('.').pop() || 'jpg';
+        const fileExt = reportImageFile.name.split(".").pop() || "jpg";
         const fileName = `monorail_${user.id}_${Date.now()}.${fileExt}`;
         const filePath = `reports/${fileName}`;
         const { error: uploadError } = await supabase.storage
-          .from('avatars')
+          .from("avatars")
           .upload(filePath, reportImageFile, { upsert: true });
 
         if (!uploadError) {
-          const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("avatars").getPublicUrl(filePath);
           if (publicUrl) {
             finalImageUrl = publicUrl;
           }
@@ -487,26 +953,27 @@ export default function MonorailPage() {
       const typeLabel = problemTypeLabels[reportProblemType] || "مشكلة في المونوريل";
 
       let scopeInfo = "";
-      if (reportTargetScope === "route" && calcFrom && calcTo) {
-        scopeInfo = `📍 المسار المعني: من ${calcFrom} إلى ${calcTo}
-💰 السعر المحسوب: ${routeResult?.price || routeResult?.totalPrice || "غير محدد"} ج.م
-⏱️ الوقت المقدر: ${routeResult?.time || routeResult?.totalTime || "غير محدد"} دقيقة
+      if (reportTargetScope === "route" && selectedFrom && selectedTo) {
+        scopeInfo = `📍 المسار المعني: من ${selectedFrom} إلى ${selectedTo}
+💰 السعر المحسوب: ${routeResult?.price || "غير محدد"} ج.م
+⏱️ الوقت المقدر: ${routeResult?.time || "غير محدد"} دقيقة
 🚉 عدد المحطات: ${routeResult?.count || "غير محدد"}`;
       } else if (reportTargetScope === "station" && reportSelectedStation) {
         scopeInfo = `🚉 المحطة المعنية: ${reportSelectedStation}`;
       }
 
-      const contentText = `بلاغ عن مشكلة في صفحة قطار المونوريل:
+      const contentText = `بلاغ عن مشكلة في خدمة قطار المونوريل:
 ${scopeInfo ? scopeInfo + "\n\n" : ""}⚠️ نوع المشكلة: ${typeLabel}
 
 📝 تفاصيل المشكلة المبلغ عنها:
 ${reportDetails.trim()}`;
 
-      const reportTitle = reportTargetScope === "route" && calcFrom && calcTo
-        ? `مشكلة مسار مونوريل: من ${calcFrom} إلى ${calcTo}`
-        : reportTargetScope === "station" && reportSelectedStation
-          ? `مشكلة محطة مونوريل: ${reportSelectedStation}`
-          : `مشكلة في المونوريل (${typeLabel})`;
+      const reportTitle =
+        reportTargetScope === "route" && selectedFrom && selectedTo
+          ? `مشكلة مسار مونوريل: من ${selectedFrom} إلى ${selectedTo}`
+          : reportTargetScope === "station" && reportSelectedStation
+            ? `مشكلة محطة مونوريل: ${reportSelectedStation}`
+            : `مشكلة في المونوريل (${typeLabel})`;
 
       const { error: insertError } = await supabase.from("app_feedback").insert([
         {
@@ -522,13 +989,13 @@ ${reportDetails.trim()}`;
 
       if (insertError) throw insertError;
 
-      // Send notification to user
+      // Insert notification
       try {
         await supabase.from("notifications").insert([
           {
             user_id: user.id,
             title: "تم استلام بلاغك بنجاح 🚝",
-            message: `شكراً لمساعدتنا في تحسين وتدقيق خدمة قطار المونوريل. تم تسجيل بلاغك بخصوص "${reportTitle}" وجاري مراجعته.`,
+            message: `شكراً لمساعدتنا في تدقيق شبكة المونوريل. تم تسجيل بلاغك بخصوص "${reportTitle}" وجاري مراجعته.`,
             type: "info",
             link: "/profile",
           },
@@ -557,1181 +1024,1305 @@ ${reportDetails.trim()}`;
     }
   };
 
-  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin ||
-    ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
+  // Selected Line Object and Station list for explorer
+  const selectedLineObj = MONORAIL_LINES_CONFIG.find((l) => l.id === selectedLine) || MONORAIL_LINES_CONFIG[0];
+  const currentLineStations = useMemo(() => {
+    return stations
+      .filter((s) => s.line_type === selectedLine)
+      .sort((a, b) => a.station_order - b.station_order);
+  }, [stations, selectedLine]);
 
-  if (authLoading) {
-    return (
-      <div className="app-container" style={{ maxWidth: "800px", paddingTop: "120px", textAlign: "center", direction: "rtl" }}>
-        <div style={{
-          width: "48px",
-          height: "48px",
-          border: "4px solid rgba(128,128,128,0.1)",
-          borderTop: "4px solid var(--colorSecondary, #3b82f6)",
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite",
-          margin: "0 auto 24px"
-        }} />
-        <p style={{ color: "var(--textSecondary)", fontSize: "1.1rem", fontFamily: "var(--font-display)" }}>جاري التحقق من التفاصيل...</p>
-        <style dangerouslySetInnerHTML={{
-          __html: `
-          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        `}} />
-      </div>
-    );
-  }
-
-  // Paywall / Lock screen matching Metro & Directory premium view style
-  if (!user || !hasAccess) {
-    return (
-      <>
-        <title>ماب القاهرة - مونوريل </title>
-        <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)" }}>
-          {/* Banner matching Metro */}
-          <div className="metro-animate-fade" style={{
-            backgroundColor: "var(--bgPrimary)",
-            padding: "24px 20px 24px",
-            textAlign: "center",
-            position: "relative",
-            borderBottom: "1px solid var(--borderGlass)",
-            direction: "rtl"
-          }}>
-            {/* Back Button */}
-            <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-              <Link
-                href="/"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  background: "var(--bgGlass-card)",
-                  border: "1px solid var(--borderGlass)",
-                  color: "var(--textPrimary)",
-                  textDecoration: "none"
-                }}
-              >
-                <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-              </Link>
-            </div>
-
-            {/* Cover Image Banner */}
-            <div className="metro-animate-slide-up metro-delay-100">
-              <h1 style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
-                fontWeight: "600",
-                color: "var(--textPrimary)",
-                letterSpacing: "-0.5px",
-              }}>
-                <img src="/images/icons2d/Cairo_monorail_east.png" alt="Cairo Monorail" loading="lazy" decoding="async" style={{ width: "35px", marginLeft: "10px" }} />
-                قطار المونوريل</h1>
-              <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto", lineHeight: "1.6" }}>
-                خريطة تفاعلية تفصيلية لشبكة المونوريل الجديدة.
-              </p>
-            </div>
-          </div>
-
-          {/* Lock Panel centered container */}
-          <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>
-            <div className="metro-animate-slide-up metro-delay-200" style={{
-              backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
-              borderRadius: "15px",
-              padding: "35px 25px",
-              textAlign: "center",
-              marginTop: "32px",
-              boxShadow: "var(--shadow-card)",
-              position: "relative",
-              overflow: "hidden"
-            }}>
-              {/* Lock Icon */}
-              <div style={{
-                marginBottom: "24px",
-              }}>
-                <img src="images/icons3d/lockPage.png" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
-              </div>
-
-
-              <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--textPrimary)", marginBottom: "14px" }}>
-                دليل المونوريل يتطلب اشتراك في الباقة الفضية
-              </h2>
-
-              <p style={{ color: "var(--textSecondary)", fontSize: "0.95rem", lineHeight: "1.7", maxWidth: "460px", margin: "0 auto 28px", fontFamily: "var(--font-body)" }}>
-                تصفح الخريطة التفصيلية والمسارات الزمنية لخطوط المونوريل (شرق وغرب النيل) متاح للمشتركين بالباقة الفضية أو الذهبية.
-              </p>
-
-              {/* Perks list */}
-              <div style={{
-                background: "rgba(128, 128, 128, 0.04)",
-                padding: "18px 20px",
-                borderRadius: "12px",
-                border: "1px solid var(--borderGlass)",
-                textAlign: "right",
-                margin: "0 auto 28px",
-                maxWidth: "420px"
-              }}>
-                <div style={{ fontWeight: "800", color: "var(--textPrimary)", fontSize: "0.9rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "8px" }}>
-                  <i className="bx bxs-award" style={{ color: "#fbbf24", fontSize: "1.1rem" }}></i>
-                  <span>ميزات الباقة الفضية:</span>
-                </div>
-                <ul style={{
-                  paddingRight: "16px",
-                  margin: 0,
-                  fontSize: "0.85rem",
-                  color: "var(--textSecondary)",
-                  lineHeight: "1.6",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "6px",
-                  fontFamily: "var(--font-body)"
-                }}>
-                  <li>✨ عرض تفاصيل ومحطات خطوط المونوريل كاملة.</li>
-                  <li>✨ معرفة المحطات التبادلية والاتجاهات ومعالم المحيط.</li>
-                  <li>✨ حساب أوقات الرحلات التقديرية بالدقائق.</li>
-                </ul>
-              </div>
-
-              {/* CTAs */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "340px", margin: "0 auto" }}>
-                {user ? (
-                  <Link
-                    href="/profile?expand=subscription"
-                    style={{
-                      padding: "var(--paddingBtn)",
-                      borderRadius: "var(--radiusBtn)",
-                      background: "var(--bg-subscribe-button-seliver)",
-                      color: "#000",
-                      textDecoration: "none",
-                      fontWeight: "bold",
-                      fontSize: "0.95rem",
-                      boxShadow: "var(--bs-subscribe-button-seliver)",
-                      border: "1px solid var(--br-subscribe-button-seliver)",
-                      display: "block"
-                    }}
-                  >
-                    اشترك الآن في الباقة الفضية
-                  </Link>
-                ) : (
-                  <Link
-                    href="/login"
-                    style={{
-                      padding: "var(--paddingBtn)",
-                      borderRadius: "var(--radiusBtn)",
-                      background: "var(--bg-subscribe-button-base)",
-                      color: "#fff",
-                      textDecoration: "none",
-                      fontWeight: "bold",
-                      fontSize: "0.95rem",
-                      boxShadow: "var(--bs-subscribe-button-base)",
-                      display: "block"
-                    }}
-                  >
-                    سجل دخولك أولاً لتفعيل الاشتراك
-                  </Link>
-                )}
-
-                <Link
-                  href="/"
-                  style={{
-                    padding: "var(--paddingBtn)",
-                    borderRadius: "var(--radiusBtn)",
-                    background: "var(--bg-metro-base)",
-                    color: "var(--text-metro-base)",
-                    textDecoration: "none",
-                    fontWeight: "bold",
-                    fontSize: "0.9rem",
-                    border: "1px solid var(--borderGlass)",
-                    display: "block"
-                  }}
-                >
-                  العودة للصفحة الرئيسية
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <style dangerouslySetInnerHTML={{
-            __html: `
-          @keyframes pulse-gold {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.3); }
-            50% { transform: scale(1.03); box-shadow: 0 0 15px 8px rgba(251, 191, 36, 0.12); }
-          }
-        `}} />
-        </div>
-      </>
-    );
-  }
-
-  // Filter stations based on active line and search query
-  const lineStations = stations
-    .filter(s => s.line_type === activeLine)
-    .sort((a, b) => a.station_order - b.station_order)
-    .filter(s => !searchQuery.trim() || normalizeArabic(s.name).includes(normalizeArabic(searchQuery.trim())));
-
-  // Global search results across both lines for instant search
-  const normalizedQuery = normalizeArabic(searchQuery.trim());
-  const searchResults = normalizedQuery
-    ? stations.filter(s => normalizeArabic(s.name).includes(normalizedQuery))
-    : [];
-
-  // Active line statistics
-  const lineStats = {
-    east: {
-      length: "56.5 كم",
-      stationsCount: 22,
-      designSpeed: "80 كم/س",
-      time: "60 دقيقة",
-      color: "#3b82f6",
-      colorLight: "rgba(59, 130, 246, 0.12)",
-      gradient: "linear-gradient(135deg, #3b82f6, #60a5fa)"
-    },
-    west: {
-      length: "42 كم",
-      stationsCount: 16,
-      designSpeed: "80 كم/س",
-      time: "45 دقيقة",
-      color: "#10b981",
-      colorLight: "rgba(16, 185, 129, 0.12)",
-      gradient: "linear-gradient(135deg, #10b981, #34d399)"
-    }
-  };
-
-  const currentStats = lineStats[activeLine];
-
-  const handleStationClick = (stationName: string) => {
-    if (expandedStation === stationName) {
-      setExpandedStation(null);
-    } else {
-      setExpandedStation(stationName);
-    }
-  };
+  const filteredCurrentLineStations = useMemo(() => {
+    if (!lineSearchQuery.trim()) return currentLineStations;
+    const q = normalizeArabic(lineSearchQuery.trim());
+    return currentLineStations.filter((s) => {
+      const nameMatch = normalizeArabic(s.name).includes(q);
+      const details = MONORAIL_STATION_DETAILS[s.name];
+      const landmarkMatch = details?.landmarks?.some((l) => normalizeArabic(l).includes(q));
+      return nameMatch || landmarkMatch;
+    });
+  }, [currentLineStations, lineSearchQuery]);
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)", direction: "rtl" }}>
-      {/* CSS internal styles definition for custom hover effects and keyframe animation states */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .pulse-node-east {
-          animation: pulse-node-east-anim 2.5s infinite;
-        }
-        .pulse-node-west {
-          animation: pulse-node-west-anim 2.5s infinite;
-        }
-
-        @keyframes pulse-node-east-anim {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
-          50% { box-shadow: 0 0 12px 6px rgba(59, 130, 246, 0.25); }
-        }
-        @keyframes pulse-node-west-anim {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
-          50% { box-shadow: 0 0 12px 6px rgba(16, 185, 129, 0.25); }
-        }
-      `}} />
-
-      {/* Header Banner - Matches Metro Cover Style */}
-      <div className="metro-animate-fade" style={{
-        backgroundColor: "var(--bgPrimary)",
-        padding: "24px 20px 24px",
-        textAlign: "center",
-        position: "relative",
-        borderBottom: "1px solid var(--borderGlass)",
-      }}>
-        {/* Back Button
-        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-          <Link 
-            href="/" 
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              background: "var(--bgGlass-card)",
-              border: "1px solid var(--borderGlass)",
-              color: "var(--textPrimary)",
-              textDecoration: "none",
-              transition: "transform 0.2s ease"
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-          </Link>
-        </div> */}
-
-        <div className="metro-animate-slide-up metro-delay-100">
-          <h1 style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
-            fontWeight: "bold",
-            color: "var(--textPrimary)",
-            margin: "0 0 10px",
-            letterSpacing: "-0.5px",
-          }}>
-            <img src="/images/icons2d/Cairo_monorail_east.png" alt="" loading="lazy" decoding="async" style={{ width: "40px", height: "40px", marginLeft: "10px" }} />
-            دليل قطار المونوريل</h1>
-          <p className="sub-title" style={{ color: "var(--textSecondary)", fontSize: "0.95rem", maxWidth: "600px", margin: "0 auto 20px", lineHeight: "1.6" }}>
-            استكشف المحطات والاتجاهات والمعالم الهامة لخطوط شرق وغرب النيل.
+    //================================== START MAIN CONTAINER =================================
+    <div className="main-container">
+      {/* Header Banner */}
+      <div ref={headerRef} className="header-banner">
+        <div>
+          {/* Title */}
+          <h1 className="header-title">قطار المونوريل الكهربائي المعلق</h1>
+          {/* Sub Title */}
+          <p className="header-sub-title">
+            احسب مسار وتكلفة رحلتك في ثوانٍ، تصفح خطوط شرق وغرب النيل، واعرف محطات التبادل والمعالم الحيوية وأحدث حالات التشغيل.
           </p>
-
-          {/* Badges indicators */}
-          <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
-            <span style={{
-              background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
-              color: "#3b82f6",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>شرق النيل (العاصمة)</span>
-            <span style={{
-              background: "var(--bgSecondary)",
-              border: "1px solid var(--borderGlass)",
-              color: "#10b981",
-              borderRadius: "10px",
-              padding: "4px 14px",
-              fontSize: "0.78rem",
-              fontWeight: "700",
-            }}>غرب النيل (أكتوبر)</span>
-          </div>
-
-          {/* Report Problem Button */}
-          <div style={{ marginTop: "14px" }}>
-            <button
-              type="button"
-              onClick={() => handleOpenReportModal()}
-              style={{
-                background: "rgba(239, 68, 68, 0.08)",
-                border: "1px solid rgba(239, 68, 68, 0.25)",
-                color: "#ef4444",
-                borderRadius: "20px",
-                padding: "6px 16px",
-                fontSize: "0.8rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                fontFamily: "var(--font-cairo)",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.16)"}
-              onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
-            >
-              <i className="fa-solid fa-triangle-exclamation"></i>
-              <span>الإبلاغ عن مشكلة في المونوريل</span>
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Main Container */}
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
+      {/* Container */}
+      <div className="container">
+        {/* Top Lines Slider */}
+        <div
+          ref={sliderRef}
+          className="hide-scrollbar"
+          style={{
+            display: "flex",
+            gap: "14px",
+            overflowX: "auto",
+            padding: "6px 4px 16px 4px",
+            marginBottom: "20px",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            scrollSnapType: "x mandatory",
+          }}
+        >
+          {MONORAIL_LINES_CONFIG.map((line) => {
+            const active = selectedLine === line.id;
+            const lineStatsCount = stations.filter((s) => s.line_type === line.id).length;
 
-        {/* Search Panel Card - Styled matching Metro searchCard & Directory searchCard */}
-        <div className="metro-animate-slide-up metro-delay-200" style={{
-          backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
-          borderRadius: "var(--radius-card)",
-          padding: "20px",
-          marginTop: "24px",
-          boxShadow: "var(--shadow-sm)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          position: "relative",
-          zIndex: 30,
-        }}>
-          {/* Search Box */}
-          <div ref={searchContainerRef} style={{ position: "relative" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "8px" }}>
-              <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "5px", color: "var(--colorSecondary)" }}></i> ابحث في محطات المونوريل
-            </label>
-            <input
-              className="input-fields"
-              type="text"
-              placeholder="ابحث باسم المحطة..."
-              value={searchQuery}
-              onFocus={() => setIsDropdownOpen(true)}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setIsDropdownOpen(true);
-              }}
-              style={{
-                width: "100%",
-                direction: "rtl",
-                fontFamily: "var(--font-body)",
-                height: "50px",
-              }}
-            />
-
-            {/* Instant Search Results Dropdown */}
-            {isDropdownOpen && searchQuery.trim().length > 0 && (
-              <div style={{
-                position: "absolute",
-                top: "100%",
-                left: 0,
-                right: 0,
-                backgroundColor: "var(--bgPrimary)",
-                border: "1px solid var(--borderGlass)",
-                borderRadius: "var(--radius-card)",
-                boxShadow: "var(--shadow-sm)",
-                zIndex: 100,
-                marginTop: "6px",
-                maxHeight: "260px",
-                overflowY: "auto",
-                padding: "8px 0"
-              }}>
-                {searchResults.length === 0 ? (
-                  <div style={{
-                    padding: "16px",
-                    textAlign: "center",
-                    color: "var(--textSecondary)",
-                    fontSize: "0.9rem"
-                  }}>
-                    لم يتم العثور على محطات مطابقة
+            return (
+              <button
+                key={line.id}
+                type="button"
+                onClick={() => {
+                  setSelectedLine(line.id);
+                  if (detailsPanelRef.current) {
+                    detailsPanelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
+                style={{
+                  background: `radial-gradient(circle at 100% 0%, ${line.color}98 20%, transparent 65%), var(--bgPrimary)`,
+                  border: active ? `2px solid ${line.color}` : "1px solid var(--borderSecondary)",
+                  borderRadius: "var(--ra-8)",
+                  padding: "16px 16px 14px 16px",
+                  cursor: "pointer",
+                  transition: "all 0.22s cubic-bezier(0.4, 0, 0.2, 1)",
+                  textAlign: "right",
+                  flex: "0 0 auto",
+                  minWidth: "185px",
+                  maxWidth: "220px",
+                  height: "88px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  scrollSnapAlign: "start",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Bottom Title & Subtitle */}
+                <div style={{ textAlign: "right", width: "100%", marginTop: "auto", position: "relative", zIndex: 1 }}>
+                  <div
+                    style={{
+                      color: "var(--textPrimary)",
+                      fontFamily: "var(--font-display)",
+                      fontWeight: "700",
+                      fontSize: "0.92rem",
+                      lineHeight: "1.3",
+                      letterSpacing: "-0.2px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {line.shortName}
                   </div>
-                ) : (
-                  searchResults.map((station, index) => {
-                    const isEast = station.line_type === "east";
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--textMuted)",
+                      fontWeight: "500",
+                      marginTop: "3px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {lineStatsCount > 0 ? `${lineStatsCount} محطة (${line.length})` : "تحت الإنشاء"}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Trip Route Calculator Panel */}
+        <div ref={searchPanelRef} className="details-panel">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <h5 className="text-lg fw-bold" style={{ margin: 0 }}>
+              احسب تذكرتك وظبط رحلتك
+            </h5>
+
+            <button
+              type="button"
+              onClick={findNearestStation}
+              disabled={locatingNearest}
+              style={{
+                background: "rgba(59, 130, 246, 0.08)",
+                border: "1px solid rgba(59, 130, 246, 0.2)",
+                borderRadius: "4px",
+                padding: "4px 10px",
+                fontSize: "0.75rem",
+                fontWeight: "700",
+                color: "var(--colorSecondary)",
+                cursor: locatingNearest ? "wait" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                transition: "all 0.2s ease",
+              }}
+              title="تحديد أقرب محطة مونوريل لموقعي الحالي عبر الـ GPS"
+            >
+              <i className={locatingNearest ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-location-crosshairs"}></i>
+              {locatingNearest ? "جاري التحديد..." : "أقرب محطة فين"}
+            </button>
+          </div>
+
+          {/* Search Inputs Container */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
+            {/* FROM STATION INPUT */}
+            <div style={{ position: "relative", zIndex: showFromList ? 20 : 2 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexWrap: "wrap", gap: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
+                  <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "var(--colorSuccess)" }}></i> من محطة:
+                  {nearestDistance && selectedFrom && (
+                    <span style={{ fontSize: "0.74rem", color: "var(--colorSuccess)", fontWeight: "700", marginRight: "8px", background: "rgba(16, 185, 129, 0.1)", padding: "2px 6px", borderRadius: "6px" }}>
+                      أقرب محطة: {nearestDistance}
+                    </span>
+                  )}
+                </label>
+                <VoiceInputButton
+                  onTranscript={(text) => {
+                    setFromQuery(text);
+                    setSelectedFrom(null);
+                    setShowFromList(true);
+                  }}
+                />
+              </div>
+              <div style={{ position: "relative" }}>
+                <input
+                  className="input-fields"
+                  placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: الاستاد، المشير طنطاوي، هايبر وان)"
+                  value={fromQuery}
+                  onChange={(e) => {
+                    setFromQuery(e.target.value);
+                    setSelectedFrom(null);
+                    setShowFromList(true);
+                  }}
+                  onFocus={() => setShowFromList(true)}
+                  onBlur={() => setTimeout(() => setShowFromList(false), 250)}
+                  style={{
+                    width: "100%",
+                    direction: "rtl",
+                    fontFamily: "var(--font-body)",
+                  }}
+                />
+                {selectedFrom && (
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>
+                    تم الاختيار ✔
+                  </span>
+                )}
+              </div>
+              {showFromList && filteredFromStations.length > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    background: "var(--bgSecondary)",
+                    border: "1px solid var(--borderGlass)",
+                    borderRadius: "var(--radius-card)",
+                    overflow: "hidden",
+                    zIndex: 100,
+                    maxHeight: "220px",
+                    overflowY: "auto",
+                    marginTop: "4px",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                  }}
+                >
+                  {filteredFromStations.map((s) => {
+                    const details = MONORAIL_STATION_DETAILS[s.name];
+                    const q = normalizeArabic(fromQuery.trim());
+                    const matchedLandmark = q ? details?.landmarks?.find((l) => normalizeArabic(l).includes(q)) : null;
+                    const lineCfg = MONORAIL_LINES_CONFIG.find((l) => l.id === s.line_type);
+
                     return (
                       <div
-                        key={station.id || index}
-                        onClick={() => handleSelectSearchStation(station)}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          padding: "12px 16px",
-                          cursor: "pointer",
-                          transition: "background-color 0.2s ease",
-                          borderBottom: index < searchResults.length - 1 ? "1px solid var(--borderGlass)" : "none"
+                        key={s.name}
+                        onMouseDown={() => {
+                          setSelectedFrom(s.name);
+                          setFromQuery(s.name);
+                          setShowFromList(false);
                         }}
-                        onMouseEnter={e => e.currentTarget.style.backgroundColor = "var(--bgSecondary)"}
-                        onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
+                        style={{
+                          padding: "10px 16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                          borderBottom: "1px solid rgba(255,255,255,0.03)",
+                          transition: "background 0.2s",
+                          fontFamily: "var(--font-sub)",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <span style={{
-                            width: "8px",
-                            height: "8px",
-                            borderRadius: "50%",
-                            backgroundColor: isEast ? "#3b82f6" : "#10b981"
-                          }} />
-                          <span style={{ fontWeight: "700", color: "var(--textPrimary)", fontSize: "0.95rem" }}>
-                            {station.name}
-                          </span>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          {matchedLandmark && (
+                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                              📍 قريب من: {matchedLandmark}
+                            </span>
+                          )}
                         </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <span style={{
-                            fontSize: "0.72rem",
-                            padding: "2px 8px",
-                            borderRadius: "4px",
-                            fontWeight: "bold",
-                            backgroundColor: isEast ? "rgba(59, 130, 246, 0.12)" : "rgba(16, 185, 129, 0.12)",
-                            color: isEast ? "#3b82f6" : "#10b981"
-                          }}>
-                            {isEast ? "شرق النيل" : "غرب النيل"}
+                        <div style={{ marginRight: "auto", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span
+                            style={{
+                              fontSize: "0.7rem",
+                              color: lineCfg?.color || "#3b82f6",
+                              background: (lineCfg?.color || "#3b82f6") + "15",
+                              border: `1px solid ${(lineCfg?.color || "#3b82f6")}33`,
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            {lineCfg?.shortName}
                           </span>
+                          {details?.status === "تحت الإنشاء" && (
+                            <span style={{ fontSize: "0.68rem", background: "rgba(239, 68, 68, 0.12)", color: "#ef4444", padding: "1px 5px", borderRadius: "4px" }}>
+                              قيد الإنشاء
+                            </span>
+                          )}
                         </div>
                       </div>
                     );
-                  })
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Line Selector Tab Switcher (Matching Directory Categories Tabs style) */}
-          <div style={{ display: "flex", gap: "8px", borderTop: "1px solid var(--borderGlass)", paddingTop: "14px" }}>
-            <button
-              onClick={() => {
-                setActiveLine("east");
-                setExpandedStation(null);
-              }}
-              style={{
-                background: activeLine === "east" ? "rgba(59, 130, 246, 0.15)" : "var(--bgSecondary)",
-                border: `1px solid ${activeLine === "east" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                color: activeLine === "east" ? "var(--textPrimary)" : "var(--textSecondary)",
-                padding: "6px 12px",
-                borderRadius: "50px",
-                fontSize: "0.82rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                fontFamily: "var(--font-body)",
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                transition: "all 0.2s ease"
-              }}
-            >
-              شرق النيل (العاصمة)
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveLine("west");
-                setExpandedStation(null);
-              }}
-              style={{
-                background: activeLine === "west" ? "rgba(16, 185, 129, 0.15)" : "var(--bgSecondary)",
-                border: `1px solid ${activeLine === "west" ? "var(--colorSuccess)" : "var(--borderGlass)"}`,
-                color: activeLine === "west" ? "var(--textPrimary)" : "var(--textSecondary)",
-                padding: "6px 12px",
-                borderRadius: "50px",
-                fontSize: "0.82rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                fontFamily: "var(--font-body)",
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                transition: "all 0.2s ease"
-              }}
-            >
-              غرب النيل (أكتوبر)
-            </button>
-          </div>
-        </div>
-
-        {/* Route Info & Stats - Beautiful clean directory matching rows */}
-        <div className="metro-animate-slide-up metro-delay-300" style={{
-          marginTop: "20px",
-          backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
-          borderRadius: "var(--radius-card)",
-          padding: "16px",
-          boxShadow: "var(--shadow-sm)",
-        }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
-            <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-              طول المسار: <strong style={{ color: "var(--textPrimary)" }}>{currentStats.length}</strong>
-            </div>
-            <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-              عدد المحطات: <strong style={{ color: "var(--textPrimary)" }}>{currentStats.stationsCount} محطة</strong>
-            </div>
-            <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-              زمن الرحلة: <strong style={{ color: "var(--textPrimary)" }}>~ {currentStats.time}</strong>
-            </div>
-            <div style={{ fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-              السرعة: <strong style={{ color: "var(--textPrimary)" }}>{currentStats.designSpeed}</strong>
-            </div>
-          </div>
-          <div style={{ borderTop: "1px solid var(--borderGlass)", marginTop: "12px", paddingTop: "12px", fontSize: "0.82rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-            ℹ️ {activeLine === "east" ? (
-              <span>يربط مدينة نصر (الاستاد) بالعاصمة الإدارية الجديدة لخدمة أحياء شرق القاهرة والتجمع الخامس.</span>
-            ) : (
-              <span>يربط الجيزة (وادي النيل) بمدينة السادس من أكتوبر لخدمة مواطني الجيزة وضواحي أكتوبر.</span>
-            )}
-          </div>
-        </div>
-
-        {/* Ticket Calculator & Trip Planner */}
-        <div className="metro-animate-slide-up metro-delay-350" style={{
-          marginTop: "20px",
-          backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--borderGlass)",
-          borderRadius: "var(--radius-card)",
-          padding: "20px",
-          boxShadow: "var(--shadow-sm)",
-        }}>
-          <div style={{
-            fontSize: "1.1rem",
-            fontWeight: "800",
-            color: "var(--textPrimary)",
-            marginBottom: "16px",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
-          }}>
-            <i className="bx bx-card" style={{ color: "var(--colorSecondary, #3b82f6)", fontSize: "1.3rem" }}></i>
-            أحسب تذكرتك وظبط رحلتك
-          </div>
-
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "16px" }}>
-            {/* From Station */}
-            <div style={{ flex: "1 1 200px" }}>
-              <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>
-                محطة القيام:
-              </label>
-              <select
-                value={calcFrom}
-                onChange={(e) => setCalcFrom(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  backgroundColor: "var(--bgSecondary)",
-                  color: "var(--textPrimary)",
-                  border: "1px solid var(--borderGlass)",
-                  fontFamily: "var(--font-cairo)",
-                  fontSize: "0.85rem",
-                  outline: "none"
-                }}
-              >
-                <option value="">-- اختر محطة القيام --</option>
-                <optgroup label="شرق النيل (العاصمة)">
-                  {eastStations.map(s => (
-                    <option key={s.name} value={s.name}>{s.name}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="غرب النيل (أكتوبر)">
-                  {westStations.map(s => (
-                    <option key={s.name} value={s.name}>{s.name}</option>
-                  ))}
-                </optgroup>
-              </select>
-            </div>
-
-            {/* To Station */}
-            <div style={{ flex: "1 1 200px" }}>
-              <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textSecondary)", display: "block", marginBottom: "6px" }}>
-                محطة الوصول:
-              </label>
-              <select
-                value={calcTo}
-                onChange={(e) => setCalcTo(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  backgroundColor: "var(--bgSecondary)",
-                  color: "var(--textPrimary)",
-                  border: "1px solid var(--borderGlass)",
-                  fontFamily: "var(--font-cairo)",
-                  fontSize: "0.85rem",
-                  outline: "none"
-                }}
-              >
-                <option value="">-- اختر محطة الوصول --</option>
-                <optgroup label="شرق النيل (العاصمة)">
-                  {eastStations.map(s => (
-                    <option key={s.name} value={s.name}>{s.name}</option>
-                  ))}
-                </optgroup>
-                <optgroup label="غرب النيل (أكتوبر)">
-                  {westStations.map(s => (
-                    <option key={s.name} value={s.name}>{s.name}</option>
-                  ))}
-                </optgroup>
-              </select>
-            </div>
-          </div>
-
-          {/* Results display */}
-          {routeResult ? (
-            <div style={{
-              background: "rgba(128, 128, 128, 0.03)",
-              border: "1px solid var(--borderGlass)",
-              borderRadius: "12px",
-              padding: "16px",
-            }}>
-              {routeResult.sameLine ? (
-                // Same line trip result
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
-                    <div>
-                      <span style={{ color: "var(--textSecondary)", fontSize: "0.78rem", display: "block", marginBottom: "4px" }}>سعر تذكرة الرحلة (العادية)</span>
-                      <strong style={{ fontSize: "1.6rem", color: "var(--colorSecondary, #3b82f6)" }}>{routeResult.price} ج.م</strong>
-                    </div>
-                    <div>
-                      <span style={{ color: "var(--textSecondary)", fontSize: "0.78rem", display: "block", marginBottom: "4px" }}>تذكرة مخفضة (كبار السن / الاحتياجات)</span>
-                      <strong style={{ fontSize: "1.4rem", color: "#10b981" }}>{routeResult.discountPrice} ج.م</strong>
-                    </div>
-                    <div style={{ textAlign: "left", marginRight: "auto" }}>
-                      <span style={{ color: "var(--textSecondary)", fontSize: "0.78rem", display: "block", marginBottom: "4px" }}>تفاصيل المسار</span>
-                      <span style={{ fontSize: "0.85rem", color: "var(--textPrimary)", fontWeight: "bold" }}>
-                        {routeResult.count} محطات ~ {routeResult.time} دقيقة
-                      </span>
-                    </div>
-                  </div>
-
-                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", marginTop: "10px" }}>
-                    📊 نوع المنطقة: {routeResult.zoneName}
-                  </div>
-
-                  {/* Route path stations */}
-                  <div style={{ marginTop: "16px", borderTop: "1px solid var(--borderGlass)", paddingTop: "12px" }}>
-                    <div style={{ fontWeight: "700", marginBottom: "8px", fontSize: "0.82rem", color: "var(--textPrimary)" }}>مسار الرحلة بالتفصيل:</div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
-                      {routeResult.stations?.map((sName, idx) => {
-                        const isStart = idx === 0;
-                        const isEnd = idx === (routeResult.stations?.length ?? 0) - 1;
-                        return (
-                          <React.Fragment key={sName}>
-                            <span style={{
-                              padding: "4px 10px",
-                              borderRadius: "20px",
-                              background: isStart || isEnd ? (routeResult.lineType === "east" ? "#3b82f6" : "#10b981") : "rgba(128, 128, 128, 0.08)",
-                              color: isStart || isEnd ? "#fff" : "var(--textPrimary)",
-                              fontSize: "0.78rem",
-                              fontWeight: isStart || isEnd ? "bold" : "normal",
-                              border: "1px solid var(--borderGlass)"
-                            }}>
-                              {sName}
-                            </span>
-                            {idx < (routeResult.stations?.length ?? 0) - 1 && <span style={{ color: "var(--text-muted)", fontSize: "0.78rem" }}>←</span>}
-                          </React.Fragment>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                // Cross line trip result (different lines!)
-                <div>
-                  <div style={{
-                    padding: "8px 12px",
-                    background: "rgba(251, 191, 36, 0.08)",
-                    border: "1px solid rgba(251, 191, 36, 0.2)",
-                    borderRadius: "8px",
-                    color: "#fb2424ff",
-                    fontSize: "0.8rem",
-                    lineHeight: "1.5",
-                    marginBottom: "16px"
-                  }}>
-                    ⚠️ <strong>خطوط المونوريل غير متصلة مباشرة:</strong> محطة القيام والوصول تقعان في اتجاهين منفصلين (شرق وغرب النيل). يمكنك الانتقال بينهما عن طريق <strong>مترو الخط الثالث</strong>.
-                  </div>
-
-                  <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", alignItems: "center" }}>
-                    <div>
-                      <span style={{ color: "var(--textSecondary)", fontSize: "0.78rem", display: "block", marginBottom: "4px" }}>إجمالي التذاكر (مونوريل + مترو)</span>
-                      <strong style={{ fontSize: "1.6rem", color: "var(--colorSecondary, #3b82f6)" }}>{routeResult.totalPrice} ج.م</strong>
-                    </div>
-
-                    <div style={{ textAlign: "right", marginRight: "auto" }}>
-                      <span style={{ color: "var(--textSecondary)", fontSize: "0.78rem", display: "block", marginBottom: "4px" }}> زمن الرحلة المقدر</span>
-                      <span style={{ fontSize: "0.85rem", color: "var(--textPrimary)", fontWeight: "bold" }}>
-                        ~ {routeResult.totalTime} دقيقة
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Multi-leg route details */}
-                  <div style={{ marginTop: "16px", borderTop: "1px solid var(--borderGlass)", paddingTop: "12px", display: "flex", flexDirection: "column", gap: "12px" }}>
-                    <div style={{ fontWeight: "700", fontSize: "0.82rem", color: "var(--textPrimary)" }}>خطة السفر :</div>
-
-                    {/* Leg 1 */}
-                    <div style={{ padding: "10px", background: "rgba(128, 128, 128, 0.05)", borderRadius: "8px", border: "1px solid var(--borderGlass)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src={
-                              routeResult.leg1?.lineType === "east"
-                                ? "/images/icons2d/Cairo_monorail_east.png"
-                                : "/images/icons2d/Cairo_monorail_west.png"
-                            }
-                            alt="monorail"
-                            loading="lazy"
-                            decoding="async"
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              marginLeft: "5px",
-                            }}
-                          />
-                          <span style={{ fontWeight: "bold", color: routeResult.leg1?.lineType === "east" ? "#3b82f6" : "#10b981" }}>
-                            الخطوة الأولى
-                          </span>
-                        </div>
-                        <span style={{ color: "var(--textSecondary)" }}>{routeResult.leg1?.price} ج.م ~ {routeResult.leg1?.time} دقيقة</span>
-                      </div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                        استخدم مونوريل  ({routeResult.leg1?.lineType === "east" ? "شرق النيل" : "غرب النيل"}) من <strong>{routeResult.leg1?.from}</strong> إلى محطة التبادل <strong>{routeResult.leg1?.to}</strong> ({routeResult.leg1?.count} محطات)
-                      </div>
-                    </div>
-
-                    {/* Leg 2 */}
-                    <div style={{ padding: "10px", background: "rgba(128, 128, 128, 0.05)", borderRadius: "8px", border: "1px solid var(--borderGlass)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img src="images/icons2d/metro.svg" alt="cairo_metro" loading="lazy" decoding="async" style={{ width: "20px", height: "20px", marginLeft: "5px" }} />
-                          <span style={{ fontWeight: "bold", color: "#007928ff" }}>
-                            الخطوة الثانية
-                          </span>
-                        </div>
-                        <span style={{ color: "var(--textSecondary)" }}>{routeResult.leg2?.price} ج.م ~ {routeResult.leg2?.time} دقيقة</span>
-                      </div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                        قم بالتبديل للمترو من محطة <strong>{routeResult.leg2?.from}</strong> إلى محطة <strong>{routeResult.leg2?.to}</strong>
-                      </div>
-                    </div>
-
-                    {/* Leg 3 */}
-                    <div style={{ padding: "10px", background: "rgba(128, 128, 128, 0.05)", borderRadius: "8px", border: "1px solid var(--borderGlass)" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "0.78rem" }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img
-                            src={
-                              routeResult.leg3?.lineType === "east"
-                                ? "/images/icons2d/Cairo_monorail_east.png"
-                                : "/images/icons2d/Cairo_monorail_west.png"
-                            }
-                            alt="monorail"
-                            loading="lazy"
-                            decoding="async"
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              marginLeft: "5px",
-                            }}
-                          />
-                          <span style={{ fontWeight: "bold", color: routeResult.leg3?.lineType === "east" ? "#3b82f6" : "#10b981" }}>
-                            الخطوة الثالثة
-                          </span>
-                        </div>
-                        <span style={{ color: "var(--textSecondary)" }}>{routeResult.leg3?.price} ج.م ~ {routeResult.leg3?.time} دقيقة</span>
-                      </div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                        اركب من محطة التبادل <strong>{routeResult.leg3?.from}</strong> إلى وجهتك النهائية <strong>{routeResult.leg3?.to}</strong> ({routeResult.leg3?.count} محطات)
-                      </div>
-                    </div>
-                  </div>
+                  })}
                 </div>
               )}
+            </div>
 
-              {/* Report Route Button */}
+            {/* SWAP BUTTON */}
+            <div style={{ display: "flex", justifyContent: "center", margin: "-8px 0" }}>
               <button
                 type="button"
-                onClick={() => handleOpenReportModal(null, true)}
+                onClick={swapStations}
                 style={{
-                  marginTop: "16px",
-                  width: "100%",
-                  padding: "9px 14px",
-                  borderRadius: "10px",
-                  background: "rgba(239, 68, 68, 0.08)",
-                  border: "1px solid rgba(239, 68, 68, 0.25)",
-                  color: "#ef4444",
-                  fontSize: "0.82rem",
-                  fontWeight: "700",
+                  background: "var(--bgSecondary)",
+                  border: "1px solid var(--borderGlass)",
+                  borderRadius: "50%",
+                  width: "38px",
+                  height: "38px",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "6px",
-                  fontFamily: "var(--font-cairo)",
+                  color: "var(--textSecondary)",
+                  fontSize: "1.15rem",
                   transition: "all 0.2s ease",
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.15)"}
-                onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "rotate(180deg)";
+                  e.currentTarget.style.background = "var(--hoverBtn)";
+                  e.currentTarget.style.color = "var(--colorSecondary)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "rotate(0deg)";
+                  e.currentTarget.style.background = "var(--bgSecondary)";
+                  e.currentTarget.style.color = "var(--textSecondary)";
+                }}
+                title="تبديل محطة القيام والوصول"
               >
-                <i className="fa-solid fa-triangle-exclamation"></i>
-                <span>الإبلاغ عن خطأ في حساب هذا المسار</span>
+                ⇅
               </button>
             </div>
-          ) : (
-            <div style={{
-              textAlign: "center",
-              padding: "16px",
-              color: "var(--textSecondary)",
-              fontSize: "0.8rem",
-              background: "rgba(128, 128, 128, 0.02)",
-              borderRadius: "10px",
-              border: "1px dashed var(--borderGlass)"
-            }}>
-              💡 اختر محطة القيام والوصول لحساب أسعار التذاكر وتخطيط مسار رحلتك بالكامل.
-            </div>
-          )}
-        </div>
 
-        {/* Timeline list of stations styled matching Directory item cards */}
-        <div className="metro-animate-slide-up metro-delay-400" style={{ marginTop: "24px" }}>
-          <div style={{
-            fontSize: "1.2rem",
-            fontWeight: "800",
-            color: "var(--textPrimary)",
-            marginBottom: "24px",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
-          }}>
-            <i style={{ color: currentStats.color }} className="bx bx-station"></i>
-            محطات الخط ({lineStations.length})
+            {/* TO STATION INPUT */}
+            <div style={{ position: "relative", zIndex: showToList ? 20 : 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--textSecondary)", margin: 0, fontFamily: "var(--font-heading)" }}>
+                  <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "#ff0000" }}></i> إلى محطة:
+                </label>
+                <VoiceInputButton
+                  onTranscript={(text) => {
+                    setToQuery(text);
+                    setSelectedTo(null);
+                    setShowToList(true);
+                  }}
+                />
+              </div>
+              <div style={{ position: "relative" }}>
+                <input
+                  className="input-fields"
+                  placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: مدينة الفنون، الجامعة الأمريكية، أكتوبر)"
+                  value={toQuery}
+                  onChange={(e) => {
+                    setToQuery(e.target.value);
+                    setSelectedTo(null);
+                    setShowToList(true);
+                  }}
+                  onFocus={() => setShowToList(true)}
+                  onBlur={() => setTimeout(() => setShowToList(false), 250)}
+                  style={{
+                    width: "100%",
+                    direction: "rtl",
+                    fontFamily: "var(--font-body)",
+                  }}
+                />
+                {selectedTo && (
+                  <span style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "8px", fontWeight: "600" }}>
+                    تم الاختيار ✔
+                  </span>
+                )}
+              </div>
+              {showToList && filteredToStations.length > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    background: "var(--bgSecondary)",
+                    border: "1px solid var(--borderGlass)",
+                    borderRadius: "var(--radius-card)",
+                    overflow: "hidden",
+                    zIndex: 100,
+                    maxHeight: "220px",
+                    overflowY: "auto",
+                    marginTop: "4px",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                  }}
+                >
+                  {filteredToStations.map((s) => {
+                    const details = MONORAIL_STATION_DETAILS[s.name];
+                    const q = normalizeArabic(toQuery.trim());
+                    const matchedLandmark = q ? details?.landmarks?.find((l) => normalizeArabic(l).includes(q)) : null;
+                    const lineCfg = MONORAIL_LINES_CONFIG.find((l) => l.id === s.line_type);
+
+                    return (
+                      <div
+                        key={s.name}
+                        onMouseDown={() => {
+                          setSelectedTo(s.name);
+                          setToQuery(s.name);
+                          setShowToList(false);
+                        }}
+                        style={{
+                          padding: "10px 16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                          borderBottom: "1px solid rgba(255,255,255,0.03)",
+                          transition: "background 0.2s",
+                          fontFamily: "var(--font-sub)",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--textPrimary)" }}>{s.name}</span>
+                          {matchedLandmark && (
+                            <span style={{ fontSize: "0.72rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
+                              📍 قريب من: {matchedLandmark}
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ marginRight: "auto", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span
+                            style={{
+                              fontSize: "0.7rem",
+                              color: lineCfg?.color || "#3b82f6",
+                              background: (lineCfg?.color || "#3b82f6") + "15",
+                              border: `1px solid ${(lineCfg?.color || "#3b82f6")}33`,
+                              padding: "2px 6px",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            {lineCfg?.shortName}
+                          </span>
+                          {details?.status === "تحت الإنشاء" && (
+                            <span style={{ fontSize: "0.68rem", background: "rgba(239, 68, 68, 0.12)", color: "#ef4444", padding: "1px 5px", borderRadius: "4px" }}>
+                              قيد الإنشاء
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
-          {loadingStations ? (
-            <div style={{ textAlign: "center", padding: "40px", color: "var(--textSecondary)" }}>
-              <span style={{ display: "inline-block", width: "24px", height: "24px", border: "3px solid var(--borderGlass)", borderTopColor: currentStats.color, borderRadius: "50%", animation: "spin 1s linear infinite" }} />
-              <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>جاري تحميل محطات المونوريل...</p>
-            </div>
-          ) : lineStations.length === 0 ? (
-            <div style={{
-              textAlign: "center",
-              padding: "40px",
-              color: "var(--textSecondary)",
-              backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--borderGlass)",
-              borderRadius: "15px"
-            }}>
-              <p>لم يتم العثور على محطات مطابقة للبحث</p>
-            </div>
-          ) : (
-            <div style={{ position: "relative", paddingRight: "35px" }}>
-              {/* Timeline Vertical Line with Neon Glow */}
-              <div style={{
-                position: "absolute",
-                top: "12px",
-                bottom: "12px",
-                right: "14px",
-                width: "2px",
-                background: `linear-gradient(to bottom, ${currentStats.color}, var(--borderGlass))`,
-                borderRadius: "4px",
-                filter: `drop-shadow(0 0 3px ${currentStats.color})`
-              }} />
+          {/* Action / Search Button */}
+          <button
+            type="button"
+            onClick={() => {
+              if (selectedFrom && selectedTo) {
+                setIsTripActive(false);
+                setCurrentStepIndex(0);
+              }
+            }}
+            disabled={!selectedFrom || !selectedTo || selectedFrom === selectedTo}
+            className="btn btn-primary"
+            style={{
+              width: "100%",
+              marginTop: "4px",
+              fontSize: "0.95rem",
+              fontWeight: "700",
+              cursor: !selectedFrom || !selectedTo || selectedFrom === selectedTo ? "not-allowed" : "pointer",
+              opacity: !selectedFrom || !selectedTo || selectedFrom === selectedTo ? 0.6 : 1,
+            }}
+          >
+            <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "6px" }}></i>
+            اعرض مسار وتفاصيل الرحلة
+          </button>
 
-              {/* List */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                {lineStations.map((station, index) => {
-                  const dbLandmarks = Array.isArray(station.landmarks) && station.landmarks.length > 0 ? (station.landmarks as string[]) : null;
-                  const staticDetails = STATION_DETAILS[station.name];
-                  const details = (staticDetails || dbLandmarks) ? {
-                    landmarks: dbLandmarks || staticDetails?.landmarks || [],
-                    type: staticDetails?.type || "عادية",
-                    timeFromStart: staticDetails?.timeFromStart ?? 0,
-                    status: station.status || staticDetails?.status || "تحت الإنشاء"
-                  } : null;
-                  const isExpanded = expandedStation === station.name;
-                  const isFirst = station.station_order === 1;
-                  const isLast = station.station_order === currentStats.stationsCount;
-                  const isTerminal = isFirst || isLast;
-                  const isTransfer = station.name.includes("الاستاد") || station.name.includes("هشام بركات") || station.name.includes("مدينة الفنون والثقافة") || station.name.includes("وادي النيل") || station.name.includes("نقابة المهندسين") || station.name.includes("المشير طنطاوي") || station.name.includes("الطريق الدائري");
+          {/* TRIP RESULTS */}
+          {routeResult && (
+            <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              {/* Results Details Grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+                {/* Number of Stations */}
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{routeResult.count}</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>عدد المحطات</div>
+                </div>
+                {/* Price */}
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSuccess)" }}>{routeResult.price} ج.م</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>سعر التذكرة</div>
+                </div>
+                {/* Estimated Time */}
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSecondary)" }}>{routeResult.time} د</div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>زمن الرحلة</div>
+                </div>
+                {/* Multi-leg / Transfer Status */}
+                <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px", textAlign: "center" }}>
+                  <div style={{ fontSize: "1.1rem", fontWeight: "800", color: !routeResult.sameLine ? "var(--colorWarning, #f59e0b)" : "var(--colorSuccess)" }}>
+                    {!routeResult.sameLine ? "تبديل (مترو L3)" : "مباشر"}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--textSecondary)", fontWeight: "600", marginTop: "4px" }}>نوع المسار</div>
+                </div>
+              </div>
 
-                  return (
-                    <div id={`station-${station.name}`} key={station.id || index} style={{ display: "flex", flexDirection: "column", position: "relative" }}>
+              {/* Informative Guidance Box */}
+              {!isTripActive && (
+                <div
+                  style={{
+                    background: "var(--bgGlass)",
+                    border: "1px solid var(--borderGlass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "14px 16px",
+                  }}
+                >
+                  <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem", color: "var(--textPrimary)", fontWeight: "600" }}>
+                    <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: "var(--colorSecondary)", fontSize: "1.1rem", verticalAlign: "middle" }}></i>
+                    {routeResult.description}
+                  </p>
+                  {routeResult.discountPrice && (
+                    <div style={{ marginTop: "6px", fontSize: "0.78rem", color: "var(--textMuted)" }}>
+                      💡 تخفيض كبار السن وذوي الهمم: <strong>{routeResult.discountPrice} ج.م</strong>
+                    </div>
+                  )}
+                </div>
+              )}
 
-                      {/* Circle Node on the timeline */}
-                      <div
-                        className={`${isTerminal ? (activeLine === "east" ? "pulse-node-east" : "pulse-node-west") : ""}`}
-                        style={{
-                          position: "absolute",
-                          right: "-29px",
-                          top: "15px",
-                          width: isTerminal ? "20px" : "16px",
-                          height: isTerminal ? "20px" : "16px",
-                          borderRadius: "50%",
-                          background: details?.status === "تحت الإنشاء" ? "var(--bgPrimary)" : (isTerminal ? "#454549ff" : (isTransfer ? "rgba(255,255,255,0.9)" : currentStats.color)),
-                          border: details?.status === "تحت الإنشاء" ? `3px dashed ${currentStats.color}` : `4.5px solid var(--bgPrimary, #000)`,
-                          boxShadow: isTransfer && details?.status !== "تحت الإنشاء" ? "0 0 8px rgba(255,255,255,0.5)" : "none",
-                          zIndex: 2,
-                          transform: isTerminal ? "translateY(-3px)" : "none",
-                          transition: "all 0.3s ease"
-                        }}
-                      />
+              {/* Actions Grid: Start Trip + Share Route */}
+              {!isTripActive && (
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  {/* Start Trip Button */}
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setIsTripActive(true);
+                      setCurrentStepIndex(0);
+                    }}
+                    style={{
+                      flex: "1 1 140px",
+                      fontSize: "0.88rem",
+                      fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <i className="fa-solid fa-play"></i>
+                    بدء تتبع الرحلة
+                  </button>
 
-                      {/* Content Box - Styled matching Directory item cards */}
-                      <div
-                        onClick={() => handleStationClick(station.name)}
-                        style={{
-                          backgroundColor: "var(--bgPrimary)",
-                          border: isExpanded ? `1px solid ${currentStats.color}` : (details?.status === "تحت الإنشاء" ? `1px dashed ${currentStats.color}50` : "1px solid var(--borderGlass)"),
-                          opacity: details?.status === "تحت الإنشاء" ? 0.75 : 1,
-                          borderRadius: "var(--radius-card)",
-                          padding: "12px 16px",
-                          marginRight: "10px",
-                          boxShadow: "var(--shadow-sm)",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "10px",
-                          cursor: "pointer",
-                          transition: "transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
-                        onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
-                      >
-                        {/* Header Row */}
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <span style={{
-                              fontSize: "1.02rem",
-                              fontWeight: "700",
-                              color: details?.status === "تحت الإنشاء" ? "var(--textSecondary)" : "var(--textPrimary)",
-                            }}>
-                              {station.name}
+                  {/* Share Route Button */}
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={handleShareRoute}
+                    style={{
+                      flex: "1 1 140px",
+                      fontSize: "0.88rem",
+                      fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      background: "var(--bgSecondary)",
+                      border: "1px solid var(--borderGlass)",
+                      color: "var(--textPrimary)",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    <i className={copiedRoute ? "fa-solid fa-check" : "fa-solid fa-share-nodes"}></i>
+                    {copiedRoute ? "تم النسخ بنجاح ✔" : "مشاركة التفاصيل"}
+                  </button>
+
+                  {/* WhatsApp Share Button */}
+                  <a
+                    href={whatsappShareUrl}
+                    target="_blank"
+                    className="btn"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontSize: "0.88rem",
+                      fontWeight: "700",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      background: "rgba(0, 119, 44, 1)",
+                      border: "1px solid rgba(37, 211, 102, 0.3)",
+                      color: "#ffffffff",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                      width: "100%",
+                    }}
+                  >
+                    <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }}></i>
+                    شارك مباشرا علي الواتساب
+                  </a>
+                </div>
+              )}
+
+              {/* Active Trip Tracker */}
+              {isTripActive && trackerStationsList.length > 0 && (
+                <div
+                  style={{
+                    background: "var(--bgSecondary)",
+                    border: "1px solid var(--borderGlass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "16px",
+                  }}
+                >
+                  {/* Active Trip Badge */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--colorSecondary)", background: "rgba(59, 130, 246, 0.12)", padding: "4px 10px", borderRadius: "8px" }}>
+                      رحلة نشطة حالياً
+                    </span>
+                    <button
+                      onClick={() => {
+                        setIsTripActive(false);
+                        setCurrentStepIndex(0);
+                      }}
+                      style={{
+                        border: "none",
+                        color: "var(--accent-red, #ef4444)",
+                        fontSize: "0.78rem",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        background: "rgba(246, 59, 59, 0.12)",
+                        padding: "4px 10px",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      <i className="fa-solid fa-trash" style={{ marginLeft: "6px" }}></i>
+                      إنهاء التتبع
+                    </button>
+                  </div>
+
+                  {/* Current Station Info */}
+                  <div style={{ fontSize: "0.92rem", fontWeight: "600", marginBottom: "6px", color: "var(--textSecondary)" }}>
+                    أنت الآن في محطة:{" "}
+                    <strong style={{ color: "var(--textPrimary)", fontSize: "1.05rem" }}>
+                      {trackerStationsList[currentStepIndex]?.name}
+                    </strong>
+                    <span style={{ fontSize: "0.78rem", color: "var(--textMuted)", marginRight: "8px" }}>
+                      ({currentStepIndex + 1} من {trackerStationsList.length})
+                    </span>
+                  </div>
+
+                  {/* Remaining Stations Counter */}
+                  {(() => {
+                    const remainingCount = trackerStationsList.length - 1 - currentStepIndex;
+                    const remainingMins = Math.max(0, remainingCount * 2.5);
+                    return (
+                      <div style={{ fontSize: "0.82rem", color: "var(--textMuted)", marginBottom: "12px" }}>
+                        متبقي {remainingCount} محطة للوصول إلى الوجهة (~{Math.round(remainingMins)} دقيقة)
+                      </div>
+                    );
+                  })()}
+
+                  {/* Progress Bar */}
+                  <div
+                    style={{
+                      height: "6px",
+                      background: "var(--borderGlass)",
+                      borderRadius: "4px",
+                      overflow: "hidden",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        background: "var(--colorSecondary)",
+                        width: `${((currentStepIndex + 1) / trackerStationsList.length) * 100}%`,
+                        transition: "width 0.3s ease",
+                      }}
+                    />
+                  </div>
+
+                  {/* Station Progress Controller */}
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <button
+                      type="button"
+                      disabled={currentStepIndex === 0}
+                      onClick={() => setCurrentStepIndex((prev) => Math.max(0, prev - 1))}
+                      style={{
+                        flex: 1,
+                        padding: "8px",
+                        borderRadius: "var(--ra-8)",
+                        border: "1px solid var(--borderGlass)",
+                        background: "var(--bgPrimary)",
+                        color: "var(--textPrimary)",
+                        fontSize: "0.85rem",
+                        fontWeight: "600",
+                        cursor: currentStepIndex === 0 ? "not-allowed" : "pointer",
+                        opacity: currentStepIndex === 0 ? 0.5 : 1,
+                      }}
+                    >
+                      <i className="fa-solid fa-chevron-right" style={{ marginLeft: "4px" }}></i> المحطة السابقة
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={currentStepIndex >= trackerStationsList.length - 1}
+                      onClick={() => setCurrentStepIndex((prev) => Math.min(trackerStationsList.length - 1, prev + 1))}
+                      className="btn btn-primary"
+                      style={{
+                        flex: 1,
+                        padding: "8px",
+                        fontSize: "0.85rem",
+                        fontWeight: "700",
+                        cursor: currentStepIndex >= trackerStationsList.length - 1 ? "not-allowed" : "pointer",
+                        opacity: currentStepIndex >= trackerStationsList.length - 1 ? 0.5 : 1,
+                      }}
+                    >
+                      وصلت المحطة التالية <i className="fa-solid fa-chevron-left" style={{ marginRight: "4px" }}></i>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Detailed Path Timeline for Route */}
+              <div
+                style={{
+                  background: "var(--bgSecondary)",
+                  border: "1px solid var(--borderGlass)",
+                  borderRadius: "var(--ra-8)",
+                  padding: "16px",
+                }}
+              >
+                <div style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "12px" }}>
+                  تفاصيل ومسار محطات الرحلة ({routeResult.count} محطة):
+                </div>
+
+                {/* Single Line Path */}
+                {routeResult.sameLine && routeResult.stations && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {routeResult.stations.map((stName, idx) => {
+                      const isFirst = idx === 0;
+                      const isLast = idx === routeResult.stations.length - 1;
+                      const stDetails = MONORAIL_STATION_DETAILS[stName];
+
+                      return (
+                        <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <div
+                            style={{
+                              width: isFirst || isLast ? "12px" : "8px",
+                              height: isFirst || isLast ? "12px" : "8px",
+                              borderRadius: "50%",
+                              background: isFirst ? "var(--colorSuccess)" : isLast ? "var(--accent-red, #ef4444)" : routeResult.lineColor,
+                              border: isFirst || isLast ? "2px solid var(--bgPrimary)" : "none",
+                              boxShadow: isFirst || isLast ? `0 0 0 2px ${routeResult.lineColor}` : "none",
+                              flexShrink: 0,
+                            }}
+                          />
+                          <span style={{ fontSize: "0.85rem", fontWeight: isFirst || isLast ? "700" : "500", color: "var(--textPrimary)" }}>
+                            {stName}
+                            {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(محطة الركوب)</span>}
+                            {isLast && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(محطة الوصول)</span>}
+                          </span>
+                          {stDetails?.status === "تحت الإنشاء" && (
+                            <span style={{ fontSize: "0.68rem", background: "rgba(239, 68, 68, 0.12)", color: "#ef4444", padding: "1px 5px", borderRadius: "4px", marginRight: "auto" }}>
+                              تحت الإنشاء 🚧
                             </span>
-                            {details?.status === "تحت الإنشاء" && (
-                              <span style={{
-                                background: "rgba(239, 68, 68, 0.12)",
-                                color: "#ef4444",
-                                fontSize: "0.68rem",
-                                padding: "2px 6px",
-                                borderRadius: "4px",
-                                fontWeight: "bold",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "3px"
-                              }}>
-                                تحت الإنشاء 🚧
-                              </span>
-                            )}
-                          </div>
-
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-
-
-                            {isTransfer && (
-                              <span style={{
-                                background: "rgba(251, 191, 36, 0.12)",
-                                color: "#fbbf24",
-                                fontSize: "0.68rem",
-                                padding: "2px 6px",
-                                borderRadius: "4px",
-                                fontWeight: "bold"
-                              }}>
-                                تبادلية
-                              </span>
-                            )}
-                            <i className={`bx bx-chevron-${isExpanded ? 'up' : 'down'}`} style={{ color: "var(--textSecondary)", fontSize: "1.3rem" }}></i>
-                          </div>
+                          )}
                         </div>
+                      );
+                    })}
+                  </div>
+                )}
 
-                        {/* Expandable landmarks and details block matching Directory entries expansion */}
-                        {isExpanded && (
-                          <div style={{
-                            borderTop: "1px solid var(--borderGlass)",
-                            paddingTop: "12px",
-                            marginTop: "4px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "10px",
-                            animation: "fadeIn 0.25s ease"
-                          }}>
-                            {details ? (
-                              <>
-                                {/* Landmarks */}
-                                <div>
-                                  <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginBottom: "6px", fontWeight: "700" }}>
-                                    📍 المعالم القريبة:
-                                  </div>
-                                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                                    {details.landmarks.map((landmark, idx) => (
-                                      <span key={idx} style={{
-                                        background: "var(--bgSecondary)",
-                                        color: "var(--textSecondary)",
-                                        fontSize: "0.78rem",
-                                        padding: "4px 10px",
-                                        borderRadius: "6px",
-                                        border: "1px solid var(--borderGlass)"
-                                      }}>
-                                        {landmark}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                {/* Additional metadata info row */}
-                                <div style={{ display: "flex", flexWrap: "wrap", gap: "14px", marginTop: "4px" }}>
-                                  <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
-                                    🔗 الربط والتبادل: <strong style={{ color: "var(--textPrimary)" }}>{details.type}</strong>
-                                  </div>
-                                </div>
-
-                                {/* Report button for this station */}
-                                <div style={{ marginTop: "6px" }}>
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleOpenReportModal(station.name);
-                                    }}
-                                    style={{
-                                      padding: "5px 12px",
-                                      borderRadius: "8px",
-                                      background: "rgba(239, 68, 68, 0.08)",
-                                      border: "1px solid rgba(239, 68, 68, 0.25)",
-                                      color: "#ef4444",
-                                      fontSize: "0.76rem",
-                                      fontWeight: "700",
-                                      cursor: "pointer",
-                                      display: "inline-flex",
-                                      alignItems: "center",
-                                      gap: "5px",
-                                      fontFamily: "var(--font-cairo)",
-                                      transition: "all 0.2s ease"
-                                    }}
-                                    onMouseEnter={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.16)"}
-                                    onMouseLeave={e => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
-                                  >
-                                    <i className="fa-solid fa-triangle-exclamation"></i>
-                                    <span>إبلاغ عن مشكلة في هذه المحطة</span>
-                                  </button>
-                                </div>
-                              </>
-                            ) : (
-                              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                                لا توجد تفاصيل إضافية مسجلة لهذه المحطة.
-                              </div>
-                            )}
-                          </div>
-                        )}
+                {/* Multi-Leg Path */}
+                {!routeResult.sameLine && routeResult.leg1 && routeResult.leg3 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                    {/* Leg 1 */}
+                    <div style={{ borderRight: `3px solid ${routeResult.leg1.lineColor}`, paddingRight: "10px" }}>
+                      <div style={{ fontSize: "0.82rem", fontWeight: "700", color: routeResult.leg1.lineColor, marginBottom: "6px" }}>
+                        المرحلة الأولى: {routeResult.leg1.lineName} ({routeResult.leg1.count} محطات - {routeResult.leg1.price} ج.م)
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+                        من <strong>{routeResult.leg1.from}</strong> إلى محطة التحويل <strong>{routeResult.leg1.to}</strong>
                       </div>
                     </div>
-                  );
-                })}
+
+                    {/* Leg 2 - Metro Transfer */}
+                    <div style={{ borderRight: "3px dashed var(--colorWarning, #f59e0b)", paddingRight: "10px", background: "rgba(245, 158, 11, 0.05)", padding: "8px 10px", borderRadius: "6px" }}>
+                      <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--colorWarning, #f59e0b)", marginBottom: "4px" }}>
+                        المرحلة الثانية: التحويل عبر الخط الثالث لمترو الأنفاق (~25 دقيقة - 12 ج.م)
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+                        {routeResult.leg2.description}
+                      </div>
+                    </div>
+
+                    {/* Leg 3 */}
+                    <div style={{ borderRight: `3px solid ${routeResult.leg3.lineColor}`, paddingRight: "10px" }}>
+                      <div style={{ fontSize: "0.82rem", fontWeight: "700", color: routeResult.leg3.lineColor, marginBottom: "6px" }}>
+                        المرحلة الثالثة: {routeResult.leg3.lineName} ({routeResult.leg3.count} محطات - {routeResult.leg3.price} ج.م)
+                      </div>
+                      <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>
+                        من محطة التحويل <strong>{routeResult.leg3.from}</strong> إلى الوجهة النهائية <strong>{routeResult.leg3.to}</strong>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Report Route Issue Button */}
+                <div style={{ marginTop: "14px", paddingTop: "10px", borderTop: "1px solid var(--borderGlass)", display: "flex", justifyContent: "flex-end" }}>
+                  <button
+                    type="button"
+                    className="btn btn-reportProblem"
+                    onClick={() => handleOpenReportModal(null, true)}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      fontSize: "0.76rem",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    <i className="fa-solid fa-triangle-exclamation"></i>
+                    الإبلاغ عن خطأ في حساب هذا المسار
+                  </button>
+                </div>
               </div>
             </div>
           )}
         </div>
+
+        {/* Selected Line Explorer & Timeline Panel */}
+        <div ref={detailsPanelRef} className="details-panel">
+          {/* Header of explorer */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "8px",
+                  background: `${selectedLineObj.color}18`,
+                  border: `1px solid ${selectedLineObj.color}40`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: selectedLineObj.color,
+                  fontSize: "1.1rem",
+                }}
+              >
+                <i className={selectedLineObj.icon} />
+              </div>
+              <div>
+                <h2 style={{ fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)", margin: 0 }}>
+                  {selectedLineObj.name}
+                </h2>
+                <span style={{ fontSize: "0.75rem", color: "var(--textMuted)" }}>
+                  {currentLineStations.length} محطة — الطول: {selectedLineObj.length} — زمن الرحلة: {selectedLineObj.time}
+                </span>
+              </div>
+            </div>
+
+            {/* Line Switch Tabs */}
+            <div style={{ display: "flex", gap: "6px" }}>
+              {MONORAIL_LINES_CONFIG.map((line) => (
+                <button
+                  key={line.id}
+                  type="button"
+                  onClick={() => setSelectedLine(line.id)}
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: "6px",
+                    fontSize: "0.75rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    background: selectedLine === line.id ? line.color : "var(--bgSecondary)",
+                    color: selectedLine === line.id ? "#ffffff" : "var(--textSecondary)",
+                    border: selectedLine === line.id ? `1px solid ${line.color}` : "1px solid var(--borderGlass)",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {line.shortName}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Line Stats Grid */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+              gap: "8px",
+              marginBottom: "16px",
+            }}
+          >
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>بداية الخط</div>
+              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>{selectedLineObj.from}</div>
+            </div>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>نهاية الخط</div>
+              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>{selectedLineObj.to}</div>
+            </div>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>طول المسار</div>
+              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--textPrimary)", marginTop: "2px" }}>{selectedLineObj.length}</div>
+            </div>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "10px", textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", color: "var(--textSecondary)", fontWeight: "600" }}>زمن المسار كاملاً</div>
+              <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--textPrimary)", marginTop: "2px" }}>{selectedLineObj.time}</div>
+            </div>
+          </div>
+
+          {/* Search inside line stations */}
+          <div style={{ position: "relative", marginBottom: "16px" }}>
+            <input
+              className="input-fields"
+              placeholder={`ابحث في محطات ${selectedLineObj.shortName}...`}
+              value={lineSearchQuery}
+              onChange={(e) => setLineSearchQuery(e.target.value)}
+              style={{ width: "100%", direction: "rtl", fontSize: "0.85rem" }}
+            />
+            {lineSearchQuery && (
+              <button
+                type="button"
+                onClick={() => setLineSearchQuery("")}
+                style={{
+                  position: "absolute",
+                  left: "10px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--textMuted)",
+                  cursor: "pointer",
+                }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Stations Timeline */}
+          <div style={{ background: "var(--bgGlass)", border: "1px solid var(--borderGlass)", borderRadius: "var(--radius-card)", padding: "18px 16px" }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {filteredCurrentLineStations.length > 0 ? (
+                filteredCurrentLineStations.map((stationObj, idx) => {
+                  const station = stationObj.name;
+                  const isFirst = idx === 0 && !lineSearchQuery;
+                  const isLast = idx === filteredCurrentLineStations.length - 1 && !lineSearchQuery;
+                  const details = MONORAIL_STATION_DETAILS[station];
+                  const landmarks = details?.landmarks || [];
+                  const isUnderConstruction = details?.status === "تحت الإنشاء";
+                  const isTransfer = details?.type?.includes("تبادلية");
+
+                  return (
+                    <div key={idx} id={`station-${station}`} style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "34px" }}>
+                        {/* Timeline Dot */}
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "16px", flexShrink: 0 }}>
+                          <div
+                            style={{
+                              width: isTransfer || isFirst || isLast ? "12px" : "8px",
+                              height: isTransfer || isFirst || isLast ? "12px" : "8px",
+                              borderRadius: "50%",
+                              backgroundColor: isUnderConstruction ? "transparent" : isTransfer ? "var(--colorWarning, #f59e0b)" : selectedLineObj.color,
+                              border: isUnderConstruction ? "2px dashed var(--colorDanger)" : isFirst || isLast ? "2px solid var(--bgPrimary)" : "none",
+                              boxShadow: isUnderConstruction ? "none" : isFirst || isLast ? `0 0 0 2px ${selectedLineObj.color}` : "none",
+                            }}
+                          />
+                        </div>
+
+                        {/* Station Name and Badges */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexGrow: 1, flexWrap: "wrap" }}>
+                          <span
+                            onClick={() => setExpandedStation(expandedStation === station ? null : station)}
+                            style={{
+                              fontSize: "0.88rem",
+                              fontWeight: isFirst || isLast || isTransfer ? "700" : "500",
+                              color: isUnderConstruction ? "#ef4444" : "var(--textPrimary)",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {station}
+                            <i
+                              className={`bx ${expandedStation === station ? "bx-chevron-up" : "bx-chevron-down"}`}
+                              style={{
+                                fontSize: "0.95rem",
+                                color: expandedStation === station ? "var(--colorSecondary)" : "var(--textMuted)",
+                                transition: "all 0.2s ease",
+                              }}
+                            />
+                            {isUnderConstruction && (
+                              <span
+                                style={{
+                                  fontSize: "0.68rem",
+                                  background: "rgba(239, 68, 68, 0.12)",
+                                  color: "#ef4444",
+                                  border: "1px solid rgba(239, 68, 68, 0.25)",
+                                  padding: "1px 6px",
+                                  borderRadius: "4px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                تحت الإنشاء 🚧
+                              </span>
+                            )}
+                            {details?.status === "تشغيل تجريبي" && (
+                              <span
+                                style={{
+                                  fontSize: "0.68rem",
+                                  background: "rgba(59, 130, 246, 0.12)",
+                                  color: "var(--colorSecondary)",
+                                  border: "1px solid rgba(59, 130, 246, 0.25)",
+                                  padding: "1px 6px",
+                                  borderRadius: "4px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                تشغيل تجريبي ⚡
+                              </span>
+                            )}
+                            {isFirst && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(بدايــة الخط)</span>}
+                            {isLast && <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", marginRight: "6px" }}>(نهـاية الخط)</span>}
+                          </span>
+
+                          {/* Transfer badge */}
+                          {isTransfer && (
+                            <span
+                              style={{
+                                fontSize: "0.7rem",
+                                fontWeight: "700",
+                                color: "var(--colorWarning, #f59e0b)",
+                                background: "rgba(245, 158, 11, 0.1)",
+                                border: "1px solid rgba(245, 158, 11, 0.25)",
+                                padding: "2px 6px",
+                                borderRadius: "4px",
+                                marginRight: "auto",
+                              }}
+                            >
+                              {details.type}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Expanded Landmarks / Status details */}
+                      {expandedStation === station && (
+                        <div
+                          style={{
+                            margin: "4px 16px 12px 28px",
+                            padding: "10px 14px",
+                            borderRadius: "8px",
+                            background: "var(--bgSecondary)",
+                            border: isUnderConstruction ? "1px dashed rgba(239, 68, 68, 0.3)" : "1px solid var(--borderGlass)",
+                          }}
+                        >
+                          {isUnderConstruction && (
+                            <div style={{ color: "#ef4444", fontSize: "0.75rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+                              <span>⚠️ هذه المحطة قيد الإنشاء والتشطيب وليست في الخدمة للجمهور حالياً.</span>
+                            </div>
+                          )}
+                          <div style={{ fontSize: "0.75rem", color: "var(--textPrimary)", marginBottom: "6px", fontWeight: "bold" }}>
+                            المعالم والأماكن الحيوية القريبة من المحطة:
+                          </div>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                            {landmarks.length > 0 ? (
+                              landmarks.map((landmark: string, lIdx: number) => (
+                                <span
+                                  key={lIdx}
+                                  style={{
+                                    fontSize: "0.72rem",
+                                    background: "rgba(255, 255, 255, 0.05)",
+                                    color: "var(--textPrimary)",
+                                    padding: "3px 8px",
+                                    borderRadius: "4px",
+                                    border: "1px solid var(--borderGlass)",
+                                  }}
+                                >
+                                  {landmark}
+                                </span>
+                              ))
+                            ) : (
+                              <span style={{ fontSize: "0.72rem", color: "var(--textMuted)", fontStyle: "italic" }}>
+                                لم يتم تسجيل معالم قريبة لهذه المحطة بعد.
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid var(--borderGlass)", display: "flex", justifyContent: "flex-end" }}>
+                            <button
+                              type="button"
+                              className="btn btn-reportProblem"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenReportModal(station);
+                              }}
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "5px",
+                                fontSize: "0.74rem",
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                padding: "3px 8px",
+                                borderRadius: "6px",
+                                transition: "all 0.2s ease",
+                              }}
+                            >
+                              <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.75rem" }}></i>
+                              الإبلاغ عن خطأ في محطة {station}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Connective Line */}
+                      {!isLast && (
+                        <div style={{ display: "flex", gap: "12px", minHeight: "14px" }}>
+                          <div style={{ width: "16px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
+                            <div
+                              style={{
+                                width: "2px",
+                                backgroundColor: selectedLineObj.color,
+                                minHeight: "14px",
+                                opacity: 0.4,
+                              }}
+                            />
+                          </div>
+                          <div style={{ flexGrow: 1 }} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ color: "var(--textSecondary)", fontSize: "0.88rem", textAlign: "center", padding: "12px" }}>
+                  لا توجد محطات مطابقة لبحثك في هذا الخط.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Info Section */}
+          <div
+            style={{
+              marginTop: "12px",
+              background: "var(--bgGlass)",
+              border: "1px solid var(--borderGlass)",
+              borderRadius: "var(--radius-card)",
+              padding: "16px",
+            }}
+          >
+            <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
+              <i className="bx bxs-info-circle" style={{ marginLeft: "6px", color: selectedLineObj.color, fontSize: "1.1rem", verticalAlign: "middle" }}></i>
+              <strong>معلومات الخط: </strong>
+              <span style={{ color: "var(--textMuted)" }}>{selectedLineObj.desc}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Project Overview Panel */}
+        <div ref={mapPanelRef} className="details-panel">
+          <h2
+            style={{
+              fontSize: "1.25rem",
+              fontWeight: "800",
+              color: "var(--textPrimary)",
+              margin: "0 0 8px",
+            }}
+          >
+            عن مشروع مونوريل القاهرة الكبرى
+          </h2>
+          <p style={{ color: "var(--textSecondary)", fontSize: "0.85rem", lineHeight: "1.7", margin: "0 0 14px" }}>
+            يعد مونوريل القاهرة أطول شبكة مونوريل بدون سائق في العالم بطول إجمالي يقارب 100 كم لخطيه (شرق وغرب النيل)، حيث ينقل ما يقارب 500 ألف راكب يومياً بوسيلة مواصلات حضارية صديقة للبيئة تعمل بقطارات Alstom Innovia 300 فائقة التطور.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "10px" }}>
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
+              <div style={{ fontWeight: "700", color: "var(--colorSecondary)", fontSize: "0.88rem", marginBottom: "4px" }}>
+                ⚡ سرعة تشغيلية عالية
+              </div>
+              <div style={{ fontSize: "0.78rem", color: "var(--textMuted)", lineHeight: "1.6" }}>
+                سرعة تصميمية تصل إلى 80 كم/ساعة، مما يختصر زمن الرحلة بين نصر والعاصمة إلى نحو 60 دقيقة فقط.
+              </div>
+            </div>
+
+            <div style={{ background: "var(--bgSecondary)", border: "1px solid var(--borderGlass)", borderRadius: "var(--ra-8)", padding: "12px" }}>
+              <div style={{ fontWeight: "700", color: "var(--colorSuccess)", fontSize: "0.88rem", marginBottom: "4px" }}>
+                🔄 تكامل ذكي مع المترو والـ LRT
+              </div>
+              <div style={{ fontSize: "0.78rem", color: "var(--textMuted)", lineHeight: "1.6" }}>
+                محطات تبادلية كبرى في الاستاد ووادي النيل مع الخط الثالث، ومدينة الفنون مع القطار الخفيف LRT.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Report Problem Alert Box */}
+        <div
+          ref={reportBannerRef}
+          style={{
+            background: "var(--bgLinearAlert)",
+            border: "1px solid var(--borderSecondary)",
+            borderRadius: "var(--ra-8)",
+            padding: "20px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "16px",
+            marginTop: "14px",
+            overflow: "hidden",
+            position: "relative",
+          }}
+        >
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexDirection: "row-reverse", justifyContent: "flex-end" }}>
+              <h2
+                style={{
+                  margin: "0 0 6px",
+                  fontSize: "1rem",
+                  fontWeight: "800",
+                  gap: "8px",
+                }}
+              >
+                الإبلاغ عن مشكلة فى بيانات المونوريل
+              </h2>
+              <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px" }} />
+            </div>
+
+            <p
+              style={{
+                margin: 0,
+                fontSize: "0.82rem",
+                color: "var(--textSecondary)",
+                lineHeight: "1.6",
+              }}
+            >
+              هل لاحظت أي خطأ في مسارات المونوريل، أسعار التذاكر، أو محطات التبديل؟ شاركنا ملاحظتك لمساعدتنا في تدقيق وتحديث الشبكة.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-reportProblem"
+            onClick={() => handleOpenReportModal()}
+            style={{
+              fontSize: "0.84rem",
+              fontWeight: "700",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              transition: "all 0.15s ease",
+              flexShrink: 0,
+            }}
+          >
+            <i className="fa-solid fa-flag"></i>
+            <span>تقديم بلاغ عن خطأ</span>
+          </button>
+        </div>
       </div>
 
-      {/* Report Problem Modal for Monorail */}
+      {/* Report Problem Modal */}
       {reportModalOpen && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(0, 0, 0, 0.75)",
-          backdropFilter: "blur(6px)",
-          zIndex: 9999,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "16px",
-          direction: "rtl"
-        }}>
-          <div style={{
-            backgroundColor: "var(--bgPrimary)",
-            borderRadius: "var(--radius-card)",
-            border: "1px solid var(--borderGlass)",
-            width: "100%",
-            maxWidth: "520px",
-            maxHeight: "90vh",
-            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.75)",
+            backdropFilter: "blur(6px)",
+            zIndex: 9999,
             display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            animation: "fadeIn 0.2s ease",
-            fontFamily: "var(--font-cairo)"
-          }}>
-            {/* Modal Header */}
-            <div style={{
-              padding: "16px 20px",
-              borderBottom: "1px solid var(--borderGlass)",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+            direction: "rtl",
+          }}
+        >
+          <div
+            ref={modalBoxRef}
+            style={{
+              backgroundColor: "var(--bgPrimary)",
+              borderRadius: "var(--radius-card)",
+              border: "1px solid var(--borderGlass)",
+              width: "100%",
+              maxWidth: "520px",
+              maxHeight: "90vh",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: "rgba(255, 255, 255, 0.02)"
-            }}>
+              flexDirection: "column",
+              overflow: "hidden",
+              fontFamily: "var(--font-cairo)",
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                padding: "16px 20px",
+                borderBottom: "1px solid var(--borderGlass)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.02)",
+              }}
+            >
               <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--textPrimary)", display: "flex", alignItems: "center", gap: "8px" }}>
                 <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
-                <span>مشكلة في صفحة قطار المونوريل</span>
+                <span>مشكلة في بيانات قطار المونوريل</span>
               </h5>
               <button
                 type="button"
@@ -1751,438 +2342,286 @@ ${reportDetails.trim()}`;
             <div style={{ padding: "20px", maxHeight: "80vh", overflowY: "auto" }}>
               {reportSuccess ? (
                 <div style={{ textAlign: "center", padding: "30px 10px" }}>
-                  <div style={{
-                    width: "60px",
-                    height: "60px",
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(52, 199, 89, 0.15)",
-                    color: "#34c759",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "2rem",
-                    margin: "0 auto 16px"
-                  }}>
+                  <div
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "50%",
+                      backgroundColor: "rgba(52, 199, 89, 0.15)",
+                      color: "#34c759",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "2rem",
+                      margin: "0 auto 16px",
+                    }}
+                  >
                     <i className="bx bx-check"></i>
                   </div>
-                  <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--textPrimary)" }}>
-                    تم استلام بلاغك بنجاح!
-                  </h4>
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-                    شكراً لمساهمتك في تحسين وتدقيق خدمة قطار المونوريل. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
+                  <h4 style={{ margin: "0 0 8px", fontWeight: "800", color: "var(--textPrimary)" }}>تم إرسال بلاغك بنجاح!</h4>
+                  <p style={{ margin: 0, color: "var(--textSecondary)", fontSize: "0.88rem", lineHeight: "1.6" }}>
+                    شكراً جزيلاً لمساعدتك في تدقيق وتطوير شبكة المونوريل. سيقوم فريقنا بمراجعة ملاحظاتك في أقرب وقت.
                   </p>
-                </div>
-              ) : limitChecking ? (
-                <div style={{ textAlign: "center", padding: "40px" }}>
-                  <div style={{ width: "30px", height: "30px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "var(--colorSecondary)", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 12px" }} />
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
-                </div>
-              ) : limitReached ? (
-                <div style={{ textAlign: "center", padding: "20px 10px" }}>
-                  <div style={{
-                    width: "80px",
-                    height: "80px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 14px"
-                  }}>
-                    <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%", objectFit: "contain" }} loading="lazy" />
-                  </div>
-                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
-                    تم الوصول للحد الأقصى من البلاغات المعلقة
-                  </h5>
-                  <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-                    لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
-                  </p>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => setReportModalOpen(false)}
-                    style={{ width: "100%" }}
-                  >
-                    حسناً، فهمت
-                  </button>
-                </div>
-              ) : !user ? (
-                <div style={{ textAlign: "center", padding: "20px 10px" }}>
-                  <div style={{
-                    width: "56px",
-                    height: "56px",
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(59, 130, 246, 0.15)",
-                    color: "var(--colorSecondary)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "1.8rem",
-                    margin: "0 auto 14px"
-                  }}>
-                    <i className="bx bx-user"></i>
-                  </div>
-                  <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--textPrimary)" }}>
-                    تسجيل الدخول مطلوب
-                  </h5>
-                  <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--textSecondary)", lineHeight: "1.6" }}>
-                    يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي مشكلة في المونوريل ومتابعة حالته وكسب نقاط المساهمة.
-                  </p>
-                  <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-                    <Link
-                      href="/login"
-                      className="btn btn-primary"
-                      style={{ width: "100%" }}
-                    >
-                      تسجيل الدخول
-                    </Link>
-                  </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  {/* Scope Segmented Control */}
+                <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                  {/* Auth Warning */}
+                  {!user && (
+                    <div
+                      style={{
+                        padding: "10px 14px",
+                        borderRadius: "8px",
+                        backgroundColor: "rgba(239, 68, 68, 0.1)",
+                        border: "1px solid rgba(239, 68, 68, 0.25)",
+                        color: "#ef4444",
+                        fontSize: "0.82rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <i className="bx bx-error-circle" style={{ fontSize: "1.1rem" }}></i>
+                      <span>يرجى تسجيل الدخول بحسابك أولاً لتتمكن من إرسال البلاغ.</span>
+                    </div>
+                  )}
+
+                  {/* Limit Warning */}
+                  {limitReached && (
+                    <div
+                      style={{
+                        padding: "10px 14px",
+                        borderRadius: "8px",
+                        backgroundColor: "rgba(245, 158, 11, 0.1)",
+                        border: "1px solid rgba(245, 158, 11, 0.25)",
+                        color: "var(--colorWarning, #f59e0b)",
+                        fontSize: "0.82rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <i className="bx bx-error-circle" style={{ fontSize: "1.1rem" }}></i>
+                      <span>لقد بلغت الحد الأقصى للبلاغات اليومية (3 بلاغات). يرجى المحاولة غداً.</span>
+                    </div>
+                  )}
+
+                  {/* Error Alert */}
+                  {reportError && (
+                    <div
+                      style={{
+                        padding: "10px 14px",
+                        borderRadius: "8px",
+                        backgroundColor: "rgba(239, 68, 68, 0.1)",
+                        border: "1px solid rgba(239, 68, 68, 0.25)",
+                        color: "#ef4444",
+                        fontSize: "0.82rem",
+                      }}
+                    >
+                      {reportError}
+                    </div>
+                  )}
+
+                  {/* Scope Selector */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "8px" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
                       نطاق المشكلة:
                     </label>
-                    <div style={{ display: "grid", gridTemplateColumns: (calcFrom && calcTo) ? "repeat(3, 1fr)" : "repeat(2, 1fr)", gap: "6px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "6px" }}>
                       <button
                         type="button"
                         onClick={() => {
                           setReportTargetScope("general");
                           setReportSelectedStation("");
-                          setReportStationSearchQuery("");
-                          setShowReportStationList(false);
                         }}
                         style={{
-                          padding: "8px 4px",
-                          borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "general" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                          background: reportTargetScope === "general" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "general" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          padding: "6px",
+                          borderRadius: "6px",
+                          fontSize: "0.78rem",
                           fontWeight: "700",
-                          fontSize: "0.8rem",
                           cursor: "pointer",
-                          fontFamily: "var(--font-body)"
+                          background: reportTargetScope === "general" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                          color: reportTargetScope === "general" ? "#ffffff" : "var(--textSecondary)",
+                          border: reportTargetScope === "general" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
                         }}
                       >
                         مشكلة عامة
                       </button>
-
                       <button
                         type="button"
                         onClick={() => {
                           setReportTargetScope("station");
-                          setShowReportStationList(true);
                         }}
                         style={{
-                          padding: "8px 4px",
-                          borderRadius: "8px",
-                          border: `1px solid ${reportTargetScope === "station" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                          background: reportTargetScope === "station" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                          color: reportTargetScope === "station" ? "var(--textPrimary)" : "var(--textSecondary)",
+                          padding: "6px",
+                          borderRadius: "6px",
+                          fontSize: "0.78rem",
                           fontWeight: "700",
-                          fontSize: "0.8rem",
                           cursor: "pointer",
-                          fontFamily: "var(--font-body)"
+                          background: reportTargetScope === "station" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                          color: reportTargetScope === "station" ? "#ffffff" : "var(--textSecondary)",
+                          border: reportTargetScope === "station" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
                         }}
                       >
                         محطة معينة
                       </button>
-
-                      {calcFrom && calcTo && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setReportTargetScope("route");
-                            setReportSelectedStation("");
-                            setReportStationSearchQuery("");
-                            setShowReportStationList(false);
-                          }}
-                          style={{
-                            padding: "8px 4px",
-                            borderRadius: "8px",
-                            border: `1px solid ${reportTargetScope === "route" ? "var(--colorSecondary)" : "var(--borderGlass)"}`,
-                            background: reportTargetScope === "route" ? "rgba(59, 130, 246, 0.12)" : "var(--bgSecondary)",
-                            color: reportTargetScope === "route" ? "var(--textPrimary)" : "var(--textSecondary)",
-                            fontWeight: "700",
-                            fontSize: "0.8rem",
-                            cursor: "pointer",
-                            fontFamily: "var(--font-body)"
-                          }}
-                        >
-                          المسار الحالي
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        disabled={!routeResult}
+                        onClick={() => {
+                          setReportTargetScope("route");
+                        }}
+                        style={{
+                          padding: "6px",
+                          borderRadius: "6px",
+                          fontSize: "0.78rem",
+                          fontWeight: "700",
+                          cursor: !routeResult ? "not-allowed" : "pointer",
+                          opacity: !routeResult ? 0.5 : 1,
+                          background: reportTargetScope === "route" ? "var(--colorSecondary)" : "var(--bgSecondary)",
+                          color: reportTargetScope === "route" ? "#ffffff" : "var(--textSecondary)",
+                          border: reportTargetScope === "route" ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
+                        }}
+                      >
+                        المسار الحالي
+                      </button>
                     </div>
                   </div>
 
-                  {/* If Scope is Station: Searchable station autocomplete selector */}
+                  {/* Station Picker if Scope is Station */}
                   {reportTargetScope === "station" && (
                     <div style={{ position: "relative" }}>
-                      <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                        <span>اختر أو ابحث عن المحطة:</span>
-                        {reportSelectedStation && (
-                          <span style={{ fontSize: "0.74rem", color: "var(--colorSecondary)", fontWeight: "700" }}>
-                            تم تحديد: {reportSelectedStation} ✔
-                          </span>
-                        )}
+                      <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                        اختر المحطة المعنية:
                       </label>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          type="text"
-                          className="input-fields"
-                          placeholder="ابحث باسم المحطة أو المعلم القريب..."
-                          value={reportStationSearchQuery}
-                          onChange={e => {
-                            const val = e.target.value;
-                            setReportStationSearchQuery(val);
-                            setShowReportStationList(true);
-                            if (reportSelectedStation && val !== reportSelectedStation) {
-                              setReportSelectedStation("");
-                            }
-                          }}
-                          onFocus={() => setShowReportStationList(true)}
-                          onBlur={() => setTimeout(() => setShowReportStationList(false), 250)}
+                      <input
+                        className="input-fields"
+                        placeholder="ابحث باسم المحطة..."
+                        value={reportStationSearchQuery}
+                        onChange={(e) => {
+                          setReportStationSearchQuery(e.target.value);
+                          setReportSelectedStation("");
+                          setShowReportStationList(true);
+                        }}
+                        onFocus={() => setShowReportStationList(true)}
+                        style={{ width: "100%", direction: "rtl", fontSize: "0.85rem" }}
+                      />
+                      {reportSelectedStation && (
+                        <span style={{ position: "absolute", left: "10px", top: "34px", fontSize: "0.72rem", background: "rgba(59, 130, 246, 0.15)", color: "var(--colorSecondary)", padding: "2px 8px", borderRadius: "6px", fontWeight: "600" }}>
+                          تم التحديد ✔
+                        </span>
+                      )}
+                      {showReportStationList && filteredReportStations.length > 0 && (
+                        <div
                           style={{
-                            width: "100%",
-                            padding: "10px 36px 10px 36px",
-                            borderRadius: "10px",
+                            position: "absolute",
+                            top: "100%",
+                            left: 0,
+                            right: 0,
                             background: "var(--bgSecondary)",
-                            color: "var(--textPrimary)",
-                            border: reportSelectedStation ? "1px solid var(--colorSecondary)" : "1px solid var(--borderGlass)",
-                            fontFamily: "var(--font-cairo)",
-                            fontSize: "0.9rem",
-                            direction: "rtl"
+                            border: "1px solid var(--borderGlass)",
+                            borderRadius: "var(--radius-card)",
+                            overflow: "hidden",
+                            zIndex: 100,
+                            maxHeight: "160px",
+                            overflowY: "auto",
+                            marginTop: "4px",
+                            boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
                           }}
-                        />
-                        <div style={{
-                          position: "absolute",
-                          right: "12px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          color: "var(--textSecondary)",
-                          pointerEvents: "none",
-                          fontSize: "0.85rem"
-                        }}>
-                          🔍
-                        </div>
-
-                        {reportStationSearchQuery && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setReportSelectedStation("");
-                              setReportStationSearchQuery("");
-                              setShowReportStationList(true);
-                            }}
-                            title="مسح"
-                            style={{
-                              position: "absolute",
-                              left: "10px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              background: "rgba(255, 255, 255, 0.08)",
-                              border: "none",
-                              borderRadius: "50%",
-                              width: "22px",
-                              height: "22px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontSize: "0.75rem",
-                              color: "var(--textSecondary)",
-                              cursor: "pointer",
-                            }}
-                          >
-                            ✕
-                          </button>
-                        )}
-                      </div>
-
-                      {/* Station suggestions list popup */}
-                      {showReportStationList && (
-                        <div style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: 0,
-                          right: 0,
-                          background: "var(--bgSecondary)",
-                          border: "1px solid var(--borderGlass)",
-                          borderRadius: "10px",
-                          overflow: "hidden",
-                          zIndex: 1100,
-                          maxHeight: "200px",
-                          overflowY: "auto",
-                          boxShadow: "var(--shadow-lg)",
-                          marginTop: "4px",
-                          fontFamily: "var(--font-cairo)"
-                        }}>
-                          {filteredReportStations.length === 0 ? (
-                            <div style={{ padding: "12px", textAlign: "center", fontSize: "0.82rem", color: "var(--textSecondary)" }}>
-                              لا توجد محطة مطابقة لبحثك "{reportStationSearchQuery}"
+                        >
+                          {filteredReportStations.map((s) => (
+                            <div
+                              key={s.name}
+                              onMouseDown={() => {
+                                setReportSelectedStation(s.name);
+                                setReportStationSearchQuery(s.name);
+                                setShowReportStationList(false);
+                              }}
+                              style={{
+                                padding: "8px 12px",
+                                cursor: "pointer",
+                                fontSize: "0.85rem",
+                                color: "var(--textPrimary)",
+                                borderBottom: "1px solid rgba(255,255,255,0.03)",
+                              }}
+                              onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                              onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                            >
+                              {s.name}
                             </div>
-                          ) : (
-                            filteredReportStations.map((st: any) => {
-                              const isSelected = reportSelectedStation === st.name;
-                              const q = normalizeArabic(reportStationSearchQuery.trim());
-                              const details = STATION_DETAILS[st.name];
-                              const matchedLandmark = q ? details?.landmarks?.find((l: string) => normalizeArabic(l).includes(q)) : null;
-                              const isEast = st.line_type === "east";
-
-                              return (
-                                <div
-                                  key={`${st.line_type}-${st.name}`}
-                                  onMouseDown={() => {
-                                    setReportSelectedStation(st.name);
-                                    setReportStationSearchQuery(st.name);
-                                    setShowReportStationList(false);
-                                  }}
-                                  style={{
-                                    padding: "9px 14px",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    gap: "8px",
-                                    borderBottom: "1px solid rgba(255, 255, 255, 0.03)",
-                                    background: isSelected ? "rgba(59, 130, 246, 0.15)" : "transparent",
-                                    transition: "background 0.15s ease"
-                                  }}
-                                  onMouseEnter={e => {
-                                    if (!isSelected) e.currentTarget.style.background = "var(--hoverBtn)";
-                                  }}
-                                  onMouseLeave={e => {
-                                    if (!isSelected) e.currentTarget.style.background = "transparent";
-                                  }}
-                                >
-                                  <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                                    <span style={{ fontSize: "0.88rem", fontWeight: isSelected ? "700" : "600", color: isSelected ? "var(--colorSecondary)" : "var(--textPrimary)" }}>
-                                      {st.name}
-                                    </span>
-                                    {matchedLandmark ? (
-                                      <span style={{ fontSize: "0.7rem", color: "var(--colorSecondary)", fontWeight: "bold" }}>
-                                        📍 قريب من: {matchedLandmark}
-                                      </span>
-                                    ) : (
-                                      details?.landmarks && details.landmarks.length > 0 && (
-                                        <span style={{ fontSize: "0.7rem", color: "var(--textSecondary)" }}>
-                                          📍 {details.landmarks.slice(0, 2).join("، ")}
-                                        </span>
-                                      )
-                                    )}
-                                  </div>
-
-                                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                    <span style={{
-                                      fontSize: "0.68rem",
-                                      padding: "2px 8px",
-                                      borderRadius: "6px",
-                                      background: isEast ? "rgba(59, 130, 246, 0.12)" : "rgba(16, 185, 129, 0.12)",
-                                      color: isEast ? "#3b82f6" : "#10b981",
-                                      fontWeight: "bold",
-                                      border: "1px solid var(--borderGlass)"
-                                    }}>
-                                      {isEast ? "شرق النيل" : "غرب النيل"}
-                                    </span>
-                                    {isSelected && (
-                                      <span style={{ fontSize: "0.75rem", color: "var(--colorSuccess)", fontWeight: "700" }}>✔</span>
-                                    )}
-                                  </div>
-                                </div>
-                              );
-                            })
-                          )}
+                          ))}
                         </div>
                       )}
                     </div>
                   )}
 
-                  {/* If Scope is Route: display current route preview card */}
-                  {reportTargetScope === "route" && calcFrom && calcTo && (
-                    <div style={{
-                      padding: "10px 14px",
-                      borderRadius: "10px",
-                      background: "rgba(59, 130, 246, 0.06)",
-                      border: "1px solid rgba(59, 130, 246, 0.2)",
-                      fontSize: "0.84rem",
-                      color: "var(--textPrimary)",
-                      lineHeight: "1.6"
-                    }}>
-                      <div>📍 <strong>من:</strong> {calcFrom} ← <strong>إلى:</strong> {calcTo}</div>
-                      {routeResult && (
-                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)", marginTop: "4px" }}>
-                          السعر: {routeResult.price || routeResult.totalPrice} ج.م • المحطات: {routeResult.count || `${routeResult.leg1?.count || 0} + ${routeResult.leg3?.count || 0}`} • الوقت المقدر: {routeResult.time || routeResult.totalTime} د
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Problem Type dropdown */}
+                  {/* Problem Type Select */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
                       نوع المشكلة:
                     </label>
                     <select
-                      value={reportProblemType}
-                      onChange={e => setReportProblemType(e.target.value)}
                       className="input-fields"
-                      style={{
-                        width: "100%",
-                        padding: "10px 14px",
-                        borderRadius: "10px",
-                        background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
-                        fontFamily: "var(--font-cairo)",
-                        fontSize: "0.9rem",
-                        cursor: "pointer"
-                      }}
+                      value={reportProblemType}
+                      onChange={(e) => setReportProblemType(e.target.value)}
+                      style={{ width: "100%", direction: "rtl", fontSize: "0.85rem" }}
                     >
-                      <option value="route_error" style={{ background: "var(--bgSecondary)" }}>خطأ في حساب مسار الرحلة أو زمن الوصول</option>
-                      <option value="price" style={{ background: "var(--bgSecondary)" }}>سعر التذكرة غير صحيح أو عدد المحطات غير دقيق</option>
-                      <option value="transfer" style={{ background: "var(--bgSecondary)" }}>خطأ في محطة التبديل أو تعليمات التحويل</option>
-                      <option value="station_info" style={{ background: "var(--bgSecondary)" }}>اسم المحطة أو المعالم القريبة غير دقيقة</option>
-                      <option value="construction" style={{ background: "var(--bgSecondary)" }}>محطة مغلقة أو تغيرت حالة تشغيلها</option>
-                      <option value="app_bug" style={{ background: "var(--bgSecondary)" }}>مشكلة تقنية أو زر لا يستجيب في الصفحة</option>
-                      <option value="other" style={{ background: "var(--bgSecondary)" }}>ملاحظة أو مشكلة أخرى</option>
+                      <option value="route_error">خطأ في حساب مسار الرحلة أو زمن الوصول</option>
+                      <option value="price">سعر التذكرة غير صحيح أو عدد المحطات غير دقيق</option>
+                      <option value="transfer">خطأ في محطة التبديل أو تعليمات التحويل مع المترو/القطار</option>
+                      <option value="station_info">اسم المحطة أو المعالم القريبة غير دقيقة</option>
+                      <option value="construction">محطة مغلقة أو قيد الإنشاء أو تغيرت حالة تشغيلها</option>
+                      <option value="app_bug">مشكلة تقنية أو زر لا يستجيب في الصفحة</option>
+                      <option value="other">ملاحظة أو مشكلة أخرى</option>
                     </select>
                   </div>
 
                   {/* Details Textarea */}
                   <div>
-                    <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                      تفاصيل المشكلة / التصحيح المقترح: <span style={{ color: "#ef4444" }}>*</span>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                      تفاصيل البلاغ:
                     </label>
                     <textarea
-                      placeholder="يرجى كتابة المشكلة بالتفصيل واقتراح التصحيح إن وُجد (مثال: محطة كذا أصبح اسمها مختلف، أو التبديل الصحيح للمونوريل يكون كذا)..."
-                      value={reportDetails}
-                      onChange={e => setReportDetails(e.target.value)}
                       className="input-fields"
+                      rows={3}
+                      placeholder="اشرح المشكلة بالتفصيل لمساعدتنا في إصلاحها..."
+                      value={reportDetails}
+                      onChange={(e) => setReportDetails(e.target.value)}
+                      style={{ width: "100%", direction: "rtl", fontSize: "0.85rem", resize: "vertical" }}
                       required
-                      style={{
-                        width: "100%",
-                        minHeight: "100px",
-                        padding: "12px",
-                        borderRadius: "10px",
-                        background: "var(--bgSecondary)",
-                        color: "var(--textPrimary)",
-                        border: "1px solid var(--borderGlass)",
-                        fontFamily: "var(--font-cairo)",
-                        fontSize: "0.9rem",
-                        resize: "vertical"
-                      }}
                     />
                   </div>
 
-                  {/* Enhanced Image File Upload */}
+                  {/* Image Attachment Dropzone */}
                   <div>
-                    <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px" }}>
-                      <span>صورة توضيحية للمشكلة (اختياري):</span>
-                      <span style={{ fontSize: "0.74rem", color: "var(--textSecondary)", fontWeight: "normal" }}>
-                        JPG, PNG, WEBP (الحد الأقصى 5MB)
-                      </span>
+                    <label style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "6px", display: "block" }}>
+                      إرفاق صورة توضيحية (اختياري):
                     </label>
-
-                    {!reportImagePreview ? (
+                    {reportImagePreview ? (
+                      <div style={{ position: "relative", borderRadius: "8px", overflow: "hidden", border: "1px solid var(--borderGlass)" }}>
+                        <img src={reportImagePreview} alt="Preview" style={{ width: "100%", maxHeight: "140px", objectFit: "cover" }} />
+                        <button
+                          type="button"
+                          onClick={() => handleReportImageSelect(null)}
+                          style={{
+                            position: "absolute",
+                            top: "8px",
+                            left: "8px",
+                            background: "rgba(239, 68, 68, 0.8)",
+                            border: "none",
+                            borderRadius: "50%",
+                            width: "28px",
+                            height: "28px",
+                            color: "#ffffff",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
                       <div
                         onDragOver={(e) => {
                           e.preventDefault();
@@ -2192,248 +2631,84 @@ ${reportDetails.trim()}`;
                         onDrop={(e) => {
                           e.preventDefault();
                           setIsDraggingImage(false);
-                          const droppedFile = e.dataTransfer.files?.[0];
-                          if (droppedFile) handleReportImageSelect(droppedFile);
+                          if (e.dataTransfer.files?.[0]) {
+                            handleReportImageSelect(e.dataTransfer.files[0]);
+                          }
                         }}
                         style={{
-                          position: "relative",
-                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "1.5px dashed var(--borderGlass)",
-                          borderRadius: "12px",
-                          background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
-                          padding: "20px 16px",
+                          border: isDraggingImage ? "2px dashed var(--colorSecondary)" : "2px dashed var(--borderGlass)",
+                          borderRadius: "8px",
+                          padding: "16px",
                           textAlign: "center",
                           cursor: "pointer",
+                          background: isDraggingImage ? "rgba(59, 130, 246, 0.05)" : "transparent",
                           transition: "all 0.2s ease",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "8px",
                         }}
-                        onMouseEnter={(e) => {
-                          if (!isDraggingImage) e.currentTarget.style.background = "var(--hoverBtn)";
-                        }}
-                        onMouseLeave={(e) => {
-                          if (!isDraggingImage) e.currentTarget.style.background = "rgba(255, 255, 255, 0.02)";
+                        onClick={() => {
+                          const input = document.getElementById("monorail-report-img-input");
+                          if (input) input.click();
                         }}
                       >
+                        <i className="fa-solid fa-cloud-arrow-up" style={{ fontSize: "1.4rem", color: "var(--textMuted)", marginBottom: "4px" }}></i>
+                        <div style={{ fontSize: "0.78rem", color: "var(--textSecondary)" }}>اسحب الصورة هنا أو اضغط للاختيار من جهازك</div>
+                        <div style={{ fontSize: "0.68rem", color: "var(--textMuted)", marginTop: "2px" }}>PNG, JPG, WEBP بحد أقصى 5 ميجابايت</div>
                         <input
+                          id="monorail-report-img-input"
                           type="file"
                           accept="image/*"
+                          style={{ display: "none" }}
                           onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleReportImageSelect(file);
-                          }}
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            opacity: 0,
-                            cursor: "pointer",
+                            if (e.target.files?.[0]) {
+                              handleReportImageSelect(e.target.files[0]);
+                            }
                           }}
                         />
-
-                        <div style={{
-                          width: "46px",
-                          height: "46px",
-                          borderRadius: "50%",
-                          background: "rgba(59, 130, 246, 0.12)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "var(--colorSecondary)",
-                          fontSize: "1.4rem"
-                        }}>
-                          <i className="bx bx-cloud-upload"></i>
-                        </div>
-
-                        <div>
-                          <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--textPrimary)", marginBottom: "3px" }}>
-                            اضغط لاختيار صورة أو اسحبها وأفلتها هنا
-                          </div>
-                          <div style={{ fontSize: "0.76rem", color: "var(--textSecondary)" }}>
-                            لقطة شاشة للخطأ، أو صورة للمحطة لتوضيح المشكلة بدقة
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div style={{
-                        position: "relative",
-                        border: "1px solid var(--borderGlass)",
-                        borderRadius: "12px",
-                        background: "var(--bgSecondary)",
-                        padding: "10px 12px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "12px",
-                      }}>
-                        {/* Thumbnail */}
-                        <div style={{
-                          width: "64px",
-                          height: "64px",
-                          borderRadius: "8px",
-                          overflow: "hidden",
-                          flexShrink: 0,
-                          background: "#000",
-                          border: "1px solid var(--borderGlass)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          position: "relative"
-                        }}>
-                          <img
-                            src={reportImagePreview}
-                            alt="معاينة الصورة المرفقة"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover"
-                            }}
-                          />
-                        </div>
-
-                        {/* File details */}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{
-                            fontSize: "0.86rem",
-                            fontWeight: "700",
-                            color: "var(--textPrimary)",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis"
-                          }}>
-                            {reportImageFile?.name || "صورة توضيحية"}
-                          </div>
-                          <div style={{ fontSize: "0.74rem", color: "var(--textSecondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-                            <span>
-                              {reportImageFile
-                                ? reportImageFile.size < 1024 * 1024
-                                  ? `${(reportImageFile.size / 1024).toFixed(0)} KB`
-                                  : `${(reportImageFile.size / (1024 * 1024)).toFixed(1)} MB`
-                                : ""}
-                            </span>
-                            <span>•</span>
-                            <span style={{ color: "var(--colorSuccess)", fontWeight: "600" }}>جاهزة للإرسال ✔</span>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                          {/* Change button */}
-                          <label style={{
-                            cursor: "pointer",
-                            padding: "6px 10px",
-                            borderRadius: "8px",
-                            background: "rgba(255, 255, 255, 0.05)",
-                            border: "1px solid var(--borderGlass)",
-                            color: "var(--textPrimary)",
-                            fontSize: "0.75rem",
-                            fontWeight: "600",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px"
-                          }}>
-                            <i className="bx bx-sync"></i>
-                            <span>تغيير</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleReportImageSelect(file);
-                              }}
-                              style={{ display: "none" }}
-                            />
-                          </label>
-
-                          {/* Delete button */}
-                          <button
-                            type="button"
-                            onClick={() => handleReportImageSelect(null)}
-                            title="حذف الصورة"
-                            style={{
-                              padding: "6px 10px",
-                              borderRadius: "8px",
-                              background: "rgba(239, 68, 68, 0.1)",
-                              border: "1px solid rgba(239, 68, 68, 0.25)",
-                              color: "#ef4444",
-                              fontSize: "0.75rem",
-                              fontWeight: "600",
-                              cursor: "pointer",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px"
-                            }}
-                          >
-                            <i className="bx bx-trash"></i>
-                            <span>حذف</span>
-                          </button>
-                        </div>
                       </div>
                     )}
                   </div>
 
-                  {/* Error Message */}
-                  {reportError && (
-                    <div style={{
-                      padding: "10px 14px",
-                      borderRadius: "8px",
-                      backgroundColor: "rgba(239, 68, 68, 0.1)",
-                      border: "1px solid rgba(239, 68, 68, 0.3)",
-                      color: "#ef4444",
-                      fontSize: "0.85rem"
-                    }}>
-                      {reportError}
-                    </div>
-                  )}
-
-                  {/* Submit and Cancel Buttons */}
-                  <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
-                    <button
-                      type="submit"
-                      className="btn actionBtnDelete"
-                      disabled={reportLoading || reportUploading}
-                      style={{
-                        flex: 1,
-                        fontWeight: "700",
-                        fontSize: "0.92rem",
-                        cursor: reportLoading ? "wait" : "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "6px",
-                        width: "50%",
-                      }}
-                    >
-                      {reportLoading ? (
-                        <>
-                          <div style={{ width: "16px", height: "16px", border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
-                          <span>{reportUploading ? "جاري الرفع..." : "جاري الإرسال..."}</span>
-                        </>
-                      ) : (
-                        <>
-                          <i className="bx bx-send"></i>
-                          <span>إرسال البلاغ</span>
-                        </>
-                      )}
-                    </button>
+                  {/* Form Action Buttons */}
+                  <div style={{ display: "flex", gap: "8px", marginTop: "6px" }}>
                     <button
                       type="button"
-                      className="btn btn-cancle"
-                      disabled={reportLoading}
                       onClick={() => {
                         setReportModalOpen(false);
                         handleReportImageSelect(null);
                       }}
+                      className="btn"
                       style={{
-                        fontWeight: "700",
-                        fontSize: "0.92rem",
-                        width: "50%",
+                        flex: 1,
+                        background: "var(--bgSecondary)",
+                        border: "1px solid var(--borderGlass)",
+                        color: "var(--textPrimary)",
+                        fontSize: "0.85rem",
                       }}
                     >
                       إلغاء
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={reportLoading || !user || limitReached}
+                      className="btn btn-primary"
+                      style={{
+                        flex: 2,
+                        fontSize: "0.85rem",
+                        fontWeight: "700",
+                        cursor: reportLoading || !user || limitReached ? "not-allowed" : "pointer",
+                        opacity: reportLoading || !user || limitReached ? 0.6 : 1,
+                      }}
+                    >
+                      {reportLoading ? (
+                        <span>
+                          <i className="fa-solid fa-spinner fa-spin" style={{ marginLeft: "6px" }}></i>
+                          {reportUploading ? "جاري رفع الصورة..." : "جاري الإرسال..."}
+                        </span>
+                      ) : (
+                        <span>
+                          <i className="fa-solid fa-paper-plane" style={{ marginLeft: "6px" }}></i>
+                          إرسال البلاغ
+                        </span>
+                      )}
                     </button>
                   </div>
                 </form>
@@ -2443,5 +2718,6 @@ ${reportDetails.trim()}`;
         </div>
       )}
     </div>
+    //================================== END MAIN CONTAINER =================================
   );
 }
