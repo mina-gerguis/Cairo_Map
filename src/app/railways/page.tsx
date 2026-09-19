@@ -6,6 +6,8 @@ import gsap from "gsap";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
+import { isPageOpenByPromotion } from "@/lib/promotions";
+import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 import TrainTypesSection from "@/components/railways/TrainTypesSection";
 
 interface TrainClass {
@@ -288,7 +290,7 @@ export const REPORT_PROBLEM_OPTIONS = [
 ];
 
 export default function RailwaysPage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, isPageOpen } = useAuth();
   const [selectedRouteId, setSelectedRouteId] = useState<string>("cairo-alex");
   const [routes, setRoutes] = useState<RailwayRoute[]>([]);
 
@@ -700,8 +702,10 @@ ${reportDetails.trim()}`;
     }
   };
 
+  const promoStatus = isPageOpen("/railways");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
   // ========================= Loading screen
   if (authLoading) {
@@ -726,7 +730,7 @@ ${reportDetails.trim()}`;
   }
 
   // ========================= Lock screen
-  if (!user || !hasAccess) {
+  if (!hasAccess) {
     return (
       <div className="main-container">
         {/* Banner */}
@@ -885,6 +889,13 @@ ${reportDetails.trim()}`;
 
       {/* Container */}
       <div className="container">
+        {promoStatus.isOpen && promoStatus.offer && (
+          <PromotionalPageBanner
+            offer={promoStatus.offer}
+            remainingDays={promoStatus.remainingDays}
+          />
+        )}
+
         {/* Cards Slider */}
         <div
           ref={sliderRef}

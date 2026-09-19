@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
+import { isPageOpenByPromotion } from "@/lib/promotions";
+import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 
 export interface Port {
   id?: string;
@@ -163,7 +165,7 @@ function normalizeArabic(text: string) {
 }
 
 export default function PortsPage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, isPageOpen } = useAuth();
   const [ports, setPorts] = useState<Port[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -176,12 +178,14 @@ export default function PortsPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
+  const promoStatus = isPageOpen("/ports");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   useEffect(() => {
-    if (user && hasAccess) {
+    if (hasAccess) {
       loadPorts();
     }
   }, [user, hasAccess]);
@@ -346,7 +350,7 @@ export default function PortsPage() {
   }
 
   // Paywall Screen (Consistent with Metro, Monorail, LRT & Airports)
-  if (!user || !hasAccess) {
+  if (!hasAccess) {
     return (
       <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)", direction: "rtl", textAlign: "right" }}>
         {/* Header Banner */}
@@ -547,6 +551,15 @@ export default function PortsPage() {
           </div>
         </div>
       </div>
+
+      {promoStatus.isOpen && promoStatus.offer && (
+        <div style={{ padding: "0 20px" }}>
+          <PromotionalPageBanner
+            offer={promoStatus.offer}
+            remainingDays={promoStatus.remainingDays}
+          />
+        </div>
+      )}
 
       {/* Main Container */}
       <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>

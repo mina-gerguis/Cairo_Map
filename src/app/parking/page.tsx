@@ -5,6 +5,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
+import { isPageOpenByPromotion } from "@/lib/promotions";
+import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 
 function normalizeArabic(text: string): string {
   if (!text) return "";
@@ -34,7 +36,7 @@ interface ParkingSpot {
 const DEFAULT_PARKING: ParkingSpot[] = [];
 
 export default function ParkingPage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, isPageOpen } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArea, setSelectedArea] = useState("all");
   const [expandedParkingId, setExpandedParkingId] = useState<string | null>(null);
@@ -81,8 +83,10 @@ export default function ParkingPage() {
   const [suggestLimitChecking, setSuggestLimitChecking] = useState(false);
   const [suggestLimitReached, setSuggestLimitReached] = useState(false);
 
+  const promoStatus = isPageOpen("/parking");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   const getLocalParking = (): ParkingSpot[] => {
@@ -539,7 +543,7 @@ export default function ParkingPage() {
     );
   }
 
-  if (!user || !hasAccess) {
+  if (!hasAccess) {
     return (
       <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)", direction: "rtl" }}>
         {/* Banner matching Metro Cover Style */}
@@ -851,6 +855,15 @@ export default function ParkingPage() {
           </div>
         </div>
       </div>
+
+      {promoStatus.isOpen && promoStatus.offer && (
+        <div style={{ maxWidth: "600px", margin: "16px auto 0", padding: "0 20px" }}>
+          <PromotionalPageBanner
+            offer={promoStatus.offer}
+            remainingDays={promoStatus.remainingDays}
+          />
+        </div>
+      )}
 
       {/* Main Container */}
       <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>

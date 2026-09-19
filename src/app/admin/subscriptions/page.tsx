@@ -3,8 +3,19 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../admin.module.css";
+import {
+  NewUserTrialConfig,
+  OpenPageAccessOffer,
+  PROTECTED_PAGE_OPTIONS,
+  DEFAULT_TRIAL_CONFIG,
+  getNewUserTrialConfig,
+  saveNewUserTrialConfig,
+  getOpenPageAccessOffers,
+  saveOpenPageAccessOffer,
+  deleteOpenPageAccessOffer,
+} from "@/lib/promotions";
 
 interface SubscriptionPlan {
   id: string;
@@ -35,10 +46,14 @@ interface UserProfile {
 
 export default function AdminSubscriptionsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
+
+  // Active Tab: users | plans | promotions
+  const [activeTab, setActiveTab] = useState<"users" | "plans" | "promotions">("users");
 
   // Plans State
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
@@ -67,10 +82,43 @@ export default function AdminSubscriptionsPage() {
     subscription_end: "",
   });
 
-  // Active Tab: users or plans
-  const [activeTab, setActiveTab] = useState<"users" | "plans">("users");
+  // Promotions State (New User Trial & Open Page Offers)
+  const [trialConfig, setTrialConfig] = useState<NewUserTrialConfig>(DEFAULT_TRIAL_CONFIG);
+  const [loadingTrial, setLoadingTrial] = useState(true);
+  const [savingTrial, setSavingTrial] = useState(false);
+  const [trialPreset, setTrialPreset] = useState<"7" | "30" | "90" | "custom">("30");
+
+  const [openOffers, setOpenOffers] = useState<OpenPageAccessOffer[]>([]);
+  const [loadingOffers, setLoadingOffers] = useState(true);
+  const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState<OpenPageAccessOffer | null>(null);
+  const [savingOffer, setSavingOffer] = useState(false);
+
+  const [offerForm, setOfferForm] = useState({
+    title: "",
+    target_page: "all",
+    duration_type: "preset" as "preset" | "custom",
+    duration_preset_days: 7,
+    custom_end_date: "",
+    is_active: true,
+    banner_message: "",
+    send_broadcast: false,
+  });
+
   const [updating, setUpdating] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Sync tab with URL search params
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "promotions" || tabParam === "offers") {
+      setActiveTab("promotions");
+    } else if (tabParam === "plans") {
+      setActiveTab("plans");
+    } else if (tabParam === "users") {
+      setActiveTab("users");
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -94,6 +142,7 @@ export default function AdminSubscriptionsPage() {
           setIsAdmin(true);
           fetchPlans();
           fetchUsers();
+          fetchPromotions();
         }
       } catch (error) {
         setIsAdmin(false);
@@ -138,6 +187,30 @@ export default function AdminSubscriptionsPage() {
       console.error("Error fetching user profiles:", err);
     } finally {
       setLoadingUsers(false);
+    }
+  };
+
+  const fetchPromotions = async () => {
+    setLoadingTrial(true);
+    setLoadingOffers(true);
+    try {
+      const [trialData, offersData] = await Promise.all([
+        getNewUserTrialConfig(),
+        getOpenPageAccessOffers(),
+      ]);
+
+      setTrialConfig(trialData);
+      if (trialData.duration_days === 7) setTrialPreset("7");
+      else if (trialData.duration_days === 30) setTrialPreset("30");
+      else if (trialData.duration_days === 90) setTrialPreset("90");
+      else setTrialPreset("custom");
+
+      setOpenOffers(offersData);
+    } catch (err) {
+      console.error("Error fetching promotions:", err);
+    } finally {
+      setLoadingTrial(false);
+      setLoadingOffers(false);
     }
   };
 
@@ -357,6 +430,162 @@ export default function AdminSubscriptionsPage() {
     }));
   };
 
+  // --- Handlers: New User Trial Promotion ---
+  const handleSaveTrial = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setSavingTrial(true);
+    setStatusMessage(null);
+
+    let days = trialConfig.duration_days;
+    if (trialPreset === "7") days = 7;
+    else if (trialPreset === "30") days = 30;
+    else if (trialPreset === "90") days = 90;
+
+    const payload = {
+      ...trialConfig,
+      duration_days: Math.max(1, days),
+    };
+
+    try {
+      const res = await saveNewUserTrialConfig(payload);
+      if (res.success) {
+        setTrialConfig(payload);
+        setStatusMessage({
+          type: "success",
+          text: payload.is_active
+            ? `🎉 تم تفعيل عرض الاشتراك المجاني للحسابات الجديدة (${days} يوماً - باقة ${payload.target_tier === "gold" ? "الذهبية" : payload.target_tier === "silver" ? "الفضية" : "المشوار"}) بنجاح!`
+            : "تم تعطيل عرض الاشتراك التجريبي للحسابات الجديدة.",
+        });
+      } else {
+        throw new Error(res.error || "Failed");
+      }
+    } catch (err: any) {
+      setStatusMessage({ type: "error", text: "فشل حفظ إعدادات العرض الترحيبي: " + err.message });
+    } finally {
+      setSavingTrial(false);
+    }
+  };
+
+  // --- Handlers: Open Page Access Offers ---
+  const handleOpenAddOfferModal = () => {
+    setSelectedOffer(null);
+    setOfferForm({
+      title: "عرض مجاني خاص لفترة محدودة",
+      target_page: "all",
+      duration_type: "preset",
+      duration_preset_days: 7,
+      custom_end_date: "",
+      is_active: true,
+      banner_message: "🎉 هذه الخدمة مفتوحة الآن مجاناً لجميع المستخدمين والزوار لفترة محدودة!",
+      send_broadcast: false,
+    });
+    setIsOfferModalOpen(true);
+  };
+
+  const handleEditOffer = (offer: OpenPageAccessOffer) => {
+    setSelectedOffer(offer);
+    const hasCustomEnd = !!offer.end_date;
+    const endDateStr = offer.end_date ? new Date(offer.end_date).toISOString().split("T")[0] : "";
+
+    setOfferForm({
+      title: offer.title || "",
+      target_page: offer.target_page || "all",
+      duration_type: hasCustomEnd ? "custom" : "preset",
+      duration_preset_days: 7,
+      custom_end_date: endDateStr,
+      is_active: offer.is_active,
+      banner_message: offer.banner_message || "",
+      send_broadcast: false,
+    });
+    setIsOfferModalOpen(true);
+  };
+
+  const handleSaveOffer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingOffer(true);
+    setStatusMessage(null);
+
+    let calculatedEndDate: string | null = null;
+    const now = new Date();
+
+    if (offerForm.duration_type === "preset") {
+      calculatedEndDate = new Date(now.getTime() + offerForm.duration_preset_days * 24 * 60 * 60 * 1000).toISOString();
+    } else if (offerForm.custom_end_date) {
+      calculatedEndDate = new Date(offerForm.custom_end_date + "T23:59:59").toISOString();
+    }
+
+    const payload: Partial<OpenPageAccessOffer> = {
+      id: selectedOffer?.id,
+      title: offerForm.title.trim(),
+      target_page: offerForm.target_page,
+      is_active: offerForm.is_active,
+      start_date: selectedOffer?.start_date || now.toISOString(),
+      end_date: calculatedEndDate,
+      banner_message: offerForm.banner_message.trim(),
+    };
+
+    try {
+      const res = await saveOpenPageAccessOffer(payload);
+      if (res.success && res.data) {
+        const savedData = res.data;
+        setOpenOffers((prev) => {
+          const exists = prev.some((o) => o.id === savedData.id);
+          return exists ? prev.map((o) => (o.id === savedData.id ? savedData : o)) : [savedData, ...prev];
+        });
+
+        if (offerForm.send_broadcast && supabase && offerForm.is_active) {
+          try {
+            const pageOption = PROTECTED_PAGE_OPTIONS.find((p) => p.value === offerForm.target_page);
+            const pageLabel = pageOption ? pageOption.label : offerForm.target_page;
+            await supabase.from("notifications").insert([
+              {
+                user_id: null,
+                title: `🎁 ${offerForm.title}`,
+                message: `يسرنا إعلامكم بفتح (${pageLabel}) مجاناً لجميع المستخدمين حتى ${new Date(calculatedEndDate || "").toLocaleDateString("ar-EG")}.`,
+                type: "info",
+                link: offerForm.target_page === "all" ? "/" : offerForm.target_page,
+              },
+            ]);
+          } catch (bErr) {
+            console.warn("Failed to send broadcast notification:", bErr);
+          }
+        }
+
+        setStatusMessage({ type: "success", text: "تم حفظ وتفعيل عرض فتح الصفحة بنجاح!" });
+        setIsOfferModalOpen(false);
+      }
+    } catch (err: any) {
+      setStatusMessage({ type: "error", text: "فشل حفظ العرض: " + err.message });
+    } finally {
+      setSavingOffer(false);
+    }
+  };
+
+  const handleToggleOfferStatus = async (offer: OpenPageAccessOffer) => {
+    try {
+      const updated = { ...offer, is_active: !offer.is_active };
+      await saveOpenPageAccessOffer(updated);
+      setOpenOffers((prev) => prev.map((o) => (o.id === offer.id ? updated : o)));
+      setStatusMessage({
+        type: "success",
+        text: updated.is_active ? `تم تشغيل عرض "${offer.title}" بنجاح.` : `تم إيقاف عرض "${offer.title}".`,
+      });
+    } catch (err: any) {
+      setStatusMessage({ type: "error", text: "فشل تعديل حالة العرض: " + err.message });
+    }
+  };
+
+  const handleDeleteOffer = async (id: string, title: string) => {
+    if (!confirm(`هل أنت متأكد من حذف عرض "${title}"؟`)) return;
+    try {
+      await deleteOpenPageAccessOffer(id);
+      setOpenOffers((prev) => prev.filter((o) => o.id !== id));
+      setStatusMessage({ type: "success", text: `تم حذف العرض "${title}" بنجاح.` });
+    } catch (err: any) {
+      setStatusMessage({ type: "error", text: "فشل حذف العرض: " + err.message });
+    }
+  };
+
   const getTierBadge = (tier: string) => {
     switch (tier) {
       case "gold":
@@ -433,6 +662,12 @@ export default function AdminSubscriptionsPage() {
     return isExpired || u.subscription_status === "expired";
   }).length;
 
+  const activeOpenOffersCount = openOffers.filter((o) => {
+    if (!o.is_active) return false;
+    if (o.end_date && new Date(o.end_date) < new Date()) return false;
+    return true;
+  }).length;
+
   if (authChecking) {
     return (
       <div className={styles.adminLoadingContainer}>
@@ -465,7 +700,7 @@ export default function AdminSubscriptionsPage() {
             <span>👑</span> إدارة الباقات والاشتراكات
           </h1>
           <p className={styles.tableSubtitle} style={{ marginTop: "4px", fontSize: "0.9rem" }}>
-            قم بإدارة أسعار ومزايا الباقات، متابعة اشتراكات الأعضاء، وتحديث التجديدات والتراخيص الفعالة.
+            إدارة أسعار ومزايا الباقات، متابعة اشتراكات الأعضاء، وتفعيل العروض والخصومات والوصول المجاني.
           </p>
         </div>
       </div>
@@ -494,21 +729,23 @@ export default function AdminSubscriptionsPage() {
 
         <div className={styles.subStatCard}>
           <div className={`${styles.subStatIcon} ${styles.subStatIconWarning}`}>
-            <i className="bx bx-diamond" />
+            <i className="bx bx-gift" />
           </div>
           <div className={styles.subStatContent}>
-            <span className={styles.subStatValue}>{paidSubscribersCount}</span>
-            <span className={styles.subStatLabel}>اشتراكات مدفوعة 💎</span>
+            <span className={styles.subStatValue}>
+              {trialConfig.is_active ? "مفعّل 🎁" : "معطّل ⚪"}
+            </span>
+            <span className={styles.subStatLabel}>عرض التسجيل الجديد</span>
           </div>
         </div>
 
         <div className={styles.subStatCard}>
           <div className={`${styles.subStatIcon} ${styles.subStatIconDanger}`}>
-            <i className="bx bx-time-five" />
+            <i className="bx bx-lock-open-alt" />
           </div>
           <div className={styles.subStatContent}>
-            <span className={styles.subStatValue}>{expiredSubscribersCount}</span>
-            <span className={styles.subStatLabel}>اشتراكات منتهية 🔴</span>
+            <span className={styles.subStatValue}>{activeOpenOffersCount}</span>
+            <span className={styles.subStatLabel}>صفحات مفتوحة مجاناً</span>
           </div>
         </div>
       </div>
@@ -534,6 +771,32 @@ export default function AdminSubscriptionsPage() {
         >
           <i className="bx bx-layer" style={{ fontSize: "1.2rem" }} />
           <span>تحرير أسعار ومميزات الباقات ({plans.length})</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab("promotions");
+            setStatusMessage(null);
+          }}
+          className={`${styles.subTabBtn} ${activeTab === "promotions" ? styles.subTabBtnActive : ""}`}
+          style={{ position: "relative" }}
+        >
+          <i className="bx bx-gift" style={{ fontSize: "1.2rem", color: "#f59e0b" }} />
+          <span>العروض والخصومات 🎁</span>
+          {(trialConfig.is_active || activeOpenOffersCount > 0) && (
+            <span
+              style={{
+                background: "#10b981",
+                color: "#fff",
+                fontSize: "0.68rem",
+                padding: "2px 6px",
+                borderRadius: "10px",
+                marginRight: "4px",
+                fontWeight: "800",
+              }}
+            >
+              نشط
+            </span>
+          )}
         </button>
       </div>
 
@@ -777,6 +1040,550 @@ export default function AdminSubscriptionsPage() {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── TAB 3: Promotions & Offers Manager (العروض والخصومات) ── */}
+      {activeTab === "promotions" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+          
+          {/* SECTION A: Automatic Free Trial for New Signups */}
+          <div className={styles.subPanelCard} style={{ position: "relative", overflow: "hidden" }}>
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "4px",
+                background: trialConfig.is_active
+                  ? "linear-gradient(90deg, #10b981, #3b82f6)"
+                  : "rgba(148, 163, 184, 0.3)",
+              }}
+            />
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "20px" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <span style={{ fontSize: "1.5rem" }}>🎁</span>
+                  <h3 className={styles.subPanelHeaderTitle} style={{ margin: 0 }}>
+                    العرض الترحيبي: اشتراك مجاني تلقائي للحسابات الجديدة
+                  </h3>
+                </div>
+                <p className={styles.tableSubtitle} style={{ marginTop: "6px", maxWidth: "700px" }}>
+                  عند تفعيل هذا العرض، أي مستخدم ينشئ حساباً جديداً في الموقع يحصل تلقائياً وبشكل فوري على باقة اشتراك مجانية للمدة المحددة مع رسالة ترحيبية في حسابه.
+                </p>
+              </div>
+
+              {/* Status Switch Badge */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  background: trialConfig.is_active ? "rgba(16, 185, 129, 0.15)" : "rgba(148, 163, 184, 0.15)",
+                  padding: "8px 16px",
+                  borderRadius: "14px",
+                  border: `1px solid ${trialConfig.is_active ? "rgba(16, 185, 129, 0.3)" : "rgba(148, 163, 184, 0.2)"}`,
+                }}
+              >
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "700", fontSize: "0.9rem" }}>
+                  <input
+                    type="checkbox"
+                    checked={trialConfig.is_active}
+                    onChange={(e) => setTrialConfig({ ...trialConfig, is_active: e.target.checked })}
+                    style={{ width: "18px", height: "18px", accentColor: "#10b981", cursor: "pointer" }}
+                  />
+                  <span>{trialConfig.is_active ? "العرض نشط حالياً 🟢" : "العرض معطّل ⚪"}</span>
+                </label>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveTrial}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                  gap: "20px",
+                  background: "var(--bg-glass-card, rgba(0, 0, 0, 0.15))",
+                  padding: "20px",
+                  borderRadius: "16px",
+                  border: "1px solid var(--border-glass)",
+                }}
+              >
+                {/* 1. Select Tier */}
+                <div>
+                  <label className={styles.subFormLabel} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <i className="bx bx-crown" style={{ color: "#fbbf24" }} />
+                    <span>نوع باقة الهدية الترحيبية</span>
+                  </label>
+                  <select
+                    value={trialConfig.target_tier}
+                    onChange={(e) => setTrialConfig({ ...trialConfig, target_tier: e.target.value as any })}
+                    className={styles.subFormSelect}
+                    style={{ fontWeight: "700" }}
+                  >
+                    <option value="gold">🥇 الباقة الذهبية (كل المميزات والخدمات مفتوحة)</option>
+                    <option value="silver">🥈 الباقة الفضية (المميزات المتقدمة)</option>
+                    <option value="mishwar">⚡ باقة المشوار (الوصول السريع)</option>
+                  </select>
+                  <span style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "4px", display: "block" }}>
+                    سيتم منح المستخدم الجديد هذه الباقة فور استكمال التسجيل.
+                  </span>
+                </div>
+
+                {/* 2. Select Duration Presets */}
+                <div>
+                  <label className={styles.subFormLabel} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <i className="bx bx-time" style={{ color: "#38bdf8" }} />
+                    <span>مدة الاشتراك المجاني</span>
+                  </label>
+
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTrialPreset("7");
+                        setTrialConfig({ ...trialConfig, duration_days: 7 });
+                      }}
+                      className={styles.subQuickBtn}
+                      style={{
+                        flex: 1,
+                        background: trialPreset === "7" ? "var(--mainBtn, #3b82f6)" : undefined,
+                        color: trialPreset === "7" ? "#fff" : undefined,
+                        borderColor: trialPreset === "7" ? "#3b82f6" : undefined,
+                        fontWeight: "700",
+                      }}
+                    >
+                      أسبوع (7 أيام)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTrialPreset("30");
+                        setTrialConfig({ ...trialConfig, duration_days: 30 });
+                      }}
+                      className={styles.subQuickBtn}
+                      style={{
+                        flex: 1,
+                        background: trialPreset === "30" ? "var(--mainBtn, #3b82f6)" : undefined,
+                        color: trialPreset === "30" ? "#fff" : undefined,
+                        borderColor: trialPreset === "30" ? "#3b82f6" : undefined,
+                        fontWeight: "700",
+                      }}
+                    >
+                      شهر (30 يوم)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTrialPreset("90");
+                        setTrialConfig({ ...trialConfig, duration_days: 90 });
+                      }}
+                      className={styles.subQuickBtn}
+                      style={{
+                        flex: 1,
+                        background: trialPreset === "90" ? "var(--mainBtn, #3b82f6)" : undefined,
+                        color: trialPreset === "90" ? "#fff" : undefined,
+                        borderColor: trialPreset === "90" ? "#3b82f6" : undefined,
+                        fontWeight: "700",
+                      }}
+                    >
+                      3 شهور (90 يوم)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setTrialPreset("custom")}
+                      className={styles.subQuickBtn}
+                      style={{
+                        flex: 1,
+                        background: trialPreset === "custom" ? "var(--mainBtn, #3b82f6)" : undefined,
+                        color: trialPreset === "custom" ? "#fff" : undefined,
+                        borderColor: trialPreset === "custom" ? "#3b82f6" : undefined,
+                        fontWeight: "700",
+                      }}
+                    >
+                      مخصص
+                    </button>
+                  </div>
+
+                  {trialPreset === "custom" && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <input
+                        type="number"
+                        min="1"
+                        max="3650"
+                        value={trialConfig.duration_days}
+                        onChange={(e) => setTrialConfig({ ...trialConfig, duration_days: Number(e.target.value) })}
+                        className={styles.subFormInput}
+                        placeholder="عدد الأيام..."
+                        style={{ width: "140px" }}
+                      />
+                      <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: "600" }}>يوم</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Welcome Notification Message */}
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <label className={styles.subFormLabel}>نص رسالة الإشعار الترحيبي للمستخدمين الجدد</label>
+                  <textarea
+                    rows={2}
+                    value={trialConfig.welcome_message}
+                    onChange={(e) => setTrialConfig({ ...trialConfig, welcome_message: e.target.value })}
+                    className={styles.subFormInput}
+                    style={{ lineHeight: "1.5", resize: "vertical" }}
+                    placeholder="🎉 تهانينا! حصلت على اشتراك مجاني كهدية ترحيبية لتسجيل حسابك الجديد."
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
+                <button
+                  type="submit"
+                  disabled={savingTrial}
+                  className={styles.inviteButton}
+                  style={{
+                    padding: "12px 28px",
+                    background: trialConfig.is_active ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : undefined,
+                    fontWeight: "800",
+                  }}
+                >
+                  <i className="bx bx-save" style={{ fontSize: "1.15rem" }} />
+                  <span>{savingTrial ? "جاري الحفظ..." : "حفظ إعدادات العرض الترحيبي"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* SECTION B: Temporary Open Access for Protected Pages */}
+          <div className={styles.subPanelCard}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", marginBottom: "20px" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <span style={{ fontSize: "1.5rem" }}>🔓</span>
+                  <h3 className={styles.subPanelHeaderTitle} style={{ margin: 0 }}>
+                    فتح الصفحات والخدمات المدفوعة مجاناً للجميع
+                  </h3>
+                </div>
+                <p className={styles.tableSubtitle} style={{ marginTop: "6px" }}>
+                  إتاحة صفحة أو خدمة تتطلب اشتراكاً (مثل ازاي اروح، المساعد الذكي، المطارات) للوصول المجاني لكل الزوار والمستخدمين لفترة زمنية محددة.
+                </p>
+              </div>
+
+              <button
+                onClick={handleOpenAddOfferModal}
+                className={styles.inviteButton}
+                style={{
+                  padding: "10px 18px",
+                  background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                  fontWeight: "700",
+                }}
+              >
+                <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem" }} />
+                <span>إضافة عرض فتح صفحة +</span>
+              </button>
+            </div>
+
+            {loadingOffers ? (
+              <div style={{ textAlign: "center", padding: "40px 0" }}>
+                <div className={styles.spinner} style={{ margin: "0 auto 12px" }} />
+                <p style={{ color: "var(--text-secondary)" }}>جاري تحميل عروض الصفحات...</p>
+              </div>
+            ) : openOffers.length === 0 ? (
+              <div className={styles.adsEmptyState} style={{ padding: "40px 20px" }}>
+                <i className="bx bx-lock-open" style={{ fontSize: "3rem", marginBottom: "10px", opacity: 0.4 }} />
+                <h4 style={{ margin: "0 0 6px", color: "var(--text-primary)" }}>لا توجد عروض فتح مؤقتة حالياً</h4>
+                <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem" }}>
+                  يمكنك النقر على زر &quot;إضافة عرض فتح صفحة&quot; لإتاحة أي خدمة مجاناً لفترة محددة.
+                </p>
+              </div>
+            ) : (
+              <div className={styles.tableResponsive}>
+                <table className={styles.adminTable}>
+                  <thead className={styles.adminThead}>
+                    <tr>
+                      <th className={styles.adminTh}>عنوان العرض</th>
+                      <th className={styles.adminTh}>الصفحة / الخدمة</th>
+                      <th className={styles.adminTh}>فترة الإتاحة والانتهاء</th>
+                      <th className={styles.adminTh}>الحالة</th>
+                      <th className={styles.adminTh} style={{ textAlign: "center" }}>الإجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {openOffers.map((offer) => {
+                      const isExpired = offer.end_date && new Date(offer.end_date) < new Date();
+                      const pageOption = PROTECTED_PAGE_OPTIONS.find((p) => p.value === offer.target_page);
+                      const pageLabel = pageOption ? pageOption.label : offer.target_page;
+
+                      return (
+                        <tr key={offer.id} className={styles.adminTr}>
+                          <td className={styles.adminTd}>
+                            <div style={{ fontWeight: "700", color: "var(--text-primary)" }}>{offer.title}</div>
+                            {offer.banner_message && (
+                              <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px", maxWidth: "280px" }}>
+                                {offer.banner_message}
+                              </div>
+                            )}
+                          </td>
+
+                          <td className={styles.adminTd}>
+                            <span
+                              style={{
+                                display: "inline-block",
+                                padding: "4px 10px",
+                                borderRadius: "10px",
+                                background: "rgba(59, 130, 246, 0.15)",
+                                color: "#60a5fa",
+                                fontSize: "0.82rem",
+                                fontWeight: "700",
+                              }}
+                            >
+                              {pageLabel}
+                            </span>
+                          </td>
+
+                          <td className={styles.adminTd}>
+                            <div style={{ fontWeight: "700" }}>
+                              {offer.end_date ? new Date(offer.end_date).toLocaleDateString("ar-EG") : "مفتوح دائم حتى الإيقاف"}
+                            </div>
+                            {getDaysRemainingInfo(offer.end_date, offer.is_active ? "active" : "expired")}
+                          </td>
+
+                          <td className={styles.adminTd}>
+                            <span
+                              className={
+                                !offer.is_active || isExpired
+                                  ? styles.statusBadgeExpired
+                                  : styles.statusBadgeActive
+                              }
+                            >
+                              {isExpired ? "منتهي 🔴" : offer.is_active ? "مفتوح للجميع 🟢" : "معطّل ⚪"}
+                            </span>
+                          </td>
+
+                          <td className={styles.adminTd} style={{ textAlign: "center" }}>
+                            <div className={styles.actionGroup} style={{ justifyContent: "center" }}>
+                              <button
+                                onClick={() => handleToggleOfferStatus(offer)}
+                                className={styles.actionBtn}
+                                style={{
+                                  padding: "6px 10px",
+                                  borderRadius: "8px",
+                                  background: offer.is_active ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.15)",
+                                  color: offer.is_active ? "#f87171" : "#34d399",
+                                }}
+                                title={offer.is_active ? "تعطيل العرض" : "تفعيل العرض"}
+                              >
+                                <i className={`bx ${offer.is_active ? "bx-pause" : "bx-play"}`} />
+                              </button>
+
+                              <button
+                                onClick={() => handleEditOffer(offer)}
+                                className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                                style={{ padding: "6px 10px", borderRadius: "8px" }}
+                                title="تعديل تفاصيل العرض"
+                              >
+                                <i className="bx bx-edit" />
+                              </button>
+
+                              <button
+                                onClick={() => handleDeleteOffer(offer.id, offer.title)}
+                                className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                                style={{ padding: "6px 10px", borderRadius: "8px" }}
+                                title="حذف العرض"
+                              >
+                                <i className="bx bx-trash" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── MODAL: Add / Edit Open Page Offer ── */}
+      {isOfferModalOpen && (
+        <div className={styles.subModalOverlay} onClick={() => setIsOfferModalOpen(false)}>
+          <div className={styles.subModalBox} onClick={(e) => e.stopPropagation()} style={{ maxWidth: "560px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 className={styles.subModalTitle}>
+                {selectedOffer ? "⚙️ تعديل عرض فتح الصفحة" : "🎁 إضافة عرض فتح صفحة مدفوعة مجاناً"}
+              </h3>
+              <button
+                onClick={() => setIsOfferModalOpen(false)}
+                style={{ background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "1.5rem" }}
+              >
+                &times;
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveOffer} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <label className={styles.subFormLabel}>عنوان العرض الترويجي</label>
+                <input
+                  type="text"
+                  required
+                  value={offerForm.title}
+                  onChange={(e) => setOfferForm({ ...offerForm, title: e.target.value })}
+                  className={styles.subFormInput}
+                  placeholder="مثال: إتاحة خدمة ازاي اروح مجاناً بمناسبة التحديث"
+                />
+              </div>
+
+              <div>
+                <label className={styles.subFormLabel}>الصفحة أو الخدمة المستهدفة</label>
+                <select
+                  value={offerForm.target_page}
+                  onChange={(e) => setOfferForm({ ...offerForm, target_page: e.target.value })}
+                  className={styles.subFormSelect}
+                  style={{ fontWeight: "700" }}
+                >
+                  {PROTECTED_PAGE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Duration selection */}
+              <div>
+                <label className={styles.subFormLabel}>مدة الفتح المجاني</label>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px" }}>
+                  {[
+                    { label: "24 ساعة", days: 1 },
+                    { label: "3 أيام", days: 3 },
+                    { label: "أسبوع", days: 7 },
+                    { label: "أسبوعين", days: 14 },
+                    { label: "شهر", days: 30 },
+                  ].map((preset) => (
+                    <button
+                      key={preset.days}
+                      type="button"
+                      onClick={() =>
+                        setOfferForm({
+                          ...offerForm,
+                          duration_type: "preset",
+                          duration_preset_days: preset.days,
+                        })
+                      }
+                      className={styles.subQuickBtn}
+                      style={{
+                        flex: 1,
+                        background:
+                          offerForm.duration_type === "preset" && offerForm.duration_preset_days === preset.days
+                            ? "var(--mainBtn, #3b82f6)"
+                            : undefined,
+                        color:
+                          offerForm.duration_type === "preset" && offerForm.duration_preset_days === preset.days
+                            ? "#fff"
+                            : undefined,
+                      }}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setOfferForm({ ...offerForm, duration_type: "custom" })}
+                    className={styles.subQuickBtn}
+                    style={{
+                      flex: 1,
+                      background: offerForm.duration_type === "custom" ? "var(--mainBtn, #3b82f6)" : undefined,
+                      color: offerForm.duration_type === "custom" ? "#fff" : undefined,
+                    }}
+                  >
+                    تاريخ مخصص
+                  </button>
+                </div>
+
+                {offerForm.duration_type === "custom" && (
+                  <div>
+                    <label className={styles.subFormLabel} style={{ fontSize: "0.8rem" }}>تاريخ انتهاء العرض</label>
+                    <input
+                      type="date"
+                      required
+                      value={offerForm.custom_end_date}
+                      onChange={(e) => setOfferForm({ ...offerForm, custom_end_date: e.target.value })}
+                      className={styles.subFormInput}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className={styles.subFormLabel}>رسالة البانر الترويجي في أعلى الصفحة</label>
+                <textarea
+                  rows={2}
+                  value={offerForm.banner_message}
+                  onChange={(e) => setOfferForm({ ...offerForm, banner_message: e.target.value })}
+                  className={styles.subFormInput}
+                  style={{ lineHeight: "1.5" }}
+                  placeholder="🎉 هذه الخدمة مفتوحة الآن مجاناً لجميع المستخدمين والزوار لفترة محدودة!"
+                />
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", background: "var(--bg-secondary)", padding: "12px 14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "0.88rem", fontWeight: "700" }}>
+                  <input
+                    type="checkbox"
+                    checked={offerForm.is_active}
+                    onChange={(e) => setOfferForm({ ...offerForm, is_active: e.target.checked })}
+                    style={{ width: "16px", height: "16px", accentColor: "#10b981" }}
+                  />
+                  <span>تفعيل العرض فور الحفظ</span>
+                </label>
+
+                {!selectedOffer && (
+                  <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                    <input
+                      type="checkbox"
+                      checked={offerForm.send_broadcast}
+                      onChange={(e) => setOfferForm({ ...offerForm, send_broadcast: e.target.checked })}
+                      style={{ width: "16px", height: "16px", accentColor: "#3b82f6" }}
+                    />
+                    <span>إرسال إشعار ترويجي فوري لجميع المستخدمين</span>
+                  </label>
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                <button
+                  type="submit"
+                  disabled={savingOffer}
+                  className={styles.inviteButton}
+                  style={{ flex: 1, justifyContent: "center", padding: "12px", background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)" }}
+                >
+                  {savingOffer ? "جاري الحفظ..." : "حفظ وتفعيل العرض"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsOfferModalOpen(false)}
+                  style={{
+                    padding: "12px 20px",
+                    borderRadius: "12px",
+                    background: "transparent",
+                    color: "var(--text-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    cursor: "pointer",
+                    fontWeight: "700",
+                  }}
+                >
+                  إلغاء
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 

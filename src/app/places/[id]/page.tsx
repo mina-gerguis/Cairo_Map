@@ -9,6 +9,7 @@ import { getTodayWorkingHoursText, parseWorkingHours, DAYS_OF_WEEK, isCurrentlyO
 import ReviewSection from "@/components/ReviewSection";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
+import { isPageOpenByPromotion } from "@/lib/promotions";
 
 // Icon
 import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
@@ -46,9 +47,11 @@ export default function PlaceDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
 
-  const { user, profile } = useAuth();
+  const { user, profile, isPageOpen } = useAuth();
+  const promoStatus = isPageOpen("/places")?.isOpen ? isPageOpen("/places") : isPageOpen("/directions");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
+import { isPageOpenByPromotion } from "@/lib/promotions";
+import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 
 interface BusCompany {
   name: string;
@@ -91,7 +93,7 @@ const DEFAULT_BUS_STATIONS: BusStation[] = [
 ];
 
 export default function BusStationsPage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, isPageOpen } = useAuth();
   const [stations, setStations] = useState<BusStation[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -112,12 +114,14 @@ export default function BusStationsPage() {
   const [limitReached, setLimitReached] = useState(false);
   const [limitChecking, setLimitChecking] = useState(false);
 
+  const promoStatus = isPageOpen("/bus-stations");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   useEffect(() => {
-    if (user && hasAccess) {
+    if (hasAccess) {
       loadStations();
     }
   }, [user, hasAccess]);
@@ -340,7 +344,7 @@ ${reportDetails.trim()}`;
     );
   }
 
-  if (!user || !hasAccess) {
+  if (!hasAccess) {
     return (
       <div style={{ minHeight: "100vh", paddingBottom: "50px", backgroundColor: "var(--bgPrimary)" }}>
         {/* Banner matching Metro Cover Style */}
@@ -551,6 +555,15 @@ ${reportDetails.trim()}`;
           </p>
         </div>
       </div>
+
+      {promoStatus.isOpen && promoStatus.offer && (
+        <div style={{ maxWidth: "600px", margin: "16px auto 0", padding: "0 20px" }}>
+          <PromotionalPageBanner
+            offer={promoStatus.offer}
+            remainingDays={promoStatus.remainingDays}
+          />
+        </div>
+      )}
 
       {/* Main Container */}
       <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl" }}>

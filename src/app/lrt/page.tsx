@@ -5,6 +5,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
+import { isPageOpenByPromotion } from "@/lib/promotions";
+import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 
 const DEFAULT_LRT: any[] = [
   { name: "عدلي منصور", line_type: "trunk", station_order: 1 },
@@ -99,7 +101,7 @@ function normalizeArabic(text: string) {
 }
 
 export default function LrtPage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, isPageOpen } = useAuth();
   const [stations, setStations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -141,12 +143,14 @@ export default function LrtPage() {
   const [limitChecking, setLimitChecking] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
 
+  const promoStatus = isPageOpen("/lrt");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   useEffect(() => {
-    if (user && hasAccess) {
+    if (hasAccess) {
       loadStations();
     }
   }, [user, hasAccess]);
@@ -628,7 +632,7 @@ ${reportDetails.trim()}`;
     );
   }
 
-  if (!user || !hasAccess) {
+  if (!hasAccess) {
     return (
       <>
         <title>خريطة القطار الكهربائي LRT - دليل شامل لكل المحطات</title>
@@ -903,6 +907,15 @@ ${reportDetails.trim()}`;
           </div>
         </div>
       </div>
+
+      {promoStatus.isOpen && promoStatus.offer && (
+        <div style={{ maxWidth: "600px", margin: "16px auto 0", padding: "0 20px" }}>
+          <PromotionalPageBanner
+            offer={promoStatus.offer}
+            remainingDays={promoStatus.remainingDays}
+          />
+        </div>
+      )}
 
       {/* Main Container */}
       <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px", direction: "rtl", textAlign: "right" }}>

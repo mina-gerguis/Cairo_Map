@@ -18,11 +18,12 @@ import RouteSearchCard from "./components/RouteSearchCard";
 import RouteResultsSection from "./components/RouteResultsSection";
 import BottomReportBanner from "./components/BottomReportBanner";
 import DirectionsReportModal from "./components/DirectionsReportModal";
+import { isPageOpenByPromotion } from "@/lib/promotions";
 
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
 
 export default function DirectionsPage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, isPageOpen } = useAuth();
   const {
     loading: dataLoading,
     popularRoutes,
@@ -176,9 +177,11 @@ export default function DirectionsPage() {
     }
   };
 
-  // Check user subscription / access
+  // Check user subscription / access or promotional open access
+  const promoStatus = isPageOpen("/directions");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   // Loading screen
@@ -187,7 +190,7 @@ export default function DirectionsPage() {
   }
 
   // Paywall / Lock screen
-  if (!user || !hasAccess) {
+  if (!hasAccess) {
     return (
       <DirectionsPaywall
         user={user}

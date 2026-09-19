@@ -13,6 +13,7 @@ import {
   type ConfirmationResult
 } from "@/lib/firebase";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
+import { applyNewUserTrialIfActive } from "@/lib/promotions";
 
 /* ═══════════════════════════════════════════
    Shared wrapper for auth pages (White background)
@@ -660,6 +661,13 @@ export default function SignupPage() {
             email_verified: isEmailVerified,
             updated_at: new Date().toISOString()
           }, { onConflict: "id" });
+
+          // Automatically apply free trial promotion if active
+          try {
+            await applyNewUserTrialIfActive(signUpData.user.id, fullNameCombined);
+          } catch (trialErr) {
+            console.warn("Trial application notice:", trialErr);
+          }
         } catch (profileErr) {
           console.error("Error updating profile fields on signup:", profileErr);
         }

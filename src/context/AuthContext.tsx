@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { OpenPageAccessOffer, getOpenPageAccessOffers, isPageOpenByPromotion } from "@/lib/promotions";
 
 interface AuthContextProps {
   user: User | null;
@@ -11,6 +12,9 @@ interface AuthContextProps {
   logout: () => Promise<void>;
   profile: any | null;
   refreshProfile: () => Promise<void>;
+  openOffers: OpenPageAccessOffer[];
+  isPageOpen: (pathname: string) => { isOpen: boolean; offer: OpenPageAccessOffer | null; remainingDays: number | null };
+  refreshPromotions: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -21,6 +25,9 @@ const AuthContext = createContext<AuthContextProps>({
   logout: async () => {},
   profile: null,
   refreshProfile: async () => {},
+  openOffers: [],
+  isPageOpen: () => ({ isOpen: false, offer: null, remainingDays: null }),
+  refreshPromotions: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -30,6 +37,76 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any | null>(null);
   const [isSessionRegistered, setIsSessionRegistered] = useState(false);
+  const [openOffers, setOpenOffers] = useState<OpenPageAccessOffer[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = localStorage.getItem("dftry_promo_open_pages");
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const refreshPromotions = useCallback(async () => {
+    try {
+      const offers = await getOpenPageAccessOffers();
+      setOpenOffers(offers);
+    } catch (e) {
+      console.warn("Failed to sync promotions in AuthContext:", e);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshPromotions();
+
+    const handlePromoUpdate = () => {
+      try {
+        const raw = localStorage.getItem("dftry_promo_open_pages");
+        if (raw) {
+          setOpenOffers(JSON.parse(raw));
+        }
+      } catch {
+        // ignore
+      }
+      refreshPromotions();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("promotions_updated", handlePromoUpdate);
+      window.addEventListener("storage", handlePromoUpdate);
+    }
+
+    let channel: any = null;
+    if (supabase) {
+      channel = supabase
+        .channel("public:sub_offers_global_realtime")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "subscription_offers" },
+          () => {
+            refreshPromotions();
+          }
+        )
+        .subscribe();
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("promotions_updated", handlePromoUpdate);
+        window.removeEventListener("storage", handlePromoUpdate);
+      }
+      if (supabase && channel) {
+        supabase.removeChannel(channel);
+      }
+    };
+  }, [refreshPromotions]);
+
+  const isPageOpen = useCallback(
+    (pathname: string) => {
+      return isPageOpenByPromotion(pathname, openOffers);
+    },
+    [openOffers]
+  );
 
   const fetchProfile = async (userId: string, currentUser?: User | null) => {
     if (!supabase) return;
@@ -515,7 +592,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, mfaPending, logout, profile, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session, loading, mfaPending, logout, profile, refreshProfile, openOffers, isPageOpen, refreshPromotions }}>
       {children}
     </AuthContext.Provider>
   );

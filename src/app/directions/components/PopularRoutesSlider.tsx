@@ -31,15 +31,7 @@ export default function PopularRoutesSlider({
             className={styles.popularCard}
             style={{
               background: `radial-gradient(135px circle at top right, ${item.glowColor}33 0%, ${item.glowColor}10 45%, transparent 75%), var(--cardGlassBg, rgba(18, 18, 22, 0.72))`,
-              borderColor: isTop ? `${item.glowColor}80` : undefined,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = `${item.glowColor}80`;
-              e.currentTarget.style.boxShadow = `inset 0 1px 0 0 rgba(255, 255, 255, 0.2), 0 8px 24px -2px ${item.glowColor}35, 0 4px 12px rgba(0,0,0,0.2)`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = isTop ? `${item.glowColor}80` : "";
-              e.currentTarget.style.boxShadow = "";
+              borderColor: "var(--border-glass)",
             }}
             aria-label={`اختيار مسار ${item.label}`}
           >
@@ -47,10 +39,6 @@ export default function PopularRoutesSlider({
             <div className={styles.popularCardTop}>
               <div
                 className={styles.popularCardIconBox}
-                style={{
-                  boxShadow: `0 4px 12px ${item.glowColor}25`,
-                  borderColor: `${item.glowColor}35`,
-                }}
               >
                 {item.icon ? (
                   <img
@@ -66,21 +54,6 @@ export default function PopularRoutesSlider({
                   />
                 )}
               </div>
-
-              {item.isTrending && (
-                <span className={styles.popularCardTrendingPill}>
-                  <span
-                    style={{
-                      width: "6px",
-                      height: "6px",
-                      borderRadius: "50%",
-                      backgroundColor: item.glowColor,
-                      display: "inline-block",
-                    }}
-                  />
-                  {isTop ? "الأكثر طلباً" : "شائع"}
-                </span>
-              )}
             </div>
 
             {/* Bottom Row: Title & Subtitle */}
@@ -88,11 +61,6 @@ export default function PopularRoutesSlider({
               <div className={styles.popularCardTitle}>
                 {item.label}
               </div>
-              {item.subtitle && (
-                <div className={styles.popularCardSubtitle}>
-                  {item.subtitle}
-                </div>
-              )}
             </div>
           </button>
         );

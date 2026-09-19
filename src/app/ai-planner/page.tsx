@@ -7,6 +7,8 @@ import { egyptLocations } from "@/data/egypt_locations";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import VoiceInputButton from "@/components/VoiceInputButton";
+import { isPageOpenByPromotion } from "@/lib/promotions";
+import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 import "./planner.css";
 
 // ── TYPES & INTERFACES ──
@@ -159,7 +161,7 @@ const AI_TIME_SLOTS = [
 ];
 
 export default function PlannerPage() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, isPageOpen } = useAuth();
 
   // ── DYNAMIC PLACES STATE FROM DATABASE ──
   const [allPlaces, setAllPlaces] = useState<Place[]>(initialPlaces);
@@ -280,8 +282,10 @@ export default function PlannerPage() {
     setTimeout(() => setShowNotification(null), 5000);
   };
 
+  const promoStatus = isPageOpen("/ai-planner");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
 
   // ── 1. FETCH LIVE PLACES FROM SUPABASE ON MOUNT ──
@@ -1196,7 +1200,7 @@ export default function PlannerPage() {
     );
   }
 
-  if (!user || !hasAccess) {
+  if (!hasAccess) {
     return (
       <div className="app-container" style={{ maxWidth: "600px", paddingTop: "60px", paddingBottom: "60px", direction: "rtl", textAlign: "right" }}>
         <div style={{ marginBottom: "24px" }}>
@@ -1321,6 +1325,15 @@ export default function PlannerPage() {
 
   return (
     <div className="planner-container">
+      {promoStatus.isOpen && promoStatus.offer && (
+        <div style={{ marginBottom: "20px" }}>
+          <PromotionalPageBanner
+            offer={promoStatus.offer}
+            remainingDays={promoStatus.remainingDays}
+          />
+        </div>
+      )}
+
       {/* Dynamic Alerts */}
       {showNotification && (
         <div className="planner-notification-toast">

@@ -76,6 +76,7 @@ export default function AdminLayout({
           { label: "طلبات الإيداع والسحب المعلقة", href: "/admin/points?tab=requests", category: "صفحة إدارية", icon: "bx bx-transfer" },
           { label: "إدارة الحسابات والمستخدمين", href: "/admin/users", category: "صفحة إدارية", icon: "bx bx-group" },
           { label: "الاشتراكات المميزة والذهبية", href: "/admin/subscriptions", category: "صفحة إدارية", icon: "bx bx-crown" },
+          { label: "العروض والخصومات للاشتراكات", href: "/admin/subscriptions?tab=promotions", category: "صفحة إدارية", icon: "bx bx-gift" },
           { label: "إدارة المدن الشهيرة والمعالم", href: "/admin/cities", category: "خدمة موقع", icon: "bx bx-building-house" },
           { label: "إدارة المطارات", href: "/admin/airports", category: "خدمة موقع", icon: "bx bx-plane" },
           { label: "إدارة الموانئ البحرية", href: "/admin/ports", category: "خدمة موقع", icon: "bx bx-anchor" },
@@ -409,7 +410,10 @@ export default function AdminLayout({
     if (activeSubTab === "requests") pageTitle = "طلبات الإيداع والسحب";
     else pageTitle = "الرصيد والشحن";
   }
-  else if (pathname === "/admin/subscriptions") pageTitle = "الاشتراكات المميزة";
+  else if (pathname === "/admin/subscriptions") {
+    if (activeSubTab === "promotions" || activeSubTab === "offers") pageTitle = "العروض والخصومات";
+    else pageTitle = "الاشتراكات المميزة";
+  }
   else if (pathname === "/admin/users") pageTitle = "إدارة الحسابات والمستخدمين";
 
   // Compute greeting based on time
@@ -846,14 +850,30 @@ export default function AdminLayout({
             {/* الاشتراكات المميزة */}
             <Link
               href="/admin/subscriptions"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/subscriptions" ? styles.sidebarNavLinkActive : ""}`}
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/subscriptions" && (!activeSubTab || activeSubTab === "users" || activeSubTab === "plans") ? styles.sidebarNavLinkActive : ""}`}
               onClick={() => {
+                setActiveSubTab(null);
                 if (isMobile) setIsSidebarOpen(false);
               }}
             >
               <div className={styles.linkLeftGroup}>
                 <i className={`bx bx-crown ${styles.linkIcon}`} />
                 <span className={styles.linkLabel}>الاشتراكات المميزة</span>
+              </div>
+            </Link>
+
+            {/* العروض والخصومات */}
+            <Link
+              href="/admin/subscriptions?tab=promotions"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/subscriptions" && (activeSubTab === "promotions" || activeSubTab === "offers") ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab("promotions");
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-gift ${styles.linkIcon}`} style={{ color: "#f59e0b" }} />
+                <span className={styles.linkLabel}>العروض والخصومات</span>
               </div>
             </Link>
           </nav>

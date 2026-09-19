@@ -14,6 +14,7 @@ import PlaceNoteModal from "@/components/PlaceNoteModal";
 import AdBanner from "@/components/AdBanner";
 import LocationHelperModal from "@/components/LocationHelperModal";
 import RequireAuthModal from "@/components/common/RequireAuthModal";
+import { isPageOpenByPromotion } from "@/lib/promotions";
 import Image from "next/image";
 // Icon
 import { MdDomain } from "react-icons/md";
@@ -127,9 +128,11 @@ type PlaceWithDist = Place & { distanceKm?: number; closestBranchName?: string }
 ═══════════════════════════════════════════════ */
 function HomeContent() {
   // ── الحالات الأساسية (State Management) ──
-  const { user, profile } = useAuth(); // حالة المستخدم الحالي
+  const { user, profile, isPageOpen } = useAuth(); // حالة المستخدم الحالي
+  const promoStatus = isPageOpen("/places")?.isOpen ? isPageOpen("/places") : isPageOpen("/directions");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = profile?.is_admin ||
+    promoStatus.isOpen ||
     ((profile?.subscription_tier === "mishwar" || profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold") && !isExpired);
   const searchParams = useSearchParams();
   const [places, setPlaces] = useState<Place[]>([]); // قائمة الأماكن

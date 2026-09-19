@@ -237,7 +237,8 @@
 
 .chevronRotated {
   transform: rotate(180deg);
-  background: rgba(99, 102, 241, 0.24);
+  background: rgba(255, 255, 255, 0.781);
+  color: #000;
 }
 
 .collapsedSummaryBar {
