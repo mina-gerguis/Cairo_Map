@@ -153,7 +153,7 @@ export default function ClientLayoutWrapper({
       <main style={{ paddingTop: "72px" }}>
         {children}
       </main>
-      <Footer />
+      {/* <Footer /> */}
       <MobileBottomNav />
       <ScrollToTop />
       <MobileInstallPrompt />

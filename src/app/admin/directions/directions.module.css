@@ -488,6 +488,7 @@
   font-size: 1.2rem;
   font-weight: 900;
   color: var(--text-primary);
+  font-family: var(--font-sub);
 }
 
 .modalBody {

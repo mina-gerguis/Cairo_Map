@@ -44,43 +44,24 @@ export default function MicrobusSuccessModal({
           alignItems: "center"
         }}
       >
-        <div style={{
-          width: "60px",
-          height: "60px",
-          borderRadius: "50%",
-          backgroundColor: "rgba(16, 185, 129, 0.15)",
-          border: "2px solid #10b981",
-          color: "#10b981",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "2rem",
-          marginBottom: "16px",
-          boxShadow: "0 0 20px rgba(16, 185, 129, 0.35)"
-        }}>
-          <i className="bx bx-check" />
-        </div>
-
         <h3 style={{ margin: "0 0 10px 0", fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", fontFamily: "var(--font-sub)" }}>
-          تم الإرسال بنجاح! 🎉
+          تم الإرسال بنجاح!
         </h3>
 
-        <p style={{ margin: "0 0 22px 0", fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+        <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
           {message}
         </p>
 
         <button
           type="button"
           onClick={onClose}
-          className={styles.spotlightBtn}
+          className="btn tab"
           style={{
             width: "100%",
             padding: "12px",
-            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-            boxShadow: "0 4px 14px rgba(16, 185, 129, 0.35)"
           }}
         >
-          تم بنجاح 👍
+          تم بنجاح
         </button>
       </div>
     </div>

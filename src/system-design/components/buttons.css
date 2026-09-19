@@ -2,9 +2,6 @@
  * ============================================================================
  * DESIGN SYSTEM — BUTTON COMPONENTS
  * ============================================================================
- * Comprehensive styling for base buttons, color variants, subscription tiers,
- * action icons, and interactive states.
- */
 
 /* ==========================================================================
    1. Base Button
@@ -86,6 +83,8 @@
   -webkit-backdrop-filter: blur(20px) saturate(15);
 }
 
+/* Outline Blue */
+
 .btn-outline-blue {
   background: rgba(0, 111, 238, 0.15);
   border: 1px solid rgba(0, 111, 238, 0.30);
@@ -99,7 +98,17 @@
   -webkit-backdrop-filter: blur(20px) saturate(15);
 }
 
-/* --- Cancel / Ghost --- */
+.btn-purple {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+}
+
+.btn-purple:hover {
+  opacity: 0.88;
+  filter: brightness(1.05);
+}
+
+/* --- Cancel --- */
 .btn-cancel {
   background: var(--btn-cancel);
   color: var(--text-primary);
@@ -110,7 +119,7 @@
   color: var(--text-primary);
 }
 
-/* --- Success & Danger --- */
+/* --- Success --- */
 .btn-success {
   background: var(--successBtn);
   color: var(--text-primary);
@@ -121,6 +130,7 @@
   color: var(--text-primary);
 }
 
+/* --- Danger --- */
 .btn-danger {
   background: var(--btn-danger);
   border: 1px solid rgba(255, 59, 48, 0.30);
@@ -138,7 +148,7 @@ html.light .btn-danger {
 html.light .btn-danger:hover {
   color: #ffffff;
 }
-/* export  */
+/* --- Export --- */
 .btn-export {
   background: rgb(16, 185, 129);
   color: #ffffff;
@@ -150,7 +160,7 @@ html.light .btn-danger:hover {
   color: #ffffff;
 }
 
-/* report  */
+/* --- Report --- */
 .btn-report {
   padding: var(--space-4) var(--space-8);
   background: var(--btn-danger);

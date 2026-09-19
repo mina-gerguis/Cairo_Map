@@ -34,7 +34,16 @@ export async function getPendingFeedbackCount(userId: string): Promise<number> {
 
     if (feedErr) console.error("Error counting app feedback:", feedErr);
 
-    const total = (proposalsCount || 0) + (reportsCount || 0) + (feedbackCount || 0);
+    // 4. route_interactions pending reports count
+    const { count: routeReportsCount, error: routeErr } = await supabase
+      .from("route_interactions")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("interaction_type", "report");
+
+    if (routeErr) console.error("Error counting route interactions reports:", routeErr);
+
+    const total = (proposalsCount || 0) + (reportsCount || 0) + (feedbackCount || 0) + (routeReportsCount || 0);
     return total;
   } catch (err) {
     console.error("Error checking pending feedback limit:", err);

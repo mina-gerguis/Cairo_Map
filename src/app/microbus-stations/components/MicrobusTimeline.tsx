@@ -22,18 +22,18 @@ export default function MicrobusTimeline({
     <div className={styles.timelineWrapper}>
       <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", display: "block", marginBottom: "12px", fontWeight: "700" }}>
         <i className="bx bx-transfer" style={{ fontSize: "0.88rem", marginLeft: "6px", color: accentColor }} />
-        محطات وخط السير:
+        خط السير:
       </span>
 
       <div style={{ overflowX: "auto", paddingBottom: "6px" }} className="hide-scrollbar">
         <div style={{ display: "flex", alignItems: "center", position: "relative", minWidth: "400px", padding: "0 10px" }}>
           <div style={{
             position: "absolute",
-            top: "12px",
+            top: "10px",
             left: "24px",
             right: "24px",
-            height: "2px",
-            background: "rgba(255, 255, 255, 0.1)",
+            height: "1px",
+            background: "var(--border-glass)",
             zIndex: 1
           }} />
 
@@ -55,7 +55,6 @@ export default function MicrobusTimeline({
                   width: "20px",
                   height: "20px",
                   borderRadius: "50%",
-                  backgroundColor: "var(--bgPrimary)",
                   border: `3px solid ${dotColor}`,
                   display: "flex",
                   alignItems: "center",
@@ -76,7 +75,7 @@ export default function MicrobusTimeline({
                   fontWeight: isStart || isEnd ? "bold" : "500",
                   color: isStart || isEnd ? "var(--text-primary)" : "var(--text-secondary)",
                   textAlign: "center",
-                  width: "70px",
+                  minWidth: "max-content",
                   whiteSpace: "normal",
                   lineHeight: "1.3"
                 }}>

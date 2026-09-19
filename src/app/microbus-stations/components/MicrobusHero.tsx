@@ -20,7 +20,7 @@ export default function MicrobusHero({
           alt="Cairo Microbus"
           loading="lazy"
           decoding="async"
-          className="height-auto"
+          className="h-auto"
           style={{ width: "60px", height: "42px", objectFit: "contain" }}
         />
         <span className={styles.heroTitleGradient}>مواقف الميكروباص</span>

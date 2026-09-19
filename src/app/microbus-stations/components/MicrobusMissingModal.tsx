@@ -15,6 +15,8 @@ interface MicrobusMissingModalProps {
   setMissingNotes: (val: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   submitting: boolean;
+  limitReached?: boolean;
+  limitChecking?: boolean;
 }
 
 export default function MicrobusMissingModal({
@@ -31,6 +33,8 @@ export default function MicrobusMissingModal({
   setMissingNotes,
   onSubmit,
   submitting,
+  limitReached = false,
+  limitChecking = false,
 }: MicrobusMissingModalProps) {
   if (!isOpen) return null;
 
@@ -69,7 +73,6 @@ export default function MicrobusMissingModal({
           paddingBottom: "14px"
         }}>
           <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-sub)" }}>
-            <i className="bx bx-plus-circle" style={{ color: "#3b82f6" }} />
             إبلاغ الإدارة بخط سرفيس غير مدرج
           </h3>
           <button
@@ -89,7 +92,7 @@ export default function MicrobusMissingModal({
               placeholder="مثال: موقف رمسيس، موقف العاشر، موقف المنيب..."
               value={missingStationName}
               onChange={e => setMissingStationName(e.target.value)}
-              className={styles.modernInput}
+              className="input-fields"
               required
               style={{ height: "42px" }}
             />
@@ -102,7 +105,7 @@ export default function MicrobusMissingModal({
               placeholder="مثال: 6 أكتوبر، العاصمة الإدارية، التجمع الخامس..."
               value={missingDestination}
               onChange={e => setMissingDestination(e.target.value)}
-              className={styles.modernInput}
+              className="input-fields"
               required
               style={{ height: "42px" }}
             />
@@ -115,7 +118,7 @@ export default function MicrobusMissingModal({
               placeholder="مثال: 15 ج.م"
               value={missingFare}
               onChange={e => setMissingFare(e.target.value)}
-              className={styles.modernInput}
+              className="input-fields"
               style={{ height: "42px" }}
             />
           </div>
@@ -126,25 +129,30 @@ export default function MicrobusMissingModal({
               placeholder="أي تفاصيل أخرى مثل: بيمشي من المحور، أو ميني باص..."
               value={missingNotes}
               onChange={e => setMissingNotes(e.target.value)}
-              className={styles.modernInput}
+              className="input-fields"
               style={{ height: "70px", padding: "10px 14px", resize: "none" }}
             />
           </div>
+
+          {limitReached && (
+            <div style={{ padding: "10px 14px", background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: "10px", color: "#ef4444", fontSize: "0.82rem", lineHeight: "1.5" }}>
+              <i className="bx bx-error-circle" style={{ marginLeft: "6px", verticalAlign: "middle" }} />
+              لقد وصلت للحد الأقصى المسموح به (5 بلاغات معلقة). يرجى انتظار مراجعة الإدارة لبلاغاتك السابقة قبل إرسال بلاغات جديدة.
+            </div>
+          )}
 
           <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "6px" }}>
             <button
               type="button"
               onClick={onClose}
               className="btn btn-cancel"
-              style={{ padding: "8px 16px" }}
             >
               إلغاء
             </button>
             <button
               type="submit"
-              disabled={submitting}
-              className={styles.spotlightBtn}
-              style={{ padding: "8px 20px" }}
+              disabled={submitting || limitReached || limitChecking}
+              className="btn btn-primary"
             >
               {submitting ? "جاري الإرسال..." : "إرسال للإدارة"}
             </button>

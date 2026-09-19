@@ -14,14 +14,9 @@ export default function SubmitButton({
   return (
     <button
       type="submit"
-      className="btn"
+      className="btn btn-primary"
       {...props}
       style={{
-        margin: 0,
-        background:
-          "linear-gradient(135deg, #1100ffff 0%, #1100ffff 100%)",
-        color: "#fff",
-        padding: "10px 24px",
         ...style,
       }}
     >

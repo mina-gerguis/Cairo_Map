@@ -19,6 +19,7 @@ import RouteResultsSection from "./components/RouteResultsSection";
 import BottomReportBanner from "./components/BottomReportBanner";
 import DirectionsReportModal from "./components/DirectionsReportModal";
 import { isPageOpenByPromotion } from "@/lib/promotions";
+import Footer from "@/components/Footer";
 
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
 
@@ -293,6 +294,9 @@ export default function DirectionsPage() {
         resolvedFrom={resolvedFromLabel || fromInput}
         resolvedTo={resolvedToLabel || toInput}
       />
+
+      {/* Footer */}
+      <Footer />
     </div>
     //================================== END MAIN CONTAINER =================================
   );

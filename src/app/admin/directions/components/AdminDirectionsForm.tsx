@@ -3,6 +3,8 @@ import styles from "../directions.module.css";
 import { FormLeg, FormOption, RouteConnectionIdentifier } from "../types";
 import { createDefaultLeg, createDefaultOption } from "../constants";
 import { RouteOptionFormBox } from "./RouteOptionFormBox";
+import CancelButton from "@/components/ui/button/CancelButton";
+import SubmitButton from "@/components/ui/button/SubmitButton";
 
 interface AdminDirectionsFormProps {
   editingConnection: RouteConnectionIdentifier | null;
@@ -285,20 +287,28 @@ export function AdminDirectionsForm({
 
           {/* Modal Footer Actions matching metro */}
           <div className={styles.modalFooter}>
-            <button
-              type="button"
-              className="btn btn-cancel"
+            <CancelButton
               onClick={onCancel}
+              style={{
+                width: "100%",
+                padding: "10px 30px",
+                margin: "10px 0"
+              }}
             >
               إلغاء
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
+            </CancelButton>
+
+            <SubmitButton
+              editingItem={Boolean(editingConnection)}
               disabled={isSubmitting}
+              style={{
+                margin: "10px 0",
+                padding: "10px 30px",
+                width: "100%"
+              }}
             >
               {isSubmitting ? "جاري الحفظ..." : editingConnection ? "حفظ التغييرات" : "إضافة الطريق"}
-            </button>
+            </SubmitButton>
           </div>
         </form>
       </div>

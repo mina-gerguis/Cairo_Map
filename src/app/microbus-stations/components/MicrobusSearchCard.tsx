@@ -69,7 +69,7 @@ export default function MicrobusSearchCard({
               placeholder="6 أكتوبر، التجمع، العبور..."
               value={destinationQuery}
               onChange={e => onDestinationChange(e.target.value)}
-              className={styles.modernInput}
+              className="input-fields"
               style={{ paddingLeft: destinationQuery ? "42px" : "16px" }}
             />
             {destinationQuery && (

@@ -20,6 +20,7 @@ import MicrobusSuccessModal from "./components/MicrobusSuccessModal";
 import MicrobusPaywall from "./components/MicrobusPaywall";
 import MicrobusLoading from "./components/MicrobusLoading";
 import styles from "./microbus.module.css";
+import Footer from "@/components/Footer";
 
 export default function MicrobusStationsPage() {
   const { user, profile, loading: authLoading, isPageOpen } = useAuth();
@@ -168,13 +169,44 @@ export default function MicrobusStationsPage() {
     }
   };
 
+  // Handler: Open Missing Route Modal
+  const handleOpenMissingRouteModal = async () => {
+    if (!user) {
+      alert("يرجى تسجيل الدخول أولاً للإبلاغ عن خط غير مدرج.");
+      return;
+    }
+    setMissingStationName(selectedStation && selectedStation !== "all" ? selectedStation : "");
+    setMissingDestination("");
+    setMissingFare("");
+    setMissingNotes("");
+    setMissingRouteModalOpen(true);
+
+    setLimitChecking(true);
+    try {
+      const reached = await isFeedbackLimitReached(user.id);
+      setLimitReached(reached);
+    } catch (e) {
+      console.error("Error checking feedback limit:", e);
+    } finally {
+      setLimitChecking(false);
+    }
+  };
+
   // Handler: Submit Problem Report
   const handleReportSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !supabase) return;
-    if (limitReached) {
-      alert("لقد وصلت للحد الأقصى للبلاغات المعلقة قيد المراجعة.");
-      return;
+
+    // Check limit dynamically before submitting to prevent bypassing
+    try {
+      const reached = await isFeedbackLimitReached(user.id);
+      if (reached) {
+        setLimitReached(true);
+        alert("لقد وصلت للحد الأقصى المسموح به (5 بلاغات معلقة). يرجى انتظار رد الإدارة على بلاغاتك السابقة قبل تقديم بلاغات جديدة.");
+        return;
+      }
+    } catch (err) {
+      console.error("Error checking feedback limit:", err);
     }
 
     setSubmittingReport(true);
@@ -221,6 +253,18 @@ export default function MicrobusStationsPage() {
     if (!missingStationName.trim() || !missingDestination.trim()) {
       alert("يرجى إدخال اسم الموقف والوجهة المطلوبة.");
       return;
+    }
+
+    // Check limit dynamically before submitting to prevent bypassing
+    try {
+      const reached = await isFeedbackLimitReached(user.id);
+      if (reached) {
+        setLimitReached(true);
+        alert("لقد وصلت للحد الأقصى المسموح به (5 بلاغات معلقة). يرجى انتظار رد الإدارة على بلاغاتك السابقة قبل تقديم بلاغات جديدة.");
+        return;
+      }
+    } catch (err) {
+      console.error("Error checking feedback limit:", err);
     }
 
     setSubmittingMissingRoute(true);
@@ -334,17 +378,7 @@ export default function MicrobusStationsPage() {
 
         {/* Missing Route Callout Banner */}
         <MicrobusBottomBanner
-          onOpenMissingRouteModal={() => {
-            if (!user) {
-              alert("يرجى تسجيل الدخول أولاً للإبلاغ عن خط غير مدرج.");
-              return;
-            }
-            setMissingStationName(selectedStation && selectedStation !== "all" ? selectedStation : "");
-            setMissingDestination("");
-            setMissingFare("");
-            setMissingNotes("");
-            setMissingRouteModalOpen(true);
-          }}
+          onOpenMissingRouteModal={handleOpenMissingRouteModal}
         />
       </div>
 
@@ -380,6 +414,8 @@ export default function MicrobusStationsPage() {
         setMissingNotes={setMissingNotes}
         onSubmit={handleMissingRouteSubmit}
         submitting={submittingMissingRoute}
+        limitReached={limitReached}
+        limitChecking={limitChecking}
       />
 
       {/* Success Notification Modal */}
@@ -388,6 +424,9 @@ export default function MicrobusStationsPage() {
         onClose={() => setSuccessModalOpen(false)}
         message={successMessage}
       />
+      
+      <Footer />
     </div>
+
   );
 }

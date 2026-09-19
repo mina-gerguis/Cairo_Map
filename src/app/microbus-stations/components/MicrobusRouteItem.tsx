@@ -34,7 +34,7 @@ export default function MicrobusRouteItem({
         className={`${styles.routeHeader} ${isExpanded ? styles.routeHeaderActive : ""}`}
       >
         <div className={styles.routeTitle}>
-          <i className="bx bx-right-arrow-alt" style={{transform: "scaleX(-1)" }} />
+          <i className="bx bx-right-arrow-alt" style={{ transform: "scaleX(-1)" }} />
           <span>إلى {route.destination}</span>
         </div>
 
@@ -52,40 +52,32 @@ export default function MicrobusRouteItem({
           {/* Metrics Grid */}
           <div className={styles.metricsGrid}>
             {/* Vehicle Tile */}
-            <div className={styles.metricTile}>
-              <div className="tab">
-                <i className="bx bx-bus" style={{color: "var(--bgMode)"}}/>
-              </div>
+            {/* <div className={styles.metricTile}>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>نوع المركبة</span>
+                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>نوع الميكوباص</span>
                 <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)" }}>
                   {route.vehicleType || "ميكروباص"}
                 </span>
               </div>
-            </div>
+            </div> */}
 
             {/* Duration Tile */}
             <div className={styles.metricTile}>
-              <div className={styles.metricTileIcon} style={{ background: "rgba(16, 185, 129, 0.12)", color: "#10b981" }}>
-                <i className="bx bx-time" />
-              </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>زمن الرحلة</span>
+                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>وقت الوصول</span>
                 <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)" }}>
                   {route.duration ? `${route.duration} دقيقة` : "30-45 دقيقة"}
+                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginRight: "5px" }}>تقريبا</span>
                 </span>
               </div>
             </div>
 
             {/* Fare Full Tile */}
-            <div className={styles.metricTile} style={{ gridColumn: "span 2" }}>
-              <div className={styles.metricTileIcon} style={{ background: "rgba(245, 158, 11, 0.12)", color: "#f59e0b" }}>
-                <i className="bx bx-money" />
-              </div>
+            <div className={styles.metricTile}>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>التعرفة الرسمية المقدرة</span>
-                <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#10b981" }}>
-                  {route.fare} جنيه مصري
+                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>الأجرة</span>
+                <span style={{ fontSize: "0.95rem", fontWeight: "800" }}>
+                  {route.fare} جنيه
                 </span>
               </div>
             </div>
@@ -119,11 +111,13 @@ export default function MicrobusRouteItem({
           )}
 
           {/* Interactive Voting & Report Row */}
+          <div>
+            <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-secondary)" }}>
+              هل الخط دقيق؟
+            </span>
+          </div>
           <div className={styles.actionsRow}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-secondary)" }}>
-                هل الخط دقيق؟
-              </span>
               <button
                 type="button"
                 onClick={e => {
@@ -148,19 +142,23 @@ export default function MicrobusRouteItem({
                 <span>({dislikes})</span>
               </button>
             </div>
-
-            <button
-              type="button"
-              onClick={e => {
-                e.stopPropagation();
-                onOpenReport();
-              }}
-              className={styles.voteButton}
-              style={{ color: "#f87171" }}
-            >
-              <i className="bx bx-error" />
-              <span>إبلاغ عن خطأ</span>
-            </button>
+            <div >
+              <button
+                type="button"
+                onClick={e => {
+                  e.stopPropagation();
+                  onOpenReport();
+                }}
+                className="btn btn-report"
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                }}
+              >
+                <i className="bx bx-error" />
+                <span>إبلاغ عن خطأ</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

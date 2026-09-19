@@ -83,11 +83,10 @@ export default function MicrobusReportModal({
         <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "14px" }}>
           <div style={{
             fontSize: "0.84rem",
-            color: "var(--text-secondary)",
-            background: "rgba(255, 255, 255, 0.03)",
+            background: "var(--bg-glass)",
             padding: "10px 14px",
-            borderRadius: "12px",
-            border: "1px solid rgba(255, 255, 255, 0.06)"
+            borderRadius: "var(--radius-card)",
+            border: "1px solid var(--border-glass)"
           }}>
             <div><strong>الموقف:</strong> {reportingStationName}</div>
             <div style={{ marginTop: "3px" }}><strong>الوجهة:</strong> {reportingRouteDestination}</div>
@@ -98,13 +97,12 @@ export default function MicrobusReportModal({
             <select
               value={reportReason}
               onChange={e => setReportReason(e.target.value as any)}
-              className={styles.modernSelect}
-              style={{ height: "42px" }}
+              className="input-fields"
             >
-              <option value="fare">💰 التعرفة / الأجرة غير صحيحة</option>
-              <option value="via">🛣️ خط السير / المناطق غير دقيقة</option>
-              <option value="location">📍 مكان الموقف أو نقطة التحميل غير صحيحة</option>
-              <option value="other">📝 ملاحظة أخرى</option>
+              <option value="fare"> الأجرة غير صحيحة</option>
+              <option value="via">خط السير غير صحيح</option>
+              <option value="location">الموقع غير صحيح</option>
+              <option value="other">أخرى</option>
             </select>
           </div>
 
@@ -114,15 +112,15 @@ export default function MicrobusReportModal({
               placeholder="يرجى كتابة التفاصيل هنا لمساعدتنا في تدقيق البيانات (مثال: الأجرة الحقيقية هي 12 ج.م)..."
               value={reportComment}
               onChange={e => setReportComment(e.target.value)}
-              className={styles.modernInput}
+              className="input-fields"
               style={{ height: "85px", padding: "10px 14px", resize: "none" }}
             />
           </div>
 
           {limitReached && (
-            <div style={{ padding: "10px", background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: "10px", color: "#ef4444", fontSize: "0.82rem" }}>
-              <i className="bx bx-error-circle" style={{ marginLeft: "4px" }} />
-              لقد وصلت للحد الأقصى للبلاغات المعلقة قيد المراجعة.
+            <div style={{ padding: "10px 14px", background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: "10px", color: "#ef4444", fontSize: "0.82rem", lineHeight: "1.5" }}>
+              <i className="bx bx-error-circle" style={{ marginLeft: "6px", verticalAlign: "middle" }} />
+              لقد وصلت للحد الأقصى المسموح به (5 بلاغات معلقة). يرجى انتظار مراجعة الإدارة لبلاغاتك السابقة قبل إرسال بلاغات جديدة.
             </div>
           )}
 
@@ -131,15 +129,13 @@ export default function MicrobusReportModal({
               type="button"
               onClick={onClose}
               className="btn btn-cancel"
-              style={{ padding: "8px 16px" }}
             >
               إلغاء
             </button>
             <button
               type="submit"
               disabled={submitting || limitReached || limitChecking}
-              className={styles.spotlightBtn}
-              style={{ padding: "8px 20px" }}
+              className="btn btn-primary"
             >
               {submitting ? "جاري الإرسال..." : "إرسال البلاغ"}
             </button>
