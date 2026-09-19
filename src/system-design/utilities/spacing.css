@@ -122,3 +122,9 @@
 .gap-32 { gap: var(--space-32); }
 .gap-40 { gap: var(--space-40); }
 .gap-48 { gap: var(--space-48); }
+
+/*  */
+.height-auto {
+  height: auto;
+}
+
