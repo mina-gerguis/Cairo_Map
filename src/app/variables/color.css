@@ -38,7 +38,7 @@
     --radius-card: var(--ra-8);
     /* Borders Global */
     --border-glass: var(--border-glassBtn);
-    --borderPrimary: #7c7c7c36;
+    --border-primary: #7c7c7c36;
     --border-secondary: rgb(32, 32, 32);
     --borderDashed: #ffffff71;
 
@@ -127,7 +127,7 @@ html.light {
     --hoverBtn: rgba(244, 244, 245, 0.9);
     --secondHoverBtn: rgb(182, 182, 182);
     /* border */
-    --borderPrimary: rgba(151, 151, 151, 0.384);
+    --border-primary: rgba(151, 151, 151, 0.384);
     --border-secondary: rgba(228, 228, 228, 0.863);
     --borderDashed: #0000004f;
     /* Input Fields */

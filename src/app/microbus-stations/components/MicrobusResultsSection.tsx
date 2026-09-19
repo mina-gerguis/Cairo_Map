@@ -58,9 +58,9 @@ export default function MicrobusResultsSection({
       {/* Notice: Specific station selected, but NO direct match for query */}
       {isSpecificStation && !hasMatches && hasQuery && currentStation && (
         <div style={{
-          background: "rgba(239, 68, 68, 0.08)",
+          background: "rgba(255, 97, 97, 0.08)",
           border: "1px solid rgba(239, 68, 68, 0.25)",
-          borderRadius: "16px",
+          borderRadius: "var(--radius-card)",
           padding: "16px 20px",
           display: "flex",
           flexDirection: "column",
@@ -73,25 +73,6 @@ export default function MicrobusResultsSection({
           <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
             تم إظهار جميع خطوط <strong>{selectedStation}</strong> بالأسفل لاختيار أقرب بديل.
           </p>
-        </div>
-      )}
-
-      {/* Notice: Direct route found */}
-      {isSpecificStation && hasMatches && hasQuery && (
-        <div style={{
-          background: "rgba(16, 185, 129, 0.08)",
-          border: "1px solid rgba(16, 185, 129, 0.25)",
-          borderRadius: "16px",
-          padding: "14px 20px",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          color: "#10b981",
-          fontWeight: "800",
-          fontSize: "0.92rem"
-        }}>
-          <i className="bx bx-check-circle" style={{ fontSize: "1.25rem" }} />
-          <span>متوفر خط سير مباشر إلى {destinationQuery} من هذا الموقف!</span>
         </div>
       )}
 

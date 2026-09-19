@@ -32,9 +32,6 @@ export default function MicrobusStationsSlider({
           } as React.CSSProperties}
         >
           <div className={styles.bentoCardTop}>
-            <div className={styles.bentoIconBox} style={{ color: "#3b82f6" }}>
-              <i className="bx bx-grid-alt" />
-            </div>
             <span className={styles.bentoPill}>
               <i className="bx bx-layer" /> الكل
             </span>
@@ -67,9 +64,6 @@ export default function MicrobusStationsSlider({
               } as React.CSSProperties}
             >
               <div className={styles.bentoCardTop}>
-                <div className={styles.bentoIconBox} style={{ color: palette.color }}>
-                  <i className={palette.icon} />
-                </div>
                 <span className={styles.bentoPill}>
                   {station.governorate}
                 </span>
@@ -78,7 +72,7 @@ export default function MicrobusStationsSlider({
               <div>
                 <div className={styles.bentoCardTitle}>موقف {shortName}</div>
                 <div className={styles.bentoCardSubtitle}>
-                  {routeCount} خطوط سير متاحة
+                  {routeCount} خطوط سير 
                 </div>
               </div>
             </button>

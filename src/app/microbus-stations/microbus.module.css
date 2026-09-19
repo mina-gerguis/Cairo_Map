@@ -77,10 +77,13 @@
 }
 
 @keyframes pulseDot {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.35);
     opacity: 0.6;
@@ -171,51 +174,45 @@
   flex: 0 0 auto;
   min-width: 175px;
   max-width: 210px;
-  height: 110px;
-  border-radius: 16px;
+  border-radius: var(--ra-16);
   padding: 14px 16px;
   cursor: pointer;
   outline: none;
   text-align: right;
   display: flex;
   flex-direction: column;
-  justifyContent: space-between;
   align-items: stretch;
   scroll-snap-align: start;
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
   -webkit-backdrop-filter: blur(20px);
   background: var(--bg-glass, rgba(20, 20, 24, 0.7));
-  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 8px 24px -4px rgba(0, 0, 0, 0.3);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
 :global(html.light) .bentoCard {
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 4px 16px -2px rgba(0, 0, 0, 0.05);
 }
 
-.bentoCard:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), 0 12px 30px -4px rgba(0, 0, 0, 0.4);
+.bentoCardActive {
+  border: 1px solid #ffffff4b !important;
 }
 
-.bentoCardActive {
-  border-color: var(--card-color, #3b82f6) !important;
-  box-shadow: inset 0 0 0 1px var(--card-color, #3b82f6), 0 0 24px -2px var(--card-glow, rgba(59, 130, 246, 0.35)) !important;
+:global(html.light) .bentoCardActive {
+  border: 1px solid var(--border-primary) !important;
 }
 
 .bentoCardTop {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
 }
 
@@ -241,6 +238,7 @@
   align-items: center;
   gap: 3px;
   padding: 2px 7px;
+  margin-bottom: 8px;
   border-radius: 999px;
   font-size: 0.65rem;
   font-weight: 700;
@@ -278,22 +276,15 @@
 
 /* ==================== 21ST.DEV SEARCH CARD ==================== */
 .searchBentoCard {
-  background: var(--bg-glass, rgba(20, 20, 24, 0.75));
+  background: var(--bg-glass);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 12px 32px -4px rgba(0, 0, 0, 0.35);
-  border-radius: 20px;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-card);
   padding: 22px;
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
-}
-
-:global(html.light) .searchBentoCard {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 10px 25px -4px rgba(0, 0, 0, 0.06);
 }
 
 .searchBentoHeader {
@@ -370,15 +361,15 @@
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.08);
   border: none;
-  width: 26px;
-  height: 26px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1.3rem;
   transition: all 0.2s ease;
 }
 
@@ -429,12 +420,11 @@
 
 /* ==================== 21ST.DEV STATION CARD ==================== */
 .stationCard {
-  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  background: var(--bg-glass);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 10px 30px -4px rgba(0, 0, 0, 0.25);
-  border-radius: 20px;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-card);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -517,7 +507,7 @@
 
 /* ==================== 21ST.DEV ROUTE CARD ==================== */
 .routeCard {
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
@@ -597,7 +587,7 @@
 .metricTile {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   padding: 10px 14px;
   display: flex;
   align-items: center;

@@ -133,7 +133,7 @@
    --ra-full: 9999px;
 
    /* --- Semantic Radius Aliases --- */
-   --radius-card: var(--ra-6);
+   --radius-card: var(--ra-8);
    --radiusBtn: var(--ra-8);
    --radiusBtnLg: var(--ra-14);
    --radiusBtnTabs: var(--ra-full);

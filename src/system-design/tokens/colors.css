@@ -46,7 +46,7 @@
   /* --- Border Tokens --- */
   --border-glassBtn: rgba(255, 255, 255, 0.10);
   --border-glass: var(--border-glassBtn);
-  --borderPrimary: rgba(124, 124, 124, 0.21);
+  --border-primary: rgba(124, 124, 124, 0.21);
   --border-secondary: rgb(32, 32, 32);
   --borderDashed: rgba(255, 255, 255, 0.44);
   --border-glass-bright: rgba(255, 255, 255, 0.15);
@@ -129,7 +129,7 @@ html.light {
   /* --- Border Tokens --- */
   --border-glassBtn: rgba(0, 0, 0, 0.08);
   --border-glass: var(--border-glassBtn);
-  --borderPrimary: rgba(151, 151, 151, 0.38);
+  --border-primary: rgba(151, 151, 151, 0.38);
   --border-secondary: rgba(228, 228, 228, 0.86);
   --borderDashed: rgba(0, 0, 0, 0.31);
   --border-glass-bright: rgba(0, 0, 0, 0.15);

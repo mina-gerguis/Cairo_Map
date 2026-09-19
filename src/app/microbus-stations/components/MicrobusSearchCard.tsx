@@ -35,19 +35,15 @@ export default function MicrobusSearchCard({
     <div ref={searchPanelRef} className={styles.searchBentoCard}>
       <div className={styles.searchBentoHeader}>
         <h2 className={styles.searchTitle}>
-          <i className="bx bx-search-alt" style={{ color: "var(--color-secondary, #3b82f6)" }} />
+          <i className="bx bx-search-alt" style={{ color: "var(--color-secondary" }} />
           <span>تحديد الموقف والوجهة</span>
         </h2>
-        <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: "600" }}>
-          بحث فوري
-        </span>
       </div>
 
       <div className={styles.inputGroup}>
         {/* From Station Selection */}
         <div>
           <label className={styles.fieldLabel}>
-            <i className="bx bx-trip" style={{ color: "#10b981" }} />
             <span>هتركب من موقف إيه؟</span>
           </label>
           <select
@@ -55,7 +51,7 @@ export default function MicrobusSearchCard({
             onChange={e => onStationChange(e.target.value)}
             className={styles.modernSelect}
           >
-            <option value="all">جميع مواقف القاهرة والجيزة ({stations.length} موقف)</option>
+            <option value="all">جميع المواقف ({stations.length} موقف)</option>
             {stations.map(s => (
               <option key={s.id || s.name} value={s.name}>{s.name}</option>
             ))}
@@ -65,13 +61,12 @@ export default function MicrobusSearchCard({
         {/* Destination Search Input */}
         <div>
           <label className={styles.fieldLabel}>
-            <i className="bx bx-target-lock" style={{ color: "#ef4444" }} />
-            <span>عايز تروح فين؟ (اكتب الوجهة)</span>
+            <span>عايز تروح فين؟</span>
           </label>
           <div style={{ position: "relative" }}>
             <input
               type="text"
-              placeholder="مثال: 6 أكتوبر، التجمع، حلوان، الشيخ زايد، العبور..."
+              placeholder="6 أكتوبر، التجمع، العبور..."
               value={destinationQuery}
               onChange={e => onDestinationChange(e.target.value)}
               className={styles.modernInput}

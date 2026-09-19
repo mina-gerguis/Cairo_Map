@@ -37,20 +37,10 @@ export default function MicrobusStationCard({
       {/* Station Header */}
       <div onClick={onToggleExpand} className={styles.stationHeader}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            className={styles.stationIconBadge}
-            style={{
-              color: palette.color,
-              background: `${palette.color}18`,
-              borderColor: `${palette.color}35`,
-            }}
-          >
-            <i className={palette.icon} />
-          </div>
           <div>
             <h3 className={styles.stationName}>{station.name}</h3>
             <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: "500" }}>
-              {routesCount} خط سير متاح بالموقف
+              {routesCount} خطوط سير بالموقف
             </span>
           </div>
         </div>
@@ -107,9 +97,6 @@ export default function MicrobusStationCard({
                 ? "خطوط السير المطابقة لبحثك:"
                 : "جميع خطوط سير الموقف:"}
             </h4>
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-              اضغط على الخط لعرض التفاصيل
-            </span>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>

@@ -34,13 +34,13 @@ export default function MicrobusRouteItem({
         className={`${styles.routeHeader} ${isExpanded ? styles.routeHeaderActive : ""}`}
       >
         <div className={styles.routeTitle}>
-          <i className="bx bx-right-arrow-alt" style={{ color: accentColor, transform: "scaleX(-1)" }} />
+          <i className="bx bx-right-arrow-alt" style={{transform: "scaleX(-1)" }} />
           <span>إلى {route.destination}</span>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span className={styles.farePill}>
-            {route.fare} ج.م
+          <span className="tab">
+            {route.fare} جنيه
           </span>
           <i className={`bx bx-chevron-${isExpanded ? "up" : "down"}`} style={{ fontSize: "1.2rem", color: "var(--text-muted)" }} />
         </div>
@@ -53,8 +53,8 @@ export default function MicrobusRouteItem({
           <div className={styles.metricsGrid}>
             {/* Vehicle Tile */}
             <div className={styles.metricTile}>
-              <div className={styles.metricTileIcon} style={{ background: "rgba(59, 130, 246, 0.12)", color: "#3b82f6" }}>
-                <i className="bx bx-bus" />
+              <div className="tab">
+                <i className="bx bx-bus" style={{color: "var(--bgMode)"}}/>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>نوع المركبة</span>

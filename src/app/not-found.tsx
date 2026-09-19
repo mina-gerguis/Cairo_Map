@@ -613,7 +613,7 @@ export default function NotFound() {
                 display: "flex",
                 alignItems: "center",
                 backgroundColor: "var(--bg-glass)",
-                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--color-primary)" : "1.5px solid var(--borderPrimary)",
+                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--color-primary)" : "1.5px solid var(--border-primary)",
                 borderRadius: "var(--ra-32)",
                 padding: "8px 15px 8px 15px",
                 boxShadow: "0 10px 30px var(--shadow-card)",
@@ -1054,7 +1054,7 @@ export default function NotFound() {
         <div
           style={{
             background: "var(--bg-glass)",
-            border: "1px solid var(--borderPrimary)",
+            border: "1px solid var(--border-primary)",
             borderRadius: "var(--ra-24)",
             padding: "1.75rem",
             backdropFilter: "blur(16px)",

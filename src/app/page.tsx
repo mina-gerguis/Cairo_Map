@@ -894,7 +894,7 @@ export default function HomePage() {
                 display: "flex",
                 alignItems: "center",
                 backgroundColor: "var(--bg-glass)",
-                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--color-primary)" : "1.5px solid var(--borderPrimary)",
+                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--color-primary)" : "1.5px solid var(--border-primary)",
                 borderRadius: "var(--ra-32)",
                 padding: "8px 15px 8px 15px",
                 boxShadow: "0 10px 30px var(--shadow-card)",

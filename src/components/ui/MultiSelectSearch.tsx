@@ -227,7 +227,7 @@ export function MultiSelectSearch({
             background: "var(--bg-glass)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid var(--borderPrimary)",
+            border: "1px solid var(--border-primary)",
             borderRadius: "var(--ra-8)",
             boxShadow: "var(--shadow-xs)",
             padding: "12px",

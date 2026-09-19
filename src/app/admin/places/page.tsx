@@ -2470,7 +2470,7 @@ export default function AdminDashboard() {
                 <h4 style={{ fontSize: "0.88rem", color: "var(--color-primary)", marginBottom: "8px", fontWeight: "700" }}>📂 أسماء التصنيفات الفرعية المتاحة لكل قسم رئيسي:</h4>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "12px", fontSize: "0.85rem" }}>
                   {CATEGORIES_STRUCTURE.map(main => (
-                    <div key={main.name} style={{ background: "var(--secondBtn)", padding: "10px 12px", borderRadius: "8px", border: "1px solid var(--borderPrimary)" }}>
+                    <div key={main.name} style={{ background: "var(--secondBtn)", padding: "10px 12px", borderRadius: "8px", border: "1px solid var(--border-primary)" }}>
                       <div style={{ fontWeight: "700", color: "var(--color-primary)", marginBottom: "6px" }}>{main.emoji} {main.label}</div>
                       <div style={{ color: "var(--text-secondary)", lineHeight: "1.5" }}>
                         {main.subCategories.map(s => s.label).join(" • ")}
@@ -2491,7 +2491,7 @@ export default function AdminDashboard() {
               type="file"
               accept=".xlsx, .xls, .csv"
               onChange={handleExcelUpload}
-              style={{ display: "block", marginTop: "10px", fontSize: "0.85rem", backgroundColor: "var(--secondBtn)", color: "var(--text-primary)", borderRadius: "8px", border: "1px solid var(--borderPrimary)", padding: "6px 14px", fontFamily: "var(--font-body)" }}
+              style={{ display: "block", marginTop: "10px", fontSize: "0.85rem", backgroundColor: "var(--secondBtn)", color: "var(--text-primary)", borderRadius: "8px", border: "1px solid var(--border-primary)", padding: "6px 14px", fontFamily: "var(--font-body)" }}
             />
           </div>
 

@@ -498,7 +498,7 @@ ${reportDetails.trim()}`;
                             justifyContent: "space-between",
                             gap: "10px",
                             background: isSelected ? "var(--bgPrimary)" : "transparent",
-                            border: isSelected ? `1px solid var(--borderPrimary)` : "1px solid transparent",
+                            border: isSelected ? `1px solid var(--border-primary)` : "1px solid transparent",
                             transition: "all 0.15s ease"
                           }}
                           onMouseEnter={(e) => {
