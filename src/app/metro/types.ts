@@ -99,7 +99,9 @@ export interface MetroProblemOption {
 // ── Component Props Interfaces ──
 
 export interface MetroHeaderProps {
-  headerRef: React.RefObject<HTMLDivElement | null>;
+  headerRef?: React.RefObject<HTMLDivElement | null>;
+  linesCount?: number;
+  stationsCount?: number;
 }
 
 export interface MetroLinesSliderProps {

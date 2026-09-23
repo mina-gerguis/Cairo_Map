@@ -176,7 +176,7 @@ html.light {
   z-index: 0;
 }
 
-:global(html.light) .ambient-glow {
+html.light .ambient-glow {
   background: radial-gradient(
     ellipse 60% 50% at 50% 0%,
     rgba(59, 130, 246, 0.1),

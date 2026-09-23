@@ -19,6 +19,8 @@ import {
 } from "./components";
 import { LineId } from "./types";
 import { METRO_LINES_LIST } from "./constants";
+import styles from "./metro.module.css";
+import Footer from "@/components/Footer";
 
 
 export type {
@@ -133,12 +135,17 @@ export default function MetroPage() {
   };
 
   return (
-    <div className="main-container">
-      {/* Header Banner */}
-      <MetroHeader headerRef={headerRef} />
+    <div className={styles.pageWrapper}>
+      <div className={styles.ambientGlow} />
 
-      {/* Main Container */}
-      <div className="container">
+      <div className={styles.contentContainer}>
+        {/* Header Hero Banner with PageHero */}
+        <MetroHeader
+          headerRef={headerRef}
+          linesCount={METRO_LINES_LIST.length}
+          stationsCount={data.allStations.length}
+        />
+
         {/* Top Lines Slider */}
         <MetroLinesSlider
           sliderRef={sliderRef}
@@ -272,6 +279,8 @@ export default function MetroPage() {
         color={data.color}
         onSubmit={reportModal.handleSubmitReport}
       />
+
+      <Footer />
     </div>
   );
 }
