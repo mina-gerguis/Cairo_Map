@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useAuth } from "@/context/AuthContext";
-import Footer from "@/components/Footer";
 import {
   useMetroData,
   useMetroCalculator,
@@ -20,7 +19,7 @@ import {
 } from "./components";
 import { LineId } from "./types";
 import { METRO_LINES_LIST } from "./constants";
-import styles from "./metro.module.css";
+
 
 export type {
   LineId,
@@ -73,7 +72,7 @@ export default function MetroPage() {
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
-          { opacity: 0, y: -16 },
+          { opacity: 0, y: -15 },
           { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
         );
       }
@@ -89,14 +88,14 @@ export default function MetroPage() {
       if (sections.length > 0) {
         gsap.fromTo(
           sections,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.08 }
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.55, stagger: 0.1, ease: "power2.out", delay: 0.1 }
         );
       }
     });
 
     return () => ctx.revert();
-  }, [data.allStations.length]);
+  }, []);
 
   // Line switch animation
   useEffect(() => {
@@ -134,19 +133,13 @@ export default function MetroPage() {
   };
 
   return (
-    <div className="page-wrapper">
-      {/* Background Radial Glow */}
-      <div className="ambient-glow" />
+    <div className="main-container">
+      {/* Header Banner */}
+      <MetroHeader headerRef={headerRef} />
 
-      <div className="content-container">
-        {/* Header Hero Banner */}
-        <MetroHeader
-          headerRef={headerRef}
-          stationsCount={data.allStations.length}
-          linesCount={3}
-        />
-
-        {/* Top Bento Lines Slider */}
+      {/* Main Container */}
+      <div className="container">
+        {/* Top Lines Slider */}
         <MetroLinesSlider
           sliderRef={sliderRef}
           lines={METRO_LINES_LIST}
@@ -234,7 +227,7 @@ export default function MetroPage() {
         {/* Official Cairo Metro Map Download Section */}
         <MetroMapSection mapPanelRef={mapPanelRef} />
 
-        {/* Bottom Report Problem Callout Banner */}
+        {/* Bottom Report Problem Alert Box */}
         <MetroReportBanner
           bannerRef={reportBannerRef}
           onOpenReportModal={() => reportModal.handleOpenReportModal()}
@@ -279,9 +272,6 @@ export default function MetroPage() {
         color={data.color}
         onSubmit={reportModal.handleSubmitReport}
       />
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

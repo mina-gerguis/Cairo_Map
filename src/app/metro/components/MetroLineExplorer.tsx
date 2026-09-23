@@ -1,7 +1,6 @@
 import React from "react";
 import { LineId, MetroLineExplorerProps } from "../types";
 import { LINE_COLORS, LINE_NAMES } from "../constants";
-import styles from "../metro.module.css";
 
 export default function MetroLineExplorer({
   panelRef,
@@ -18,41 +17,58 @@ export default function MetroLineExplorer({
   onOpenReportModal,
 }: MetroLineExplorerProps) {
   return (
-    <div id="metro-line-explorer-panel" ref={panelRef} className={styles.stationCard}>
+    <div ref={panelRef} className="details-panel">
       {/* Line Header & Line 3 Branch Tabs */}
-      <div className={styles.stationHeader}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            className={styles.stationIconBadge}
-            style={{
-              background: `${color}18`,
-              borderColor: `${color}35`,
-              color: color,
-            }}
-          >
-            <i className="bx bx-git-branch" />
-          </div>
-          <div>
-            <h2 className={styles.stationName}>{selectedLineObj.name}</h2>
-            <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-muted)" }}>
-              {selectedLineObj.desc || "استعراض مسار المحطات، المعالم القريبة ومحطات التبديل"}
-            </p>
-          </div>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "8px",
+        }}
+      >
+        <h5 className="text-lg fw-bold" style={{ margin: 0 }}>
+          {selectedLineObj.name}
+        </h5>
 
         {/* Line 3 sub-branches tabs */}
         {explorerLine === "line3" && (
-          <div className={styles.branchTabs}>
+          <div
+            className="tabs"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "6px",
+              marginBottom: 0,
+              padding: "4px",
+            }}
+          >
             {[
               { id: "trunk", name: "الفرع الرئيسي" },
-              { id: "branchA", name: "روض الفرج" },
-              { id: "branchB", name: "جامعة القاهرة" },
+              { id: "branchA", name: "اتجاه روض الفرج" },
+              { id: "branchB", name: "اتجاه جامعة القاهرة" },
             ].map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => onSelectBranch(tab.id as any)}
-                className={`${styles.branchTab} ${line3ActiveBranch === tab.id ? styles.branchTabActive : ""}`}
+                style={{
+                  padding: "8px 10px",
+                  borderRadius: "8px",
+                  border: "none",
+                  background: line3ActiveBranch === tab.id ? "var(--text-primary)" : "transparent",
+                  color: line3ActiveBranch === tab.id ? "var(--bgMode)" : "var(--text-primary)",
+                  fontWeight: "700",
+                  fontSize: "0.8rem",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-body)",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  whiteSpace: "nowrap",
+                }}
               >
                 {tab.name}
               </button>
@@ -62,36 +78,86 @@ export default function MetroLineExplorer({
       </div>
 
       {/* Details Grid (From, To, Count) */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px" }}>
-        <div className={styles.metricTile} style={{ flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
-          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: "600" }}>محطة البداية</span>
-          <span style={{ fontSize: "0.92rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+        <div
+          style={{
+            background: "var(--bg-secondary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "var(--ra-8)",
+            padding: "12px",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "1rem",
+              fontWeight: "800",
+              color: color,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
             {currentExplorerStations[0]?.name || selectedLineObj.from}
-          </span>
+          </div>
         </div>
 
-        <div className={styles.metricTile} style={{ flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
-          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: "600" }}>محطة النهاية</span>
-          <span style={{ fontSize: "0.92rem", fontWeight: "800", color: color, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>
+        <div
+          style={{
+            background: "var(--bg-secondary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "var(--ra-8)",
+            padding: "12px",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "1rem",
+              fontWeight: "800",
+              color: color,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
             {currentExplorerStations[currentExplorerStations.length - 1]?.name || selectedLineObj.to}
-          </span>
+          </div>
         </div>
 
-        <div className={styles.metricTile} style={{ flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
-          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: "600" }}>إجمالي المحطات</span>
-          <span style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)" }}>
-            {currentExplorerStations.length > 0 ? `${currentExplorerStations.length} محطة` : "تحت الإنشاء"}
-          </span>
+        <div
+          style={{
+            background: "var(--bg-secondary)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "var(--ra-8)",
+            padding: "12px",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "0.95rem",
+              fontWeight: "800",
+              color: "var(--text-primary)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {currentExplorerStations.length > 0
+              ? `${currentExplorerStations.length} محطة`
+              : "تحت الإنشاء"}
+          </div>
         </div>
       </div>
 
       {/* Detailed stops vertical timeline */}
       <div
         style={{
-          background: "rgba(0, 0, 0, 0.15)",
-          border: "1px solid rgba(255, 255, 255, 0.06)",
-          borderRadius: "14px",
-          padding: "18px 16px",
+          background: "var(--bg-glass)",
+          padding: "20px 16px",
+          borderRadius: "var(--radius-card)",
+          border: "1px solid var(--border-glass)",
         }}
       >
         <div
@@ -104,19 +170,11 @@ export default function MetroLineExplorer({
             gap: "8px",
           }}
         >
-          <h3
-            style={{
-              fontSize: "0.95rem",
-              fontWeight: "800",
-              margin: 0,
-              color: "var(--text-primary)",
-              fontFamily: "var(--font-sub, inherit)",
-            }}
-          >
-            المحطات المسجلة على هذا الخط ({currentExplorerStations.length})
-          </h3>
-          <span style={{ fontSize: "0.74rem", color: "var(--text-muted)" }}>
-            انقر على اسم المحطة لاستعراض المعالم والأماكن الحيوية
+          <h2 className="text-md fw-bold" style={{ margin: 0 }}>
+            المحطات المسجلة على هذا الخط
+          </h2>
+          <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            انقر على اسم المحطة لاستعراض المعالم القريبة
           </span>
         </div>
 
@@ -141,7 +199,7 @@ export default function MetroLineExplorer({
                       display: "flex",
                       alignItems: "center",
                       gap: "12px",
-                      minHeight: "36px",
+                      minHeight: "34px",
                     }}
                   >
                     {/* Dot */}
@@ -162,12 +220,12 @@ export default function MetroLineExplorer({
                           backgroundColor: isUnderConstruction
                             ? "transparent"
                             : isTransfer
-                            ? "#f59e0b"
+                            ? "var(--colorWarning, #f59e0b)"
                             : color,
                           border: isUnderConstruction
-                            ? `2px dashed #ef4444`
+                            ? `2px dashed var(--colorDanger)`
                             : isFirst || isLast
-                            ? `2px solid var(--bgPrimary, #18181b)`
+                            ? `2px solid var(--bgPrimary)`
                             : "none",
                           boxShadow:
                             isUnderConstruction
@@ -184,7 +242,6 @@ export default function MetroLineExplorer({
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
                         gap: "8px",
                         flexGrow: 1,
                         flexWrap: "wrap",
@@ -194,7 +251,7 @@ export default function MetroLineExplorer({
                         onClick={() => onToggleStation(station)}
                         style={{
                           fontSize: "0.88rem",
-                          fontWeight: isFirst || isLast || isTransfer ? "800" : "600",
+                          fontWeight: isFirst || isLast || isTransfer ? "700" : "500",
                           color: isUnderConstruction
                             ? "#ef4444"
                             : isFirst || isLast
@@ -215,7 +272,7 @@ export default function MetroLineExplorer({
                             fontSize: "0.95rem",
                             color:
                               expandedStation === station
-                                ? "var(--color-secondary, #3b82f6)"
+                                ? "var(--color-secondary)"
                                 : "var(--text-muted)",
                             transition: "all 0.2s ease",
                           }}
@@ -237,19 +294,19 @@ export default function MetroLineExplorer({
                         )}
                         {isFirst && (
                           <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "6px" }}>
-                            (بداية الخط)
+                            (بدايــة الخط)
                           </span>
                         )}
                         {isLast && (
                           <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginRight: "6px" }}>
-                            (نهاية الخط)
+                            (نهـاية الخط)
                           </span>
                         )}
                       </span>
 
                       {/* Transfer switcher buttons */}
                       {isTransfer && (
-                        <div style={{ display: "flex", gap: "6px", marginRight: "auto" }}>
+                        <div style={{ display: "flex", gap: "4px", marginRight: "auto" }}>
                           {allLinesForStation
                             .filter((l) => l !== explorerLine)
                             .map((l) => (
@@ -258,15 +315,14 @@ export default function MetroLineExplorer({
                                 type="button"
                                 onClick={() => onSwitchLine(l)}
                                 style={{
-                                  fontSize: "0.7rem",
+                                  fontSize: "0.68rem",
                                   fontWeight: "700",
                                   color: LINE_COLORS[l] || "#3b82f6",
                                   background: (LINE_COLORS[l] || "#3b82f6") + "1a",
-                                  border: `1px solid ${(LINE_COLORS[l] || "#3b82f6")}40`,
-                                  padding: "3px 8px",
-                                  borderRadius: "6px",
+                                  border: `1px solid ${(LINE_COLORS[l] || "#3b82f6")}33`,
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
                                   cursor: "pointer",
-                                  transition: "all 0.2s ease",
                                 }}
                                 title={`انقر للانتقال إلى ${LINE_NAMES[l]}`}
                               >
@@ -287,36 +343,36 @@ export default function MetroLineExplorer({
                   {expandedStation === station && (
                     <div
                       style={{
-                        margin: "6px 16px 14px 28px",
-                        padding: "12px 16px",
-                        borderRadius: "10px",
-                        background: "rgba(255, 255, 255, 0.03)",
+                        margin: "4px 16px 12px 28px",
+                        padding: "10px 14px",
+                        borderRadius: "8px",
+                        background: "var(--bg-secondary)",
                         border: isUnderConstruction
                           ? "1px dashed rgba(239, 68, 68, 0.3)"
-                          : "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
+                          : "1px solid var(--border-glass)",
                       }}
                     >
                       {isUnderConstruction && (
                         <div
                           style={{
                             color: "#ef4444",
-                            fontSize: "0.78rem",
+                            fontSize: "0.75rem",
                             fontWeight: "bold",
                             display: "flex",
                             alignItems: "center",
                             gap: "6px",
-                            marginBottom: "8px",
+                            marginBottom: "6px",
                           }}
                         >
-                          <span>⚠️ هذه المحطة قيد الإنشاء والتجهيز وليست في الخدمة الفعلية بعد.</span>
+                          <span>⚠️ هذه المحطة قيد الإنشاء وليست في الخدمة الفعلية بعد.</span>
                         </div>
                       )}
                       <div
                         style={{
-                          fontSize: "0.78rem",
-                          color: "var(--text-secondary)",
+                          fontSize: "0.75rem",
+                          color: "var(--text-primary)",
                           marginBottom: "6px",
-                          fontWeight: "700",
+                          fontWeight: "bold",
                         }}
                       >
                         المعالم والأماكن الحيوية القريبة من المحطة:
@@ -327,19 +383,19 @@ export default function MetroLineExplorer({
                             <span
                               key={lIdx}
                               style={{
-                                fontSize: "0.74rem",
+                                fontSize: "0.72rem",
                                 background: "rgba(255, 255, 255, 0.05)",
                                 color: "var(--text-primary)",
-                                padding: "4px 10px",
-                                borderRadius: "6px",
-                                border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
+                                padding: "3px 8px",
+                                borderRadius: "4px",
+                                border: "1px solid var(--border-glass)",
                               }}
                             >
-                              📍 {landmark}
+                              {landmark}
                             </span>
                           ))
                         ) : (
-                          <span style={{ fontSize: "0.74rem", color: "var(--text-muted)", fontStyle: "italic" }}>
+                          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontStyle: "italic" }}>
                             لم يتم تسجيل معالم قريبة لهذه المحطة بعد.
                           </span>
                         )}
@@ -348,25 +404,32 @@ export default function MetroLineExplorer({
                         style={{
                           marginTop: "10px",
                           paddingTop: "8px",
-                          borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+                          borderTop: "1px solid var(--border-glass)",
                           display: "flex",
                           justifyContent: "flex-end",
                         }}
                       >
                         <button
                           type="button"
+                          className="btn btn-report"
                           onClick={(e) => {
                             e.stopPropagation();
                             onOpenReportModal(station);
                           }}
-                          className={styles.actionButton}
                           style={{
-                            fontSize: "0.75rem",
-                            padding: "4px 10px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "5px",
+                            fontSize: "0.74rem",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                            padding: "3px 8px",
+                            borderRadius: "6px",
+                            transition: "all 0.2s ease",
                           }}
                         >
-                          <i className="fa-solid fa-flag" style={{ color: "#f59e0b" }}></i>
-                          <span>الإبلاغ عن تصحيح في محطة {station}</span>
+                          <i className="fa-solid fa-triangle-exclamation" style={{ fontSize: "0.75rem" }}></i>
+                          الإبلاغ عن خطأ في محطة {station}
                         </button>
                       </div>
                     </div>
@@ -388,21 +451,55 @@ export default function MetroLineExplorer({
                             width: "2px",
                             backgroundColor: color,
                             minHeight: "14px",
-                            opacity: 0.35,
+                            opacity: 0.4,
                           }}
                         />
                       </div>
+                      <div style={{ flexGrow: 1 }} />
                     </div>
                   )}
                 </div>
               );
             })
           ) : (
-            <div style={{ textAlign: "center", padding: "24px 0", color: "var(--text-muted)" }}>
-              لا توجد محطات مسجلة لهذا الخط حالياً.
+            <div
+              className="sub-title"
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: "0.88rem",
+                textAlign: "center",
+                padding: "12px",
+              }}
+            >
+              لا توجد محطات مضافة لهذا الخط بعد (المشروع تحت التخطيط والإنشاء).
             </div>
           )}
         </div>
+      </div>
+
+      {/* Tips / Info Section */}
+      <div
+        style={{
+          marginTop: "12px",
+          background: "var(--bg-glass)",
+          border: "1px solid var(--border-glass)",
+          borderRadius: "var(--radius-card)",
+          padding: "16px",
+        }}
+      >
+        <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
+          <i
+            className="bx bxs-info-circle"
+            style={{
+              marginLeft: "6px",
+              color: color,
+              fontSize: "1.1rem",
+              verticalAlign: "middle",
+            }}
+          ></i>
+          <strong>معلومات الخط: </strong>
+          <span style={{ color: "var(--text-muted)" }}>{selectedLineObj.desc}</span>
+        </p>
       </div>
     </div>
   );

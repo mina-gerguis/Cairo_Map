@@ -1,40 +1,40 @@
 import React from "react";
 import { MetroMapSectionProps } from "../types";
-import styles from "../metro.module.css";
 
 export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
   return (
-    <div ref={mapPanelRef} className={styles.stationCard}>
-      <div className={styles.stationHeader}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            className={styles.stationIconBadge}
-            style={{
-              background: "rgba(59, 130, 246, 0.12)",
-              borderColor: "rgba(59, 130, 246, 0.25)",
-              color: "#3b82f6",
-            }}
-          >
-            <i className="bx bx-map-alt" />
-          </div>
-          <div>
-            <h2 className={styles.stationName}>خريطة شبكة مترو القاهرة الرسمية</h2>
-            <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-muted)" }}>
-              استعراض المخطط العام لجميع الخطوط والمحطات التبادلية بجودة فائقة
-            </p>
-          </div>
-        </div>
-      </div>
+    <div ref={mapPanelRef} className="details-panel">
+      <h2
+        style={{
+          fontSize: "1.25rem",
+          fontWeight: "800",
+          color: "var(--text-primary)",
+          margin: "0 0 8px",
+        }}
+      >
+        خريطة مترو القاهرة الرسمية
+      </h2>
+      <p
+        className="sub-title"
+        style={{
+          color: "var(--text-secondary)",
+          fontSize: "0.85rem",
+          lineHeight: "1.7",
+          margin: "0",
+        }}
+      >
+        يمكنك استعراض الخريطة التوضيحية لشبكة المترو الرسمية أو تحميلها كصورة عالية الدقة للوصول إليها في أي وقت دون الحاجة لإنترنت:
+      </p>
 
       <div
         style={{
           position: "relative",
-          borderRadius: "var(--radius-card, 14px)",
+          borderRadius: "var(--ra-8)",
           overflow: "hidden",
-          border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
-          height: "230px",
+          border: "1px solid var(--border-glass)",
+          height: "220px",
           width: "100%",
-          backgroundColor: "rgba(0,0,0,0.2)",
+          backgroundColor: "rgba(0,0,0,0.05)",
         }}
       >
         <a href="/images/metro/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
@@ -48,32 +48,30 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
               height: "100%",
               objectFit: "cover",
               display: "block",
-              transition: "transform 0.35s ease",
+              transition: "transform 0.3s ease",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           />
           <div
             style={{
               position: "absolute",
-              bottom: "12px",
-              right: "12px",
-              background: "rgba(0, 0, 0, 0.7)",
+              bottom: "10px",
+              right: "10px",
+              background: "rgba(0,0,0,0.6)",
               color: "#ffffff",
-              padding: "5px 12px",
+              padding: "4px 10px",
               borderRadius: "8px",
               fontSize: "0.75rem",
-              fontWeight: "700",
+              fontWeight: "600",
               display: "flex",
               alignItems: "center",
-              gap: "6px",
-              backdropFilter: "blur(6px)",
-              WebkitBackdropFilter: "blur(6px)",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
+              gap: "4px",
+              backdropFilter: "blur(4px)",
             }}
           >
-            <i className="bx bx-expand-alt" style={{ fontSize: "0.95rem" }}></i>
-            <span>اضغط للتكبير وعرض الخريطة كاملة</span>
+            <i className="bx bx-expand-alt" style={{ fontSize: "0.9rem" }}></i>
+            اضغط للتكبير وعرض الخريطة كاملة
           </div>
         </a>
       </div>
@@ -81,14 +79,21 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
       <a
         href="/images/metro/cairo-metro-map.png"
         download="cairo-metro-map.png"
-        className={styles.calculateActionBtn}
+        className="btn btn-primary"
         style={{
+          width: "100%",
+          fontSize: "0.92rem",
+          fontWeight: "700",
+          textAlign: "center",
           textDecoration: "none",
-          marginTop: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
         }}
       >
         <i className="bx bx-download" style={{ fontSize: "1.2rem" }}></i>
-        <span>تحميل خريطة المترو بجودة فائقة (PNG)</span>
+        تحميل خريطة المترو بجودة فائقة
       </a>
     </div>
   );

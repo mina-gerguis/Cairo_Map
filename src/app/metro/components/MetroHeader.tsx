@@ -1,29 +1,15 @@
-import React, { RefObject } from "react";
-import PageHero from "@/components/common/PageHero";
+import React from "react";
+import { MetroHeaderProps } from "../types";
 
-interface MetroHeaderProps {
-  headerRef: RefObject<HTMLDivElement | null>;
-  stationsCount?: number;
-  linesCount?: number;
-}
-
-export default function MetroHeader({
-  headerRef,
-  stationsCount = 90,
-  linesCount = 3,
-}: MetroHeaderProps) {
+export default function MetroHeader({ headerRef }: MetroHeaderProps) {
   return (
-    <PageHero
-      headerRef={headerRef}
-      title="مترو القاهرة الكبرى"
-      icon={{
-        src: "/images/transit/metro.png",
-        alt: "Cairo Metro",
-        width: 52,
-        height: 42,
-        priority: true,
-      }}
-      subtitle="احسب رحلتك في ثوانٍ، تصفح مسارات ومحطات خطوط المترو، واعرف قيمة تذكرتك ومحطات التبديل وأقرب محطة لموقعك."
-    />
+    <div ref={headerRef} className="header-banner">
+      <div>
+        <h1 className="header-title">مترو القاهرة الكبري</h1>
+        <p className="header-sub-title">
+          احسب رحلتك في ثوانٍ، تصفح مسارات ومحطات خطوط المترو، واعرف قيمة تذكرتك ومحطات التبديل ومواعيد الرحلات.
+        </p>
+      </div>
+    </div>
   );
 }

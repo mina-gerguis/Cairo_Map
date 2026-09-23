@@ -1,6 +1,5 @@
 import React from "react";
 import { MetroReportBannerProps } from "../types";
-import styles from "../metro.module.css";
 
 export default function MetroReportBanner({
   bannerRef,
@@ -9,64 +8,73 @@ export default function MetroReportBanner({
   return (
     <div
       ref={bannerRef}
-      className={styles.calloutBanner}
-      onClick={onOpenReportModal}
-      style={{ cursor: "pointer" }}
+      style={{
+        background: "var(--bg-linear-alert)",
+        border: "1px solid var(--border-secondary)",
+        borderRadius: "var(--ra-8)",
+        padding: "20px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "16px",
+        marginTop: "14px",
+        overflow: "hidden",
+        position: "relative",
+      }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "16px", maxWidth: "560px" }}>
+      <div>
         <div
           style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "14px",
-            background: "rgba(59, 130, 246, 0.15)",
-            border: "1px solid rgba(59, 130, 246, 0.3)",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            fontSize: "1.4rem",
-            color: "var(--color-secondary, #3b82f6)",
+            gap: "8px",
+            flexDirection: "row-reverse",
+            justifyContent: "flex-end",
           }}
         >
-          <i className="bx bx-error-circle" />
+          <h2
+            style={{
+              margin: "0 0 6px",
+              fontSize: "1rem",
+              fontWeight: "800",
+              gap: "8px",
+            }}
+          >
+            الإبلاغ عن مشكلة فى بيانات المترو
+          </h2>
+          <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px" }} />
         </div>
 
-        <div>
-          <h3
-            style={{
-              margin: "0 0 4px",
-              fontSize: "1.05rem",
-              fontWeight: "800",
-              color: "var(--text-primary)",
-              fontFamily: "var(--font-sub, inherit)",
-            }}
-          >
-            الإبلاغ عن مشكلة في بيانات المترو
-          </h3>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "0.84rem",
-              color: "var(--text-secondary)",
-              lineHeight: "1.6",
-            }}
-          >
-            هل لاحظت أي خطأ في أسعار التذاكر، محطات التبديل أو أسماء المحطات؟ شاركنا ملاحظتك لمساعدتنا في تدقيق البيانات.
-          </p>
-        </div>
+        <p
+          style={{
+            margin: 0,
+            fontSize: "0.82rem",
+            color: "var(--text-secondary)",
+            lineHeight: "1.6",
+          }}
+        >
+          هل لاحظت أي خطأ في أسعار التذاكر، محطات التبديل؟ شاركنا ملاحظتك لمساعدتنا في تدقيق وتحديث شبكة المترو باستمرار.
+        </p>
       </div>
 
       <button
         type="button"
-        className={styles.calloutBtn}
-        onClick={(e) => {
-          e.stopPropagation();
-          onOpenReportModal();
+        className="btn btn-report"
+        onClick={onOpenReportModal}
+        style={{
+          fontSize: "0.84rem",
+          fontWeight: "700",
+          cursor: "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+          transition: "all 0.15s ease",
+          flexShrink: 0,
         }}
       >
-        <i className="fa-solid fa-flag" />
-        <span>تقديم بلاغ</span>
+        <i className="fa-solid fa-flag"></i>
+        <span>تقديم بلاغ عن خطأ</span>
       </button>
     </div>
   );

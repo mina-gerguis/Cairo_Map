@@ -3,7 +3,6 @@ import VoiceInputButton from "@/components/VoiceInputButton";
 import { MetroRouteCalculatorProps } from "../types";
 import { LINE_COLORS, LINE_NAMES } from "../constants";
 import { normalizeArabic } from "../utils";
-import styles from "../metro.module.css";
 
 export default function MetroRouteCalculator({
   panelRef,
@@ -41,47 +40,83 @@ export default function MetroRouteCalculator({
   onOpenReportModal,
 }: MetroRouteCalculatorProps) {
   return (
-    <div ref={panelRef} className={styles.searchBentoCard}>
+    <div ref={panelRef} className="details-panel">
       {/* Title & Nearest Station GPS Button */}
-      <div className={styles.searchBentoHeader}>
-        <h2 className={styles.searchTitle}>
-          <i className="bx bx-trip" style={{ color: "var(--color-secondary, #3b82f6)", fontSize: "1.4rem" }} />
-          <span>حاسبة ومخطط رحلات المترو</span>
-        </h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "8px",
+        }}
+      >
+        <h5 className="text-lg fw-bold" style={{ margin: 0 }}>
+          رايح فين كدا .؟
+        </h5>
 
         <button
           type="button"
           onClick={onFindNearest}
           disabled={locatingNearest}
-          className={styles.gpsBtn}
+          style={{
+            background: "rgba(59, 130, 246, 0.08)",
+            border: "1px solid rgba(59, 130, 246, 0.2)",
+            borderRadius: "4px",
+            padding: "4px 10px",
+            fontSize: "0.75rem",
+            fontWeight: "700",
+            color: "var(--color-secondary)",
+            cursor: locatingNearest ? "wait" : "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            transition: "all 0.2s ease",
+          }}
           title="تحديد أقرب محطة مترو لموقعي الحالي عبر الـ GPS"
         >
           <i className={locatingNearest ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-location-crosshairs"}></i>
-          <span>{locatingNearest ? "جاري التحديد..." : "أقرب محطة مني"}</span>
+          {locatingNearest ? "جاري التحديد..." : "أقرب محطة فين"}
         </button>
       </div>
 
       {/* Search Inputs Container */}
-      <div className={styles.inputGroup}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
         {/* FROM STATION INPUT */}
-        <div className={styles.inputWrapper} style={{ zIndex: showFromList ? 30 : 2 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label className={styles.fieldLabel} style={{ margin: 0 }}>
-              <i className="fa-solid fa-circle-dot" style={{ color: "var(--colorSuccess, #10b981)" }}></i>
-              <span>محطة الركوب (من):</span>
+        <div style={{ position: "relative", zIndex: showFromList ? 20 : 2 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "6px",
+              flexWrap: "wrap",
+              gap: "6px",
+            }}
+          >
+            <label
+              style={{
+                fontSize: "0.85rem",
+                fontWeight: "700",
+                color: "var(--text-secondary)",
+                margin: 0,
+                fontFamily: "var(--font-heading)",
+              }}
+            >
+              <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "var(--colorSuccess)" }}></i> من محطة:
               {nearestDistance && selectedFrom && (
                 <span
                   style={{
-                    fontSize: "0.72rem",
-                    color: "var(--colorSuccess, #10b981)",
+                    fontSize: "0.74rem",
+                    color: "var(--colorSuccess)",
                     fontWeight: "700",
-                    marginRight: "6px",
-                    background: "rgba(16, 185, 129, 0.12)",
-                    padding: "2px 8px",
+                    marginRight: "8px",
+                    background: "rgba(16, 185, 129, 0.1)",
+                    padding: "2px 6px",
                     borderRadius: "6px",
                   }}
                 >
-                  أقرب محطة ({nearestDistance})
+                  أقرب محطة: {nearestDistance}
                 </span>
               )}
             </label>
@@ -91,7 +126,6 @@ export default function MetroRouteCalculator({
               }}
             />
           </div>
-
           <div style={{ position: "relative" }}>
             <input
               className="input-fields"
@@ -103,31 +137,46 @@ export default function MetroRouteCalculator({
               style={{
                 width: "100%",
                 direction: "rtl",
-                paddingLeft: selectedFrom || fromQuery ? "85px" : "16px",
+                fontFamily: "var(--font-body)",
               }}
             />
             {selectedFrom && (
               <span
                 style={{
                   position: "absolute",
-                  left: "10px",
+                  left: "12px",
                   top: "50%",
                   transform: "translateY(-50%)",
                   fontSize: "0.72rem",
                   background: "rgba(59, 130, 246, 0.15)",
-                  color: "var(--color-secondary, #3b82f6)",
-                  padding: "3px 8px",
+                  color: "var(--color-secondary)",
+                  padding: "2px 8px",
                   borderRadius: "8px",
-                  fontWeight: "700",
+                  fontWeight: "600",
                 }}
               >
                 تم الاختيار ✔
               </span>
             )}
           </div>
-
           {showFromList && filteredFrom.length > 0 && (
-            <div className={styles.dropdownList}>
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "var(--radius-card)",
+                overflow: "hidden",
+                zIndex: 100,
+                maxHeight: "220px",
+                overflowY: "auto",
+                marginTop: "4px",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+              }}
+            >
               {filteredFrom.map((s) => {
                 const q = normalizeArabic(fromQuery.trim());
                 const matchedLandmark = q
@@ -137,49 +186,56 @@ export default function MetroRouteCalculator({
                   <div
                     key={s.name}
                     onMouseDown={() => onSelectFrom(s.name)}
-                    className={styles.dropdownItem}
+                    style={{
+                      padding: "10px 16px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      borderBottom: "1px solid rgba(255,255,255,0.03)",
+                      transition: "background 0.2s",
+                      fontFamily: "var(--font-sub)",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
                     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                      <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--text-primary)" }}>
                         {s.name}
                       </span>
                       {matchedLandmark && (
-                        <span style={{ fontSize: "0.72rem", color: "var(--color-secondary, #3b82f6)", fontWeight: "bold" }}>
+                        <span style={{ fontSize: "0.72rem", color: "var(--color-secondary)", fontWeight: "bold" }}>
                           📍 قريب من: {matchedLandmark}
                         </span>
                       )}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <div style={{ display: "flex", gap: "4px" }}>
-                        {s.lines.map((l) => (
-                          <span
-                            key={l}
-                            style={{
-                              width: "7px",
-                              height: "7px",
-                              borderRadius: "50%",
-                              background: LINE_COLORS[l],
-                              display: "inline-block",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      {s.isTransfer && (
+                    <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
+                      {s.lines.map((l) => (
                         <span
+                          key={l}
                           style={{
-                            fontSize: "0.7rem",
-                            background: "rgba(245, 158, 11, 0.15)",
-                            color: "var(--colorWarning, #f59e0b)",
-                            border: "1px solid rgba(245, 158, 11, 0.3)",
-                            padding: "2px 6px",
-                            borderRadius: "6px",
-                            fontWeight: "700",
+                            width: "6px",
+                            height: "6px",
+                            borderRadius: "50%",
+                            background: LINE_COLORS[l],
+                            display: "inline-block",
                           }}
-                        >
-                          تبادلية
-                        </span>
-                      )}
+                        />
+                      ))}
                     </div>
+                    {s.isTransfer && (
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          background: "var(--border-glass)",
+                          color: "var(--text-secondary)",
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        تبادلية
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -188,24 +244,60 @@ export default function MetroRouteCalculator({
         </div>
 
         {/* SWAP BUTTON */}
-        <div className={styles.swapBtnWrapper}>
+        <div style={{ display: "flex", justifyContent: "center", margin: "-8px 0" }}>
           <button
             type="button"
             onClick={onSwapStations}
-            className={styles.swapBtn}
+            style={{
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border-glass)",
+              borderRadius: "50%",
+              width: "38px",
+              height: "38px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--text-secondary)",
+              fontSize: "1.15rem",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "rotate(180deg)";
+              e.currentTarget.style.background = "var(--hoverBtn)";
+              e.currentTarget.style.color = "var(--color-secondary)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "rotate(0deg)";
+              e.currentTarget.style.background = "var(--bg-secondary)";
+              e.currentTarget.style.color = "var(--text-secondary)";
+            }}
             title="تبديل محطة القيام والوصول"
-            aria-label="تبديل المحطات"
           >
             ⇅
           </button>
         </div>
 
         {/* TO STATION INPUT */}
-        <div className={styles.inputWrapper} style={{ zIndex: showToList ? 30 : 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label className={styles.fieldLabel} style={{ margin: 0 }}>
-              <i className="fa-solid fa-circle-dot" style={{ color: "#ef4444" }}></i>
-              <span>محطة الوصول (إلى):</span>
+        <div style={{ position: "relative", zIndex: showToList ? 20 : 1 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "6px",
+            }}
+          >
+            <label
+              style={{
+                fontSize: "0.85rem",
+                fontWeight: "700",
+                color: "var(--text-secondary)",
+                margin: 0,
+                fontFamily: "var(--font-heading)",
+              }}
+            >
+              <i className="fa-solid fa-circle-dot" style={{ marginLeft: "6px", color: "#ff0000" }}></i> إلى محطة:
             </label>
             <VoiceInputButton
               onTranscript={(text) => {
@@ -213,7 +305,6 @@ export default function MetroRouteCalculator({
               }}
             />
           </div>
-
           <div style={{ position: "relative" }}>
             <input
               className="input-fields"
@@ -225,31 +316,47 @@ export default function MetroRouteCalculator({
               style={{
                 width: "100%",
                 direction: "rtl",
-                paddingLeft: selectedTo || toQuery ? "85px" : "16px",
+                fontFamily: "var(--font-body)",
               }}
             />
             {selectedTo && (
               <span
                 style={{
                   position: "absolute",
-                  left: "10px",
+                  left: "12px",
                   top: "50%",
                   transform: "translateY(-50%)",
                   fontSize: "0.72rem",
                   background: "rgba(59, 130, 246, 0.15)",
-                  color: "var(--color-secondary, #3b82f6)",
-                  padding: "3px 8px",
+                  color: "var(--color-secondary)",
+                  padding: "2px 8px",
                   borderRadius: "8px",
-                  fontWeight: "700",
+                  fontWeight: "600",
                 }}
               >
                 تم الاختيار ✔
               </span>
             )}
           </div>
-
           {showToList && filteredTo.length > 0 && (
-            <div className={styles.dropdownList}>
+            <div
+              style={{
+                position: "relative",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "var(--radius-card)",
+                overflow: "hidden",
+                zIndex: 100,
+                maxHeight: "220px",
+                overflowY: "auto",
+                marginTop: "4px",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                fontFamily: "var(--font-sub)",
+              }}
+            >
               {filteredTo.map((s) => {
                 const q = normalizeArabic(toQuery.trim());
                 const matchedLandmark = q
@@ -259,49 +366,55 @@ export default function MetroRouteCalculator({
                   <div
                     key={s.name}
                     onMouseDown={() => onSelectTo(s.name)}
-                    className={styles.dropdownItem}
+                    style={{
+                      padding: "10px 16px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      borderBottom: "1px solid rgba(255,255,255,0.03)",
+                      transition: "background 0.2s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hoverBtn)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
                     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                      <span style={{ fontSize: "0.92rem", fontWeight: "600", color: "var(--text-primary)" }}>
                         {s.name}
                       </span>
                       {matchedLandmark && (
-                        <span style={{ fontSize: "0.72rem", color: "var(--color-secondary, #3b82f6)", fontWeight: "bold" }}>
+                        <span style={{ fontSize: "0.72rem", color: "var(--color-secondary)", fontWeight: "bold" }}>
                           📍 قريب من: {matchedLandmark}
                         </span>
                       )}
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <div style={{ display: "flex", gap: "4px" }}>
-                        {s.lines.map((l) => (
-                          <span
-                            key={l}
-                            style={{
-                              width: "7px",
-                              height: "7px",
-                              borderRadius: "50%",
-                              background: LINE_COLORS[l],
-                              display: "inline-block",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      {s.isTransfer && (
+                    <div style={{ marginRight: "auto", display: "flex", gap: "4px" }}>
+                      {s.lines.map((l) => (
                         <span
+                          key={l}
                           style={{
-                            fontSize: "0.7rem",
-                            background: "rgba(245, 158, 11, 0.15)",
-                            color: "var(--colorWarning, #f59e0b)",
-                            border: "1px solid rgba(245, 158, 11, 0.3)",
-                            padding: "2px 6px",
-                            borderRadius: "6px",
-                            fontWeight: "700",
+                            width: "6px",
+                            height: "6px",
+                            borderRadius: "50%",
+                            background: LINE_COLORS[l],
+                            display: "inline-block",
                           }}
-                        >
-                          تبادلية
-                        </span>
-                      )}
+                        />
+                      ))}
                     </div>
+                    {s.isTransfer && (
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          background: "var(--border-glass)",
+                          color: "var(--text-secondary)",
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        تبادلية
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -310,20 +423,28 @@ export default function MetroRouteCalculator({
         </div>
       </div>
 
-      {/* SEARCH ACTION BUTTON */}
+      {/* SEARCH BUTTON */}
       <button
         type="button"
         onClick={onFindRoute}
         disabled={!selectedFrom || !selectedTo}
-        className={styles.calculateActionBtn}
+        className="btn btn-primary"
+        style={{
+          width: "100%",
+          marginTop: "4px",
+          fontSize: "0.95rem",
+          fontWeight: "700",
+          cursor: !selectedFrom || !selectedTo ? "not-allowed" : "pointer",
+          opacity: !selectedFrom || !selectedTo ? 0.6 : 1,
+        }}
       >
-        <i className="fa-solid fa-magnifying-glass" />
-        <span>اعرض مسار وتفاصيل الرحلة</span>
+        <i className="fa-solid fa-magnifying-glass" style={{ marginLeft: "6px" }}></i>
+        اعرض مسار وتفاصيل الرحلة
       </button>
 
       {/* TRIP RESULTS */}
       {result && (
-        <div className={styles.routeResultCard}>
+        <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "16px" }}>
           {/* Not Found State */}
           {!result.found ? (
             <div style={{ textAlign: "center", color: "var(--text-secondary)", padding: "20px 0" }}>
@@ -335,147 +456,248 @@ export default function MetroRouteCalculator({
             </div>
           ) : (
             <>
-              {/* Metrics Grid */}
-              <div className={styles.metricsGrid}>
+              {/* Results Details Grid */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
                 {/* Number of Stations */}
-                <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6" }}>
-                    <i className="bx bx-train" />
+                <div
+                  style={{
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-secondary)" }}>
+                    {result.stationCount}
                   </div>
-                  <div>
-                    <p className={styles.metricTileLabel}>عدد المحطات</p>
-                    <p className={styles.metricTileVal}>{result.stationCount} محطة</p>
-                  </div>
-                </div>
-
-                {/* Ticket Price */}
-                <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>
-                    <i className="bx bx-purchase-tag-alt" />
-                  </div>
-                  <div>
-                    <p className={styles.metricTileLabel}>سعر التذكرة</p>
-                    <p className={styles.metricTileVal} style={{ color: "#10b981" }}>{result.price} ج.م</p>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>
+                    عدد المحطات
                   </div>
                 </div>
-
+                {/* Price */}
+                <div
+                  style={{
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--colorSuccess)" }}>
+                    {result.price} ج.م
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>
+                    سعر التذكرة
+                  </div>
+                </div>
                 {/* Estimated Time */}
-                <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(245, 158, 11, 0.1)", color: "#f59e0b" }}>
-                    <i className="bx bx-time" />
+                <div
+                  style={{
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-secondary)" }}>
+                    {result.estimatedTime} د
                   </div>
-                  <div>
-                    <p className={styles.metricTileLabel}>زمن الرحلة</p>
-                    <p className={styles.metricTileVal}>{result.estimatedTime} دقيقة</p>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>
+                    وقت الوصول
                   </div>
                 </div>
-
-                {/* Transfers */}
-                <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(139, 92, 246, 0.1)", color: "#8b5cf6" }}>
-                    <i className="bx bx-transfer" />
+                {/* Number of Transfers */}
+                <div
+                  style={{
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "1.1rem",
+                      fontWeight: "800",
+                      color: result.needsTransfer ? "var(--colorWarning, #f59e0b)" : "var(--colorSuccess)",
+                    }}
+                  >
+                    {result.needsTransfer ? `${result.transfers.length} تبديل` : "مباشر"}
                   </div>
-                  <div>
-                    <p className={styles.metricTileLabel}>التحويلات</p>
-                    <p className={styles.metricTileVal} style={{ color: result.needsTransfer ? "#f59e0b" : "#10b981" }}>
-                      {result.needsTransfer ? `${result.transfers.length} تبديل` : "خط مباشر"}
-                    </p>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "600", marginTop: "4px" }}>
+                    نوع الرحلة
                   </div>
                 </div>
               </div>
 
-              {/* Informative Guidance Banner */}
+              {/* Informative Guidance Box */}
               {!isTripActive && (
-                <div className={styles.routeInstructionsBanner}>
-                  <i className="bx bxs-info-circle" style={{ color: "var(--color-secondary, #3b82f6)", fontSize: "1.2rem", flexShrink: 0 }} />
-                  <span>{result.description}</span>
+                <div
+                  style={{
+                    background: "var(--bg-glass)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "14px 16px",
+                  }}
+                >
+                  <p
+                    style={{
+                      margin: 0,
+                      lineHeight: "1.7",
+                      fontSize: "0.88rem",
+                      color: "var(--text-primary)",
+                      fontWeight: "600",
+                    }}
+                  >
+                    <i
+                      className="bx bxs-info-circle"
+                      style={{
+                        marginLeft: "6px",
+                        color: "var(--color-secondary)",
+                        fontSize: "1.1rem",
+                        verticalAlign: "middle",
+                      }}
+                    ></i>
+                    {result.description}
+                  </p>
                 </div>
               )}
 
-              {/* Action Buttons Row */}
+              {/* Actions Grid: Start Trip + Share Route */}
               {!isTripActive && (
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  {/* Start Trip Button */}
                   <button
                     type="button"
-                    className={`${styles.actionButton} ${styles.actionButtonPrimary}`}
+                    className="btn btn-primary"
                     onClick={onStartTrip}
-                    style={{ flex: "1 1 140px", justifyContent: "center", height: "40px" }}
+                    style={{
+                      flex: "1 1 140px",
+                      fontSize: "0.88rem",
+                      fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                    }}
                   >
                     <i className="fa-solid fa-play"></i>
-                    <span>بدء تتبع الرحلة (GPS)</span>
+                    بدء تتبع الرحلة
                   </button>
-
+                  {/* Share Route Button */}
                   <button
                     type="button"
-                    className={styles.actionButton}
+                    className="btn"
                     onClick={onShareRoute}
-                    style={{ flex: "1 1 120px", justifyContent: "center", height: "40px" }}
+                    style={{
+                      flex: "1 1 140px",
+                      fontSize: "0.88rem",
+                      fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      background: "var(--bg-secondary)",
+                      border: "1px solid var(--border-glass)",
+                      color: "var(--text-primary)",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                    }}
                   >
                     <i className={copiedRoute ? "fa-solid fa-check" : "fa-solid fa-share-nodes"}></i>
-                    <span>{copiedRoute ? "تم النسخ بنجاح ✔" : "مشاركة المسار"}</span>
+                    {copiedRoute ? "تم النسخ بنجاح ✔" : "مشاركة التفاصيل"}
                   </button>
-
+                  {/* WhatsApp Share Button */}
                   <a
                     href={whatsappShareUrl}
                     target="_blank"
+                    className="btn"
                     rel="noopener noreferrer"
-                    className={styles.actionButton}
                     style={{
-                      background: "rgba(37, 211, 102, 0.15)",
-                      borderColor: "rgba(37, 211, 102, 0.3)",
-                      color: "#25d366",
+                      fontSize: "0.88rem",
+                      fontWeight: "700",
+                      display: "inline-flex",
+                      alignItems: "center",
                       justifyContent: "center",
-                      height: "40px",
-                      flex: "1 1 140px",
+                      gap: "6px",
+                      background: "rgba(0, 119, 44, 1)",
+                      border: "1px solid rgba(37, 211, 102, 0.3)",
+                      color: "#ffffffff",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                      width: "100%",
                     }}
                   >
-                    <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }} />
-                    <span>مشاركة عبر واتساب</span>
+                    <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }}></i>
+                    شارك مباشرا علي الواتساب
                   </a>
                 </div>
               )}
 
-              {/* Active Trip Live Tracker Box */}
+              {/* Active Trip Tracker */}
               {isTripActive && (
-                <div className={styles.stepTrackerBox}>
-                  <div className={styles.stepHeader}>
+                <div
+                  style={{
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border-glass)",
+                    borderRadius: "var(--ra-8)",
+                    padding: "16px",
+                  }}
+                >
+                  {/* Active Trip Badge */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "12px",
+                    }}
+                  >
                     <span
                       style={{
                         fontSize: "0.78rem",
                         fontWeight: "700",
-                        color: "var(--color-secondary, #3b82f6)",
+                        color: "var(--color-secondary)",
                         background: "rgba(59, 130, 246, 0.12)",
                         padding: "4px 10px",
                         borderRadius: "8px",
                       }}
                     >
-                      <i className="fa-solid fa-location-arrow" style={{ marginLeft: "4px" }} />
-                      تتبع الرحلة نشط
+                      رحلة نشطة حالياً
                     </span>
-
                     <button
-                      type="button"
                       onClick={onEndTrip}
                       style={{
                         border: "none",
-                        color: "#ef4444",
+                        color: "var(--accent-red, #ef4444)",
                         fontSize: "0.78rem",
                         fontWeight: "700",
                         cursor: "pointer",
-                        background: "rgba(239, 68, 68, 0.12)",
+                        background: "rgba(246, 59, 59, 0.12)",
                         padding: "4px 10px",
                         borderRadius: "8px",
-                        transition: "all 0.2s ease",
                       }}
                     >
-                      <i className="fa-solid fa-xmark" style={{ marginLeft: "4px" }} />
+                      <i className="fa-solid fa-trash" style={{ marginLeft: "6px" }}></i>
                       إنهاء التتبع
                     </button>
                   </div>
 
-                  <div style={{ fontSize: "0.95rem", fontWeight: "600", color: "var(--text-secondary)" }}>
+                  {/* Current Station Info */}
+                  <div
+                    style={{
+                      fontSize: "0.92rem",
+                      fontWeight: "600",
+                      marginBottom: "6px",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
                     أنت الآن في محطة:{" "}
-                    <strong style={{ color: "var(--text-primary)", fontSize: "1.1rem" }}>
+                    <strong style={{ color: "var(--text-primary)", fontSize: "1.05rem" }}>
                       {result.detailedPath[currentStepIndex]?.station}
                     </strong>
                     <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginRight: "8px" }}>
@@ -489,9 +711,16 @@ export default function MetroRouteCalculator({
                     );
                     const remainingTime = Math.max(0, (uniqueRemainingStations.length - 1) * 2);
                     return (
-                      <div style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-secondary)" }}>
-                        الوقت المتبقي التقديري:{" "}
-                        <strong style={{ color: "var(--color-secondary, #3b82f6)" }}>{remainingTime} دقيقة</strong>
+                      <div
+                        style={{
+                          fontSize: "0.85rem",
+                          fontWeight: "600",
+                          marginBottom: "14px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
+                        الوقت المتبقي المقدر:{" "}
+                        <strong style={{ color: "var(--color-secondary)" }}>{remainingTime} دقيقة</strong>
                       </div>
                     );
                   })()}
@@ -499,18 +728,19 @@ export default function MetroRouteCalculator({
                   {result.detailedPath[currentStepIndex]?.isTransferPoint && (
                     <div
                       style={{
-                        background: "rgba(245, 158, 11, 0.1)",
-                        border: "1px solid rgba(245, 158, 11, 0.3)",
-                        borderRadius: "10px",
+                        background: "rgba(245, 158, 11, 0.08)",
+                        border: "1px solid rgba(245, 158, 11, 0.25)",
+                        borderRadius: "8px",
                         padding: "12px",
-                        fontSize: "0.85rem",
+                        marginBottom: "14px",
+                        fontSize: "0.84rem",
                         lineHeight: "1.6",
                       }}
                     >
                       <div style={{ fontWeight: "800", color: "#f59e0b", marginBottom: "4px" }}>
-                        ⚠️ محطة تبديل خطوط المترو!
+                        ⚠️ تنبيه: محطة تبديل وتحويل خط!
                       </div>
-                      انزل هنا من القطار وتوجه نحو رصيف{" "}
+                      انزل هنا من القطار وابحث عن اليافطة الإرشادية المكتوب عليها{" "}
                       <strong
                         style={{
                           color:
@@ -519,42 +749,41 @@ export default function MetroRouteCalculator({
                       >
                         {LINE_NAMES[result.detailedPath[currentStepIndex]?.targetLine!]}
                       </strong>{" "}
-                      واتبع الإرشادات للركوب في الاتجاه المطلوب.
+                      واتبع الأسهم للتوجه نحو الرصيف وركوب القطار التالي.
                     </div>
                   )}
 
                   {currentStepIndex < result.detailedPath.length - 1 ? (
                     <button
                       type="button"
-                      className={styles.calculateActionBtn}
+                      className="btn btn-primary"
                       onClick={onStepNext}
-                      style={{ height: "42px", marginTop: "4px" }}
+                      style={{
+                        width: "100%",
+                        fontSize: "0.92rem",
+                        fontWeight: "700",
+                      }}
                     >
-                      <span>وصلت لمحطة {result.detailedPath[currentStepIndex + 1]?.station} ←</span>
+                      وصلت لمحطة {result.detailedPath[currentStepIndex + 1]?.station} ←
                     </button>
                   ) : (
                     <div
                       style={{
                         textAlign: "center",
-                        background: "rgba(16, 185, 129, 0.1)",
-                        border: "1px solid rgba(16, 185, 129, 0.25)",
-                        borderRadius: "10px",
-                        padding: "16px",
+                        background: "rgba(16, 185, 129, 0.08)",
+                        border: "1px solid rgba(16, 185, 129, 0.2)",
+                        borderRadius: "8px",
+                        padding: "14px",
                       }}
                     >
-                      <div style={{ fontSize: "2rem", marginBottom: "4px" }}>🎉</div>
-                      <h4 style={{ color: "#10b981", fontWeight: "800", margin: "0 0 4px" }}>
+                      <div style={{ fontSize: "1.8rem", marginBottom: "4px" }}>🎉</div>
+                      <h4 style={{ color: "var(--colorSuccess)", fontWeight: "800", margin: "0 0 4px" }}>
                         حمدلله على السلامة!
                       </h4>
-                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 12px" }}>
-                        لقد وصلت بنجاح إلى وجهتك محطة {result.detailedPath[currentStepIndex]?.station}.
+                      <p style={{ fontSize: "0.84rem", color: "var(--text-secondary)", margin: "0 0 10px" }}>
+                        لقد وصلت إلى وجهتك محطة {result.detailedPath[currentStepIndex]?.station}.
                       </p>
-                      <button
-                        type="button"
-                        onClick={onEndTrip}
-                        className={`${styles.actionButton} ${styles.actionButtonPrimary}`}
-                        style={{ margin: "0 auto", padding: "8px 20px" }}
-                      >
+                      <button type="button" onClick={onEndTrip} className="btn btn-primary">
                         إنهاء الرحلة
                       </button>
                     </div>
@@ -562,33 +791,23 @@ export default function MetroRouteCalculator({
                 </div>
               )}
 
-              {/* Detailed Path Steps List */}
+              {/* Detailed Stops Timeline */}
               <div
                 style={{
-                  background: "rgba(0, 0, 0, 0.15)",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
-                  padding: "16px",
+                  background: "var(--bg-glass)",
+                  padding: "20px 16px",
+                  borderRadius: "var(--ra-8)",
+                  border: "1px solid var(--border-glass)",
                 }}
               >
-                <h3
-                  style={{
-                    fontSize: "0.95rem",
-                    fontWeight: "800",
-                    color: "var(--text-primary)",
-                    margin: "0 0 14px",
-                    fontFamily: "var(--font-sub, inherit)",
-                  }}
-                >
-                  مسار الرحلة بالتفصيل ({result.detailedPath.length} محطة)
-                </h3>
+                <h2 className="text-md fw-bold mb-4">المحطات وترتيب مسار الرحلة</h2>
 
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   {result.detailedPath.map((node, idx) => {
                     const isFirst = idx === 0;
                     const isLast = idx === result.detailedPath.length - 1;
                     const isTransfer = node.isTransferPoint;
-                    const activeColor = LINE_COLORS[node.line] || "#3b82f6";
+                    const activeColor = LINE_COLORS[node.line] || "#ef4444";
                     const isPassed = isTripActive && idx < currentStepIndex;
                     const isCurrent = isTripActive && idx === currentStepIndex;
 
@@ -597,8 +816,8 @@ export default function MetroRouteCalculator({
 
                     return (
                       <div key={idx} style={{ display: "flex", flexDirection: "column" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "34px" }}>
-                          {/* Station Dot */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px", minHeight: "32px" }}>
+                          {/* Dot */}
                           <div
                             style={{
                               display: "flex",
@@ -611,14 +830,14 @@ export default function MetroRouteCalculator({
                             {isPassed ? (
                               <div
                                 style={{
-                                  width: "14px",
-                                  height: "14px",
+                                  width: "12px",
+                                  height: "12px",
                                   borderRadius: "50%",
-                                  backgroundColor: "#10b981",
+                                  backgroundColor: "var(--colorSuccess)",
                                   display: "flex",
                                   alignItems: "center",
                                   justifyContent: "center",
-                                  color: "#ffffff",
+                                  color: "#fff",
                                   fontSize: "0.6rem",
                                   fontWeight: "bold",
                                 }}
@@ -636,12 +855,12 @@ export default function MetroRouteCalculator({
                                     : isFirst || isLast
                                     ? activeColor
                                     : isTransfer
-                                    ? "#f59e0b"
+                                    ? "var(--colorWarning, #f59e0b)"
                                     : activeColor,
                                   border: isUnderConstruction
-                                    ? `2px dashed #ef4444`
+                                    ? `2px dashed var(--colorDanger)`
                                     : isFirst || isLast
-                                    ? `2px solid var(--bgPrimary, #18181b)`
+                                    ? `2px solid var(--bgPrimary)`
                                     : "none",
                                   boxShadow:
                                     isUnderConstruction
@@ -654,61 +873,61 @@ export default function MetroRouteCalculator({
                             )}
                           </div>
 
-                          {/* Station Name & Badges */}
+                          {/* Text & Badges */}
                           <div
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              justifyContent: "space-between",
                               gap: "8px",
                               flexGrow: 1,
                               opacity: isPassed ? 0.5 : 1,
                             }}
                           >
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                              <span
-                                style={{
-                                  fontSize: "0.88rem",
-                                  fontWeight: isFirst || isLast || isTransfer || isCurrent ? "800" : "600",
-                                  color: isUnderConstruction
-                                    ? "#ef4444"
-                                    : isCurrent
-                                    ? "var(--color-secondary, #3b82f6)"
-                                    : isFirst || isLast
-                                    ? "var(--text-primary)"
-                                    : "var(--text-secondary)",
-                                }}
-                              >
-                                {node.station}
-                              </span>
+                            <span
+                              style={{
+                                fontSize: "0.88rem",
+                                fontWeight: isFirst || isLast || isTransfer || isCurrent ? "700" : "500",
+                                color: isUnderConstruction
+                                  ? "#ef4444"
+                                  : isCurrent
+                                  ? "var(--color-secondary)"
+                                  : isFirst || isLast
+                                  ? "var(--text-primary)"
+                                  : "var(--text-secondary)",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
+                            >
+                              {node.station}
                               {isFirst && (
-                                <span style={{ fontSize: "0.7rem", color: "#10b981", background: "rgba(16, 185, 129, 0.12)", padding: "1px 6px", borderRadius: "4px", fontWeight: "700" }}>
-                                  محطة الركوب
+                                <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                                  (محطة الركوب)
                                 </span>
                               )}
                               {isLast && (
-                                <span style={{ fontSize: "0.7rem", color: "#ef4444", background: "rgba(239, 68, 68, 0.12)", padding: "1px 6px", borderRadius: "4px", fontWeight: "700" }}>
-                                  محطة الوصول
+                                <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                                  (محطة الوصول)
                                 </span>
                               )}
-                            </div>
+                            </span>
 
                             <span
                               style={{
                                 fontSize: "0.68rem",
                                 color: "#ffffff",
-                                background: activeColor,
-                                padding: "2px 6px",
-                                borderRadius: "6px",
-                                fontWeight: "700",
+                                background: activeColor + "cc",
+                                padding: "1px 6px",
+                                borderRadius: "4px",
+                                marginRight: "auto",
                               }}
                             >
-                              {LINE_NAMES[node.line]?.split(" ")[0] + " " + LINE_NAMES[node.line]?.split(" ")[1]}
+                              {LINE_NAMES[node.line].split(" ")[0] + " " + LINE_NAMES[node.line].split(" ")[1]}
                             </span>
                           </div>
                         </div>
 
-                        {/* Connective Line Between Stops */}
+                        {/* Connective Line */}
                         {!isLast && (
                           <div style={{ display: "flex", gap: "12px", minHeight: "16px" }}>
                             <div
@@ -724,7 +943,7 @@ export default function MetroRouteCalculator({
                                   width: "2px",
                                   backgroundColor: activeColor,
                                   minHeight: "16px",
-                                  opacity: 0.35,
+                                  opacity: 0.4,
                                 }}
                               />
                             </div>
@@ -732,17 +951,17 @@ export default function MetroRouteCalculator({
                               {isTransfer && (
                                 <div
                                   style={{
-                                    background: "rgba(245, 158, 11, 0.08)",
-                                    border: "1px solid rgba(245, 158, 11, 0.25)",
-                                    borderRadius: "8px",
+                                    background: "rgba(245, 158, 11, 0.06)",
+                                    border: "1px solid rgba(245, 158, 11, 0.2)",
+                                    borderRadius: "6px",
                                     padding: "6px 10px",
                                     margin: "4px 0",
-                                    fontSize: "0.78rem",
-                                    color: "#f59e0b",
-                                    fontWeight: "700",
+                                    fontSize: "0.76rem",
+                                    color: "var(--colorWarning, #f59e0b)",
+                                    fontWeight: "600",
                                   }}
                                 >
-                                  🔄 محطة تبديل: التحويل إلى {LINE_NAMES[node.targetLine!]}
+                                  🔄 محطة تبديل: التوجه إلى {LINE_NAMES[node.targetLine!]}
                                 </div>
                               )}
                             </div>
@@ -755,18 +974,22 @@ export default function MetroRouteCalculator({
               </div>
 
               {/* Route Report Problem Button */}
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2px" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
                 <button
                   type="button"
+                  className="btn btn-report"
                   onClick={() => onOpenReportModal(null, true)}
-                  className={styles.actionButton}
                   style={{
-                    color: "var(--text-muted)",
-                    fontSize: "0.78rem",
+                    fontSize: "0.8rem",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
                   }}
                 >
-                  <i className="fa-solid fa-flag" style={{ color: "#f59e0b" }} />
-                  <span>الإبلاغ عن خطأ في حساب هذا المسار</span>
+                  <i className="fa-solid fa-triangle-exclamation"></i>
+                  <span>الإبلاغ عن خطأ في حساب مسار هذه الرحلة</span>
                 </button>
               </div>
             </>
