@@ -78,7 +78,7 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
         }}
       >
         <i className="bx bx-download" style={{ fontSize: "1.2rem" }}></i>
-        <span>تحميل خريطة المترو بجودة فائقة (PNG)</span>
+        <span>تحميل خريطة المترو</span>
       </a>
     </div>
   );
