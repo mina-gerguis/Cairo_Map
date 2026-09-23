@@ -3,6 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { RouteData, RouteOption } from "../types";
 import RouteOptionCard from "./RouteOptionCard";
 import RouteNotFoundCard from "./RouteNotFoundCard";
+import styles from "../page.module.css";
 
 interface RouteResultsSectionProps {
   resultsPanelRef: RefObject<HTMLDivElement | null>;
@@ -30,50 +31,59 @@ export default function RouteResultsSection({
   if (!searchTriggered) return null;
 
   return (
-    <div ref={resultsPanelRef} style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
+    <div
+      id="directions-results-section"
+      ref={resultsPanelRef}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        marginBottom: "24px",
+        scrollMarginTop: "24px"
+      }}
+    >
       {matchedRoute ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {/* Summary Header */}
-          <div
-            style={{
-              padding: "14px 16px",
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              borderRadius: "var(--radius-card)"
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "var(--fs-sm)",
-                fontWeight: "var(--fw-medium)",
-                color: "var(--text-primary)",
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--space-8)",
-                margin: 0,
-                flexWrap: "wrap",
-                fontFamily: "var(--font-sub)"
-              }}
-            >
-              <span>المسارات من</span>
-              <span style={{ color: "var(--color-secondary)" }}>{resolvedFrom}</span>
-              <span>إلى</span>
-              <span style={{ color: "var(--color-secondary)" }}>{resolvedTo}</span>
-            </h3>
+          <div className={styles.summaryCard}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+              <h3
+                style={{
+                  fontSize: "1.05rem",
+                  fontWeight: "800",
+                  color: "var(--text-primary)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  margin: 0,
+                  flexWrap: "wrap",
+                  fontFamily: "var(--font-sub)"
+                }}
+              >
+                <span>المسارات المتاحة من</span>
+                <span style={{ color: "var(--color-secondary)" }}>{resolvedFrom}</span>
+                <span>إلى</span>
+                <span style={{ color: "var(--color-secondary)" }}>{resolvedTo}</span>
+              </h3>
+
+              <span className={styles.bentoPill}>
+                {matchedRoute.options?.length || 1} خيارات بديلة
+              </span>
+            </div>
 
             {((fromInput.trim() !== resolvedFrom) || (toInput.trim() !== resolvedTo)) && (
               <p
                 style={{
-                  margin: "6px 0 0",
+                  margin: "4px 0 0",
                   fontSize: "0.8rem",
                   color: "var(--text-muted)",
                   display: "flex",
                   alignItems: "center",
-                  gap: "4px"
+                  gap: "6px"
                 }}
               >
-                <i className="bx bx-info-circle" />
-                <span>تم توجيه بحثك تلقائياً بناءً على الأسماء الدلالية والمواقف الرئيسية.</span>
+                <i className="bx bx-info-circle" style={{ color: "var(--color-secondary)" }} />
+                <span>تم توجيه بحثك تلقائياً بناءً على أقرب نقطة انطلاق ومحطة رئيسية.</span>
               </p>
             )}
           </div>

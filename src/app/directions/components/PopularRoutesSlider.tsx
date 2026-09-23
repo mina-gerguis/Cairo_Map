@@ -15,57 +15,75 @@ export default function PopularRoutesSlider({
 }: PopularRoutesSliderProps) {
   if (!routes || routes.length === 0) return null;
 
+  const handleRouteClick = (from: string, to: string) => {
+    onSelectRoute(from, to);
+
+    setTimeout(() => {
+      const targetEl = document.getElementById("directions-results-section");
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
+  };
+
   return (
-    <div
-      ref={sliderRef}
-      className={`${styles.popularSlider} hide-scrollbar`}
-    >
-      {routes.map((item, idx) => {
-        const isTop = idx === 0;
+    <div ref={sliderRef} className={styles.sliderSection}>
+      <div className={styles.sliderHeader}>
+        <h2 className={styles.sliderTitle}>
+          <i className="bx bx-trending-up" style={{ color: "#f59e0b" }} />
+          <span>أشهر المسارات والرحلات</span>
+        </h2>
+      </div>
 
-        return (
-          <button
-            key={`${item.from}-${item.to}-${idx}`}
-            type="button"
-            onClick={() => onSelectRoute(item.from, item.to)}
-            className={styles.popularCard}
-            style={{
-              background: `radial-gradient(135px circle at top right, ${item.glowColor}33 0%, ${item.glowColor}10 45%, transparent 75%), var(--cardGlassBg, rgba(18, 18, 22, 0.72))`,
-              borderColor: "var(--border-glass)",
-            }}
-            aria-label={`اختيار مسار ${item.label}`}
-          >
-            {/* Top Row: Icon Squircle + Optional Badge */}
-            <div className={styles.popularCardTop}>
-              <div
-                className={styles.popularCardIconBox}
-              >
-                {item.icon ? (
-                  <img
-                    src={item.icon}
-                    alt={item.label}
-                    className={styles.popularCardIcon}
-                    loading="lazy"
-                  />
-                ) : (
-                  <i
-                    className={`fa-solid fa-route ${styles.popularCardFontIcon}`}
-                    style={{ color: item.glowColor }}
-                  />
-                )}
-              </div>
-            </div>
+      <div className={styles.sliderTrack}>
+        {routes.map((item, idx) => {
+          const glow = item.glowColor || "#3b82f6";
 
-            {/* Bottom Row: Title & Subtitle */}
-            <div className={styles.popularCardBottom}>
-              <div className={styles.popularCardTitle}>
-                {item.label}
+          return (
+            <button
+              key={`${item.from}-${item.to}-${idx}`}
+              type="button"
+              onClick={() => handleRouteClick(item.from, item.to)}
+              className={styles.bentoCard}
+              style={{
+                background: `radial-gradient(135px circle at top right, ${glow}28 0%, ${glow}0a 45%, transparent 75%), var(--bg-glass)`,
+              }}
+              aria-label={`اختيار مسار ${item.label}`}
+            >
+              <div className={styles.bentoCardTop}>
+                <div className={styles.bentoIconBox}>
+                  {item.icon ? (
+                    <img
+                      src={item.icon}
+                      alt={item.label}
+                      style={{ width: "22px", height: "22px", objectFit: "contain" }}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <i
+                      className="fa-solid fa-route"
+                      style={{ color: glow, fontSize: "1rem" }}
+                    />
+                  )}
+                </div>
+
+                <span className={styles.bentoPill}>
+                  {idx === 0 ? "🔥 الأكثر طلباً" : "مسار مباشر"}
+                </span>
               </div>
-            </div>
-          </button>
-        );
-      })}
+
+              <div>
+                <div className={styles.bentoCardTitle}>
+                  {item.label}
+                </div>
+                <div className={styles.bentoCardSubtitle}>
+                  من {item.from} إلى {item.to}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
-

@@ -1,7 +1,8 @@
 import React, { RefObject, useMemo, useState } from "react";
 import VoiceInputButton from "@/components/VoiceInputButton";
 import { CitySuggestion } from "../types";
-import { normalizeArabic, calculateLocationScore } from "../utils";
+import { calculateLocationScore } from "../utils";
+import styles from "../page.module.css";
 
 interface RouteSearchCardProps {
   searchPanelRef: RefObject<HTMLDivElement | null>;
@@ -72,45 +73,41 @@ export default function RouteSearchCard({
   const isSearchDisabled = !fromInput.trim() || !toInput.trim();
 
   return (
-    <div ref={searchPanelRef} className="details-panel" style={{ position: "relative", zIndex: 20 }}>
-      <h2
-        style={{
-          fontSize: "1.15rem",
-          fontWeight: "800",
-          color: "var(--text-primary)",
-          margin: "0 0 4px",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px"
-        }}
-      >
-        <i className="fa-solid fa-compass" style={{ color: "var(--color-secondary)" }}></i>
-        <span>تحديد محطة الانطلاق والوجهة</span>
-      </h2>
+    <div ref={searchPanelRef} className={styles.searchBentoCard}>
+      <div className={styles.searchBentoHeader}>
+        <h2 className={styles.searchTitle}>
+          <i className="fa-solid fa-compass" style={{ color: "var(--color-secondary)" }} />
+          <span>تحديد محطة الانطلاق والوجهة</span>
+        </h2>
+      </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
+      <div className={styles.inputGroup}>
         {/* FROM INPUT */}
-        <div style={{ position: "relative", zIndex: showFromSuggestions ? 100 : 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
-              <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "#10b981" }}></i> هتتحرك منين ؟
-            </label>
+        <div style={{ position: "relative", zIndex: showFromSuggestions ? 100 : 2 }}>
+          <div className={styles.fieldLabel}>
+            <span>
+              <i className="fa-solid fa-route" style={{ marginLeft: "6px", color: "#10b981" }} />
+              هتتحرك منين ؟
+            </span>
             <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
               <button
                 type="button"
                 onClick={onUseGPS}
-                title="حدد موقعك الحالي بالـ GPS"
+                title="تحديد الموقع بالـ GPS"
+                className={styles.chipTag}
                 style={{
-                  background: "transparent",
-                  color: isLocating ? "#ef4444" : "var(--text-primary)",
-                  border: "none",
-                  padding: "0px 8px",
-                  cursor: "pointer",
-                  display: "flex",
+                  padding: "3px 10px",
+                  fontSize: "0.75rem",
+                  display: "inline-flex",
                   alignItems: "center",
+                  gap: "4px"
                 }}
               >
-                <i className="bx bx-target-lock" style={{ fontSize: "1.1rem" }} />
+                <i
+                  className={`bx ${isLocating ? "bx-loader-alt bx-spin" : "bx-target-lock"}`}
+                  style={{ color: isLocating ? "#ef4444" : "var(--color-secondary)" }}
+                />
+                <span>موقعي</span>
               </button>
               <VoiceInputButton
                 onTranscript={(text) => {
@@ -121,10 +118,13 @@ export default function RouteSearchCard({
             </div>
           </div>
 
-          <div style={{ position: "relative" }}>
+          <div className={styles.inputWrapper}>
+            <span className={styles.inputStartIcon}>
+              <i className="bx bx-map-pin" style={{ color: "#10b981" }} />
+            </span>
             <input
-              className="input-fields"
-              placeholder="اكتب اسم مكان الانطلاق... (مثال: موقف الأحرار أو الزقازيق أو رمسيس)"
+              className={styles.modernInput}
+              placeholder="اكتب مكان الانطلاق... (رمسيس، موقف الأحرار، الجيزة...)"
               value={fromInput}
               onChange={(e) => {
                 setFromInput(e.target.value);
@@ -132,11 +132,6 @@ export default function RouteSearchCard({
               }}
               onFocus={() => setShowFromSuggestions(true)}
               onBlur={() => setTimeout(() => setShowFromSuggestions(false), 250)}
-              style={{
-                width: "100%",
-                direction: "rtl",
-                fontFamily: "var(--font-body)",
-              }}
             />
             {fromInput.trim() && (
               <button
@@ -145,112 +140,55 @@ export default function RouteSearchCard({
                   setFromInput("");
                   setShowFromSuggestions(false);
                 }}
-                style={{
-                  position: "absolute",
-                  left: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--text-secondary)",
-                  cursor: "pointer",
-                  fontSize: "0.9rem"
-                }}
+                className={styles.clearBtn}
+                aria-label="مسح الانطلاق"
               >
-                ✕
+                ×
               </button>
             )}
-          </div>
 
-          {/* From Suggestions Dropdown */}
-          {showFromSuggestions && (filteredFromCities || []).length > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                top: "100%",
-                left: 0,
-                right: 0,
-                backgroundColor: "var(--bg-secondary)",
-                border: "1px solid var(--border-glass)",
-                borderRadius: "var(--radius-card)",
-                overflow: "hidden",
-                zIndex: 999,
-                maxHeight: "220px",
-                overflowY: "auto",
-                boxShadow: "var(--shadow-lg)",
-                marginTop: "6px",
-                fontFamily: "var(--font-body)",
-              }}
-            >
-              {(filteredFromCities || []).map((item, idx) => (
-                <div
-                  key={idx}
-                  onMouseDown={() => {
-                    setFromInput(item.name);
-                    setShowFromSuggestions(false);
-                  }}
-                  style={{
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderBottom: "1px solid var(--border-glass)",
-                    transition: "background 0.2s",
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                >
-                  <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--text-primary)" }}>
-                    {item.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+            {/* From Suggestions Dropdown */}
+            {showFromSuggestions && (filteredFromCities || []).length > 0 && (
+              <div className={styles.suggestionsDropdown}>
+                {(filteredFromCities || []).slice(0, 8).map((item, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onMouseDown={() => {
+                      setFromInput(item.name);
+                      setShowFromSuggestions(false);
+                    }}
+                    className={styles.suggestionItem}
+                  >
+                    <span>{item.name}</span>
+                    <i className="bx bx-chevron-left" style={{ color: "var(--text-muted)" }} />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* SWAP BUTTON */}
-        <div style={{ display: "flex", justifyContent: "center", margin: "-6px 0" }}>
+        <div className={styles.swapBtnRow}>
           <button
             type="button"
             onClick={onSwap}
             title="تبديل نقطة الانطلاق والوصول"
-            style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              borderRadius: "50%",
-              width: "38px",
-              height: "38px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "var(--text-secondary)",
-              fontSize: "1.1rem",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = "rotate(180deg)";
-              e.currentTarget.style.background = "var(--hoverBtn)";
-              e.currentTarget.style.color = "var(--color-secondary)";
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = "rotate(0deg)";
-              e.currentTarget.style.background = "var(--bg-secondary)";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
+            className={styles.swapBtn}
+            aria-label="تبديل نقطة الانطلاق والوصول"
           >
-            ⇅
+            <i className="bx bx-transfer-alt" />
           </button>
         </div>
 
         {/* TO INPUT */}
         <div style={{ position: "relative", zIndex: showToSuggestions ? 100 : 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-secondary)", margin: 0 }}>
-              <i className="fa-solid fa-route" style={{ marginLeft: "5px", color: "#ef4444" }}></i> لفين ؟
-            </label>
+          <div className={styles.fieldLabel}>
+            <span>
+              <i className="fa-solid fa-route" style={{ marginLeft: "6px", color: "#ef4444" }} />
+              عايز تروح فين ؟
+            </span>
             <VoiceInputButton
               onTranscript={(text) => {
                 setToInput(text);
@@ -259,10 +197,13 @@ export default function RouteSearchCard({
             />
           </div>
 
-          <div style={{ position: "relative" }}>
+          <div className={styles.inputWrapper}>
+            <span className={styles.inputStartIcon}>
+              <i className="bx bx-flag" style={{ color: "#ef4444" }} />
+            </span>
             <input
-              className="input-fields"
-              placeholder="اكتب اسم الوجهة... (مثال: معرض الكتاب أو التجمع الخامس أو أكتوبر)"
+              className={styles.modernInput}
+              placeholder="اكتب الوجهة... (التجمع، المعادي، 6 أكتوبر، العبور...)"
               value={toInput}
               onChange={(e) => {
                 setToInput(e.target.value);
@@ -270,11 +211,6 @@ export default function RouteSearchCard({
               }}
               onFocus={() => setShowToSuggestions(true)}
               onBlur={() => setTimeout(() => setShowToSuggestions(false), 250)}
-              style={{
-                width: "100%",
-                direction: "rtl",
-                fontFamily: "var(--font-body)",
-              }}
             />
             {toInput.trim() && (
               <button
@@ -283,69 +219,53 @@ export default function RouteSearchCard({
                   setToInput("");
                   setShowToSuggestions(false);
                 }}
-                style={{
-                  position: "absolute",
-                  left: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--text-secondary)",
-                  cursor: "pointer",
-                  fontSize: "0.9rem"
-                }}
+                className={styles.clearBtn}
+                aria-label="مسح الوجهة"
               >
-                ✕
+                ×
               </button>
+            )}
+
+            {/* To Suggestions Dropdown */}
+            {showToSuggestions && (filteredToCities || []).length > 0 && (
+              <div className={styles.suggestionsDropdown}>
+                {(filteredToCities || []).slice(0, 8).map((item, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onMouseDown={() => {
+                      setToInput(item.name);
+                      setShowToSuggestions(false);
+                    }}
+                    className={styles.suggestionItem}
+                  >
+                    <span>{item.name}</span>
+                    <i className="bx bx-chevron-left" style={{ color: "var(--text-muted)" }} />
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
-          {/* To Suggestions Dropdown */}
-          {showToSuggestions && (filteredToCities || []).length > 0 && (
-            <div
-              style={{
-                position: "relative",
-                top: "100%",
-                left: 0,
-                right: 0,
-                backgroundColor: "var(--bg-secondary)",
-                border: "1px solid var(--border-glass)",
-                borderRadius: "var(--radius-card)",
-                overflow: "hidden",
-                zIndex: 999,
-                maxHeight: "220px",
-                overflowY: "auto",
-                boxShadow: "var(--shadow-lg)",
-                marginTop: "6px",
-                fontFamily: "var(--font-body)",
-              }}
-            >
-              {(filteredToCities || []).map((item, idx) => (
-                <div
-                  key={idx}
-                  onMouseDown={() => {
-                    setToInput(item.name);
-                    setShowToSuggestions(false);
-                  }}
-                  style={{
-                    padding: "10px 14px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderBottom: "1px solid var(--border-glass)",
-                    transition: "background 0.2s",
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "var(--hoverBtn)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                >
-                  <span style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--text-primary)" }}>
-                    {item.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* Quick Preset Chips */}
+          <div className={styles.presetChipsWrapper}>
+            <span style={{ fontSize: "0.76rem", color: "var(--text-muted)", fontWeight: "700" }}>
+              وجهات شائعة:
+            </span>
+            {["التجمع الخامس", "6 أكتوبر", "موقف العاشر", "المهندسين", "المعادي", "العبور"].map((dest) => (
+              <button
+                key={dest}
+                type="button"
+                onClick={() => {
+                  setToInput(dest);
+                  setShowToSuggestions(false);
+                }}
+                className={`${styles.chipTag} ${toInput === dest ? styles.chipTagActive : ""}`}
+              >
+                {dest}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -357,14 +277,19 @@ export default function RouteSearchCard({
         disabled={isSearchDisabled}
         style={{
           width: "100%",
-          marginTop: "4px",
-          fontSize: "var(--fs-sm)",
-          fontWeight: "var(--fw-bold)",
+          marginTop: "16px",
+          height: "46px",
+          fontSize: "0.95rem",
+          fontWeight: "700",
           cursor: isSearchDisabled ? "not-allowed" : "pointer",
           opacity: isSearchDisabled ? 0.6 : 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
         }}
       >
-        <i className="bx bx-search-alt" style={{ fontSize: "1.2rem" }} />
+        <i className="bx bx-search-alt" style={{ fontSize: "1.25rem" }} />
         <span>ابحث عن مسارات المواصلات</span>
       </button>
     </div>

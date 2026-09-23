@@ -1,0 +1,1059 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — DISPLAY & LAYOUT UTILITIES
+ * ============================================================================
+ * Comprehensive atomic utilities for display types, flexbox, CSS grid,
+ * alignment, distribution, flex sizing, gap scale, and responsive layout helpers.
+ */
+
+/* ==========================================================================
+   1. Base Display Properties (.d-*, .flex, .grid, .block, etc.)
+   ========================================================================== */
+
+.d-none,
+.hidden {
+   display: none;
+}
+
+.d-block,
+.block {
+   display: block;
+}
+
+.d-inline,
+.inline {
+   display: inline;
+}
+
+.d-inline-block,
+.inline-block {
+   display: inline-block;
+}
+
+.d-flex,
+.flex {
+   display: flex;
+}
+
+.d-inline-flex,
+.inline-flex {
+   display: inline-flex;
+}
+
+.d-grid,
+.grid {
+   display: grid;
+}
+
+.d-inline-grid,
+.inline-grid {
+   display: inline-grid;
+}
+
+.d-contents,
+.contents {
+   display: contents;
+}
+
+.d-table,
+.table {
+   display: table;
+}
+
+.d-table-row,
+.table-row {
+   display: table-row;
+}
+
+.d-table-cell,
+.table-cell {
+   display: table-cell;
+}
+
+
+/* ==========================================================================
+   2. Flex Direction (.flex-row, .flex-col, .column, etc.)
+   ========================================================================== */
+
+.flex-row,
+.row {
+   flex-direction: row;
+}
+
+.flex-row-reverse,
+.row-reverse {
+   flex-direction: row-reverse;
+}
+
+.flex-col,
+.flex-column,
+.column,
+.col {
+   flex-direction: column;
+}
+
+.flex-col-reverse,
+.flex-column-reverse,
+.column-reverse {
+   flex-direction: column-reverse;
+}
+
+
+/* ==========================================================================
+   3. Flex Wrapping (.flex-wrap, .wrap, .nowrap, etc.)
+   ========================================================================== */
+
+.flex-wrap,
+.wrap {
+   flex-wrap: wrap;
+}
+
+.flex-nowrap,
+.nowrap,
+.no-wrap {
+   flex-wrap: nowrap;
+}
+
+.flex-wrap-reverse,
+.wrap-reverse {
+   flex-wrap: wrap-reverse;
+}
+
+
+/* ==========================================================================
+   4. Flex Sizing, Grow, Shrink & Basis
+   ========================================================================== */
+
+.flex-1 {
+   flex: 1 1 0%;
+}
+
+.flex-auto {
+   flex: 1 1 auto;
+}
+
+.flex-initial {
+   flex: 0 1 auto;
+}
+
+.flex-none {
+   flex: none;
+}
+
+.flex-grow,
+.grow {
+   flex-grow: 1;
+}
+
+.flex-grow-0,
+.grow-0 {
+   flex-grow: 0;
+}
+
+.flex-shrink,
+.shrink {
+   flex-shrink: 1;
+}
+
+.flex-shrink-0,
+.shrink-0 {
+   flex-shrink: 0;
+}
+
+.basis-0 {
+   flex-basis: 0px;
+}
+
+.basis-auto {
+   flex-basis: auto;
+}
+
+.basis-full {
+   flex-basis: 100%;
+}
+
+
+/* ==========================================================================
+   5. Justify Content (.justify-*, .jc*, .jcs, .jcsp, etc.)
+   ========================================================================== */
+
+.justify-start,
+.jc-start,
+.jc-fs,
+.jcs-start {
+   justify-content: flex-start;
+}
+
+.justify-center,
+.jc-center,
+.jc-c,
+.jcs {
+   justify-content: center;
+}
+
+.justify-end,
+.jc-end,
+.jc-fe,
+.jce {
+   justify-content: flex-end;
+}
+
+.justify-between,
+.jc-between,
+.jc-sb,
+.jcsp {
+   justify-content: space-between;
+}
+
+.justify-around,
+.jc-around,
+.jc-sa,
+.jcsa {
+   justify-content: space-around;
+}
+
+.justify-evenly,
+.jc-evenly,
+.jc-se,
+.jcse {
+   justify-content: space-evenly;
+}
+
+.justify-normal,
+.jc-normal {
+   justify-content: normal;
+}
+
+.justify-stretch,
+.jc-stretch {
+   justify-content: stretch;
+}
+
+
+/* ==========================================================================
+   6. Align Items (.items-*, .ai-*, .ai-c, etc.)
+   ========================================================================== */
+
+.items-center,
+.align-center,
+.align-items-center,
+.ai-center,
+.ai-c {
+   align-items: center;
+}
+
+.items-start,
+.align-start,
+.align-items-start,
+.ai-start,
+.ai-s,
+.ai-fs {
+   align-items: flex-start;
+}
+
+.items-end,
+.align-end,
+.align-items-end,
+.ai-end,
+.ai-e,
+.ai-fe {
+   align-items: flex-end;
+}
+
+.items-baseline,
+.align-baseline,
+.ai-baseline,
+.ai-b {
+   align-items: baseline;
+}
+
+.items-stretch,
+.align-stretch,
+.ai-stretch {
+   align-items: stretch;
+}
+
+
+/* ==========================================================================
+   7. Align Self (.self-*, .as-*)
+   ========================================================================== */
+
+.self-auto,
+.as-auto {
+   align-self: auto;
+}
+
+.self-start,
+.as-start,
+.as-s,
+.as-fs {
+   align-self: flex-start;
+}
+
+.self-center,
+.as-center,
+.as-c {
+   align-self: center;
+}
+
+.self-end,
+.as-end,
+.as-e,
+.as-fe {
+   align-self: flex-end;
+}
+
+.self-stretch,
+.as-stretch {
+   align-self: stretch;
+}
+
+.self-baseline,
+.as-baseline,
+.as-b {
+   align-self: baseline;
+}
+
+
+/* ==========================================================================
+   8. Align Content (.content-*, .ac-*)
+   ========================================================================== */
+
+.content-center,
+.ac-center,
+.ac-c {
+   align-content: center;
+}
+
+.content-start,
+.ac-start,
+.ac-s,
+.ac-fs {
+   align-content: flex-start;
+}
+
+.content-end,
+.ac-end,
+.ac-e,
+.ac-fe {
+   align-content: flex-end;
+}
+
+.content-between,
+.ac-between,
+.ac-sb {
+   align-content: space-between;
+}
+
+.content-around,
+.ac-around,
+.ac-sa {
+   align-content: space-around;
+}
+
+.content-evenly,
+.ac-evenly,
+.ac-se {
+   align-content: space-evenly;
+}
+
+.content-stretch,
+.ac-stretch {
+   align-content: stretch;
+}
+
+
+/* ==========================================================================
+   9. Place Content, Items & Self (.place-*)
+   ========================================================================== */
+
+.place-content-center {
+   place-content: center;
+}
+
+.place-content-start {
+   place-content: start;
+}
+
+.place-content-end {
+   place-content: end;
+}
+
+.place-content-between {
+   place-content: space-between;
+}
+
+.place-items-center {
+   place-items: center;
+}
+
+.place-items-start {
+   place-items: start;
+}
+
+.place-items-end {
+   place-items: end;
+}
+
+.place-items-stretch {
+   place-items: stretch;
+}
+
+.place-self-auto {
+   place-self: auto;
+}
+
+.place-self-center {
+   place-self: center;
+}
+
+.place-self-start {
+   place-self: start;
+}
+
+.place-self-end {
+   place-self: end;
+}
+
+
+/* ==========================================================================
+   10. Justify Items & Justify Self (.justify-items-*, .justify-self-*)
+   ========================================================================== */
+
+.justify-items-start,
+.ji-start {
+   justify-items: start;
+}
+
+.justify-items-center,
+.ji-center,
+.ji-c {
+   justify-items: center;
+}
+
+.justify-items-end,
+.ji-end {
+   justify-items: end;
+}
+
+.justify-items-stretch,
+.ji-stretch {
+   justify-items: stretch;
+}
+
+.justify-self-auto,
+.js-auto {
+   justify-self: auto;
+}
+
+.justify-self-start,
+.js-start {
+   justify-self: start;
+}
+
+.justify-self-center,
+.js-center,
+.js-c {
+   justify-self: center;
+}
+
+.justify-self-end,
+.js-end {
+   justify-self: end;
+}
+
+.justify-self-stretch,
+.js-stretch {
+   justify-self: stretch;
+}
+
+
+/* ==========================================================================
+   11. Flex Layout Combination Helpers (Quick Shortcuts)
+   ========================================================================== */
+
+.flex-center {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.inline-flex-center {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.flex-between {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.flex-col-center {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+}
+
+.flex-col-between {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+}
+
+.flex-col-start {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+}
+
+
+/* ==========================================================================
+   12. CSS Grid Template Columns & Rows
+   ========================================================================== */
+
+.grid-cols-1 {
+   grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-cols-5 {
+   grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.grid-cols-6 {
+   grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.grid-cols-7 {
+   grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.grid-cols-8 {
+   grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.grid-cols-9 {
+   grid-template-columns: repeat(9, minmax(0, 1fr));
+}
+
+.grid-cols-10 {
+   grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.grid-cols-11 {
+   grid-template-columns: repeat(11, minmax(0, 1fr));
+}
+
+.grid-cols-12 {
+   grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.grid-cols-none {
+   grid-template-columns: none;
+}
+
+/* Responsive Auto-fit Column Presets */
+.grid-cols-auto-fit-xs {
+   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.grid-cols-auto-fit-sm {
+   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid-cols-auto-fit-md {
+   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.grid-cols-auto-fit-lg {
+   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+/* Grid Template Rows */
+.grid-rows-1 {
+   grid-template-rows: repeat(1, minmax(0, 1fr));
+}
+
+.grid-rows-2 {
+   grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.grid-rows-3 {
+   grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+.grid-rows-4 {
+   grid-template-rows: repeat(4, minmax(0, 1fr));
+}
+
+.grid-rows-5 {
+   grid-template-rows: repeat(5, minmax(0, 1fr));
+}
+
+.grid-rows-6 {
+   grid-template-rows: repeat(6, minmax(0, 1fr));
+}
+
+.grid-rows-none {
+   grid-template-rows: none;
+}
+
+
+/* ==========================================================================
+   13. CSS Grid Column & Row Spans
+   ========================================================================== */
+
+.col-auto {
+   grid-column: auto;
+}
+
+.col-span-1 {
+   grid-column: span 1 / span 1;
+}
+
+.col-span-2 {
+   grid-column: span 2 / span 2;
+}
+
+.col-span-3 {
+   grid-column: span 3 / span 3;
+}
+
+.col-span-4 {
+   grid-column: span 4 / span 4;
+}
+
+.col-span-5 {
+   grid-column: span 5 / span 5;
+}
+
+.col-span-6 {
+   grid-column: span 6 / span 6;
+}
+
+.col-span-7 {
+   grid-column: span 7 / span 7;
+}
+
+.col-span-8 {
+   grid-column: span 8 / span 8;
+}
+
+.col-span-9 {
+   grid-column: span 9 / span 9;
+}
+
+.col-span-10 {
+   grid-column: span 10 / span 10;
+}
+
+.col-span-11 {
+   grid-column: span 11 / span 11;
+}
+
+.col-span-12 {
+   grid-column: span 12 / span 12;
+}
+
+.col-span-full {
+   grid-column: 1 / -1;
+}
+
+.row-auto {
+   grid-row: auto;
+}
+
+.row-span-1 {
+   grid-row: span 1 / span 1;
+}
+
+.row-span-2 {
+   grid-row: span 2 / span 2;
+}
+
+.row-span-3 {
+   grid-row: span 3 / span 3;
+}
+
+.row-span-4 {
+   grid-row: span 4 / span 4;
+}
+
+.row-span-5 {
+   grid-row: span 5 / span 5;
+}
+
+.row-span-6 {
+   grid-row: span 6 / span 6;
+}
+
+.row-span-full {
+   grid-row: 1 / -1;
+}
+
+
+/* ==========================================================================
+   14. CSS Grid Auto Flow
+   ========================================================================== */
+
+.grid-flow-row {
+   grid-auto-flow: row;
+}
+
+.grid-flow-col {
+   grid-auto-flow: column;
+}
+
+.grid-flow-dense {
+   grid-auto-flow: dense;
+}
+
+.grid-flow-row-dense {
+   grid-auto-flow: row dense;
+}
+
+.grid-flow-col-dense {
+   grid-auto-flow: column dense;
+}
+
+
+/* ==========================================================================
+   15. Gap Scale (.gap-*, .gap-x-*, .gap-y-*)
+   ========================================================================== */
+
+.gap-0 {
+   gap: var(--space-0, 0px);
+}
+
+.gap-1 {
+   gap: var(--gap-1, var(--space-1, 1px));
+}
+
+.gap-2 {
+   gap: var(--gap-2, var(--space-2, 2px));
+}
+
+.gap-3 {
+   gap: var(--space-3, 3px);
+}
+
+.gap-4 {
+   gap: var(--gap-4, var(--space-4, 4px));
+}
+
+.gap-6 {
+   gap: var(--space-6, 6px);
+}
+
+.gap-8 {
+   gap: var(--gap-8, var(--space-8, 8px));
+}
+
+.gap-10 {
+   gap: var(--space-10, 10px);
+}
+
+.gap-12 {
+   gap: var(--gap-12, var(--space-12, 12px));
+}
+
+.gap-14 {
+   gap: var(--space-14, 14px);
+}
+
+.gap-16 {
+   gap: var(--gap-16, var(--space-16, 16px));
+}
+
+.gap-18 {
+   gap: var(--space-18, 18px);
+}
+
+.gap-20 {
+   gap: var(--gap-20, var(--space-20, 20px));
+}
+
+.gap-24 {
+   gap: var(--gap-24, var(--space-24, 24px));
+}
+
+.gap-28 {
+   gap: var(--gap-28, var(--space-28, 28px));
+}
+
+.gap-32 {
+   gap: var(--gap-32, var(--space-32, 32px));
+}
+
+.gap-36 {
+   gap: var(--gap-36, var(--space-36, 36px));
+}
+
+.gap-40 {
+   gap: var(--gap-40, var(--space-40, 40px));
+}
+
+.gap-44 {
+   gap: var(--space-44, 44px);
+}
+
+.gap-48 {
+   gap: var(--gap-48, var(--space-48, 48px));
+}
+
+.gap-56 {
+   gap: var(--gap-56, var(--space-56, 56px));
+}
+
+.gap-64 {
+   gap: var(--gap-64, var(--space-64, 64px));
+}
+
+/* Row Gaps (Vertical) */
+.gap-y-0 {
+   row-gap: var(--space-0, 0px);
+}
+
+.gap-y-2 {
+   row-gap: var(--gap-2, var(--space-2, 2px));
+}
+
+.gap-y-4 {
+   row-gap: var(--gap-4, var(--space-4, 4px));
+}
+
+.gap-y-6 {
+   row-gap: var(--space-6, 6px);
+}
+
+.gap-y-8 {
+   row-gap: var(--gap-8, var(--space-8, 8px));
+}
+
+.gap-y-10 {
+   row-gap: var(--space-10, 10px);
+}
+
+.gap-y-12 {
+   row-gap: var(--gap-12, var(--space-12, 12px));
+}
+
+.gap-y-16 {
+   row-gap: var(--gap-16, var(--space-16, 16px));
+}
+
+.gap-y-20 {
+   row-gap: var(--gap-20, var(--space-20, 20px));
+}
+
+.gap-y-24 {
+   row-gap: var(--gap-24, var(--space-24, 24px));
+}
+
+.gap-y-32 {
+   row-gap: var(--gap-32, var(--space-32, 32px));
+}
+
+.gap-y-40 {
+   row-gap: var(--gap-40, var(--space-40, 40px));
+}
+
+.gap-y-48 {
+   row-gap: var(--gap-48, var(--space-48, 48px));
+}
+
+/* Column Gaps (Horizontal) */
+.gap-x-0 {
+   column-gap: var(--space-0, 0px);
+}
+
+.gap-x-2 {
+   column-gap: var(--gap-2, var(--space-2, 2px));
+}
+
+.gap-x-4 {
+   column-gap: var(--gap-4, var(--space-4, 4px));
+}
+
+.gap-x-6 {
+   column-gap: var(--space-6, 6px);
+}
+
+.gap-x-8 {
+   column-gap: var(--gap-8, var(--space-8, 8px));
+}
+
+.gap-x-10 {
+   column-gap: var(--space-10, 10px);
+}
+
+.gap-x-12 {
+   column-gap: var(--gap-12, var(--space-12, 12px));
+}
+
+.gap-x-16 {
+   column-gap: var(--gap-16, var(--space-16, 16px));
+}
+
+.gap-x-20 {
+   column-gap: var(--gap-20, var(--space-20, 20px));
+}
+
+.gap-x-24 {
+   column-gap: var(--gap-24, var(--space-24, 24px));
+}
+
+.gap-x-32 {
+   column-gap: var(--gap-32, var(--space-32, 32px));
+}
+
+.gap-x-40 {
+   column-gap: var(--gap-40, var(--space-40, 40px));
+}
+
+.gap-x-48 {
+   column-gap: var(--gap-48, var(--space-48, 48px));
+}
+
+
+/* ==========================================================================
+   16. Order (.order-*)
+   ========================================================================== */
+
+.order-first {
+   order: -9999;
+}
+
+.order-last {
+   order: 9999;
+}
+
+.order-none {
+   order: 0;
+}
+
+.order-1 {
+   order: 1;
+}
+
+.order-2 {
+   order: 2;
+}
+
+.order-3 {
+   order: 3;
+}
+
+.order-4 {
+   order: 4;
+}
+
+.order-5 {
+   order: 5;
+}
+
+.order-6 {
+   order: 6;
+}
+
+.order-7 {
+   order: 7;
+}
+
+.order-8 {
+   order: 8;
+}
+
+.order-9 {
+   order: 9;
+}
+
+.order-10 {
+   order: 10;
+}
+
+.order-11 {
+   order: 11;
+}
+
+.order-12 {
+   order: 12;
+}
+
+
+/* ==========================================================================
+   17. Visibility (.visible, .invisible, .collapse)
+   ========================================================================== */
+
+.visible {
+   visibility: visible;
+}
+
+.invisible {
+   visibility: hidden;
+}
+
+.collapse {
+   visibility: collapse;
+}
+
+
+/* ==========================================================================
+   18. Responsive Display Helpers (Mobile <= 768px & Desktop > 768px)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+   .hide-mobile,
+   .d-none-mobile {
+      display: none !important;
+   }
+
+   .show-mobile {
+      display: block !important;
+   }
+
+   .flex-mobile,
+   .d-flex-mobile {
+      display: flex !important;
+   }
+
+   .flex-col-mobile {
+      flex-direction: column !important;
+   }
+
+   .flex-row-mobile {
+      flex-direction: row !important;
+   }
+}
+
+@media (min-width: 769px) {
+
+   .hide-desktop,
+   .d-none-desktop {
+      display: none !important;
+   }
+
+   .show-desktop {
+      display: block !important;
+   }
+
+   .flex-desktop,
+   .d-flex-desktop {
+      display: flex !important;
+   }
+}

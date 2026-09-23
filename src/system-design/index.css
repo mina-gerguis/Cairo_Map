@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * DESIGN SYSTEM — ROOT ENTRY POINT
+ * DESIGN SYSTEM — ROOT ENTRY POINT (Tailwind Standards)
  * ============================================================================
  * Aggregates all token definitions, component styles, and atomic utilities
  * in the strict, correct cascade order.
@@ -18,6 +18,11 @@
 @import url("./components/inputs.css");
 @import url("./components/cards.css");
 
-/* --- 3. Atomic Utilities Layer --- */
+/* --- 3. Atomic Utilities Layer (Tailwind Standards) --- */
 @import url("./utilities/typography.css");
 @import url("./utilities/spacing.css");
+@import url("./utilities/sizing.css");
+@import url("./utilities/layout.css");
+@import url("./utilities/borders.css");
+@import url("./utilities/effects.css");
+@import url("./utilities/colors.css");

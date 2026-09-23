@@ -6,9 +6,8 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import styles from "../admin.module.css";
 import Link from "next/link";
-import clsx from "clsx";
 import CustomModal from "@/components/common/Modals";
-import { STATION_DETAILS } from "@/app/lrt/page";
+import { STATION_DETAILS } from "@/app/lrt/constants";
 
 // ── Default Mock / Seed Data ──
 const DEFAULT_LRT: any[] = [
@@ -726,7 +725,7 @@ function AdminLrtInner() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="btn btn-cancle"
+                  className="btn btn-cancel"
                 >
                   إلغاء
                 </button>

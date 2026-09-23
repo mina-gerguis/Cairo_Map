@@ -144,6 +144,14 @@ export default function MicrobusStationsPage() {
     } else {
       setExpandedStationId(null);
     }
+
+    setTimeout(() => {
+      const targetId = stationName === "all" ? "stations-results-section" : `station-${stationName}`;
+      const targetEl = document.getElementById(targetId) || resultsPanelRef.current;
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 60);
   };
 
   // Handler: Open Report Modal

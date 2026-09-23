@@ -8,23 +8,16 @@ interface RouteLegTimelineProps {
 
 export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
   return (
-    <div
-      style={{
-        background: "var(--bg-glass)",
-        padding: "16px",
-        borderRadius: "var(--ra-8)",
-        border: "1px solid var(--border-glass)"
-      }}
-    >
+    <div>
       <h4
         style={{
-          margin: "0 0 14px 0",
+          margin: "0 0 16px 0",
           fontSize: "0.92rem",
           fontWeight: "800",
           color: "var(--text-primary)",
           display: "flex",
           alignItems: "center",
-          gap: "6px",
+          gap: "8px",
           fontFamily: "var(--font-sub)"
         }}
       >
@@ -43,22 +36,23 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
           return (
             <div key={legIdx} style={{ display: "flex", flexDirection: "column" }}>
               {/* Stage Header Item */}
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", minHeight: "32px" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
                 {/* Dot Number */}
                 <div
                   style={{
-                    width: "24px",
-                    height: "24px",
+                    width: "26px",
+                    height: "26px",
                     borderRadius: "50%",
-                    backgroundColor: "var(--color-secondary)",
+                    backgroundColor: "var(--color-secondary, #3b82f6)",
                     color: "#ffffff",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "0.75rem",
+                    fontSize: "0.78rem",
                     fontWeight: "800",
                     flexShrink: 0,
-                    marginTop: "2px"
+                    marginTop: "2px",
+                    boxShadow: "0 0 10px rgba(59, 130, 246, 0.3)"
                   }}
                 >
                   {legIdx + 1}
@@ -79,12 +73,13 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                     <h5
                       style={{
                         margin: 0,
-                        fontSize: "0.92rem",
-                        fontWeight: "700",
+                        fontSize: "0.94rem",
+                        fontWeight: "800",
                         color: "var(--text-primary)",
                         display: "flex",
                         alignItems: "center",
-                        gap: "6px"
+                        gap: "6px",
+                        fontFamily: "var(--font-sub)"
                       }}
                     >
                       {legIconData.type === "image" && legIconData.src ? (
@@ -96,7 +91,7 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                       ) : (
                         <i
                           className={legIconData.iconClass || "bx bx-right-arrow-alt"}
-                          style={{ color: "var(--color-secondary)", fontSize: "1rem" }}
+                          style={{ color: "var(--color-secondary)", fontSize: "1.05rem" }}
                         />
                       )}
                       <span>{leg.title}</span>
@@ -104,31 +99,13 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
 
                     <div style={{ display: "flex", gap: "6px" }}>
                       {leg.cost !== undefined && (
-                        <span
-                          style={{
-                            background: "var(--tab-active-bg)",
-                            color: "var(--tab-active-color)",
-                            padding: "2px 8px",
-                            borderRadius: "var(--ra-6)",
-                            fontSize: "0.74rem",
-                            fontWeight: "700"
-                          }}
-                        >
-                          الأجرة: {leg.cost} ج.م
+                        <span className="tab" style={{ padding: "2px 8px", fontSize: "0.74rem" }}>
+                          {leg.cost} ج.م
                         </span>
                       )}
                       {leg.duration && (
-                        <span
-                          style={{
-                            background: "var(--tab-active-bg)",
-                            color: "var(--tab-active-color)",
-                            padding: "2px 8px",
-                            borderRadius: "var(--ra-6)",
-                            fontSize: "0.74rem",
-                            fontWeight: "700"
-                          }}
-                        >
-                          الوقت: {leg.duration}
+                        <span className="tab" style={{ padding: "2px 8px", fontSize: "0.74rem" }}>
+                          {leg.duration}
                         </span>
                       )}
                     </div>
@@ -138,12 +115,12 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                     {(leg?.steps || []).map((stepText, sIdx) => (
                       <div key={sIdx} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-                        <span style={{ color: "var(--color-secondary)", fontSize: "0.8rem", marginTop: "2px" }}>•</span>
+                        <span style={{ color: "var(--color-secondary)", fontSize: "0.9rem", lineHeight: "1.4" }}>•</span>
                         <div
                           style={{
                             fontSize: "0.86rem",
                             color: "var(--text-secondary)",
-                            lineHeight: "1.5",
+                            lineHeight: "1.6",
                             fontFamily: "var(--font-body)"
                           }}
                         >
@@ -157,13 +134,13 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
 
               {/* Connecting vertical line */}
               {!isLastLeg && (
-                <div style={{ display: "flex", gap: "12px", minHeight: "14px", marginTop: "-8px", marginBottom: "4px" }}>
-                  <div style={{ width: "24px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
+                <div style={{ display: "flex", gap: "12px", minHeight: "16px", marginTop: "-6px", marginBottom: "4px" }}>
+                  <div style={{ width: "26px", display: "flex", justifyContent: "center", flexShrink: 0 }}>
                     <div
                       style={{
                         width: "2px",
-                        backgroundColor: "var(--color-secondary)",
-                        minHeight: "14px",
+                        backgroundColor: "var(--color-secondary, #3b82f6)",
+                        minHeight: "16px",
                         opacity: 0.35,
                       }}
                     />

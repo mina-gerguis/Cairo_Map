@@ -98,11 +98,10 @@ export default function MicrobusRouteItem({
             <div style={{
               fontSize: "0.82rem",
               color: "var(--text-secondary)",
-              background: "rgba(255, 255, 255, 0.02)",
+              background: "var(--bg-glass)",
               padding: "10px 12px",
-              borderRadius: "10px",
-              border: "1px solid rgba(255, 255, 255, 0.06)",
-              borderRight: `3px solid ${accentColor}`,
+              borderRadius: "var(--radius-card)",
+              border: "1px solid var(--border-glass)",
               lineHeight: "1.6"
             }}>
               <i className="bx bx-info-circle" style={{ marginLeft: "6px", color: accentColor }} />

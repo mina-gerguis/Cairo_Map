@@ -1,144 +1,192 @@
 /**
  * ============================================================================
- * DESIGN SYSTEM — SPACING SCALE & TOKENS
+ * DESIGN SYSTEM — SPACING & RADIUS TOKENS (Tailwind CSS Scale)
  * ============================================================================
- * Standardized 1:1 pixel progression scale for padding, margins, and gaps.
- * 
- * Scale Architecture:
- * 1. Micro Step (+1px)     : [1px - 4px]   -> Borders, hairline gaps, sub-pixel alignments.
- * 2. Fine Step (+2px/+4px)  : [6px - 20px]  -> Button paddings, badge insets, list item gaps.
- * 3. Component Step (+4px)  : [24px - 48px] -> Card paddings, input group spacing, modular gaps.
- * 4. Layout Step (+8px/16px): [56px - 128px]-> Section margins, hero padding, canvas gutters.
+ * Standardized spacing and radius tokens following Tailwind CSS scale.
+ * Fully compatible with backward-compatible aliases.
  */
 
 :root {
-   /* ==========================================================================
-     1. Base Spacing Scale (1:1 Pixel Mapping)
+  /* ==========================================================================
+     1. Tailwind Standard Spacing Scale (4px base grid)
      ========================================================================== */
-   --space-0: 0px;
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-0_5: 0.125rem;  /* 2px */
+  --spacing-1: 0.25rem;     /* 4px */
+  --spacing-1_5: 0.375rem;  /* 6px */
+  --spacing-2: 0.5rem;      /* 8px */
+  --spacing-2_5: 0.625rem;  /* 10px */
+  --spacing-3: 0.75rem;     /* 12px */
+  --spacing-3_5: 0.875rem;  /* 14px */
+  --spacing-4: 1rem;        /* 16px */
+  --spacing-5: 1.25rem;     /* 20px */
+  --spacing-6: 1.5rem;      /* 24px */
+  --spacing-7: 1.75rem;     /* 28px */
+  --spacing-8: 2rem;        /* 32px */
+  --spacing-9: 2.25rem;     /* 36px */
+  --spacing-10: 2.5rem;     /* 40px */
+  --spacing-11: 2.75rem;    /* 44px */
+  --spacing-12: 3rem;       /* 48px */
+  --spacing-14: 3.5rem;     /* 56px */
+  --spacing-16: 4rem;       /* 64px */
+  --spacing-20: 5rem;       /* 80px */
+  --spacing-24: 6rem;       /* 96px */
+  --spacing-28: 7rem;       /* 112px */
+  --spacing-32: 8rem;       /* 128px */
+  --spacing-36: 9rem;       /* 144px */
+  --spacing-40: 10rem;      /* 160px */
+  --spacing-44: 11rem;      /* 176px */
+  --spacing-48: 12rem;      /* 192px */
+  --spacing-52: 13rem;      /* 208px */
+  --spacing-56: 14rem;      /* 224px */
+  --spacing-60: 15rem;      /* 240px */
+  --spacing-64: 16rem;      /* 256px */
+  --spacing-72: 18rem;      /* 288px */
+  --spacing-80: 20rem;      /* 320px */
+  --spacing-96: 24rem;      /* 384px */
 
-   /* --- Micro Steps --- */
-   --space-1: 1px;
-   --space-2: 2px;
-   --space-3: 3px;
-   --space-4: 4px;
-
-   /* --- Fine Steps --- */
-   --space-6: 6px;
-   --space-8: 8px;
-   --space-10: 10px;
-   --space-12: 12px;
-   --space-14: 14px;
-   --space-16: 16px;
-   --space-18: 18px;
-   --space-20: 20px;
-
-   /* --- Component Steps --- */
-   --space-24: 24px;
-   --space-28: 28px;
-   --space-32: 32px;
-   --space-36: 36px;
-   --space-40: 40px;
-   --space-44: 44px;
-   --space-48: 48px;
-
-   /* --- Layout & Canvas Steps --- */
-   --space-56: 56px;
-   --space-64: 64px;
-   --space-72: 72px;
-   --space-80: 80px;
-   --space-96: 96px;
-   --space-112: 112px;
-   --space-128: 128px;
-
-   /* ==========================================================================
-     2. Backward Compatibility Aliases (Margins)
+  /* ==========================================================================
+     2. Tailwind Standard Border Radius Tokens
      ========================================================================== */
-   --mg-1: var(--space-1);
-   --mg-2: var(--space-2);
-   --mg-3: var(--space-3);
-   --mg-4: var(--space-4);
-   --mg-6: var(--space-6);
-   --mg-8: var(--space-8);
-   --mg-10: var(--space-10);
-   --mg-12: var(--space-12);
-   --mg-14: var(--space-14);
-   --mg-16: var(--space-16);
-   --mg-18: var(--space-18);
-   --mg-20: var(--space-20);
-   --mg-24: var(--space-24);
-   --mg-28: var(--space-28);
-   --mg-32: var(--space-32);
-   --mg-36: var(--space-36);
-   --mg-40: var(--space-40);
-   --mg-44: var(--space-44);
-   --mg-48: var(--space-48);
-   --mg-56: var(--space-56);
-   --mg-64: var(--space-64);
+  --radius-none: 0px;
+  --radius-sm: 0.125rem;    /* 2px */
+  --radius: 0.25rem;        /* 4px */
+  --radius-md: 0.375rem;    /* 6px */
+  --radius-lg: 0.5rem;      /* 8px */
+  --radius-xl: 0.75rem;     /* 12px */
+  --radius-2xl: 1rem;       /* 16px */
+  --radius-3xl: 1.5rem;     /* 24px */
+  --radius-full: 9999px;
 
-   /* ==========================================================================
-     3. Backward Compatibility Aliases (Paddings)
+  /* ==========================================================================
+     3. Backward Compatibility Aliases (1:1 Pixel & Legacy Aliases)
      ========================================================================== */
-   --pd-1: var(--space-1);
-   --pd-2: var(--space-2);
-   --pd-4: var(--space-4);
-   --pd-8: var(--space-8);
-   --pd-12: var(--space-12);
-   --pd-16: var(--space-16);
-   --pd-20: var(--space-20);
-   --pd-24: var(--space-24);
-   --pd-28: var(--space-28);
-   --pd-32: var(--space-32);
-   --pd-36: var(--space-36);
-   --pd-40: var(--space-40);
-   --pd-48: var(--space-48);
-   --pd-56: var(--space-56);
-   --pd-64: var(--space-64);
-   --padding-btn: var(--space-10) var(--space-14);
+  --space-0: 0px;
+  --space-1: 1px;
+  --space-2: 2px;
+  --space-3: 3px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-18: 18px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-36: 36px;
+  --space-40: 40px;
+  --space-44: 44px;
+  --space-48: 48px;
+  --space-56: 56px;
+  --space-64: 64px;
+  --space-72: 72px;
+  --space-80: 80px;
+  --space-96: 96px;
+  --space-112: 112px;
+  --space-128: 128px;
 
+  /* Margins */
+  --mg-1: var(--space-1);
+  --mg-2: var(--space-2);
+  --mg-3: var(--space-3);
+  --mg-4: var(--space-4);
+  --mg-6: var(--space-6);
+  --mg-8: var(--space-8);
+  --mg-10: var(--space-10);
+  --mg-12: var(--space-12);
+  --mg-14: var(--space-14);
+  --mg-16: var(--space-16);
+  --mg-18: var(--space-18);
+  --mg-20: var(--space-20);
+  --mg-24: var(--space-24);
+  --mg-28: var(--space-28);
+  --mg-32: var(--space-32);
+  --mg-36: var(--space-36);
+  --mg-40: var(--space-40);
+  --mg-44: var(--space-44);
+  --mg-48: var(--space-48);
+  --mg-56: var(--space-56);
+  --mg-64: var(--space-64);
 
-   --pt-1: var(--space-1);
-   --pt-2: var(--space-2);
-   --pt-4: var(--space-4);
-   --pt-8: var(--space-8);
-   --pt-12: var(--space-12);
-   --pt-16: var(--space-16);
-   --pt-20: var(--space-20);
-   --pt-24: var(--space-24);
-   --pt-28: var(--space-28);
-   --pt-32: var(--space-32);
-   --pt-36: var(--space-36);
-   --pt-40: var(--space-40);
-   --pt-48: var(--space-48);
-   --pt-56: var(--space-56);
-   --pt-64: var(--space-64);
+  /* Paddings */
+  --pd-1: var(--space-1);
+  --pd-2: var(--space-2);
+  --pd-4: var(--space-4);
+  --pd-8: var(--space-8);
+  --pd-12: var(--space-12);
+  --pd-16: var(--space-16);
+  --pd-20: var(--space-20);
+  --pd-24: var(--space-24);
+  --pd-28: var(--space-28);
+  --pd-32: var(--space-32);
+  --pd-36: var(--space-36);
+  --pd-40: var(--space-40);
+  --pd-48: var(--space-48);
+  --pd-56: var(--space-56);
+  --pd-64: var(--space-64);
+  --padding-btn: var(--spacing-2_5) var(--spacing-3_5);
 
-   /* ==========================================================================
-     4. Backward Compatibility Aliases (Radii)
-     ========================================================================== */
-   --ra-0: 0px;
-   --ra-1: 1px;
-   --ra-2: 2px;
-   --ra-4: 4px;
-   --ra-6: 6px;
-   --ra-8: 8px;
-   --ra-10: 10px;
-   --ra-12: 12px;
-   --ra-14: 14px;
-   --ra-16: 16px;
-   --ra-18: 18px;
-   --ra-20: 20px;
-   --ra-24: 24px;
-   --ra-32: 32px;
-   --ra-full: 9999px;
+  --pt-1: var(--space-1);
+  --pt-2: var(--space-2);
+  --pt-4: var(--space-4);
+  --pt-8: var(--space-8);
+  --pt-12: var(--space-12);
+  --pt-16: var(--space-16);
+  --pt-20: var(--space-20);
+  --pt-24: var(--space-24);
+  --pt-28: var(--space-28);
+  --pt-32: var(--space-32);
+  --pt-36: var(--space-36);
+  --pt-40: var(--space-40);
+  --pt-48: var(--space-48);
+  --pt-56: var(--space-56);
+  --pt-64: var(--space-64);
 
-   /* --- Semantic Radius Aliases --- */
-   --radius-card: var(--ra-8);
-   --radiusBtn: var(--ra-8);
-   --radiusBtnLg: var(--ra-14);
-   --radiusBtnTabs: var(--ra-full);
-   --inputRadius: var(--ra-8);
-   --cardGlassRadius: var(--ra-14);
-   --modelCardRadius: var(--ra-8);
-   --containerRadius: var(--ra-8);
+  /* Radii Legacy */
+  --ra-0: var(--radius-none);
+  --ra-1: 1px;
+  --ra-2: var(--radius-sm);
+  --ra-4: var(--radius);
+  --ra-6: var(--radius-md);
+  --ra-8: var(--radius-lg);
+  --ra-10: 10px;
+  --ra-12: var(--radius-xl);
+  --ra-14: 14px;
+  --ra-16: var(--radius-2xl);
+  --ra-18: 18px;
+  --ra-20: 20px;
+  --ra-24: var(--radius-3xl);
+  --ra-32: 32px;
+  --ra-full: var(--radius-full);
+
+  --radius-card: var(--radius-lg);
+  --radiusBtn: var(--radius-lg);
+  --radiusBtnLg: var(--radius-xl);
+  --radiusBtnTabs: var(--radius-full);
+  --inputRadius: var(--radius-lg);
+  --cardGlassRadius: var(--radius-xl);
+  --modelCardRadius: var(--radius-lg);
+  --containerRadius: var(--radius-lg);
+
+  /* Gaps Legacy */
+  --gap-1: var(--space-1);
+  --gap-2: var(--space-2);
+  --gap-4: var(--space-4);
+  --gap-8: var(--space-8);
+  --gap-12: var(--space-12);
+  --gap-16: var(--space-16);
+  --gap-20: var(--space-20);
+  --gap-24: var(--space-24);
+  --gap-28: var(--space-28);
+  --gap-32: var(--space-32);
+  --gap-36: var(--space-36);
+  --gap-40: var(--space-40);
+  --gap-48: var(--space-48);
+  --gap-56: var(--space-56);
+  --gap-64: var(--space-64);
 }

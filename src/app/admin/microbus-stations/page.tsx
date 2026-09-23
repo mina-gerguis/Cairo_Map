@@ -8,8 +8,10 @@ import {
   AdminMicrobusStationsSqlBanner,
   AdminMicrobusStationsNotifications,
   AdminMicrobusStationsSearch,
+  AdminMicrobusStationsToolbar,
   AdminMicrobusStationsTable,
   AdminMicrobusStationsModal,
+  AdminMicrobusStationsExcelModal,
   AdminMicrobusStationsDeleteModal,
   AdminMicrobusStationsLoading
 } from "./components";
@@ -40,6 +42,21 @@ function AdminMicrobusStationsContent() {
     setSearchQuery,
     filteredStations,
     totalStationsCount,
+    selectedStationKeys,
+    selectedCount,
+    toggleSelectStation,
+    toggleSelectAll,
+    clearSelection,
+    showBulkDeleteModal,
+    isBulkDeleting,
+    handleOpenBulkDelete,
+    handleCancelBulkDelete,
+    handleConfirmBulkDelete,
+    showExcelModal,
+    handleOpenExcelModal,
+    handleCloseExcelModal,
+    handleExportExcel,
+    handleImportExcel,
     showModal,
     editingItem,
     formData,
@@ -69,8 +86,12 @@ function AdminMicrobusStationsContent() {
 
   return (
     <div className={styles.adminShell} style={{ direction: "rtl", textAlign: "right" }}>
-      {/* Upper Title Banner & Add Action */}
-      <AdminMicrobusStationsHeader onAddClick={handleOpenAdd} />
+      {/* Upper Title Banner & Add/Export/Import Actions */}
+      <AdminMicrobusStationsHeader
+        onAddClick={handleOpenAdd}
+        onOpenExcelModal={handleOpenExcelModal}
+        onExportExcel={handleExportExcel}
+      />
 
       {/* SQL Warning Card if DB is using LocalStorage fallback */}
       {!dbConnected && <AdminMicrobusStationsSqlBanner />}
@@ -85,9 +106,23 @@ function AdminMicrobusStationsContent() {
         totalCount={totalStationsCount}
       />
 
+      {/* Selection & Bulk Actions Toolbar */}
+      <AdminMicrobusStationsToolbar
+        totalCount={totalStationsCount}
+        visibleStations={filteredStations}
+        selectedCount={selectedCount}
+        selectedStationKeys={selectedStationKeys}
+        onToggleSelectAll={toggleSelectAll}
+        onClearSelection={clearSelection}
+        onBulkDelete={handleOpenBulkDelete}
+      />
+
       {/* Data Table */}
       <AdminMicrobusStationsTable
         stations={filteredStations}
+        selectedStationKeys={selectedStationKeys}
+        onToggleSelect={toggleSelectStation}
+        onToggleSelectAll={toggleSelectAll}
         onEdit={handleOpenEdit}
         onDelete={handleDeleteClick}
       />
@@ -106,12 +141,28 @@ function AdminMicrobusStationsContent() {
         onSubmit={handleSubmit}
       />
 
-      {/* Delete Confirmation Modal */}
+      {/* Excel Import Modal */}
+      <AdminMicrobusStationsExcelModal
+        isOpen={showExcelModal}
+        onClose={handleCloseExcelModal}
+        onImportSuccess={handleImportExcel}
+      />
+
+      {/* Single Delete Confirmation Modal */}
       <AdminMicrobusStationsDeleteModal
         itemToDelete={itemToDelete}
         isDeleting={isDeleting}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+
+      {/* Bulk Delete Confirmation Modal */}
+      <AdminMicrobusStationsDeleteModal
+        itemToDelete={null}
+        bulkDeleteCount={showBulkDeleteModal ? selectedCount : 0}
+        isDeleting={isBulkDeleting}
+        onConfirm={handleConfirmBulkDelete}
+        onCancel={handleCancelBulkDelete}
       />
     </div>
   );

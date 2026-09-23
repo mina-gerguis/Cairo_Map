@@ -1,0 +1,69 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — COLOR UTILITIES (Tailwind CSS Standards)
+ * ============================================================================
+ * Atomic utility classes for backgrounds, text colors, and border colors.
+ */
+
+/* ==========================================================================
+   1. Background Color Utilities (.bg-*)
+   ========================================================================== */
+.bg-transparent { background-color: transparent; }
+.bg-current     { background-color: currentColor; }
+.bg-black       { background-color: #000000; }
+.bg-white       { background-color: #ffffff; }
+
+/* Theme Semantic Backgrounds */
+.bg-primary     { background-color: var(--color-primary); }
+.bg-secondary   { background-color: var(--color-secondary); }
+.bg-mode        { background-color: var(--bgMode); }
+.bg-surface     { background-color: var(--bg-secondary); }
+.bg-surface-alt { background-color: var(--bgThird); }
+.bg-glass       { background-color: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.bg-glass-active{ background-color: var(--bg-glass-active); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+/* Status Backgrounds */
+.bg-success     { background-color: var(--colorSuccess); }
+.bg-warning     { background-color: var(--colorWarning); }
+.bg-danger      { background-color: var(--colorDanger); }
+.bg-info        { background-color: var(--colorInfo); }
+
+/* ==========================================================================
+   2. Text Color Utilities (.text-*)
+   ========================================================================== */
+.text-inherit     { color: inherit; }
+.text-current     { color: currentColor; }
+.text-transparent { color: transparent; }
+.text-black       { color: #000000; }
+.text-white       { color: #ffffff; }
+
+/* Theme Semantic Text Colors */
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted     { color: var(--text-muted); }
+.text-brand     { color: var(--color-primary); }
+.text-accent    { color: var(--colorAccent); }
+
+/* Status Text Colors */
+.text-success   { color: var(--colorSuccess); }
+.text-warning   { color: var(--colorWarning); }
+.text-danger    { color: var(--colorDanger); }
+.text-info      { color: var(--colorInfo); }
+
+/* ==========================================================================
+   3. Border Color Utilities (.border-*)
+   ========================================================================== */
+.border-transparent { border-color: transparent; }
+.border-current     { border-color: currentColor; }
+.border-black       { border-color: #000000; }
+.border-white       { border-color: #ffffff; }
+
+/* Theme Semantic Border Colors */
+.border-border      { border-color: var(--border-primary); }
+.border-secondary   { border-color: var(--border-secondary); }
+.border-glass       { border-color: var(--border-glass); }
+.border-glass-bright{ border-color: var(--border-glass-bright); }
+.border-brand       { border-color: var(--color-primary); }
+.border-danger      { border-color: var(--colorDanger); }
+.border-success     { border-color: var(--colorSuccess); }
+.border-warning     { border-color: var(--colorWarning); }

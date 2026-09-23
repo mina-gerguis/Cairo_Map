@@ -1,5 +1,7 @@
 import React, { RefObject } from "react";
 import styles from "../microbus.module.css";
+import PrimaryButton from "@/components/ui/button/PrimaryButton";
+import CancelButton from "@/components/ui/button/CancelButton";
 
 interface MicrobusReportModalProps {
   isOpen: boolean;
@@ -125,20 +127,18 @@ export default function MicrobusReportModal({
           )}
 
           <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "6px" }}>
-            <button
-              type="button"
+            <CancelButton
               onClick={onClose}
-              className="btn btn-cancel"
-            >
-              إلغاء
-            </button>
-            <button
+            />
+
+            <PrimaryButton
               type="submit"
               disabled={submitting || limitReached || limitChecking}
-              className="btn btn-primary"
-            >
-              {submitting ? "جاري الإرسال..." : "إرسال البلاغ"}
-            </button>
+              loading={submitting}
+              loadingText="جاري الإرسال..."
+              onClick={onSubmit}
+              label="إرسال البلاغ"
+            />
           </div>
         </form>
       </div>

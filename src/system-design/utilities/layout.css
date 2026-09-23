@@ -1,0 +1,206 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — LAYOUT UTILITIES (Tailwind CSS Standards)
+ * ============================================================================
+ * Display, Flexbox, CSS Grid, Positioning, Overflow, and Z-Index utilities.
+ */
+
+/* ==========================================================================
+   1. Display Utilities
+   ========================================================================== */
+.block        { display: block; }
+.inline-block { display: inline-block; }
+.inline       { display: inline; }
+.flex         { display: flex; }
+.inline-flex  { display: inline-flex; }
+.grid         { display: grid; }
+.inline-grid  { display: inline-grid; }
+.contents     { display: contents; }
+.hidden       { display: none; }
+.table        { display: table; }
+.table-row    { display: table-row; }
+.table-cell   { display: table-cell; }
+
+/* Legacy Display Aliases */
+.d-none       { display: none; }
+.d-block      { display: block; }
+.d-inline     { display: inline; }
+.d-inline-block { display: inline-block; }
+.d-flex       { display: flex; }
+.d-inline-flex { display: inline-flex; }
+.d-grid       { display: grid; }
+
+/* ==========================================================================
+   2. Flexbox Direction, Wrap & Flow
+   ========================================================================== */
+.flex-row         { flex-direction: row; }
+.flex-row-reverse { flex-direction: row-reverse; }
+.flex-col         { flex-direction: column; }
+.flex-col-reverse { flex-direction: column-reverse; }
+
+.flex-wrap         { flex-wrap: wrap; }
+.flex-wrap-reverse { flex-wrap: wrap-reverse; }
+.flex-nowrap       { flex-wrap: nowrap; }
+
+/* Flex Basis, Grow, Shrink */
+.flex-1       { flex: 1 1 0%; }
+.flex-auto    { flex: 1 1 auto; }
+.flex-initial { flex: 0 1 auto; }
+.flex-none    { flex: none; }
+
+.grow         { flex-grow: 1; }
+.grow-0       { flex-grow: 0; }
+.shrink       { flex-shrink: 1; }
+.shrink-0     { flex-shrink: 0; }
+
+/* Legacy Flex Aliases */
+.column          { flex-direction: column; }
+.row             { flex-direction: row; }
+.flex-column     { flex-direction: column; }
+
+/* ==========================================================================
+   3. Alignment & Justification
+   ========================================================================== */
+/* Align Items */
+.items-start    { align-items: flex-start; }
+.items-end      { align-items: flex-end; }
+.items-center   { align-items: center; }
+.items-baseline { align-items: baseline; }
+.items-stretch  { align-items: stretch; }
+
+/* Align Self */
+.self-auto     { align-self: auto; }
+.self-start    { align-self: flex-start; }
+.self-end      { align-self: flex-end; }
+.self-center   { align-self: center; }
+.self-stretch  { align-self: stretch; }
+.self-baseline { align-self: baseline; }
+
+/* Align Content */
+.content-center  { align-content: center; }
+.content-start   { align-content: flex-start; }
+.content-end     { align-content: flex-end; }
+.content-between { align-content: space-between; }
+.content-around  { align-content: space-around; }
+.content-evenly  { align-content: space-evenly; }
+
+/* Justify Content */
+.justify-normal  { justify-content: normal; }
+.justify-start   { justify-content: flex-start; }
+.justify-end     { justify-content: flex-end; }
+.justify-center  { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around  { justify-content: space-around; }
+.justify-evenly  { justify-content: space-evenly; }
+.justify-stretch { justify-content: stretch; }
+
+/* Justify Items */
+.justify-items-start   { justify-items: start; }
+.justify-items-end     { justify-items: end; }
+.justify-items-center  { justify-items: center; }
+.justify-items-stretch { justify-items: stretch; }
+
+/* Justify Self */
+.justify-self-auto    { justify-self: auto; }
+.justify-self-start   { justify-self: start; }
+.justify-self-end     { justify-self: end; }
+.justify-self-center  { justify-self: center; }
+.justify-self-stretch { justify-self: stretch; }
+
+/* ==========================================================================
+   4. CSS Grid Utilities
+   ========================================================================== */
+.grid-cols-1  { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3  { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4  { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5  { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6  { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-7  { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-8  { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9  { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.grid-cols-none { grid-template-columns: none; }
+
+.col-auto      { grid-column: auto; }
+.col-span-1    { grid-column: span 1 / span 1; }
+.col-span-2    { grid-column: span 2 / span 2; }
+.col-span-3    { grid-column: span 3 / span 3; }
+.col-span-4    { grid-column: span 4 / span 4; }
+.col-span-5    { grid-column: span 5 / span 5; }
+.col-span-6    { grid-column: span 6 / span 6; }
+.col-span-7    { grid-column: span 7 / span 7; }
+.col-span-8    { grid-column: span 8 / span 8; }
+.col-span-9    { grid-column: span 9 / span 9; }
+.col-span-10   { grid-column: span 10 / span 10; }
+.col-span-11   { grid-column: span 11 / span 11; }
+.col-span-12   { grid-column: span 12 / span 12; }
+.col-span-full { grid-column: 1 / -1; }
+
+.grid-flow-row       { grid-auto-flow: row; }
+.grid-flow-col       { grid-auto-flow: column; }
+.grid-flow-dense     { grid-auto-flow: dense; }
+.grid-flow-row-dense { grid-auto-flow: row dense; }
+.grid-flow-col-dense { grid-auto-flow: column dense; }
+
+/* ==========================================================================
+   5. Positioning Utilities
+   ========================================================================== */
+.static   { position: static; }
+.fixed    { position: fixed; }
+.absolute { position: absolute; }
+.relative { position: relative; }
+.sticky   { position: sticky; }
+
+/* Inset Placements */
+.inset-0   { inset: 0px; }
+.inset-x-0 { left: 0px; right: 0px; }
+.inset-y-0 { top: 0px; bottom: 0px; }
+.inset-auto{ inset: auto; }
+
+.top-0     { top: 0px; }
+.top-1\/2  { top: 50%; }
+.top-full  { top: 100%; }
+.top-auto  { top: auto; }
+
+.bottom-0    { bottom: 0px; }
+.bottom-1\/2 { bottom: 50%; }
+.bottom-full { bottom: 100%; }
+.bottom-auto { bottom: auto; }
+
+.left-0    { left: 0px; }
+.left-1\/2 { left: 50%; }
+.left-full { left: 100%; }
+.left-auto { left: auto; }
+
+.right-0    { right: 0px; }
+.right-1\/2 { right: 50%; }
+.right-full { right: 100%; }
+.right-auto { right: auto; }
+
+/* ==========================================================================
+   6. Z-Index Utilities (.z-*)
+   ========================================================================== */
+.z-0    { z-index: 0; }
+.z-10   { z-index: 10; }
+.z-20   { z-index: 20; }
+.z-30   { z-index: 30; }
+.z-40   { z-index: 40; }
+.z-50   { z-index: 50; }
+.z-auto { z-index: auto; }
+
+/* ==========================================================================
+   7. Overflow Utilities (.overflow-*)
+   ========================================================================== */
+.overflow-auto    { overflow: auto; }
+.overflow-hidden  { overflow: hidden; }
+.overflow-clip    { overflow: clip; }
+.overflow-visible { overflow: visible; }
+.overflow-scroll  { overflow: scroll; }
+
+.overflow-x-auto    { overflow-x: auto; }
+.overflow-y-auto    { overflow-y: auto; }
+.overflow-x-hidden  { overflow-x: hidden; }
+.overflow-y-hidden  { overflow-y: hidden; }

@@ -18,13 +18,25 @@ export default function MicrobusStationsSlider({
   selectedStation,
   onSelectStation,
 }: MicrobusStationsSliderProps) {
+  const handleStationClick = (stationName: string) => {
+    onSelectStation(stationName);
+
+    setTimeout(() => {
+      const targetId = stationName === "all" ? "stations-results-section" : `station-${stationName}`;
+      const targetEl = document.getElementById(targetId) || document.getElementById("stations-results-section");
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 60);
+  };
+
   return (
     <div ref={sliderRef} className={styles.sliderSection}>
       <div className={styles.sliderTrack}>
         {/* All Stations Button */}
         <button
           type="button"
-          onClick={() => onSelectStation("all")}
+          onClick={() => handleStationClick("all")}
           className={`${styles.bentoCard} ${selectedStation === "all" ? styles.bentoCardActive : ""}`}
           style={{
             "--card-color": "#3b82f6",
@@ -56,7 +68,7 @@ export default function MicrobusStationsSlider({
             <button
               key={station.id || station.name}
               type="button"
-              onClick={() => onSelectStation(station.name)}
+              onClick={() => handleStationClick(station.name)}
               className={`${styles.bentoCard} ${active ? styles.bentoCardActive : ""}`}
               style={{
                 "--card-color": palette.color,

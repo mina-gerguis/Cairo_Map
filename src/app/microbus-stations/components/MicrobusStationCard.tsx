@@ -33,7 +33,11 @@ export default function MicrobusStationCard({
   const routesCount = Array.isArray(station.routes) ? station.routes.length : 0;
 
   return (
-    <div className={styles.stationCard}>
+    <div
+      id={`station-${station.name}`}
+      className={styles.stationCard}
+      style={{ scrollMarginTop: "24px" }}
+    >
       {/* Station Header */}
       <div onClick={onToggleExpand} className={styles.stationHeader}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>

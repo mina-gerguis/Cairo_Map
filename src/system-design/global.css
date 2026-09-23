@@ -147,6 +147,53 @@ html.light {
 }
 
 /* ============================================================
+   Page Service
+   ============================================================ */
+.page-wrapper {
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    direction: rtl;
+    padding-bottom: var(--pd-64);
+}
+
+/* Ambient Radial Glow in the background */
+.ambient-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;
+  height: 400px;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 0%,
+    rgba(59, 130, 246, 0.2),
+    rgba(16, 185, 129, 0.06) 50%,
+    transparent 80%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global(html.light) .ambient-glow {
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 0%,
+    rgba(59, 130, 246, 0.1),
+    rgba(16, 185, 129, 0.03) 50%,
+    transparent 80%
+  );
+}
+
+.content-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--pd-16);
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
    Slider
    ============================================================ */
 .slider-title {

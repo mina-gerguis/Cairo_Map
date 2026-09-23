@@ -1026,7 +1026,7 @@ function AdminRailwaysInner() {
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowLineModal(false)} className="btn btn-cancle">إلغاء</button>
+                <button type="button" onClick={() => setShowLineModal(false)} className="btn btn-cancel">إلغاء</button>
                 <button type="submit" className="btn btn-primary">حفظ الخط</button>
               </div>
             </form>
@@ -1097,7 +1097,7 @@ function AdminRailwaysInner() {
               </div>
 
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
-                <button type="button" onClick={() => setShowStationModal(false)} className="btn btn-cancle" >إلغاء</button>
+                <button type="button" onClick={() => setShowStationModal(false)} className="btn btn-cancel" >إلغاء</button>
                 <button type="submit" className="btn btn-primary" >حفظ المحطة</button>
               </div>
             </form>

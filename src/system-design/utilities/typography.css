@@ -1,52 +1,136 @@
 /**
  * ============================================================================
- * DESIGN SYSTEM — TYPOGRAPHY UTILITIES
+ * DESIGN SYSTEM — TYPOGRAPHY UTILITIES (Tailwind CSS Standards)
  * ============================================================================
- * Fast, atomic utility classes for font sizing, weights, and family bindings.
+ * Atomic utility classes for font size, weights, alignment, line heights,
+ * letter spacing, text transformations, and overflow handling.
  */
 
 /* ==========================================================================
-   1. Font Size Classes
+   1. Font Size Utilities (.text-*)
    ========================================================================== */
-.text-xss { font-size: var(--fs-xss); }
-.text-xs  { font-size: var(--fs-xs);  }
-.text-sm  { font-size: var(--fs-sm);  }
-.text-md  { font-size: var(--fs-md);  }
-.text-lg  { font-size: var(--fs-lg);  }
-.text-xl  { font-size: var(--fs-xl);  }
-.text-2xl { font-size: var(--fs-2xl); }
-.text-3xl { font-size: var(--fs-3xl); }
-.text-4xl { font-size: var(--fs-4xl); }
-.text-5xl { font-size: var(--fs-5xl); }
-.text-6xl { font-size: var(--fs-6xl); }
-.text-7xl { font-size: var(--fs-7xl); }
+.text-xs   { font-size: var(--text-xs);   line-height: var(--text-xs--line-height);   }
+.text-sm   { font-size: var(--text-sm);   line-height: var(--text-sm--line-height);   }
+.text-base { font-size: var(--text-base); line-height: var(--text-base--line-height); }
+.text-lg   { font-size: var(--text-lg);   line-height: var(--text-lg--line-height);   }
+.text-xl   { font-size: var(--text-xl);   line-height: var(--text-xl--line-height);   }
+.text-2xl  { font-size: var(--text-2xl);  line-height: var(--text-2xl--line-height);  }
+.text-3xl  { font-size: var(--text-3xl);  line-height: var(--text-3xl--line-height);  }
+.text-4xl  { font-size: var(--text-4xl);  line-height: var(--text-4xl--line-height);  }
+.text-5xl  { font-size: var(--text-5xl);  line-height: var(--text-5xl--line-height);  }
+.text-6xl  { font-size: var(--text-6xl);  line-height: var(--text-6xl--line-height);  }
+.text-7xl  { font-size: var(--text-7xl);  line-height: var(--text-7xl--line-height);  }
+.text-8xl  { font-size: var(--text-8xl);  line-height: var(--text-8xl--line-height);  }
+.text-9xl  { font-size: var(--text-9xl);  line-height: var(--text-9xl--line-height);  }
+
+/* Backward compatibility aliases */
+.text-xss { font-size: var(--text-xs); }
+.text-md  { font-size: var(--text-lg); }
 
 /* ==========================================================================
-   2. Font Weight Named Classes
+   2. Font Weight Utilities (.font-*)
    ========================================================================== */
-.fw-light      { font-weight: var(--fw-light);      }
-.fw-normal     { font-weight: var(--fw-normal);     }
-.fw-medium     { font-weight: var(--fw-medium);     }
-.fw-semibold   { font-weight: var(--fw-semibold);   }
-.fw-bold       { font-weight: var(--fw-bold);       }
-.fw-extra-bold { font-weight: var(--fw-extra-bold); }
-.fw-black      { font-weight: var(--fw-black);      }
+.font-thin       { font-weight: var(--font-thin);       }
+.font-extralight { font-weight: var(--font-extralight); }
+.font-light      { font-weight: var(--font-light);      }
+.font-normal     { font-weight: var(--font-normal);     }
+.font-medium     { font-weight: var(--font-medium);     }
+.font-semibold   { font-weight: var(--font-semibold);   }
+.font-bold       { font-weight: var(--font-bold);       }
+.font-extrabold  { font-weight: var(--font-extrabold);  }
+.font-black      { font-weight: var(--font-black);      }
+
+/* Backward compatibility font-weight aliases (.fw-*) */
+.fw-light      { font-weight: var(--font-light);      }
+.fw-normal     { font-weight: var(--font-normal);     }
+.fw-medium     { font-weight: var(--font-medium);     }
+.fw-semibold   { font-weight: var(--font-semibold);   }
+.fw-bold       { font-weight: var(--font-bold);       }
+.fw-extra-bold { font-weight: var(--font-extrabold);  }
+.fw-black      { font-weight: var(--font-black);      }
+.fw-100        { font-weight: 100; }
+.fw-200        { font-weight: 200; }
+.fw-300        { font-weight: 300; }
+.fw-400        { font-weight: 400; }
+.fw-500        { font-weight: 500; }
+.fw-600        { font-weight: 600; }
+.fw-700        { font-weight: 700; }
+.fw-800        { font-weight: 800; }
+.fw-900        { font-weight: 900; }
 
 /* ==========================================================================
-   3. Font Weight Numeric Classes
+   3. Font Family Utilities (.font-*)
    ========================================================================== */
-.fw-300 { font-weight: 300; }
-.fw-400 { font-weight: 400; }
-.fw-500 { font-weight: 500; }
-.fw-600 { font-weight: 600; }
-.fw-700 { font-weight: 700; }
-.fw-800 { font-weight: 800; }
-.fw-900 { font-weight: 900; }
-
-/* ==========================================================================
-   4. Font Family Utility Classes
-   ========================================================================== */
+.font-sans    { font-family: var(--font-sans);    }
+.font-serif   { font-family: var(--font-serif);   }
+.font-mono    { font-family: var(--font-mono);    }
 .font-display { font-family: var(--font-display); }
 .font-heading { font-family: var(--font-heading); }
 .font-body    { font-family: var(--font-body);    }
 .font-sub     { font-family: var(--font-sub);     }
+
+/* ==========================================================================
+   4. Text Alignment (.text-*)
+   ========================================================================== */
+.text-left    { text-align: left;    }
+.text-center  { text-align: center;  }
+.text-right   { text-align: right;   }
+.text-justify { text-align: justify; }
+.text-start   { text-align: start;   }
+.text-end     { text-align: end;     }
+
+/* ==========================================================================
+   5. Text Transform & Decoration
+   ========================================================================== */
+.uppercase    { text-transform: uppercase;  }
+.lowercase    { text-transform: lowercase;  }
+.capitalize   { text-transform: capitalize; }
+.normal-case  { text-transform: none;       }
+
+.underline    { text-decoration-line: underline;    }
+.overline     { text-decoration-line: overline;     }
+.line-through { text-decoration-line: line-through; }
+.no-underline { text-decoration-line: none;         }
+
+/* ==========================================================================
+   6. Line Height / Leading (.leading-*)
+   ========================================================================== */
+.leading-none    { line-height: 1;      }
+.leading-tight   { line-height: 1.25;   }
+.leading-snug    { line-height: 1.375;  }
+.leading-normal  { line-height: 1.5;    }
+.leading-relaxed { line-height: 1.625;  }
+.leading-loose   { line-height: 2;      }
+
+/* ==========================================================================
+   7. Letter Spacing / Tracking (.tracking-*)
+   ========================================================================== */
+.tracking-tighter { letter-spacing: -0.05em; }
+.tracking-tight   { letter-spacing: -0.025em; }
+.tracking-normal  { letter-spacing: 0em;      }
+.tracking-wide    { letter-spacing: 0.025em;  }
+.tracking-wider   { letter-spacing: 0.05em;   }
+.tracking-widest  { letter-spacing: 0.1em;    }
+
+/* ==========================================================================
+   8. Text Overflow & Whitespace
+   ========================================================================== */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis { text-overflow: ellipsis; }
+.text-clip     { text-overflow: clip;     }
+
+.whitespace-normal  { white-space: normal;   }
+.whitespace-nowrap  { white-space: nowrap;   }
+.whitespace-pre     { white-space: pre;      }
+.whitespace-pre-line{ white-space: pre-line; }
+.whitespace-pre-wrap{ white-space: pre-wrap; }
+
+.break-normal { overflow-wrap: normal; word-break: normal; }
+.break-words  { overflow-wrap: break-word; }
+.break-all    { word-break: break-all; }
+.break-keep   { word-break: keep-all; }

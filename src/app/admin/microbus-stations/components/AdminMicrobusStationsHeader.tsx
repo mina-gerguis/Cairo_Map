@@ -4,9 +4,15 @@ import React from "react";
 
 interface AdminMicrobusStationsHeaderProps {
   onAddClick: () => void;
+  onOpenExcelModal: () => void;
+  onExportExcel: () => void;
 }
 
-export function AdminMicrobusStationsHeader({ onAddClick }: AdminMicrobusStationsHeaderProps) {
+export function AdminMicrobusStationsHeader({
+  onAddClick,
+  onOpenExcelModal,
+  onExportExcel
+}: AdminMicrobusStationsHeaderProps) {
   return (
     <div
       style={{
@@ -34,13 +40,39 @@ export function AdminMicrobusStationsHeader({ onAddClick }: AdminMicrobusStation
         </p>
       </div>
 
-      <button
-        onClick={onAddClick}
-        className="btn btn-purple"
-      >
-        <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
-        إضافة موقف جديد
-      </button>
+      <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+        {/* Export to Excel */}
+        <button
+          type="button"
+          className="btn btn-export"
+          onClick={onExportExcel}
+          title="تصدير جميع مواقف السرفيس إلى ملف Excel"
+        >
+          <i className="bx bx-export" style={{ marginLeft: "6px" }} />
+          <span>تصدير</span>
+        </button>
+
+        {/* Import from Excel */}
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={onOpenExcelModal}
+          title="استيراد مواقف وخطوط سير من ملف Excel"
+        >
+          <i className="bx bx-import" style={{ marginLeft: "6px" }} />
+          <span>استيراد</span>
+        </button>
+
+        {/* Add Station Button */}
+        <button
+          onClick={onAddClick}
+          className="btn btn-purple"
+          type="button"
+        >
+          <i className="bx bx-plus-circle" style={{ fontSize: "1.15rem", marginLeft: "6px" }} />
+          <span>إضافة موقف جديد</span>
+        </button>
+      </div>
     </div>
   );
 }

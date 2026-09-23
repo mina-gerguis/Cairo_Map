@@ -1119,7 +1119,7 @@ export default function AdminCitiesPage() {
                 <button
                   type="button"
                   onClick={() => setIsCityModalOpen(false)}
-                  className="btn btn-cancle"
+                  className="btn btn-cancel"
                 >
                   إلغاء
                 </button>

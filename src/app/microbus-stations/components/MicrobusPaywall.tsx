@@ -19,15 +19,19 @@ export default function MicrobusPaywall({
       <div className={styles.ambientGlow} />
       <div className={styles.contentContainer} style={{ paddingTop: "40px" }}>
         <div ref={paywallRef} style={{ textAlign: "center", marginBottom: "28px" }}>
-          <div className={styles.livePill}>
-            <i className="bx bxs-lock-alt" style={{ color: "#fbbf24" }} />
-            <span>ميزة الباقة الذهبية الحصرية</span>
-          </div>
           <h1 className={styles.heroTitle}>
-            <span className={styles.heroTitleGradient}>دليل مواقف الميكروباص</span>
+            <img
+              src="/images/icons2d/microbus.png"
+              alt="Cairo Microbus"
+              loading="lazy"
+              decoding="async"
+              className="h-auto"
+              style={{ width: "60px", height: "42px", objectFit: "contain" }}
+            />
+            <span className={styles.heroTitleGradient}>مواقف الميكروباص</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            تصفح كامل مواقف السرفيس، والتعرفة الرسمية لخطوط القاهرة والجيزة، متاح حصرياً للباقة الذهبية.
+            تقدر دلوقتي تعرف خطوط السير والأجرات الرسمية وزمن الرحلة في جميع المواقف و نقط التحميل في جمهورية مصر العربية.
           </p>
         </div>
 
@@ -39,8 +43,8 @@ export default function MicrobusPaywall({
             margin: "0 auto",
             textAlign: "center",
             padding: "36px 28px",
-            border: "1px solid rgba(251, 191, 36, 0.25)",
-            boxShadow: "0 20px 50px -10px rgba(251, 191, 36, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.15)"
+            border: "1px solid var(--border-glass)",
+            borderRadius: "var(--radius-card)",
           }}
         >
           <div style={{ marginBottom: "20px" }}>
@@ -82,13 +86,6 @@ export default function MicrobusPaywall({
               <Link
                 href="/profile?expand=subscription"
                 className="btn btn-gold"
-                style={{
-                  padding: "14px",
-                  borderRadius: "12px",
-                  fontSize: "0.95rem",
-                  fontWeight: "800",
-                  textDecoration: "none"
-                }}
               >
                 ترقية إلى الباقة الذهبية الآن
               </Link>
@@ -96,13 +93,6 @@ export default function MicrobusPaywall({
               <Link
                 href="/login"
                 className="btn btn-primary"
-                style={{
-                  padding: "14px",
-                  borderRadius: "12px",
-                  fontSize: "0.95rem",
-                  fontWeight: "800",
-                  textDecoration: "none"
-                }}
               >
                 تسجيل الدخول لتفعيل الاشتراك
               </Link>
@@ -111,12 +101,6 @@ export default function MicrobusPaywall({
             <Link
               href="/"
               className="btn btn-cancel"
-              style={{
-                padding: "12px",
-                borderRadius: "12px",
-                fontSize: "0.88rem",
-                textDecoration: "none"
-              }}
             >
               الرجوع للرئيسية
             </Link>

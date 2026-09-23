@@ -1,0 +1,143 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — SIZING UTILITIES (Tailwind CSS Standards)
+ * ============================================================================
+ * Width, Height, Min/Max dimensions matching standard Tailwind classes.
+ */
+
+/* ==========================================================================
+   1. Width Utilities (.w-*)
+   ========================================================================== */
+.w-0       { width: 0px; }
+.w-px      { width: 1px; }
+.w-1       { width: var(--spacing-1); }
+.w-2       { width: var(--spacing-2); }
+.w-3       { width: var(--spacing-3); }
+.w-4       { width: var(--spacing-4); }
+.w-5       { width: var(--spacing-5); }
+.w-6       { width: var(--spacing-6); }
+.w-8       { width: var(--spacing-8); }
+.w-10      { width: var(--spacing-10); }
+.w-12      { width: var(--spacing-12); }
+.w-14      { width: var(--spacing-14); }
+.w-16      { width: var(--spacing-16); }
+.w-20      { width: var(--spacing-20); }
+.w-24      { width: var(--spacing-24); }
+.w-28      { width: var(--spacing-28); }
+.w-32      { width: var(--spacing-32); }
+.w-36      { width: var(--spacing-36); }
+.w-40      { width: var(--spacing-40); }
+.w-48      { width: var(--spacing-48); }
+.w-56      { width: var(--spacing-56); }
+.w-64      { width: var(--spacing-64); }
+.w-72      { width: var(--spacing-72); }
+.w-80      { width: var(--spacing-80); }
+.w-96      { width: var(--spacing-96); }
+
+.w-auto    { width: auto; }
+.w-1\/2, .w-1_2   { width: 50%; }
+.w-1\/3, .w-1_3   { width: 33.333333%; }
+.w-2\/3, .w-2_3   { width: 66.666667%; }
+.w-1\/4, .w-1_4   { width: 25%; }
+.w-2\/4, .w-2_4   { width: 50%; }
+.w-3\/4, .w-3_4   { width: 75%; }
+.w-1\/5, .w-1_5   { width: 20%; }
+.w-2\/5, .w-2_5   { width: 40%; }
+.w-3\/5, .w-3_5   { width: 60%; }
+.w-4\/5, .w-4_5   { width: 80%; }
+.w-full    { width: 100%; }
+.w-screen  { width: 100vw; }
+.w-min     { width: min-content; }
+.w-max     { width: max-content; }
+.w-fit     { width: fit-content; }
+
+/* Min Width */
+.min-w-0    { min-width: 0px; }
+.min-w-full { min-width: 100%; }
+.min-w-min  { min-width: min-content; }
+.min-w-max  { min-width: max-content; }
+.min-w-fit  { min-width: fit-content; }
+
+/* Max Width */
+.max-w-0    { max-width: 0rem; }
+.max-w-none { max-width: none; }
+.max-w-xs   { max-width: 20rem; }
+.max-w-sm   { max-width: 24rem; }
+.max-w-md   { max-width: 28rem; }
+.max-w-lg   { max-width: 32rem; }
+.max-w-xl   { max-width: 36rem; }
+.max-w-2xl  { max-width: 42rem; }
+.max-w-3xl  { max-width: 48rem; }
+.max-w-4xl  { max-width: 56rem; }
+.max-w-5xl  { max-width: 64rem; }
+.max-w-6xl  { max-width: 72rem; }
+.max-w-7xl  { max-width: 80rem; }
+.max-w-full { max-width: 100%; }
+.max-w-min  { max-width: min-content; }
+.max-w-max  { max-width: max-content; }
+.max-w-fit  { max-width: fit-content; }
+.max-w-prose{ max-width: 65ch; }
+
+/* Screen Max Widths */
+.max-w-screen-sm { max-width: 640px; }
+.max-w-screen-md { max-width: 768px; }
+.max-w-screen-lg { max-width: 1024px; }
+.max-w-screen-xl { max-width: 1280px; }
+.max-w-screen-2xl{ max-width: 1536px; }
+
+/* ==========================================================================
+   2. Height Utilities (.h-*)
+   ========================================================================== */
+.h-0       { height: 0px; }
+.h-px      { height: 1px; }
+.h-1       { height: var(--spacing-1); }
+.h-2       { height: var(--spacing-2); }
+.h-3       { height: var(--spacing-3); }
+.h-4       { height: var(--spacing-4); }
+.h-5       { height: var(--spacing-5); }
+.h-6       { height: var(--spacing-6); }
+.h-8       { height: var(--spacing-8); }
+.h-10      { height: var(--spacing-10); }
+.h-12      { height: var(--spacing-12); }
+.h-14      { height: var(--spacing-14); }
+.h-16      { height: var(--spacing-16); }
+.h-20      { height: var(--spacing-20); }
+.h-24      { height: var(--spacing-24); }
+.h-28      { height: var(--spacing-28); }
+.h-32      { height: var(--spacing-32); }
+.h-36      { height: var(--spacing-36); }
+.h-40      { height: var(--spacing-40); }
+.h-48      { height: var(--spacing-48); }
+.h-56      { height: var(--spacing-56); }
+.h-64      { height: var(--spacing-64); }
+.h-72      { height: var(--spacing-72); }
+.h-80      { height: var(--spacing-80); }
+.h-96      { height: var(--spacing-96); }
+
+.h-auto    { height: auto; }
+.h-1\/2, .h-1_2   { height: 50%; }
+.h-1\/3, .h-1_3   { height: 33.333333%; }
+.h-2\/3, .h-2_3   { height: 66.666667%; }
+.h-1\/4, .h-1_4   { height: 25%; }
+.h-3\/4, .h-3_4   { height: 75%; }
+.h-full    { height: 100%; }
+.h-screen  { height: 100vh; }
+.h-min     { height: min-content; }
+.h-max     { height: max-content; }
+.h-fit     { height: fit-content; }
+
+/* Min Height */
+.min-h-0      { min-height: 0px; }
+.min-h-full   { min-height: 100%; }
+.min-h-screen { min-height: 100vh; }
+.min-h-min    { min-height: min-content; }
+.min-h-max    { min-height: max-content; }
+.min-h-fit    { min-height: fit-content; }
+
+/* Max Height */
+.max-h-0      { max-height: 0px; }
+.max-h-full   { max-height: 100%; }
+.max-h-screen { max-height: 100vh; }
+.max-h-min    { max-height: min-content; }
+.max-h-max    { max-height: max-content; }
+.max-h-fit    { max-height: fit-content; }

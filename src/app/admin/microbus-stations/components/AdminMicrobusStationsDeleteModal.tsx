@@ -6,6 +6,7 @@ import { AdminMicrobusStation } from "../types";
 
 interface AdminMicrobusStationsDeleteModalProps {
   itemToDelete: AdminMicrobusStation | null;
+  bulkDeleteCount?: number;
   isDeleting: boolean;
   onConfirm: () => void;
   onCancel: () => void;
@@ -13,21 +14,29 @@ interface AdminMicrobusStationsDeleteModalProps {
 
 export function AdminMicrobusStationsDeleteModal({
   itemToDelete,
+  bulkDeleteCount = 0,
   isDeleting,
   onConfirm,
   onCancel
 }: AdminMicrobusStationsDeleteModalProps) {
+  const isBulk = bulkDeleteCount > 0;
+  const isOpen = Boolean(itemToDelete) || isBulk;
+
   return (
     <CustomModal
-      isOpen={Boolean(itemToDelete)}
+      isOpen={isOpen}
       onClose={onCancel}
-      title="تأكيد الحذف"
+      title={isBulk ? "تأكيد الحذف الجماعي" : "تأكيد الحذف"}
       titleColor="#ff3b30"
       iconSrc="/images/icons3d/trash.png"
       borderColor="rgba(255, 59, 48, 0.25)"
-      message="هل أنت متأكد من حذف هذا السجل؟"
+      message={
+        isBulk
+          ? `هل أنت متأكد من حذف (${bulkDeleteCount}) موقف محدد مع كافة خطوط السير الخاصة بها؟`
+          : "هل أنت متأكد من حذف هذا السجل؟"
+      }
       primaryButton={{
-        label: isDeleting ? "جاري الحذف..." : "نعم، احذف",
+        label: isDeleting ? "جاري الحذف..." : isBulk ? `نعم، احذف (${bulkDeleteCount}) موقف` : "نعم، احذف",
         onClick: onConfirm,
         bgColor: "#ff3b30",
         disabled: isDeleting,

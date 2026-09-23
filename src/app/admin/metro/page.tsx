@@ -8,7 +8,7 @@ import styles from "../admin.module.css";
 import Link from "next/link";
 import clsx from "clsx";
 import CustomModal from "@/components/common/Modals";
-import { METRO_STATION_LANDMARKS } from "@/app/metro/page";
+import { METRO_STATION_LANDMARKS } from "@/app/metro/constants";
 
 // ── Default Mock / Seed Data ──
 const DEFAULT_METRO_STATIONS: any[] = [

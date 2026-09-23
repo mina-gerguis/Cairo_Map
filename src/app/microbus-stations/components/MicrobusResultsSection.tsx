@@ -54,7 +54,17 @@ export default function MicrobusResultsSection({
     : (isSpecificStation && currentStation ? [currentStation] : []);
 
   return (
-    <div ref={resultsPanelRef} style={{ display: "flex", flexDirection: "column", gap: "18px", marginBottom: "28px" }}>
+    <div
+      id="stations-results-section"
+      ref={resultsPanelRef}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "18px",
+        marginBottom: "28px",
+        scrollMarginTop: "24px",
+      }}
+    >
       {/* Notice: Specific station selected, but NO direct match for query */}
       {isSpecificStation && !hasMatches && hasQuery && currentStation && (
         <div style={{

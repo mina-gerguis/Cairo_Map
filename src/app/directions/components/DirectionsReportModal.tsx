@@ -779,7 +779,7 @@ ${reportDetails.trim()}`;
                 </button>
                 <button
                   type="button"
-                  className="btn btn-cancle"
+                  className="btn btn-cancel"
                   disabled={reportLoading}
                   onClick={handleClose}
                   style={{

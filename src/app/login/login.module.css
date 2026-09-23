@@ -1,0 +1,533 @@
+/* ============================================================================
+   LOGIN PAGE MODULE CSS
+   Clean Code Architecture & Design System Standards
+   ============================================================================ */
+
+/* ── Main Layout Wrapper ── */
+.loginLayout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+  direction: rtl;
+  background: #ffffff;
+}
+
+:global(html.dark) .loginLayout {
+  background: #09090b;
+}
+
+/* ── DriftWall Interactive Mesh Background Layer ── */
+.driftWallWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+}
+
+:global(html.dark) .driftWallWrapper {
+  opacity: 0.55;
+}
+
+/* ── Ambient Background Glow Orbs ── */
+.ambientOrb1 {
+  position: fixed;
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(108, 99, 255, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambientOrb2 {
+  position: fixed;
+  bottom: -20%;
+  left: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 212, 170, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global(html.dark) .ambientOrb1 {
+  background: radial-gradient(circle, rgba(108, 99, 255, 0.25) 0%, transparent 70%);
+}
+
+:global(html.dark) .ambientOrb2 {
+  background: radial-gradient(circle, rgba(0, 68, 120, 0.45) 0%, transparent 70%);
+}
+
+/* ── Container ── */
+.formContainer {
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header & Branding ── */
+.header {
+  text-align: center;
+  margin-bottom: 36px;
+  animation: slideInSection 0.6s ease both;
+}
+
+.logoWrapper {
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logoImgDark {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  display: none;
+}
+
+.logoImgLight {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+:global(html.dark) .logoImgDark {
+  display: block;
+}
+
+:global(html.dark) .logoImgLight {
+  display: none;
+}
+
+.title {
+  font-family: var(--font-display, inherit);
+  font-size: 2.1rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #6c63ff, #00d4aa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Glass Card ── */
+.glassCard {
+  background: var(--card-glass, rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid var(--border-glass, rgba(0, 0, 0, 0.08));
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
+  animation: slideInSection 0.7s ease 0.1s both;
+}
+
+:global(html.dark) .glassCard {
+  background: rgba(18, 18, 23, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Error Banner ── */
+.errorBanner {
+  background: rgba(255, 63, 142, 0.12);
+  border: 1px solid rgba(255, 63, 142, 0.3);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #ff6eb4;
+  margin-bottom: 24px;
+  font-size: 0.88rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: slideInSection 0.3s ease;
+}
+
+/* ── Form Layout ── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-heading, inherit);
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  height: 44px;
+  width: 100%;
+  min-width: 0;
+  border-radius: 10px;
+  border: 1px solid var(--border-glass, rgba(0, 0, 0, 0.12));
+  background: transparent;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  color: var(--text-primary, #111827);
+  outline: none;
+  transition: all 0.2s ease;
+  text-align: left;
+  direction: ltr;
+}
+
+.inputFocused {
+  border: 1.5px solid var(--color-primary, #6c63ff) !important;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+}
+
+.passwordInput {
+  padding-right: 44px;
+}
+
+.togglePasswordBtn {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted, #9ca3af);
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.2s ease;
+}
+
+.togglePasswordBtn:hover {
+  color: var(--text-primary, #111827);
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox {
+  accent-color: var(--color-primary, #6c63ff);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkboxLabel {
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-heading, inherit);
+}
+
+.submitBtn {
+  margin-top: 8px;
+  padding: var(--padding-btn, 12px 24px);
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radiusBtn, 12px);
+  border: 1px solid var(--border-glass, rgba(0, 0, 0, 0.1));
+  background: #000;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+  font-family: var(--font-sub, inherit);
+}
+
+:global(html.dark) .submitBtn {
+  background: #ffffff;
+  color: #000000;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ── MFA Form ── */
+.mfaHeader {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.mfaIconWrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.mfaIcon {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.mfaTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary, #111827);
+}
+
+.mfaSubtitle {
+  margin: 8px 0 0;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.mfaDigitsContainer {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  direction: ltr;
+  padding: 0 10px;
+}
+
+.mfaDigitInput {
+  width: 45px;
+  height: 50px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0;
+  border-radius: 12px;
+  border: 2px solid rgba(108, 99, 255, 0.2);
+  background: rgba(108, 99, 255, 0.05);
+  color: var(--text-primary, #111827);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.mfaDigitInput:focus {
+  border-color: var(--color-primary, #6c63ff);
+  background: rgba(108, 99, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+.mfaSubmitBtn {
+  margin-top: 8px;
+  padding: var(--padding-btn, 12px);
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radiusBtn, 12px);
+  border: none;
+  background: var(--color-primary, #6c63ff);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+  font-family: var(--font-sub, inherit);
+}
+
+.mfaSubmitBtn:hover:not(:disabled) {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.mfaSubmitBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.mfaCancelBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--btn-cancel, rgba(143, 143, 143, 0.08));
+  border: none;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 8px;
+  padding: var(--padding-btn, 12px);
+  border-radius: var(--radiusBtn, 12px);
+  width: 100%;
+  transition: all 0.2s ease;
+  font-family: var(--font-sub, inherit);
+}
+
+.mfaCancelBtn:hover {
+  background: rgba(143, 143, 143, 0.15);
+  color: var(--text-primary, #111827);
+}
+
+/* ── Footer Links ── */
+.footerContainer {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border-glass, rgba(0, 0, 0, 0.08));
+}
+
+.dividerText {
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.signupBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: var(--padding-btn, 12px);
+  border-radius: var(--radiusBtn, 12px);
+  border: 1px solid var(--border-glass, rgba(0, 0, 0, 0.08));
+  background: rgba(143, 143, 143, 0.06);
+  color: var(--text-primary, #111827);
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: var(--font-sub, inherit);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.signupBtn:hover {
+  background: rgba(143, 143, 143, 0.12);
+  transform: translateY(-1px);
+}
+
+.guestBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, #6b7280);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.guestBtn:hover {
+  color: var(--text-primary, #111827);
+  background: rgba(143, 143, 143, 0.05);
+}
+
+.footerTerms {
+  text-align: center;
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.8rem;
+  margin-top: 24px;
+  animation: slideInSection 0.8s ease 0.3s both;
+}
+
+.termsLink {
+  color: var(--color-primary, #6c63ff);
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.termsLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Keyframes ── */
+@keyframes slideInSection {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,1 @@
+export { useAirportsData } from "./useAirportsData";

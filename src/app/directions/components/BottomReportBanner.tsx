@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "../page.module.css";
 
 interface BottomReportBannerProps {
   onOpenReportModal: () => void;
@@ -6,40 +7,26 @@ interface BottomReportBannerProps {
 
 export default function BottomReportBanner({ onOpenReportModal }: BottomReportBannerProps) {
   return (
-    <div
-      onClick={onOpenReportModal}
-      style={{
-        background: "var(--bg-linear-alert)",
-        border: "1px solid var(--border-secondary)",
-        borderRadius: "var(--ra-8)",
-        padding: "var(--pd-20)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "16px",
-        marginTop: "14px",
-        overflow: "hidden",
-        position: "relative"
-      }}
-    >
+    <div onClick={onOpenReportModal} className={styles.calloutBanner}>
       <div style={{ flex: "1 1 300px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexDirection: "row-reverse", justifyContent: "flex-end" }}>
-          <h2
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+          <img
+            src="/images/icons3d/alert.png"
+            alt="Report"
+            style={{ width: "32px", height: "32px", objectFit: "contain" }}
+          />
+          <h3
             style={{
-              margin: "0 0 6px",
-              fontSize: "1rem",
+              margin: 0,
+              fontSize: "1.05rem",
               fontWeight: "800",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px"
+              color: "var(--text-primary)",
+              fontFamily: "var(--font-sub)"
             }}
           >
             الإبلاغ عن مشكلة أو تحديث في خطوط المواصلات
-          </h2>
-          <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px" }} />
+          </h3>
         </div>
-
         <p
           style={{
             margin: 0,
@@ -51,6 +38,7 @@ export default function BottomReportBanner({ onOpenReportModal }: BottomReportBa
           هل لاحظت أي خطأ في الأسعار، خطوات الطريق، أو وسائل المواصلات؟ شاركنا ملاحظتك لمساعدتنا في تدقيق الدليل وتحديثه باستمرار.
         </p>
       </div>
+      <i className="bx bx-chevron-left" style={{ fontSize: "1.4rem", color: "var(--text-muted)", marginRight: "auto" }} />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { RouteData, RouteOption } from "./types";
 
 import DirectionsLoading from "./components/DirectionsLoading";
 import DirectionsPaywall from "./components/DirectionsPaywall";
+import DirectionsHero from "./components/DirectionsHero";
 import PopularRoutesSlider from "./components/PopularRoutesSlider";
 import RouteSearchCard from "./components/RouteSearchCard";
 import RouteResultsSection from "./components/RouteResultsSection";
@@ -20,6 +21,7 @@ import BottomReportBanner from "./components/BottomReportBanner";
 import DirectionsReportModal from "./components/DirectionsReportModal";
 import { isPageOpenByPromotion } from "@/lib/promotions";
 import Footer from "@/components/Footer";
+import styles from "./page.module.css";
 
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
 
@@ -63,7 +65,7 @@ export default function DirectionsPage() {
       if (headerRef.current) {
         gsap.fromTo(
           headerRef.current,
-          { opacity: 0, y: -15 },
+          { opacity: 0, y: -16 },
           { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
         );
       }
@@ -73,13 +75,13 @@ export default function DirectionsPage() {
         gsap.fromTo(
           sections,
           { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.1 }
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "power2.out", delay: 0.08 }
         );
       }
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [dataLoading]);
 
   // Modal entrance animation
   useEffect(() => {
@@ -181,9 +183,11 @@ export default function DirectionsPage() {
   // Check user subscription / access or promotional open access
   const promoStatus = isPageOpen("/directions");
   const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
-  const hasAccess = profile?.is_admin ||
+  const hasAccess = Boolean(
+    profile?.is_admin ||
     promoStatus.isOpen ||
-    ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired);
+    ((profile?.subscription_tier === "silver" || profile?.subscription_tier === "gold" || profile?.subscription_tier === "mishwar") && !isExpired)
+  );
 
   // Loading screen
   if (authLoading || dataLoading) {
@@ -202,41 +206,26 @@ export default function DirectionsPage() {
   }
 
   return (
-    //================================== START MAIN CONTAINER =================================
-    <div className="main-container">
-      {/* Header Banner */}
-      <div ref={headerRef} className="header-banner">
-        <div>
-          <h1 className="header-title">
-            <img
-              src="/images/icons2d/arab_republic _of_egypt.png"
-              alt="Egypt"
-              loading="lazy"
-              decoding="async"
-              style={{ width: "38px", marginLeft: "10px" }}
-            />
-            ازاي اروح ..؟
-          </h1>
-          <p className="header-sub-title">
-            دليل السفر والانتقال الذكي لمختلف وسائل المواصلات بالقاهرة والمحافظات. ابحث عن أي مكان وسنوجهك لأفضل طريق بدقة.
-          </p>
-        </div>
-      </div>
+    <div className={styles.pageWrapper}>
+      {/* Ambient Glow */}
+      <div className={styles.ambientGlow} />
 
-      {/* Main Content Container */}
-      <div className="container">
+      <div className={styles.contentContainer}>
+        {/* Hero Section */}
+        <DirectionsHero
+          headerRef={headerRef}
+          popularRoutesCount={popularRoutes.length}
+        />
+
         {/* Dynamic Popular Searches Slider (Ranked by user search counts) */}
-        <div>
-          <h2 className="slider-title">أشهر المسارات</h2>
-          <PopularRoutesSlider
-            sliderRef={sliderRef}
-            routes={popularRoutes}
-            onSelectRoute={handlePresetSearch}
-          />
-        </div>
+        <PopularRoutesSlider
+          sliderRef={sliderRef}
+          routes={popularRoutes}
+          onSelectRoute={handlePresetSearch}
+        />
 
         {/* Weather comfort widget */}
-        <div style={{ marginBottom: "16px" }}>
+        <div style={{ marginBottom: "20px" }}>
           <WeatherComfortWidget />
         </div>
 
@@ -298,6 +287,5 @@ export default function DirectionsPage() {
       {/* Footer */}
       <Footer />
     </div>
-    //================================== END MAIN CONTAINER =================================
   );
 }

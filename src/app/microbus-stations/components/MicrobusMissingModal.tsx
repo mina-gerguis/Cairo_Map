@@ -1,5 +1,7 @@
 import React, { RefObject } from "react";
 import styles from "../microbus.module.css";
+import CancelButton from "@/components/ui/button/CancelButton";
+import PrimaryButton from "@/components/ui/button/PrimaryButton";
 
 interface MicrobusMissingModalProps {
   isOpen: boolean;
@@ -70,10 +72,10 @@ export default function MicrobusMissingModal({
           justifyContent: "space-between",
           alignItems: "center",
           borderBottom: "1px solid rgba(255,255,255,0.08)",
-          paddingBottom: "14px"
+          paddingBottom: "var(--pd-8)"
         }}>
           <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-sub)" }}>
-            إبلاغ الإدارة بخط سرفيس غير مدرج
+            اقتراح خط سرفيس جديد
           </h3>
           <button
             type="button"
@@ -84,7 +86,8 @@ export default function MicrobusMissingModal({
           </button>
         </div>
 
-        <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "14px" }}>
+        <form onSubmit={onSubmit}
+          className="flex column gap-12 mt-4">
           <div>
             <label className={styles.fieldLabel}>اسم الموقف: <span style={{ color: "#ef4444" }}>*</span></label>
             <input
@@ -142,20 +145,18 @@ export default function MicrobusMissingModal({
           )}
 
           <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "6px" }}>
-            <button
-              type="button"
+            <CancelButton
               onClick={onClose}
-              className="btn btn-cancel"
-            >
-              إلغاء
-            </button>
-            <button
+            />
+
+            <PrimaryButton
               type="submit"
               disabled={submitting || limitReached || limitChecking}
-              className="btn btn-primary"
-            >
-              {submitting ? "جاري الإرسال..." : "إرسال للإدارة"}
-            </button>
+              loading={submitting}
+              loadingText="جاري الإرسال..."
+              onClick={onSubmit}
+              label="إرسال الإقتراح"
+            />
           </div>
         </form>
       </div>

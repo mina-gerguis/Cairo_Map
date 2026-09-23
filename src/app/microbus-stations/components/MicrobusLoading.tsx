@@ -13,7 +13,7 @@ export default function MicrobusLoading() {
         animation: "spin 0.9s linear infinite",
         marginBottom: "20px"
       }} />
-      <p style={{ color: "var(--text-secondary)", fontSize: "1rem", fontFamily: "var(--font-sub)" }}>جاري تحميل دليل المواقف...</p>
+      <p style={{ color: "var(--text-secondary)", fontSize: "1rem", fontFamily: "var(--font-sub)" }}>جاري تحميل دليل مواقف الميكروباص...</p>
       <style dangerouslySetInnerHTML={{
         __html: `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`
       }} />

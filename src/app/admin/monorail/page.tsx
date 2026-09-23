@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import styles from "../admin.module.css";
 import Link from "next/link";
-import { STATION_DETAILS } from "@/app/monorail/page";
+import { STATION_DETAILS } from "@/app/monorail/constants";
 import clsx from "clsx";
 import CustomModal from "@/components/common/Modals";
 
@@ -756,7 +756,7 @@ function AdminMonorailInner() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="btn btn-cancle"
+                  className="btn btn-cancel"
                 >
                   إلغاء
                 </button>

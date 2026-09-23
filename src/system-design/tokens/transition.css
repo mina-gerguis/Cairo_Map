@@ -1,7 +1,30 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — TRANSITION & MOTION TOKENS (Tailwind Standards)
+ * ============================================================================
+ */
+
 :root {
-    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-    --transition-fast: all 0.15s ease-out;
-    --transition-smooth: all 0.25s ease-out;
-    --transition-spring: all 0.60s var(--ease-spring);
-    --transition-bounce: all 0.30s var(--ease-spring);
+  /* Tailwind Standard Transition Timing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Tailwind Standard Durations */
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+
+  /* Legacy Presets */
+  --transition-fast: all 0.15s var(--ease-out);
+  --transition-smooth: all 0.25s var(--ease-out);
+  --transition-spring: all 0.60s var(--ease-spring);
+  --transition-bounce: all 0.30s var(--ease-spring);
 }

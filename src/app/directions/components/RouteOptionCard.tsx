@@ -7,6 +7,7 @@ import {
   getTransitOptionIconPath
 } from "../utils";
 import RouteLegTimeline from "./RouteLegTimeline";
+import styles from "../page.module.css";
 
 interface RouteOptionCardProps {
   option: RouteOption;
@@ -36,173 +37,115 @@ export default function RouteOptionCard({
   };
 
   return (
-    <div className="details-panel" style={{ margin: 0 }}>
+    <div className={styles.routeCard}>
       {/* Option Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "12px",
-          borderBottom: "1px solid var(--border-glass)",
-          paddingBottom: "14px"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <div className={styles.routeHeader}>
+        <div className={styles.routeTitle}>
           {iconData.type === "image" && iconData.src ? (
             <img
               src={iconData.src}
               loading="lazy"
               decoding="async"
-              style={{ width: "40px", height: "auto", objectFit: "contain" }}
+              style={{ width: "36px", height: "auto", objectFit: "contain" }}
               alt={option.typeName}
             />
           ) : (
-            <div
-              style={{
-                width: "38px",
-                height: "38px",
-                borderRadius: "10px",
-                background: "rgba(59, 130, 246, 0.12)",
-                color: "var(--color-secondary)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "1.3rem"
-              }}
-            >
-              <i className={iconData.iconClass || "bx bx-bus"} />
+            <div className={styles.bentoIconBox}>
+              <i className={iconData.iconClass || "bx bx-bus"} style={{ color: "var(--color-secondary)" }} />
             </div>
           )}
-          <div>
-            <h2 style={{ margin: 0, fontSize: "var(--fs-md)", fontWeight: "var(--fw-bold)", color: "var(--text-primary)", fontFamily: "var(--font-sub)" }}>
-              {option.typeName}
-            </h2>
-          </div>
+          <span>{option.typeName}</span>
         </div>
 
-        <div style={{ display: "flex", gap: "8px" }}>
-          <span
-            style={{
-              background: "var(--tab-active-bg)",
-              border: "1px solid var(--border-glass)",
-              color: "var(--tab-active-color)",
-              padding: "4px 10px",
-              borderRadius: "var(--ra-8)",
-              fontSize: "0.82rem",
-              fontWeight: "700"
-            }}
-          >
-            مصاريف: {summary.totalCost} ج.م
-          </span>
-          <span
-            style={{
-              background: "var(--tab-active-bg)",
-              border: "1px solid var(--border-glass)",
-              color: "var(--tab-active-color)",
-              padding: "4px 10px",
-              borderRadius: "var(--ra-8)",
-              fontSize: "0.82rem",
-              fontWeight: "700"
-            }}
-          >
-            الوقت: {summary.totalDuration}
-          </span>
-        </div>
-      </div>
-
-      {/* Multi-stage vertical timeline */}
-      <RouteLegTimeline legs={legs} />
-
-      {/* Trip Summary Box */}
-      <div
-        style={{
-          background: "var(--bg-glass)",
-          border: "1px solid var(--border-glass)",
-          borderRadius: "var(--ra-8)",
-          padding: "12px 14px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            background: "var(--bg-glass)",
-            padding: "8px 12px",
-            borderRadius: "var(--ra-8)",
-            border: "1px solid var(--border-glass)"
-          }}
-        >
-          <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-muted)" }}>
-            هتصرف أجرة بقيمة :
-          </span>
-          <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#10b981" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+          <span className={styles.farePill}>
             {summary.totalCost} جنيه
           </span>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            background: "var(--bg-glass)",
-            padding: "8px 12px",
-            borderRadius: "var(--ra-8)",
-            border: "1px solid var(--border-glass)"
-          }}
-        >
-          <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-muted)" }}>
-            وقت الوصول المقدر :
-          </span>
-          <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--color-secondary)" }}>
+          <span className={styles.timePill}>
             {summary.totalDuration}
           </span>
         </div>
       </div>
 
-      {/* Tips section if available */}
-      {option.tips && (
-        <div
-          style={{
-            background: "var(--bg-glass)",
-            border: "1px solid var(--border-glass)",
-            borderRadius: "var(--ra-8)",
-            padding: "12px 14px"
-          }}
-        >
-          <p style={{ margin: 0, lineHeight: "1.6", fontSize: "0.85rem" }}>
-            <i
-              className="bx bxs-info-circle"
-              style={{ marginLeft: "6px", color: "var(--color-secondary)", fontSize: "1.1rem", verticalAlign: "middle" }}
-            />
-            <strong>نصيحة الطريق: </strong>
-            <span style={{ color: "var(--text-muted)" }}>{option.tips}</span>
-          </p>
-        </div>
-      )}
+      {/* Option Details Box */}
+      <div className={styles.routeDetailsBox}>
+        {/* Metrics Grid */}
+        <div className={styles.metricsGrid}>
+          {/* Fare tile */}
+          <div className={styles.metricTile}>
+            <div className={styles.metricTileIcon} style={{ background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>
+              <i className="bx bx-money" />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>التكلفة الإجمالية</span>
+              <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "#10b981" }}>
+                {summary.totalCost} ج.م
+              </span>
+            </div>
+          </div>
 
-      {/* Action Buttons: WhatsApp Share, Maps, Report */}
-      <div>
-        <div style={{ display: "flex", gap: "8px", margin: "var(--mg-8) 0" }}>
-          {/* Share Button */}
+          {/* Duration tile */}
+          <div className={styles.metricTile}>
+            <div className={styles.metricTileIcon} style={{ background: "rgba(59, 130, 246, 0.1)", color: "var(--color-secondary)" }}>
+              <i className="bx bx-time-five" />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>الوقت المقدر</span>
+              <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--color-secondary)" }}>
+                {summary.totalDuration}
+              </span>
+            </div>
+          </div>
+
+          {/* Stages tile */}
+          <div className={styles.metricTile}>
+            <div className={styles.metricTileIcon} style={{ background: "rgba(139, 92, 246, 0.1)", color: "#8b5cf6" }}>
+              <i className="bx bx-git-branch" />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>مراحل التنقل</span>
+              <span style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                {legs.length} {legs.length === 1 ? "وسيلة واحدة" : "وسائل نقل"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Multi-stage vertical timeline */}
+        <div className={styles.timelineWrapper}>
+          <RouteLegTimeline legs={legs} />
+        </div>
+
+        {/* Tips section if available */}
+        {option.tips && (
+          <div className={styles.tipsBox}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: "800", color: "#f59e0b", marginBottom: "4px" }}>
+              <i className="bx bxs-bulb" style={{ fontSize: "1.1rem" }} />
+              <span>نصيحة مهمة للمسار:</span>
+            </div>
+            <p style={{ margin: 0, color: "var(--text-secondary)" }}>{option.tips}</p>
+          </div>
+        )}
+
+        {/* Action Buttons: WhatsApp Share, Maps, Report */}
+        <div className={styles.actionsRow}>
           <button
             type="button"
             onClick={handleShare}
             className="btn btn-primary"
             style={{
-              width: "100%",
+              flex: 1,
+              height: "42px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px"
             }}
           >
             <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }} />
             <span>مشاركة الخط</span>
           </button>
-          {/* Map Link Button */}
+
           {option.map_link && (
             <a
               href={option.map_link}
@@ -210,27 +153,37 @@ export default function RouteOptionCard({
               rel="noopener noreferrer"
               className="btn btn-secondary"
               style={{
-                width: "100%",
+                flex: 1,
+                height: "42px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px"
               }}
             >
               <i className="bx bx-navigation" style={{ fontSize: "1.1rem" }} />
               <span>خريطة Google</span>
             </a>
           )}
+
+          <button
+            type="button"
+            className="btn btn-report"
+            onClick={() => onOpenReportModal(option)}
+            style={{
+              flex: option.map_link ? "0 0 auto" : 1,
+              height: "42px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              padding: "0 18px"
+            }}
+          >
+            <i className="fa-solid fa-triangle-exclamation" />
+            <span>إبلاغ عن خطأ</span>
+          </button>
         </div>
-        {/* Report Problem Button */}
-        <button
-          type="button"
-          className="btn btn-report"
-          onClick={() => onOpenReportModal(option)}
-          style={{
-            width: "100%",
-            padding: "var(--padding-btn)",
-          }}
-        >
-          <i className="fa-solid fa-triangle-exclamation"></i>
-          <span>الإبلاغ عن خطأ</span>
-        </button>
       </div>
     </div>
   );

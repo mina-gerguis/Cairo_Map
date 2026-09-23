@@ -1,0 +1,244 @@
+/* Directory Module CSS */
+
+.sliderContainer {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 6px 4px 16px 4px;
+  margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+}
+
+.sliderContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.sliderCard {
+  border-radius: var(--ra-8, 8px);
+  padding: 16px 16px 14px 16px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: right;
+  flex: 0 0 auto;
+  min-width: 185px;
+  max-width: 220px;
+  height: 88px;
+  display: flex;
+  flex-direction: column;
+  justifyContent: space-between;
+  align-items: flex-start;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+}
+
+.sliderCard:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.sliderCardTitle {
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sliderCardSubtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Emergency Fast Dial Ribbon */
+.emergencyRibbon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.emergencyCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--ra-8, 8px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.emergencyCard:hover {
+  transform: translateY(-2px);
+}
+
+.emergencyIconCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+/* Suggestions Dropdown */
+.suggestionsDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-card, 12px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  max-height: 280px;
+  overflow-y: auto;
+  direction: rtl;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background-color 0.2s;
+}
+
+.suggestionItem:hover {
+  background-color: var(--hoverBtn, rgba(255, 255, 255, 0.06));
+}
+
+/* Phone Cards Grid */
+.phoneGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.phoneCard {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--ra-8, 8px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.phoneCard:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Empty State Box */
+.emptyState {
+  text-align: center;
+  padding: 30px 10px;
+  background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+  border-radius: var(--radius-card, 12px);
+  border: 1px solid var(--border-glass);
+}
+
+/* Accordion */
+.accordionItem {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--ra-8, 8px);
+  overflow: hidden;
+}
+
+.accordionHeader {
+  padding: 12px 16px;
+  background: var(--bg-glass, rgba(255, 255, 255, 0.02));
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.accordionHeader:hover {
+  background: var(--hoverBtn, rgba(255, 255, 255, 0.05));
+}
+
+.accordionContent {
+  padding: 8px 16px;
+  background: var(--bgPrimary);
+  border-top: 1px solid var(--border-glass);
+}
+
+/* Modal Overlay & Card */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  direction: rtl;
+}
+
+.modalBox {
+  background-color: var(--bgPrimary);
+  border-radius: var(--radius-card, 12px);
+  border: 1px solid var(--border-glass);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-cairo);
+}
+
+.modalHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.modalContent {
+  padding: 20px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.dropzone {
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
