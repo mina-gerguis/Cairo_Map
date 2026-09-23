@@ -554,6 +554,7 @@
 
 /* Branch switcher pills */
 .branchTabs {
+  margin: 0 auto;
   display: flex;
   gap: 6px;
   background: rgba(255, 255, 255, 0.04);

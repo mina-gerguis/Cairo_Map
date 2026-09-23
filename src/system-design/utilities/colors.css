@@ -15,9 +15,8 @@
 
 /* Theme Semantic Backgrounds */
 .bg-primary     { background-color: var(--color-primary); }
-.bg-secondary   { background-color: var(--color-secondary); }
+.bg-secondary   { background-color: var(--bg-secondary); }
 .bg-mode        { background-color: var(--bgMode); }
-.bg-surface     { background-color: var(--bg-secondary); }
 .bg-surface-alt { background-color: var(--bgThird); }
 .bg-glass       { background-color: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .bg-glass-active{ background-color: var(--bg-glass-active); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }

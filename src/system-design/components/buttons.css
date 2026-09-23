@@ -15,6 +15,7 @@
   border-radius: var(--radiusBtn);
   border: 1px solid var(--border-glass);
   outline: none;
+  font-size: var(--fs-sm);
   font-family: var(--font-sub);
   font-weight: var(--fw-medium);
   line-height: 1;
@@ -48,12 +49,23 @@
 
 /* --- Primary --- */
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: var(--mainBtn);
   border-color: var(--mainBtnBorder);
   color: #ffffff !important;
 }
 
 .btn-primary:hover {
+  opacity: 0.88;
+  filter: brightness(1.05);
+}
+
+.btn-primary-gradient {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: var(--mainBtnBorder);
+  color: #ffffff !important;
+}
+
+.btn-primary-gradient:hover {
   opacity: 0.88;
   filter: brightness(1.05);
 }

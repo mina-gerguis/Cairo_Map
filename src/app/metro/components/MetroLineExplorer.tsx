@@ -22,16 +22,6 @@ export default function MetroLineExplorer({
       {/* Line Header & Line 3 Branch Tabs */}
       <div className={styles.stationHeader}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            className={styles.stationIconBadge}
-            style={{
-              background: `${color}18`,
-              borderColor: `${color}35`,
-              color: color,
-            }}
-          >
-            <i className="bx bx-git-branch" />
-          </div>
           <div>
             <h2 className={styles.stationName}>{selectedLineObj.name}</h2>
             <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -42,7 +32,7 @@ export default function MetroLineExplorer({
 
         {/* Line 3 sub-branches tabs */}
         {explorerLine === "line3" && (
-          <div className={styles.branchTabs}>
+          <div className={styles.branchTabs} >
             {[
               { id: "trunk", name: "الفرع الرئيسي" },
               { id: "branchA", name: "روض الفرج" },
@@ -78,7 +68,7 @@ export default function MetroLineExplorer({
         </div>
 
         <div className={styles.metricTile} style={{ flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
-          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: "600" }}>إجمالي المحطات</span>
+          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: "600" }}> المحطات</span>
           <span style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)" }}>
             {currentExplorerStations.length > 0 ? `${currentExplorerStations.length} محطة` : "تحت الإنشاء"}
           </span>
@@ -86,14 +76,8 @@ export default function MetroLineExplorer({
       </div>
 
       {/* Detailed stops vertical timeline */}
-      <div
-        style={{
-          background: "rgba(0, 0, 0, 0.15)",
-          border: "1px solid rgba(255, 255, 255, 0.06)",
-          borderRadius: "14px",
-          padding: "18px 16px",
-        }}
-      >
+      <div className="bg-secondary border border-glass rounded-lg p-4">
+        
         <div
           style={{
             display: "flex",
@@ -285,17 +269,7 @@ export default function MetroLineExplorer({
 
                   {/* Expanded Landmarks / Status details */}
                   {expandedStation === station && (
-                    <div
-                      style={{
-                        margin: "6px 16px 14px 28px",
-                        padding: "12px 16px",
-                        borderRadius: "10px",
-                        background: "rgba(255, 255, 255, 0.03)",
-                        border: isUnderConstruction
-                          ? "1px dashed rgba(239, 68, 68, 0.3)"
-                          : "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
-                      }}
-                    >
+                    <div className="rounded-lg p-4 bg-glass mt-1">
                       {isUnderConstruction && (
                         <div
                           style={{
@@ -359,13 +333,8 @@ export default function MetroLineExplorer({
                             e.stopPropagation();
                             onOpenReportModal(station);
                           }}
-                          className={styles.actionButton}
-                          style={{
-                            fontSize: "0.75rem",
-                            padding: "4px 10px",
-                          }}
+                          className="btn btn-report"
                         >
-                          <i className="fa-solid fa-flag" style={{ color: "#f59e0b" }}></i>
                           <span>الإبلاغ عن تصحيح في محطة {station}</span>
                         </button>
                       </div>

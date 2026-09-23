@@ -306,7 +306,6 @@ export default function MetroRouteCalculator({
         disabled={!selectedFrom || !selectedTo}
         className="btn btn-primary w-full mt-3"
       >
-        <i className="fa-solid fa-magnifying-glass" />
         <span>اعرض مسار وتفاصيل الرحلة</span>
       </button>
 
@@ -503,33 +502,23 @@ export default function MetroRouteCalculator({
                   {currentStepIndex < result.detailedPath.length - 1 ? (
                     <button
                       type="button"
-                      className="btn btn-primary w-full"
+                      className="btn btn-primary-gradient w-full"
                       onClick={onStepNext}
                     >
                       <span>وصلت لمحطة {result.detailedPath[currentStepIndex + 1]?.station} ←</span>
                     </button>
                   ) : (
                     <div
-                      style={{
-                        textAlign: "center",
-                        background: "rgba(16, 185, 129, 0.1)",
-                        border: "1px solid rgba(16, 185, 129, 0.25)",
-                        borderRadius: "10px",
-                        padding: "16px",
-                      }}
+                      className="pt-5 text-center"
                     >
-                      <div style={{ fontSize: "2rem", marginBottom: "4px" }}>🎉</div>
-                      <h4 style={{ color: "#10b981", fontWeight: "800", margin: "0 0 4px" }}>
-                        حمدلله على السلامة!
-                      </h4>
-                      <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: "0 0 12px" }}>
-                        لقد وصلت بنجاح إلى وجهتك محطة {result.detailedPath[currentStepIndex]?.station}.
+                      <h4 className="font-sub text-primary fs-6 fw-bold">حمدلله على السلامة!</h4>
+                      <p className="text-secondary mb-4 fs-sm">
+                        لقد وصلت إلى محطة {result.detailedPath[currentStepIndex]?.station}.
                       </p>
                       <button
                         type="button"
                         onClick={onEndTrip}
-                        className={`${styles.actionButton} ${styles.actionButtonPrimary}`}
-                        style={{ margin: "0 auto", padding: "8px 20px" }}
+                        className="btn btn-cancel w-full"
                       >
                         إنهاء الرحلة
                       </button>
@@ -539,13 +528,7 @@ export default function MetroRouteCalculator({
               )}
 
               {/* Detailed Path Steps List */}
-              <div
-                style={{
-                  background: "rgba(0, 0, 0, 0.15)",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
-                  borderRadius: "14px",
-                  padding: "16px",
-                }}
+              <div className="bg-secondary border border-glass rounded-lg p-4 "
               >
                 <h3
                   style={{
@@ -659,12 +642,12 @@ export default function MetroRouteCalculator({
                               </span>
                               {isFirst && (
                                 <span style={{ fontSize: "0.7rem", color: "#10b981", background: "rgba(16, 185, 129, 0.12)", padding: "1px 6px", borderRadius: "4px", fontWeight: "700" }}>
-                                  محطة الركوب
+                                 ركبت من
                                 </span>
                               )}
                               {isLast && (
                                 <span style={{ fontSize: "0.7rem", color: "#ef4444", background: "rgba(239, 68, 68, 0.12)", padding: "1px 6px", borderRadius: "4px", fontWeight: "700" }}>
-                                  محطة الوصول
+                                الواجهة النهائية
                                 </span>
                               )}
                             </div>
@@ -718,7 +701,7 @@ export default function MetroRouteCalculator({
                                     fontWeight: "700",
                                   }}
                                 >
-                                  🔄 محطة تبديل: التحويل إلى {LINE_NAMES[node.targetLine!]}
+                                  محطة تبديل: التحويل إلى {LINE_NAMES[node.targetLine!]}
                                 </div>
                               )}
                             </div>
@@ -735,14 +718,9 @@ export default function MetroRouteCalculator({
                 <button
                   type="button"
                   onClick={() => onOpenReportModal(null, true)}
-                  className={styles.actionButton}
-                  style={{
-                    color: "var(--text-muted)",
-                    fontSize: "0.78rem",
-                  }}
+                  className="btn btn-report"
                 >
-                  <i className="fa-solid fa-flag" style={{ color: "#f59e0b" }} />
-                  <span>الإبلاغ عن خطأ في حساب هذا المسار</span>
+                  <span>الإبلاغ عن خطأ في هذا المسار</span>
                 </button>
               </div>
             </>

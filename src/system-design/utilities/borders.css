@@ -108,3 +108,12 @@
 .outline-0    { outline-width: 0px; }
 .outline-1    { outline-width: 1px; }
 .outline-2    { outline-width: 2px; }
+
+
+/* 
+==========================================================================
+   6. Border Color Utilities
+   ========================================================================== */
+   .border-glass {
+    border-color: var(--border-glass);
+   }

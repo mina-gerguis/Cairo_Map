@@ -7,16 +7,6 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
     <div ref={mapPanelRef} className={styles.stationCard}>
       <div className={styles.stationHeader}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
-            className={styles.stationIconBadge}
-            style={{
-              background: "rgba(59, 130, 246, 0.12)",
-              borderColor: "rgba(59, 130, 246, 0.25)",
-              color: "#3b82f6",
-            }}
-          >
-            <i className="bx bx-map-alt" />
-          </div>
           <div>
             <h2 className={styles.stationName}>خريطة شبكة مترو القاهرة الرسمية</h2>
             <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -73,7 +63,7 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
             }}
           >
             <i className="bx bx-expand-alt" style={{ fontSize: "0.95rem" }}></i>
-            <span>اضغط للتكبير وعرض الخريطة كاملة</span>
+            <span>اضغط للتكبير</span>
           </div>
         </a>
       </div>
@@ -81,7 +71,7 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
       <a
         href="/images/metro/cairo-metro-map.png"
         download="cairo-metro-map.png"
-        className={styles.calculateActionBtn}
+        className="btn btn-primary"
         style={{
           textDecoration: "none",
           marginTop: 0,
