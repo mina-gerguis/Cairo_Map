@@ -20,8 +20,7 @@
 
 .bentoCard {
   flex: 0 0 auto;
-  min-width: 175px;
-  max-width: 210px;
+  width: auto;
   border-radius: var(--radius-card);
   padding: 14px 16px;
   cursor: pointer;
