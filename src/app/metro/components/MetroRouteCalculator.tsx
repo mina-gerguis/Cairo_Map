@@ -45,8 +45,7 @@ export default function MetroRouteCalculator({
       {/* Title & Nearest Station GPS Button */}
       <div className={styles.searchBentoHeader}>
         <h2 className={styles.searchTitle}>
-          <i className="bx bx-trip" style={{ color: "var(--color-secondary, #3b82f6)", fontSize: "1.4rem" }} />
-          <span>حاسبة ومخطط رحلات المترو</span>
+          <span>علي فين كدا .؟</span>
         </h2>
 
         <button
@@ -68,7 +67,7 @@ export default function MetroRouteCalculator({
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
             <label className={styles.fieldLabel} style={{ margin: 0 }}>
               <i className="fa-solid fa-circle-dot" style={{ color: "var(--colorSuccess, #10b981)" }}></i>
-              <span>محطة الركوب (من):</span>
+              <span>هركب من</span>
               {nearestDistance && selectedFrom && (
                 <span
                   style={{
@@ -100,11 +99,6 @@ export default function MetroRouteCalculator({
               onChange={(e) => onFromQueryChange(e.target.value)}
               onFocus={onFromFocus}
               onBlur={() => setTimeout(onFromBlur, 250)}
-              style={{
-                width: "100%",
-                direction: "rtl",
-                paddingLeft: selectedFrom || fromQuery ? "85px" : "16px",
-              }}
             />
             {selectedFrom && (
               <span
@@ -205,7 +199,7 @@ export default function MetroRouteCalculator({
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
             <label className={styles.fieldLabel} style={{ margin: 0 }}>
               <i className="fa-solid fa-circle-dot" style={{ color: "#ef4444" }}></i>
-              <span>محطة الوصول (إلى):</span>
+              <span>هروح لـِ</span>
             </label>
             <VoiceInputButton
               onTranscript={(text) => {
@@ -222,11 +216,6 @@ export default function MetroRouteCalculator({
               onChange={(e) => onToQueryChange(e.target.value)}
               onFocus={onToFocus}
               onBlur={() => setTimeout(onToBlur, 250)}
-              style={{
-                width: "100%",
-                direction: "rtl",
-                paddingLeft: selectedTo || toQuery ? "85px" : "16px",
-              }}
             />
             {selectedTo && (
               <span
@@ -259,7 +248,7 @@ export default function MetroRouteCalculator({
                   <div
                     key={s.name}
                     onMouseDown={() => onSelectTo(s.name)}
-                    className={styles.dropdownItem}
+                    className={styles.dropdownItem} 
                   >
                     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                       <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
@@ -315,7 +304,7 @@ export default function MetroRouteCalculator({
         type="button"
         onClick={onFindRoute}
         disabled={!selectedFrom || !selectedTo}
-        className={styles.calculateActionBtn}
+        className="btn btn-primary w-full mt-3"
       >
         <i className="fa-solid fa-magnifying-glass" />
         <span>اعرض مسار وتفاصيل الرحلة</span>
@@ -339,9 +328,6 @@ export default function MetroRouteCalculator({
               <div className={styles.metricsGrid}>
                 {/* Number of Stations */}
                 <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(59, 130, 246, 0.1)", color: "#3b82f6" }}>
-                    <i className="bx bx-train" />
-                  </div>
                   <div>
                     <p className={styles.metricTileLabel}>عدد المحطات</p>
                     <p className={styles.metricTileVal}>{result.stationCount} محطة</p>
@@ -350,9 +336,6 @@ export default function MetroRouteCalculator({
 
                 {/* Ticket Price */}
                 <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>
-                    <i className="bx bx-purchase-tag-alt" />
-                  </div>
                   <div>
                     <p className={styles.metricTileLabel}>سعر التذكرة</p>
                     <p className={styles.metricTileVal} style={{ color: "#10b981" }}>{result.price} ج.م</p>
@@ -361,9 +344,6 @@ export default function MetroRouteCalculator({
 
                 {/* Estimated Time */}
                 <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(245, 158, 11, 0.1)", color: "#f59e0b" }}>
-                    <i className="bx bx-time" />
-                  </div>
                   <div>
                     <p className={styles.metricTileLabel}>زمن الرحلة</p>
                     <p className={styles.metricTileVal}>{result.estimatedTime} دقيقة</p>
@@ -372,9 +352,6 @@ export default function MetroRouteCalculator({
 
                 {/* Transfers */}
                 <div className={styles.metricTile}>
-                  <div className={styles.metricTileIcon} style={{ background: "rgba(139, 92, 246, 0.1)", color: "#8b5cf6" }}>
-                    <i className="bx bx-transfer" />
-                  </div>
                   <div>
                     <p className={styles.metricTileLabel}>التحويلات</p>
                     <p className={styles.metricTileVal} style={{ color: result.needsTransfer ? "#f59e0b" : "#10b981" }}>
@@ -402,7 +379,7 @@ export default function MetroRouteCalculator({
                     style={{ flex: "1 1 140px", justifyContent: "center", height: "40px" }}
                   >
                     <i className="fa-solid fa-play"></i>
-                    <span>بدء تتبع الرحلة (GPS)</span>
+                    <span>بدء تتبع الرحلة</span>
                   </button>
 
                   <button
@@ -526,9 +503,8 @@ export default function MetroRouteCalculator({
                   {currentStepIndex < result.detailedPath.length - 1 ? (
                     <button
                       type="button"
-                      className={styles.calculateActionBtn}
+                      className="btn btn-primary w-full"
                       onClick={onStepNext}
-                      style={{ height: "42px", marginTop: "4px" }}
                     >
                       <span>وصلت لمحطة {result.detailedPath[currentStepIndex + 1]?.station} ←</span>
                     </button>

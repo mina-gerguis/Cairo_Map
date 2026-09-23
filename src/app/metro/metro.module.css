@@ -189,11 +189,11 @@
 .gpsBtn {
   background: rgba(59, 130, 246, 0.08);
   border: 1px solid rgba(59, 130, 246, 0.25);
-  border-radius: 10px;
-  padding: 6px 12px;
-  font-size: 0.78rem;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--color-secondary, #3b82f6);
+  color: var(--color-secondary);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -205,7 +205,6 @@
 .gpsBtn:hover {
   background: rgba(59, 130, 246, 0.16);
   border-color: rgba(59, 130, 246, 0.45);
-  transform: translateY(-1px);
 }
 
 .inputGroup {
@@ -230,7 +229,7 @@
 }
 
 .dropdownList {
-  position: absolute;
+  position: relative;
   top: 100%;
   left: 0;
   right: 0;
@@ -328,7 +327,6 @@
   border: none;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
   transition: all 0.2s ease;
   margin-top: 6px;
 }
@@ -427,7 +425,7 @@
 .routeInstructionsBanner {
   background: rgba(59, 130, 246, 0.08);
   border: 1px solid rgba(59, 130, 246, 0.18);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   padding: 12px 14px;
   display: flex;
   align-items: center;
@@ -441,7 +439,7 @@
 .stepTrackerBox {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  border-radius: var(--radius-card);
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
