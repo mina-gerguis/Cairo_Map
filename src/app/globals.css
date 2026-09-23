@@ -1,23 +1,6 @@
-@import "tailwindcss";
-@source "../**/*.{js,ts,jsx,tsx,mdx}";
-@source "../../src/**/*.{js,ts,jsx,tsx,mdx}";
-@source "../../*.{js,ts,jsx,tsx,mdx}";
 
 @import url("../system-design/index.css");
 @import url("../system-design/global.css");
-
-@theme {
-  --font-display: "thmanyah", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-heading: "Cairo", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-body: "IBM Plex Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-sub: "thmanyah text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-almarai: var(--font-almarai);
-
-  --color-primary: #006FEE;
-  --color-secondary: #3b82f6;
-  --color-brand: #2727ff;
-  --color-accent: #1a3eff;
-}
 
 
 
