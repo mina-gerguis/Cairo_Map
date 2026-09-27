@@ -48,6 +48,10 @@
 .flex-initial { flex: 0 1 auto; }
 .flex-none    { flex: none; }
 
+.basis-auto   { flex-basis: auto; }
+.basis-full   { flex-basis: 100%; }
+.basis-0      { flex-basis: 0px; }
+
 .grow         { flex-grow: 1; }
 .grow-0       { flex-grow: 0; }
 .shrink       { flex-shrink: 1; }
@@ -189,6 +193,9 @@
 .z-30   { z-index: 30; }
 .z-40   { z-index: 40; }
 .z-50   { z-index: 50; }
+.z-100  { z-index: 100; }
+.z-modal,
+.z-9999 { z-index: 9999; }
 .z-auto { z-index: auto; }
 
 /* ==========================================================================
@@ -204,3 +211,45 @@
 .overflow-y-auto    { overflow-y: auto; }
 .overflow-x-hidden  { overflow-x: hidden; }
 .overflow-y-hidden  { overflow-y: hidden; }
+
+/* ==========================================================================
+   8. Object Fit Utilities (.object-*)
+   ========================================================================== */
+.object-contain   { object-fit: contain; }
+.object-cover     { object-fit: cover; }
+.object-fill      { object-fit: fill; }
+.object-none      { object-fit: none; }
+.object-scale-down { object-fit: scale-down; }
+
+/* ==========================================================================
+   9. Resize Utilities (.resize-*)
+   ========================================================================== */
+.resize-none { resize: none; }
+.resize-y    { resize: vertical; }
+.resize-x    { resize: horizontal; }
+.resize      { resize: both; }
+
+/* ==========================================================================
+   10. Scrollbar Utilities (.no-scrollbar)
+   ========================================================================== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ==========================================================================
+   11. Scroll Snap Utilities (.snap-*)
+   ========================================================================== */
+.snap-none   { scroll-snap-type: none; }
+.snap-x      { scroll-snap-type: x mandatory; }
+.snap-y      { scroll-snap-type: y mandatory; }
+.snap-both   { scroll-snap-type: both mandatory; }
+.snap-start  { scroll-snap-align: start; }
+.snap-end    { scroll-snap-align: end; }
+.snap-center { scroll-snap-align: center; }
+.snap-align-none { scroll-snap-align: none; }
+
+

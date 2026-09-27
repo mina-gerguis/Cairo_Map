@@ -125,3 +125,36 @@
 .backdrop-blur-md   { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .backdrop-blur-lg   { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 .backdrop-blur-xl   { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+
+/* ==========================================================================
+   6. Interactive Hover Micro-Interactions
+   ========================================================================== */
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+.hover-lift:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   7. Animation Utilities (.animate-*)
+   ========================================================================== */
+.animate-none   { animation: none; }
+.animate-spin   { animation: spin 0.9s linear infinite; }
+.animate-pulse  { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+

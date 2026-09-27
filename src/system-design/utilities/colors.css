@@ -17,15 +17,24 @@
 .bg-primary     { background-color: var(--color-primary); }
 .bg-secondary   { background-color: var(--bg-secondary); }
 .bg-mode        { background-color: var(--bgMode); }
+.bg-surface     { background-color: var(--bgPrimary); }
 .bg-surface-alt { background-color: var(--bgThird); }
+.bg-overlay     { background-color: var(--overlay); }
 .bg-glass       { background-color: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .bg-glass-active{ background-color: var(--bg-glass-active); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.bg-alert       { background: var(--bg-linear-alert); }
+.bg-subtle      { background-color: rgba(255, 255, 255, 0.03); }
+html.light .bg-subtle { background-color: rgba(0, 0, 0, 0.03); }
+.bg-tab-active  { background-color: var(--tab-active-bg, var(--bg-glass-active)); }
 
 /* Status Backgrounds */
-.bg-success     { background-color: var(--colorSuccess); }
-.bg-warning     { background-color: var(--colorWarning); }
-.bg-danger      { background-color: var(--colorDanger); }
-.bg-info        { background-color: var(--colorInfo); }
+.bg-success        { background-color: var(--colorSuccess); }
+.bg-success-subtle { background-color: rgba(16, 185, 129, 0.15); }
+.bg-warning        { background-color: var(--colorWarning); }
+.bg-danger         { background-color: var(--colorDanger); }
+.bg-danger-subtle  { background-color: rgba(239, 68, 68, 0.12); }
+.bg-info           { background-color: var(--colorInfo); }
+.bg-brand-subtle   { background-color: rgba(59, 130, 246, 0.15); }
 
 /* ==========================================================================
    2. Text Color Utilities (.text-*)
@@ -42,6 +51,7 @@
 .text-muted     { color: var(--text-muted); }
 .text-brand     { color: var(--color-primary); }
 .text-accent    { color: var(--colorAccent); }
+.text-tab-active{ color: var(--tab-active-color, var(--text-primary)); }
 
 /* Status Text Colors */
 .text-success   { color: var(--colorSuccess); }
@@ -59,10 +69,20 @@
 
 /* Theme Semantic Border Colors */
 .border-border      { border-color: var(--border-primary); }
+.border-subtle      { border-color: rgba(255, 255, 255, 0.07); }
+html.light .border-subtle { border-color: rgba(0, 0, 0, 0.07); }
 .border-secondary   { border-color: var(--border-secondary); }
 .border-glass       { border-color: var(--border-glass); }
 .border-glass-bright{ border-color: var(--border-glass-bright); }
 .border-brand       { border-color: var(--color-primary); }
+.border-brand-subtle{ border-color: rgba(59, 130, 246, 0.25); }
 .border-danger      { border-color: var(--colorDanger); }
+.border-danger-subtle{ border-color: rgba(239, 68, 68, 0.30); }
 .border-success     { border-color: var(--colorSuccess); }
 .border-warning     { border-color: var(--colorWarning); }
+
+/* Directional Border Colors (.border-t-*) */
+.border-t-transparent { border-top-color: transparent; }
+.border-t-brand,
+.border-t-primary     { border-top-color: var(--color-primary); }
+.border-t-secondary   { border-top-color: var(--color-secondary, #3b82f6); }

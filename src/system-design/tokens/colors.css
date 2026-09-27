@@ -35,7 +35,7 @@
   --bgLinear: radial-gradient(ellipse 85% 42% at 85% 24%, rgba(17, 64, 253, 0.88) 0%, rgba(48, 45, 205, 0.45) 35%, transparent 70%),
     linear-gradient(180deg, var(--bgMode) 100%);
   --bg-linear-alert: radial-gradient(ellipse 85% 65% at 85% 15%, rgba(239, 68, 68, 0.22) 0%, rgba(185, 28, 28, 0.08) 45%, transparent 75%),
-    linear-gradient(180deg, #121214 0%, var(--bgMode) 100%);
+    linear-gradient(180deg, var(--bgMode) 0%, var(--bgMode) 100%);
 
   /* --- Typography Colors --- */
   --text-primary: #f4f4f5;

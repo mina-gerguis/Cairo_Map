@@ -352,7 +352,7 @@ export function getTransitOptionIconPath(option: { type?: string; icon?: string;
 
   // 1. Metro (مترو الأنفاق)
   if (t === "metro" || icon === "metro" || icon.includes("subway") || icon.includes("metro") || t.includes("مترو")) {
-    return { type: "image", src: "/images/icons2d/metro.png" };
+    return { type: "image", src: "/images/transit/metro.png" };
   }
 
   // 2. Microbus (ميكروباص)

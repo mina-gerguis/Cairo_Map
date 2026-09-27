@@ -177,52 +177,15 @@ ${reportDetails.trim()}`;
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.75)",
-        backdropFilter: "blur(6px)",
-        zIndex: 9999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "16px",
-        direction: "rtl"
-      }}
-    >
+    <div className="fixed inset-0 bg-overlay backdrop-blur-sm z-modal flex items-center justify-center p-4">
       <div
         ref={modalBoxRef}
-        style={{
-          backgroundColor: "var(--bgPrimary)",
-          borderRadius: "var(--radius-card)",
-          border: "1px solid var(--border-glass)",
-          width: "100%",
-          maxWidth: "520px",
-          maxHeight: "90vh",
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-          fontFamily: "var(--font-cairo)"
-        }}
+        className="bg-surface rounded-lg border border-glass w-full max-w-lg max-h-90vh shadow-2xl flex flex-col overflow-hidden font-cairo"
       >
         {/* Modal Header */}
-        <div
-          style={{
-            padding: "16px 20px",
-            borderBottom: "1px solid var(--border-glass)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.02)"
-          }}
-        >
-          <h5 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }}></i>
+        <div className="px-5 py-4 border-b border-glass flex justify-between items-center bg-subtle">
+          <h5 className="m-0 text-base sm:text-lg font-extrabold text-primary flex items-center gap-2">
+            <i className="fa-solid fa-triangle-exclamation text-danger text-lg" />
             <span>مشكلة في دليل مسارات المواصلات</span>
           </h5>
           <button
@@ -230,144 +193,89 @@ ${reportDetails.trim()}`;
             onClick={handleClose}
             className="btn-close"
           >
-            <i className="bx bx-x"></i>
+            <i className="bx bx-x" />
           </button>
         </div>
 
         {/* Modal Content */}
-        <div style={{ padding: "20px", maxHeight: "80vh", overflowY: "auto" }}>
+        <div className="p-5 max-h-80vh overflow-y-auto">
           {reportSuccess ? (
-            <div style={{ textAlign: "center", padding: "30px 10px" }}>
-              <div
-                style={{
-                  width: "60px",
-                  height: "60px",
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(52, 199, 89, 0.15)",
-                  color: "#34c759",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "2rem",
-                  margin: "0 auto 16px"
-                }}
-              >
-                <i className="bx bx-check"></i>
+            <div className="text-center py-8 px-2.5">
+              <div className="w-16 h-16 rounded-full bg-success-subtle text-success flex items-center justify-center text-3xl mx-auto mb-4">
+                <i className="bx bx-check" />
               </div>
-              <h4 style={{ margin: "0 0 8px", fontSize: "1.15rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h4 className="m-0 mb-2 text-lg font-extrabold text-primary">
                 تم استلام بلاغك بنجاح!
               </h4>
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+              <p className="m-0 text-sm text-secondary leading-relaxed">
                 شكراً لمساهمتك في تدقيق وتحديث أسعار ومسارات المواصلات. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
               </p>
             </div>
           ) : limitChecking ? (
-            <div style={{ textAlign: "center", padding: "40px" }}>
-              <div
-                style={{
-                  width: "30px",
-                  height: "30px",
-                  border: "3px solid rgba(255,255,255,0.1)",
-                  borderTopColor: "var(--color-secondary)",
-                  borderRadius: "50%",
-                  animation: "spin 1s linear infinite",
-                  margin: "0 auto 12px"
-                }}
-              />
-              <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
+            <div className="text-center p-10">
+              <div className="w-8 h-8 border-3 border-glass border-t-secondary rounded-full animate-spin mx-auto mb-3" />
+              <span className="text-muted text-sm">جاري التحقق...</span>
             </div>
           ) : limitReached ? (
-            <div style={{ textAlign: "center", padding: "20px 10px" }}>
-              <div
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  margin: "0 auto 14px"
-                }}
-              >
-                <img src="/images/icons3d/error.png" alt="error" style={{ width: "100%", height: "100%", objectFit: "contain" }} loading="lazy" />
+            <div className="text-center py-5 px-2.5">
+              <div className="w-20 h-20 flex items-center justify-center mx-auto mb-3.5">
+                <img
+                  src="/images/icons3d/error.png"
+                  alt="error"
+                  loading="lazy"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h5 className="m-0 mb-2 text-lg font-extrabold text-primary">
                 تم الوصول للحد الأقصى من البلاغات المعلقة
               </h5>
-              <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+              <p className="m-0 mb-4 text-sm text-secondary leading-relaxed">
                 لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
               </p>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary w-full"
                 onClick={handleClose}
-                style={{ width: "100%" }}
               >
                 حسناً، فهمت
               </button>
             </div>
           ) : !user ? (
-            <div style={{ textAlign: "center", padding: "20px 10px" }}>
-              <div
-                style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(59, 130, 246, 0.15)",
-                  color: "var(--color-secondary)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.8rem",
-                  margin: "0 auto 14px"
-                }}
-              >
-                <i className="bx bx-user"></i>
+            <div className="text-center py-5 px-2.5">
+              <div className="w-14 h-14 rounded-full bg-brand-subtle text-brand flex items-center justify-center text-3xl mx-auto mb-3.5">
+                <i className="bx bx-user" />
               </div>
-              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h5 className="m-0 mb-2 text-lg font-extrabold text-primary">
                 تسجيل الدخول مطلوب
               </h5>
-              <p style={{ margin: "0 0 20px", fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
+              <p className="m-0 mb-5 text-sm text-secondary leading-relaxed">
                 يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي مشكلة ومتابعة حالته وكسب نقاط المساهمة.
               </p>
-              <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+              <div className="flex gap-2.5 justify-center">
                 <Link
                   href="/login"
-                  className="btn btn-primary"
-                  style={{ width: "100%" }}
+                  className="btn btn-primary w-full"
                 >
                   تسجيل الدخول
                 </Link>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmitReport} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <form onSubmit={handleSubmitReport} className="flex flex-col gap-4">
               {/* Scope Selector */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "8px" }}>
+                <label className="block text-sm font-bold text-primary mb-2">
                   نطاق المشكلة:
                 </label>
-                <div
-                  className="tabs"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: resolvedFrom ? "repeat(2, 1fr)" : "1fr",
-                    gap: "6px"
-                  }}
-                >
+                <div className="tabs w-full">
                   <button
                     type="button"
                     onClick={() => setReportTargetScope("general")}
-                    style={{
-                      padding: "8px 4px",
-                      borderRadius: "8px",
-                      border: "none",
-                      background: reportTargetScope === "general" ? "var(--tab-active-bg)" : "transparent",
-                      color: reportTargetScope === "general" ? "var(--tab-active-color)" : "var(--text-primary)",
-                      fontWeight: "700",
-                      fontSize: "0.8rem",
-                      cursor: "pointer",
-                      fontFamily: "var(--font-body)"
-                    }}
+                    className={`py-1.5 px-3 rounded-lg border-none font-bold text-xs cursor-pointer font-body transition ${
+                      reportTargetScope === "general"
+                        ? "bg-tab-active text-tab-active"
+                        : "bg-transparent text-primary"
+                    }`}
                   >
                     مشكلة عامة
                   </button>
@@ -376,17 +284,11 @@ ${reportDetails.trim()}`;
                     <button
                       type="button"
                       onClick={() => setReportTargetScope("route")}
-                      style={{
-                        padding: "8px 4px",
-                        borderRadius: "8px",
-                        border: "none",
-                        background: reportTargetScope === "route" ? "var(--tab-active-bg)" : "transparent",
-                        color: reportTargetScope === "route" ? "var(--tab-active-color)" : "var(--text-primary)",
-                        fontWeight: "700",
-                        fontSize: "0.8rem",
-                        cursor: "pointer",
-                        fontFamily: "var(--font-body)"
-                      }}
+                      className={`py-1.5 px-3 rounded-lg border-none font-bold text-xs cursor-pointer font-body transition ${
+                        reportTargetScope === "route"
+                          ? "bg-tab-active text-tab-active"
+                          : "bg-transparent text-primary"
+                      }`}
                     >
                       المسار الحالي
                     </button>
@@ -396,20 +298,10 @@ ${reportDetails.trim()}`;
 
               {/* Route Summary Box */}
               {reportTargetScope === "route" && resolvedFrom && (
-                <div
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: "10px",
-                    background: "rgba(59, 130, 246, 0.06)",
-                    border: "1px solid rgba(59, 130, 246, 0.2)",
-                    fontSize: "0.84rem",
-                    color: "var(--text-primary)",
-                    lineHeight: "1.6"
-                  }}
-                >
+                <div className="p-3 px-3.5 rounded-xl bg-brand-subtle border border-brand-subtle text-sm text-primary leading-relaxed">
                   <div>من: <strong>{resolvedFrom}</strong> ← إلى: <strong>{resolvedTo}</strong></div>
                   {reportingOption && (
-                    <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "4px" }}>
+                    <div className="text-xs text-secondary mt-1">
                       • الوسيلة: {reportingOption.typeName} <br />• الأجرة: {reportingOption.cost} ج.م <br />• الوقت: {reportingOption.duration}
                     </div>
                   )}
@@ -417,8 +309,8 @@ ${reportDetails.trim()}`;
               )}
 
               {/* Custom Problem Type Dropdown Selector */}
-              <div style={{ position: "relative" }}>
-                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
+              <div className="relative">
+                <label className="flex justify-between items-center text-sm font-bold text-primary mb-1.5">
                   <span>نوع المشكلة:</span>
                 </label>
 
@@ -428,58 +320,32 @@ ${reportDetails.trim()}`;
                     <button
                       type="button"
                       onClick={() => setShowProblemTypeDropdown(prev => !prev)}
-                      style={{
-                        width: "100%",
-                        padding: "9px 12px",
-                        borderRadius: "var(--radius-card)",
-                        background: "var(--bg-secondary)",
-                        color: "var(--text-primary)",
-                        border: showProblemTypeDropdown ? `1px solid var(--text-primary)` : "1px solid var(--border-glass)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        cursor: "pointer",
-                        transition: "all 0.15s ease",
-                        textAlign: "right",
-                        fontFamily: "var(--font-body)"
-                      }}
+                      className={`w-full py-2.5 px-3 rounded-xl bg-secondary text-primary border flex items-center justify-between cursor-pointer transition text-right font-body ${
+                        showProblemTypeDropdown ? "border-primary" : "border-glass"
+                      }`}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-                        <div style={{ minWidth: 0, textAlign: "right" }}>
-                          <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="min-w-0 text-right">
+                          <div className="text-sm font-bold text-primary truncate">
                             {curOpt.title}
                           </div>
-                          <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div className="text-xs text-secondary truncate">
                             {curOpt.desc}
                           </div>
                         </div>
                       </div>
 
-                      <i className={showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"} style={{ fontSize: "1.25rem", color: "var(--text-secondary)", marginRight: "8px", flexShrink: 0 }} />
+                      <i
+                        className={`text-xl text-secondary mr-2 shrink-0 ${
+                          showProblemTypeDropdown ? "bx bx-chevron-up" : "bx bx-chevron-down"
+                        }`}
+                      />
                     </button>
                   );
                 })()}
 
                 {showProblemTypeDropdown && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      right: 0,
-                      background: "var(--bg-secondary)",
-                      border: "1px solid var(--border-glass)",
-                      borderRadius: "var(--radius-card)",
-                      zIndex: 1200,
-                      maxHeight: "360px",
-                      overflowY: "auto",
-                      marginTop: "6px",
-                      padding: "6px",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px"
-                    }}
-                  >
+                  <div className="absolute top-full left-0 right-0 bg-secondary border border-glass rounded-xl z-50 max-h-72 overflow-y-auto mt-1.5 p-1.5 flex flex-col gap-1">
                     {REPORT_PROBLEM_OPTIONS.map((opt) => {
                       const isSelected = opt.id === reportProblemType;
                       return (
@@ -489,31 +355,18 @@ ${reportDetails.trim()}`;
                             setReportProblemType(opt.id);
                             setShowProblemTypeDropdown(false);
                           }}
-                          style={{
-                            padding: "8px 10px",
-                            borderRadius: "var(--radius-card)",
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: "10px",
-                            background: isSelected ? "var(--bgPrimary)" : "transparent",
-                            border: isSelected ? `1px solid var(--border-primary)` : "1px solid transparent",
-                            transition: "all 0.15s ease"
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!isSelected) e.currentTarget.style.background = "rgba(255, 255, 255, 0.04)";
-                          }}
-                          onMouseLeave={(e) => {
-                            if (!isSelected) e.currentTarget.style.background = "transparent";
-                          }}
+                          className={`p-2 px-2.5 rounded-lg cursor-pointer flex items-center justify-between gap-2.5 border transition ${
+                            isSelected
+                              ? "bg-surface border-border"
+                              : "bg-transparent border-transparent hover:bg-subtle"
+                          }`}
                         >
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-                            <div style={{ minWidth: 0, textAlign: "right" }}>
-                              <div style={{ fontSize: "0.84rem", fontWeight: isSelected ? "800" : "600", color: "var(--text-primary)" }}>
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="min-w-0 text-right">
+                              <div className={`text-sm ${isSelected ? "font-extrabold" : "font-semibold"} text-primary`}>
                                 {opt.title}
                               </div>
-                              <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                              <div className="text-xs text-muted">
                                 {opt.desc}
                               </div>
                             </div>
@@ -527,35 +380,23 @@ ${reportDetails.trim()}`;
 
               {/* Details Textarea */}
               <div>
-                <label style={{ display: "block", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
-                  تفاصيل المشكلة : <span style={{ color: "#ef4444" }}>*</span>
+                <label className="block text-sm font-bold text-primary mb-1.5">
+                  تفاصيل المشكلة : <span className="text-danger">*</span>
                 </label>
                 <textarea
                   placeholder="يرجى كتابة المشكلة بالتفصيل واقتراح التصحيح إن وُجد (مثال: الأجرة زادت وأصبحت 25 جنيه بدلاً من 20، أو الميكروباص يمر بمحطة كذا)..."
                   value={reportDetails}
                   onChange={e => setReportDetails(e.target.value)}
-                  className="input-fields"
+                  className="input-fields w-full min-h-24 p-3 rounded-xl bg-secondary text-primary border border-glass font-body text-sm resize-y"
                   required
-                  style={{
-                    width: "100%",
-                    minHeight: "100px",
-                    padding: "12px",
-                    borderRadius: "10px",
-                    background: "var(--bg-secondary)",
-                    color: "var(--text-primary)",
-                    border: "1px solid var(--border-glass)",
-                    fontFamily: "var(--font-body)",
-                    fontSize: "0.9rem",
-                    resize: "vertical"
-                  }}
                 />
               </div>
 
               {/* Image Upload Area */}
               <div>
-                <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
+                <label className="flex justify-between items-center text-sm font-bold text-primary mb-1.5">
                   <span>صورة توضيحية (اختياري):</span>
-                  <span style={{ fontSize: "0.74rem", color: "var(--text-secondary)", fontWeight: "normal", fontFamily: "var(--font-body)" }}>
+                  <span className="text-xs text-secondary font-normal font-body">
                     JPG, PNG, WEBP (Max~5MB)
                   </span>
                 </label>
@@ -573,27 +414,11 @@ ${reportDetails.trim()}`;
                       const droppedFile = e.dataTransfer.files?.[0];
                       if (droppedFile) handleImageSelect(droppedFile);
                     }}
-                    style={{
-                      position: "relative",
-                      border: isDraggingImage ? "2px dashed var(--color-secondary)" : "2px dashed var(--borderDashed)",
-                      borderRadius: "12px",
-                      background: isDraggingImage ? "rgba(59, 130, 246, 0.08)" : "rgba(255, 255, 255, 0.02)",
-                      padding: "20px 16px",
-                      textAlign: "center",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "8px",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isDraggingImage) e.currentTarget.style.background = "var(--hoverBtn)";
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isDraggingImage) e.currentTarget.style.background = "rgba(255, 255, 255, 0.02)";
-                    }}
+                    className={`relative border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2 ${
+                      isDraggingImage
+                        ? "border-brand bg-brand-subtle"
+                        : "border-glass bg-subtle hover:bg-brand-subtle"
+                    }`}
                   >
                     <input
                       type="file"
@@ -602,97 +427,39 @@ ${reportDetails.trim()}`;
                         const file = e.target.files?.[0];
                         if (file) handleImageSelect(file);
                       }}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        opacity: 0,
-                        cursor: "pointer",
-                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
 
-                    <div
-                      style={{
-                        width: "46px",
-                        height: "46px",
-                        borderRadius: "50%",
-                        background: "rgba(59, 130, 246, 0.12)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "var(--color-secondary)",
-                        fontSize: "1.4rem"
-                      }}
-                    >
-                      <i className="bx bx-cloud-upload"></i>
+                    <div className="w-11 h-11 rounded-full bg-brand-subtle flex items-center justify-center text-brand text-2xl">
+                      <i className="bx bx-cloud-upload" />
                     </div>
 
                     <div>
-                      <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "3px" }}>
+                      <div className="text-sm font-bold text-primary mb-0.5">
                         اضغط لاختيار صورة أو اسحبها وأفلتها هنا
                       </div>
-                      <div style={{ fontSize: "0.76rem", color: "var(--text-secondary)" }}>
+                      <div className="text-xs text-secondary">
                         أرسل صورة الخطأ أو موقف المواصلات إن وُجد
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div
-                    style={{
-                      position: "relative",
-                      border: "1px solid var(--border-glass)",
-                      borderRadius: "12px",
-                      background: "var(--bg-secondary)",
-                      padding: "10px 12px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "12px",
-                    }}
-                  >
+                  <div className="relative border border-glass rounded-xl bg-secondary p-2.5 px-3 flex items-center gap-3">
                     {/* Thumbnail */}
-                    <div
-                      style={{
-                        width: "64px",
-                        height: "64px",
-                        borderRadius: "8px",
-                        overflow: "hidden",
-                        flexShrink: 0,
-                        background: "#000",
-                        border: "1px solid var(--border-glass)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        position: "relative"
-                      }}
-                    >
+                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-black border border-glass flex items-center justify-center relative">
                       <img
                         src={reportImagePreview}
                         alt="معاينة الصورة المرفقة"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover"
-                        }}
+                        className="w-full h-full object-cover"
                       />
                     </div>
 
                     {/* File details */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: "0.86rem",
-                          fontWeight: "700",
-                          color: "var(--text-primary)",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis"
-                        }}
-                      >
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-bold text-primary truncate">
                         {reportImageFile?.name || "صورة توضيحية"}
                       </div>
-                      <div style={{ fontSize: "0.74rem", color: "var(--text-secondary)", marginTop: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <div className="text-xs text-secondary mt-1 flex items-center gap-1.5">
                         <span>
                           {reportImageFile
                             ? reportImageFile.size < 1024 * 1024
@@ -704,26 +471,14 @@ ${reportDetails.trim()}`;
                     </div>
 
                     {/* Actions */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <div className="flex items-center gap-1.5">
                       <button
                         type="button"
                         onClick={() => handleImageSelect(null)}
                         title="حذف الصورة"
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: "8px",
-                          background: "rgba(239, 68, 68, 0.1)",
-                          border: "1px solid rgba(239, 68, 68, 0.25)",
-                          color: "#ef4444",
-                          fontSize: "0.75rem",
-                          fontWeight: "600",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px"
-                        }}
+                        className="py-1.5 px-2.5 rounded-lg bg-danger-subtle border border-danger-subtle text-danger text-xs font-semibold cursor-pointer flex items-center gap-1"
                       >
-                        <i className="bx bx-trash"></i>
+                        <i className="bx bx-trash" />
                         <span>حذف</span>
                       </button>
                     </div>
@@ -733,60 +488,37 @@ ${reportDetails.trim()}`;
 
               {/* Error Message */}
               {reportError && (
-                <div
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: "8px",
-                    backgroundColor: "rgba(239, 68, 68, 0.1)",
-                    border: "1px solid rgba(239, 68, 68, 0.3)",
-                    color: "#ef4444",
-                    fontSize: "0.85rem"
-                  }}
-                >
+                <div className="py-2.5 px-3.5 rounded-lg bg-danger-subtle border border-danger-subtle text-danger text-sm">
                   {reportError}
                 </div>
               )}
 
               {/* Submit and Cancel Buttons */}
-              <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+              <div className="flex gap-2.5 mt-2">
                 <button
                   type="submit"
-                  className="btn btn-danger"
+                  className={`btn btn-danger font-bold text-sm flex items-center justify-center gap-1.5 w-1/2 flex-1 ${
+                    reportLoading ? "cursor-wait" : "cursor-pointer"
+                  }`}
                   disabled={reportLoading || reportUploading}
-                  style={{
-                    flex: 1,
-                    fontWeight: "700",
-                    fontSize: "0.92rem",
-                    cursor: reportLoading ? "wait" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                    width: "50%",
-                  }}
                 >
                   {reportLoading ? (
                     <>
-                      <div style={{ width: "16px", height: "16px", border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span>{reportUploading ? "يتم الرفع..." : "جاري الإرسال..."}</span>
                     </>
                   ) : (
                     <>
-                      <i className="bx bx-send"></i>
+                      <i className="bx bx-send" />
                       <span>إرسال البلاغ</span>
                     </>
                   )}
                 </button>
                 <button
                   type="button"
-                  className="btn btn-cancel"
+                  className="btn btn-cancel font-bold text-sm w-1/2"
                   disabled={reportLoading}
                   onClick={handleClose}
-                  style={{
-                    fontWeight: "700",
-                    fontSize: "0.92rem",
-                    width: "50%",
-                  }}
                 >
                   إلغاء
                 </button>

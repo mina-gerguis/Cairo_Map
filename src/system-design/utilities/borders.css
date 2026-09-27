@@ -53,6 +53,7 @@
 .border   { border-width: 1px; border-style: solid; }
 .border-0 { border-width: 0px; }
 .border-2 { border-width: 2px; border-style: solid; }
+.border-3 { border-width: 3px; border-style: solid; }
 .border-4 { border-width: 4px; border-style: solid; }
 .border-8 { border-width: 8px; border-style: solid; }
 
@@ -109,11 +110,4 @@
 .outline-1    { outline-width: 1px; }
 .outline-2    { outline-width: 2px; }
 
-
-/* 
-==========================================================================
-   6. Border Color Utilities
-   ========================================================================== */
-   .border-glass {
-    border-color: var(--border-glass);
-   }
+    

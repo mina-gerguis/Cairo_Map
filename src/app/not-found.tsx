@@ -1111,7 +1111,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/icons2d/metro.png" alt=" metro " width="42" />
+                <img src="/images/transit/metro.png" alt=" metro " width="42" />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>خريطة المترو</div>

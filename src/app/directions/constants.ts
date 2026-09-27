@@ -68,7 +68,7 @@ export const DEFAULT_POPULAR_ROUTES: QuickRouteItem[] = [
   { from: "القاهرة (رمسيس)", to: "الإسكندرية", label: "رمسيس ⇆ الإسكندرية", glowColor: "#f97316", searchCount: 43, icon: "/images/icons2d/Cairo_train.png", subtitle: "43 عملية بحث" },
   { from: "القاهرة (عبود)", to: "بنها", label: "عبود ⇆ بنها", glowColor: "#14b8a6", searchCount: 39, icon: "/images/icons2d/microbus.png", subtitle: "39 عملية بحث" },
   { from: "الزقازيق", to: "المنصورة", label: "الزقازيق ⇆ المنصورة", glowColor: "#6366f1", searchCount: 34, icon: "/images/icons2d/microbus.png", subtitle: "34 عملية بحث" },
-  { from: "القاهرة (رمسيس)", to: "مدينة نصر", label: "رمسيس ⇆ مدينة نصر", glowColor: "#e11d48", searchCount: 31, icon: "/images/icons2d/metro.png", subtitle: "31 عملية بحث" },
+  { from: "القاهرة (رمسيس)", to: "مدينة نصر", label: "رمسيس ⇆ مدينة نصر", glowColor: "#e11d48", searchCount: 31, icon: "/images/transit/metro.png", subtitle: "31 عملية بحث" },
 ];
 
 export const REPORT_PROBLEM_OPTIONS: ReportProblemOption[] = [

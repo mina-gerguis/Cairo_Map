@@ -25,7 +25,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "مترو الأنفاق",
     acceptedArabicKeywords: ["مترو", "مترو الأنفاق", "مترو الانفاق", "metro", "subway"],
     description: "خطوط مترو القاهرة الكبرى (الخط الأول، الثاني، الثالث)",
-    iconPath: "/images/icons2d/metro.png",
+    iconPath: "/images/transit/metro.png",
     badgeColor: "#ef4444"
   },
   {

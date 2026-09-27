@@ -1,7 +1,6 @@
 import React, { RefObject } from "react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-import styles from "../page.module.css";
 
 interface DirectionsPaywallProps {
   user: User | null;
@@ -15,22 +14,22 @@ export default function DirectionsPaywall({
   paywallCardRef
 }: DirectionsPaywallProps) {
   return (
-    <div className={styles.pageWrapper}>
-      <div className={styles.ambientGlow} />
-      <div className={styles.contentContainer} style={{ paddingTop: "40px" }}>
+    <div className="min-h-screen relative overflow-x-hidden pb-16">
+      <div className="ambient-glow" />
+      <div className="max-w-3xl mx-auto px-4 pt-10 relative z-10">
         {/* Paywall Header */}
-        <div ref={paywallRef} style={{ textAlign: "center", marginBottom: "28px" }}>
-          <h1 className={styles.heroTitle}>
+        <div ref={paywallRef} className="text-center mb-7">
+          <h1 className="flex items-center justify-center gap-3 font-extrabold font-sub text-3xl sm:text-4xl m-0 mb-2.5">
             <img
-              src="/images/icons2d/arab_republic _of_egypt.png"
+              src="/images/transit/arab_republic _of_egypt.png"
               alt="Cairo Directions"
               loading="lazy"
               decoding="async"
-              style={{ width: "42px", height: "auto", objectFit: "contain" }}
+              className="w-10 h-auto object-contain"
             />
-            <span className={styles.heroTitleGradient}>ازاي اروح ..؟</span>
+            <span className="text-gradient-title">ازاي اروح ..؟</span>
           </h1>
-          <p className={styles.heroSubtitle}>
+          <p className="text-muted text-sm sm:text-base max-w-lg mx-auto m-0 leading-relaxed font-body">
             دليل السفر والانتقال الذكي لمختلف وسائل المواصلات والطرق المختصرة.
           </p>
         </div>
@@ -38,86 +37,34 @@ export default function DirectionsPaywall({
         {/* Paywall Card */}
         <div
           ref={paywallCardRef}
-          className={styles.routeCard}
-          style={{
-            maxWidth: "520px",
-            margin: "0 auto",
-            textAlign: "center",
-            padding: "36px 28px",
-          }}
+          className="bg-glass border border-glass rounded-2xl shadow-xl max-w-lg mx-auto text-center px-7 py-9 flex flex-col items-center overflow-hidden relative"
         >
           {/* Badge Icon */}
-          <div style={{ marginBottom: "18px" }}>
+          <div className="mb-4">
             <img
               src="/images/icons3d/CairoSilver.png"
               alt="Silver Access"
               loading="lazy"
               decoding="async"
-              style={{ width: "120px", height: "auto", objectFit: "contain", margin: "0 auto" }}
+              className="w-28 sm:w-32 h-auto object-contain mx-auto"
             />
           </div>
 
-          <h2
-            style={{
-              fontSize: "1.3rem",
-              fontWeight: "800",
-              color: "var(--text-primary)",
-              marginBottom: "10px",
-              fontFamily: "var(--font-sub)"
-            }}
-          >
+          <h2 className="text-xl sm:text-2xl font-extrabold text-primary font-sub m-0 mb-2.5 leading-snug">
             دليل مسارات المواصلات يتطلب الاشتراك في الباقة الفضية
           </h2>
 
-          <p
-            style={{
-              fontSize: "0.88rem",
-              color: "var(--text-secondary)",
-              lineHeight: "1.6",
-              margin: "0 0 18px"
-            }}
-          >
+          <p className="text-sm text-secondary leading-relaxed m-0 mb-4">
             محرك البحث المتقدم عن خطوط المواصلات والطرق المختصرة (ميكروباص، أتوبيسات، مترو، ومونوريل) متاح للمشتركين في الباقة الفضية أو الذهبية أو المشوار.
           </p>
 
           {/* Perks list */}
-          <div
-            style={{
-              background: "rgba(255, 255, 255, 0.03)",
-              border: "1px solid rgba(255, 255, 255, 0.07)",
-              borderRadius: "16px",
-              padding: "16px",
-              textAlign: "right",
-              margin: "0 0 24px"
-            }}
-          >
-            <div
-              style={{
-                fontWeight: "800",
-                color: "var(--text-primary)",
-                fontSize: "0.88rem",
-                marginBottom: "10px",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px"
-              }}
-            >
-              <i className="bx bxs-award" style={{ color: "#94a3b8" }} />
+          <div className="bg-subtle border border-subtle rounded-2xl p-4 text-right m-0 mb-6 w-full">
+            <div className="font-extrabold text-primary text-sm mb-2.5 flex items-center gap-1.5">
+              <i className="bx bxs-award text-muted" />
               <span>ما الذي يميز الباقة الفضية؟</span>
             </div>
-            <ul
-              style={{
-                paddingRight: "16px",
-                margin: 0,
-                fontSize: "0.82rem",
-                color: "var(--text-secondary)",
-                lineHeight: "1.8",
-                listStyleType: "none",
-                display: "flex",
-                flexDirection: "column",
-                gap: "6px"
-              }}
-            >
+            <ul className="list-none p-0 pr-4 m-0 text-xs sm:text-sm text-secondary leading-loose flex flex-col gap-1.5">
               <li>✨ البحث عن مسارات مواصلات بين أي منطقتين بالتفصيل</li>
               <li>✨ حساب تكلفة الرحلة والمدة المتوقعة بدقة لكل مرحلة</li>
               <li>✨ خيارات متعددة للتنقل (مباشر، مترو + ميكروباص، إلخ)</li>
@@ -126,18 +73,18 @@ export default function DirectionsPaywall({
           </div>
 
           {/* CTA Buttons */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="flex flex-col gap-3 w-full">
             {user ? (
               <Link
                 href="/profile?expand=subscription"
-                className="btn btn-silver"
+                className="btn btn-silver w-full"
               >
                 اشترك الآن في الباقة الفضية
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="btn btn-primary"
+                className="btn btn-primary w-full"
               >
                 سجل دخولك أولاً لتفعيل الاشتراك
               </Link>
@@ -145,7 +92,7 @@ export default function DirectionsPaywall({
 
             <Link
               href="/"
-              className="btn btn-cancel"
+              className="btn btn-cancel w-full"
             >
               الرجوع للرئيسية
             </Link>

@@ -510,7 +510,7 @@ export function buildDynamicPopularRoutes(
         } else if (item.to.includes("الإسكندرية") || item.to.includes("المنصورة")) {
           iconSrc = "/images/icons2d/Cairo_train.png";
         } else if (item.to.includes("مترو") || item.from.includes("مترو") || item.to.includes("رمسيس")) {
-          iconSrc = "/images/icons2d/metro.png";
+          iconSrc = "/images/transit/metro.png";
         } else {
           iconSrc = "/images/icons2d/microbus.png";
         }
@@ -547,7 +547,7 @@ export function getTransitOptionIconPath(option: { type?: string; icon?: string;
 
   // 1. Metro (مترو الأنفاق)
   if (t === "metro" || icon === "metro" || icon.includes("subway") || icon.includes("metro") || t.includes("مترو")) {
-    return { type: "image", src: "/images/icons2d/metro.png" };
+    return { type: "image", src: "/images/transit/metro.png" };
   }
 
   // 2. Microbus (ميكروباص)

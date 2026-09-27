@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "../page.module.css";
 
 interface BottomReportBannerProps {
   onOpenReportModal: () => void;
@@ -7,38 +6,25 @@ interface BottomReportBannerProps {
 
 export default function BottomReportBanner({ onOpenReportModal }: BottomReportBannerProps) {
   return (
-    <div onClick={onOpenReportModal} className={styles.calloutBanner}>
-      <div style={{ flex: "1 1 300px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+    <div
+      onClick={onOpenReportModal}
+      className="bg-alert border border-secondary duration-200 cursor-pointer p-8 rounded-md flex items-center justify-between flex-wrap gap-4 mt-6 relative overflow-hidden"
+    >
+      <div className="flex-1">
+        <div className="flex items-center gap-2.5 mb-1.5">
           <img
             src="/images/icons3d/alert.png"
             alt="Report"
-            style={{ width: "32px", height: "32px", objectFit: "contain" }}
+            className="w-8 h-8 object-contain shrink-0"
           />
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "1.05rem",
-              fontWeight: "800",
-              color: "var(--text-primary)",
-              fontFamily: "var(--font-sub)"
-            }}
-          >
-            الإبلاغ عن مشكلة أو تحديث في خطوط المواصلات
+          <h3 className="m-0 text-lg font-extrabold text-primary font-sub">
+            الإبلاغ عن مشكلة في خطوط المواصلات
           </h3>
         </div>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "0.82rem",
-            color: "var(--text-secondary)",
-            lineHeight: "1.6"
-          }}
-        >
+        <p className="m-0 text-sm text-secondary leading-relaxed">
           هل لاحظت أي خطأ في الأسعار، خطوات الطريق، أو وسائل المواصلات؟ شاركنا ملاحظتك لمساعدتنا في تدقيق الدليل وتحديثه باستمرار.
         </p>
       </div>
-      <i className="bx bx-chevron-left" style={{ fontSize: "1.4rem", color: "var(--text-muted)", marginRight: "auto" }} />
     </div>
   );
 }

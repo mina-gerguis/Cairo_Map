@@ -1,6 +1,5 @@
 import React, { RefObject } from "react";
 import { QuickRouteItem } from "../types";
-import styles from "../page.module.css";
 
 interface PopularRoutesSliderProps {
   sliderRef: RefObject<HTMLDivElement | null>;
@@ -27,15 +26,15 @@ export default function PopularRoutesSlider({
   };
 
   return (
-    <div ref={sliderRef} className={styles.sliderSection}>
-      <div className={styles.sliderHeader}>
-        <h2 className={styles.sliderTitle}>
-          <i className="bx bx-trending-up" style={{ color: "#f59e0b" }} />
-          <span>أشهر المسارات والرحلات</span>
+    <div ref={sliderRef} className="mt-2 mb-5">
+      <div className="flex items-center justify-between mb-2 px-1">
+        <h2 className="text-md font-extrabold text-primary flex items-center gap-1.5 m-0 font-sub pb-2">
+          <i className="bx bx-trending-up text-warning" />
+          <span>أشهر المسارات</span>
         </h2>
       </div>
 
-      <div className={styles.sliderTrack}>
+      <div className="flex gap-3 overflow-x-auto pt-1.5 px-1 pb-3.5 no-scrollbar snap-x">
         {routes.map((item, idx) => {
           const glow = item.glowColor || "#3b82f6";
 
@@ -44,19 +43,19 @@ export default function PopularRoutesSlider({
               key={`${item.from}-${item.to}-${idx}`}
               type="button"
               onClick={() => handleRouteClick(item.from, item.to)}
-              className={styles.bentoCard}
+              className="shrink-0 min-w-44 max-w-56 rounded-lg p-3.5 px-4 cursor-pointer outline-none text-right flex flex-col items-stretch snap-start relative overflow-hidden backdrop-blur-md border border-glass  transition select-none"
               style={{
                 background: `radial-gradient(135px circle at top right, ${glow}28 0%, ${glow}0a 45%, transparent 75%), var(--bg-glass)`,
               }}
               aria-label={`اختيار مسار ${item.label}`}
             >
-              <div className={styles.bentoCardTop}>
-                <div className={styles.bentoIconBox}>
+              <div className="flex items-center justify-between w-full mb-2">
+                <div className="w-10 h-10">
                   {item.icon ? (
                     <img
                       src={item.icon}
                       alt={item.label}
-                      style={{ width: "22px", height: "22px", objectFit: "contain" }}
+                      className="w-10 h-10 object-contain"
                       loading="lazy"
                     />
                   ) : (
@@ -66,17 +65,13 @@ export default function PopularRoutesSlider({
                     />
                   )}
                 </div>
-
-                <span className={styles.bentoPill}>
-                  {idx === 0 ? "🔥 الأكثر طلباً" : "مسار مباشر"}
-                </span>
               </div>
 
               <div>
-                <div className={styles.bentoCardTitle}>
+                <div className="text-primary font-sub font-bold text-sm leading-snug truncate">
                   {item.label}
                 </div>
-                <div className={styles.bentoCardSubtitle}>
+                <div className="text-muted font-body font-medium text-xs mt-1 truncate">
                   من {item.from} إلى {item.to}
                 </div>
               </div>

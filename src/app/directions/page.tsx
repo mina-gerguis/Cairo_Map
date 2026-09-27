@@ -224,11 +224,6 @@ export default function DirectionsPage() {
           onSelectRoute={handlePresetSearch}
         />
 
-        {/* Weather comfort widget */}
-        <div style={{ marginBottom: "20px" }}>
-          <WeatherComfortWidget />
-        </div>
-
         {/* Search Panel Card */}
         <RouteSearchCard
           searchPanelRef={searchPanelRef}
