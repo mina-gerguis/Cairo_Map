@@ -594,19 +594,19 @@ export function getTransitOptionIconPath(option: { type?: string; icon?: string;
     return { type: "image", src: "/images/icons2d/bus.png" };
   }
 
-  // 5. Railways / Train (قطار السكك الحديدية)
-  if (t === "train" || icon === "train" || icon.includes("railway") || icon.includes("cairo_train") || t.includes("قطار") || t.includes("قطارات") || t.includes("سكك حديد")) {
-    return { type: "image", src: "/images/icons2d/Cairo_train.png" };
-  }
-
-  // 6. Monorail (مونوريل شرق / غرب النيل)
+  // 5. Monorail (مونوريل شرق / غرب النيل)
   if (t === "monorail" || icon === "monorail" || icon.includes("monorail") || t.includes("مونوريل")) {
     return { type: "image", src: "/images/icons2d/Cairo_monorail_east.png" };
   }
 
-  // 7. LRT / Electric Train (القطار الكهربائي الخفيف)
+  // 6. LRT / Electric Train (القطار الكهربائي الخفيف)
   if (t === "lrt" || icon === "lrt" || icon.includes("lrt") || icon.includes("cairo_lrt") || t.includes("lrt") || t.includes("كهربائي")) {
     return { type: "image", src: "/images/icons2d/Cairo_lrt.png" };
+  }
+
+  // 7. Railways / Train (قطار السكك الحديدية)
+  if (t === "train" || icon === "train" || icon.includes("railway") || icon.includes("cairo_train") || t.includes("قطار") || t.includes("قطارات") || t.includes("سكك حديد")) {
+    return { type: "image", src: "/images/icons2d/Cairo_train.png" };
   }
 
   // 8. Plane / Airport (طيران / مطار)

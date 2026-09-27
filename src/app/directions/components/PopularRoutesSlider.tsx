@@ -17,7 +17,6 @@ export default function PopularRoutesSlider({
 
   const handleRouteClick = (from: string, to: string) => {
     onSelectRoute(from, to);
-
     setTimeout(() => {
       const targetEl = document.getElementById("directions-results-section");
       if (targetEl) {
@@ -29,7 +28,6 @@ export default function PopularRoutesSlider({
   const sliderItems: CardsSliderItem[] = routes.map((item, idx) => ({
     id: `${item.from}-${item.to}-${idx}`,
     title: item.label,
-    subtitle: `من ${item.from} إلى ${item.to}`,
     icon: item.icon,
     accentColor: item.glowColor || "#3b82f6",
     onClick: () => handleRouteClick(item.from, item.to),

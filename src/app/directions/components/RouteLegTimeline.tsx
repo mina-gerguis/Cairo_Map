@@ -21,6 +21,7 @@ export default function RouteLegTimeline({ legs }: RouteLegTimelineProps) {
           const legIconData = getTransitOptionIconPath({
             vehicleType: leg.vehicleType || leg.title,
             type: leg.vehicleType,
+            icon: leg.icon,
           });
 
           return (

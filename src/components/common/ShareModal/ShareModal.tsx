@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import styles from "./ShareModal.module.css";
 import { ShareModalProps } from "./types";
 
@@ -14,12 +15,10 @@ export default function ShareModal({
   extraInfo,
 }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
-  const [canNativeShare, setCanNativeShare] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-      setCanNativeShare(true);
-    }
+    setMounted(true);
   }, []);
 
   // Escape key listener to close modal
@@ -36,7 +35,7 @@ export default function ShareModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleCopy = async () => {
     try {
@@ -51,7 +50,7 @@ export default function ShareModal({
   };
 
   const handleNativeShare = async () => {
-    if (typeof navigator !== "undefined" && navigator.share) {
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
       try {
         await navigator.share({
           title,
@@ -62,6 +61,17 @@ export default function ShareModal({
         if (err.name !== "AbortError") {
           console.warn("Native share error:", err);
         }
+      }
+    } else {
+      // Desktop / Unsupported browsers fallback: Copy full trip details & URL to clipboard
+      try {
+        if (typeof navigator !== "undefined" && navigator.clipboard) {
+          await navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2500);
+        }
+      } catch (err) {
+        console.warn("Native share fallback error:", err);
       }
     }
   };
@@ -77,7 +87,7 @@ export default function ShareModal({
     messenger: `fb-messenger://share/?link=${encodedUrl}`,
   };
 
-  return (
+  return createPortal(
     <div
       className={styles.overlay}
       onClick={(e) => {
@@ -187,37 +197,24 @@ export default function ShareModal({
               <span className={styles.appName}>فيسبوك</span>
             </a>
 
-            {/* X / Twitter */}
-            <a
-              href={shareLinks.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
+            {/* Native / More Share for Any Screen */}
+            <button
+              type="button"
+              onClick={handleNativeShare}
               className={styles.appItem}
-              title="منصة X"
+              title="المزيد من خيارات المشاركة"
             >
-              <div className={`${styles.appIconWrapper} ${styles.twitter}`}>
-                <i className="bx bxl-twitter" />
+              <div className={`${styles.appIconWrapper} ${styles.nativeShare}`}>
+                <i className={copied ? "bx bx-check" : "bx bx-dots-horizontal-rounded"} />
               </div>
-              <span className={styles.appName}>منصة X</span>
-            </a>
-
-            {/* Native Share for iPhone / Android / Supported Desktop */}
-            {canNativeShare && (
-              <button
-                type="button"
-                onClick={handleNativeShare}
-                className={styles.appItem}
-                title="المزيد من التطبيقات"
-              >
-                <div className={`${styles.appIconWrapper} ${styles.nativeShare}`}>
-                  <i className="bx bx-dots-horizontal-rounded" />
-                </div>
-                <span className={styles.appName}>المزيد...</span>
-              </button>
-            )}
+              <span className={styles.appName}>
+                {copied ? "تم النسخ!" : "المزيد..."}
+              </span>
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

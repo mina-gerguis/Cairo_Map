@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../directions.module.css";
-import { FormLeg, FormOption, RouteConnectionIdentifier } from "../types";
+import { FormLeg, FormOption, RouteConnectionIdentifier, TransitVehicleType } from "../types";
 import { createDefaultLeg, createDefaultOption } from "../constants";
 import { RouteOptionFormBox } from "./RouteOptionFormBox";
 import CancelButton from "@/components/ui/button/CancelButton";
@@ -76,7 +76,8 @@ export function AdminDirectionsForm({
     onOptionsChange((prev) => {
       const updated = [...prev];
       const newLegNum = (updated[optIdx]?.legs || []).length + 1;
-      updated[optIdx].legs.push(createDefaultLeg(newLegNum));
+      const parentVehicle = (updated[optIdx]?.type || "microbus") as TransitVehicleType;
+      updated[optIdx].legs.push(createDefaultLeg(newLegNum, parentVehicle));
       return updated;
     });
   };

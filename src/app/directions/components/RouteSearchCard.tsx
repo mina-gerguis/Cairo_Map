@@ -14,6 +14,8 @@ interface RouteSearchCardProps {
   onSwap: () => void;
   isLocating: boolean;
   onUseGPS: () => void;
+  locationBadge?: string | null;
+  onClearLocationBadge?: () => void;
 }
 
 export default function RouteSearchCard({
@@ -27,6 +29,8 @@ export default function RouteSearchCard({
   onSwap,
   isLocating,
   onUseGPS,
+  locationBadge,
+  onClearLocationBadge,
 }: RouteSearchCardProps) {
   const filterSuggestions = (items: (SearchSuggestion | string)[], query: string) => {
     const rawInput = query.trim();
@@ -58,6 +62,8 @@ export default function RouteSearchCard({
       onSwap={onSwap}
       isLocating={isLocating}
       onUseGPS={onUseGPS}
+      locationBadge={locationBadge}
+      onClearLocationBadge={onClearLocationBadge}
     />
   );
 }

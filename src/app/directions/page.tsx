@@ -21,6 +21,7 @@ import BottomReportBanner from "./components/BottomReportBanner";
 import DirectionsReportModal from "./components/DirectionsReportModal";
 import { isPageOpenByPromotion } from "@/lib/promotions";
 import Footer from "@/components/Footer";
+import { resolvePreciseLocation } from "./utils/gpsLocator";
 import styles from "./page.module.css";
 
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
@@ -43,6 +44,7 @@ export default function DirectionsPage() {
   const [resolvedFromLabel, setResolvedFromLabel] = useState("");
   const [resolvedToLabel, setResolvedToLabel] = useState("");
   const [isLocating, setIsLocating] = useState(false);
+  const [locationBadge, setLocationBadge] = useState<string | null>(null);
 
   // Problem Reporting Modal state
   const [reportModalOpen, setReportModalOpen] = useState(false);
@@ -169,21 +171,57 @@ export default function DirectionsPage() {
     }
   }, [dataLoading]);
 
-  // GPS Current Location handler
+  // High-precision GPS Current Location handler
   const handleUseGPSLocation = () => {
     if (typeof window === "undefined" || !navigator.geolocation) {
-      alert("خاصية تحديد الموقع غير مدعومة في متصفحك.");
+      alert("خاصية تحديد الموقع الجغرافي (GPS) غير مدعومة في متصفحك.");
       return;
     }
+
     setIsLocating(true);
+    setLocationBadge(null);
+
     navigator.geolocation.getCurrentPosition(
-      () => {
-        setIsLocating(false);
-        setFromInput("القاهرة (رمسيس)");
+      async (position) => {
+        try {
+          const { latitude, longitude, accuracy } = position.coords;
+          const result = await resolvePreciseLocation(latitude, longitude, accuracy);
+
+          setFromInput(result.formattedInput);
+          setLocationBadge(result.badgeText);
+          setSearchTriggered(false);
+
+          // If the user already entered a destination, automatically search the route
+          if (toInput.trim()) {
+            handlePerformSearch(result.formattedInput, toInput);
+          }
+        } catch (err) {
+          console.error("Error resolving precise location:", err);
+          alert("تعذر تحديد اسم منطقتك الحالية بدقة، يرجى كتابة اسم المنطقة يدوياً.");
+        } finally {
+          setIsLocating(false);
+        }
       },
-      () => {
+      (error) => {
         setIsLocating(false);
-        alert("تعذر تحديد الموقع. يرجى تفعيل خدمة GPS والتأكد من إعطاء الصلاحية للمتصفح.");
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert("تم رفض إذن الوصول للموقع. يرجى تفعيل إذن الـ GPS في متصفحك أو إعدادات الجهاز والمحاولة مجدداً.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("معلومات الموقع الجغرافي (GPS) غير متوفرة حالياً في جهازك.");
+            break;
+          case error.TIMEOUT:
+            alert("استغرق طلب تحديد الموقع وقتاً طويلاً. يرجى التأكد من تشغيل الـ GPS والمحاولة مجدداً.");
+            break;
+          default:
+            alert("تعذر تحديد موقعك الحالي عبر الـ GPS. يرجى التأكد من إعطاء الصلاحية للمتصفح.");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0,
       }
     );
   };
@@ -257,6 +295,7 @@ export default function DirectionsPage() {
           toInput={toInput}
           setFromInput={(val) => {
             setFromInput(val);
+            setLocationBadge(null);
             setSearchTriggered(false);
           }}
           setToInput={(val) => {
@@ -268,6 +307,8 @@ export default function DirectionsPage() {
           onSwap={handleSwap}
           isLocating={isLocating}
           onUseGPS={handleUseGPSLocation}
+          locationBadge={locationBadge}
+          onClearLocationBadge={() => setLocationBadge(null)}
         />
 
         {/* Results Section */}

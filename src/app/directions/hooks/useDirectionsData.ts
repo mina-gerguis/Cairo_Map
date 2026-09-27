@@ -215,6 +215,41 @@ export function useDirectionsData() {
       }
     }
 
+    // If no direct route found, check for a reverse route (return trip)
+    if (!bestRoute) {
+      let highestReverseScore = 0;
+      let bestReverseRoute: RouteData | null = null;
+
+      for (const route of (routes || [])) {
+        const revFromScore = calculateLocationScore(route.to, route.to_aliases, fromInput);
+        const revToScore = calculateLocationScore(route.from, route.from_aliases, toInput);
+
+        if (revFromScore >= 120 && revToScore >= 120) {
+          const totalScore = revFromScore + revToScore;
+          if (totalScore > highestReverseScore) {
+            highestReverseScore = totalScore;
+            bestReverseRoute = route;
+          }
+        }
+      }
+
+      if (bestReverseRoute) {
+        bestRoute = {
+          from: bestReverseRoute.to,
+          to: bestReverseRoute.from,
+          from_aliases: bestReverseRoute.to_aliases,
+          to_aliases: bestReverseRoute.from_aliases,
+          options: bestReverseRoute.options.map(opt => ({
+            ...opt,
+            typeName: `مسار العودة: ${opt.typeName}`,
+            steps: [...opt.steps].reverse().map((st, i) => `خطوة ${i + 1} (عودة): ${st}`),
+            legs: opt.legs ? [...opt.legs].reverse() : undefined,
+            tips: opt.tips ? `(مسار العودة) ${opt.tips}` : "مسار العودة الموصى به باستخدام نفس شبكة المواصلات في الاتجاه المعاكس."
+          }))
+        };
+      }
+    }
+
     return {
       matchedRoute: bestRoute,
       resolvedFrom: bestRoute ? bestRoute.from : searchFrom,

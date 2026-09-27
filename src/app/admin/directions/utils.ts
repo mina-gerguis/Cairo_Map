@@ -5,7 +5,8 @@ import {
   GroupedRoute,
   OriginTabItem,
   RouteEntry,
-  RouteLeg
+  RouteLeg,
+  TransitVehicleType
 } from "./types";
 import { createDefaultLeg } from "./constants";
 
@@ -292,6 +293,147 @@ export function formatOptionCalculations(options: FormOption[]): FormOption[] {
 }
 
 /**
+ * Strictly maps any transit vehicle string (Arabic or English) to a valid TransitVehicleType key.
+ */
+export function resolveTransitVehicleType(rawType?: string): TransitVehicleType {
+  if (!rawType) return "microbus";
+  const norm = rawType.trim().toLowerCase();
+
+  // 1. Metro (مترو الأنفاق)
+  if (norm === "metro" || norm.includes("مترو") || norm.includes("subway")) {
+    return "metro";
+  }
+
+  // 2. Monorail (مونوريل شرق وغرب النيل)
+  if (norm === "monorail" || norm.includes("مونوريل")) {
+    return "monorail";
+  }
+
+  // 3. LRT (Light Rail Transit / القطار الكهربائي الخفيف)
+  if (
+    norm === "lrt" ||
+    norm.includes("lrt") ||
+    norm.includes("كهربائي") ||
+    norm.includes("light rail")
+  ) {
+    return "lrt";
+  }
+
+  // 4. BRT (Bus Rapid Transit / الأتوبيس الترددي السريع)
+  if (
+    norm === "brt" ||
+    norm.includes("brt") ||
+    norm.includes("ترددي") ||
+    norm.includes("bus rapid")
+  ) {
+    return "brt";
+  }
+
+  // 5. Railways / Train (قطار السكك الحديدية)
+  if (
+    norm === "train" ||
+    norm.includes("قطار") ||
+    norm.includes("قطارات") ||
+    norm.includes("سكك حديد") ||
+    norm.includes("سكة حديد") ||
+    norm.includes("railway")
+  ) {
+    return "train";
+  }
+
+  // 6. Public Bus / Superjet / Minibus (أتوبيس النقل العام)
+  if (
+    norm === "bus" ||
+    norm.includes("أتوبيس") ||
+    norm.includes("اتوبيس") ||
+    norm.includes("باص") ||
+    norm.includes("سوبر جيت") ||
+    norm.includes("جو باص")
+  ) {
+    return "bus";
+  }
+
+  // 7. Microbus (ميكروباص / سرفيس)
+  if (
+    norm === "microbus" ||
+    norm.includes("ميكرو") ||
+    norm.includes("سرفيس")
+  ) {
+    return "microbus";
+  }
+
+  // 8. Taxi / Cab / Ride Hailing (تاكسي / أوبر / كريم)
+  if (
+    norm === "taxi" ||
+    norm.includes("تاكسي") ||
+    norm.includes("اوبر") ||
+    norm.includes("أوبر") ||
+    norm.includes("كريم") ||
+    norm.includes("cab") ||
+    norm.includes("uber")
+  ) {
+    return "taxi";
+  }
+
+  // 9. Car / Private vehicle (سيارة خاصة)
+  if (
+    norm === "car" ||
+    norm.includes("سيار") ||
+    norm.includes("عربي") ||
+    norm.includes("ملاكي")
+  ) {
+    return "car";
+  }
+
+  // 10. Walking / Pedestrian (مشي / سير على الأقدام)
+  if (
+    norm === "walk" ||
+    norm.includes("مشي") ||
+    norm.includes("اقدام") ||
+    norm.includes("أقدام")
+  ) {
+    return "walk";
+  }
+
+  // 11. Airplane / Airport (طائرة / طيران / مطار)
+  if (
+    norm === "plane" ||
+    norm.includes("طائر") ||
+    norm.includes("طيران") ||
+    norm.includes("مطار") ||
+    norm.includes("airport") ||
+    norm.includes("flight")
+  ) {
+    return "plane";
+  }
+
+  // 12. Ship / Ferry (سفينة / عبارة / أتوبيس نهري)
+  if (
+    norm === "ship" ||
+    norm.includes("سفين") ||
+    norm.includes("عبار") ||
+    norm.includes("نهري") ||
+    norm.includes("مركب") ||
+    norm.includes("ferry") ||
+    norm.includes("boat")
+  ) {
+    return "ship";
+  }
+
+  // 13. Multi-modal (مواصلات متعددة)
+  if (
+    norm === "multi" ||
+    norm.includes("متعدد") ||
+    norm.includes("تحويل") ||
+    norm.includes("transfer")
+  ) {
+    return "multi";
+  }
+
+  return "microbus";
+}
+
+/**
  * Maps GroupedRoute connection back to form state for editing.
  */
 export function mapConnectionToFormOptions(conn: GroupedRoute): FormOption[] {
@@ -302,7 +444,9 @@ export function mapConnectionToFormOptions(conn: GroupedRoute): FormOption[] {
     if (opt.legs && Array.isArray(opt.legs) && opt.legs.length > 0) {
       formLegs = opt.legs.map((leg) => ({
         title: leg.title || "المرحلة",
-        vehicleType: leg.vehicleType || "ميكروباص",
+        vehicleType: leg.vehicleType
+          ? resolveTransitVehicleType(leg.vehicleType)
+          : resolveTransitVehicleType(opt.type),
         cost: leg.cost !== undefined ? leg.cost.toString() : "",
         duration: leg.duration || "",
         steps: leg.steps && Array.isArray(leg.steps) && leg.steps.length > 0 ? leg.steps : [""]
@@ -311,7 +455,7 @@ export function mapConnectionToFormOptions(conn: GroupedRoute): FormOption[] {
       formLegs = [
         {
           title: "المرحلة الأولى: خطوات المسار",
-          vehicleType: "ميكروباص",
+          vehicleType: resolveTransitVehicleType(opt.type),
           cost: opt.cost.toString(),
           duration: opt.duration,
           steps:
@@ -380,19 +524,19 @@ export function getTransitOptionIconPath(option: { type?: string; icon?: string;
     return { type: "image", src: "/images/icons2d/bus.png" };
   }
 
-  // 5. Railways / Train (قطار السكك الحديدية)
-  if (t === "train" || icon === "train" || icon.includes("railway") || icon.includes("cairo_train") || t.includes("قطار") || t.includes("قطارات") || t.includes("سكك حديد")) {
-    return { type: "image", src: "/images/icons2d/Cairo_train.png" };
-  }
-
-  // 6. Monorail (مونوريل)
+  // 5. Monorail (مونوريل)
   if (t === "monorail" || icon === "monorail" || icon.includes("cairo_monorail") || icon.includes("monorail") || t.includes("مونوريل")) {
     return { type: "image", src: "/images/icons2d/Cairo_monorail_east.png" };
   }
 
-  // 7. LRT (Light Rail Transit / القطار الكهربائي الخفيف)
+  // 6. LRT (Light Rail Transit / القطار الكهربائي الخفيف)
   if (t === "lrt" || icon === "lrt" || icon.includes("cairo_lrt") || icon.includes("lrt") || t.includes("lrt") || t.includes("كهربائي")) {
     return { type: "image", src: "/images/icons2d/Cairo_lrt.png" };
+  }
+
+  // 7. Railways / Train (قطار السكك الحديدية)
+  if (t === "train" || icon === "train" || icon.includes("railway") || icon.includes("cairo_train") || t.includes("قطار") || t.includes("قطارات") || t.includes("سكك حديد")) {
+    return { type: "image", src: "/images/icons2d/Cairo_train.png" };
   }
 
   // 8. Airport / Plane (طيران / مطار)

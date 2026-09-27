@@ -16,6 +16,7 @@ export type TransitVehicleType =
 export interface RouteLeg {
   title: string;
   vehicleType?: string;
+  icon?: string;
   cost?: number;
   duration?: string;
   steps: string[];
@@ -60,6 +61,7 @@ export interface DbTransitRoute {
 export interface FormLeg {
   title: string;
   vehicleType: string;
+  icon?: string;
   cost: string;
   duration: string;
   steps: string[];

@@ -26,6 +26,8 @@ export interface RouteSearchCardProps {
   isLocating?: boolean;
   onUseGPS?: () => void;
   gpsTitle?: string;
+  locationBadge?: string | null;
+  onClearLocationBadge?: () => void;
 
   // TO Field
   toInput: string;

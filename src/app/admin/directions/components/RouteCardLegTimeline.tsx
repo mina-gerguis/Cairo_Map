@@ -13,7 +13,8 @@ export function RouteCardLegTimeline({ legs }: RouteCardLegTimelineProps) {
       {(legs || []).map((leg, lIdx) => {
         const iconRes = getTransitOptionIconPath({
           vehicleType: leg.vehicleType || leg.title,
-          type: leg.vehicleType
+          type: leg.vehicleType,
+          icon: leg.icon
         });
 
         return (
@@ -29,7 +30,7 @@ export function RouteCardLegTimeline({ legs }: RouteCardLegTimelineProps) {
                       style={{ width: "18px", height: "auto", objectFit: "contain" }}
                     />
                   ) : (
-                    <span>📍</span>
+                    <i className={iconRes.iconClass || "bx bx-right-arrow-alt"} style={{ fontSize: "1rem" }} />
                   )}
                   {leg.title}
                 </span>

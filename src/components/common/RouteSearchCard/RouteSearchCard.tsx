@@ -55,6 +55,8 @@ export default function RouteSearchCard({
   isLocating = false,
   onUseGPS,
   gpsTitle = "تحديد الموقع بالـ GPS",
+  locationBadge,
+  onClearLocationBadge,
   toInput,
   setToInput,
   toLabel,
@@ -152,6 +154,7 @@ export default function RouteSearchCard({
                 <button
                   type="button"
                   onClick={onUseGPS}
+                  disabled={isLocating}
                   title={gpsTitle}
                   className={styles.gpsBtn}
                 >
@@ -159,7 +162,7 @@ export default function RouteSearchCard({
                     className={`bx ${isLocating ? "bx-loader-alt bx-spin" : "bx-target-lock"}`}
                     style={{ color: isLocating ? "#ef4444" : "var(--color-secondary, #3b82f6)" }}
                   />
-                  <span>موقعي</span>
+                  <span>{isLocating ? "جاري التحديد..." : "موقعي"}</span>
                 </button>
               )}
 
@@ -224,6 +227,23 @@ export default function RouteSearchCard({
               </div>
             )}
           </div>
+
+          {locationBadge && (
+            <div className={styles.locationBadge}>
+              <i className="bx bx-check-circle" style={{ color: "#10b981", fontSize: "1.05rem" }} />
+              <span>{locationBadge}</span>
+              {onClearLocationBadge && (
+                <button
+                  type="button"
+                  onClick={onClearLocationBadge}
+                  className={styles.badgeCloseBtn}
+                  aria-label="إغلاق تنبيه الموقع"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* SWAP BUTTON */}

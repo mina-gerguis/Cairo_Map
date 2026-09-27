@@ -16,6 +16,7 @@ export type TransitVehicleType =
 export interface RouteLeg {
   title: string;
   vehicleType?: string;
+  icon?: string;
   cost?: number;
   duration?: string;
   steps: string[];

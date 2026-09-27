@@ -6,35 +6,30 @@ export const TRANSIT_VEHICLE_CONFIG: Record<
   TransitVehicleType,
   { defaultName: string; defaultIcon: string; label: string }
 > = {
-  microbus: {
-    defaultName: "ميكروباص",
-    defaultIcon: "microbus",
-    label: "ميكروباص"
+  metro: {
+    defaultName: "مترو الأنفاق",
+    defaultIcon: "metro",
+    label: "مترو الأنفاق"
+  },
+  train: {
+    defaultName: "قطار السكك الحديدية",
+    defaultIcon: "Cairo_train",
+    label: "قطار"
   },
   bus: {
     defaultName: "أتوبيس النقل العام",
     defaultIcon: "bus",
     label: "أتوبيس"
   },
-  car: {
-    defaultName: "سيارة خاصة",
-    defaultIcon: "car",
-    label: "عربية خاص (سيارة)"
-  },
-  taxi: {
-    defaultName: "تاكسي / أوبر",
-    defaultIcon: "taxi",
-    label: "تاكسي / أوبر"
-  },
-  train: {
-    defaultName: "القطار المباشر",
-    defaultIcon: "train",
-    label: "قطار"
-  },
   monorail: {
     defaultName: "قطار المونوريل",
-    defaultIcon: "monorail",
+    defaultIcon: "Cairo_monorail_east",
     label: "مونوريل"
+  },
+  microbus: {
+    defaultName: "ميكروباص",
+    defaultIcon: "microbus",
+    label: "ميكروباص"
   },
   lrt: {
     defaultName: "القطار الكهربائي الخفيف (LRT)",
@@ -46,10 +41,20 @@ export const TRANSIT_VEHICLE_CONFIG: Record<
     defaultIcon: "brt",
     label: "الأتوبيس الترددي (BRT)"
   },
-  metro: {
-    defaultName: "مترو الأنفاق",
-    defaultIcon: "metro",
-    label: "مترو"
+  taxi: {
+    defaultName: "تاكسي / أوبر",
+    defaultIcon: "taxi",
+    label: "تاكسي / أوبر"
+  },
+  car: {
+    defaultName: "سيارة خاصة",
+    defaultIcon: "car",
+    label: "عربية خاص (سيارة)"
+  },
+  walk: {
+    defaultName: "سير على الأقدام",
+    defaultIcon: "walk",
+    label: "سير على الأقدام (مشي)"
   },
   plane: {
     defaultName: "طائرة / طيران",
@@ -65,27 +70,16 @@ export const TRANSIT_VEHICLE_CONFIG: Record<
     defaultName: "مواصلات متعددة",
     defaultIcon: "multi",
     label: "مواصلات متعددة"
-  },
-  walk: {
-    defaultName: "سير على الأقدام",
-    defaultIcon: "walk",
-    label: "سير على الأقدام (مشي)"
   }
 };
 
-export const createDefaultLeg = (stageNumber: number = 1): FormLeg => {
-  const stageNameArabic =
-    stageNumber === 1
-      ? "الأولى"
-      : stageNumber === 2
-      ? "الثانية"
-      : stageNumber === 3
-      ? "الثالثة"
-      : `${stageNumber}`;
-
+export const createDefaultLeg = (
+  stageNumber: number = 1,
+  defaultVehicle: TransitVehicleType = "microbus"
+): FormLeg => {
   return {
     title: ``,
-    vehicleType: "ميكروباص",
+    vehicleType: defaultVehicle,
     cost: "",
     duration: "",
     steps: ["", "", ""]
@@ -100,7 +94,7 @@ export const createDefaultOption = (): FormOption => ({
   duration: "",
   durationMinutes: "",
   steps: [""],
-  legs: [createDefaultLeg(1)],
+  legs: [createDefaultLeg(1, "microbus")],
   tips: "",
   map_link: ""
 });
