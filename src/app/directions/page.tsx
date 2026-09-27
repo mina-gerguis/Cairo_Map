@@ -143,6 +143,32 @@ export default function DirectionsPage() {
     handlePerformSearch(fromPreset, toPreset);
   };
 
+  // Handle shared route query params (?from=...&to=...) on load
+  useEffect(() => {
+    if (typeof window === "undefined" || dataLoading) return;
+
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlFrom = urlParams.get("from");
+      const urlTo = urlParams.get("to");
+
+      if (urlFrom && urlTo) {
+        setFromInput(urlFrom);
+        setToInput(urlTo);
+        handlePerformSearch(urlFrom, urlTo);
+
+        setTimeout(() => {
+          const targetEl = document.getElementById("directions-results-section");
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 300);
+      }
+    } catch (e) {
+      console.warn("Error reading route search params:", e);
+    }
+  }, [dataLoading]);
+
   // GPS Current Location handler
   const handleUseGPSLocation = () => {
     if (typeof window === "undefined" || !navigator.geolocation) {

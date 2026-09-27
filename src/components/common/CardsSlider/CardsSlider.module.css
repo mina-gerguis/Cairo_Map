@@ -1,0 +1,116 @@
+.sliderContainer {
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-inline: 0.25rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary, #f4f4f5);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  font-family: var(--font-sub, inherit);
+}
+
+.track {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-top: 0.375rem;
+  padding-bottom: 0.875rem;
+  padding-inline: 0.25rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  outline: none;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  user-select: none;
+  background-color: var(--bg-glass, rgba(0, 0, 0, 0.7));
+  text-decoration: none;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s ease,
+              box-shadow 0.22s ease;
+}
+
+.card:hover {
+  border-color: var(--border-primary);
+}
+
+.card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-secondary, #3b82f6);
+  outline-offset: 2px;
+}
+
+.iconWrapper {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconImg {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+}
+
+.cardTitle {
+  color: var(--text-primary, #f4f4f5);
+  font-family: var(--font-sub, inherit);
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardSubtitle {
+  color: var(--text-muted, #71717a);
+  font-family: var(--font-body, inherit);
+  font-weight: 500;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

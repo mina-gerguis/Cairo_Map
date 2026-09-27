@@ -357,31 +357,50 @@ export function buildLegsFromOption(option: RouteOption): RouteLeg[] {
 /**
  * Formats and triggers native or WhatsApp sharing for a route option.
  */
-export function shareRoute(params: {
+export async function shareRoute(params: {
   from: string;
   to: string;
   option: RouteOption;
   legs: RouteLeg[];
   summary: TripSummary;
-}) {
+}): Promise<"shared" | "copied" | "failed"> {
   const { from, to, option, legs, summary } = params;
 
   const stepsList = legs
     .map((leg, i) => `📌 مرحلة ${i + 1}: ${leg.title}\n` + (leg.steps || []).map((s) => `  • ${s}`).join("\n"))
     .join("\n\n");
 
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
-  const shareText = `🚗 *خط السير عبر ماب القاهرة (Cairo Map)* 🗺️\n\n📍 *من:* ${from}\n🎯 *إلى:* ${to}\n🚌 *نوع الوسيلة:* ${option.typeName}\n💵 *الإجمالي:* ${summary.totalCost} ج.م\n⏱️ *المدة المتوقعة:* ${summary.totalDuration}\n\n📋 *الخطوات التفصيلية:*\n${stepsList}\n\n🔗 *تصفح المسارات كاملة:* ${currentUrl}`;
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const shareUrl = `${origin}/directions?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+  const shareText = `🚗 *خط السير عبر ماب القاهرة (Cairo Map)* 🗺️\n\n📍 *من:* ${from}\n🎯 *إلى:* ${to}\n🚌 *نوع الوسيلة:* ${option.typeName}\n💵 *الإجمالي:* ${summary.totalCost} ج.م\n⏱️ *المدة المتوقعة:* ${summary.totalDuration}\n\n📋 *الخطوات التفصيلية:*\n${stepsList}\n\n🔗 *رابط المسار المباشر:*\n${shareUrl}`;
 
-  if (typeof navigator !== "undefined" && navigator.share) {
-    navigator.share({
-      title: `مسار مواصلات: من ${from} إلى ${to}`,
-      text: shareText,
-    }).catch(() => { });
-  } else if (typeof window !== "undefined") {
-    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    window.open(waUrl, "_blank");
+  // 1. Native Web Share API (opens system share dialog on Mobile & modern browsers with all installed apps)
+  if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+    try {
+      await navigator.share({
+        title: `مسار مواصلات: من ${from} إلى ${to}`,
+        text: shareText,
+        url: shareUrl,
+      });
+      return "shared";
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        return "shared";
+      }
+    }
   }
+
+  // 2. Fallback: Copy direct share text & link to clipboard
+  if (typeof navigator !== "undefined" && navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(shareText);
+      return "copied";
+    } catch (err) {
+      console.warn("Failed to copy route to clipboard:", err);
+    }
+  }
+
+  return "failed";
 }
 
 /**
