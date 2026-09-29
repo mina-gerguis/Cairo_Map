@@ -450,7 +450,11 @@ export default function MobileBottomNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const isAuthPage =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password";
   const isAdminPage = pathname?.startsWith("/admin");
   if (isAuthPage || isAdminPage) return null;
 

@@ -29,7 +29,11 @@ export default function ClientLayoutWrapper({
 }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
-  const isAuth = pathname === "/login" || pathname === "/signup";
+  const isAuth =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password";
 
   const [activeAlert, setActiveAlert] = useState<AlertItem | null>(null);
 

@@ -14,6 +14,7 @@ export const LOGIN_TEXTS = {
   MFA_SUBTITLE: "يرجى إدخال الكود المكون من 6 أرقام من تطبيق المصادقة الخاص بك",
   USERNAME_OR_EMAIL: "اسم المستخدم أو البريد الإلكتروني",
   PASSWORD: "كلمة المرور",
+  FORGOT_PASSWORD: "هل نسيت كلمة السر؟",
   KEEP_SIGNED_IN: "البقاء مسجل الدخول",
   SUBMIT_BUTTON: "تسجيل الدخول",
   SUBMIT_LOADING: "جاري الدخول...",

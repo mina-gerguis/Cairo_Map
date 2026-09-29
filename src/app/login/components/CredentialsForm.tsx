@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { CredentialsFormProps } from "../types";
 import { LOGIN_TEXTS } from "../constants";
 import styles from "../login.module.css";
@@ -43,10 +44,15 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
 
       {/* Password Field */}
       <div className={styles.fieldGroup}>
-        <label htmlFor="password" className={styles.label}>
-          <i className="bx bx-lock-alt" style={{ fontSize: "1rem" }} />
-          {LOGIN_TEXTS.PASSWORD}
-        </label>
+        <div className={styles.passwordLabelRow}>
+          <label htmlFor="password" className={styles.label}>
+            <i className="bx bx-lock-alt" style={{ fontSize: "1rem" }} />
+            {LOGIN_TEXTS.PASSWORD}
+          </label>
+          <Link href="/forgot-password" className={styles.forgotPasswordLink}>
+            {LOGIN_TEXTS.FORGOT_PASSWORD}
+          </Link>
+        </div>
         <div className={styles.inputWrapper}>
           <input
             id="password"

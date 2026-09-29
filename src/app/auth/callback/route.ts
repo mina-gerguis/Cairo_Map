@@ -47,7 +47,8 @@ export async function GET(request: Request) {
         console.error('Error ensuring profile for OAuth user:', err);
       }
 
-      return NextResponse.redirect(`${origin}`);
+      const redirectUrl = next.startsWith('/') ? `${origin}${next}` : `${origin}/${next}`;
+      return NextResponse.redirect(redirectUrl);
     }
   }
 
