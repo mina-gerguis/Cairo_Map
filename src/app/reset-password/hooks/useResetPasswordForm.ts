@@ -55,23 +55,87 @@ export const useResetPasswordForm = (): UseResetPasswordFormReturn => {
       }
     });
 
+    // Check URL parameters and hash for errors or tokens
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+
+      // Check for errors in query or hash (e.g. otp_expired)
+      const urlError =
+        searchParams.get("error_description") ||
+        searchParams.get("error") ||
+        hashParams.get("error_description") ||
+        hashParams.get("error");
+
+      if (urlError) {
+        if (
+          urlError.toLowerCase().includes("expired") ||
+          urlError.toLowerCase().includes("invalid") ||
+          urlError.toLowerCase().includes("otp")
+        ) {
+          setError(RESET_PASSWORD_MESSAGES.NO_SESSION);
+        } else {
+          setError(decodeURIComponent(urlError.replace(/\+/g, " ")));
+        }
+        setCheckingSession(false);
+        setHasValidSession(false);
+        return;
+      }
+
+      // 1. Handle ?code= (PKCE auth flow)
+      const code = searchParams.get("code");
+      if (code) {
+        supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+          if (!isMounted) return;
+          if (!error && data?.session) {
+            setHasValidSession(true);
+            setCheckingSession(false);
+          } else if (error) {
+            setError(RESET_PASSWORD_MESSAGES.NO_SESSION);
+            setCheckingSession(false);
+          }
+        });
+      }
+
+      // 2. Handle ?token_hash= (Supabase OTP recovery flow)
+      const tokenHash = searchParams.get("token_hash");
+      const type = searchParams.get("type");
+      if (tokenHash && (type === "recovery" || !type)) {
+        supabase.auth
+          .verifyOtp({
+            token_hash: tokenHash,
+            type: "recovery",
+          })
+          .then(({ data, error }) => {
+            if (!isMounted) return;
+            if (!error && data?.session) {
+              setHasValidSession(true);
+              setCheckingSession(false);
+            } else if (error) {
+              setError(RESET_PASSWORD_MESSAGES.NO_SESSION);
+              setCheckingSession(false);
+            }
+          });
+      }
+    }
+
     // Listen to auth state changes (e.g. PASSWORD_RECOVERY event or SIGNED_IN)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!isMounted) return;
-      if (event === "PASSWORD_RECOVERY" || session) {
+      if (event === "PASSWORD_RECOVERY" || (session && event === "SIGNED_IN") || (session && event === "INITIAL_SESSION")) {
         setHasValidSession(true);
         setCheckingSession(false);
       }
     });
 
-    // Timeout safety fallback: if no session or event detected in 3 seconds
+    // Timeout safety fallback
     const timeout = setTimeout(() => {
       if (isMounted) {
         setCheckingSession(false);
       }
-    }, 3000);
+    }, 3500);
 
     return () => {
       isMounted = false;

@@ -83,8 +83,11 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
         }
       }
 
-      const origin = typeof window !== "undefined" ? window.location.origin : "";
-      const redirectTo = `${origin}/auth/callback?next=/reset-password`;
+      let baseUrl =
+        process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+        (typeof window !== "undefined" ? window.location.origin : "");
+      baseUrl = baseUrl.replace(/\/+$/, "");
+      const redirectTo = `${baseUrl}/reset-password`;
 
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(targetEmail, {
         redirectTo,

@@ -6,6 +6,18 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
   const next = searchParams.get('next') ?? '/';
 
+  // If next points to reset-password, forward all parameters directly to /reset-password
+  // so the client-side Supabase SDK handles session restoration in browser storage.
+  if (next.includes('reset-password') || next.startsWith('/reset-password')) {
+    const forwardUrl = new URL(next.startsWith('/') ? `${origin}${next}` : `${origin}/${next}`);
+    searchParams.forEach((value, key) => {
+      if (key !== 'next') {
+        forwardUrl.searchParams.set(key, value);
+      }
+    });
+    return NextResponse.redirect(forwardUrl.toString());
+  }
+
   if (code) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
