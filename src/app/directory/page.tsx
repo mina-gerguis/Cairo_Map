@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { useDirectoryData, useDirectoryModal } from "./hooks";
+import { useDirectoryData } from "./hooks";
 import {
   DirectoryHero,
-  DirectorySlider,
-  EmergencyRibbon,
   DirectorySearchPanel,
   PhonesSection,
   TelecomSection,
   ReportAlertBanner,
-  DirectoryModal,
+  DirectoryReportModal,
 } from "./components";
+import { DirectoryReportTarget } from "./components/DirectoryReportModal";
 import { DirectoryTopCard } from "./types";
+import Footer from "@/components/Footer";
 
 export type { PhoneEntry, TelecomCodeEntry } from "./types";
 export { COMPANY_META } from "./constants";
@@ -32,8 +32,18 @@ export default function PhoneDirectoryPage() {
   // Core Data & Filter Hook
   const data = useDirectoryData();
 
-  // Modal (Suggest / Report) Hook
-  const modal = useDirectoryModal(data.searchQuery, data.activeCompany);
+  // Transit Report Modal state
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportingTarget, setReportingTarget] = useState<DirectoryReportTarget | null>(null);
+
+  const handleOpenReport = (
+    type: "phone" | "code" | "general" = "general",
+    name?: string,
+    numberOrCode?: string
+  ) => {
+    setReportingTarget(name ? { type, name, numberOrCode } : null);
+    setReportModalOpen(true);
+  };
 
   // Set Page Title
   useEffect(() => {
@@ -75,14 +85,14 @@ export default function PhoneDirectoryPage() {
 
   // Animate Modal Open
   useEffect(() => {
-    if (modal.modalOpen && modalBoxRef.current) {
+    if (reportModalOpen && modalBoxRef.current) {
       gsap.fromTo(
         modalBoxRef.current,
         { opacity: 0, scale: 0.95, y: 15 },
         { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out" }
       );
     }
-  }, [modal.modalOpen]);
+  }, [reportModalOpen]);
 
   // Handle category selection from slider
   const handleSelectCategory = (card: DirectoryTopCard) => {
@@ -103,20 +113,14 @@ export default function PhoneDirectoryPage() {
   return (
     <div className="main-container">
       {/* Header Banner */}
-      <DirectoryHero headerRef={headerRef} />
+      <DirectoryHero
+        headerRef={headerRef}
+        phonesCount={data.entries.length}
+        codesCount={data.codes.length}
+      />
 
       {/* Main Content Container */}
       <div className="container">
-        {/* Top Cards Slider */}
-        <DirectorySlider
-          sliderRef={sliderRef}
-          activeMainTab={data.activeMainTab}
-          selectedSpecialty={data.selectedSpecialty}
-          onSelectCategory={handleSelectCategory}
-        />
-
-        {/* Emergency Fast Dial Ribbon */}
-        <EmergencyRibbon ribbonRef={emergencyRibbonRef} />
 
         {/* Search Panel Card */}
         <DirectorySearchPanel
@@ -149,8 +153,8 @@ export default function PhoneDirectoryPage() {
             setVisibleCount={data.setVisibleCount}
             copiedId={data.copiedId}
             onCopy={data.handleCopyCode}
-            onOpenSuggestModal={(query) => modal.handleOpenModal("suggest", "phone", query || data.searchQuery)}
-            onOpenReportModal={(name, phone) => modal.handleOpenModal("report", "phone", name, phone)}
+            onOpenSuggestModal={(query) => handleOpenReport("general", query || data.searchQuery)}
+            onOpenReportModal={(name, phone) => handleOpenReport("phone", name, phone)}
           />
         )}
 
@@ -172,23 +176,27 @@ export default function PhoneDirectoryPage() {
             onCopy={data.handleCopyCode}
             searchQuery={data.searchQuery}
             sectionIcons={data.sectionIcons}
-            onOpenSuggestModal={(query) => modal.handleOpenModal("suggest", "code", query || data.searchQuery)}
+            onOpenSuggestModal={(query) => handleOpenReport("code", query || data.searchQuery)}
           />
         )}
 
         {/* Bottom Report Problem Alert Banner */}
         <ReportAlertBanner
           reportBannerRef={reportBannerRef}
-          onOpenModal={() => modal.handleOpenModal("suggest", "phone")}
+          onOpenModal={() => handleOpenReport("general")}
         />
       </div>
 
-      {/* Suggest / Report Modal */}
-      <DirectoryModal
+      {/* Problem Report Modal (TransitReportModal) */}
+      <DirectoryReportModal
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
         modalBoxRef={modalBoxRef}
-        modalState={modal}
-        specialties={data.specialties}
+        reportingTarget={reportingTarget}
       />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

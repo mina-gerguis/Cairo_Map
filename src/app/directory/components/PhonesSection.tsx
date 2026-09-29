@@ -84,14 +84,14 @@ export default function PhonesSection({
           style={{
             background:
               selectedSpecialty === "all"
-                ? "var(--color-secondary)"
+                ? "var(--tab-active-bg)"
                 : "var(--bg-secondary)",
             border: `1px solid ${
               selectedSpecialty === "all"
-                ? "var(--color-secondary)"
+                ? "var(--tab-active-border)"
                 : "var(--border-glass)"
             }`,
-            color: selectedSpecialty === "all" ? "#ffffff" : "var(--text-secondary)",
+            color: selectedSpecialty === "all" ? "var(--tab-active-color)" : "var(--text-secondary)",
             padding: "4px 12px",
             borderRadius: "6px",
             fontSize: "0.78rem",
@@ -112,11 +112,11 @@ export default function PhonesSection({
               type="button"
               onClick={() => setSelectedSpecialty(spec)}
               style={{
-                background: active ? "var(--color-secondary)" : "var(--bg-secondary)",
+                background: active ? "var(--tab-active-bg)" : "var(--bg-secondary)",
                 border: `1px solid ${
-                  active ? "var(--color-secondary)" : "var(--border-glass)"
+                  active ? "var(--tab-active-border)" : "var(--border-glass)"
                 }`,
-                color: active ? "#ffffff" : "var(--text-secondary)",
+                color: active ? "var(--tab-active-color)" : "var(--text-secondary)",
                 padding: "4px 12px",
                 borderRadius: "6px",
                 fontSize: "0.78rem",
@@ -139,16 +139,16 @@ export default function PhonesSection({
       {/* Phone Cards Grid */}
       {slicedEntries.length === 0 ? (
         <div className={styles.emptyState}>
-          <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🔍</div>
-          <h4
+          <h3 className="sub-title"
             style={{
               fontWeight: "700",
               color: "var(--text-primary)",
               marginBottom: "4px",
+
             }}
           >
             لم يتم العثور على أرقام مطابقة لبحثك
-          </h4>
+          </h3>
           <p
             style={{
               fontSize: "0.82rem",

@@ -123,6 +123,8 @@ export interface UseDirectoryModalReturn {
 // Component Props Interfaces
 export interface DirectoryHeroProps {
   headerRef: React.RefObject<HTMLDivElement | null>;
+  phonesCount?: number;
+  codesCount?: number;
 }
 
 export interface DirectorySliderProps {

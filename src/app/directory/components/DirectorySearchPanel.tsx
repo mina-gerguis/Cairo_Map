@@ -1,5 +1,4 @@
 import React from "react";
-import VoiceInputButton from "@/components/VoiceInputButton";
 import { DirectorySearchPanelProps } from "../types";
 import { getDialUrl } from "../utils";
 import styles from "../directory.module.css";
@@ -114,12 +113,6 @@ export default function DirectorySearchPanel({
             ></i>
             ابحث بالاسم، الرقم، التخصص، أو الخدمة:
           </label>
-          <VoiceInputButton
-            onTranscript={(text) => {
-              setSearchQuery(text);
-              onSaveSearch(text);
-            }}
-          />
         </div>
 
         <div style={{ position: "relative" }}>
@@ -178,6 +171,21 @@ export default function DirectorySearchPanel({
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <span>
+                    <img
+                      src={entry.logo_url}
+                      alt={entry.name}
+                      loading="lazy"
+                      decoding="async"
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "var(--radius-full)",
+                        objectFit: "contain",
+                        flexShrink: 0,
+                      }}
+                    />
+                  </span>
                   <span
                     style={{
                       fontSize: "0.92rem",
@@ -187,48 +195,25 @@ export default function DirectorySearchPanel({
                   >
                     {entry.name}
                   </span>
-                  {entry.specialty && (
-                    <span
-                      style={{
-                        fontSize: "0.72rem",
-                        background: "var(--border-glass)",
-                        color: "var(--text-secondary)",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      {entry.specialty}
-                    </span>
-                  )}
                 </div>
 
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "8px" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
-                  <span
+                  <a
+                    href={getDialUrl(entry.phone_number)}
                     style={{
                       fontSize: "0.82rem",
                       fontWeight: "800",
-                      color: "var(--colorSuccess)",
-                      background: "rgba(16, 185, 129, 0.1)",
+                      color: "var(--color-secondary)",
+                      background: "var(--bg-glass)",
                       padding: "2px 8px",
-                      borderRadius: "8px",
+                      borderRadius: "var(--radius-md)",
                       direction: "ltr",
                     }}
                   >
                     {entry.phone_number}
-                  </span>
-                  <a
-                    href={getDialUrl(entry.phone_number)}
-                    style={{
-                      color: "var(--color-secondary)",
-                      fontSize: "0.85rem",
-                      textDecoration: "none",
-                    }}
-                    title="اتصال مباشر"
-                  >
-                    <i className="fa-solid fa-phone"></i>
                   </a>
                 </div>
               </div>
@@ -255,7 +240,7 @@ export default function DirectorySearchPanel({
               fontWeight: "600",
             }}
           >
-            آخر عمليات البحث:
+            آخر البحث:
           </span>
           {recentSearches.map((term, index) => (
             <button
@@ -275,7 +260,7 @@ export default function DirectorySearchPanel({
                 cursor: "pointer",
               }}
             >
-              🔍 {term}
+              {term}
             </button>
           ))}
           <button

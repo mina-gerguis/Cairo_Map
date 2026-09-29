@@ -103,10 +103,9 @@
   left: 0;
   right: 0;
   z-index: 2000;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card, 12px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  background-color: var(--bg-glass);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-card);
   max-height: 280px;
   overflow-y: auto;
   direction: rtl;

@@ -1,6 +1,4 @@
 export { default as DirectoryHero } from "./DirectoryHero";
-export { default as DirectorySlider } from "./DirectorySlider";
-export { default as EmergencyRibbon } from "./EmergencyRibbon";
 export { default as DirectorySearchPanel } from "./DirectorySearchPanel";
 export { default as PhoneCard } from "./PhoneCard";
 export { default as PhonesSection } from "./PhonesSection";
@@ -8,3 +6,4 @@ export { default as TelecomAccordion } from "./TelecomAccordion";
 export { default as TelecomSection } from "./TelecomSection";
 export { default as ReportAlertBanner } from "./ReportAlertBanner";
 export { default as DirectoryModal } from "./DirectoryModal";
+export { default as DirectoryReportModal } from "./DirectoryReportModal";

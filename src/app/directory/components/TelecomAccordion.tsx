@@ -124,13 +124,16 @@ export default function TelecomAccordion({
                           color: isCopied
                             ? "var(--colorSuccess)"
                             : "var(--text-primary)",
-                          padding: "6px 12px",
-                          borderRadius: "6px",
+                          width: "30px",
+                          height: "30px",
+                          padding: "8px",
+                          borderRadius: "var(--radius-full)",
                           fontSize: "0.78rem",
                           fontWeight: "700",
                           cursor: "pointer",
-                          display: "inline-flex",
+                          display: "flex",
                           alignItems: "center",
+                          justifyContent: "center",
                           gap: "4px",
                         }}
                         title="نسخ الكود"
@@ -138,7 +141,6 @@ export default function TelecomAccordion({
                         <i
                           className={isCopied ? "fa-solid fa-check" : "fa-solid fa-copy"}
                         ></i>
-                        {isCopied ? "تم النسخ" : "نسخ"}
                       </button>
 
                       <a
@@ -146,18 +148,20 @@ export default function TelecomAccordion({
                         style={{
                           background: activeCompanyColor,
                           color: "#ffffff",
-                          padding: "6px 12px",
-                          borderRadius: "6px",
+                          width: "30px",
+                          height: "30px",
+                          padding: "8px",
+                          borderRadius: "var(--radius-full)",
                           fontSize: "0.78rem",
                           fontWeight: "700",
                           textDecoration: "none",
-                          display: "inline-flex",
+                          display: "flex",
                           alignItems: "center",
+                          justifyContent: "center",
                           gap: "4px",
                         }}
                       >
                         <i className="fa-solid fa-phone"></i>
-                        طلب الكود
                       </a>
                     </div>
                   </div>

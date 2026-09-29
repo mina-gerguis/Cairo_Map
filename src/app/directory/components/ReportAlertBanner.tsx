@@ -8,74 +8,25 @@ export default function ReportAlertBanner({
   return (
     <div
       ref={reportBannerRef}
-      style={{
-        background: "var(--bg-linear-alert)",
-        border: "1px solid var(--border-secondary)",
-        borderRadius: "var(--ra-8)",
-        padding: "20px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "16px",
-        marginTop: "14px",
-        overflow: "hidden",
-        position: "relative",
-      }}
+      onClick={onOpenModal}
+      className="bg-alert border border-secondary duration-200 cursor-pointer p-8 rounded-md flex items-center justify-between flex-wrap gap-4 mt-6 relative overflow-hidden"
     >
-      <div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            flexDirection: "row-reverse",
-            justifyContent: "flex-end",
-          }}
-        >
-          <h2
-            style={{
-              margin: "0 0 6px",
-              fontSize: "1rem",
-              fontWeight: "800",
-              gap: "8px",
-            }}
-          >
-            الإبلاغ عن رقم خاطئ أو اقتراح إضافة رقم جديد
-          </h2>
-          <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px" }} />
+      <div className="flex-1">
+        <div className="flex items-center gap-2.5 mb-1.5">
+          <img
+            src="/images/icons3d/alert.png"
+            alt="Report"
+            className="w-8 h-8 object-contain shrink-0"
+          />
+          <h3 className="m-0 text-lg font-extrabold text-primary font-sub">
+            الإبلاغ عن مشكلة في دليل الهاتف والخدمات
+          </h3>
         </div>
-
-        <p
-          style={{
-            margin: 0,
-            fontSize: "0.82rem",
-            color: "var(--text-secondary)",
-            lineHeight: "1.6",
-          }}
-        >
-          هل لاحظت أي رقم غير صالح أو خطأ في أكواد الشبكات؟ أو تود إضافة رقم جهة خدمية يستفيد منها الجميع؟
+        <p className="m-0 text-sm text-secondary leading-relaxed">
+          هل لاحظت أي رقم غير صالح أو خطأ في أكواد الشبكات؟ شاركنا ملاحظتك لمساعدتنا في تدقيق الدليل وتحديثه باستمرار.
         </p>
       </div>
-
-      <button
-        type="button"
-        className="btn btn-report"
-        onClick={onOpenModal}
-        style={{
-          fontSize: "0.84rem",
-          fontWeight: "700",
-          cursor: "pointer",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          transition: "all 0.15s ease",
-          flexShrink: 0,
-        }}
-      >
-        <i className="fa-solid fa-flag"></i>
-        <span>تقديم بلاغ أو اقتراح</span>
-      </button>
     </div>
   );
 }
+

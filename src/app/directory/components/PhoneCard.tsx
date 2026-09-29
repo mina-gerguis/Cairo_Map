@@ -13,40 +13,21 @@ export default function PhoneCard({
     <div className={styles.phoneCard}>
       {/* Top row: Icon/Logo + Name & Specialty */}
       <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-        {entry.logo_url ? (
-          <img
-            src={entry.logo_url}
-            alt={entry.name}
-            loading="lazy"
-            decoding="async"
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "8px",
-              objectFit: "cover",
-              flexShrink: 0,
-              background: "#fff",
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "8px",
-              background: "rgba(59, 130, 246, 0.12)",
-              border: "1px solid rgba(59, 130, 246, 0.2)",
-              color: "var(--color-secondary)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "1.1rem",
-              flexShrink: 0,
-            }}
-          >
-            <i className="fa-solid fa-headset"></i>
-          </div>
-        )}
+
+        <img
+          src={entry.logo_url}
+          alt={entry.name}
+          loading="lazy"
+          decoding="async"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "var(--radius-full)",
+            objectFit: "cover",
+            flexShrink: 0,
+            background: "var(--bg-primary)",
+          }}
+        />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
@@ -58,7 +39,7 @@ export default function PhoneCard({
               flexWrap: "wrap",
             }}
           >
-            <h4
+            <h4 className="sub-title"
               style={{
                 margin: 0,
                 fontSize: "0.92rem",
@@ -121,7 +102,7 @@ export default function PhoneCard({
             style={{
               fontSize: "0.95rem",
               fontWeight: "800",
-              color: "var(--colorSuccess)",
+              color: "var(--color-secondary)",
               direction: "ltr",
             }}
           >
@@ -131,7 +112,7 @@ export default function PhoneCard({
             type="button"
             onClick={() => onCopy(entry.phone_number, entry.id)}
             style={{
-              background: isCopied ? "rgba(16, 185, 129, 0.15)" : "transparent",
+              background: "transparent",
               border: "none",
               color: isCopied ? "var(--colorSuccess)" : "var(--text-muted)",
               cursor: "pointer",
@@ -168,10 +149,10 @@ export default function PhoneCard({
               display: "inline-flex",
               alignItems: "center",
               gap: "5px",
-              background: "var(--colorSuccess)",
+              background: "var(--color-secondary)",
               color: "#ffffff",
               padding: "4px 10px",
-              borderRadius: "6px",
+              borderRadius: "var(--radius-md)",
               textDecoration: "none",
               fontSize: "0.78rem",
               fontWeight: "700",
