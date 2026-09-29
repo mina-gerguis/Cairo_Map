@@ -1,0 +1,122 @@
+import React, { RefObject } from "react";
+import { BrtStation, VoteStats } from "../types";
+import { STATION_PALETTE } from "../constants";
+import BrtStationCard from "./BrtStationCard";
+import styles from "../brt.module.css";
+
+interface BrtResultsSectionProps {
+  resultsPanelRef: RefObject<HTMLDivElement | null>;
+  loading: boolean;
+  stations: BrtStation[];
+  filteredStations: BrtStation[];
+  selectedStation: string;
+  destinationQuery: string;
+  expandedStationId: string | null;
+  onToggleStation: (id: string) => void;
+  expandedRouteKey: string | null;
+  onToggleRoute: (routeKey: string) => void;
+  getRouteVotes: (stationName: string, destination: string) => VoteStats;
+  onVoteRoute: (stationName: string, destination: string, type: "like" | "dislike") => void;
+  onOpenReport: (stationName: string, destination: string) => void;
+}
+
+export default function BrtResultsSection({
+  resultsPanelRef,
+  loading,
+  stations,
+  filteredStations,
+  selectedStation,
+  destinationQuery,
+  expandedStationId,
+  onToggleStation,
+  expandedRouteKey,
+  onToggleRoute,
+  getRouteVotes,
+  onVoteRoute,
+  onOpenReport,
+}: BrtResultsSectionProps) {
+  if (loading) {
+    return (
+      <div ref={resultsPanelRef} className={styles.stationCard} style={{ textAlign: "center", padding: "40px" }}>
+        <div style={{ width: "32px", height: "32px", border: "3px solid rgba(255,255,255,0.1)", borderTopColor: "#e11d48", borderRadius: "50%", animation: "spin 0.9s linear infinite", margin: "0 auto 12px" }} />
+        <span style={{ color: "var(--text-secondary)", fontSize: "0.92rem" }}>جاري تحديث بيانات محطات الأتوبيس الترددي...</span>
+      </div>
+    );
+  }
+
+  const isSpecificStation = selectedStation && selectedStation !== "all";
+  const hasMatches = filteredStations.length > 0;
+  const currentStation = isSpecificStation ? stations.find(s => s.name === selectedStation) : null;
+  const hasQuery = destinationQuery.trim() !== "";
+
+  const stationsToRender = hasMatches
+    ? filteredStations
+    : (isSpecificStation && currentStation ? [currentStation] : []);
+
+  return (
+    <div
+      id="stations-results-section"
+      ref={resultsPanelRef}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "18px",
+        marginBottom: "28px",
+        scrollMarginTop: "24px",
+      }}
+    >
+      {/* Notice: Specific station selected, but NO direct match for query */}
+      {isSpecificStation && !hasMatches && hasQuery && currentStation && (
+        <div style={{
+          background: "rgba(255, 97, 97, 0.08)",
+          border: "1px solid rgba(239, 68, 68, 0.25)",
+          borderRadius: "var(--radius-card)",
+          padding: "16px 20px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "6px"
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#ef4444", fontWeight: "800", fontSize: "0.95rem" }}>
+            <i className="bx bx-info-circle" style={{ fontSize: "1.25rem" }} />
+            <span>لا تتوفر مسارات مباشرة من هذه المحطة إلى "{destinationQuery}"</span>
+          </div>
+          <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
+            تم إظهار جميع مسارات <strong>{selectedStation}</strong> بالأسفل لاختيار أقرب محطة بديلة.
+          </p>
+        </div>
+      )}
+
+      {/* Notice: No stations match query in all stations */}
+      {!isSpecificStation && !hasMatches && hasQuery && (
+        <div className={styles.stationCard} style={{ textAlign: "center", padding: "36px 20px" }}>
+          <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.92rem", lineHeight: "1.7" }}>
+            لم نتمكن من العثور على محطة أو مسار مباشر إلى <strong>"{destinationQuery}"</strong> حالياً. جارٍ تدقيق وتحديث البيانات.
+          </p>
+        </div>
+      )}
+
+      {/* Render Station Cards */}
+      {stationsToRender.map((station, sIdx) => {
+        const isStationExpanded = expandedStationId === (station.id || station.name) || stationsToRender.length === 1;
+        const palette = STATION_PALETTE[sIdx % STATION_PALETTE.length];
+
+        return (
+          <BrtStationCard
+            key={station.id || sIdx}
+            station={station}
+            palette={palette}
+            isExpanded={isStationExpanded}
+            onToggleExpand={() => onToggleStation(station.id || station.name)}
+            expandedRouteKey={expandedRouteKey}
+            onToggleRoute={onToggleRoute}
+            getRouteVotes={getRouteVotes}
+            onVoteRoute={onVoteRoute}
+            onOpenReport={onOpenReport}
+            hasQuery={hasQuery}
+            hasDirectMatches={hasMatches}
+          />
+        );
+      })}
+    </div>
+  );
+}

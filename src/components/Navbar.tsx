@@ -80,17 +80,20 @@ export default function Navbar() {
   // ── قائمة الروابط الرئيسية للموقع ──
   const mainLinks: NavLink[] = [
     { href: "/", label: "الصفحة الرئيسية", icon: "fa-solid fa-house-chimney" },
+    { href: "/map", label: "الخريطة", icon: "fa-solid fa-map-location-dot" },
     {
       label: "الخدمات",
       isDropdown: true,
       icon: "fa-solid fa-star-of-life",
       subItems: [
+        { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: "cairo.png" },
         { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.png" },
         { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.png" },
         { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.png" },
         { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.png" },
         { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: "Cairo_monorail_east.png" },
         { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: "Cairo_lrt.png" },
+        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: "brt.png" },
         { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: "Cairo_train.png" },
         { href: "/airports", label: "المطارات", subtitle: "معلومات مطار القاهرة والرحلات", imgLogo: "airport.png" },
         { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: "arab_republice.png" },

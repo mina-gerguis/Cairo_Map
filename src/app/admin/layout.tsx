@@ -85,6 +85,7 @@ export default function AdminLayout({
           { label: "إدارة مترو الأنفاق", href: "/admin/metro", category: "خدمة موقع", icon: "bx bxs-train" },
           { label: "إدارة سكك حديد مصر", href: "/admin/railways", category: "خدمة موقع", icon: "bx bx-train" },
           { label: "إدارة مواقف السرفيس", href: "/admin/microbus-stations", category: "خدمة موقع", icon: "bx bx-map-pin" },
+          { label: "إدارة الأتوبيس الترددي BRT", href: "/admin/brt", category: "خدمة موقع", icon: "bx bx-bus" },
           { label: "إدارة الأتوبيسات وسوبرجيت", href: "/admin/bus-stations", category: "خدمة موقع", icon: "bx bx-bus" },
           { label: "إدارة الجراجات ومواقف السيارات", href: "/admin/parking", category: "خدمة موقع", icon: "bx bx-car" },
           { label: "إدارة دليل الهواتف والأكواد", href: "/admin/directory", category: "خدمة موقع", icon: "bx bx-phone-call" },
@@ -149,7 +150,7 @@ export default function AdminLayout({
       setActiveSubTab(params.get("tab"));
     }
 
-    if (pathname === "/admin/places" || pathname === "/admin/cities" || pathname === "/admin/airports" || pathname === "/admin/ports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations" || pathname === "/admin/parking") {
+    if (pathname === "/admin/places" || pathname === "/admin/cities" || pathname === "/admin/airports" || pathname === "/admin/ports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations" || pathname === "/admin/brt" || pathname === "/admin/parking") {
       setIsServicesDropdownOpen(true);
     }
 
@@ -399,6 +400,7 @@ export default function AdminLayout({
   else if (pathname === "/admin/railways") pageTitle = "إدارة سكك حديد مصر";
   else if (pathname === "/admin/bus-stations") pageTitle = "إدارة الأتوبيسات (سوبرجيت)";
   else if (pathname === "/admin/microbus-stations") pageTitle = "إدارة مواقف السرفيس";
+  else if (pathname === "/admin/brt") pageTitle = "إدارة الأتوبيس الترددي BRT";
   else if (pathname === "/admin/parking") pageTitle = "إدارة الجراجات ومواقف السيارات";
   else if (pathname === "/admin/directions") pageTitle = "إدارة ازاي اروح (خطوط المواصلات)";
   else if (pathname === "/admin/directory") pageTitle = "دليل الهواتف والأكواد";
@@ -646,6 +648,21 @@ export default function AdminLayout({
               <div className={styles.linkLeftGroup}>
                 <i className={`bx bx-map-pin ${styles.linkIcon}`} />
                 <span className={styles.linkLabel}>المواقف (سرفيس)</span>
+              </div>
+            </Link>
+
+            {/* الأتوبيس الترددي BRT */}
+            <Link
+              href="/admin/brt"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/brt" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab(null);
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-bus ${styles.linkIcon}`} style={{ color: "#e11d48" }} />
+                <span className={styles.linkLabel}>الأتوبيس الترددي (BRT)</span>
               </div>
             </Link>
 

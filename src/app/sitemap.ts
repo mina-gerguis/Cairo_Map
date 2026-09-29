@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/places", priority: 0.9, changeFrequency: "daily" as const },
     { path: "/monorail", priority: 0.85, changeFrequency: "weekly" as const },
     { path: "/lrt", priority: 0.85, changeFrequency: "weekly" as const },
+    { path: "/brt", priority: 0.85, changeFrequency: "weekly" as const },
     { path: "/railways", priority: 0.85, changeFrequency: "weekly" as const },
     { path: "/airports", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/bus-stations", priority: 0.8, changeFrequency: "weekly" as const },

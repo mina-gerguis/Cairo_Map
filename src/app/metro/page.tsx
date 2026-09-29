@@ -13,6 +13,7 @@ import {
   MetroLinesSlider,
   MetroRouteCalculator,
   MetroLineExplorer,
+  MetroInterchangeGuide,
   MetroMapSection,
   MetroReportBanner,
   MetroReportModal,
@@ -63,6 +64,7 @@ export default function MetroPage() {
   const sliderRef = useRef<HTMLDivElement>(null);
   const searchPanelRef = useRef<HTMLDivElement>(null);
   const detailsPanelRef = useRef<HTMLDivElement>(null);
+  const interchangeGuideRef = useRef<HTMLDivElement>(null);
   const mapPanelRef = useRef<HTMLDivElement>(null);
   const reportBannerRef = useRef<HTMLDivElement>(null);
   const modalBoxRef = useRef<HTMLDivElement>(null);
@@ -83,6 +85,7 @@ export default function MetroPage() {
         sliderRef.current,
         searchPanelRef.current,
         detailsPanelRef.current,
+        interchangeGuideRef.current,
         mapPanelRef.current,
         reportBannerRef.current,
       ].filter(Boolean);
@@ -229,6 +232,12 @@ export default function MetroPage() {
           stationLinesMap={data.stationLinesMap}
           color={data.color}
           onOpenReportModal={(stationName) => reportModal.handleOpenReportModal(stationName)}
+        />
+
+        {/* Metro Platform & Line Interchange / Transfer Guide Section */}
+        <MetroInterchangeGuide
+          guideRef={interchangeGuideRef}
+          onSelectLine={handleSelectLine}
         />
 
         {/* Official Cairo Metro Map Download Section */}

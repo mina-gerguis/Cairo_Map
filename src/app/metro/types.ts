@@ -163,6 +163,11 @@ export interface MetroLineExplorerProps {
   onOpenReportModal: (stationName: string) => void;
 }
 
+export interface MetroInterchangeGuideProps {
+  guideRef?: React.RefObject<HTMLDivElement | null>;
+  onSelectLine?: (lineId: LineId) => void;
+}
+
 export interface MetroMapSectionProps {
   mapPanelRef: React.RefObject<HTMLDivElement | null>;
 }

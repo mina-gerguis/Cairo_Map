@@ -1,0 +1,162 @@
+import React, { RefObject } from "react";
+import styles from "../brt.module.css";
+import CancelButton from "@/components/ui/button/CancelButton";
+import PrimaryButton from "@/components/ui/button/PrimaryButton";
+
+interface BrtMissingModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  missingModalBoxRef: RefObject<HTMLDivElement | null>;
+  missingStationName: string;
+  setMissingStationName: (val: string) => void;
+  missingDestination: string;
+  setMissingDestination: (val: string) => void;
+  missingFare: string;
+  setMissingFare: (val: string) => void;
+  missingNotes: string;
+  setMissingNotes: (val: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  submitting: boolean;
+  limitReached?: boolean;
+  limitChecking?: boolean;
+}
+
+export default function BrtMissingModal({
+  isOpen,
+  onClose,
+  missingModalBoxRef,
+  missingStationName,
+  setMissingStationName,
+  missingDestination,
+  setMissingDestination,
+  missingFare,
+  setMissingFare,
+  missingNotes,
+  setMissingNotes,
+  onSubmit,
+  submitting,
+  limitReached = false,
+  limitChecking = false,
+}: BrtMissingModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      backdropFilter: "blur(12px)",
+      WebkitBackdropFilter: "blur(12px)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 1000,
+      padding: "20px",
+      direction: "rtl"
+    }}>
+      <div
+        ref={missingModalBoxRef}
+        className={styles.stationCard}
+        style={{
+          width: "100%",
+          maxWidth: "480px",
+          boxShadow: "0 25px 60px -15px rgba(0,0,0,0.6)",
+          padding: "22px"
+        }}
+      >
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          paddingBottom: "var(--pd-8)"
+        }}>
+          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-sub)" }}>
+            اقتراح محطة أو مسار جديد في BRT
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-close"
+          >
+            <i className="bx bx-x" />
+          </button>
+        </div>
+
+        <form onSubmit={onSubmit} className="flex column gap-12 mt-4">
+          <div>
+            <label className={styles.fieldLabel}>اسم محطة الأتوبيس الترددي: <span style={{ color: "#ef4444" }}>*</span></label>
+            <input
+              type="text"
+              placeholder="مثال: محطة عدلي منصور، محطة كايرو فستيفال، محطة المنيب..."
+              value={missingStationName}
+              onChange={e => setMissingStationName(e.target.value)}
+              className="input-fields"
+              required
+              style={{ height: "42px" }}
+            />
+          </div>
+
+          <div>
+            <label className={styles.fieldLabel}>وجهة المسار (إلى فين؟): <span style={{ color: "#ef4444" }}>*</span></label>
+            <input
+              type="text"
+              placeholder="مثال: كارفور المعادي، محور 26 يوليو، بشتيل..."
+              value={missingDestination}
+              onChange={e => setMissingDestination(e.target.value)}
+              className="input-fields"
+              required
+              style={{ height: "42px" }}
+            />
+          </div>
+
+          <div>
+            <label className={styles.fieldLabel}>سعر التذكرة التقديري (اختياري):</label>
+            <input
+              type="text"
+              placeholder="مثال: 15 ج.م"
+              value={missingFare}
+              onChange={e => setMissingFare(e.target.value)}
+              className="input-fields"
+              style={{ height: "42px" }}
+            />
+          </div>
+
+          <div>
+            <label className={styles.fieldLabel}>ملاحظات أو نقاط المرور (اختياري):</label>
+            <textarea
+              placeholder="أي تفاصيل أو معالم قريبة أو محطات تبادلية..."
+              value={missingNotes}
+              onChange={e => setMissingNotes(e.target.value)}
+              className="input-fields"
+              style={{ height: "70px", padding: "10px 14px", resize: "none" }}
+            />
+          </div>
+
+          {limitReached && (
+            <div style={{ padding: "10px 14px", background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: "10px", color: "#ef4444", fontSize: "0.82rem", lineHeight: "1.5" }}>
+              <i className="bx bx-error-circle" style={{ marginLeft: "6px", verticalAlign: "middle" }} />
+              لقد وصلت للحد الأقصى المسموح به (5 بلاغات معلقة). يرجى انتظار مراجعة الإدارة لبلاغاتك السابقة قبل إرسال بلاغات جديدة.
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "6px" }}>
+            <CancelButton onClick={onClose} />
+
+            <PrimaryButton
+              type="submit"
+              disabled={submitting || limitReached || limitChecking}
+              loading={submitting}
+              loadingText="جاري الإرسال..."
+              onClick={onSubmit}
+              label="إرسال الإقتراح"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

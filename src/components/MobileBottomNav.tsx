@@ -79,6 +79,15 @@ interface SiteServiceItem {
 
 const SITE_SERVICES: SiteServiceItem[] = [
   {
+    id: "map",
+    label: "خريطة الأماكن التفاعلية",
+    subtitle: "خريطة حية للموقع وموقعي والأماكن",
+    href: "/map",
+    icon: "cairo.png",
+    badge: "خريطة تفاعلية",
+    keywords: ["خريطة", "الخريطة", "خريطه", "الخريطه", "موقعي", "مكان", "اماكن", "map", "gps"],
+  },
+  {
     id: "metro",
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري",
@@ -104,6 +113,15 @@ const SITE_SERVICES: SiteServiceItem[] = [
     icon: "Cairo_lrt.png",
     badge: "القطار الكهربائي",
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"],
+  },
+  {
+    id: "brt",
+    label: "الأتوبيس الترددي السريع (BRT)",
+    subtitle: "محطات ومسار الأتوبيس على الطريق الدائري",
+    href: "/brt",
+    icon: "brt.png",
+    badge: "أتوبيس ترددي",
+    keywords: ["brt", "ترددي", "الترددي", "اتوبيس ترددي", "الأتوبيس الترددي", "الدائري", "الطريق الدائري", "حافلات سريعة"],
   },
   {
     id: "railways",

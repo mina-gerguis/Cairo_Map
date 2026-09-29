@@ -169,6 +169,15 @@ const SITE_SERVICES: SiteServiceItem[] = [
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"]
   },
   {
+    id: "brt",
+    label: "الأتوبيس الترددي السريع (BRT)",
+    subtitle: "محطات ومسار الأتوبيس على الطريق الدائري",
+    href: "/brt",
+    icon: "brt.png",
+    badge: "أتوبيس ترددي",
+    keywords: ["brt", "ترددي", "الترددي", "اتوبيس ترددي", "الأتوبيس الترددي", "الدائري", "الطريق الدائري", "حافلات سريعة"]
+  },
+  {
     id: "railways",
     label: "قطارات السكك الحديدية",
     subtitle: "قطارات القاهرة والصعيد",
@@ -757,6 +766,7 @@ export default function HomePage() {
 
   const quickSearchTags = [
     { label: "موناريل", route: "/monorail", icon: "Cairo_monorail_east.png" },
+    { label: "الأتوبيس الترددي", route: "/brt", icon: "brt.png" },
     { label: "القطار الكهربي", route: "/lrt", icon: "Cairo_lrt.png" },
     { label: "موقف الميكروباصات", route: "/microbus-stations", icon: "microbus.png" },
     { label: "موقف الأتوبيسات", route: "/bus-stations", icon: "bus.png" },
