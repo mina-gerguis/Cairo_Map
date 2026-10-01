@@ -80,7 +80,7 @@ async function getPlaceById(id: string): Promise<Place | null> {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const place = await getPlaceById(id);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
 
   if (!place) {
     return {
@@ -136,7 +136,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PlacePage({ params }: PageProps) {
   const { id } = await params;
   const place = await getPlaceById(id);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
 
   // JSON-LD Schema
   const jsonLd = place

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: "دليل مواقف السرفيس والميكروباص وخطوط السير والتعريفة الرسمية وأماكن الانطلاق في كافة أحياء القاهرة الكبرى.",
   keywords: ["مواقف الميكروباص", "سرفيس القاهرة", "موقف رمسيس", "موقف الجيزة", "خطوط السرفيس"],
   alternates: {
-    canonical: "https://cairomap.net/microbus-stations",
+    canonical: "https://cairomap.vercel.app/microbus-stations",
   },
 };
 

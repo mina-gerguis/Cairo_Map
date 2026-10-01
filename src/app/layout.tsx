@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app"),
   title: {
     default: "ماب القاهرة - دليل الأماكن، المواصلات والخدمات الذكي",
     template: "%s | ماب القاهرة",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "ماب القاهرة - دليل الأماكن والمواصلات الذكي",
     description: "دليلك الشامل لخطوط المترو، السكة الحديد، المنوريل، وأرقام وعناوين الأماكن والخدمات في القاهرة الكبرى.",
-    url: "https://cairomap.net",
+    url: "https://cairomap.vercel.app",
     siteName: "ماب القاهرة",
     locale: "ar_EG",
     type: "website",
@@ -79,13 +79,15 @@ export const metadata: Metadata = {
   },
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
+
 const globalJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://cairomap.net/#website",
-      url: "https://cairomap.net",
+      "@id": `${siteUrl}/#website`,
+      url: siteUrl,
       name: "ماب القاهرة",
       description: "دليل المواصلات والأماكن والخدمات الذكي في القاهرة الكبرى",
       inLanguage: "ar-EG",
@@ -93,17 +95,17 @@ const globalJsonLd = {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: "https://cairomap.net/places?search={search_term_string}",
+          urlTemplate: `${siteUrl}/places?search={search_term_string}`,
         },
         "query-input": "required name=search_term_string",
       },
     },
     {
       "@type": "Organization",
-      "@id": "https://cairomap.net/#organization",
+      "@id": `${siteUrl}/#organization`,
       name: "ماب القاهرة - Cairo Map",
-      url: "https://cairomap.net",
-      logo: "https://cairomap.net/apple-touch-icon.png",
+      url: siteUrl,
+      logo: `${siteUrl}/apple-touch-icon.png`,
       sameAs: [],
     },
   ],

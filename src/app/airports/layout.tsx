@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: "دليل مطارات جمهورية مصر العربية: مطار القاهرة الدولي (مبنى 1، 2، 3 ومبنى الركاب الموسمي)، مطار سفنكس، مطار العاصمة، ومواصلات المطارات.",
   keywords: ["مطار القاهرة", "مطار سفنكس", "مبنى الركاب", "اتوبيس المطار", "مواصلات المطار", "ماب القاهرة"],
   alternates: {
-    canonical: "https://cairomap.net/airports",
+    canonical: "https://cairomap.vercel.app/airports",
   },
 };
 

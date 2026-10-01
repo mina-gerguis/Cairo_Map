@@ -216,7 +216,7 @@ export function useMetroCalculator(
         await navigator.share({
           title: `رحلة مترو من ${selectedFrom} إلى ${selectedTo}`,
           text: shareText,
-          url: "https://cairomap.net/metro",
+          url: "https://cairomap.vercel.app/metro",
         });
         return;
       } catch {

@@ -5,12 +5,12 @@ export const metadata: Metadata = {
   description: "جدول مواعيد قطارات سكك حديد مصر، قطارات تالجو، الـ VIP، والمكيفة والروسي، وأسعار التذاكر وطريقة الحجز وخطوط بحري وقبلي.",
   keywords: ["قطارات مصر", "سكك حديد مصر", "مواعيد القطارات", "قطار تالجو", "اسعار قطارات الصعيد", "قطارات اسكندرية"],
   alternates: {
-    canonical: "https://cairomap.net/railways",
+    canonical: "https://cairomap.vercel.app/railways",
   },
   openGraph: {
     title: "سكك حديد مصر - مواعيد وأسعار القطارات | ماب القاهرة",
     description: "استعلم عن مواعيد قطارات مصر وأسعار التذاكر ومحطات التوقف.",
-    url: "https://cairomap.net/railways",
+    url: "https://cairomap.vercel.app/railways",
   },
 };
 

@@ -44,7 +44,7 @@ async function getBlogBySlug(slugParam: string): Promise<BlogArticle | null> {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
 
   if (!blog) {
     return {
@@ -98,7 +98,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function SingleBlogPage({ params }: PageProps) {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
 
   // JSON-LD Schema
   const jsonLd = blog

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: "دليل مواقف الأتوبيسات الإقليمية (موقف عبود، الترجمان، السلام، المنيب، ألماظة) وخطوط أتوبيسات هيئة النقل العام بالقاهرة والجيزة.",
   keywords: ["مواقف الاتوبيس", "موقف عبود", "موقف الترجمان", "موقف السلام", "اتوبيسات الاقاليم", "ماب القاهرة"],
   alternates: {
-    canonical: "https://cairomap.net/bus-stations",
+    canonical: "https://cairomap.vercel.app/bus-stations",
   },
 };
 

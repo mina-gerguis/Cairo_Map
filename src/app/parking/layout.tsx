@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: "دليل جراجات وساحات انتظار السيارات في القاهرة والجيزة، جراجات التحرير، روكسي، العتبة، والمولات الكبرى مع الأسعار ومواقع GPS.",
   keywords: ["جراجات القاهرة", "ساحات انتظار السيارات", "جراج التحرير", "جراج روكسي", "ركن السيارات"],
   alternates: {
-    canonical: "https://cairomap.net/parking",
+    canonical: "https://cairomap.vercel.app/parking",
   },
 };
 

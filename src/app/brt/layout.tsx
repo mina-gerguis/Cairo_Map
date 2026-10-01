@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: "دليل الأتوبيس الترددي السريع BRT على الطريق الدائري حول القاهرة الكبرى، قائمة المحطات، نقاط الربط بالمترو ومواقف الأقاليم وتفاصيل الخدمة.",
   keywords: ["الاتوبيس الترددي", "BRT الطريق الدائري", "محطات الاتوبيس الترددي", "مواصلات الدائري", "ماب القاهرة"],
   alternates: {
-    canonical: "https://cairomap.net/brt",
+    canonical: "https://cairomap.vercel.app/brt",
   },
 };
 

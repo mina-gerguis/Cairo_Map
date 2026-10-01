@@ -5,12 +5,12 @@ export const metadata: Metadata = {
   description: "دليلك الشامل لجميع الأماكن والأنشطة والخدمات في القاهرة والجيزة ومصر الجديدة والمعادي والتجمع وأكتوبر والشيخ زايد.",
   keywords: ["دليل الاماكن", "مطاعم القاهرة", "كافيهات التجمع", "مستشفيات القاهرة", "صيدليات 24 ساعة"],
   alternates: {
-    canonical: "https://cairomap.net/places",
+    canonical: "https://cairomap.vercel.app/places",
   },
   openGraph: {
     title: "دليل الأماكن والخدمات الشامل | ماب القاهرة",
     description: "ابحث في آلاف الأماكن والخدمات الموثقة مع أرقام الهواتف واللوكيشن ومواعيد العمل.",
-    url: "https://cairomap.net/places",
+    url: "https://cairomap.vercel.app/places",
   },
 };
 
