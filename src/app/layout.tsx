@@ -99,6 +99,9 @@ export const metadata: Metadata = {
     description: "دليلك الشامل للمواصلات والأماكن في القاهرة الكبرى.",
     images: ["/apple-touch-icon.png"],
   },
+  verification: {
+    google: "9R9Wjnu7iPmzSLWqsZyBs24_mmcGTRfprEE7hzxvNDk",
+  },
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
@@ -141,6 +144,11 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={almarai.variable}>
       <head>
+        {/* Google Search Console Verification */}
+        <meta
+          name="google-site-verification"
+          content="9R9Wjnu7iPmzSLWqsZyBs24_mmcGTRfprEE7hzxvNDk"
+        />
         {/* Global JSON-LD Schema */}
         <script
           type="application/ld+json"
@@ -154,7 +162,7 @@ export default function RootLayout({
           strategy="lazyOnload"
         />
         {/* Service Worker Registration */}
-        <Script id="sw-registration" strategy="afterInteractive">
+        <Script id="sw-registration" strategy="lazyOnload">
           {`
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', function() {
