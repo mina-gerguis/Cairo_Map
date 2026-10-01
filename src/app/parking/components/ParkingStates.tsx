@@ -1,167 +1,94 @@
 "use client";
 
-import React from "react";
+import React, { RefObject } from "react";
 import Link from "next/link";
+import PageHero from "@/components/common/PageHero";
 import { ParkingLockStateProps } from "../types";
+import styles from "../parking.module.css";
 
 export function ParkingLoading() {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "var(--bgPrimary)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "12px",
-        color: "var(--text-secondary)",
-      }}
-    >
-      <div
-        style={{
-          width: "40px",
-          height: "40px",
-          border: "4px solid var(--border-glass)",
-          borderTop: "4px solid var(--color-secondary, #3b82f6)",
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite",
-        }}
-      />
-      <span>جاري التحقق من التفاصيل...</span>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`,
-        }}
-      />
+    <div className={styles.loadingWrapper}>
+      <div className={styles.loadingSpinner} />
+      <span style={{ fontSize: "0.95rem", fontWeight: "600" }}>
+        جاري تحميل وتجهيز دليل الجراجات...
+      </span>
     </div>
   );
 }
 
-export function ParkingLockState({ user }: ParkingLockStateProps) {
+interface ModernParkingLockStateProps extends ParkingLockStateProps {
+  headerRef?: RefObject<HTMLDivElement | null>;
+  cardRef?: RefObject<HTMLDivElement | null>;
+}
+
+export function ParkingLockState({ user, headerRef, cardRef }: ModernParkingLockStateProps) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        paddingBottom: "50px",
-        backgroundColor: "var(--bgPrimary)",
-        direction: "rtl",
-      }}
-    >
-      {/* Banner matching Metro Cover Style */}
-      <div
-        className="metro-animate-fade"
-        style={{
-          backgroundColor: "var(--bgPrimary)",
-          padding: "24px 20px 24px",
-          textAlign: "center",
-          position: "relative",
-          borderBottom: "1px solid var(--border-glass)",
+    <div className={styles.pageWrapper}>
+      <div className={styles.ambientGlow} />
+
+      <PageHero
+        headerRef={headerRef}
+        title="دليل الجراجات"
+        icon={{
+          src: "/images/icons2d/parking.png",
+          alt: "Cairo Parking",
+          width: 60,
+          height: 42,
         }}
-      >
-        {/* Back Button */}
-        <div style={{ position: "absolute", top: "20px", right: "20px", zIndex: 10 }}>
-          <Link
-            href="/"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              background: "var(--bg-glass-card)",
-              border: "1px solid var(--border-glass)",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-            }}
-          >
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.5rem" }}></i>
-          </Link>
-        </div>
+        subtitle="خريطة تفاعلية ودليل جراجات وسط البلد، روكسي، ومحطات المترو التبادلية."
+      />
 
-        <div className="metro-animate-slide-up metro-delay-100">
-          <h1
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: "var(--font-display)",
-              fontSize: "clamp(1.5rem, 5vw, 2rem)",
-              fontWeight: "600",
-              color: "var(--text-primary)",
-              letterSpacing: "-0.5px",
-            }}
-          >
-            <img
-              src="/images/icons2d/parking.png"
-              alt="Parking"
-              loading="lazy"
-              decoding="async"
-              style={{ width: "60px", marginLeft: "10px" }}
-            />
-            دليل الجراجات
-          </h1>
-          <p
-            className="sub-title"
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "0.95rem",
-              maxWidth: "600px",
-              margin: "5px auto",
-              lineHeight: "1.6",
-            }}
-          >
-            خريطة تفاعلية ودليل جراجات وسط البلد، روكسي، ومحطات المترو التبادلية.
-          </p>
-        </div>
-      </div>
-
-      {/* Lock Panel centered container */}
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
+      <div className={styles.contentContainer} style={{ paddingTop: "10px" }}>
         <div
-          className="metro-animate-slide-up metro-delay-200"
+          ref={cardRef}
           style={{
-            backgroundColor: "var(--bgPrimary)",
-            border: "1px solid var(--border-glass)",
-            borderRadius: "15px",
-            padding: "35px 25px",
+            maxWidth: "520px",
+            margin: "0 auto",
             textAlign: "center",
-            marginTop: "32px",
+            padding: "36px 28px",
+            background: "var(--bg-glass)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: "1px solid var(--border-glass)",
+            borderRadius: "var(--radius-card)",
             boxShadow: "var(--shadow-card)",
-            position: "relative",
-            overflow: "hidden",
           }}
         >
           {/* Lock Icon */}
-          <div style={{ marginBottom: "24px" }}>
+          <div style={{ marginBottom: "20px" }}>
             <img
               src="/images/icons3d/lockPage.png"
               alt="Lock"
               loading="lazy"
               decoding="async"
-              style={{ width: "150px", height: "120px", objectFit: "contain" }}
+              style={{
+                width: "130px",
+                height: "100px",
+                objectFit: "contain",
+                margin: "0 auto",
+              }}
             />
           </div>
 
           <h2
             style={{
-              fontSize: "1.6rem",
+              fontSize: "1.35rem",
               fontWeight: "800",
               color: "var(--text-primary)",
-              marginBottom: "14px",
+              marginBottom: "12px",
+              fontFamily: "var(--font-sub)",
             }}
           >
-            دليل الجراجات يتطلب اشتراك في الباقة الفضية
+            دليل الجراجات يتطلب اشتراك في الباقة الفضية أو الذهبية
           </h2>
 
           <p
             style={{
               color: "var(--text-secondary)",
-              fontSize: "0.95rem",
+              fontSize: "0.9rem",
               lineHeight: "1.7",
-              maxWidth: "460px",
-              margin: "0 auto 28px",
+              margin: "0 auto 20px",
               fontFamily: "var(--font-body)",
             }}
           >
@@ -172,41 +99,45 @@ export function ParkingLockState({ user }: ParkingLockStateProps) {
           {/* Perks list */}
           <div
             style={{
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--border-glass)",
-              borderRadius: "12px",
-              padding: "16px 20px",
+              background: "rgba(255, 255, 255, 0.03)",
+              border: "1px solid rgba(255, 255, 255, 0.07)",
+              borderRadius: "14px",
+              padding: "16px",
               textAlign: "right",
-              margin: "0 auto 32px",
-              maxWidth: "440px",
+              margin: "0 auto 24px",
             }}
           >
             <div
               style={{
                 fontWeight: "800",
                 color: "var(--text-primary)",
-                fontSize: "0.92rem",
+                fontSize: "0.88rem",
                 marginBottom: "10px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
               }}
             >
-              ميزات الباقة الفضية:
+              <i className="bx bxs-car" style={{ color: "#3b82f6" }} />
+              <span>ميزات الباقة الفضية للجراجات:</span>
             </div>
             <ul
               style={{
                 paddingRight: "16px",
                 margin: 0,
-                fontSize: "0.85rem",
+                fontSize: "0.82rem",
                 color: "var(--text-secondary)",
-                lineHeight: "1.6",
+                lineHeight: "1.7",
                 display: "flex",
                 flexDirection: "column",
                 gap: "6px",
+                listStyleType: "none",
               }}
             >
               <li>✨ عرض مواقع وتفاصيل الجراجات المتعددة الطوابق والذكية.</li>
               <li>✨ معرفة أقرب محطات المترو التبادلية والخدمية لكل جراج.</li>
-              <li>✨ استخدام ميزة التوجيه المباشر بالخرائط لمعرفة الاتجاهات.</li>
-              <li>✨ ميزة اركن واركب لتوفير الوقت وتكلفة الوقود بالزحام.</li>
+              <li>✨ التوجيه المباشر بالخرائط لمعرفة الاتجاهات وحساب المسافة.</li>
+              <li>✨ توفير الوقت والجهد وتفادي زحام الانتظار وركن سيارتك بأمان.</li>
             </ul>
           </div>
 
@@ -215,7 +146,7 @@ export function ParkingLockState({ user }: ParkingLockStateProps) {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "12px",
+              gap: "10px",
               maxWidth: "340px",
               margin: "0 auto",
             }}
@@ -223,17 +154,14 @@ export function ParkingLockState({ user }: ParkingLockStateProps) {
             {user ? (
               <Link
                 href="/profile?expand=subscription"
+                className="btn btn-primary"
                 style={{
-                  padding: "var(--padding-btn)",
-                  borderRadius: "var(--radiusBtn)",
-                  background: "var(--bg-subscribe-button-seliver)",
-                  color: "var(--color-white-50)",
+                  padding: "12px 20px",
+                  borderRadius: "12px",
+                  fontWeight: "800",
+                  fontSize: "0.92rem",
+                  textAlign: "center",
                   textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: "0.95rem",
-                  boxShadow: "var(--bs-subscribe-button-seliver)",
-                  border: "1px solid var(--br-subscribe-button-seliver)",
-                  display: "block",
                 }}
               >
                 اشترك الآن في الباقة الفضية
@@ -241,34 +169,30 @@ export function ParkingLockState({ user }: ParkingLockStateProps) {
             ) : (
               <Link
                 href="/login"
+                className="btn btn-primary"
                 style={{
-                  padding: "var(--padding-btn)",
-                  borderRadius: "var(--radiusBtn)",
-                  background: "var(--bg-subscribe-button-base)",
-                  color: "#fff",
+                  padding: "12px 20px",
+                  borderRadius: "12px",
+                  fontWeight: "800",
+                  fontSize: "0.92rem",
+                  textAlign: "center",
                   textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: "0.95rem",
-                  boxShadow: "var(--bs-subscribe-button-base)",
-                  display: "block",
                 }}
               >
-                سجل دخولك أولاً لتفعيل الاشتراك
+                سجل دخولك لتفعيل الاشتراك
               </Link>
             )}
 
             <Link
               href="/"
+              className="btn btn-cancel"
               style={{
-                padding: "var(--padding-btn)",
-                borderRadius: "var(--radiusBtn)",
-                background: "var(--bg-secondary)",
-                color: "var(--text-secondary)",
+                padding: "10px 20px",
+                borderRadius: "12px",
+                fontWeight: "700",
+                fontSize: "0.88rem",
+                textAlign: "center",
                 textDecoration: "none",
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-                border: "1px solid var(--border-glass)",
-                display: "block",
               }}
             >
               الرجوع للرئيسية

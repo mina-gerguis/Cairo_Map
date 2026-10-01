@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 import Footer from "@/components/Footer";
 
-import { useAirportsData } from "./hooks";
+import { useAirportsData, useAirportsReportModal } from "./hooks";
 import {
   AirportsHero,
   AirportsLoading,
@@ -13,11 +13,20 @@ import {
   AirportsTabs,
   AirportsSearchCard,
   AirportsResultsSection,
-  AirportsTravelGuide
+  AirportsTravelGuide,
+  AirportsReportBanner,
+  AirportsReportModal
 } from "./components";
 import styles from "./airports.module.css";
 
-export type { Airport, AirportTab, AirportsStats } from "./types";
+export type {
+  Airport,
+  AirportTab,
+  AirportCategoryFilter,
+  AirportsStats,
+  AirportReportProblemType,
+  AirportReportScope
+} from "./types";
 
 export default function AirportsPage() {
   const { user, profile, loading: authLoading, isPageOpen } = useAuth();
@@ -36,16 +45,49 @@ export default function AirportsPage() {
 
   // Core Data & State Hook
   const {
+    airports,
     filteredAirports,
     loading: dataLoading,
     searchQuery,
     setSearchQuery,
+    selectedCategory,
+    setSelectedCategory,
+    categoryCounts,
     expandedId,
     toggleExpand,
     activeTab,
     setActiveTab,
     stats
   } = useAirportsData(user, hasAccess);
+
+  // Error & Feedback Reporting Hook
+  const {
+    reportModalOpen,
+    openReportModal,
+    closeReportModal,
+    targetScope,
+    setTargetScope,
+    selectedAirportForReport,
+    setSelectedAirportForReport,
+    customAirportName,
+    setCustomAirportName,
+    airportQuery,
+    setAirportQuery,
+    reportProblemType,
+    setReportProblemType,
+    reportDetails,
+    setReportDetails,
+    reportImageFile,
+    reportImagePreview,
+    handleImageSelect,
+    reportUploading,
+    reportLoading,
+    reportError,
+    reportSuccess,
+    limitReached,
+    limitChecking,
+    handleSubmitReport
+  } = useAirportsReportModal(user, airports);
 
   // 1. Initial Authentication Loading State
   if (authLoading) {
@@ -67,6 +109,7 @@ export default function AirportsPage() {
       <AirportsHero
         totalAirports={stats.totalAirports}
         internationalCount={stats.internationalCount}
+        domesticCount={stats.domesticCount}
       />
 
       <div className={styles.contentContainer}>
@@ -84,14 +127,21 @@ export default function AirportsPage() {
         <AirportsTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
+          airportsCount={stats.totalAirports}
         />
+
+        {/* Callout Banner for Error / Data Reporting */}
+        <AirportsReportBanner onOpenReport={() => openReportModal(null)} />
 
         {activeTab === "list" && (
           <>
-            {/* Live Search Card */}
+            {/* Live Search & Category Filters */}
             <AirportsSearchCard
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              categoryCounts={categoryCounts}
             />
 
             {/* Airports Accordion Results Section */}
@@ -100,6 +150,7 @@ export default function AirportsPage() {
               airports={filteredAirports}
               expandedId={expandedId}
               onToggleExpand={toggleExpand}
+              onReport={airport => openReportModal(airport)}
             />
           </>
         )}
@@ -109,6 +160,36 @@ export default function AirportsPage() {
           <AirportsTravelGuide />
         )}
       </div>
+
+      {/* Error / Problem Reporting Modal */}
+      <AirportsReportModal
+        isOpen={reportModalOpen}
+        onClose={closeReportModal}
+        user={user}
+        airports={airports}
+        targetScope={targetScope}
+        setTargetScope={setTargetScope}
+        selectedAirport={selectedAirportForReport}
+        setSelectedAirport={setSelectedAirportForReport}
+        customAirportName={customAirportName}
+        setCustomAirportName={setCustomAirportName}
+        airportQuery={airportQuery}
+        setAirportQuery={setAirportQuery}
+        problemType={reportProblemType}
+        setProblemType={setReportProblemType}
+        details={reportDetails}
+        setDetails={setReportDetails}
+        imageFile={reportImageFile}
+        imagePreview={reportImagePreview}
+        onImageSelect={handleImageSelect}
+        error={reportError}
+        loading={reportLoading}
+        uploading={reportUploading}
+        success={reportSuccess}
+        limitChecking={limitChecking}
+        limitReached={limitReached}
+        onSubmit={handleSubmitReport}
+      />
 
       {/* Global Footer */}
       <Footer />

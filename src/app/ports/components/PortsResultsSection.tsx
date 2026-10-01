@@ -10,6 +10,7 @@ interface PortsResultsSectionProps {
   searchQuery: string;
   expandedPort: string | null;
   onToggleExpand: (name: string) => void;
+  onReport?: (port: Port) => void;
 }
 
 export default function PortsResultsSection({
@@ -19,6 +20,7 @@ export default function PortsResultsSection({
   searchQuery,
   expandedPort,
   onToggleExpand,
+  onReport,
 }: PortsResultsSectionProps) {
   if (loading) {
     return (
@@ -48,6 +50,7 @@ export default function PortsResultsSection({
             port={port}
             isExpanded={expandedPort === port.name}
             onToggleExpand={() => onToggleExpand(port.name)}
+            onReport={onReport}
           />
         ))
       ) : (

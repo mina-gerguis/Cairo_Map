@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { Airport, DEFAULT_AIRPORTS } from "@/data/airports";
-import { AirportTab, AirportsStats } from "../types";
-import { enrichAirportData, filterAirports, getLocalAirports } from "../utils";
+import { AirportTab, AirportCategoryFilter, AirportsStats } from "../types";
+import { enrichAirportData, filterAirports, getLocalAirports, matchesCategory } from "../utils";
 
 export function useAirportsData(user: any, hasAccess: boolean) {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<AirportCategoryFilter>("all");
   const [expandedId, setExpandedId] = useState<number | string | null>(null);
   const [activeTab, setActiveTab] = useState<AirportTab>("list");
 
@@ -70,8 +71,31 @@ export function useAirportsData(user: any, hasAccess: boolean) {
   }, []);
 
   const filteredAirports = useMemo(() => {
-    return filterAirports(airports, searchQuery);
-  }, [airports, searchQuery]);
+    return filterAirports(airports, searchQuery, selectedCategory);
+  }, [airports, searchQuery, selectedCategory]);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<AirportCategoryFilter, number> = {
+      all: airports.length,
+      international: 0,
+      domestic: 0,
+      cairo: 0,
+      redsea_sinai: 0,
+      alex_delta: 0,
+      upper_egypt: 0
+    };
+
+    airports.forEach(a => {
+      if (matchesCategory(a, "international")) counts.international++;
+      if (matchesCategory(a, "domestic")) counts.domestic++;
+      if (matchesCategory(a, "cairo")) counts.cairo++;
+      if (matchesCategory(a, "redsea_sinai")) counts.redsea_sinai++;
+      if (matchesCategory(a, "alex_delta")) counts.alex_delta++;
+      if (matchesCategory(a, "upper_egypt")) counts.upper_egypt++;
+    });
+
+    return counts;
+  }, [airports]);
 
   const stats: AirportsStats = useMemo(() => {
     const internationalCount = airports.filter(
@@ -92,6 +116,9 @@ export function useAirportsData(user: any, hasAccess: boolean) {
     loading,
     searchQuery,
     setSearchQuery,
+    selectedCategory,
+    setSelectedCategory,
+    categoryCounts,
     expandedId,
     toggleExpand,
     activeTab,

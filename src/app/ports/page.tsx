@@ -8,10 +8,13 @@ import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 import Footer from "@/components/Footer";
 
 import { usePortsData } from "./hooks/usePortsData";
+import { usePortsReportModal } from "./hooks/usePortsReportModal";
 import PortsHero from "./components/PortsHero";
 import PortsSlider from "./components/PortsSlider";
 import PortsSearchCard from "./components/PortsSearchCard";
 import PortsResultsSection from "./components/PortsResultsSection";
+import PortsReportBanner from "./components/PortsReportBanner";
+import PortsReportModal from "./components/PortsReportModal";
 import PortsPaywall from "./components/PortsPaywall";
 import PortsLoading from "./components/PortsLoading";
 import styles from "./ports.module.css";
@@ -48,6 +51,35 @@ export default function PortsPage() {
     handleSelectSearchPort,
     counts,
   } = usePortsData(user, hasAccess);
+
+  // Ports Error Reporting Hook
+  const {
+    reportModalOpen,
+    openReportModal,
+    closeReportModal,
+    targetScope,
+    setTargetScope,
+    selectedPortForReport,
+    setSelectedPortForReport,
+    customPortName,
+    setCustomPortName,
+    portQuery,
+    setPortQuery,
+    reportProblemType,
+    setReportProblemType,
+    reportDetails,
+    setReportDetails,
+    reportImageFile,
+    reportImagePreview,
+    handleImageSelect,
+    reportUploading,
+    reportLoading,
+    reportError,
+    reportSuccess,
+    limitReached,
+    limitChecking,
+    handleSubmitReport,
+  } = usePortsReportModal(user, ports);
 
   // GSAP Animation Refs
   const headerRef = useRef<HTMLDivElement>(null);
@@ -154,6 +186,9 @@ export default function PortsPage() {
           </div>
         )}
 
+        {/* Callout Banner for Error / Data Reporting */}
+        <PortsReportBanner onOpenReport={() => openReportModal(null)} />
+
         {/* Bento Slider for Quick Category Navigation */}
         <PortsSlider
           sliderRef={sliderRef}
@@ -184,8 +219,39 @@ export default function PortsPage() {
           searchQuery={searchQuery}
           expandedPort={expandedPort}
           onToggleExpand={toggleExpand}
+          onReport={(port) => openReportModal(port)}
         />
       </div>
+
+      {/* Ports Error / Problem Reporting Modal */}
+      <PortsReportModal
+        isOpen={reportModalOpen}
+        onClose={closeReportModal}
+        user={user}
+        ports={ports}
+        targetScope={targetScope}
+        setTargetScope={setTargetScope}
+        selectedPort={selectedPortForReport}
+        setSelectedPort={setSelectedPortForReport}
+        customPortName={customPortName}
+        setCustomPortName={setCustomPortName}
+        portQuery={portQuery}
+        setPortQuery={setPortQuery}
+        problemType={reportProblemType}
+        setProblemType={setReportProblemType}
+        details={reportDetails}
+        setDetails={setReportDetails}
+        imageFile={reportImageFile}
+        imagePreview={reportImagePreview}
+        onImageSelect={handleImageSelect}
+        error={reportError}
+        loading={reportLoading}
+        uploading={reportUploading}
+        success={reportSuccess}
+        limitChecking={limitChecking}
+        limitReached={limitReached}
+        onSubmit={handleSubmitReport}
+      />
 
       {/* Global Footer */}
       <Footer />

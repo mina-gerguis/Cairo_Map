@@ -6,11 +6,13 @@ import styles from "../airports.module.css";
 interface AirportsTabsProps {
   activeTab: AirportTab;
   onTabChange: (tab: AirportTab) => void;
+  airportsCount?: number;
 }
 
 export default function AirportsTabs({
   activeTab,
-  onTabChange
+  onTabChange,
+  airportsCount
 }: AirportsTabsProps) {
   return (
     <div className={styles.tabsWrapper} role="tablist">
@@ -24,8 +26,11 @@ export default function AirportsTabs({
             activeTab === tab.id ? styles.tabBtnActive : ""
           }`}
         >
-          <span>{tab.icon}</span>
-          <span>{tab.label}</span>
+          <span className={styles.tabIcon}>{tab.icon}</span>
+          <span className={styles.tabLabel}>{tab.label}</span>
+          {tab.id === "list" && airportsCount !== undefined && (
+            <span className={styles.tabBadge}>{airportsCount}</span>
+          )}
         </button>
       ))}
     </div>

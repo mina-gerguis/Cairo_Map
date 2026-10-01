@@ -10,6 +10,7 @@ export function normalizeArabic(text: string): string {
     .replace(/[أإآ]/g, "ا")
     .replace(/ة/g, "ه")
     .replace(/ى/g, "ي")
+    .replace(/[\u064B-\u0652]/g, "") // remove tashkeel
     .replace(/ـ/g, "")
     .trim();
 }
@@ -35,6 +36,26 @@ export function getLocalPorts(): Port[] {
       return DEFAULT_PORTS;
     }
   }
-  localStorage.setItem("local_ports", JSON.stringify(DEFAULT_PORTS));
+  try {
+    localStorage.setItem("local_ports", JSON.stringify(DEFAULT_PORTS));
+  } catch {
+    // ignore quota errors
+  }
   return DEFAULT_PORTS;
+}
+
+/**
+ * Formats report content for submission to app_feedback for ports
+ */
+export function formatPortReportContent(
+  portName: string,
+  problemTypeLabel: string,
+  details: string
+): string {
+  return `بلاغ عن خطأ في دليل الموانئ البحرية:
+الميناء المعني: ${portName || "مشكلة عامة بدليل الموانئ"}
+نوع المشكلة: ${problemTypeLabel}
+
+تفاصيل البلاغ / التصحيح المقترح:
+${details.trim()}`;
 }

@@ -1,26 +1,36 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { useAuth } from "@/context/AuthContext";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
+import Footer from "@/components/Footer";
+
 import {
   useParkingData,
   useParkingReportModal,
   useParkingSuggestModal,
 } from "./hooks";
+
 import {
-  ParkingLoading,
-  ParkingLockState,
-  ParkingHeader,
-  ParkingActions,
-  ParkingSearchFilter,
-  ParkingGarageList,
+  ParkingHero,
+  ParkingAreasSlider,
+  ParkingSearchCard,
+  ParkingResultsSection,
+  ParkingBottomBanner,
   ParkingReportModal,
   ParkingSuggestModal,
+  ParkingLoading,
+  ParkingLockState,
 } from "./components";
 
+import styles from "./parking.module.css";
+
 export default function ParkingPage() {
+  const { user } = useAuth();
+
+  // Core Data & State Hook
   const {
-    user,
     authLoading,
     loading,
     promoStatus,
@@ -36,66 +46,106 @@ export default function ParkingPage() {
     areas,
   } = useParkingData();
 
+  // Modal Hooks
   const reportModal = useParkingReportModal(user, parkingData);
   const suggestModal = useParkingSuggestModal(user, searchTerm, selectedArea);
 
+  // GSAP Animation Refs
+  const headerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const searchPanelRef = useRef<HTMLDivElement>(null);
+  const resultsPanelRef = useRef<HTMLDivElement>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
+
+  // GSAP Entrance Animations
+  useEffect(() => {
+    if (loading || authLoading || !hasAccess) return;
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: -16 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+        );
+      }
+
+      const elements = [
+        sliderRef.current,
+        searchPanelRef.current,
+        resultsPanelRef.current,
+      ].filter(Boolean);
+
+      if (elements.length > 0) {
+        gsap.fromTo(
+          elements,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: "power2.out",
+            delay: 0.08,
+          }
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, [loading, authLoading, hasAccess]);
+
+  // Handle Area selection from slider
+  const handleSelectArea = (area: string) => {
+    setSelectedArea(area);
+  };
+
+  // 1. Loading Screen
   if (authLoading || loading) {
     return <ParkingLoading />;
   }
 
+  // 2. Paywall Gate
   if (!hasAccess) {
-    return <ParkingLockState user={user} />;
+    return <ParkingLockState user={user} headerRef={headerRef} />;
   }
 
+  // 3. Authorized Main Dashboard
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        paddingBottom: "50px",
-        backgroundColor: "var(--bgPrimary)",
-        direction: "rtl",
-      }}
-    >
-      {/* Animation Styles */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-          .metro-animate-fade { animation: fadeIn 0.35s ease forwards; }
-          .metro-animate-slide-up { animation: fadeIn 0.45s ease-out forwards; }
-          .metro-delay-100 { animation-delay: 0.1s; }
-          .metro-delay-150 { animation-delay: 0.15s; }
-          .metro-delay-200 { animation-delay: 0.2s; }
-          .metro-delay-250 { animation-delay: 0.25s; }
-          .metro-delay-300 { animation-delay: 0.3s; }
-          .metro-delay-350 { animation-delay: 0.35s; }
-          .metro-delay-400 { animation-delay: 0.4s; }
-        `,
-        }}
+    <div className={styles.pageWrapper}>
+      {/* Ambient Top Glow */}
+      <div className={styles.ambientGlow} />
+
+      {/* Hero Header with Navigation and Stats using PageHero */}
+      <ParkingHero
+        headerRef={headerRef}
+        parkingCount={parkingData.length}
+        areasCount={areas.length}
       />
 
-      {/* Header Banner */}
-      <ParkingHeader>
-        <ParkingActions
-          onOpenSuggestModal={() => suggestModal.handleOpenSuggestModal()}
-          onOpenReportModal={() => reportModal.handleOpenReportModal("general")}
+      <div className={styles.contentContainer}>
+        {/* Promotional Campaign Banner if Active */}
+        {promoStatus.isOpen && promoStatus.offer && (
+          <div style={{ marginTop: "16px" }}>
+            <PromotionalPageBanner
+              offer={promoStatus.offer}
+              remainingDays={promoStatus.remainingDays}
+            />
+          </div>
+        )}
+
+        {/* Bento Quick Slider of Areas */}
+        <ParkingAreasSlider
+          sliderRef={sliderRef}
+          areas={areas}
+          parkingData={parkingData}
+          selectedArea={selectedArea}
+          onSelectArea={handleSelectArea}
         />
-      </ParkingHeader>
 
-      {/* Promotional Banner */}
-      {promoStatus.isOpen && promoStatus.offer && (
-        <div style={{ maxWidth: "600px", margin: "16px auto 0", padding: "0 20px" }}>
-          <PromotionalPageBanner
-            offer={promoStatus.offer}
-            remainingDays={promoStatus.remainingDays}
-          />
-        </div>
-      )}
-
-      {/* Main Content Container */}
-      <div style={{ maxWidth: "600px", margin: "0 auto", padding: "0 20px" }}>
-        {/* Search & Area Filter */}
-        <ParkingSearchFilter
+        {/* Spotlight Search & Filter Panel */}
+        <ParkingSearchCard
+          searchPanelRef={searchPanelRef}
           searchTerm={searchTerm}
           onSearchTermChange={setSearchTerm}
           selectedArea={selectedArea}
@@ -103,8 +153,9 @@ export default function ParkingPage() {
           areas={areas}
         />
 
-        {/* Garage List or Empty State */}
-        <ParkingGarageList
+        {/* Parking Garages Accordion Directory */}
+        <ParkingResultsSection
+          resultsPanelRef={resultsPanelRef}
           parkings={filteredParking}
           expandedParkingId={expandedParkingId}
           onToggleParking={handleParkingClick}
@@ -115,6 +166,12 @@ export default function ParkingPage() {
           onOpenSuggestModal={(initialName) =>
             suggestModal.handleOpenSuggestModal(initialName)
           }
+        />
+
+        {/* Bottom Suggest & Report Callout Banner */}
+        <ParkingBottomBanner
+          onOpenSuggestModal={() => suggestModal.handleOpenSuggestModal()}
+          onOpenReportModal={() => reportModal.handleOpenReportModal("general")}
         />
       </div>
 
@@ -189,6 +246,9 @@ export default function ParkingPage() {
         suggestLimitReached={suggestModal.suggestLimitReached}
         onSubmit={suggestModal.handleSubmitSuggestion}
       />
+
+      {/* Global Footer */}
+      <Footer />
     </div>
   );
 }

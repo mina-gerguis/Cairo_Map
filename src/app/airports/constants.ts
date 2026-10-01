@@ -1,4 +1,4 @@
-import { AirportTab } from "./types";
+import { AirportTab, AirportCategoryFilter, AirportReportOption, AirportReportProblemType } from "./types";
 
 export interface TabOption {
   id: AirportTab;
@@ -7,9 +7,79 @@ export interface TabOption {
 }
 
 export const AIRPORT_TABS: TabOption[] = [
-  { id: "list", label: "قائمة المطارات", icon: "✈️" },
-  { id: "guide", label: "دليل وإرشادات السفر", icon: "📖" }
+  { id: "list", label: "دليل ومطارات مصر", icon: "✈️" },
+  { id: "guide", label: "إرشادات وتعليمات السفر", icon: "📖" }
 ];
+
+export interface CategoryFilterOption {
+  id: AirportCategoryFilter;
+  label: string;
+  icon?: string;
+}
+
+export const AIRPORT_CATEGORY_FILTERS: CategoryFilterOption[] = [
+  { id: "all", label: "جميع المطارات", icon: "bx bx-grid-alt" },
+  { id: "international", label: "مطارات دولية", icon: "bx bx-globe" },
+  { id: "domestic", label: "مطارات داخلية", icon: "bx bx-home" },
+  { id: "cairo", label: "القاهرة والجيزة", icon: "bx bx-map-pin" },
+  { id: "redsea_sinai", label: "البحر الأحمر وسيناء", icon: "bx bx-sun" },
+  { id: "alex_delta", label: "الإسكندرية والساحل", icon: "bx bx-water" },
+  { id: "upper_egypt", label: "الصعيد ومصر العليا", icon: "bx bx-pyramid" }
+];
+
+export const AIRPORT_REPORT_PROBLEM_OPTIONS: AirportReportOption[] = [
+  {
+    id: "phone",
+    title: "خطأ في أرقام الهواتف أو الموقع الرسمي",
+    desc: "أرقام الاستعلامات أو الرابط الإلكتروني غير دقيق أو تم تحديثه",
+    icon: "bx bx-phone",
+    badge: "بيانات الاتصال"
+  },
+  {
+    id: "terminals",
+    title: "خطأ في بيانات الصالات ومباني الركاب",
+    desc: "عدد الصالات، السعة، المدارج أو الخدمات والتسهيلات المتاحة",
+    icon: "bx bx-buildings",
+    badge: "البنية والخدمات"
+  },
+  {
+    id: "airlines",
+    title: "تحديث في شركات الطيران والوجهات",
+    desc: "إضافة أو تعديل شركات الطيران العاملة أو مسارات الرحلات",
+    icon: "bx bx-paper-plane",
+    badge: "شركات الطيران"
+  },
+  {
+    id: "location",
+    title: "خطأ في الموقع الجغرافي أو العنوان",
+    desc: "رابط الخريطة، العنوان الدقيق، المحافظة أو الإحداثيات",
+    icon: "bx bx-map-pin",
+    badge: "الموقع"
+  },
+  {
+    id: "missing_airport",
+    title: "مطار غير مسجل بالدليل",
+    desc: "اقتراح إضافة مطار مدني أو سياحي جديد غير متوفر بالقائمة",
+    icon: "bx bx-plus-circle",
+    badge: "إضافة مطار"
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو بلاغ آخر",
+    desc: "أي ملاحظة أخرى لتطوير وتدقيق بيانات دليل المطارات",
+    icon: "bx bx-detail",
+    badge: "أخرى"
+  }
+];
+
+export const AIRPORT_REPORT_PROBLEM_LABELS: Record<AirportReportProblemType, string> = {
+  phone: "خطأ في أرقام الهواتف أو الموقع الرسمي",
+  terminals: "خطأ في بيانات الصالات والخدمات",
+  airlines: "تحديث في شركات الطيران والوجهات",
+  location: "خطأ في الموقع الجغرافي أو العنوان",
+  missing_airport: "مطار غير مسجل بالدليل",
+  other: "ملاحظة أو مشكلة أخرى"
+};
 
 export const GOLD_AIRPORT_FEATURES = [
   "✨ دليل المطارات المصرية (القاهرة، برج العرب، سفنكس، الغردقة، إلخ)",

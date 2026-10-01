@@ -2,10 +2,26 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import L from "leaflet";
-import { MapLayerType } from "../types";
-import { FaLocationArrow, FaPlus, FaMinus, FaLayerGroup } from "react-icons/fa";
+import { MapLayerType, UserLocation } from "../types";
+import { FaLocationArrow, FaPlus, FaMinus, FaLayerGroup, FaMapPin, FaCompass } from "react-icons/fa";
 import { TbFocusCentered } from "react-icons/tb";
 import styles from "../map.module.css";
+
+const POPULAR_DISTRICTS = [
+  { name: "وسط البلد / التحرير", lat: 30.0444, lng: 31.2357 },
+  { name: "مصر الجديدة / الكوربة", lat: 30.0911, lng: 31.3256 },
+  { name: "مدينة نصر / عباس العقاد", lat: 30.0617, lng: 31.3364 },
+  { name: "التجمع الخامس / التسعين", lat: 30.0074, lng: 31.4285 },
+  { name: "المعادي / دجلة", lat: 29.9602, lng: 31.2569 },
+  { name: "الشيخ زايد", lat: 30.0488, lng: 30.9856 },
+  { name: "6 أكتوبر / الحصري", lat: 29.9723, lng: 30.9431 },
+  { name: "المهندسين / جامعة الدول", lat: 30.0521, lng: 31.2012 },
+  { name: "الدقي / مصدق", lat: 30.0384, lng: 31.2115 },
+  { name: "الزمالك", lat: 30.0619, lng: 31.2198 },
+  { name: "شبرا مصر", lat: 30.0768, lng: 31.2464 },
+  { name: "الهرم / فيصل", lat: 29.9975, lng: 31.1554 },
+  { name: "الإسكندرية / الرمل", lat: 31.2001, lng: 29.9187 },
+];
 
 interface MapFloatingToolsProps {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -14,6 +30,7 @@ interface MapFloatingToolsProps {
   onLocateUser: () => void;
   locationLoading: boolean;
   userHasLocation: boolean;
+  onSelectDistrict?: (loc: UserLocation) => void;
 }
 
 export default function MapFloatingTools({
@@ -23,9 +40,12 @@ export default function MapFloatingTools({
   onLocateUser,
   locationLoading,
   userHasLocation,
+  onSelectDistrict,
 }: MapFloatingToolsProps) {
   const [showLayerMenu, setShowLayerMenu] = useState(false);
+  const [showDistrictMenu, setShowDistrictMenu] = useState(false);
   const layerMenuRef = useRef<HTMLDivElement>(null);
+  const districtMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -34,6 +54,12 @@ export default function MapFloatingTools({
         !layerMenuRef.current.contains(event.target as Node)
       ) {
         setShowLayerMenu(false);
+      }
+      if (
+        districtMenuRef.current &&
+        !districtMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowDistrictMenu(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -79,6 +105,64 @@ export default function MapFloatingTools({
       >
         <TbFocusCentered style={{ fontSize: "1.3rem" }} />
       </button>
+
+      {/* Quick Egyptian Districts / Areas Picker */}
+      <div style={{ position: "relative" }} ref={districtMenuRef}>
+        <button
+          className={`${styles.toolButton} ${showDistrictMenu ? styles.active : ""}`}
+          onClick={() => setShowDistrictMenu(!showDistrictMenu)}
+          title="اختيار وتحديد منطقتك / حيك بدقة"
+        >
+          <FaMapPin style={{ fontSize: "1.1rem" }} />
+        </button>
+
+        {showDistrictMenu && (
+          <div
+            className={styles.layerSelectorDropdown}
+            style={{
+              maxHeight: "260px",
+              overflowY: "auto",
+              minWidth: "180px",
+            }}
+          >
+            <div
+              style={{
+                padding: "4px 8px 6px",
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                color: "var(--color-primary)",
+                borderBottom: "1px solid var(--border-glass, rgba(255,255,255,0.08))",
+                marginBottom: "4px",
+              }}
+            >
+              📍 حدد منطقتك بدقة:
+            </div>
+            {POPULAR_DISTRICTS.map((d) => (
+              <button
+                key={d.name}
+                className={styles.layerOption}
+                onClick={() => {
+                  if (onSelectDistrict) {
+                    onSelectDistrict({
+                      lat: d.lat,
+                      lng: d.lng,
+                      accuracy: 10,
+                      timestamp: Date.now(),
+                    });
+                  }
+                  mapInstanceRef.current?.flyTo([d.lat, d.lng], 15, {
+                    duration: 0.9,
+                  });
+                  setShowDistrictMenu(false);
+                }}
+              >
+                <span>🏙️</span>
+                <span>{d.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Layer Picker Button */}
       <div style={{ position: "relative" }} ref={layerMenuRef}>

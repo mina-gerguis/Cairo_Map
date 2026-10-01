@@ -14,37 +14,41 @@ export default function AirportsTravelGuide() {
       {/* Card 1: How to book & Steps */}
       <section className={styles.guideCard}>
         <div className={styles.guideCardHeader}>
-          <i
-            className="bx bx-receipt"
-            style={{ color: "var(--color-secondary)", fontSize: "1.6rem" }}
-          />
-          <h2 className={styles.guideCardTitle}>طرق وحجز تذاكر الطيران</h2>
+          <div className={styles.guideCardIconBox}>
+            <i className="bx bx-receipt" />
+          </div>
+          <div>
+            <h2 className={styles.guideCardTitle}>طرق وإجراءات حجز تذاكر الطيران</h2>
+            <p className={styles.guideCardSubtitle}>
+              الخيارات المتاحة والخطوات الصحيحة لحجز التذاكر بأفضل الأسعار وبأمان تام
+            </p>
+          </div>
         </div>
 
         <div>
-          <h3 className={styles.guideSectionTitle}>🎒 طرق الحجز المتاحة:</h3>
+          <h3 className={styles.guideSectionTitle}>
+            <i className="bx bx-world" />
+            <span>قنوات الحجز المعتمدة:</span>
+          </h3>
           <ul className={styles.guideList}>
             {BOOKING_METHODS.map((method, idx) => (
               <li key={idx}>
                 <strong>{method.title}</strong> {method.description}{" "}
                 {method.links && method.links.length > 0 && (
-                  <span>
-                    (
-                    {method.links.map((link, lIdx) => (
-                      <React.Fragment key={link.url}>
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.guideExternalLink}
-                        >
-                          {link.name}
-                        </a>
-                        {lIdx < (method.links?.length ?? 0) - 1 ? "، " : ""}
-                      </React.Fragment>
+                  <div className={styles.guideLinksRow}>
+                    {method.links.map(link => (
+                      <a
+                        key={link.url}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.guideExternalLink}
+                      >
+                        <i className="bx bx-link-external" />
+                        <span>{link.name}</span>
+                      </a>
                     ))}
-                    )
-                  </span>
+                  </div>
                 )}
               </li>
             ))}
@@ -53,29 +57,40 @@ export default function AirportsTravelGuide() {
 
         <div className={styles.guideDivider}>
           <h3 className={styles.guideSectionTitle}>
-            📝 خطوات حجز التذكرة إلكترونياً:
+            <i className="bx bx-list-ol" />
+            <span>خطوات حجز التذكرة إلكترونياً بالتفصيل:</span>
           </h3>
-          <ol className={styles.guideList}>
+          <div className={styles.guideStepsList}>
             {BOOKING_STEPS.map((step, idx) => (
-              <li key={idx}>{step}</li>
+              <div key={idx} className={styles.guideStepItem}>
+                <div className={styles.guideStepNum}>{idx + 1}</div>
+                <div className={styles.guideStepText}>
+                  {step.replace(/^[0-9️⃣\s]+/, "")}
+                </div>
+              </div>
             ))}
-          </ol>
+          </div>
         </div>
       </section>
 
       {/* Card 2: Airport entry instructions & necessary documents */}
       <section className={styles.guideCard}>
         <div className={styles.guideCardHeader}>
-          <i
-            className="bx bx-buildings"
-            style={{ color: "var(--color-secondary)", fontSize: "1.6rem" }}
-          />
-          <h2 className={styles.guideCardTitle}>تعليمات دخول المطار</h2>
+          <div className={styles.guideCardIconBox}>
+            <i className="bx bx-buildings" />
+          </div>
+          <div>
+            <h2 className={styles.guideCardTitle}>تعليمات دخول وصالات المطارات</h2>
+            <p className={styles.guideCardSubtitle}>
+              المستندات المطلوبة وإجراءات الفحص والوزن والجوازات خطوة بخطوة
+            </p>
+          </div>
         </div>
 
         <div>
           <h3 className={styles.guideSectionTitle}>
-            🛂 المستندات اللازمة والضرورية (اللازم منه):
+            <i className="bx bx-id-card" />
+            <span>المستندات اللازمة والضرورية:</span>
           </h3>
           <ul className={styles.guideList}>
             {REQUIRED_DOCUMENTS.map((doc, idx) => (
@@ -86,24 +101,34 @@ export default function AirportsTravelGuide() {
 
         <div className={styles.guideDivider}>
           <h3 className={styles.guideSectionTitle}>
-            🚶‍♂️ الخطوات والتعليمات داخل المطار:
+            <i className="bx bx-walk" />
+            <span>الإجراءات والتسلسل الزمني داخل المطار:</span>
           </h3>
-          <ol className={styles.guideList}>
+          <div className={styles.guideStepsList}>
             {AIRPORT_STEPS.map((step, idx) => (
-              <li key={idx}>{step}</li>
+              <div key={idx} className={styles.guideStepItem}>
+                <div className={styles.guideStepNum}>{idx + 1}</div>
+                <div className={styles.guideStepText}>
+                  {step.replace(/^[0-9️⃣\s]+/, "")}
+                </div>
+              </div>
             ))}
-          </ol>
+          </div>
         </div>
       </section>
 
       {/* Card 3: Tips for travelers */}
       <section className={styles.guideCard}>
         <div className={styles.guideCardHeader}>
-          <i
-            className="bx bx-info-circle"
-            style={{ color: "#f59e0b", fontSize: "1.6rem" }}
-          />
-          <h2 className={styles.guideCardTitle}>نصائح هامة للمسافرين</h2>
+          <div className={`${styles.guideCardIconBox} ${styles.guideCardIconBoxWarning}`}>
+            <i className="bx bx-info-circle" />
+          </div>
+          <div>
+            <h2 className={styles.guideCardTitle}>نصائح وإرشادات هامة للمسافرين</h2>
+            <p className={styles.guideCardSubtitle}>
+              توصيات وقواعد هامة لتجنب المشاكل وضمان رحلة سفر سلسة ومريحة
+            </p>
+          </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -112,12 +137,15 @@ export default function AirportsTravelGuide() {
               key={idx}
               className={tip.isWarning ? styles.warningBox : styles.tipBox}
             >
-              <strong
-                className={tip.isWarning ? styles.warningTitle : styles.tipTitle}
-              >
-                {tip.title}
-              </strong>
-              <span className={styles.tipText}>{tip.description}</span>
+              <div className={styles.tipHeader}>
+                <i className={tip.isWarning ? "bx bx-error" : "bx bx-bulb"} />
+                <strong
+                  className={tip.isWarning ? styles.warningTitle : styles.tipTitle}
+                >
+                  {tip.title}
+                </strong>
+              </div>
+              <p className={styles.tipText}>{tip.description}</p>
             </div>
           ))}
         </div>

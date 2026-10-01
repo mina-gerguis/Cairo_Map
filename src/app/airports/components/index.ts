@@ -6,3 +6,5 @@ export { default as AirportsSearchCard } from "./AirportsSearchCard";
 export { default as AirportCard } from "./AirportCard";
 export { default as AirportsResultsSection } from "./AirportsResultsSection";
 export { default as AirportsTravelGuide } from "./AirportsTravelGuide";
+export { default as AirportsReportBanner } from "./AirportsReportBanner";
+export { default as AirportsReportModal } from "./AirportsReportModal";

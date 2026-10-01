@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { ParkingSpot } from "../types";
 import { DEFAULT_PARKING } from "../constants";
 
+import { normalizeArabic } from "../utils";
+
 export function useParkingData() {
   const { user, profile, loading: authLoading, isPageOpen } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
@@ -97,11 +99,14 @@ export function useParkingData() {
   }, [user, hasAccess, getLocalParking]);
 
   const filteredParking = useMemo(() => {
+    const q = normalizeArabic(searchTerm.trim().toLowerCase());
     return parkingData.filter((p) => {
       const matchesSearch =
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.area.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.address.toLowerCase().includes(searchTerm.toLowerCase());
+        !q ||
+        normalizeArabic(p.name).toLowerCase().includes(q) ||
+        normalizeArabic(p.area).toLowerCase().includes(q) ||
+        normalizeArabic(p.address).toLowerCase().includes(q) ||
+        normalizeArabic(p.nearestMetro || "").toLowerCase().includes(q);
       const matchesArea = selectedArea === "all" || p.area === selectedArea;
       return matchesSearch && matchesArea;
     });

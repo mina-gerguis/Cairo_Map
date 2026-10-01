@@ -16,6 +16,7 @@ interface CairoMapProps {
   isLight: boolean;
   mapInstanceRef?: React.MutableRefObject<L.Map | null>;
   searchQuery?: string;
+  onUpdateUserLocation?: (loc: UserLocation) => void;
 }
 
 const TILE_URLS: Record<MapLayerType, { url: string; attribution: string; subdomains?: string }> = {
@@ -47,6 +48,7 @@ export default function CairoMap({
   isLight,
   mapInstanceRef,
   searchQuery = "",
+  onUpdateUserLocation,
 }: CairoMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const internalMapRef = useRef<L.Map | null>(null);
@@ -250,16 +252,30 @@ export default function CairoMap({
       userMarkerRef.current = L.marker(userLatLng, {
         icon: userIcon,
         zIndexOffset: 2000,
+        draggable: true,
       }).addTo(map);
 
       userMarkerRef.current.bindTooltip(
-        '<div style="font-weight:700; color:#007aff;">📍 موقعك الحالي</div>',
+        '<div style="font-weight:700; color:#007aff; text-align:center;">📍 موقعك الحالي<br/><span style="font-size:0.7rem; color:#a1a1aa; font-weight:normal;">اسحب العلامة لضبط مكانك بدقة 🎯</span></div>',
         {
           direction: "top",
           className: "cairo-map-tooltip",
           offset: [0, -12],
         }
       );
+
+      userMarkerRef.current.on("dragend", (e: any) => {
+        const marker = e.target;
+        const newPos = marker.getLatLng();
+        if (onUpdateUserLocation) {
+          onUpdateUserLocation({
+            lat: Number(newPos.lat.toFixed(6)),
+            lng: Number(newPos.lng.toFixed(6)),
+            accuracy: 5,
+            timestamp: Date.now(),
+          });
+        }
+      });
     }
 
     // Accuracy Circle

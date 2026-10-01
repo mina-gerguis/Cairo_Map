@@ -37,3 +37,22 @@ export interface SeaPaletteItem {
   glow: string;
   icon: string;
 }
+
+export type PortReportProblemType =
+  | "berths"
+  | "connections"
+  | "operator"
+  | "location"
+  | "capacity_type"
+  | "missing_port"
+  | "other";
+
+export type PortReportScope = "general" | "port";
+
+export interface PortReportOption {
+  id: PortReportProblemType;
+  title: string;
+  desc: string;
+  icon?: string;
+  badge?: string;
+}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ParkingGarageCardProps } from "../types";
+import styles from "../parking.module.css";
 
 export function ParkingGarageCard({
   parking,
@@ -27,229 +28,160 @@ export function ParkingGarageCard({
   return (
     <div
       onClick={onToggle}
-      style={{
-        backgroundColor: "var(--bgPrimary)",
-        border: isExpanded
-          ? "1px solid var(--color-secondary)"
-          : "1px solid var(--border-glass)",
-        borderRadius: "var(--radius-card)",
-        padding: "16px",
-        boxShadow: "var(--shadow-sm)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        cursor: "pointer",
-        transition: "transform 0.2s ease, border-color 0.2s ease",
-      }}
+      className={`${styles.garageCard} ${
+        isExpanded ? styles.garageCardExpanded : ""
+      }`}
     >
       {/* Header Row */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <span
-          style={{
-            fontSize: "1.05rem",
-            fontWeight: "700",
-            color: "var(--text-primary)",
-          }}
-        >
-          {parking.name}
-        </span>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span
-            style={{
-              background: "rgba(99, 102, 241, 0.12)",
-              color: "#818cf8",
-              fontSize: "0.78rem",
-              padding: "3px 8px",
-              borderRadius: "6px",
-              fontWeight: "bold",
-            }}
-          >
-            {parking.area}
+      <div className={styles.garageHeader}>
+        <div className={styles.garageTitleGroup}>
+          <div className={styles.garageIconBadge}>
+            <i className="bx bx-parking" />
+          </div>
+          <div>
+            <h3 className={styles.garageName}>{parking.name}</h3>
+            <div
+              style={{
+                fontSize: "0.78rem",
+                color: "var(--text-muted)",
+                marginTop: "2px",
+              }}
+            >
+              {parking.type}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.garagePillsRow}>
+          <span className={styles.areaPill}>{parking.area}</span>
+          <span className={styles.ratePill}>
+            {parking.hourlyRate} ج.م / س
           </span>
           <i
-            className={`bx bx-chevron-${isExpanded ? "up" : "down"}`}
-            style={{ color: "var(--text-secondary)", fontSize: "1.3rem" }}
-          ></i>
+            className={`bx bx-chevron-${isExpanded ? "up" : "down"} ${
+              styles.chevronIcon
+            }`}
+          />
         </div>
       </div>
 
-      {/* Summary Row */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          fontSize: "0.82rem",
-          color: "var(--text-secondary)",
-        }}
-      >
-        <span>{parking.type}</span>
-        <span style={{ fontWeight: "700", color: "#10b981" }}>
-          {parking.hourlyRate} ج.م / ساعة
-        </span>
-      </div>
-
-      {/* Expanded details block */}
+      {/* Expanded Details Section */}
       {isExpanded && (
-        <div
-          style={{
-            borderTop: "1px solid var(--border-glass)",
-            paddingTop: "12px",
-            marginTop: "4px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "12px",
-            animation: "fadeIn 0.25s ease",
-          }}
-        >
+        <div className={styles.garageDetailsBox}>
           {/* Address */}
-          <div
-            style={{
-              fontSize: "0.85rem",
-              color: "var(--text-secondary)",
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "6px",
-            }}
-          >
-            <span style={{ fontSize: "0.95rem" }}>📍</span>
+          <div className={styles.addressRow}>
+            <i
+              className="bx bx-map-pin"
+              style={{
+                color: "var(--color-secondary, #3b82f6)",
+                fontSize: "1.1rem",
+                marginTop: "2px",
+              }}
+            />
             <span>{parking.address}</span>
           </div>
 
           {/* Nearest Metro */}
-          <div
-            style={{
-              padding: "10px 12px",
-              borderRadius: "10px",
-              background: "rgba(16, 185, 129, 0.05)",
-              border: "1px solid rgba(16, 185, 129, 0.15)",
-              margin: "4px 0",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "0.8rem",
-                color: "#10b981",
-                fontWeight: "bold",
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
-              أقرب محطة مترو:
-            </span>
-            <span
-              style={{
-                fontSize: "0.85rem",
-                color: "var(--text-primary)",
-                fontWeight: "600",
-              }}
-            >
-              {parking.nearestMetro}
-            </span>
-          </div>
-
-          {/* Capacity & Rates Grid */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "10px",
-            }}
-          >
-            <div
-              style={{
-                background: "var(--bg-secondary)",
-                border: "1px solid var(--border-glass)",
-                padding: "8px",
-                borderRadius: "8px",
-                textAlign: "center",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "0.75rem",
-                  color: "var(--text-muted)",
-                  display: "block",
-                  marginBottom: "2px",
-                }}
-              >
-                السعة الإجمالية
-              </span>
-              <span
-                style={{
-                  fontSize: "0.95rem",
-                  fontWeight: "700",
-                  color: "var(--text-primary)",
-                }}
-              >
-                {parking.capacity} سيارة
-              </span>
+          {parking.nearestMetro && (
+            <div className={styles.metroHighlightBox}>
+              <i
+                className="bx bx-train"
+                style={{ color: "#10b981", fontSize: "1.2rem" }}
+              />
+              <div style={{ fontSize: "0.85rem" }}>
+                <span
+                  style={{
+                    color: "#10b981",
+                    fontWeight: "800",
+                    marginLeft: "6px",
+                  }}
+                >
+                  أقرب محطة مترو:
+                </span>
+                <span
+                  style={{
+                    color: "var(--text-primary)",
+                    fontWeight: "600",
+                  }}
+                >
+                  {parking.nearestMetro}
+                </span>
+              </div>
             </div>
-            <div
-              style={{
-                background: "var(--bg-secondary)",
-                border: "1px solid var(--border-glass)",
-                padding: "8px",
-                borderRadius: "8px",
-                textAlign: "center",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "0.75rem",
-                  color: "var(--text-muted)",
-                  display: "block",
-                  marginBottom: "2px",
-                }}
-              >
-                الحد الأقصى لليوم
-              </span>
-              <span
-                style={{
-                  fontSize: "0.95rem",
-                  fontWeight: "700",
-                  color: "#10b981",
-                }}
-              >
-                {parking.maxDailyRate
-                  ? `${parking.maxDailyRate} ج.م`
-                  : "غير محدد"}
-              </span>
+          )}
+
+          {/* Metrics Grid */}
+          <div className={styles.metricsGrid}>
+            <div className={styles.metricTile}>
+              <div className={styles.metricTileIcon}>
+                <i className="bx bx-car" style={{ color: "#3b82f6" }} />
+              </div>
+              <div>
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    color: "var(--text-muted)",
+                    display: "block",
+                  }}
+                >
+                  السعة الإجمالية
+                </span>
+                <span
+                  style={{
+                    fontSize: "0.92rem",
+                    fontWeight: "800",
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  {parking.capacity ? `${parking.capacity} سيارة` : "غير محدد"}
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.metricTile}>
+              <div className={styles.metricTileIcon}>
+                <i className="bx bx-wallet" style={{ color: "#10b981" }} />
+              </div>
+              <div>
+                <span
+                  style={{
+                    fontSize: "0.72rem",
+                    color: "var(--text-muted)",
+                    display: "block",
+                  }}
+                >
+                  الحد الأقصى لليوم
+                </span>
+                <span
+                  style={{
+                    fontSize: "0.92rem",
+                    fontWeight: "800",
+                    color: "#10b981",
+                  }}
+                >
+                  {parking.maxDailyRate
+                    ? `${parking.maxDailyRate} ج.م`
+                    : "غير محدد"}
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Features */}
           {parking.features && parking.features.length > 0 && (
-            <div>
-              <div
+            <div className={styles.featuresWrapper}>
+              <span
                 style={{
                   fontSize: "0.78rem",
                   color: "var(--text-muted)",
-                  marginBottom: "6px",
                   fontWeight: "700",
                 }}
               >
-                ✨ المميزات:
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                ✨ المميزات والخدمات:
+              </span>
+              <div className={styles.featuresList}>
                 {parking.features.map((feat, idx) => (
-                  <span
-                    key={idx}
-                    style={{
-                      background: "var(--bg-secondary)",
-                      color: "var(--text-secondary)",
-                      fontSize: "0.78rem",
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      border: "1px solid var(--border-glass)",
-                    }}
-                  >
+                  <span key={idx} className={styles.featureTag}>
                     ✓ {feat}
                   </span>
                 ))}
@@ -257,67 +189,39 @@ export function ParkingGarageCard({
             </div>
           )}
 
-          {/* Action Row */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              borderTop: "1px dashed var(--border-glass)",
-              paddingTop: "10px",
-              marginTop: "4px",
-              gap: "8px",
-              flexWrap: "wrap",
-            }}
-          >
+          {/* Actions & Hours Row */}
+          <div className={styles.actionsRow}>
             <span
-              className="sub-title"
-              style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}
+              style={{
+                fontSize: "0.8rem",
+                color: "var(--text-muted)",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
             >
-              🕒 {parking.hours}
+              <i className="bx bx-time-five" />
+              <span>{parking.hours || "متاح 24 ساعة"}</span>
             </span>
+
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
                 type="button"
                 onClick={handleReportClick}
+                className={styles.reportBtn}
                 title="إبلاغ عن مشكلة في هذا الجراج"
-                style={{
-                  background: "rgba(239, 68, 68, 0.08)",
-                  border: "1px solid rgba(239, 68, 68, 0.25)",
-                  color: "#ef4444",
-                  borderRadius: "8px",
-                  padding: "6px 10px",
-                  fontSize: "0.78rem",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  fontFamily: "var(--font-sub)",
-                }}
               >
-                <i
-                  className="fa-solid fa-triangle-exclamation"
-                  style={{ fontSize: "0.85rem" }}
-                ></i>
+                <i className="bx bx-error" />
                 <span>إبلاغ عن مشكلة</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleDirectionsClick}
-                className="btn btn-primary"
-                style={{
-                  borderRadius: "8px",
-                  padding: "6px 10px",
-                  fontSize: "0.78rem",
-                  fontWeight: "700",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                }}
+                className={styles.directionsBtn}
               >
-                <span className="sub-title"> الاتجاهات</span>
+                <i className="bx bx-navigation" />
+                <span>الاتجاهات</span>
               </button>
             </div>
           </div>
@@ -326,3 +230,5 @@ export function ParkingGarageCard({
     </div>
   );
 }
+
+export default ParkingGarageCard;

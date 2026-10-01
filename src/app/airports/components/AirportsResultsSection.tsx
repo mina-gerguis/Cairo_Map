@@ -8,19 +8,21 @@ interface AirportsResultsSectionProps {
   airports: Airport[];
   expandedId: number | string | null;
   onToggleExpand: (id: number | string) => void;
+  onReport?: (airport: Airport) => void;
 }
 
 export default function AirportsResultsSection({
   loading,
   airports,
   expandedId,
-  onToggleExpand
+  onToggleExpand,
+  onReport
 }: AirportsResultsSectionProps) {
   if (loading) {
     return (
       <div className={styles.loadingBox}>
         <div className={styles.spinner} />
-        <span className={styles.loadingText}>جاري تحميل البيانات...</span>
+        <span className={styles.loadingText}>جاري تحميل بيانات المطارات...</span>
       </div>
     );
   }
@@ -28,16 +30,13 @@ export default function AirportsResultsSection({
   if (airports.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <i
-          className="bx bx-info-circle"
-          style={{
-            fontSize: "2rem",
-            color: "var(--text-muted)",
-            display: "block",
-            marginBottom: "8px"
-          }}
-        />
-        لا توجد مطارات مطابقة لبحثك. يرجى تعديل العبارة والمحاولة مجدداً.
+        <div className={styles.emptyStateIcon}>
+          <i className="bx bx-search-alt" />
+        </div>
+        <h4 className={styles.emptyStateTitle}>لم يتم العثور على أي مطارات</h4>
+        <p className={styles.emptyStateDesc}>
+          لا توجد نتائج مطابقة لبحثك أو الفلتر المحدد. جرب استخدام كلمات بحث مختلفة أو تغيير التصنيف.
+        </p>
       </div>
     );
   }
@@ -50,6 +49,7 @@ export default function AirportsResultsSection({
           airport={airport}
           isExpanded={expandedId === airport.id}
           onToggleExpand={onToggleExpand}
+          onReport={onReport}
           index={idx}
         />
       ))}

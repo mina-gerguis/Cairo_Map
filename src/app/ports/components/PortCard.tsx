@@ -6,12 +6,14 @@ interface PortCardProps {
   port: Port;
   isExpanded: boolean;
   onToggleExpand: () => void;
+  onReport?: (port: Port) => void;
 }
 
 export default function PortCard({
   port,
   isExpanded,
   onToggleExpand,
+  onReport,
 }: PortCardProps) {
   const isMed = port.sea.includes("المتوسط");
 
@@ -145,6 +147,18 @@ export default function PortCard({
           <i className="bx bx-map" style={{ fontSize: "1.15rem" }} />
           <span>عرض الموقع والاتجاهات الجغرافية (Google Maps)</span>
         </a>
+
+        {onReport && (
+          <button
+            type="button"
+            onClick={() => onReport(port)}
+            className={styles.cardReportBtn}
+            title="الإبلاغ عن خطأ في بيانات هذا الميناء"
+          >
+            <i className="bx bx-flag" />
+            <span>إبلاغ عن خطأ</span>
+          </button>
+        )}
       </div>
     </div>
   );

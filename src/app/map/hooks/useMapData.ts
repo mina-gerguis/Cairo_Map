@@ -208,7 +208,36 @@ export function useMapData(user: any, onRequireAuth?: (msg?: string) => void) {
     [user, favoriteIds, onRequireAuth]
   );
 
-  // Geolocation request
+  // Load saved location from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedLoc = localStorage.getItem("cairo_user_exact_location");
+        if (savedLoc) {
+          const parsed: UserLocation = JSON.parse(savedLoc);
+          if (parsed && typeof parsed.lat === "number" && typeof parsed.lng === "number") {
+            setUserLocation(parsed);
+          }
+        }
+      } catch {
+        // Ignore
+      }
+    }
+  }, []);
+
+  // Update user location and persist
+  const setUserLocationManual = useCallback((loc: UserLocation | null) => {
+    setUserLocation(loc);
+    if (typeof window !== "undefined") {
+      if (loc) {
+        localStorage.setItem("cairo_user_exact_location", JSON.stringify(loc));
+      } else {
+        localStorage.removeItem("cairo_user_exact_location");
+      }
+    }
+  }, []);
+
+  // High-accuracy Geolocation request with live satellite refinement
   const requestUserLocation = useCallback((onSuccess?: (loc: UserLocation) => void) => {
     if (typeof window === "undefined" || !navigator.geolocation) {
       setLocationError("متصفحك لا يدعم خدمة تحديد الموقع الجغرافي.");
@@ -218,27 +247,66 @@ export function useMapData(user: any, onRequireAuth?: (msg?: string) => void) {
     setLocationLoading(true);
     setLocationError(null);
 
+    let bestAccuracy = Infinity;
+    let watchId: number | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const finalizePosition = (pos: GeolocationPosition) => {
+      const loc: UserLocation = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: Math.round(pos.coords.accuracy),
+        timestamp: pos.timestamp,
+      };
+
+      setUserLocationManual(loc);
+      setLocationLoading(false);
+
+      if (onSuccess) {
+        onSuccess(loc);
+      }
+    };
+
+    // 1. First immediate high-accuracy request
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const loc: UserLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          accuracy: position.coords.accuracy,
-          timestamp: position.timestamp,
-        };
-        setUserLocation(loc);
-        setLocationLoading(false);
-        if (onSuccess) {
-          onSuccess(loc);
+        bestAccuracy = position.coords.accuracy;
+        finalizePosition(position);
+
+        // If accuracy is already very precise (under 25 meters), no need to keep watching
+        if (bestAccuracy <= 25) {
+          return;
         }
+
+        // 2. Refine with satellite watch for 6 seconds to get pinpoint accuracy
+        watchId = navigator.geolocation.watchPosition(
+          (refinePos) => {
+            if (refinePos.coords.accuracy < bestAccuracy) {
+              bestAccuracy = refinePos.coords.accuracy;
+              finalizePosition(refinePos);
+            }
+          },
+          () => {},
+          {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 6000,
+          }
+        );
+
+        timeoutId = setTimeout(() => {
+          if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+          }
+        }, 6000);
       },
       (error) => {
         setLocationLoading(false);
-        let errorMsg = "تعذر تحديد موقعك الحالي.";
+        let errorMsg = "تعذر تحديد موقعك بدقة.";
         if (error.code === error.PERMISSION_DENIED) {
-          errorMsg = "تم رفض إذن الوصول للموقع. يرجى تفعيل الموقع من إعدادات المتصفح.";
+          errorMsg = "تم رفض إذن الوصول للموقع. يرجى تفعيل الموقع من إعدادات المتصفح والجهاز.";
         } else if (error.code === error.POSITION_UNAVAILABLE) {
-          errorMsg = "معلومات الموقع غير متاحة حالياً.";
+          errorMsg = "معلومات الـ GPS غير متاحة حالياً. تأكد من تفعيل الموقع في جهازك.";
         } else if (error.code === error.TIMEOUT) {
           errorMsg = "انتهت مهلة طلب تحديد الموقع.";
         }
@@ -246,11 +314,11 @@ export function useMapData(user: any, onRequireAuth?: (msg?: string) => void) {
       },
       {
         enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
+        timeout: 10000,
+        maximumAge: 0, // Force live GPS satellite fix, no stale cache
       }
     );
-  }, []);
+  }, [setUserLocationManual]);
 
   // Flatten places & branches into map points
   const allMapPoints = useMemo<MapPlacePoint[]>(() => {
@@ -448,6 +516,7 @@ export function useMapData(user: any, onRequireAuth?: (msg?: string) => void) {
     locationLoading,
     locationError,
     requestUserLocation,
+    setUserLocationManual,
     favoriteIds,
     toggleFavorite,
     selectedPoint,

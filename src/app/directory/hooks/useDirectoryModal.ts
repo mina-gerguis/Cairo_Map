@@ -44,7 +44,7 @@ export function useDirectoryModal(
       setModalSuccess(false);
       setModalMode(mode);
       setModalType(type);
-      setItemName(presetName || (type === "phone" && searchQuery ? searchQuery : ""));
+      setItemName(presetName || searchQuery || "");
       setItemNumberOrCode(presetNumberOrCode);
       setItemSpecialty("");
       setCustomSpecialty("");

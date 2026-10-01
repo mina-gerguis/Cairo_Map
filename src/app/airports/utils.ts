@@ -1,4 +1,5 @@
 import { Airport, DEFAULT_AIRPORTS } from "@/data/airports";
+import { AirportCategoryFilter } from "./types";
 
 /**
  * Normalizes Arabic text by unifying alef variations, taa marbuta,
@@ -101,16 +102,93 @@ export function enrichAirportData(dbAirport: any, localMatch?: Airport): Airport
 }
 
 /**
- * Filters a list of airports based on the user's search query across names,
- * codes, cities, governorates, areas, and keywords.
+ * Checks if an airport belongs to a specific regional or classification category.
  */
-export function filterAirports(airports: Airport[], query: string): Airport[] {
-  if (!query.trim()) return airports;
+export function matchesCategory(airport: Airport, category: AirportCategoryFilter): boolean {
+  if (category === "all") return true;
+
+  const type = (airport.type || "").toLowerCase();
+  const typeEn = (airport.type_en || "").toLowerCase();
+  const gov = normalizeArabic(airport.governorate_ar || "");
+  const city = normalizeArabic(airport.city_ar || "");
+
+  switch (category) {
+    case "international":
+      return type.includes("دولي") || typeEn.includes("international") || typeEn.includes("bot");
+    case "domestic":
+      return type.includes("داخلي") || type.includes("محلي") || typeEn.includes("local") || typeEn.includes("domestic");
+    case "cairo":
+      return (
+        gov.includes("قاهره") ||
+        gov.includes("جيزه") ||
+        city.includes("قاهره") ||
+        city.includes("جيزه") ||
+        city.includes("سفنكس") ||
+        city.includes("عاصمه")
+      );
+    case "redsea_sinai":
+      return (
+        gov.includes("بحر احمر") ||
+        gov.includes("سيناء") ||
+        city.includes("شرم") ||
+        city.includes("غردقه") ||
+        city.includes("مرسي علم") ||
+        city.includes("طابا") ||
+        city.includes("طور") ||
+        city.includes("برديس")
+      );
+    case "alex_delta":
+      return (
+        gov.includes("اسكندريه") ||
+        gov.includes("مطروح") ||
+        gov.includes("بحيره") ||
+        gov.includes("بورسعيد") ||
+        city.includes("برج العرب") ||
+        city.includes("علمين") ||
+        city.includes("اسكندريه") ||
+        city.includes("بورسعيد")
+      );
+    case "upper_egypt":
+      return (
+        gov.includes("اقصر") ||
+        gov.includes("اسوان") ||
+        gov.includes("سوهاج") ||
+        gov.includes("اسيوط") ||
+        gov.includes("قنا") ||
+        gov.includes("وادي جديد") ||
+        city.includes("اقصر") ||
+        city.includes("اسوان") ||
+        city.includes("سوهاج") ||
+        city.includes("اسيوط") ||
+        city.includes("داخله") ||
+        city.includes("خارجه") ||
+        city.includes("ابو سمبل")
+      );
+    default:
+      return true;
+  }
+}
+
+/**
+ * Filters a list of airports based on the user's search query and category filter.
+ */
+export function filterAirports(
+  airports: Airport[],
+  query: string,
+  category: AirportCategoryFilter = "all"
+): Airport[] {
+  let list = airports;
+
+  if (category !== "all") {
+    list = list.filter(a => matchesCategory(a, category));
+  }
+
+  if (!query.trim()) return list;
 
   const normalizedQuery = normalizeArabic(query);
   const rawQueryLower = query.toLowerCase().trim();
 
-  return airports.filter(airport => {
+  return list.filter(airport => {
     const normNameAr = normalizeArabic(airport.name_ar || "");
     const normCityAr = normalizeArabic(airport.city_ar || "");
     const normGovAr = normalizeArabic(airport.governorate_ar || "");
@@ -139,4 +217,20 @@ export function filterAirports(airports: Airport[], query: string): Airport[] {
       matchesKeywordsEn
     );
   });
+}
+
+/**
+ * Formats report content for submission to app_feedback
+ */
+export function formatAirportReportContent(
+  airportName: string,
+  problemTypeLabel: string,
+  details: string
+): string {
+  return `بلاغ عن خطأ في دليل المطارات:
+المطار المعني: ${airportName || "مشكلة عامة بالدليل"}
+نوع المشكلة: ${problemTypeLabel}
+
+تفاصيل البلاغ / التصحيح المقترح:
+${details.trim()}`;
 }

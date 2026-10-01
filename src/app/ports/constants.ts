@@ -1,4 +1,4 @@
-import { Port, PortFilterOption, SeaPaletteItem } from "./types";
+import { Port, PortFilterOption, SeaPaletteItem, PortReportOption, PortReportProblemType } from "./types";
 
 export const DEFAULT_PORTS: Port[] = [
   {
@@ -213,4 +213,66 @@ export const PORT_PALETTES: Record<string, SeaPaletteItem> = {
     glow: "rgba(37, 99, 235, 0.35)",
     icon: "bx bx-anchor",
   },
+};
+
+export const PORT_REPORT_PROBLEM_OPTIONS: PortReportOption[] = [
+  {
+    id: "berths",
+    title: "خطأ في بيانات الأرصفة والتجهيزات الفنية",
+    desc: "عدد الأرصفة، أعماق الملاحة، محطات الحاويات، الصب الجاف أو الغاز",
+    icon: "bx bx-buildings",
+    badge: "الأرصفة والمعدات"
+  },
+  {
+    id: "connections",
+    title: "خطأ في شبكات الربط وطرق الوصول",
+    desc: "المحاور، الطرق الساحلية، خطوط السكك الحديدية أو القطار السريع",
+    icon: "bx bx-git-branch",
+    badge: "طرق الربط"
+  },
+  {
+    id: "operator",
+    title: "خطأ في الهيئة المشغلة أو الحالة التشغيلية",
+    desc: "اسم الهيئة المشغلة للميناء أو تحديث حالة المشاريع التوسعية",
+    icon: "bx bx-briefcase",
+    badge: "الهيئة المشغلة"
+  },
+  {
+    id: "capacity_type",
+    title: "خطأ في الطاقة الاستيعابية أو نوع وتخصص الميناء",
+    desc: "بيانات تخصص الميناء (تجاري، ركاب، حاويات، بترول) أو القدرة التشغيلية",
+    icon: "bx bx-category",
+    badge: "القدرة والتخصص"
+  },
+  {
+    id: "location",
+    title: "خطأ في الموقع الجغرافي أو رابط الخريطة",
+    desc: "رابط خريطة Google Maps أو المدينة والمحافظة التابع لها الميناء",
+    icon: "bx bx-map-pin",
+    badge: "الموقع"
+  },
+  {
+    id: "missing_port",
+    title: "ميناء بحري غير مسجل بالدليل",
+    desc: "اقتراح إضافة ميناء بحري، جاف أو تخصصي غير متوفر بالقائمة",
+    icon: "bx bx-plus-circle",
+    badge: "إضافة ميناء"
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو بلاغ آخر",
+    desc: "أي ملاحظة أخرى لتطوير وتدقيق بيانات دليل الموانئ المصرية",
+    icon: "bx bx-detail",
+    badge: "أخرى"
+  }
+];
+
+export const PORT_REPORT_PROBLEM_LABELS: Record<PortReportProblemType, string> = {
+  berths: "خطأ في بيانات الأرصفة والتجهيزات الفنية",
+  connections: "خطأ في شبكات الربط وطرق الوصول",
+  operator: "خطأ في الهيئة المشغلة أو الحالة التشغيلية",
+  capacity_type: "خطأ في الطاقة الاستيعابية أو التخصص",
+  location: "خطأ في الموقع الجغرافي أو رابط الخريطة",
+  missing_port: "ميناء بحري غير مسجل بالدليل",
+  other: "ملاحظة أو بلاغ آخر"
 };

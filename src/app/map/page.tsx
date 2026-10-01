@@ -79,6 +79,7 @@ function MapPageContent() {
     requestUserLocation,
     favoriteIds,
     toggleFavorite,
+    setUserLocationManual,
     selectedPoint,
     setSelectedPoint,
     searchQuery,
@@ -200,9 +201,10 @@ function MapPageContent() {
           isLight={isLight}
           mapInstanceRef={mapInstanceRef}
           searchQuery={searchQuery}
+          onUpdateUserLocation={setUserLocationManual}
         />
 
-        {/* Left Floating Tools (Zoom, Layer, GPS, Center) */}
+        {/* Left Floating Tools (Zoom, Layer, GPS, Center, District Picker) */}
         <MapFloatingTools
           mapInstanceRef={mapInstanceRef}
           mapLayer={mapLayer}
@@ -210,6 +212,7 @@ function MapPageContent() {
           onLocateUser={handleLocateUser}
           locationLoading={locationLoading}
           userHasLocation={Boolean(userLocation)}
+          onSelectDistrict={setUserLocationManual}
         />
 
         {/* Right Collapsible Places Sidebar */}
