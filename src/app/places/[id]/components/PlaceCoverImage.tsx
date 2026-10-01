@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import { PlaceCoverImageProps } from "../types";
 
 export default function PlaceCoverImage({
@@ -9,20 +10,23 @@ export default function PlaceCoverImage({
   categoryIcon,
   categoryLabel,
 }: PlaceCoverImageProps) {
-  const coverSrc =
-    place.images && place.images[0] ? place.images[0] : "/placeholder.jpg";
+  const [imgSrc, setImgSrc] = useState(
+    place.images && place.images[0] ? place.images[0] : "/placeholder.jpg"
+  );
 
   return (
     <div style={{ height: "340px", width: "100%", position: "relative" }}>
-      <img
-        src={coverSrc}
+      <Image
+        src={imgSrc}
         alt={place.name}
-        loading="lazy"
-        decoding="async"
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        onError={(e) => {
-          (e.target as HTMLImageElement).src =
-            "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80";
+        fill
+        priority
+        sizes="(max-width: 800px) 100vw, 800px"
+        style={{ objectFit: "cover" }}
+        onError={() => {
+          setImgSrc(
+            "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80"
+          );
         }}
       />
       {/* Category Badge overlay */}
@@ -41,6 +45,7 @@ export default function PlaceCoverImage({
           display: "flex",
           alignItems: "center",
           gap: "6px",
+          zIndex: 2,
         }}
       >
         <i
