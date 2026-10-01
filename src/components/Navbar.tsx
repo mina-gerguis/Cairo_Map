@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
@@ -135,8 +136,24 @@ export default function Navbar() {
       <div className="navbar-inner">
         {/* Logo */}
         <Link href="/" className="navbar-logo">
-          <img src="images/logo/darkMode_logo.png" alt="Map Cairo" className="logo-img-dark" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
-          <img src="images/logo/lightMode_logo.png" alt="Map Cairo" className="logo-img-light" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
+          <Image
+            src="/images/logo/darkMode_logo.png"
+            alt="ماب القاهرة - الوضع الليلي"
+            width={160}
+            height={48}
+            priority
+            className="logo-img-dark"
+            style={{ height: "48px", width: "auto", objectFit: "contain" }}
+          />
+          <Image
+            src="/images/logo/lightMode_logo.png"
+            alt="ماب القاهرة - الوضع النهاري"
+            width={160}
+            height={48}
+            priority
+            className="logo-img-light"
+            style={{ height: "48px", width: "auto", objectFit: "contain" }}
+          />
         </Link>
 
         {/* Desktop Links */}
@@ -159,9 +176,11 @@ export default function Navbar() {
                         style={{ display: "flex", alignItems: "center", gap: "12px", padding: "8px 12px", borderRadius: "10px", fontFamily: "var(--font-body)" }}
                       >
                         {sub.imgLogo ? (
-                          <img
-                            src={`images/icons2d/${sub.imgLogo}`}
+                          <Image
+                            src={`/images/icons2d/${sub.imgLogo}`}
                             alt={sub.label}
+                            width={24}
+                            height={24}
                             style={{ width: "24px", height: "24px", objectFit: "contain", flexShrink: 0 }}
                           />
                         ) : (
@@ -364,9 +383,11 @@ export default function Navbar() {
                           style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 10px" }}
                         >
                           {sub.imgLogo ? (
-                            <img
+                            <Image
                               src={`/images/icons2d/${sub.imgLogo}`}
                               alt={sub.label}
+                              width={22}
+                              height={22}
                               style={{ width: "22px", height: "22px", objectFit: "contain", flexShrink: 0 }}
                             />
                           ) : (

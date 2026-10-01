@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FaQuestionCircle, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 interface FAQItem {
@@ -230,9 +231,11 @@ export default function TransitFAQ() {
                         e.currentTarget.style.background = "var(--bgPrimary)";
                       }}
                     >
-                      <img
+                      <Image
                         src={item.link.icon}
                         alt={item.link.name}
+                        width={22}
+                        height={22}
                         style={{ width: "22px", height: "22px", objectFit: "contain" }}
                       />
                       <span>{item.link.name}</span>

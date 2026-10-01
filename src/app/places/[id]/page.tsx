@@ -1,222 +1,220 @@
-"use client";
+import type { Metadata } from "next";
+import { supabase } from "@/lib/supabase";
+import { initialPlaces, Place, OLD_CATEGORY_TO_MAIN_MAP } from "@/data/places";
+import { CATEGORY_LABELS } from "./constants";
+import PlaceDetailsClient from "./PlaceDetailsClient";
 
-import React, { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import ReviewSection from "@/components/ReviewSection";
-import ReportProblemModal from "@/components/ReportProblemModal";
-import PlaceNoteModal from "@/components/PlaceNoteModal";
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-// Custom Hook
-import { usePlaceDetails } from "./hooks/usePlaceDetails";
+async function getPlaceById(id: string): Promise<Place | null> {
+  // Try Supabase first
+  if (supabase) {
+    try {
+      const { data: dbPlace, error } = await supabase
+        .from("places")
+        .select("*, branches(*)")
+        .eq("id", id)
+        .single();
 
-// Constants
-import { CATEGORY_ICONS, CATEGORY_LABELS, getCategoryColor } from "./constants";
+      if (!error && dbPlace) {
+        const oldCat = dbPlace.category;
+        let finalCategory = oldCat;
+        let finalCategoryLabel =
+          dbPlace.category_label || CATEGORY_LABELS[oldCat] || oldCat;
+        let finalSubCategories = Array.isArray(dbPlace.sub_categories)
+          ? [...dbPlace.sub_categories]
+          : [];
 
-// Sub-components
-import {
-  PlaceDetailsLoading,
-  PlaceNotFound,
-  PlaceDetailsHeader,
-  PlaceCoverImage,
-  PlaceTitleSection,
-  PlaceActionButtons,
-  PlaceQuickInfo,
-  PlaceBranchSelector,
-  PlaceMediaSlider,
-  PlaceDescriptionCard,
-  PlaceGoodToKnowCard,
-  PlaceContactDetailsCard,
-  PlaceWorkingHoursCard,
-  PlaceBottomActions,
-  PlacePhotoGallery,
-  PlaceMediaLightbox,
-} from "./components";
+        const mainCatKey = Object.keys(OLD_CATEGORY_TO_MAIN_MAP).find(
+          (key) => key === oldCat
+        );
+        if (mainCatKey) {
+          finalCategory = OLD_CATEGORY_TO_MAIN_MAP[mainCatKey];
+          finalCategoryLabel = CATEGORY_LABELS[finalCategory] || finalCategory;
+          if (!finalSubCategories.includes(oldCat)) {
+            finalSubCategories.push(oldCat);
+          }
+        }
 
-export default function PlaceDetailsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params?.id as string;
-
-  // Modals state
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
-
-  // Business logic & data hook
-  const {
-    place,
-    loading,
-    selectedBranchId,
-    setSelectedBranchId,
-    displayBranch,
-    currentDistance,
-    isFavorite,
-    togglingFav,
-    toggleFavorite,
-    activeMenuIndex,
-    setActiveMenuIndex,
-    mediaList,
-    nextMedia,
-    prevMedia,
-    handleShare,
-    handleRatingUpdate,
-    hasAccess,
-    user,
-  } = usePlaceDetails(id);
-
-  if (loading) {
-    return <PlaceDetailsLoading />;
+        return {
+          id: dbPlace.id,
+          name: dbPlace.name,
+          name_en: dbPlace.name_en || "",
+          category: finalCategory,
+          categoryLabel: finalCategoryLabel,
+          subCategories: finalSubCategories,
+          place_type: dbPlace.place_type || null,
+          place_type_icon: dbPlace.place_type_icon || null,
+          governorate: dbPlace.governorate,
+          city: dbPlace.city,
+          shortDescription: dbPlace.short_description,
+          fullAddress: dbPlace.full_address,
+          phones: dbPlace.phones || [],
+          googleMapsUrl: dbPlace.google_maps_url || "",
+          images: dbPlace.images || [],
+          menuImages: dbPlace.menu_images || [],
+          workingHours: dbPlace.working_hours || "",
+          rating: dbPlace.rating || 0,
+          reviewsCount: dbPlace.reviews_count || 0,
+          description: dbPlace.description || "",
+          latitude: dbPlace.latitude || undefined,
+          longitude: dbPlace.longitude || undefined,
+          website_url: dbPlace.website_url,
+          features: Array.isArray(dbPlace.features) ? dbPlace.features : [],
+          services: Array.isArray(dbPlace.services) ? dbPlace.services : [],
+          branches: dbPlace.branches || [],
+        };
+      }
+    } catch {
+      // Fallback below
+    }
   }
+
+  // Fallback to static places array
+  const found = initialPlaces.find((p) => p.id === id);
+  return found || null;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const place = await getPlaceById(id);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net";
 
   if (!place) {
-    return <PlaceNotFound onBackHome={() => router.push("/")} />;
+    return {
+      title: "المكان غير موجود | ماب القاهرة",
+      description: "عذراً، لم يتم العثور على المكان المطلوب في دليل ماب القاهرة.",
+    };
   }
 
+  const categoryLabel = place.categoryLabel || CATEGORY_LABELS[place.category] || "خدمات وأماكن";
+  const title = `${place.name} (${categoryLabel}) - العنوان، التليفون والمواعيد`;
+  const locationText = [place.city, place.governorate].filter(Boolean).join("، ");
+  const description =
+    place.shortDescription ||
+    place.description ||
+    `تعرف على تفاصيل ${place.name} في ${locationText || "القاهرة"}. الأرقام، العناوين، مواعيد العمل، التقييمات، وطريقة الوصول عبر دليل ماب القاهرة.`;
+
+  const coverImage =
+    place.images && place.images.length > 0
+      ? place.images[0]
+      : `${siteUrl}/images/cairo-map-og.png`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${siteUrl}/places/${id}`,
+    },
+    openGraph: {
+      title: `${place.name} | ماب القاهرة`,
+      description,
+      url: `${siteUrl}/places/${id}`,
+      siteName: "ماب القاهرة - Cairo Map",
+      images: [
+        {
+          url: coverImage,
+          width: 1200,
+          height: 630,
+          alt: place.name,
+        },
+      ],
+      locale: "ar_EG",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${place.name} | ماب القاهرة`,
+      description,
+      images: [coverImage],
+    },
+  };
+}
+
+export default async function PlacePage({ params }: PageProps) {
+  const { id } = await params;
+  const place = await getPlaceById(id);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net";
+
+  // JSON-LD Schema
+  const jsonLd = place
+    ? {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Place",
+            "@id": `${siteUrl}/places/${place.id}#place`,
+            name: place.name,
+            alternateName: place.name_en || undefined,
+            description: place.shortDescription || place.description || undefined,
+            image: place.images && place.images.length > 0 ? place.images : undefined,
+            telephone: place.phones && place.phones.length > 0 ? place.phones[0] : undefined,
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: place.fullAddress || place.briefLocation || undefined,
+              addressLocality: place.city || "القاهرة",
+              addressRegion: place.governorate || "القاهرة",
+              addressCountry: "EG",
+            },
+            ...(place.latitude && place.longitude
+              ? {
+                  geo: {
+                    "@type": "GeoCoordinates",
+                    latitude: place.latitude,
+                    longitude: place.longitude,
+                  },
+                }
+              : {}),
+            ...(place.rating && place.reviewsCount
+              ? {
+                  aggregateRating: {
+                    "@type": "AggregateRating",
+                    ratingValue: place.rating,
+                    reviewCount: place.reviewsCount,
+                    bestRating: 5,
+                    worstRating: 1,
+                  },
+                }
+              : {}),
+          },
+          {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "الرئيسية",
+                item: siteUrl,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "دليل الأماكن",
+                item: `${siteUrl}/places`,
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: place.name,
+                item: `${siteUrl}/places/${place.id}`,
+              },
+            ],
+          },
+        ],
+      }
+    : null;
+
   return (
-    <div
-      className="app-container"
-      style={{ maxWidth: "800px", paddingBottom: "100px" }}
-    >
-      {/* Navigation Header */}
-      <PlaceDetailsHeader
-        place={place}
-        onShare={handleShare}
-        onClose={() => router.push("/")}
-      />
-
-      {/* Main Glass Details Box */}
-      <div className="glass-panel" style={{ overflow: "hidden", padding: "0" }}>
-        {/* Cover Image & Category Badge */}
-        <PlaceCoverImage
-          place={place}
-          categoryColor={getCategoryColor(place.category)}
-          categoryIcon={CATEGORY_ICONS[place.category]}
-          categoryLabel={
-            place.categoryLabel || CATEGORY_LABELS[place.category]
-          }
-        />
-
-        {/* Content Box */}
-        <div style={{ padding: "20px" }}>
-          {/* Title & English Name & Distance */}
-          <PlaceTitleSection
-            place={place}
-            displayBranch={displayBranch}
-            currentDistance={currentDistance}
-          />
-
-          {/* Action Row - 3 Buttons (Directions, Call, Favorite) */}
-          <PlaceActionButtons
-            displayBranch={displayBranch}
-            isFavorite={isFavorite}
-            togglingFav={togglingFav}
-            toggleFavorite={toggleFavorite}
-          />
-
-          {/* Quick Info Box (Status, Ratings) */}
-          <PlaceQuickInfo
-            displayBranch={displayBranch}
-            rating={place.rating}
-            reviewsCount={place.reviewsCount}
-            onReviewsClick={() => {
-              const el = document.getElementById("reviews-section");
-              if (el) el.scrollIntoView({ behavior: "smooth" });
-            }}
-          />
-
-          {/* Branch Selector Chips */}
-          <PlaceBranchSelector
-            branches={place.branches || []}
-            selectedBranchId={selectedBranchId}
-            onSelectBranch={setSelectedBranchId}
-          />
-
-          {/* Media / Menu Images Slider */}
-          <PlaceMediaSlider
-            mediaList={mediaList}
-            onMediaClick={(idx) => setActiveMenuIndex(idx)}
-          />
-
-          {/* Description Section */}
-          <PlaceDescriptionCard description={place.description} />
-
-          {/* Good to Know Card */}
-          <PlaceGoodToKnowCard place={place} displayBranch={displayBranch} />
-
-          {/* Details Card (Phone, Website, Address) */}
-          <PlaceContactDetailsCard
-            place={place}
-            displayBranch={displayBranch}
-          />
-
-          {/* Working Hours Card */}
-          <PlaceWorkingHoursCard workingHours={displayBranch.workingHours} />
-
-          {/* Bottom Dock / Report & Note & Share Actions */}
-          <PlaceBottomActions
-            onReportClick={() => setIsReportModalOpen(true)}
-            onNoteClick={() => {
-              if (!user) {
-                alert("يرجى تسجيل الدخول أولاً لإضافة ملاحظة.");
-                return;
-              }
-              setIsNoteModalOpen(true);
-            }}
-            onShareClick={handleShare}
-            hasAccess={hasAccess}
-            placeCode={selectedBranchId || place.id}
-          />
-
-          {/* Photo Gallery */}
-          <PlacePhotoGallery
-            images={place.images || []}
-            placeName={place.name}
-          />
-
-          {/* Reviews Section */}
-          <ReviewSection
-            place={place}
-            selectedBranchId={selectedBranchId}
-            onRatingUpdate={handleRatingUpdate}
-          />
-        </div>
-      </div>
-
-      {/* Lightbox / Zoom component */}
-      <PlaceMediaLightbox
-        images={mediaList}
-        activeIndex={activeMenuIndex}
-        onClose={() => setActiveMenuIndex(null)}
-        onNext={nextMedia}
-        onPrev={prevMedia}
-      />
-
-      {/* Modals */}
-      {isReportModalOpen && place && (
-        <ReportProblemModal
-          isOpen={isReportModalOpen}
-          onClose={() => setIsReportModalOpen(false)}
-          place={place}
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-
-      {isNoteModalOpen && place && (
-        <PlaceNoteModal
-          isOpen={isNoteModalOpen}
-          onClose={() => setIsNoteModalOpen(false)}
-          placeId={place.id}
-          placeName={place.name}
-        />
-      )}
-
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `,
-        }}
-      />
-    </div>
+      <PlaceDetailsClient id={id} />
+    </>
   );
 }

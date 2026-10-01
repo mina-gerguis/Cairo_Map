@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   FaCompass,
@@ -755,11 +756,11 @@ export default function NotFound() {
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <img
+                        <Image
                           src={`/images/icons2d/${service.icon}`}
                           alt={service.label}
-                          loading="lazy"
-                          decoding="async"
+                          width={30}
+                          height={30}
                           style={{ width: "30px", height: "30px", objectFit: "contain" }}
                         />
                         <div>
@@ -824,11 +825,11 @@ export default function NotFound() {
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <img
+                        <Image
                           src={getMainCategoryImage(place.category, place.subCategories)}
                           alt={place.name}
-                          loading="lazy"
-                          decoding="async"
+                          width={30}
+                          height={30}
                           style={{ width: "30px", height: "30px", objectFit: "contain" }}
                         />
                         <div>
@@ -887,7 +888,7 @@ export default function NotFound() {
                           fontSize: "0.85rem"
                         }}
                       >
-                        <img src={`/images/icons3d/${cat.image}`} alt={cat.name} loading="lazy" decoding="async" style={{ width: "20px" }} />
+                        <Image src={`/images/icons3d/${cat.image}`} alt={cat.label || cat.name} width={20} height={20} style={{ width: "20px", height: "auto" }} />
                         <span>{cat.label}</span>
                       </Link>
                     ))}
@@ -1120,7 +1121,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/transit/metro.png" alt=" metro " width="42" />
+                <Image src="/images/transit/metro.png" alt="خريطة المترو" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>خريطة المترو</div>
@@ -1153,7 +1154,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/icons2d/bus.png" alt=" bus " width="42" />
+                <Image src="/images/icons2d/bus.png" alt="مواقف الأتوبيس" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>مواقف الأتوبيس</div>
@@ -1186,7 +1187,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/icons2d/shop.png" alt=" directory " width="42" />
+                <Image src="/images/icons2d/shop.png" alt="دليل الخدمات" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>دليل الخدمـات</div>
@@ -1219,7 +1220,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/icons2d/parking.png" alt=" parking " width="42" />
+                <Image src="/images/icons2d/parking.png" alt="أماكن الانتظار" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>أماكن الانتظار</div>
@@ -1252,7 +1253,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/icons2d/airport.png" alt=" airport " width="42" />
+                <Image src="/images/icons2d/airport.png" alt="المطارات والموانئ" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>المطارات والموانئ</div>
@@ -1285,7 +1286,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <img src="/images/icons2d/Cairo_logo.png" alt=" add " width="42" />
+                <Image src="/images/icons2d/Cairo_logo.png" alt="المساعدة والدعم" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>المساعدة</div>

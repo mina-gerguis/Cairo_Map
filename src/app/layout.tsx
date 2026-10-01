@@ -20,11 +20,24 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.net"),
   title: {
-    default: "ماب القاهرة - دليل الأماكن والخدمات الذكي",
+    default: "ماب القاهرة - دليل الأماكن، المواصلات والخدمات الذكي",
     template: "%s | ماب القاهرة",
   },
-  description: "دليلك الشامل لأرقام وعناوين ومواقع المطاعم والكافيهات والصيدليات والمستشفيات والحدائق — © RepoDex، إحدى شركات جورجيوس القابضة.",
+  description: "دليلك الشامل لخطوط المترو، السكة الحديد، المنوريل، الأتوبيس الترددي، وأرقام وعناوين ومواقع المطاعم والكافيهات والصيدليات والمستشفيات والحدائق في القاهرة والجيزة.",
+  keywords: [
+    "ماب القاهرة",
+    "مترو القاهرة",
+    "دليل مواصلات القاهرة",
+    "ازاي اروح",
+    "قطارات مصر",
+    "مطاعم القاهرة",
+    "كافيهات التجمع",
+    "دليل الخدمات",
+    "مونوريل القاهرة",
+    "القطار الكهربائي",
+  ],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -42,6 +55,58 @@ export const metadata: Metadata = {
       },
     ],
   },
+  openGraph: {
+    title: "ماب القاهرة - دليل الأماكن والمواصلات الذكي",
+    description: "دليلك الشامل لخطوط المترو، السكة الحديد، المنوريل، وأرقام وعناوين الأماكن والخدمات في القاهرة الكبرى.",
+    url: "https://cairomap.net",
+    siteName: "ماب القاهرة",
+    locale: "ar_EG",
+    type: "website",
+    images: [
+      {
+        url: "/apple-touch-icon.png",
+        width: 180,
+        height: 180,
+        alt: "ماب القاهرة",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "ماب القاهرة - دليل الأماكن والمواصلات الذكي",
+    description: "دليلك الشامل للمواصلات والأماكن في القاهرة الكبرى.",
+    images: ["/apple-touch-icon.png"],
+  },
+};
+
+const globalJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://cairomap.net/#website",
+      url: "https://cairomap.net",
+      name: "ماب القاهرة",
+      description: "دليل المواصلات والأماكن والخدمات الذكي في القاهرة الكبرى",
+      inLanguage: "ar-EG",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: "https://cairomap.net/places?search={search_term_string}",
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://cairomap.net/#organization",
+      name: "ماب القاهرة - Cairo Map",
+      url: "https://cairomap.net",
+      logo: "https://cairomap.net/apple-touch-icon.png",
+      sameAs: [],
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -52,12 +117,17 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={almarai.variable}>
       <head>
+        {/* Global JSON-LD Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }}
+        />
         {/* Google AdSense Main Script */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7465662881430123"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         {/* Service Worker Registration */}
         <Script id="sw-registration" strategy="afterInteractive">

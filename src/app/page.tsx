@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   FaSearch,
@@ -1035,11 +1036,11 @@ export default function HomePage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <img
+                          <Image
                             src={`/images/icons2d/${service.icon}`}
                             alt={service.label}
-                            loading="lazy"
-                            decoding="async"
+                            width={30}
+                            height={30}
                             style={{ width: "30px", height: "30px", objectFit: "contain" }}
                           />
                           <div>
@@ -1104,11 +1105,11 @@ export default function HomePage() {
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <img
+                          <Image
                             src={getMainCategoryImage(place.category, place.subCategories)}
                             alt={place.name}
-                            loading="lazy"
-                            decoding="async"
+                            width={30}
+                            height={30}
                             style={{ width: "30px", height: "30px", objectFit: "contain" }}
                           />
                           <div>
@@ -1167,7 +1168,7 @@ export default function HomePage() {
                             fontSize: "0.85rem"
                           }}
                         >
-                          <img src={`/images/icons3d/${cat.image}`} alt={cat.name} loading="lazy" decoding="async" style={{ width: "20px" }} />
+                          <Image src={`/images/icons3d/${cat.image}`} alt={cat.label || cat.name} width={20} height={20} style={{ width: "20px", height: "auto" }} />
                           <span>{cat.label}</span>
                         </Link>
                       ))}
@@ -1308,7 +1309,7 @@ export default function HomePage() {
                   transition: "var(--transition-fast)"
                 }}
               >
-                <img src={`/images/icons2d/${tag.icon}`} alt={tag.label} loading="lazy" decoding="async" style={{ width: "18px", height: "18px", objectFit: "contain" }} />
+                <Image src={`/images/icons2d/${tag.icon}`} alt={tag.label} width={18} height={18} style={{ width: "18px", height: "18px", objectFit: "contain" }} />
                 <span>{tag.label}</span>
               </button>
             ))}
@@ -1577,12 +1578,12 @@ export default function HomePage() {
                     alignItems: "center",
                     justifyContent: "center"
                   }}>
-                    <img
+                    <Image
                       src={`/images/icons3d/${service.icon}.png`}
                       alt={service.title}
-                      loading="lazy"
-                      decoding="async"
-                      style={{ width: "80px" }}
+                      width={80}
+                      height={80}
+                      style={{ width: "80px", height: "auto" }}
                     />
                   </div>
                 </div>
@@ -1643,7 +1644,7 @@ export default function HomePage() {
                   style={{
                   }}
                 >
-                  <img src={`/images/icons3d/${cat.image}`} alt={cat.label} loading="lazy" decoding="async" width={"40px"} />
+                  <Image src={`/images/icons3d/${cat.image}`} alt={cat.label} width={40} height={40} style={{ width: "40px", height: "auto" }} />
                 </div>
                 <div>
                   <h5 className="home-category-card-title">
@@ -1762,7 +1763,7 @@ export default function HomePage() {
             justifyContent: "center",
             marginBottom: "20px"
           }}>
-            <img src="/images/icons3d/robot.png" alt="Robot" loading="lazy" decoding="async" width={80} />
+            <Image src="/images/icons3d/robot.png" alt="الذكاء الاصطناعي لماب القاهرة" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
           <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--text-primary)" }}>
