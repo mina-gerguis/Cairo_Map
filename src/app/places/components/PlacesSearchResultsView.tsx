@@ -74,7 +74,7 @@ export default function PlacesSearchResultsView({
         >
           <div style={{ fontSize: "3.5rem", marginBottom: "16px" }}>
             <Image
-              src="/images/404.jpg"
+              src="/images/404.webp"
               alt="Not Found"
               width={250}
               height={250}

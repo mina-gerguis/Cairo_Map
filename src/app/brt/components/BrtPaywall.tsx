@@ -21,7 +21,7 @@ export default function BrtPaywall({
         <div ref={paywallRef} style={{ textAlign: "center", marginBottom: "28px" }}>
           <h1 className={styles.heroTitle}>
             <img
-              src="/images/icons2d/brt.png"
+              src="/images/icons2d/brt.webp"
               alt="Cairo BRT"
               loading="lazy"
               decoding="async"
@@ -49,7 +49,7 @@ export default function BrtPaywall({
         >
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/icons3d/CairoGold.png"
+              src="/images/icons3d/CairoGold.webp"
               alt="Gold Access"
               loading="lazy"
               decoding="async"

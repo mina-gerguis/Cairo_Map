@@ -24,7 +24,7 @@ export default function BrtBottomBanner({
           }}
         >
           <img
-            src="/images/icons3d/alert.png"
+            src="/images/icons3d/alert.webp"
             alt="Alert"
             loading="lazy"
             decoding="async"

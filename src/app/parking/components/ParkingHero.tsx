@@ -19,7 +19,7 @@ export function ParkingHero({
       headerRef={headerRef}
       title="دليل الجراجات"
       icon={{
-        src: "/images/icons2d/parking.png",
+        src: "/images/icons2d/parking.webp",
         alt: "Cairo Parking",
         width: 60,
         height: 42,

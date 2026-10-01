@@ -31,7 +31,7 @@ const FAQ_DATA: FAQItem[] = [
     link: {
       name: "دليل القطار الكهربائي الخفيف (LRT)",
       url: "/lrt",
-      icon: "/images/icons2d/Cairo_lrt.png"
+      icon: "/images/icons2d/Cairo_lrt.webp"
     }
   },
   {
@@ -40,7 +40,7 @@ const FAQ_DATA: FAQItem[] = [
     link: {
       name: "دليل شبكة مونوريل القاهرة",
       url: "/monorail",
-      icon: "/images/icons2d/Cairo_monorail_east.png"
+      icon: "/images/icons2d/Cairo_monorail_east.webp"
     }
   },
   {
@@ -49,7 +49,7 @@ const FAQ_DATA: FAQItem[] = [
     link: {
       name: "دليل قطارات سكك حديد مصر",
       url: "/railways",
-      icon: "/images/icons2d/Cairo_train.png"
+      icon: "/images/icons2d/Cairo_train.webp"
     }
   },
   {
@@ -58,7 +58,7 @@ const FAQ_DATA: FAQItem[] = [
     link: {
       name: "محطات ومواقف الأتوبيس",
       url: "/bus-stations",
-      icon: "/images/icons2d/bus.png"
+      icon: "/images/icons2d/bus.webp"
     }
   },
   {
@@ -67,7 +67,7 @@ const FAQ_DATA: FAQItem[] = [
     link: {
       name: "دليل مواقف الميكروباص",
       url: "/microbus-stations",
-      icon: "/images/icons2d/microbus.png"
+      icon: "/images/icons2d/microbus.webp"
     }
   },
   {
@@ -76,7 +76,7 @@ const FAQ_DATA: FAQItem[] = [
     link: {
       name: "دليل الانتقال الذكي (ازاي اروح)",
       url: "/directions",
-      icon: "/images/icons2d/bus.png"
+      icon: "/images/icons2d/bus.webp"
     }
   }
 ];

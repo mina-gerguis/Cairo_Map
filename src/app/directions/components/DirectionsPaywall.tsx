@@ -21,7 +21,7 @@ export default function DirectionsPaywall({
         <div ref={paywallRef} className="text-center mb-7">
           <h1 className="flex items-center justify-center gap-3 font-extrabold font-sub text-3xl sm:text-4xl m-0 mb-2.5">
             <img
-              src="/images/transit/arab_republic _of_egypt.png"
+              src="/images/transit/arab_republic _of_egypt.webp"
               alt="Cairo Directions"
               loading="lazy"
               decoding="async"
@@ -42,7 +42,7 @@ export default function DirectionsPaywall({
           {/* Badge Icon */}
           <div className="mb-4">
             <img
-              src="/images/icons3d/CairoSilver.png"
+              src="/images/icons3d/CairoSilver.webp"
               alt="Silver Access"
               loading="lazy"
               decoding="async"

@@ -12,7 +12,7 @@ export default function DirectoryHero({
       headerRef={headerRef}
       title="دليل الهاتف والخدمات العامة"
       icon={{
-        src: "/images/transit/arab_republic _of_egypt.png",
+        src: "/images/transit/arab_republic _of_egypt.webp",
         alt: "Egypt",
         width: 42,
         height: 52,

@@ -17,7 +17,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "ميكروباص",
     acceptedArabicKeywords: ["ميكروباص", "ميكوباص", "مكروباص", "سرفيس", "microbus", "micro"],
     description: "سيارات الميكروباص والسرفيس وخطوط النقل الجماعي الصغير",
-    iconPath: "/images/icons2d/microbus.png",
+    iconPath: "/images/icons2d/microbus.webp",
     badgeColor: "#3b82f6"
   },
   {
@@ -25,7 +25,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "مترو الأنفاق",
     acceptedArabicKeywords: ["مترو", "مترو الأنفاق", "مترو الانفاق", "metro", "subway"],
     description: "خطوط مترو القاهرة الكبرى (الخط الأول، الثاني، الثالث)",
-    iconPath: "/images/transit/metro.png",
+    iconPath: "/images/transit/metro.webp",
     badgeColor: "#ef4444"
   },
   {
@@ -33,7 +33,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "أتوبيس النقل العام",
     acceptedArabicKeywords: ["أتوبيس", "اتوبيس", "باص", "نقل عام", "ميني باص", "سوبر جيت", "جو باص", "bus"],
     description: "أتوبيسات هيئة النقل العام (CTA)، الميني باص، وشركات النقل بين المحافظات",
-    iconPath: "/images/icons2d/bus.png",
+    iconPath: "/images/icons2d/bus.webp",
     badgeColor: "#0284c7"
   },
   {
@@ -41,7 +41,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "الأتوبيس الترددي (BRT)",
     acceptedArabicKeywords: ["ترددي", "الأتوبيس الترددي", "اتوبيس ترددي", "باص ترددي", "brt", "bus rapid"],
     description: "حافلات الأتوبيس الترددي السريع على الطريق الدائري",
-    iconPath: "/images/icons2d/brt.png",
+    iconPath: "/images/icons2d/brt.webp",
     badgeColor: "#10b981"
   },
   {
@@ -49,7 +49,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "قطار السكك الحديدية",
     acceptedArabicKeywords: ["قطار", "قطارات", "سكة حديد", "سكك حديد", "سكه حديد", "train", "railway"],
     description: "قطارات الهيئة القومية لسكك حديد مصر (س.ح.م) الروسي، التالجو، والمكيف",
-    iconPath: "/images/icons2d/Cairo_train.png",
+    iconPath: "/images/icons2d/Cairo_train.webp",
     badgeColor: "#d97706"
   },
   {
@@ -57,7 +57,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "قطار المونوريل",
     acceptedArabicKeywords: ["مونوريل", "المونوريل", "monorail"],
     description: "مونوريل شرق النيل (العاصمة الإدارية) ومونوريل غرب النيل (6 أكتوبر)",
-    iconPath: "/images/icons2d/Cairo_monorail_east.png",
+    iconPath: "/images/icons2d/Cairo_monorail_east.webp",
     badgeColor: "#06b6d4"
   },
   {
@@ -65,7 +65,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "القطار الكهربائي الخفيف (LRT)",
     acceptedArabicKeywords: ["lrt", "كهربائي", "القطار الكهربائي", "قطار كهربائي", "LRT", "light rail"],
     description: "القطار الكهربائي الخفيف (عدلي منصور - العاشر من رمضان - العاصمة الإدارية)",
-    iconPath: "/images/icons2d/Cairo_lrt.png",
+    iconPath: "/images/icons2d/Cairo_lrt.webp",
     badgeColor: "#8b5cf6"
   },
   {
@@ -73,7 +73,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "سيارة خاصة",
     acceptedArabicKeywords: ["سيارة", "سياره", "عربية", "عربيه", "ملاكي", "خاص", "car", "private"],
     description: "السيارات الخاصة والملاكي والسفر عبر الطرق والمحاور السريعة",
-    iconPath: "/images/icons2d/car.png",
+    iconPath: "/images/icons2d/car.webp",
     badgeColor: "#64748b"
   },
   {
@@ -81,7 +81,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "تاكسي / أوبر / كريم",
     acceptedArabicKeywords: ["تاكسي", "تاكس", "اوبر", "أوبر", "كريم", "taxi", "cab", "uber", "careem"],
     description: "سيارات التاكسي الأبيض وتطبيقات النقل الذكي",
-    iconPath: "/images/icons2d/taxi.png",
+    iconPath: "/images/icons2d/taxi.webp",
     badgeColor: "#f59e0b"
   },
   {
@@ -89,7 +89,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "طائرة / طيران",
     acceptedArabicKeywords: ["طيران", "طائرة", "طائره", "مطار", "plane", "flight", "airport"],
     description: "رحلات الطيران والمطارات وصالات السفر الجوي",
-    iconPath: "/images/icons2d/airport.png",
+    iconPath: "/images/icons2d/airport.webp",
     badgeColor: "#ec4899"
   },
   {
@@ -97,7 +97,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "سفينة / أتوبيس نهري",
     acceptedArabicKeywords: ["سفينة", "سفينه", "عبارة", "عباره", "مركب", "نهري", "أتوبيس نهري", "ship", "ferry"],
     description: "الأتوبيس النهري، المعديات، والرحلات النيلية والبحرية",
-    iconPath: "/images/icons2d/ship.png",
+    iconPath: "/images/icons2d/ship.webp",
     badgeColor: "#14b8a6"
   },
   {
@@ -105,7 +105,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "مواصلات متعددة",
     acceptedArabicKeywords: ["متعدد", "تحويل", "مواصلات متعددة", "تبديل", "multi", "transfer"],
     description: "رحلات تجمع أكثر من وسيلة (مثل: مترو + ميكروباص + أتوبيس)",
-    iconPath: "/images/icons2d/multi.png",
+    iconPath: "/images/icons2d/multi.webp",
     badgeColor: "#3b82f6"
   },
   {
@@ -113,7 +113,7 @@ export const TRANSIT_TYPES_GUIDE_DATA: TransitTypeGuideItem[] = [
     arabicName: "سير على الأقدام",
     acceptedArabicKeywords: ["مشي", "سير", "اقدام", "أقدام", "على الاقدام", "walk", "walking"],
     description: "مراحل المشي والتنقل سيراً على الأقدام بين المحطات",
-    iconPath: "/images/icons2d/walk.png",
+    iconPath: "/images/icons2d/walk.webp",
     badgeColor: "#10b981"
   }
 ];

@@ -2,17 +2,17 @@ import { OnboardingSlide, StepInfo, SignupFormData, SignupFieldErrors } from "./
 
 export const ONBOARDING_SLIDES: OnboardingSlide[] = [
   {
-    imageUrl: "images/signUp/welcome1.jpg",
+    imageUrl: "images/signUp/welcome1.webp",
     title: "أنشئ حسابك الآن مجاناً",
     desc: "استمتع بتجربة فريدة ومخصصة لحفظ أماكنك المفضلة وملاحظاتك الشخصية.",
   },
   {
-    imageUrl: "images/signUp/welcome2.jpg",
+    imageUrl: "images/signUp/welcome2.webp",
     title: "اكتشف أفضل الأماكن حولك",
     desc: "ابحث عن المطاعم، الكافيهات، والوجهات التاريخية القريبة منك بكل سهولة.",
   },
   {
-    imageUrl: "images/signUp/welcome3.jpg",
+    imageUrl: "images/signUp/welcome3.webp",
     title: "تذكيرات وملاحظات ذكية للأماكن",
     desc: "أضف ملاحظات وتذكيرات هامة لأي مكان لتعود إليها في أي وقت.",
   },

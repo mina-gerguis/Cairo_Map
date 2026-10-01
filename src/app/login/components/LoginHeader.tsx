@@ -12,12 +12,12 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({
       {/* Platform Logo */}
       <div className={styles.logoWrapper}>
         <img
-          src="/images/logo/darkMode_logo.png"
+          src="/images/logo/darkMode_logo.webp"
           alt="ماب القاهرة"
           className={styles.logoImgDark}
         />
         <img
-          src="/images/logo/lightMode_logo.png"
+          src="/images/logo/lightMode_logo.webp"
           alt="ماب القاهرة"
           className={styles.logoImgLight}
         />

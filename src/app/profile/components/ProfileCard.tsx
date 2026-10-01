@@ -223,7 +223,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 <div className={styles.phoneInputContainer}>
                   <div className={styles.phonePrefix}>
                     <Image
-                      src="/images/profile/flag-egypt.png"
+                      src="/images/profile/flag-egypt.webp"
                       alt="phone"
                       width={20}
                       height={20}
@@ -379,7 +379,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                   style={{ display: "flex", alignItems: "center", gap: "4px" }}
                 >
                   <Image
-                    src="/images/profile/flag-egypt.png"
+                    src="/images/profile/flag-egypt.webp"
                     alt="phone"
                     width={20}
                     height={20}

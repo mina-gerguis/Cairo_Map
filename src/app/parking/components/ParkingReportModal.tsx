@@ -186,7 +186,7 @@ export function ParkingReportModal({
                 }}
               >
                 <img
-                  src="/images/icons3d/error.png"
+                  src="/images/icons3d/error.webp"
                   alt="error"
                   style={{ width: "100%", height: "100%", objectFit: "contain" }}
                   loading="lazy"

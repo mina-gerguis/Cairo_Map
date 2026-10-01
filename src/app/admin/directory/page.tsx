@@ -30,7 +30,7 @@ interface TelecomCodeEntry {
 const COMPANY_META: Record<string, { label: string; logo: string; color: string; activeBg: string; activeBorder: string; badgeBg: string }> = {
   vodafone: {
     label: "فودافون",
-    logo: "/images/company/vodafone.png",
+    logo: "/images/company/vodafone.webp",
     color: "#ef4444",
     activeBg: "rgba(239, 68, 68, 0.12)",
     activeBorder: "rgba(239, 68, 68, 0.4)",
@@ -38,7 +38,7 @@ const COMPANY_META: Record<string, { label: string; logo: string; color: string;
   },
   orange: {
     label: "اورنج",
-    logo: "/images/company/orange.png",
+    logo: "/images/company/orange.webp",
     color: "#f97316",
     activeBg: "rgba(249, 115, 22, 0.12)",
     activeBorder: "rgba(249, 115, 22, 0.4)",
@@ -46,7 +46,7 @@ const COMPANY_META: Record<string, { label: string; logo: string; color: string;
   },
   etisalat: {
     label: "اتصالات",
-    logo: "/images/company/etisalat.png",
+    logo: "/images/company/etisalat.webp",
     color: "#22c55e",
     activeBg: "rgba(34, 197, 94, 0.12)",
     activeBorder: "rgba(34, 197, 94, 0.4)",
@@ -54,7 +54,7 @@ const COMPANY_META: Record<string, { label: string; logo: string; color: string;
   },
   we: {
     label: "وي",
-    logo: "/images/company/we.png",
+    logo: "/images/company/we.webp",
     color: "#a855f7",
     activeBg: "rgba(168, 85, 247, 0.12)",
     activeBorder: "rgba(168, 85, 247, 0.4)",
@@ -1279,7 +1279,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         onClose={() => !isDeleting && setPhoneToDelete(null)}
         title="تأكيد الحذف"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message="هل أنت متأكد من حذف هذا الرقم؟"
         primaryButton={{
@@ -1310,7 +1310,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         onClose={() => !isDeleting && setCodeToDelete(null)}
         title="تأكيد الحذف"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message="هل أنت متأكد من حذف هذا الكود؟"
         primaryButton={{

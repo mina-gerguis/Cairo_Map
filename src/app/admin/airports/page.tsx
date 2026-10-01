@@ -1328,7 +1328,7 @@ function AdminAirportsInner() {
         onClose={() => !isDeleting && setAirportToDelete(null)}
         title="تأكيد الحذف"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message="هل أنت متأكد من حذف هذا المطار؟"
         primaryButton={{

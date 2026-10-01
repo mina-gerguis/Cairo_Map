@@ -23,7 +23,7 @@ export default function BusStationsHero({
       <div className={styles.heroContent}>
         <h1 className={styles.heroTitle}>
           <img
-            src="/images/icons2d/bus.png"
+            src="/images/icons2d/bus.webp"
             alt="Cairo Bus"
             loading="lazy"
             decoding="async"

@@ -12,7 +12,7 @@ export default function MetroHeader({
       headerRef={headerRef}
       title="مترو القاهرة الكبرى"
       icon={{
-        src: "/images/transit/metro.png",
+        src: "/images/transit/metro.webp",
         alt: "Cairo Metro",
         width: 50,
         height: 50,

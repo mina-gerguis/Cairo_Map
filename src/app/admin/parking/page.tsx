@@ -494,7 +494,7 @@ function AdminParkingInner() {
         onClose={() => !isDeleting && setItemToDelete(null)}
         title="تأكيد حذف الجراج"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message={itemToDelete ? `هل أنت متأكد من رغبتك في حذف جراج "${itemToDelete.name}"؟ لا يمكن التراجع عن هذا الإجراء.` : undefined}
         primaryButton={{

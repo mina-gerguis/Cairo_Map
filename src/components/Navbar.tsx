@@ -87,22 +87,22 @@ export default function Navbar() {
       isDropdown: true,
       icon: "fa-solid fa-star-of-life",
       subItems: [
-        { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: "cairo.png" },
-        { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.png" },
-        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.png" },
-        { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.png" },
-        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.png" },
-        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: "Cairo_monorail_east.png" },
-        { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: "Cairo_lrt.png" },
-        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: "brt.png" },
-        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: "Cairo_train.png" },
-        { href: "/airports", label: "المطارات", subtitle: "معلومات مطار القاهرة والرحلات", imgLogo: "airport.png" },
-        { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: "arab_republice.png" },
-        { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: "bus.png" },
-        { href: "/microbus-stations", label: "مواقف الميكروباص", subtitle: "خطوط السرفيس بين المحافظات", imgLogo: "microbus.png" },
-        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: "arab_republic _of_egypt.png" },
+        { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: "cairo.webp" },
+        { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.webp" },
+        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.webp" },
+        { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.webp" },
+        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.webp" },
+        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: "Cairo_monorail_east.webp" },
+        { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: "Cairo_lrt.webp" },
+        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: "brt.webp" },
+        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: "Cairo_train.webp" },
+        { href: "/airports", label: "المطارات", subtitle: "معلومات مطار القاهرة والرحلات", imgLogo: "airport.webp" },
+        { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: "arab_republice.webp" },
+        { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: "bus.webp" },
+        { href: "/microbus-stations", label: "مواقف الميكروباص", subtitle: "خطوط السرفيس بين المحافظات", imgLogo: "microbus.webp" },
+        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: "arab_republic _of_egypt.webp" },
         { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: "ai.webp" },
-        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: "Cairo_logo.png" },
+        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: "Cairo_logo.webp" },
       ]
     },
     { href: "/blog", label: "المدونة والمقالات", icon: "bx bx-news" },
@@ -137,7 +137,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="navbar-logo">
           <Image
-            src="/images/logo/darkMode_logo.png"
+            src="/images/logo/darkMode_logo.webp"
             alt="ماب القاهرة - الوضع الليلي"
             width={160}
             height={48}
@@ -146,7 +146,7 @@ export default function Navbar() {
             style={{ height: "48px", width: "auto", objectFit: "contain" }}
           />
           <Image
-            src="/images/logo/lightMode_logo.png"
+            src="/images/logo/lightMode_logo.webp"
             alt="ماب القاهرة - الوضع النهاري"
             width={160}
             height={48}
@@ -440,7 +440,7 @@ export default function Navbar() {
         onClose={() => setShowLogoutModal(false)}
         title="تسجيل الخروج"
         message="هل أنت متأكد من تسجيل الخروج؟"
-        iconSrc="/images/icons3d/alert.png"
+        iconSrc="/images/icons3d/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: "تأكيد",

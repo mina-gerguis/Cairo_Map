@@ -29,7 +29,7 @@ export default function PlaceMapDetailCard({
   const thumbnail =
     point.images && point.images.length > 0
       ? point.images[0]
-      : "/images/icons3d/burger.png";
+      : "/images/icons3d/burger.webp";
 
   const primaryPhone = point.phones && point.phones.length > 0 ? point.phones[0] : null;
 
@@ -48,7 +48,7 @@ export default function PlaceMapDetailCard({
           alt={point.name}
           className={styles.floatingCardCover}
           onError={(e) => {
-            (e.currentTarget as HTMLImageElement).src = "/images/icons3d/burger.png";
+            (e.currentTarget as HTMLImageElement).src = "/images/icons3d/burger.webp";
           }}
         />
 

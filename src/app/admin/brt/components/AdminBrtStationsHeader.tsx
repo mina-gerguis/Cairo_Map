@@ -27,7 +27,7 @@ export function AdminBrtStationsHeader({
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
           <img
-            src="/images/icons2d/brt.png"
+            src="/images/icons2d/brt.webp"
             alt="BRT icon"
             style={{ width: "32px", height: "32px", objectFit: "contain" }}
           />

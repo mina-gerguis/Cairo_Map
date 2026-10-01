@@ -31,7 +31,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'أكل ومشروبات',
     icon: 'bx-dish',
     emoji: '🍴',
-    image: 'burger.png',
+    image: 'burger.webp',
     color: '#ff3b30',
     subCategories: [
       { name: 'restaurant', label: 'مطاعم', icon: 'bx bx-restaurant' },
@@ -47,7 +47,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'صحة',
     icon: 'bx-plus-medical',
     emoji: '🏥',
-    image: 'hospital.png',
+    image: 'hospital.webp',
     color: '#007aff',
     subCategories: [
       { name: 'hospital', label: 'مستشفيات', icon: 'bx bx-plus-medical' },
@@ -66,7 +66,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'تسوق',
     icon: 'bx-shopping-bag',
     emoji: '🛍️',
-    image: 'store.png',
+    image: 'store.webp',
     color: '#ff9500',
     subCategories: [
       { name: 'mall', label: 'مولات', icon: 'bx bx-store-alt' },
@@ -91,7 +91,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'سيارات',
     icon: 'bx-car',
     emoji: '🚗',
-    image: 'car.png',
+    image: 'car.webp',
     color: '#5856d6',
     subCategories: [
       { name: 'gas_station', label: 'محطات بنزين', icon: 'bx bx-gas-pump' },
@@ -108,7 +108,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'إقامة وسياحة',
     icon: 'bx-compass',
     emoji: '🏨',
-    image: 'museum.png',
+    image: 'museum.webp',
     color: '#af52de',
     subCategories: [
       { name: 'hotel', label: 'فنادق', icon: 'bx bx-hotel' },
@@ -124,7 +124,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'ترفيه',
     icon: 'bx-party',
     emoji: '🎭',
-    image: 'amusement_park.png',
+    image: 'amusement_park.webp',
     color: '#ff2d55',
     subCategories: [
       { name: 'cinema', label: 'سينما', icon: 'bx bx-film' },
@@ -144,7 +144,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'رياضة',
     icon: 'bx-run',
     emoji: '🏋️',
-    image: 'dumbbell.png',
+    image: 'dumbbell.webp',
     color: '#34c759',
     subCategories: [
       { name: 'gym', label: 'جيم', icon: 'bx bx-dumbbell' },
@@ -160,7 +160,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'حكومية',
     icon: 'bx-buildings',
     emoji: '🏛️',
-    image: 'government.png',
+    image: 'government.webp',
     color: '#8e8e93',
     subCategories: [
       { name: 'government_office', label: 'مصالح حكومية', icon: 'bx bx-buildings' },
@@ -177,7 +177,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'خدمات مالية',
     icon: 'bx-money',
     emoji: '💰',
-    image: 'bank.png',
+    image: 'bank.webp',
     color: '#30b0c7',
     subCategories: [
       { name: 'bank', label: 'بنوك', icon: 'fa-solid fa-building-columns' },
@@ -191,7 +191,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'أماكن دينية',
     icon: 'bx-bookmark-heart',
     emoji: '🕌',
-    image: 'moon_and_cross.png',
+    image: 'moon_and_cross.webp',
     color: '#a2845e',
     subCategories: [
       { name: 'mosque', label: 'مساجد', icon: 'fa-solid fa-kaaba' },
@@ -204,7 +204,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'تعليم',
     icon: 'bx-book-reader',
     emoji: '🎓',
-    image: 'book.png',
+    image: 'book.webp',
     color: '#34c759',
     subCategories: [
       { name: 'school', label: 'مدارس', icon: 'bx bx-book' },
@@ -220,7 +220,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'أعمال',
     icon: 'bx-briefcase-alt-2',
     emoji: '💼',
-    image: 'business.png',
+    image: 'business.webp',
     color: '#1c1c1e',
     subCategories: [
       { name: 'company', label: 'شركات', icon: 'bx bx-briefcase' },
@@ -236,7 +236,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'خدمات',
     icon: 'bx-cog',
     emoji: '🧹',
-    image: 'washing_machine.png',
+    image: 'washing_machine.webp',
     color: '#ff9f0a',
     subCategories: [
       { name: 'laundry', label: 'مغاسل', icon: 'bx bx-sun' },
@@ -256,7 +256,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     label: 'أماكن عامة',
     icon: 'bx-buildings',
     emoji: '🌳',
-    image: 'beach.png',
+    image: 'beach.webp',
     color: '#30b0c7',
     subCategories: [
       { name: 'park', label: 'حدائق', icon: 'fa-solid fa-tree' },
@@ -391,7 +391,7 @@ export function getMainCategoryImage(category: string, subCategories: string[] =
   if (main && main.image) {
     return `/images/icons3d/${main.image}`;
   }
-  return '/images/icons3d/burger.png';
+  return '/images/icons3d/burger.webp';
 }
 
 export interface Branch {

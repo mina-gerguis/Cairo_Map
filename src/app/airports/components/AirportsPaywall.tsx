@@ -15,7 +15,7 @@ export default function AirportsPaywall({ user }: AirportsPaywallProps) {
         <div className="metro-animate-slide-up">
           <h1 className={styles.heroTitle}>
             <img
-              src="/images/icons2d/airport.png"
+              src="/images/icons2d/airport.webp"
               alt="Airports"
               loading="lazy"
               decoding="async"
@@ -46,7 +46,7 @@ export default function AirportsPaywall({ user }: AirportsPaywallProps) {
           {/* Lock Icon */}
           <div className={styles.lockIconWrap}>
             <img
-              src="/images/icons3d/lockPage.png"
+              src="/images/icons3d/lockPage.webp"
               alt="Lock"
               loading="lazy"
               decoding="async"

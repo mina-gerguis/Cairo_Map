@@ -14,7 +14,7 @@ export default function ReportAlertBanner({
       <div className="flex-1">
         <div className="flex items-center gap-2.5 mb-1.5">
           <img
-            src="/images/icons3d/alert.png"
+            src="/images/icons3d/alert.webp"
             alt="Report"
             className="w-8 h-8 object-contain shrink-0"
           />

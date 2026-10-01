@@ -3,28 +3,28 @@ import { CompanyMetaConfig, DirectoryTopCard, EmergencyNumber, PhoneEntry } from
 export const COMPANY_META: Record<string, CompanyMetaConfig> = {
   vodafone: {
     label: "فودافون",
-    logo: "vodafone.png",
+    logo: "vodafone.webp",
     color: "#ef4444",
     border: "rgba(239, 68, 68, 0.3)",
     bg: "rgba(239, 68, 68, 0.08)",
   },
   orange: {
     label: "اورنج",
-    logo: "orange.png",
+    logo: "orange.webp",
     color: "#f97316",
     border: "rgba(249, 115, 22, 0.3)",
     bg: "rgba(249, 115, 22, 0.08)",
   },
   etisalat: {
     label: "اتصالات",
-    logo: "etisalat.png",
+    logo: "etisalat.webp",
     color: "#10b981",
     border: "rgba(16, 185, 129, 0.3)",
     bg: "rgba(16, 185, 129, 0.08)",
   },
   we: {
     label: "وي",
-    logo: "we.png",
+    logo: "we.webp",
     color: "#8b5cf6",
     border: "rgba(139, 92, 246, 0.3)",
     bg: "rgba(139, 92, 246, 0.08)",

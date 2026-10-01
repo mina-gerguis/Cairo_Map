@@ -1097,7 +1097,7 @@ export default function PlacesSuggestionsPage() {
         onClose={() => !isProcessingProposal && setRejectingProposal(null)}
         title="تأكيد رفض الاقتراح"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/alert.png"
+        iconSrc="/images/icons3d/alert.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message={rejectingProposal ? `سبب رفض المكان: « ${rejectingProposal.name} »` : undefined}
         primaryButton={{
@@ -1138,7 +1138,7 @@ export default function PlacesSuggestionsPage() {
         onClose={() => !isProcessingProposal && setProposalToDelete(null)}
         title="تأكيد حذف الاقتراح"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message="هل أنت متأكد من رغبتك في حذف هذا الاقتراح نهائياً من قاعدة البيانات؟"
         primaryButton={{
@@ -1193,7 +1193,7 @@ export default function PlacesSuggestionsPage() {
           }
           iconSrc={
             feedbackModal.type === "error" || feedbackModal.type === "warning"
-              ? "/images/icons3d/alert.png"
+              ? "/images/icons3d/alert.webp"
               : undefined
           }
           borderColor={

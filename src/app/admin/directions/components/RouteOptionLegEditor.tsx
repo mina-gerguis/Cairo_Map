@@ -16,12 +16,12 @@ interface RouteOptionLegEditorProps {
 }
 
 const QUICK_STAGE_VEHICLES = [
-  { key: "metro", label: "مترو", icon: "/images/transit/metro.png" },
-  { key: "train", label: "قطار", icon: "/images/icons2d/Cairo_train.png" },
-  { key: "bus", label: "أتوبيس", icon: "/images/icons2d/bus.png" },
-  { key: "monorail", label: "مونوريل", icon: "/images/icons2d/Cairo_monorail_east.png" },
-  { key: "microbus", label: "ميكروباص", icon: "/images/icons2d/microbus.png" },
-  { key: "lrt", label: "LRT", icon: "/images/icons2d/Cairo_lrt.png" }
+  { key: "metro", label: "مترو", icon: "/images/transit/metro.webp" },
+  { key: "train", label: "قطار", icon: "/images/icons2d/Cairo_train.webp" },
+  { key: "bus", label: "أتوبيس", icon: "/images/icons2d/bus.webp" },
+  { key: "monorail", label: "مونوريل", icon: "/images/icons2d/Cairo_monorail_east.webp" },
+  { key: "microbus", label: "ميكروباص", icon: "/images/icons2d/microbus.webp" },
+  { key: "lrt", label: "LRT", icon: "/images/icons2d/Cairo_lrt.webp" }
 ];
 
 export function RouteOptionLegEditor({

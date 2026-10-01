@@ -27,9 +27,9 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
           backgroundColor: "rgba(0,0,0,0.2)",
         }}
       >
-        <a href="/images/metro/cairo-metro-map.png" target="_blank" rel="noopener noreferrer">
+        <a href="/images/metro/cairo-metro-map.webp" target="_blank" rel="noopener noreferrer">
           <img
-            src="/images/metro/cairo-metro-map.png"
+            src="/images/metro/cairo-metro-map.webp"
             alt="Cairo Metro Official Map"
             loading="lazy"
             decoding="async"
@@ -69,8 +69,8 @@ export default function MetroMapSection({ mapPanelRef }: MetroMapSectionProps) {
       </div>
 
       <a
-        href="/images/metro/cairo-metro-map.png"
-        download="cairo-metro-map.png"
+        href="/images/metro/cairo-metro-map.webp"
+        download="cairo-metro-map.webp"
         className="btn btn-primary"
         style={{
           textDecoration: "none",

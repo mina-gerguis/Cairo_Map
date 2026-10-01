@@ -147,7 +147,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon: "metro.png",
+    icon: "metro.webp",
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },
@@ -156,7 +156,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطار المونوريل",
     subtitle: "محطات وأسعار تذاكر المونوريل",
     href: "/monorail",
-    icon: "Cairo_monorail_east.png",
+    icon: "Cairo_monorail_east.webp",
     badge: "قطار معلق",
     keywords: ["منورايل", "المنورايل", "قطار العاصمة", "العاصمة الادارية", "اكتوبر", "monorail"]
   },
@@ -165,7 +165,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "القطار الكهربائي الخفيف",
     subtitle: "محطات ومواعيد القطار الكهربائي",
     href: "/lrt",
-    icon: "Cairo_lrt.png",
+    icon: "Cairo_lrt.webp",
     badge: "القطار الكهربائي",
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"]
   },
@@ -174,7 +174,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الأتوبيس الترددي السريع (BRT)",
     subtitle: "محطات ومسار الأتوبيس على الطريق الدائري",
     href: "/brt",
-    icon: "brt.png",
+    icon: "brt.webp",
     badge: "أتوبيس ترددي",
     keywords: ["brt", "ترددي", "الترددي", "اتوبيس ترددي", "الأتوبيس الترددي", "الدائري", "الطريق الدائري", "حافلات سريعة"]
   },
@@ -183,7 +183,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطارات السكك الحديدية",
     subtitle: "قطارات القاهرة والصعيد",
     href: "/railways",
-    icon: "Cairo_train.png",
+    icon: "Cairo_train.webp",
     badge: "قطارات مصر",
     keywords: ["قطار", "قطارات", "سكك حديد", "سكك حديد مصر", "محطة رمسيس", "رمسيس", "قطار الصعيد", "قطار اسكندرية"]
   },
@@ -192,7 +192,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "دليل الهاتف والأكواد",
     subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "cairo.png",
+    icon: "cairo.webp",
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
@@ -201,7 +201,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "ازاي اروح؟",
     subtitle: "دليل الوصول لأي مكان في مصر",
     href: "/directions",
-    icon: "arab_republic _of_egypt.png",
+    icon: "arab_republic _of_egypt.webp",
     badge: "اتجاهات ومسارات",
     keywords: ["ازاي اروح", "ازاي اوصل", "اروح ازاي", "مواصلات", "طريق", "مسار", "اتجاهات"]
   },
@@ -219,7 +219,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف الأتوبيسات",
     subtitle: "محطات الأتوبيسات بالقاهرة والجيزة",
     href: "/bus-stations",
-    icon: "bus.png",
+    icon: "bus.webp",
     badge: "مواقف أتوبيس",
     keywords: ["اتوبيس", "أتوبيس", "موقف اتوبيس", "نقل عام", "مواقف الأتوبيس"]
   },
@@ -228,7 +228,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف السرفيس",
     subtitle: "خطوط السرفيس بين المحافظات",
     href: "/microbus-stations",
-    icon: "microbus.png",
+    icon: "microbus.webp",
     badge: "مواقف ميكروباص",
     keywords: ["ميكروباص", "موقف ميكروباص", "سرفيس", "موقف سرفيس", "مواقف"]
   },
@@ -237,7 +237,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "المطارات المصرية",
     subtitle: "معلومات مطار القاهرة ",
     href: "/airports",
-    icon: "airport.png",
+    icon: "airport.webp",
     badge: "مطارات وموانئ",
     keywords: ["مطار", "مطارات", "مطار القاهرة", "سفنكس", "موانئ", "ميناء"]
   },
@@ -246,7 +246,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الموانئ المصرية",
     subtitle: "معلومات ميناء السخنة ",
     href: "/ports",
-    icon: "arab_republice.png",
+    icon: "arab_republice.webp",
     badge: "الموانئ",
     keywords: ["ميناء", "الميناء", "ميناء السخنة"]
   },
@@ -255,7 +255,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مدونة ومقالات خريطة القاهرة",
     subtitle: "أدلة الترانزيت، النصائح، والأماكن",
     href: "/blog",
-    icon: "cairo.png",
+    icon: "cairo.webp",
     badge: "مقالات وأدلة",
     keywords: ["مدونة", "مقالات", "مقال", "اخبار", "أخبار", "دليل", "blog", "نصائح", "مقاله"]
   }
@@ -766,15 +766,15 @@ export default function HomePage() {
   };
 
   const quickSearchTags = [
-    { label: "موناريل", route: "/monorail", icon: "Cairo_monorail_east.png" },
-    { label: "الأتوبيس الترددي", route: "/brt", icon: "brt.png" },
-    { label: "القطار الكهربي", route: "/lrt", icon: "Cairo_lrt.png" },
-    { label: "موقف الميكروباصات", route: "/microbus-stations", icon: "microbus.png" },
-    { label: "موقف الأتوبيسات", route: "/bus-stations", icon: "bus.png" },
-    { label: "مدونة المقالات", route: "/blog", icon: "Cairo_logo.png" },
-    { label: "خريطة المترو", route: "/metro", icon: "metro.png" },
-    { label: "دليل الهواتف", route: "/directory", icon: "cairo.png" },
-    { label: "ازاي اروح؟", route: "/directions", icon: "arab_republic _of_egypt.png" },
+    { label: "موناريل", route: "/monorail", icon: "Cairo_monorail_east.webp" },
+    { label: "الأتوبيس الترددي", route: "/brt", icon: "brt.webp" },
+    { label: "القطار الكهربي", route: "/lrt", icon: "Cairo_lrt.webp" },
+    { label: "موقف الميكروباصات", route: "/microbus-stations", icon: "microbus.webp" },
+    { label: "موقف الأتوبيسات", route: "/bus-stations", icon: "bus.webp" },
+    { label: "مدونة المقالات", route: "/blog", icon: "Cairo_logo.webp" },
+    { label: "خريطة المترو", route: "/metro", icon: "metro.webp" },
+    { label: "دليل الهواتف", route: "/directory", icon: "cairo.webp" },
+    { label: "ازاي اروح؟", route: "/directions", icon: "arab_republic _of_egypt.webp" },
   ];
 
   const mainServices = [
@@ -1763,7 +1763,7 @@ export default function HomePage() {
             justifyContent: "center",
             marginBottom: "20px"
           }}>
-            <Image src="/images/icons3d/robot.png" alt="الذكاء الاصطناعي لماب القاهرة" width={80} height={80} style={{ width: "80px", height: "auto" }} />
+            <Image src="/images/icons3d/robot.webp" alt="الذكاء الاصطناعي لماب القاهرة" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
           <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--text-primary)" }}>

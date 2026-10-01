@@ -11,7 +11,7 @@ export default function RailwaysReportBanner({ onOpenReport }: RailwaysReportBan
       <div className={styles.calloutInfo}>
         <div className={styles.calloutTitleRow}>
           <img
-            src="/images/icons3d/alert.png"
+            src="/images/icons3d/alert.webp"
             alt="Alert"
             loading="lazy"
             decoding="async"

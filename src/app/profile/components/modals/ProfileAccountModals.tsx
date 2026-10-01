@@ -41,7 +41,7 @@ export const ProfileAccountModals: React.FC<ProfileAccountModalsProps> = ({
         title="تحذير: حذف الحساب"
         titleColor="#ff3b30"
         message="هذا الإجراء لا يمكن التراجع عنه. سيتم حذف جميع بياناتك نهائياً."
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         primaryButton={{
           label: loading ? "جاري الحذف..." : "تأكيد",
@@ -83,7 +83,7 @@ export const ProfileAccountModals: React.FC<ProfileAccountModalsProps> = ({
         onClose={() => setShowLogoutModal(false)}
         title="تسجيل الخروج"
         message="هل أنت متأكد من تسجيل الخروج؟"
-        iconSrc="/images/icons3d/alert.png"
+        iconSrc="/images/icons3d/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: loading ? "جاري الخروج..." : "تأكيد",

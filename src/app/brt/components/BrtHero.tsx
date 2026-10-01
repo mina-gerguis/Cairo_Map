@@ -17,7 +17,7 @@ export default function BrtHero({
       headerRef={headerRef}
       title="الأتوبيس الترددي السريع (BRT)"
       icon={{
-        src: "/images/icons2d/brt.png",
+        src: "/images/icons2d/brt.webp",
         alt: "Cairo BRT",
         width: 60,
         height: 42,

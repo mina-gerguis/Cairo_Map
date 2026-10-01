@@ -1388,7 +1388,7 @@ export default function AdminCitiesPage() {
         onClose={() => !isDeleting && setLandmarkToDelete(null)}
         title="تأكيد حذف المعلم"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message={`هل أنت متأكد من حذف المعلم "${landmarkToDelete?.name}"؟`}
         primaryButton={{
@@ -1434,7 +1434,7 @@ export default function AdminCitiesPage() {
         onClose={() => !isDeleting && setCityToDelete(null)}
         title="تأكيد حذف المدينة"
         titleColor="#ff3b30"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message={`هل أنت متأكد من حذف مدينة "${cityToDelete?.name}" وكافة معالمها السياحية؟`}
         primaryButton={{

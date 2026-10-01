@@ -142,7 +142,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon: "metro.png",
+    icon: "metro.webp",
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },
@@ -151,7 +151,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطار المونوريل",
     subtitle: "محطات وأسعار تذاكر المونوريل",
     href: "/monorail",
-    icon: "Cairo_monorail_east.png",
+    icon: "Cairo_monorail_east.webp",
     badge: "قطار معلق",
     keywords: ["منورايل", "المنورايل", "قطار العاصمة", "العاصمة الادارية", "اكتوبر", "monorail"]
   },
@@ -160,7 +160,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "القطار الكهربائي الخفيف",
     subtitle: "محطات ومواعيد القطار الكهربائي",
     href: "/lrt",
-    icon: "Cairo_lrt.png",
+    icon: "Cairo_lrt.webp",
     badge: "القطار الكهربائي",
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"]
   },
@@ -169,7 +169,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الأتوبيس الترددي السريع (BRT)",
     subtitle: "محطات ومسار الأتوبيس على الطريق الدائري",
     href: "/brt",
-    icon: "brt.png",
+    icon: "brt.webp",
     badge: "أتوبيس ترددي",
     keywords: ["brt", "ترددي", "الترددي", "اتوبيس ترددي", "الأتوبيس الترددي", "الدائري", "الطريق الدائري", "حافلات سريعة"]
   },
@@ -178,7 +178,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطارات السكك الحديدية",
     subtitle: "قطارات القاهرة والصعيد",
     href: "/railways",
-    icon: "Cairo_train.png",
+    icon: "Cairo_train.webp",
     badge: "قطارات مصر",
     keywords: ["قطار", "قطارات", "سكك حديد", "سكك حديد مصر", "محطة رمسيس", "رمسيس", "قطار الصعيد", "قطار اسكندرية"]
   },
@@ -187,7 +187,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "دليل الهاتف والأكواد",
     subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "cairo.png",
+    icon: "cairo.webp",
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
@@ -196,7 +196,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "ازاي اروح؟",
     subtitle: "دليل الوصول لأي مكان في مصر",
     href: "/directions",
-    icon: "arab_republic _of_egypt.png",
+    icon: "arab_republic _of_egypt.webp",
     badge: "اتجاهات ومسارات",
     keywords: ["ازاي اروح", "ازاي اوصل", "اروح ازاي", "مواصلات", "طريق", "مسار", "اتجاهات"]
   },
@@ -1121,7 +1121,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <Image src="/images/transit/metro.png" alt="خريطة المترو" width={42} height={42} style={{ width: "42px", height: "auto" }} />
+                <Image src="/images/transit/metro.webp" alt="خريطة المترو" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>خريطة المترو</div>
@@ -1154,7 +1154,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <Image src="/images/icons2d/bus.png" alt="مواقف الأتوبيس" width={42} height={42} style={{ width: "42px", height: "auto" }} />
+                <Image src="/images/icons2d/bus.webp" alt="مواقف الأتوبيس" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>مواقف الأتوبيس</div>
@@ -1187,7 +1187,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <Image src="/images/icons2d/shop.png" alt="دليل الخدمات" width={42} height={42} style={{ width: "42px", height: "auto" }} />
+                <Image src="/images/icons2d/shop.webp" alt="دليل الخدمات" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>دليل الخدمـات</div>
@@ -1220,7 +1220,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <Image src="/images/icons2d/parking.png" alt="أماكن الانتظار" width={42} height={42} style={{ width: "42px", height: "auto" }} />
+                <Image src="/images/icons2d/parking.webp" alt="أماكن الانتظار" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>أماكن الانتظار</div>
@@ -1253,7 +1253,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <Image src="/images/icons2d/airport.png" alt="المطارات والموانئ" width={42} height={42} style={{ width: "42px", height: "auto" }} />
+                <Image src="/images/icons2d/airport.webp" alt="المطارات والموانئ" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>المطارات والموانئ</div>
@@ -1286,7 +1286,7 @@ export default function NotFound() {
                   flexShrink: 0,
                 }}
               >
-                <Image src="/images/icons2d/Cairo_logo.png" alt="المساعدة والدعم" width={42} height={42} style={{ width: "42px", height: "auto" }} />
+                <Image src="/images/icons2d/Cairo_logo.webp" alt="المساعدة والدعم" width={42} height={42} style={{ width: "42px", height: "auto" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 750, fontSize: "0.95rem" }}>المساعدة</div>

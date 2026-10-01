@@ -20,7 +20,7 @@ export const MfaVerificationForm: React.FC<MfaVerificationFormProps> = ({
       <div className={styles.mfaHeader}>
         <div className={styles.mfaIconWrapper}>
           <img
-            src="/images/icons3d/padlock.png"
+            src="/images/icons3d/padlock.webp"
             alt="MFA Security"
             className={styles.mfaIcon}
           />

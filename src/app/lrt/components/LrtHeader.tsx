@@ -29,7 +29,7 @@ export default function LrtHeader({ headerRef, onOpenReportModal }: LrtHeaderPro
           }}
         >
           <img
-            src="/images/icons2d/Cairo_lrt.png"
+            src="/images/icons2d/Cairo_lrt.webp"
             alt=""
             loading="lazy"
             decoding="async"

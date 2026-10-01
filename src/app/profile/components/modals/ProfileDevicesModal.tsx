@@ -43,7 +43,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
         onClose={onClose}
         title="الجلسات النشطة"
         message="الأجهزة المسجلة حالياً بحسابك. يمكنك تسجيل الخروج من أي جهاز عن بُعد."
-        iconSrc="/images/icons3d/phone.png"
+        iconSrc="/images/icons3d/phone.webp"
         primaryButton={{
           label: "إغلاق",
           onClick: onClose,
@@ -155,7 +155,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
             ? "هل أنت متأكد من تسجيل الخروج من جهازك الحالي؟"
             : "هل أنت متأكد من إنهاء جلسة هذا الجهاز؟ سيتم تسجيل الخروج منه فوراً."
         }
-        iconSrc="/images/icons3d/alert.png"
+        iconSrc="/images/icons3d/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: "تأكيد",

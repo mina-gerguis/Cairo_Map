@@ -31,7 +31,7 @@ export function ParkingLockState({ user, headerRef, cardRef }: ModernParkingLock
         headerRef={headerRef}
         title="دليل الجراجات"
         icon={{
-          src: "/images/icons2d/parking.png",
+          src: "/images/icons2d/parking.webp",
           alt: "Cairo Parking",
           width: 60,
           height: 42,
@@ -58,7 +58,7 @@ export function ParkingLockState({ user, headerRef, cardRef }: ModernParkingLock
           {/* Lock Icon */}
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/icons3d/lockPage.png"
+              src="/images/icons3d/lockPage.webp"
               alt="Lock"
               loading="lazy"
               decoding="async"

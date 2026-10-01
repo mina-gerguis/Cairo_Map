@@ -23,7 +23,7 @@ export default function RailwaysPaywall({
         <div ref={paywallRef} style={{ textAlign: "center", marginBottom: "20px" }}>
           <h1 className={styles.heroTitle}>
             <img
-              src="/images/icons2d/Cairo_train.png"
+              src="/images/icons2d/Cairo_train.webp"
               alt="Cairo Train"
               loading="lazy"
               decoding="async"
@@ -41,7 +41,7 @@ export default function RailwaysPaywall({
         <div ref={paywallCardRef} className={styles.paywallCard}>
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/icons3d/CairoSilver.png"
+              src="/images/icons3d/CairoSilver.webp"
               alt="Silver Access"
               loading="lazy"
               decoding="async"

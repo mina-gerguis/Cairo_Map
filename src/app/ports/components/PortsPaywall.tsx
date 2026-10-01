@@ -31,7 +31,7 @@ export default function PortsPaywall({
         <div ref={paywallRef} style={{ textAlign: "center", marginBottom: "28px" }}>
           <h1 className={styles.heroTitle}>
             <img
-              src="/images/icons2d/arab_republice.png"
+              src="/images/icons2d/arab_republice.webp"
               alt="جمهورية مصر العربية"
               loading="lazy"
               decoding="async"
@@ -50,7 +50,7 @@ export default function PortsPaywall({
 
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/icons3d/CairoGold.png"
+              src="/images/icons3d/CairoGold.webp"
               alt="Gold Subscription"
               loading="lazy"
               decoding="async"

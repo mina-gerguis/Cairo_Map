@@ -63,7 +63,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
               }}
             >
               <img
-                src="/images/icons2d/Cairo_lrt.png"
+                src="/images/icons2d/Cairo_lrt.webp"
                 alt="Cairo Lrt"
                 loading="lazy"
                 decoding="async"
@@ -112,7 +112,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
             {/* Lock Icon */}
             <div style={{ marginBottom: "24px" }}>
               <img
-                src="/images/icons3d/lockPage.png"
+                src="/images/icons3d/lockPage.webp"
                 alt="Lock"
                 loading="lazy"
                 decoding="async"

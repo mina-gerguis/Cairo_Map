@@ -168,7 +168,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 }}
               >
                 <Image
-                  src="/images/profile/egyptianPounds3d.png"
+                  src="/images/profile/egyptianPounds3d.webp"
                   alt="رصيد المحفظة"
                   draggable={false}
                   width={100}

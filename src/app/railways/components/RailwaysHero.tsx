@@ -16,7 +16,7 @@ export default function RailwaysHero({
     <div ref={headerRef} className={styles.heroSection}>
       <h1 className={styles.heroTitle}>
         <img
-          src="/images/icons2d/Cairo_train.png"
+          src="/images/icons2d/Cairo_train.webp"
           alt="Cairo Train"
           loading="lazy"
           decoding="async"

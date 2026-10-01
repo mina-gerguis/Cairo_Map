@@ -23,7 +23,7 @@ export default function PortsHero({
 
       <h1 className={styles.heroTitle}>
         <img
-          src="/images/icons2d/arab_republice.png"
+          src="/images/icons2d/arab_republice.webp"
           alt="جمهورية مصر العربية"
           loading="lazy"
           decoding="async"

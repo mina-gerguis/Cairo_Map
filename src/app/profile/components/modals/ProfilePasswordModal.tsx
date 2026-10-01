@@ -40,7 +40,7 @@ export const ProfilePasswordModal: React.FC<ProfilePasswordModalProps> = ({
       onClose={onClose}
       title="تغيير كلمة المرور"
       message="الرجاء إدخال كلمة المرور الجديدة."
-      iconSrc="/images/icons3d/padlock.png"
+      iconSrc="/images/icons3d/padlock.webp"
       borderColor="var(--modelCardBorder)"
       primaryButton={{
         label: passwordLoading ? "جاري التغيير..." : "تأكيد",

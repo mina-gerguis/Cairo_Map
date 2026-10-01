@@ -75,7 +75,7 @@ export async function POST(request: Request) {
                   
                   <!-- أيقونة المودل ثلاثية الأبعاد (نفس أيقونة مودل الخروج والتنبيهات) -->
                   <div style="width: 72px; height: 72px; margin: 0 auto 18px auto; text-align: center;">
-                    <img src="${siteUrl}/images/icons3d/alert.png" alt="ماب القاهرة" width="72" height="72" style="width: 72px; height: 72px; display: inline-block; object-fit: contain; border: 0;" />
+                    <img src="${siteUrl}/images/icons3d/alert.webp" alt="ماب القاهرة" width="72" height="72" style="width: 72px; height: 72px; display: inline-block; object-fit: contain; border: 0;" />
                   </div>
 
                   <!-- عنوان المودل -->

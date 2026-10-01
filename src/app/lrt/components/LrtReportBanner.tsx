@@ -43,7 +43,7 @@ export default function LrtReportBanner({
           >
             الإبلاغ عن مشكلة فى بيانات القطار الكهربائي LRT
           </h2>
-          <img src="/images/icons3d/alert.png" alt="" style={{ width: "35px" }} />
+          <img src="/images/icons3d/alert.webp" alt="" style={{ width: "35px" }} />
         </div>
 
         <p

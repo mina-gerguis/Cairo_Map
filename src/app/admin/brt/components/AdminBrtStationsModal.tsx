@@ -77,7 +77,7 @@ export function AdminBrtStationsModal({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <img src="/images/icons2d/brt.png" alt="BRT" style={{ width: "28px", height: "28px" }} />
+            <img src="/images/icons2d/brt.webp" alt="BRT" style={{ width: "28px", height: "28px" }} />
             <h2 style={{ fontSize: "1.35rem", fontWeight: "900", margin: 0 }}>
               {editingItem ? "تعديل محطة الأتوبيس الترددي" : "إضافة محطة BRT جديدة"}
             </h2>

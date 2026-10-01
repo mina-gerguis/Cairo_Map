@@ -17,7 +17,7 @@ export default function MicrobusHero({
       headerRef={headerRef}
       title="مواقف الميكروباص"
       icon={{
-        src: "/images/icons2d/microbus.png",
+        src: "/images/icons2d/microbus.webp",
         alt: "Cairo Microbus",
         width: 60,
         height: 42,

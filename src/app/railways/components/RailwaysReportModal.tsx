@@ -136,7 +136,7 @@ export default function RailwaysReportModal({
           ) : limitReached ? (
             <div style={{ textAlign: "center", padding: "20px 10px" }}>
               <img
-                src="/images/icons3d/error.png"
+                src="/images/icons3d/error.webp"
                 alt="error"
                 style={{ width: "70px", height: "70px", objectFit: "contain", margin: "0 auto 12px" }}
               />

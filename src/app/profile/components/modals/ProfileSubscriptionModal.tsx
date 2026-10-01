@@ -664,7 +664,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               الأكثر تميزاً ⭐
             </div>
             <div>
-              <img src="/images/icons3d/CairoGold.png" alt="" width="60px" />
+              <img src="/images/icons3d/CairoGold.webp" alt="" width="60px" />
 
               <h4
                 className="sub-title"

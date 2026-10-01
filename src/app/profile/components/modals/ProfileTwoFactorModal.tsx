@@ -73,7 +73,7 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
           : "إلغاء تفعيل المصادقة الثنائية"
       }
       titleColor={mfaStep === "unenroll_confirm" ? "#ff3b30" : "var(--text-primary)"}
-      iconSrc="/images/icons3d/padlock.png"
+      iconSrc="/images/icons3d/padlock.webp"
       borderColor={
         mfaStep === "unenroll_confirm" ? "rgba(255, 59, 48, 0.25)" : "var(--modelCardBorder)"
       }

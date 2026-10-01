@@ -104,7 +104,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             }}
           >
             <Image
-              src="/images/profile/coin3dMapCairo.png"
+              src="/images/profile/coin3dMapcairo.webp"
               alt="عملة ماب القاهرة"
               draggable={false}
               width={100}

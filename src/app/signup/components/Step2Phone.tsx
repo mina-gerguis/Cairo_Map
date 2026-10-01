@@ -32,7 +32,7 @@ export const Step2Phone: React.FC<Step2PhoneProps> = ({
             <span className={styles.phoneDivider} />
             +20
             <Image
-              src="/images/profile/flag-egypt.png"
+              src="/images/profile/flag-egypt.webp"
               alt="Egypt Flag"
               width={20}
               height={20}

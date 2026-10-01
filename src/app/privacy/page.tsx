@@ -308,7 +308,7 @@ export default function PrivacyPage() {
             }}
           >
             <Image
-              src="/images/icons3d/document.png"
+              src="/images/icons3d/document.webp"
               alt="أيقونة سياسة الخصوصية ثلاثية الأبعاد"
               width={110}
               height={110}

@@ -22,7 +22,7 @@ export default function BusStationsPaywall({ user }: BusStationsPaywallProps) {
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
             <img
-              src="/images/icons2d/bus.png"
+              src="/images/icons2d/bus.webp"
               alt="Cairo Bus"
               loading="lazy"
               decoding="async"
@@ -42,7 +42,7 @@ export default function BusStationsPaywall({ user }: BusStationsPaywallProps) {
           {/* 3D Lock Illustration */}
           <div className={styles.lockIconBox}>
             <img
-              src="/images/icons3d/lockPage.png"
+              src="/images/icons3d/lockPage.webp"
               alt="Locked"
               loading="lazy"
               decoding="async"

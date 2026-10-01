@@ -86,7 +86,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         onClose={() => setShowSuggestionModal(false)}
         title="تقديم اقتراح"
         message="ساعدنا في تحسين الخدمة."
-        iconSrc="/images/icons3d/light.png"
+        iconSrc="/images/icons3d/light.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: suggestionLoading ? "جاري الإرسال..." : "إرسال",
@@ -170,7 +170,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         closeOnOverlayClick={!bugLoading && !bugUploading}
         title="الإبلاغ عن مشكلة"
         message="يرجى تزويدنا بتفاصيل المشكلة لحلها."
-        iconSrc="/images/icons3d/alert.png"
+        iconSrc="/images/icons3d/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: bugLoading ? "جاري الإرسال..." : "إرسال",
@@ -357,7 +357,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         title="تأكيد الحذف"
         titleColor="#ff3b30"
         message="هل أنت متأكد من حذف هذا الطلب"
-        iconSrc="/images/icons3d/trash.png"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         primaryButton={{
           label: "تأكيد",

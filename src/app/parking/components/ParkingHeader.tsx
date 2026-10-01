@@ -59,7 +59,7 @@ export function ParkingHeader({ children }: ParkingHeaderProps) {
           }}
         >
           <img
-            src="/images/icons2d/parking.png"
+            src="/images/icons2d/parking.webp"
             alt="Parking Icon"
             loading="lazy"
             decoding="async"

@@ -150,16 +150,16 @@ export const POPULAR_ROUTE_COLOR_PALETTE = [
 
 // Baseline seed popular searches to ensure rich initial display before user searches
 export const DEFAULT_POPULAR_ROUTES: QuickRouteItem[] = [
-  { from: "الزقازيق", to: "العاشر من رمضان", label: "الزقازيق ⇆ العاشر", glowColor: "#3b82f6", searchCount: 84, isTrending: true, icon: "/images/icons2d/microbus.png", subtitle: "84 عملية بحث" },
-  { from: "موقف الأحرار", to: "معرض الكتاب", label: "موقف الأحرار ⇆ معرض الكتاب", glowColor: "#10b981", searchCount: 76, isTrending: true, icon: "/images/icons2d/bus.png", subtitle: "76 عملية بحث" },
-  { from: "المنصورة", to: "محطة مصر", label: "المنصورة ⇆ محطة مصر", glowColor: "#f59e0b", searchCount: 65, isTrending: true, icon: "/images/icons2d/Cairo_train.png", subtitle: "65 عملية بحث" },
-  { from: "العاشر من رمضان", to: "معرض الكتاب", label: "العاشر ⇆ معرض الكتاب", glowColor: "#8b5cf6", searchCount: 58, icon: "/images/icons2d/bus.png", subtitle: "58 عملية بحث" },
-  { from: "القاهرة (رمسيس)", to: "التجمع الخامس", label: "رمسيس ⇆ التجمع الخامس", glowColor: "#ec4899", searchCount: 52, icon: "/images/icons2d/microbus.png", subtitle: "52 عملية بحث" },
-  { from: "الجيزة", to: "6 أكتوبر", label: "الجيزة ⇆ 6 أكتوبر", glowColor: "#06b6d4", searchCount: 47, icon: "/images/icons2d/microbus.png", subtitle: "47 عملية بحث" },
-  { from: "القاهرة (رمسيس)", to: "الإسكندرية", label: "رمسيس ⇆ الإسكندرية", glowColor: "#f97316", searchCount: 43, icon: "/images/icons2d/Cairo_train.png", subtitle: "43 عملية بحث" },
-  { from: "القاهرة (عبود)", to: "بنها", label: "عبود ⇆ بنها", glowColor: "#14b8a6", searchCount: 39, icon: "/images/icons2d/microbus.png", subtitle: "39 عملية بحث" },
-  { from: "الزقازيق", to: "المنصورة", label: "الزقازيق ⇆ المنصورة", glowColor: "#6366f1", searchCount: 34, icon: "/images/icons2d/microbus.png", subtitle: "34 عملية بحث" },
-  { from: "القاهرة (رمسيس)", to: "مدينة نصر", label: "رمسيس ⇆ مدينة نصر", glowColor: "#e11d48", searchCount: 31, icon: "/images/transit/metro.png", subtitle: "31 عملية بحث" },
+  { from: "الزقازيق", to: "العاشر من رمضان", label: "الزقازيق ⇆ العاشر", glowColor: "#3b82f6", searchCount: 84, isTrending: true, icon: "/images/icons2d/microbus.webp", subtitle: "84 عملية بحث" },
+  { from: "موقف الأحرار", to: "معرض الكتاب", label: "موقف الأحرار ⇆ معرض الكتاب", glowColor: "#10b981", searchCount: 76, isTrending: true, icon: "/images/icons2d/bus.webp", subtitle: "76 عملية بحث" },
+  { from: "المنصورة", to: "محطة مصر", label: "المنصورة ⇆ محطة مصر", glowColor: "#f59e0b", searchCount: 65, isTrending: true, icon: "/images/icons2d/Cairo_train.webp", subtitle: "65 عملية بحث" },
+  { from: "العاشر من رمضان", to: "معرض الكتاب", label: "العاشر ⇆ معرض الكتاب", glowColor: "#8b5cf6", searchCount: 58, icon: "/images/icons2d/bus.webp", subtitle: "58 عملية بحث" },
+  { from: "القاهرة (رمسيس)", to: "التجمع الخامس", label: "رمسيس ⇆ التجمع الخامس", glowColor: "#ec4899", searchCount: 52, icon: "/images/icons2d/microbus.webp", subtitle: "52 عملية بحث" },
+  { from: "الجيزة", to: "6 أكتوبر", label: "الجيزة ⇆ 6 أكتوبر", glowColor: "#06b6d4", searchCount: 47, icon: "/images/icons2d/microbus.webp", subtitle: "47 عملية بحث" },
+  { from: "القاهرة (رمسيس)", to: "الإسكندرية", label: "رمسيس ⇆ الإسكندرية", glowColor: "#f97316", searchCount: 43, icon: "/images/icons2d/Cairo_train.webp", subtitle: "43 عملية بحث" },
+  { from: "القاهرة (عبود)", to: "بنها", label: "عبود ⇆ بنها", glowColor: "#14b8a6", searchCount: 39, icon: "/images/icons2d/microbus.webp", subtitle: "39 عملية بحث" },
+  { from: "الزقازيق", to: "المنصورة", label: "الزقازيق ⇆ المنصورة", glowColor: "#6366f1", searchCount: 34, icon: "/images/icons2d/microbus.webp", subtitle: "34 عملية بحث" },
+  { from: "القاهرة (رمسيس)", to: "مدينة نصر", label: "رمسيس ⇆ مدينة نصر", glowColor: "#e11d48", searchCount: 31, icon: "/images/transit/metro.webp", subtitle: "31 عملية بحث" },
 ];
 
 export const REPORT_PROBLEM_OPTIONS: ReportProblemOption[] = [
