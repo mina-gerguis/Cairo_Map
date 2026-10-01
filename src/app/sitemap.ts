@@ -24,10 +24,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/live-updates", priority: 0.8, changeFrequency: "hourly" as const },
     { path: "/ai-planner", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/blog", priority: 0.85, changeFrequency: "daily" as const },
-    { path: "/help", priority: 0.5, changeFrequency: "monthly" as const },
-    { path: "/propose-place", priority: 0.5, changeFrequency: "monthly" as const },
-    { path: "/privacy", priority: 0.3, changeFrequency: "yearly" as const },
-    { path: "/terms", priority: 0.3, changeFrequency: "yearly" as const },
+    { path: "/about", priority: 0.8, changeFrequency: "monthly" as const },
+    { path: "/contact", priority: 0.8, changeFrequency: "monthly" as const },
+    { path: "/help", priority: 0.75, changeFrequency: "monthly" as const },
+    { path: "/ports", priority: 0.8, changeFrequency: "monthly" as const },
+    { path: "/propose-place", priority: 0.6, changeFrequency: "monthly" as const },
+    { path: "/privacy", priority: 0.4, changeFrequency: "yearly" as const },
+    { path: "/terms", priority: 0.4, changeFrequency: "yearly" as const },
   ];
 
   const staticUrls: MetadataRoute.Sitemap = mainRoutes.map((route) => ({
