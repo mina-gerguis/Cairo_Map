@@ -1,6 +1,7 @@
 import React from "react";
 import { LrtLineExplorerProps, LrtStation } from "../types";
 import { LRT_LINE_TABS, STATION_DETAILS } from "../constants";
+import styles from "../lrt.module.css";
 
 export default function LrtLineExplorer({
   panelRef,
@@ -44,43 +45,18 @@ export default function LrtLineExplorer({
   }, [stations, activeLine]);
 
   return (
-    <div
-      ref={panelRef}
-      className="metro-animate-slide-up metro-delay-300"
-      style={{ marginTop: "32px" }}
-    >
-      <h2
-        style={{
-          fontSize: "1.3rem",
-          fontWeight: "800",
-          color: "var(--text-primary)",
-          marginBottom: "6px",
-          textAlign: "center",
-        }}
-      >
-        محطات القطار الكهربائي LRT
-      </h2>
-      <p
-        className="sub-title"
-        style={{
-          color: "var(--text-secondary)",
-          fontSize: "0.9rem",
-          textAlign: "center",
-          marginBottom: "20px",
-        }}
-      >
-        اختر المسار لاستعراض المحطات والمعالم المحيطة بها تفصيلياً.
-      </p>
+    <div ref={panelRef} className={styles.explorerSection}>
+      <div className={styles.explorerSectionHeader}>
+        <h2 className={styles.explorerTitle}>
+          محطات ومسارات القطار الكهربائي LRT
+        </h2>
+        <p className={styles.explorerSubtitle}>
+          اختر المسار لاستعراض المحطات والمعالم المحيطة ومحطات التبادل تفصيلياً.
+        </p>
+      </div>
 
       {/* Explorer Tab Switcher */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "8px",
-          marginBottom: "16px",
-        }}
-      >
+      <div className={styles.tabsBar}>
         {LRT_LINE_TABS.map((tab) => {
           const active = activeLine === tab.id;
           return (
@@ -88,89 +64,68 @@ export default function LrtLineExplorer({
               key={tab.id}
               type="button"
               onClick={() => onSelectTab(tab.id)}
-              style={{
-                background: "var(--bgPrimary)",
-                border: active
-                  ? `2px solid ${tab.color}`
-                  : "1px solid var(--border-glass)",
-                borderRadius: "12px",
-                padding: "10px 4px",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                textAlign: "center",
-                boxShadow: active ? `0 0 10px ${tab.color}15` : "none",
-              }}
-              onMouseEnter={(e) => {
-                if (!active) e.currentTarget.style.background = "var(--hoverBtn)";
-              }}
-              onMouseLeave={(e) => {
-                if (!active) e.currentTarget.style.background = "var(--bgPrimary)";
-              }}
+              className={`${styles.tabButton} ${active ? styles.tabButtonActive : ""}`}
+              style={
+                {
+                  "--tab-color": tab.color,
+                  "--tab-bg": `${tab.color}15`,
+                  "--tab-glow": `${tab.color}25`,
+                } as React.CSSProperties
+              }
             >
               <div
-                className="sub-title"
+                style={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: tab.color,
+                  marginBottom: "4px",
+                  boxShadow: active ? `0 0 8px ${tab.color}` : "none",
+                }}
+              />
+              <span
+                className={styles.tabLabel}
                 style={{
                   color: active ? "var(--text-primary)" : "var(--text-secondary)",
-                  fontWeight: "700",
-                  fontSize: "0.8rem",
                 }}
               >
                 {tab.label}
-              </div>
+              </span>
             </button>
           );
         })}
       </div>
 
       {/* Stations Explorer Container */}
-      <div
-        style={{
-          backgroundColor: "var(--bgPrimary)",
-          border: "1px solid var(--border-glass)",
-          borderRadius: "var(--radius-card)",
-          padding: "20px",
-          boxShadow: "var(--shadow-sm)",
-        }}
-      >
-        <div
-          style={{
-            borderBottom: "1px solid var(--border-glass)",
-            paddingBottom: "14px",
-            marginBottom: "16px",
-          }}
-        >
-          <h3
-            className="sub-title"
-            style={{
-              fontSize: "1.05rem",
-              fontWeight: "800",
-              color: "var(--text-primary)",
-              marginBottom: "4px",
-            }}
-          >
-            {currentTabConfig.title}
-          </h3>
-          <p
-            className="sub-title"
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "0.82rem",
-              margin: 0,
-            }}
-          >
-            {currentTabConfig.description}
-          </p>
+      <div className={styles.explorerContainer}>
+        <div className={styles.explorerHeaderBox}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <h3 className={styles.explorerBranchTitle}>
+                {currentTabConfig.title}
+              </h3>
+              <p className={styles.explorerBranchDesc}>
+                {currentTabConfig.description}
+              </p>
+            </div>
+            <span
+              style={{
+                fontSize: "0.78rem",
+                fontWeight: "700",
+                padding: "3px 10px",
+                borderRadius: "8px",
+                backgroundColor: `${currentTabConfig.color}18`,
+                color: currentTabConfig.color,
+                border: `1px solid ${currentTabConfig.color}30`,
+              }}
+            >
+              {stationsList.length} محطة
+            </span>
+          </div>
         </div>
 
         {/* Scrollable station timeline list */}
-        <div
-          style={{
-            maxHeight: "550px",
-            overflowY: "auto",
-            padding: "16px 5px",
-            background: "transparent",
-          }}
-        >
+        <div className={styles.timelineStationList}>
           {stationsList.map((station, idx) => {
             const isLast = idx === stationsList.length - 1;
 
@@ -181,7 +136,9 @@ export default function LrtLineExplorer({
             const isTransfer =
               station.name === "عدلي منصور" ||
               station.name === "بدر" ||
-              station.name === "مدينة الفنون والثقافة";
+              station.name === "مدينة الفنون والثقافة" ||
+              station.name === "العاصمة المركزية";
+
             const isExpanded = expandedStation === station.name;
             const dbLandmarks =
               Array.isArray(station.landmarks) && station.landmarks.length > 0
@@ -205,25 +162,26 @@ export default function LrtLineExplorer({
                   display: "flex",
                   flexDirection: "column",
                   position: "relative",
+                  paddingRight: "26px",
                 }}
               >
                 {/* Circle Node on the timeline */}
                 <div
                   style={{
                     position: "absolute",
-                    right: "-29px",
-                    top: "15px",
-                    width: "16px",
-                    height: "16px",
+                    right: "2px",
+                    top: "16px",
+                    width: "14px",
+                    height: "14px",
                     borderRadius: "50%",
                     background:
                       details?.status === "تحت الإنشاء" ? "var(--bgPrimary)" : color,
                     border:
                       details?.status === "تحت الإنشاء"
                         ? `3px dashed ${color}`
-                        : `4.5px solid var(--bgPrimary, #000)`,
+                        : `3.5px solid var(--bgPrimary, #000)`,
                     zIndex: 2,
-                    boxShadow: isExpanded ? `0 0 10px ${color}` : "none",
+                    boxShadow: isExpanded ? `0 0 10px ${color}` : `0 0 6px ${color}40`,
                     transition: "all 0.3s ease",
                   }}
                 />
@@ -231,30 +189,15 @@ export default function LrtLineExplorer({
                 {/* Content Box */}
                 <div
                   onClick={() => onToggleStation(station.name)}
-                  style={{
-                    backgroundColor: "var(--bgPrimary)",
-                    border: isExpanded
-                      ? `1px solid ${color}`
-                      : details?.status === "تحت الإنشاء"
-                      ? `1px dashed ${color}50`
-                      : "1px solid var(--border-glass)",
-                    opacity: details?.status === "تحت الإنشاء" ? 0.75 : 1,
-                    borderRadius: "var(--radius-card)",
-                    padding: "12px 16px",
-                    boxShadow: "var(--shadow-sm)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                    cursor: "pointer",
-                    transition:
-                      "transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease",
-                    marginBottom: "4px",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.transform = "translateY(-2px)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.transform = "translateY(0)")
+                  className={`${styles.stationNodeCard} ${
+                    isExpanded ? styles.stationNodeCardExpanded : ""
+                  }`}
+                  style={
+                    {
+                      "--node-color": color,
+                      "--node-glow": `${color}30`,
+                      opacity: details?.status === "تحت الإنشاء" ? 0.8 : 1,
+                    } as React.CSSProperties
                   }
                 >
                   {/* Header Row */}
@@ -268,8 +211,8 @@ export default function LrtLineExplorer({
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <span
                         style={{
-                          fontSize: "1.02rem",
-                          fontWeight: "700",
+                          fontSize: "1rem",
+                          fontWeight: "800",
                           color:
                             details?.status === "تحت الإنشاء"
                               ? "var(--text-secondary)"
@@ -297,26 +240,27 @@ export default function LrtLineExplorer({
                       )}
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       {isTransfer && (
                         <span
                           style={{
                             background: "rgba(251, 191, 36, 0.12)",
                             color: "#fbbf24",
-                            fontSize: "0.68rem",
-                            padding: "2px 6px",
-                            borderRadius: "4px",
-                            fontWeight: "bold",
+                            fontSize: "0.7rem",
+                            padding: "2px 7px",
+                            borderRadius: "6px",
+                            fontWeight: "700",
+                            border: "1px solid rgba(251, 191, 36, 0.25)",
                           }}
                         >
-                          تبادلية
+                          محطة تبادلية 🔀
                         </span>
                       )}
                       <i
                         className={`bx bx-chevron-${isExpanded ? "up" : "down"}`}
                         style={{
                           color: "var(--text-secondary)",
-                          fontSize: "1.3rem",
+                          fontSize: "1.2rem",
                         }}
                       />
                     </div>
@@ -337,68 +281,67 @@ export default function LrtLineExplorer({
                     >
                       {details ? (
                         <>
-                          {/* Landmarks */}
-                          <div>
-                            <div
-                              style={{
-                                fontSize: "0.78rem",
-                                color: "var(--text-muted)",
-                                marginBottom: "6px",
-                                fontWeight: "700",
-                              }}
-                            >
-                              📍 المعالم القريبة:
-                            </div>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                              {details.landmarks.map((landmark, lIdx) => (
-                                <span
-                                  key={lIdx}
-                                  style={{
-                                    background: "var(--bg-secondary)",
-                                    color: "var(--text-secondary)",
-                                    fontSize: "0.78rem",
-                                    padding: "4px 10px",
-                                    borderRadius: "6px",
-                                    border: "1px solid var(--border-glass)",
-                                  }}
-                                >
-                                  {landmark}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-
                           {/* Connection Type */}
-                          <div
-                            style={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: "14px",
-                              marginTop: "4px",
-                            }}
-                          >
+                          {details.type && (
                             <div
                               style={{
-                                fontSize: "0.78rem",
+                                fontSize: "0.82rem",
                                 color: "var(--text-secondary)",
+                                background: "rgba(6, 182, 212, 0.06)",
+                                padding: "6px 10px",
+                                borderRadius: "8px",
+                                border: "1px solid rgba(6, 182, 212, 0.15)",
                               }}
                             >
-                              🔗 نوع المحطة:{" "}
                               <strong style={{ color: "var(--text-primary)" }}>
-                                {details.type}
-                              </strong>
+                                🔗 طبيعة المحطة:
+                              </strong>{" "}
+                              {details.type}
                             </div>
-                          </div>
+                          )}
+
+                          {/* Landmarks */}
+                          {details.landmarks && details.landmarks.length > 0 && (
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "0.78rem",
+                                  color: "var(--text-secondary)",
+                                  marginBottom: "6px",
+                                  fontWeight: "700",
+                                }}
+                              >
+                                📍 المعالم والمواقع المحيطة:
+                              </div>
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                {details.landmarks.map((landmark, lIdx) => (
+                                  <span
+                                    key={lIdx}
+                                    style={{
+                                      background: "var(--bg-secondary)",
+                                      color: "var(--text-secondary)",
+                                      fontSize: "0.78rem",
+                                      padding: "3px 9px",
+                                      borderRadius: "6px",
+                                      border: "1px solid var(--border-glass)",
+                                    }}
+                                  >
+                                    {landmark}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </>
                       ) : (
                         <span
                           style={{
                             fontSize: "0.78rem",
-                            color: "var(--text-muted)",
+                            color: "var(--text-secondary)",
                             fontStyle: "italic",
                           }}
                         >
-                          لم يتم توفير تفاصيل إضافية لهذه المحطة حالياً.
+                          لا توجد تفاصيل إضافية مسجلة لهذه المحطة حالياً.
                         </span>
                       )}
 
@@ -407,7 +350,7 @@ export default function LrtLineExplorer({
                         style={{
                           display: "flex",
                           justifyContent: "flex-end",
-                          marginTop: "8px",
+                          marginTop: "6px",
                           borderTop: "1px dashed var(--border-glass)",
                           paddingTop: "8px",
                         }}
@@ -428,7 +371,7 @@ export default function LrtLineExplorer({
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "5px",
-                            fontFamily: "var(--font-cairo)",
+                            fontFamily: "inherit",
                             padding: "2px 6px",
                           }}
                           onMouseEnter={(e) =>
@@ -450,25 +393,16 @@ export default function LrtLineExplorer({
                 {!isLast && (
                   <div
                     style={{
-                      display: "flex",
-                      gap: "12px",
-                      minHeight: "14px",
-                      position: "relative",
+                      position: "absolute",
+                      right: "8px",
+                      top: "28px",
+                      bottom: "-10px",
+                      width: "2px",
+                      backgroundColor: color,
+                      opacity: 0.35,
+                      zIndex: 1,
                     }}
-                  >
-                    <div
-                      style={{
-                        position: "absolute",
-                        right: "-22px",
-                        top: "0",
-                        bottom: "0",
-                        width: "2px",
-                        backgroundColor: color,
-                        opacity: 0.5,
-                      }}
-                    />
-                    <div style={{ height: "14px" }} />
-                  </div>
+                  />
                 )}
               </div>
             );

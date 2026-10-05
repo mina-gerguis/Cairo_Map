@@ -5,6 +5,7 @@ export interface CardsSliderItem {
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   icon?: string | React.ReactNode;
+  image?: string;
   accentColor?: string;
   badge?: React.ReactNode;
   href?: string;

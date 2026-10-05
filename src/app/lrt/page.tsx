@@ -15,6 +15,8 @@ import {
   LrtReportBanner,
   LrtReportModal,
 } from "./components";
+import styles from "./lrt.module.css";
+import { LRT_LINE_TABS } from "./constants";
 
 export type {
   LrtLineType,
@@ -50,6 +52,7 @@ export default function LrtPage() {
 
   // GSAP Animation Refs
   const headerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
   const searchCardRef = useRef<HTMLDivElement>(null);
   const calculatorRef = useRef<HTMLDivElement>(null);
   const lineExplorerRef = useRef<HTMLDivElement>(null);
@@ -64,6 +67,15 @@ export default function LrtPage() {
 
       if (headerRef.current) {
         tl.fromTo(headerRef.current, { opacity: 0, y: -20 }, { opacity: 1, y: 0 });
+      }
+
+      if (sliderRef.current) {
+        tl.fromTo(
+          sliderRef.current.children,
+          { opacity: 0, y: 15, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, stagger: 0.06 },
+          "-=0.2"
+        );
       }
 
       const sections = [
@@ -115,14 +127,11 @@ export default function LrtPage() {
 
   // 4. Main Page View
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        paddingBottom: "40px",
-        backgroundColor: "var(--bgPrimary)",
-      }}
-    >
-      {/* Header Banner */}
+    <div className={styles.pageWrapper}>
+      {/* Electric Ambient Glow */}
+      <div className={styles.ambientGlow} />
+
+      {/* Modern Page Hero Banner */}
       <LrtHeader
         headerRef={headerRef}
         onOpenReportModal={() => reportModal.handleOpenReportModal()}
@@ -130,7 +139,7 @@ export default function LrtPage() {
 
       {/* Promotional Page Banner */}
       {data.promoStatus.isOpen && data.promoStatus.offer && (
-        <div style={{ maxWidth: "600px", margin: "16px auto 0", padding: "0 20px" }}>
+        <div style={{ maxWidth: "780px", margin: "16px auto 0", padding: "0 16px" }}>
           <PromotionalPageBanner
             offer={data.promoStatus.offer}
             remainingDays={data.promoStatus.remainingDays}
@@ -139,15 +148,62 @@ export default function LrtPage() {
       )}
 
       {/* Main Content Container */}
-      <div
-        style={{
-          maxWidth: "600px",
-          margin: "0 auto",
-          padding: "0 20px",
-          direction: "rtl",
-          textAlign: "right",
-        }}
-      >
+      <div className={styles.contentContainer}>
+        {/* Branch Quick Switcher Bento Cards */}
+        <div className={styles.branchSliderSection}>
+          <div ref={sliderRef} className={styles.branchSliderTrack}>
+            {LRT_LINE_TABS.map((tab) => {
+              const active = data.activeLine === tab.id;
+              let icon = "🚄";
+              let countText = "الشبكة كاملة";
+
+              if (tab.id === "trunk") {
+                icon = "🚊";
+                countText = "6 محطات";
+              } else if (tab.id === "capital") {
+                icon = "🏛️";
+                countText = "4 محطات";
+              } else if (tab.id === "ramadan") {
+                icon = "🏭";
+                countText = "2 محطات";
+              }
+
+              return (
+                <div
+                  key={tab.id}
+                  onClick={() => {
+                    data.setActiveLine(tab.id);
+                    data.setExpandedStation(null);
+                    // Scroll to explorer
+                    if (lineExplorerRef.current) {
+                      lineExplorerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
+                  }}
+                  className={`${styles.branchBentoCard} ${
+                    active ? styles.branchBentoCardActive : ""
+                  }`}
+                  style={
+                    {
+                      "--card-accent": tab.color,
+                      "--card-accent-glow": `${tab.color}40`,
+                      "--card-accent-bg": `${tab.color}14`,
+                    } as React.CSSProperties
+                  }
+                >
+                  <div className={styles.branchCardHeader}>
+                    <div className={styles.branchIconBadge}>
+                      <span>{icon}</span>
+                    </div>
+                    <span className={styles.branchCardTag}>{countText}</span>
+                  </div>
+                  <h4 className={styles.branchCardTitle}>{tab.label}</h4>
+                  <p className={styles.branchCardSubtitle}>{tab.title.split("(")[0].trim()}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Instant Search Card */}
         <LrtSearchCard
           panelRef={searchCardRef}

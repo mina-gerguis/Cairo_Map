@@ -1,6 +1,6 @@
 /* ==================== REUSABLE SEARCH CARD STYLES ==================== */
 .card {
-  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  background: var(--bg-glass, rgba(20, 20, 24, 0.75));
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .title {
@@ -35,10 +35,12 @@
   font-family: var(--font-sub, inherit);
 }
 
-.inputGroup {
+/* ==================== SEARCH BOX CONTAINER ==================== */
+.searchBoxContainer {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .fieldContainer {
@@ -67,123 +69,207 @@
   align-items: center;
 }
 
+/* Rounded Dark Input Capsule (matches reference image) */
 .inputWrapper {
   position: relative;
   display: flex;
   align-items: center;
+  background: #1e2026;
+  border: 1px solid #383c48;
+  border-radius: 12px;
+  min-height: 50px;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+:global(html.light) .inputWrapper {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.inputWrapper:focus-within {
+  border-color: #383c48 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+:global(html.light) .inputWrapper:focus-within {
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .input {
-  margin-top: 6px;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #f4f4f5;
+  font-size: 0.98rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 0 54px 0 50px;
+  /* 54px on right for swap button/clear, 50px on left for icon */
+  text-align: right;
+  direction: rtl;
 }
 
 :global(html.light) .input {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.09);
+  color: #0f172a;
 }
 
-.input:focus {
-  border-color: var(--color-secondary, #3b82f6);
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+.input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+  opacity: 0.85;
 }
 
-:global(html.light) .input:focus {
-  background: #ffffff;
+:global(html.light) .input::placeholder {
+  color: #64748b;
 }
 
+/* Left Icon (Origin Circle & Destination Pin) */
 .inputStartIcon {
   position: absolute;
-  right: 14px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-muted, #71717a);
-  font-size: 1.1rem;
-  pointer-events: none;
   display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 3;
 }
 
-.clearBtn {
-  position: absolute;
-  left: 12px;
+.inputStartBtn {
   background: transparent;
   border: none;
-  width: 25px;
+  padding: 4px;
   border-radius: 50%;
-  color: var(--text-muted, #71717a);
-  cursor: pointer;
+  color: #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  transition: all 0.2s ease;
-  z-index: 2;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
 }
 
-.clearBtn:hover {
-  color: var(--text-primary, #f4f4f5);
+.inputStartBtn:hover {
+  color: var(--color-secondary, #3b82f6);
 }
 
-/* Swap Button */
-.swapBtnRow {
+.inputStartBtn:active {
+  transform: scale(0.92);
+}
+
+.inputStartBtn:disabled {
+  cursor: wait;
+  opacity: 0.85;
+}
+
+:global(html.light) .inputStartBtn {
+  color: #64748b;
+}
+
+:global(html.light) .inputStartBtn:hover {
+  color: var(--color-secondary, #3b82f6);
+}
+
+.inputStartBtnStatic {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin: -4px 0;
-  position: relative;
-  z-index: 5;
+  color: #cbd5e1;
+  pointer-events: none;
+}
+
+:global(html.light) .inputStartBtnStatic {
+  color: #64748b;
+}
+
+.inputIconSvg {
+  display: block;
+}
+
+/* End actions (Clear, etc.) on the right side */
+.inputEndActions {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+
+/* ==================== SWAP BUTTON (Right Junction) ==================== */
+.swapBtnAnchor {
+  position: absolute;
+  right: 14px;
+  top: 40%;
+  transform: translateY(-50%);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
 }
 
 .swapBtn {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--bg-glass, rgba(20, 20, 24, 0.8));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-  color: var(--text-primary, #f4f4f5);
+  background: #1e2026;
+  border: 1.5px solid #383c48;
+  color: #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0 0 0 3.5px #15161c, 0 2px 6px rgba(0, 0, 0, 0.3);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.2s ease,
-    border-color 0.2s ease;
-  flex-shrink: 0;
+    border-color 0.2s ease,
+    color 0.2s ease;
   outline: none;
+  padding: 0;
+  z-index: 10000;
 }
 
 :global(html.light) .swapBtn {
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
+  color: #334155;
+  box-shadow: 0 0 0 3.5px #ffffff, 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .swapBtn:hover {
-  background: var(--hoverBtn, rgba(255, 255, 255, 0.1));
-  transform: rotate(180deg);
+  background: #282b36;
   border-color: var(--color-secondary, #3b82f6);
+  color: #ffffff;
 }
 
-.swapBtn:active {
-  transform: scale(0.92) rotate(180deg);
+:global(html.light) .swapBtn:hover {
+  background: #f1f5f9;
 }
 
-.swapBtn i {
-  font-size: 1.15rem;
+.swapIconSvg {
+  width: 15px;
+  height: 15px;
+  display: block;
 }
 
-/* Autocomplete Dropdown */
+/* ==================== AUTOCOMPLETE DROPDOWN ==================== */
 .suggestionsDropdown {
-  position: absolute ;
+  position: absolute;
   top: calc(100% + 6px);
   right: 0;
   left: 0;
-  background: var(--bg-glass, rgba(24, 24, 28, 0.95));
+  background: var(--bg-glass, rgba(24, 24, 28, 0.96));
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: var(--shadow-lg, 0 16px 36px rgba(0, 0, 0, 0.35));
   z-index: 1000;
   max-height: 220px;
@@ -207,7 +293,7 @@
   text-align: right;
   font-size: 0.9rem;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.15s ease;
   font-family: var(--font-body, inherit);
@@ -224,7 +310,7 @@
   background: rgba(0, 0, 0, 0.04);
 }
 
-/* Preset Chips */
+/* ==================== PRESET CHIPS ==================== */
 .presetChipsWrapper {
   display: flex;
   align-items: center;
@@ -323,7 +409,7 @@
   opacity: 1;
 }
 
-/* Submit Search Button */
+/* ==================== SUBMIT SEARCH BUTTON ==================== */
 .submitBtn {
   margin-top: 16px;
 }
@@ -342,5 +428,17 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media screen and (max-width: 661px) {
+  .swapBtnAnchor {
+    top: 30%;
+  }
+}
+
+@media screen and (max-width: 399px) {
+  .swapBtnAnchor {
+    top: 25%;
   }
 }

@@ -1,80 +1,57 @@
 import React from "react";
 import { LrtReportBannerProps } from "../types";
+import styles from "../lrt.module.css";
 
 export default function LrtReportBanner({
   bannerRef,
   onOpenReportModal,
 }: LrtReportBannerProps) {
   return (
-    <div
-      ref={bannerRef}
-      style={{
-        background: "var(--bg-linear-alert)",
-        border: "1px solid var(--border-secondary)",
-        borderRadius: "var(--ra-8)",
-        padding: "20px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "16px",
-        marginTop: "24px",
-        overflow: "hidden",
-        position: "relative",
-      }}
-    >
-      <div>
+    <div ref={bannerRef} className={styles.calloutBanner}>
+      <div style={{ flex: "1 1 300px" }}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "8px",
-            flexDirection: "row-reverse",
-            justifyContent: "flex-end",
+            gap: "10px",
+            marginBottom: "8px",
           }}
         >
-          <h2
+          <img
+            src="/images/icons3d/alert.webp"
+            alt="Alert"
+            style={{ width: "32px", height: "32px", objectFit: "contain" }}
+          />
+          <h3
             style={{
-              margin: "0 0 6px",
-              fontSize: "1rem",
+              margin: 0,
+              fontSize: "1.02rem",
               fontWeight: "800",
-              gap: "8px",
+              color: "var(--text-primary)",
             }}
           >
             الإبلاغ عن مشكلة فى بيانات القطار الكهربائي LRT
-          </h2>
-          <img src="/images/icons3d/alert.webp" alt="" style={{ width: "35px" }} />
+          </h3>
         </div>
 
         <p
           style={{
             margin: 0,
-            fontSize: "0.82rem",
+            fontSize: "0.84rem",
             color: "var(--text-secondary)",
             lineHeight: "1.6",
           }}
         >
-          هل لاحظت أي خطأ في مسارات القطار الكهربائي، أسعار التذاكر، أو محطات التبديل؟ شاركنا
-          ملاحظتك لمساعدتنا في تدقيق وتحديث الشبكة.
+          هل لاحظت أي خطأ في مسارات القطار، أو أسعار التذاكر، أو محطات التبديل؟ ساعدنا في تدقيق وتحديث البيانات لخدمة الجميع.
         </p>
       </div>
 
       <button
         type="button"
-        className="btn btn-report"
+        className={styles.calloutBtn}
         onClick={onOpenReportModal}
-        style={{
-          fontSize: "0.84rem",
-          fontWeight: "700",
-          cursor: "pointer",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          transition: "all 0.15s ease",
-          flexShrink: 0,
-        }}
       >
-        <i className="fa-solid fa-flag" />
+        <i className="fa-solid fa-flag" style={{ color: "#ef4444" }} />
         <span>تقديم بلاغ عن خطأ</span>
       </button>
     </div>

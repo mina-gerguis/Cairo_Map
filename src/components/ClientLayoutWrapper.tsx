@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,6 +9,13 @@ import { supabase } from "@/lib/supabase";
 import SiteAlertModal from "@/components/SiteAlertModal";
 import ScrollToTop from "@/components/ScrollToTop";
 import MobileInstallPrompt from "@/components/MobileInstallPrompt";
+import { useAuth } from "@/context/AuthContext";
+import {
+  MaintenanceItem,
+  isPathUnderMaintenance,
+} from "@/lib/maintenance";
+import MaintenanceScreen from "@/components/MaintenanceScreen";
+import MaintenanceAdminBanner from "@/components/MaintenanceAdminBanner";
 
 interface AlertItem {
   id: string;
@@ -35,12 +42,16 @@ export default function ClientLayoutWrapper({
     pathname === "/forgot-password" ||
     pathname === "/reset-password";
 
+  const { profile, loading: authLoading } = useAuth();
+  const isUserAdmin = Boolean(profile?.is_admin);
+
   const [activeAlert, setActiveAlert] = useState<AlertItem | null>(null);
+  const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceItem[]>([]);
+  const [maintenanceLoaded, setMaintenanceLoaded] = useState(false);
 
   // Global Ctrl+M keyboard shortcut for toggling between light and dark modes
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't toggle theme if typing in inputs/textareas
       const target = e.target as HTMLElement;
       if (
         target &&
@@ -66,8 +77,49 @@ export default function ClientLayoutWrapper({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Fetch & Subscribe to Maintenance Rules
+  const fetchMaintenance = useCallback(async () => {
+    if (!supabase) return;
+    try {
+      const { data, error } = await supabase
+        .from("page_maintenance")
+        .select("*")
+        .eq("is_active", true);
+
+      if (!error && data) {
+        setMaintenanceRecords(data);
+      }
+    } catch (err) {
+      console.warn("Could not check page_maintenance status:", err);
+    } finally {
+      setMaintenanceLoaded(true);
+    }
+  }, []);
+
   useEffect(() => {
-    // If we are in admin panel or login/signup, don't show user alerts
+    fetchMaintenance();
+
+    if (!supabase) return;
+    const channel = supabase
+      .channel("public:page_maintenance_listener")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "page_maintenance" },
+        () => {
+          fetchMaintenance();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      if (supabase && channel) {
+        supabase.removeChannel(channel);
+      }
+    };
+  }, [fetchMaintenance]);
+
+  // Check Site Alerts
+  useEffect(() => {
     const client = supabase;
     if (isAdmin || isAuth || !client) return;
 
@@ -80,29 +132,23 @@ export default function ClientLayoutWrapper({
           .order("created_at", { ascending: false });
 
         if (error || !rawAlerts) {
-          console.warn("Could not load site alerts:", error);
           return;
         }
 
         const now = new Date();
 
-        // Filter alerts
         const eligibleAlerts = rawAlerts.filter((alert: AlertItem) => {
-          // 1. Expiry date check
           if (alert.expiry_date && new Date(alert.expiry_date) < now) {
             return false;
           }
 
-          // 2. Pathname match check (target_page can be 'all' or must equal pathname)
           const target = alert.target_page;
           const matchesPage = target === "all" || target === pathname || (target === "/" && pathname === "");
           if (!matchesPage) return false;
 
-          // 3. Check dismissed status in localStorage (permanent dismiss)
           const isPermanentlyDismissed = localStorage.getItem(`dismissed_alert_${alert.id}`) === "true";
           if (isPermanentlyDismissed) return false;
 
-          // 4. Check dismissed status in sessionStorage (session-only dismiss for every_time)
           const isSessionDismissed = sessionStorage.getItem(`dismissed_session_alert_${alert.id}`) === "true";
           if (isSessionDismissed) return false;
 
@@ -110,7 +156,6 @@ export default function ClientLayoutWrapper({
         });
 
         if (eligibleAlerts.length > 0) {
-          // Show the most recently created eligible alert
           setActiveAlert(eligibleAlerts[0]);
         } else {
           setActiveAlert(null);
@@ -127,15 +172,11 @@ export default function ClientLayoutWrapper({
     if (!activeAlert) return;
 
     if (dontShowAgain) {
-      // Permanent hide
       localStorage.setItem(`dismissed_alert_${activeAlert.id}`, "true");
     } else {
-      // Standard close:
       if (activeAlert.show_type === "first_time") {
-        // For first time only alert, closing it acts as permanent dismiss
         localStorage.setItem(`dismissed_alert_${activeAlert.id}`, "true");
       } else {
-        // For every time alert, standard close hides it for the current session only
         sessionStorage.setItem(`dismissed_session_alert_${activeAlert.id}`, "true");
       }
     }
@@ -143,6 +184,7 @@ export default function ClientLayoutWrapper({
     setActiveAlert(null);
   };
 
+  // If Admin panel or Auth routes (login/signup), render directly
   if (isAdmin || isAuth) {
     return (
       <main style={{ minHeight: "100vh" }}>
@@ -151,12 +193,33 @@ export default function ClientLayoutWrapper({
     );
   }
 
+  // Check if current page is under maintenance
+  const activeMaintenance = isPathUnderMaintenance(pathname || "", maintenanceRecords);
+
   return (
     <>
       <Navbar />
+
+      {/* Admin Floating Banner when visiting locked page */}
+      {activeMaintenance && isUserAdmin && (
+        <MaintenanceAdminBanner
+          maintenance={activeMaintenance}
+          onDeactivated={fetchMaintenance}
+        />
+      )}
+
+      {/* Page Content: If under maintenance and not admin, show Maintenance Screen */}
       <main style={{ paddingTop: "72px" }}>
-        {children}
+        {activeMaintenance && !isUserAdmin && !authLoading ? (
+          <MaintenanceScreen
+            maintenance={activeMaintenance}
+            pathname={pathname || ""}
+          />
+        ) : (
+          children
+        )}
       </main>
+
       {/* <Footer /> */}
       <MobileBottomNav />
       <ScrollToTop />
@@ -168,4 +231,3 @@ export default function ClientLayoutWrapper({
     </>
   );
 }
-

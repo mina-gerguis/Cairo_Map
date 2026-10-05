@@ -1,0 +1,920 @@
+/* ==========================================================================
+   LRT (Light Rail Transit) Modern Stylesheet
+   Design System: Glassmorphism, Modern Bento Grid, Electric Cyan/Emerald Palette
+   ========================================================================== */
+
+/* Main Outer Wrapper */
+.pageWrapper {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  direction: rtl;
+  padding-bottom: 60px;
+  background-color: var(--bgPrimary);
+}
+
+/* Electric Ambient Glow in the background */
+.ambientGlow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 950px;
+  height: 420px;
+  background: radial-gradient(
+    ellipse 65% 55% at 50% 0%,
+    rgba(6, 182, 212, 0.18) 0%,
+    rgba(16, 185, 129, 0.1) 40%,
+    rgba(168, 85, 247, 0.06) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global(html.light) .ambientGlow {
+  background: radial-gradient(
+    ellipse 65% 55% at 50% 0%,
+    rgba(6, 182, 212, 0.1) 0%,
+    rgba(16, 185, 129, 0.05) 40%,
+    rgba(168, 85, 247, 0.04) 70%,
+    transparent 100%
+  );
+}
+
+/* Content Container */
+.contentContainer {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== BRANCH HIGHLIGHTS BENTO SLIDER ==================== */
+.branchSliderSection {
+  margin: 20px 0 24px;
+}
+
+.branchSliderTrack {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 680px) {
+  .branchSliderTrack {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .branchSliderTrack {
+    grid-template-columns: 1fr;
+  }
+}
+
+.branchBentoCard {
+  border-radius: var(--radius-card, 14px);
+  padding: 14px;
+  cursor: pointer;
+  outline: none;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  background: var(--bg-glass, rgba(24, 24, 27, 0.6));
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+:global(html.light) .branchBentoCard {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.branchBentoCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 8px 20px -4px rgba(6, 182, 212, 0.15);
+}
+
+.branchBentoCardActive {
+  border-color: var(--card-accent, #06b6d4) !important;
+  box-shadow: 0 0 16px -2px var(--card-accent-glow, rgba(6, 182, 212, 0.25)) !important;
+  background: var(--card-accent-bg, rgba(6, 182, 212, 0.08)) !important;
+}
+
+:global(html.light) .branchBentoCardActive {
+  background: var(--card-accent-bg, rgba(6, 182, 212, 0.08)) !important;
+}
+
+.branchCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.branchIconBadge {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+:global(html.light) .branchIconBadge {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.branchCardTag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+}
+
+.branchCardTitle {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.branchCardSubtitle {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== SEARCH CARD ==================== */
+.searchBentoCard {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 30;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+:global(html.light) .searchBentoCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 6px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.searchHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.searchTitle {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.searchInputWrapper {
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px 0 42px;
+  border-radius: var(--ra-10, 10px);
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-family: inherit;
+  direction: rtl;
+  transition: all 0.2s ease;
+}
+
+:global(html.light) .searchInput {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #06b6d4;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.18);
+  background: var(--bgPrimary);
+}
+
+.searchClearBtn {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background 0.15s ease;
+}
+
+.searchClearBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+.searchDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary, #18181b);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-card, 12px);
+  overflow: hidden;
+  z-index: 100;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 6px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+:global(html.light) .searchDropdown {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.searchDropdownItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+:global(html.light) .searchDropdownItem {
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+
+.searchDropdownItem:last-child {
+  border-bottom: none;
+}
+
+.searchDropdownItem:hover {
+  background-color: rgba(6, 182, 212, 0.08);
+}
+
+/* ==================== ROUTE CALCULATOR CARD ==================== */
+.calculatorBentoCard {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 20;
+  box-shadow: var(--shadow-sm);
+}
+
+:global(html.light) .calculatorBentoCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 6px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.calculatorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.calculatorTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.inputsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.inputFieldLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.stationSelectedBadge {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.72rem;
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.swapBtnRow {
+  display: flex;
+  justify-content: center;
+  margin: -6px 0;
+  position: relative;
+  z-index: 5;
+}
+
+.swapBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-secondary, #18181b);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 1rem;
+}
+
+:global(html.light) .swapBtn {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.swapBtn:hover {
+  transform: rotate(180deg) scale(1.08);
+  border-color: #06b6d4;
+  color: #06b6d4;
+}
+
+.calculateBtn {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+  color: #ffffff;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+}
+
+.calculateBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+}
+
+.calculateBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ==================== ROUTE RESULTS & METRICS ==================== */
+.resultsBentoCard {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px;
+  margin-top: 20px;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.3s ease;
+}
+
+:global(html.light) .resultsBentoCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.resultsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 540px) {
+  .metricsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+}
+
+.metricTile {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.07));
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+:global(html.light) .metricTile {
+  background: rgba(248, 250, 252, 0.8);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.metricTileValue {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.metricTileLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Timeline Chips in Result */
+.routeTimelineWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+}
+
+.stationChip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.chipArrow {
+  color: #06b6d4;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+/* ==================== ACTIVE TRIP TRACKER ==================== */
+.tripTrackerCard {
+  background: linear-gradient(
+    135deg,
+    rgba(6, 182, 212, 0.1) 0%,
+    rgba(16, 185, 129, 0.06) 100%
+  );
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+  animation: fadeIn 0.3s ease;
+}
+
+.tripTrackerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tripBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #06b6d4;
+  background: rgba(6, 182, 212, 0.15);
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tripPulseDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #06b6d4;
+  box-shadow: 0 0 8px #06b6d4;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+.cancelTripBtn {
+  border: none;
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s ease;
+}
+
+.cancelTripBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.currentStationBanner {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.currentStationName {
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.tripRemainingInfo {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.nextStepBtn {
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.nextStepBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+}
+
+/* ==================== LINE EXPLORER ==================== */
+.explorerSection {
+  margin-top: 36px;
+}
+
+.explorerSectionHeader {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.explorerTitle {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.explorerSubtitle {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.tabsBar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 580px) {
+  .tabsBar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tabButton {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.6));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: inherit;
+}
+
+:global(html.light) .tabButton {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.tabButtonActive {
+  border-color: var(--tab-color, #06b6d4) !important;
+  background: var(--tab-bg, rgba(6, 182, 212, 0.08)) !important;
+  box-shadow: 0 0 14px var(--tab-glow, rgba(6, 182, 212, 0.15));
+}
+
+.tabLabel {
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.explorerContainer {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+:global(html.light) .explorerContainer {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.explorerHeaderBox {
+  border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.explorerBranchTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+.explorerBranchDesc {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+/* Timeline Station Node */
+.timelineStationList {
+  max-height: 560px;
+  overflow-y: auto;
+  padding: 12px 16px 12px 6px;
+  scrollbar-width: thin;
+}
+
+.stationNodeCard {
+  background: var(--bgPrimary, #18181b);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 6px;
+}
+
+:global(html.light) .stationNodeCard {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.stationNodeCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+.stationNodeCardExpanded {
+  border-color: var(--node-color, #06b6d4) !important;
+  box-shadow: 0 4px 16px -2px var(--node-glow, rgba(6, 182, 212, 0.2));
+}
+
+/* ==================== PRICING CARD ==================== */
+.pricingBentoCard {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 18px 20px;
+  margin-top: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+:global(html.light) .pricingBentoCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.pricingHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.pricingTitle {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.pricingTiersGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .pricingTiersGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.pricingTierItem {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.07));
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.15s ease;
+}
+
+:global(html.light) .pricingTierItem {
+  background: rgba(248, 250, 252, 0.8);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.pricingTierPrice {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.pricingTierLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+/* ==================== BOTTOM REPORT BANNER ==================== */
+.calloutBanner {
+  background: radial-gradient(
+    135% 120% at 100% 0%,
+    rgba(6, 182, 212, 0.15) 0%,
+    rgba(16, 185, 129, 0.08) 50%,
+    rgba(20, 20, 24, 0.8) 100%
+  );
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+:global(html.light) .calloutBanner {
+  background: radial-gradient(
+    135% 120% at 100% 0%,
+    rgba(6, 182, 212, 0.1) 0%,
+    rgba(16, 185, 129, 0.05) 50%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.calloutBanner:hover {
+  border-color: rgba(6, 182, 212, 0.35);
+}
+
+.calloutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+:global(html.light) .calloutBtn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.calloutBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}

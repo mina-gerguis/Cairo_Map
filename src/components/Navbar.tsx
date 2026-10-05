@@ -100,6 +100,7 @@ export default function Navbar() {
         { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: "arab_republice.webp" },
         { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: "bus.webp" },
         { href: "/microbus-stations", label: "مواقف الميكروباص", subtitle: "خطوط السرفيس بين المحافظات", imgLogo: "microbus.webp" },
+        { href: "/roads-info", label: "معلومات الطرق والسرعات", subtitle: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: "car.webp" },
         { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: "arab_republic _of_egypt.webp" },
         { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: "ai.webp" },
         { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: "Cairo_logo.webp" },

@@ -17,6 +17,7 @@ import {
   MonorailReportBanner,
   MonorailReportModal,
 } from "./components";
+import styles from "./monorail.module.css";
 
 export type {
   MonorailLineId,
@@ -109,12 +110,15 @@ export default function MonorailPage() {
   };
 
   return (
-    <div className="main-container">
+    <div className={styles.pageWrapper}>
+      {/* Ambient Radial Glow */}
+      <div className={styles.ambientGlow} />
+
       {/* Header Banner */}
       <MonorailHeader headerRef={headerRef} />
 
       {/* Main Content Container */}
-      <div className="container">
+      <div className={styles.contentContainer}>
         {/* Top Lines Slider */}
         <MonorailLinesSlider
           sliderRef={sliderRef}

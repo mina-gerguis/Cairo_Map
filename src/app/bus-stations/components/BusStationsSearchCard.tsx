@@ -12,22 +12,23 @@ export default function BusStationsSearchCard({
 }: BusStationsSearchCardProps) {
   return (
     <div className={styles.searchCard}>
-      <label htmlFor="bus-station-search" className={styles.searchLabel}>
-        🔍 ابحث عن موقف أو وجهة سفر
-      </label>
+      <div className={styles.searchHeader}>
+        <label htmlFor="bus-station-search" className={styles.searchLabel}>
+          <i className="fa-solid fa-magnifying-glass" style={{ color: "#f59e0b" }} />
+          <span>ابحث عن موقف أو وجهة سفر أو شركة</span>
+        </label>
+      </div>
 
       <div className={styles.searchInputWrapper}>
         <input
           id="bus-station-search"
           type="text"
-          placeholder="ابحث باسم الموقف، أو المحافظة، أو الوجهة..."
+          placeholder="ابحث باسم الموقف (الترجمان، ألماظة)، أو المحافظة، أو الوجهة (الإسكندرية، شرم الشيخ)..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className={styles.searchInput}
           autoComplete="off"
         />
-
-        <i className={`bx bx-search ${styles.searchIcon}`} aria-hidden="true" />
 
         {searchQuery.trim().length > 0 && (
           <button
@@ -36,7 +37,7 @@ export default function BusStationsSearchCard({
             onClick={() => onSearchChange("")}
             aria-label="مسح البحث"
           >
-            <i className="bx bx-x" />
+            ✕
           </button>
         )}
       </div>

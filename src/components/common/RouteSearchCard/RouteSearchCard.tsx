@@ -40,6 +40,35 @@ function defaultFilterSuggestions(
     });
 }
 
+// Default icons matching the reference design
+const DefaultOriginIcon = () => (
+  <svg
+    className={styles.inputIconSvg}
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="3.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="7" />
+  </svg>
+);
+
+const DefaultDestIcon = () => (
+  <svg
+    className={styles.inputIconSvg}
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
+  </svg>
+);
+
 export default function RouteSearchCard({
   searchPanelRef,
   className = "",
@@ -49,8 +78,8 @@ export default function RouteSearchCard({
   fromInput,
   setFromInput,
   fromLabel,
-  fromPlaceholder = "اكتب مكان الانطلاق... (رمسيس، موقف الأحرار، الجيزة...)",
-  fromIcon = <i className="bx bx-map-pin" style={{ color: "#10b981" }} />,
+  fromPlaceholder = "موقعي الجغرافي",
+  fromIcon,
   showGps = true,
   isLocating = false,
   onUseGPS,
@@ -60,8 +89,8 @@ export default function RouteSearchCard({
   toInput,
   setToInput,
   toLabel,
-  toPlaceholder = "اكتب الوجهة... (التجمع، المعادي، 6 أكتوبر، العبور...)",
-  toIcon = <i className="bx bx-flag" style={{ color: "#ef4444" }} />,
+  toPlaceholder = "اكتب الوجهة... (جامعة، محطة، مول...)",
+  toIcon,
   showVoiceInput = true,
   showSwap = true,
   onSwap,
@@ -134,50 +163,42 @@ export default function RouteSearchCard({
         </div>
       )}
 
-      <div className={styles.inputGroup}>
+      <div className={styles.searchBoxContainer}>
         {/* FROM INPUT FIELD */}
         <div
           className={styles.fieldContainer}
           style={{ zIndex: showFromSuggestions ? 100 : 2 }}
         >
-          <div className={styles.fieldLabel}>
-            <div className={styles.labelLeft}>
-              {fromLabel || (
-                <>
-                  <span>هتتحرك منين ؟</span>
-                </>
-              )}
-            </div>
 
-            <div className={styles.labelActions}>
-              {showGps && onUseGPS && (
+          <div className={styles.inputWrapper}>
+            {/* Left Origin Icon (Clickable to trigger GPS) */}
+            <div className={styles.inputStartIcon}>
+              {onUseGPS ? (
                 <button
                   type="button"
                   onClick={onUseGPS}
                   disabled={isLocating}
-                  title={gpsTitle}
-                  className={styles.gpsBtn}
+                  title={gpsTitle || "تحديد موقعي الحالي بالـ GPS"}
+                  aria-label={gpsTitle || "تحديد موقعي الحالي بالـ GPS"}
+                  className={styles.inputStartBtn}
                 >
-                  <i
-                    className={`bx ${isLocating ? "bx-loader-alt bx-spin" : "bx-target-lock"}`}
-                    style={{ color: isLocating ? "#ef4444" : "var(--color-secondary, #3b82f6)" }}
-                  />
-                  <span>{isLocating ? "جاري التحديد..." : "موقعي"}</span>
+                  {isLocating ? (
+                    <i
+                      className="bx bx-loader-alt bx-spin"
+                      style={{ fontSize: "1.25rem", color: "var(--color-secondary, #3b82f6)" }}
+                    />
+                  ) : (
+                    fromIcon || <DefaultOriginIcon />
+                  )}
                 </button>
-              )}
-
-              {showVoiceInput && (
-                <VoiceInputButton
-                  onTranscript={(text) => {
-                    setFromInput(text);
-                    setShowFromSuggestions(true);
-                  }}
-                />
+              ) : (
+                <span className={styles.inputStartBtnStatic}>
+                  {fromIcon || <DefaultOriginIcon />}
+                </span>
               )}
             </div>
-          </div>
 
-          <div className={styles.inputWrapper}>
+            {/* Input field */}
             <input
               className={`input-fields ${styles.input}`}
               placeholder={fromPlaceholder}
@@ -186,23 +207,8 @@ export default function RouteSearchCard({
                 setFromInput(e.target.value);
                 setShowFromSuggestions(true);
               }}
-              onFocus={() => setShowFromSuggestions(true)}
-              onBlur={() => setTimeout(() => setShowFromSuggestions(false), 250)}
+              style={{ outline: "none", border: "none", boxShadow: "none" }}
             />
-
-            {fromInput.trim() && (
-              <button
-                type="button"
-                onClick={() => {
-                  setFromInput("");
-                  setShowFromSuggestions(false);
-                }}
-                className={styles.clearBtn}
-                aria-label="مسح حقل الانطلاق"
-              >
-                ×
-              </button>
-            )}
 
             {/* From Suggestions Dropdown */}
             {showFromSuggestions && filteredFromSuggestions.length > 0 && (
@@ -227,28 +233,11 @@ export default function RouteSearchCard({
               </div>
             )}
           </div>
-
-          {locationBadge && (
-            <div className={styles.locationBadge}>
-              <i className="bx bx-check-circle" style={{ color: "#10b981", fontSize: "1.05rem" }} />
-              <span>{locationBadge}</span>
-              {onClearLocationBadge && (
-                <button
-                  type="button"
-                  onClick={onClearLocationBadge}
-                  className={styles.badgeCloseBtn}
-                  aria-label="إغلاق تنبيه الموقع"
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          )}
         </div>
 
-        {/* SWAP BUTTON */}
+        {/* SWAP BUTTON - Right Junction */}
         {showSwap && onSwap && (
-          <div className={styles.swapBtnRow}>
+          <div className={styles.swapBtnAnchor}>
             <button
               type="button"
               onClick={onSwap}
@@ -256,7 +245,17 @@ export default function RouteSearchCard({
               className={styles.swapBtn}
               aria-label="تبديل نقطة الانطلاق والوصول"
             >
-              <i className="bx bx-transfer-alt" />
+              <svg
+                className={styles.swapIconSvg}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M7 20V4M7 4L3 8M7 4L11 8M17 4V20M17 20L21 16M17 20L13 16" />
+              </svg>
             </button>
           </div>
         )}
@@ -266,28 +265,13 @@ export default function RouteSearchCard({
           className={styles.fieldContainer}
           style={{ zIndex: showToSuggestions ? 100 : 1 }}
         >
-          <div className={styles.fieldLabel}>
-            <div className={styles.labelLeft}>
-              {toLabel || (
-                <>
-                  <span>عايز تروح فين ؟</span>
-                </>
-              )}
-            </div>
-
-            <div className={styles.labelActions}>
-              {showVoiceInput && (
-                <VoiceInputButton
-                  onTranscript={(text) => {
-                    setToInput(text);
-                    setShowToSuggestions(true);
-                  }}
-                />
-              )}
-            </div>
-          </div>
-
           <div className={styles.inputWrapper}>
+            {/* Left Destination Icon */}
+            <span className={styles.inputStartIcon}>
+              {toIcon || <DefaultDestIcon />}
+            </span>
+
+            {/* Input field */}
             <input
               className={`input-fields ${styles.input}`}
               placeholder={toPlaceholder}
@@ -296,23 +280,10 @@ export default function RouteSearchCard({
                 setToInput(e.target.value);
                 setShowToSuggestions(true);
               }}
-              onFocus={() => setShowToSuggestions(true)}
-              onBlur={() => setTimeout(() => setShowToSuggestions(false), 250)}
+              style={{ outline: "none", border: "none", boxShadow: "none" }}
             />
 
-            {toInput.trim() && (
-              <button
-                type="button"
-                onClick={() => {
-                  setToInput("");
-                  setShowToSuggestions(false);
-                }}
-                className={styles.clearBtn}
-                aria-label="مسح حقل الوجهة"
-              >
-                ×
-              </button>
-            )}
+          
 
             {/* To Suggestions Dropdown */}
             {showToSuggestions && filteredToSuggestions.length > 0 && (

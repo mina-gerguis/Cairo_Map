@@ -1,5 +1,6 @@
 import React from "react";
 import { LrtSearchCardProps } from "../types";
+import styles from "../lrt.module.css";
 
 export default function LrtSearchCard({
   panelRef,
@@ -21,84 +22,63 @@ export default function LrtSearchCard({
           (searchContainerRef as any).current = node;
         }
       }}
-      className="metro-animate-slide-up metro-delay-200"
-      style={{
-        backgroundColor: "var(--bgPrimary)",
-        border: "1px solid var(--border-glass)",
-        borderRadius: "var(--radius-card)",
-        padding: "20px",
-        marginTop: "24px",
-        boxShadow: "var(--shadow-sm)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px",
-        position: "relative",
-        zIndex: 30,
-      }}
+      className={styles.searchBentoCard}
     >
-      <div style={{ position: "relative" }}>
-        <label
-          style={{
-            fontSize: "0.85rem",
-            fontWeight: "700",
-            color: "var(--text-secondary)",
-            display: "block",
-            marginBottom: "8px",
-          }}
-        >
+      <div className={styles.searchHeader}>
+        <h3 className={styles.searchTitle}>
           <i
             className="fa-solid fa-magnifying-glass"
-            style={{ marginLeft: "5px", color: "var(--color-secondary)" }}
-          />{" "}
+            style={{ color: "#06b6d4" }}
+          />
           ابحث في محطات القطار الكهربائي LRT
-        </label>
+        </h3>
+        {searchQuery.trim().length > 0 && (
+          <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+            {searchResults.length} نتيجة
+          </span>
+        )}
+      </div>
+
+      <div className={styles.searchInputWrapper}>
         <input
-          className="input-fields"
+          className={styles.searchInput}
           type="text"
-          placeholder="ابحث باسم المحطة..."
+          placeholder="اكتب اسم المحطة (مثل: عدلي منصور، الفنون والثقافة، بدر...)"
           value={searchQuery}
           onFocus={() => setIsDropdownOpen(true)}
           onChange={(e) => {
             onSearchQueryChange(e.target.value);
             setIsDropdownOpen(true);
           }}
-          style={{
-            width: "100%",
-            direction: "rtl",
-            fontFamily: "var(--font-heading)",
-            height: "50px",
-          }}
         />
+
+        {searchQuery && (
+          <button
+            type="button"
+            className={styles.searchClearBtn}
+            onClick={() => {
+              onSearchQueryChange("");
+              setIsDropdownOpen(false);
+            }}
+            aria-label="مسح البحث"
+          >
+            ✕
+          </button>
+        )}
 
         {/* Instant Search Results Dropdown */}
         {isDropdownOpen && searchQuery.trim().length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              top: "100%",
-              left: 0,
-              right: 0,
-              backgroundColor: "var(--bgPrimary)",
-              border: "1px solid var(--border-glass)",
-              borderRadius: "var(--radius-card)",
-              boxShadow: "var(--shadow-sm)",
-              zIndex: 100,
-              marginTop: "6px",
-              maxHeight: "260px",
-              overflowY: "auto",
-              padding: "8px 0",
-            }}
-          >
+          <div className={styles.searchDropdown}>
             {searchResults.length === 0 ? (
               <div
                 style={{
                   padding: "16px",
                   textAlign: "center",
                   color: "var(--text-secondary)",
-                  fontSize: "0.9rem",
+                  fontSize: "0.88rem",
                 }}
               >
-                لم يتم العثور على محطات مطابقة
+                لم يتم العثور على محطات مطابقة لـ &quot;{searchQuery}&quot;
               </div>
             ) : (
               searchResults.map((station, index) => {
@@ -116,53 +96,39 @@ export default function LrtSearchCard({
                   <div
                     key={station.id || `${station.line_type}-${station.name}-${index}`}
                     onClick={() => onSelectStation(station)}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "12px 16px",
-                      cursor: "pointer",
-                      transition: "background-color 0.2s ease",
-                      borderBottom:
-                        index < searchResults.length - 1
-                          ? "1px solid var(--border-glass)"
-                          : "none",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor = "var(--bg-secondary)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = "transparent")
-                    }
+                    className={styles.searchDropdownItem}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <span
                         style={{
-                          width: "8px",
-                          height: "8px",
+                          width: "9px",
+                          height: "9px",
                           borderRadius: "50%",
                           backgroundColor: lineColor,
+                          boxShadow: `0 0 6px ${lineColor}80`,
                         }}
                       />
                       <span
                         style={{
-                          fontWeight: "700",
+                          fontWeight: "800",
                           color: "var(--text-primary)",
-                          fontSize: "0.95rem",
+                          fontSize: "0.92rem",
                         }}
                       >
                         {station.name}
                       </span>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                       <span
                         style={{
                           fontSize: "0.72rem",
                           padding: "2px 8px",
-                          borderRadius: "4px",
-                          fontWeight: "bold",
-                          backgroundColor: lineColor + "1a",
+                          borderRadius: "6px",
+                          fontWeight: "700",
+                          backgroundColor: lineColor + "18",
                           color: lineColor,
+                          border: `1px solid ${lineColor}30`,
                         }}
                       >
                         {lineName}

@@ -68,6 +68,7 @@ export default function AdminLayout({
           { label: "اقتراحات الأماكن والمواقع", href: "/admin/places/suggestions", category: "صفحة إدارية", icon: "bx bx-map-pin" },
           { label: "إدارة الإعلانات والبنرات", href: "/admin/ads", category: "صفحة إدارية", icon: "bx bx-slideshow" },
           { label: "إدارة تنبيهات الموقع", href: "/admin/alerts", category: "صفحة إدارية", icon: "bx bx-info-circle" },
+          { label: "إدارة وضع الصيانة وحظر الصفحات", href: "/admin/maintenance", category: "صفحة إدارية", icon: "bx bx-wrench" },
           { label: "الإشعارات والرسائل الجماعية", href: "/admin/notifications", category: "صفحة إدارية", icon: "bx bx-bell" },
           { label: "البلاغات والاقتراحات الواردة", href: "/admin/reports", category: "صفحة إدارية", icon: "bx bx-inbox" },
           { label: "الرصيد والشحن المالي", href: "/admin/points?tab=users", category: "صفحة إدارية", icon: "bx bx-coin-stack" },
@@ -86,6 +87,7 @@ export default function AdminLayout({
           { label: "إدارة الأتوبيس الترددي BRT", href: "/admin/brt", category: "خدمة موقع", icon: "bx bx-bus" },
           { label: "إدارة الأتوبيسات وسوبرجيت", href: "/admin/bus-stations", category: "خدمة موقع", icon: "bx bx-bus" },
           { label: "إدارة الجراجات ومواقف السيارات", href: "/admin/parking", category: "خدمة موقع", icon: "bx bx-car" },
+          { label: "إدارة معلومات الطرق وسرعات الرادار", href: "/admin/roads-info", category: "خدمة موقع", icon: "bx bx-tachometer" },
           { label: "إدارة دليل الهواتف والأكواد", href: "/admin/directory", category: "خدمة موقع", icon: "bx bx-phone-call" },
           { label: "إدارة خطوط المواصلات والاتجاهات (ازاي اروح)", href: "/admin/directions", category: "خدمة موقع", icon: "bx bx-compass" }
         ];
@@ -148,7 +150,7 @@ export default function AdminLayout({
       setActiveSubTab(params.get("tab"));
     }
 
-    if (pathname === "/admin/places" || pathname === "/admin/cities" || pathname === "/admin/airports" || pathname === "/admin/ports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations" || pathname === "/admin/brt" || pathname === "/admin/parking") {
+    if (pathname === "/admin/places" || pathname === "/admin/cities" || pathname === "/admin/airports" || pathname === "/admin/ports" || pathname === "/admin/directory" || pathname === "/admin/monorail" || pathname === "/admin/lrt" || pathname === "/admin/metro" || pathname === "/admin/railways" || pathname === "/admin/bus-stations" || pathname === "/admin/microbus-stations" || pathname === "/admin/brt" || pathname === "/admin/parking" || pathname === "/admin/roads-info") {
       setIsServicesDropdownOpen(true);
     }
 
@@ -398,6 +400,7 @@ export default function AdminLayout({
   else if (pathname === "/admin/microbus-stations") pageTitle = "إدارة مواقف السرفيس";
   else if (pathname === "/admin/brt") pageTitle = "إدارة الأتوبيس الترددي BRT";
   else if (pathname === "/admin/parking") pageTitle = "إدارة الجراجات ومواقف السيارات";
+  else if (pathname === "/admin/roads-info") pageTitle = "إدارة معلومات الطرق وسرعات الرادار";
   else if (pathname === "/admin/directions") pageTitle = "إدارة ازاي اروح (خطوط المواصلات)";
   else if (pathname === "/admin/directory") pageTitle = "دليل الهواتف والأكواد";
   else if (pathname === "/admin/notifications") pageTitle = "الإشعارات والرسائل";
@@ -676,6 +679,21 @@ export default function AdminLayout({
               </div>
             </Link>
 
+            {/* إدارة معلومات الطرق والسرعات */}
+            <Link
+              href="/admin/roads-info"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/roads-info" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab(null);
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-tachometer ${styles.linkIcon}`} style={{ color: "#38bdf8" }} />
+                <span className={styles.linkLabel}>إدارة معلومات الطرق</span>
+              </div>
+            </Link>
+
             {/* دليل الهواتف والأكواد */}
             <Link
               href="/admin/directory"
@@ -746,6 +764,20 @@ export default function AdminLayout({
               <div className={styles.linkLeftGroup}>
                 <i className={`bx bx-info-circle ${styles.linkIcon}`} />
                 <span className={styles.linkLabel}>تنبيهات الموقع</span>
+              </div>
+            </Link>
+
+            {/* إدارة وضع الصيانة */}
+            <Link
+              href="/admin/maintenance"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/maintenance" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-wrench ${styles.linkIcon}`} style={{ color: "#fb923c" }} />
+                <span className={styles.linkLabel}>إدارة وضع الصيانة</span>
               </div>
             </Link>
 

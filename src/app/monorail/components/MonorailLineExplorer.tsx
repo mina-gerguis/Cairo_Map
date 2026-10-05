@@ -1,6 +1,7 @@
 import React from "react";
 import { MonorailLineExplorerProps } from "../types";
 import { MONORAIL_STATION_DETAILS } from "../constants";
+import styles from "../monorail.module.css";
 
 export default function MonorailLineExplorer({
   panelRef,
@@ -17,7 +18,7 @@ export default function MonorailLineExplorer({
   onOpenReportModal,
 }: MonorailLineExplorerProps) {
   return (
-    <div ref={panelRef} className="details-panel">
+    <div ref={panelRef} className={styles.explorerHeader} style={{ marginTop: "24px" }}>
       {/* Header of explorer */}
       <div
         style={{
@@ -32,9 +33,9 @@ export default function MonorailLineExplorer({
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div
             style={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "8px",
+              width: "38px",
+              height: "38px",
+              borderRadius: "10px",
               background: `${selectedLineObj.color}18`,
               border: `1px solid ${selectedLineObj.color}40`,
               display: "flex",
@@ -57,7 +58,7 @@ export default function MonorailLineExplorer({
             >
               {selectedLineObj.name}
             </h2>
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
               {currentLineStations.length} محطة — الطول: {selectedLineObj.length} — زمن الرحلة: {selectedLineObj.time}
             </span>
           </div>
@@ -71,9 +72,9 @@ export default function MonorailLineExplorer({
               type="button"
               onClick={() => onSelectLine(line.id)}
               style={{
-                padding: "4px 10px",
-                borderRadius: "6px",
-                fontSize: "0.75rem",
+                padding: "5px 12px",
+                borderRadius: "8px",
+                fontSize: "0.78rem",
                 fontWeight: "700",
                 cursor: "pointer",
                 background:
@@ -105,115 +106,66 @@ export default function MonorailLineExplorer({
           style={{
             background: "var(--bg-secondary)",
             border: "1px solid var(--border-glass)",
-            borderRadius: "var(--ra-8)",
+            borderRadius: "10px",
             padding: "10px",
             textAlign: "center",
           }}
         >
-          <div
-            style={{
-              fontSize: "0.72rem",
-              color: "var(--text-secondary)",
-              fontWeight: "600",
-            }}
-          >
+          <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>
             بداية الخط
           </div>
-          <div
-            style={{
-              fontSize: "0.92rem",
-              fontWeight: "800",
-              color: selectedLineObj.color,
-              marginTop: "2px",
-            }}
-          >
+          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>
             {selectedLineObj.from}
           </div>
         </div>
+
         <div
           style={{
             background: "var(--bg-secondary)",
             border: "1px solid var(--border-glass)",
-            borderRadius: "var(--ra-8)",
+            borderRadius: "10px",
             padding: "10px",
             textAlign: "center",
           }}
         >
-          <div
-            style={{
-              fontSize: "0.72rem",
-              color: "var(--text-secondary)",
-              fontWeight: "600",
-            }}
-          >
+          <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>
             نهاية الخط
           </div>
-          <div
-            style={{
-              fontSize: "0.92rem",
-              fontWeight: "800",
-              color: selectedLineObj.color,
-              marginTop: "2px",
-            }}
-          >
+          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: selectedLineObj.color, marginTop: "2px" }}>
             {selectedLineObj.to}
           </div>
         </div>
+
         <div
           style={{
             background: "var(--bg-secondary)",
             border: "1px solid var(--border-glass)",
-            borderRadius: "var(--ra-8)",
+            borderRadius: "10px",
             padding: "10px",
             textAlign: "center",
           }}
         >
-          <div
-            style={{
-              fontSize: "0.72rem",
-              color: "var(--text-secondary)",
-              fontWeight: "600",
-            }}
-          >
+          <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>
             طول المسار
           </div>
-          <div
-            style={{
-              fontSize: "0.92rem",
-              fontWeight: "800",
-              color: "var(--text-primary)",
-              marginTop: "2px",
-            }}
-          >
+          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>
             {selectedLineObj.length}
           </div>
         </div>
+
         <div
           style={{
             background: "var(--bg-secondary)",
             border: "1px solid var(--border-glass)",
-            borderRadius: "var(--ra-8)",
+            borderRadius: "10px",
             padding: "10px",
             textAlign: "center",
           }}
         >
-          <div
-            style={{
-              fontSize: "0.72rem",
-              color: "var(--text-secondary)",
-              fontWeight: "600",
-            }}
-          >
+          <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>
             زمن المسار كاملاً
           </div>
-          <div
-            style={{
-              fontSize: "0.92rem",
-              fontWeight: "800",
-              color: "var(--text-primary)",
-              marginTop: "2px",
-            }}
-          >
+          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>
             {selectedLineObj.time}
           </div>
         </div>
@@ -222,11 +174,11 @@ export default function MonorailLineExplorer({
       {/* Search inside line stations */}
       <div style={{ position: "relative", marginBottom: "16px" }}>
         <input
-          className="input-fields"
+          className={styles.searchInput}
           placeholder={`ابحث في محطات ${selectedLineObj.shortName}...`}
           value={lineSearchQuery}
           onChange={(e) => onSearchQueryChange(e.target.value)}
-          style={{ width: "100%", direction: "rtl", fontSize: "0.85rem" }}
+          style={{ height: "44px", fontSize: "0.88rem" }}
         />
         {lineSearchQuery && (
           <button
@@ -234,12 +186,12 @@ export default function MonorailLineExplorer({
             onClick={() => onSearchQueryChange("")}
             style={{
               position: "absolute",
-              left: "10px",
+              left: "12px",
               top: "50%",
               transform: "translateY(-50%)",
               background: "transparent",
               border: "none",
-              color: "var(--text-muted)",
+              color: "var(--text-secondary)",
               cursor: "pointer",
             }}
           >
@@ -249,374 +201,173 @@ export default function MonorailLineExplorer({
       </div>
 
       {/* Stations Timeline */}
-      <div
-        style={{
-          background: "var(--bg-glass)",
-          border: "1px solid var(--border-glass)",
-          borderRadius: "var(--radius-card)",
-          padding: "18px 16px",
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {filteredCurrentLineStations.length > 0 ? (
-            filteredCurrentLineStations.map((stationObj, idx) => {
-              const station = stationObj.name;
-              const isFirst = idx === 0 && !lineSearchQuery;
-              const isLast =
-                idx === filteredCurrentLineStations.length - 1 &&
-                !lineSearchQuery;
-              const details = MONORAIL_STATION_DETAILS[station];
-              const landmarks = details?.landmarks || [];
-              const isUnderConstruction = details?.status === "تحت الإنشاء";
-              const isTransfer = details?.type?.includes("تبادلية");
+      <div className={styles.stationTimelineBox}>
+        {filteredCurrentLineStations.length > 0 ? (
+          filteredCurrentLineStations.map((stationObj, idx) => {
+            const station = stationObj.name;
+            const isFirst = idx === 0 && !lineSearchQuery;
+            const isLast =
+              idx === filteredCurrentLineStations.length - 1 &&
+              !lineSearchQuery;
+            const details = MONORAIL_STATION_DETAILS[station];
+            const landmarks = details?.landmarks || [];
+            const isUnderConstruction = details?.status === "تحت الإنشاء";
+            const isTransfer = details?.type?.includes("تبادلية");
+            const isExpanded = expandedStation === station;
 
-              return (
+            return (
+              <div
+                key={idx}
+                id={`station-${station}`}
+                className={styles.stationNodeItem}
+                style={{
+                  borderRight: `3px solid ${isTransfer ? "#f59e0b" : selectedLineObj.color}`,
+                }}
+              >
                 <div
-                  key={idx}
-                  id={`station-${station}`}
-                  style={{ display: "flex", flexDirection: "column" }}
+                  onClick={() => onToggleStation(station)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "8px",
+                  }}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "12px",
-                      minHeight: "34px",
-                    }}
-                  >
-                    {/* Timeline Dot */}
-                    <div
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                    <span
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        width: "16px",
-                        flexShrink: 0,
+                        fontSize: "0.95rem",
+                        fontWeight: "800",
+                        color: isUnderConstruction ? "#ef4444" : "var(--text-primary)",
                       }}
                     >
-                      <div
-                        style={{
-                          width:
-                            isTransfer || isFirst || isLast ? "12px" : "8px",
-                          height:
-                            isTransfer || isFirst || isLast ? "12px" : "8px",
-                          borderRadius: "50%",
-                          backgroundColor: isUnderConstruction
-                            ? "transparent"
-                            : isTransfer
-                            ? "var(--colorWarning, #f59e0b)"
-                            : selectedLineObj.color,
-                          border: isUnderConstruction
-                            ? "2px dashed var(--colorDanger)"
-                            : isFirst || isLast
-                            ? "2px solid var(--bgPrimary)"
-                            : "none",
-                          boxShadow: isUnderConstruction
-                            ? "none"
-                            : isFirst || isLast
-                            ? `0 0 0 2px ${selectedLineObj.color}`
-                            : "none",
-                        }}
-                      />
-                    </div>
+                      {station}
+                    </span>
 
-                    {/* Station Name and Badges */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        flexGrow: 1,
-                        flexWrap: "wrap",
-                      }}
-                    >
+                    {isFirst && (
+                      <span style={{ fontSize: "0.72rem", color: selectedLineObj.color, fontWeight: "700" }}>
+                        (بداية الخط 🚩)
+                      </span>
+                    )}
+                    {isLast && (
+                      <span style={{ fontSize: "0.72rem", color: "#10b981", fontWeight: "700" }}>
+                        (نهاية الخط 🎯)
+                      </span>
+                    )}
+
+                    {isTransfer && (
                       <span
-                        onClick={() => onToggleStation(station)}
                         style={{
-                          fontSize: "0.88rem",
-                          fontWeight:
-                            isFirst || isLast || isTransfer ? "700" : "500",
-                          color: isUnderConstruction
-                            ? "#ef4444"
-                            : "var(--text-primary)",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "6px",
-                          cursor: "pointer",
+                          fontSize: "0.7rem",
+                          fontWeight: "700",
+                          color: "#f59e0b",
+                          background: "rgba(245, 158, 11, 0.12)",
+                          border: "1px solid rgba(245, 158, 11, 0.25)",
+                          padding: "2px 7px",
+                          borderRadius: "6px",
                         }}
                       >
-                        {station}
-                        <i
-                          className={`bx ${
-                            expandedStation === station
-                              ? "bx-chevron-up"
-                              : "bx-chevron-down"
-                          }`}
-                          style={{
-                            fontSize: "0.95rem",
-                            color:
-                              expandedStation === station
-                                ? "var(--color-secondary)"
-                                : "var(--text-muted)",
-                            transition: "all 0.2s ease",
-                          }}
-                        />
-                        {isUnderConstruction && (
-                          <span
-                            style={{
-                              fontSize: "0.68rem",
-                              background: "rgba(239, 68, 68, 0.12)",
-                              color: "#ef4444",
-                              border: "1px solid rgba(239, 68, 68, 0.25)",
-                              padding: "1px 6px",
-                              borderRadius: "4px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            تحت الإنشاء 🚧
-                          </span>
-                        )}
-                        {details?.status === "تشغيل تجريبي" && (
-                          <span
-                            style={{
-                              fontSize: "0.68rem",
-                              background: "rgba(59, 130, 246, 0.12)",
-                              color: "var(--color-secondary)",
-                              border: "1px solid rgba(59, 130, 246, 0.25)",
-                              padding: "1px 6px",
-                              borderRadius: "4px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            تشغيل تجريبي ⚡
-                          </span>
-                        )}
-                        {isFirst && (
-                          <span
-                            style={{
-                              fontSize: "0.72rem",
-                              color: "var(--text-muted)",
-                              marginRight: "6px",
-                            }}
-                          >
-                            (بدايــة الخط)
-                          </span>
-                        )}
-                        {isLast && (
-                          <span
-                            style={{
-                              fontSize: "0.72rem",
-                              color: "var(--text-muted)",
-                              marginRight: "6px",
-                            }}
-                          >
-                            (نهـاية الخط)
-                          </span>
-                        )}
+                        {details?.type || "محطة تبادلية"}
                       </span>
+                    )}
 
-                      {/* Transfer badge */}
-                      {isTransfer && (
-                        <span
-                          style={{
-                            fontSize: "0.7rem",
-                            fontWeight: "700",
-                            color: "var(--colorWarning, #f59e0b)",
-                            background: "rgba(245, 158, 11, 0.1)",
-                            border: "1px solid rgba(245, 158, 11, 0.25)",
-                            padding: "2px 6px",
-                            borderRadius: "4px",
-                            marginRight: "auto",
-                          }}
-                        >
-                          {details.type}
-                        </span>
-                      )}
-                    </div>
+                    {details?.status === "تشغيل تجريبي" && (
+                      <span
+                        style={{
+                          fontSize: "0.68rem",
+                          background: "rgba(59, 130, 246, 0.12)",
+                          color: "#3b82f6",
+                          border: "1px solid rgba(59, 130, 246, 0.25)",
+                          padding: "2px 6px",
+                          borderRadius: "6px",
+                          fontWeight: "700",
+                        }}
+                      >
+                        تشغيل تجريبي ⚡
+                      </span>
+                    )}
                   </div>
 
-                  {/* Expanded Landmarks / Status details */}
-                  {expandedStation === station && (
-                    <div
-                      style={{
-                        margin: "4px 16px 12px 28px",
-                        padding: "10px 14px",
-                        borderRadius: "8px",
-                        background: "var(--bg-secondary)",
-                        border: isUnderConstruction
-                          ? "1px dashed rgba(239, 68, 68, 0.3)"
-                          : "1px solid var(--border-glass)",
-                      }}
-                    >
-                      {isUnderConstruction && (
-                        <div
-                          style={{
-                            color: "#ef4444",
-                            fontSize: "0.75rem",
-                            fontWeight: "bold",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            marginBottom: "6px",
-                          }}
-                        >
-                          <span>
-                            ⚠️ هذه المحطة قيد الإنشاء والتشطيب وليست في الخدمة
-                            للجمهور حالياً.
-                          </span>
+                  <i
+                    className={`bx ${isExpanded ? "bx-chevron-up" : "bx-chevron-down"}`}
+                    style={{
+                      fontSize: "1.2rem",
+                      color: isExpanded ? selectedLineObj.color : "var(--text-secondary)",
+                    }}
+                  />
+                </div>
+
+                {/* Expanded Landmarks / Status details */}
+                {isExpanded && (
+                  <div
+                    style={{
+                      borderTop: "1px solid var(--border-glass)",
+                      paddingTop: "10px",
+                      marginTop: "4px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                      animation: "fadeIn 0.2s ease",
+                    }}
+                  >
+                    {landmarks.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "700", marginBottom: "4px" }}>
+                          📍 المعالم الحيوية القريبة:
                         </div>
-                      )}
-                      <div
-                        style={{
-                          fontSize: "0.75rem",
-                          color: "var(--text-primary)",
-                          marginBottom: "6px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        المعالم والأماكن الحيوية القريبة من المحطة:
-                      </div>
-                      <div
-                        style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}
-                      >
-                        {landmarks.length > 0 ? (
-                          landmarks.map((landmark: string, lIdx: number) => (
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                          {landmarks.map((landmark, lIdx) => (
                             <span
                               key={lIdx}
                               style={{
-                                fontSize: "0.72rem",
-                                background: "rgba(255, 255, 255, 0.05)",
-                                color: "var(--text-primary)",
+                                background: "var(--bg-secondary)",
+                                color: "var(--text-secondary)",
+                                fontSize: "0.76rem",
                                 padding: "3px 8px",
-                                borderRadius: "4px",
+                                borderRadius: "6px",
                                 border: "1px solid var(--border-glass)",
                               }}
                             >
                               {landmark}
                             </span>
-                          ))
-                        ) : (
-                          <span
-                            style={{
-                              fontSize: "0.72rem",
-                              color: "var(--text-muted)",
-                              fontStyle: "italic",
-                            }}
-                          >
-                            لم يتم تسجيل معالم قريبة لهذه المحطة بعد.
-                          </span>
-                        )}
+                          ))}
+                        </div>
                       </div>
-                      <div
+                    )}
+
+                    <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenReportModal(station);
+                        }}
                         style={{
-                          marginTop: "10px",
-                          paddingTop: "8px",
-                          borderTop: "1px solid var(--border-glass)",
-                          display: "flex",
-                          justifyContent: "flex-end",
+                          background: "transparent",
+                          border: "none",
+                          color: "#ef4444",
+                          fontSize: "0.75rem",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
                         }}
                       >
-                        <button
-                          type="button"
-                          className="btn btn-report"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenReportModal(station);
-                          }}
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "5px",
-                            fontSize: "0.74rem",
-                            fontWeight: "600",
-                            cursor: "pointer",
-                            padding: "3px 8px",
-                            borderRadius: "6px",
-                            transition: "all 0.2s ease",
-                          }}
-                        >
-                          <i
-                            className="fa-solid fa-triangle-exclamation"
-                            style={{ fontSize: "0.75rem" }}
-                          />
-                          الإبلاغ عن خطأ في محطة {station}
-                        </button>
-                      </div>
+                        <i className="fa-solid fa-triangle-exclamation" />
+                        <span>الإبلاغ عن مشكلة في هذه المحطة</span>
+                      </button>
                     </div>
-                  )}
-
-                  {/* Connective Line */}
-                  {!isLast && (
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "12px",
-                        minHeight: "14px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: "16px",
-                          display: "flex",
-                          justifyContent: "center",
-                          flexShrink: 0,
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "2px",
-                            backgroundColor: selectedLineObj.color,
-                            minHeight: "14px",
-                            opacity: 0.4,
-                          }}
-                        />
-                      </div>
-                      <div style={{ flexGrow: 1 }} />
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          ) : (
-            <div
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "0.88rem",
-                textAlign: "center",
-                padding: "12px",
-              }}
-            >
-              لا توجد محطات مطابقة لبحثك في هذا الخط.
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Info Section */}
-      <div
-        style={{
-          marginTop: "12px",
-          background: "var(--bg-glass)",
-          border: "1px solid var(--border-glass)",
-          borderRadius: "var(--radius-card)",
-          padding: "16px",
-        }}
-      >
-        <p style={{ margin: 0, lineHeight: "1.7", fontSize: "0.88rem" }}>
-          <i
-            className="bx bxs-info-circle"
-            style={{
-              marginLeft: "6px",
-              color: selectedLineObj.color,
-              fontSize: "1.1rem",
-              verticalAlign: "middle",
-            }}
-          />
-          <strong>معلومات الخط: </strong>
-          <span style={{ color: "var(--text-muted)" }}>
-            {selectedLineObj.desc}
-          </span>
-        </p>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div style={{ textAlign: "center", padding: "20px", color: "var(--text-secondary)", fontSize: "0.88rem" }}>
+            لا توجد محطات مطابقة للبحث
+          </div>
+        )}
       </div>
     </div>
   );

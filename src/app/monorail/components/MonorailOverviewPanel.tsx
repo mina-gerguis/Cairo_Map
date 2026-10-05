@@ -1,14 +1,15 @@
 import React from "react";
 import { MonorailOverviewPanelProps } from "../types";
+import styles from "../monorail.module.css";
 
 export default function MonorailOverviewPanel({
   panelRef,
 }: MonorailOverviewPanelProps) {
   return (
-    <div ref={panelRef} className="details-panel">
+    <div ref={panelRef} className={styles.overviewBentoCard}>
       <h2
         style={{
-          fontSize: "1.25rem",
+          fontSize: "1.15rem",
           fontWeight: "800",
           color: "var(--text-primary)",
           margin: "0 0 8px",
@@ -21,7 +22,7 @@ export default function MonorailOverviewPanel({
           color: "var(--text-secondary)",
           fontSize: "0.85rem",
           lineHeight: "1.7",
-          margin: "0 0 14px",
+          margin: 0,
         }}
       >
         يعد مونوريل القاهرة أطول شبكة مونوريل بدون سائق في العالم بطول إجمالي يقارب
@@ -29,26 +30,13 @@ export default function MonorailOverviewPanel({
         مواصلات حضارية صديقة للبيئة تعمل بقطارات Alstom Innovia 300 فائقة التطور.
       </p>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "10px",
-        }}
-      >
-        <div
-          style={{
-            background: "var(--bg-secondary)",
-            border: "1px solid var(--border-glass)",
-            borderRadius: "var(--ra-8)",
-            padding: "12px",
-          }}
-        >
+      <div className={styles.overviewGrid}>
+        <div className={styles.overviewFeatureTile}>
           <div
             style={{
-              fontWeight: "700",
-              color: "var(--color-secondary)",
-              fontSize: "0.88rem",
+              fontWeight: "800",
+              color: "#3b82f6",
+              fontSize: "0.9rem",
               marginBottom: "4px",
             }}
           >
@@ -57,7 +45,7 @@ export default function MonorailOverviewPanel({
           <div
             style={{
               fontSize: "0.78rem",
-              color: "var(--text-muted)",
+              color: "var(--text-secondary)",
               lineHeight: "1.6",
             }}
           >
@@ -66,19 +54,12 @@ export default function MonorailOverviewPanel({
           </div>
         </div>
 
-        <div
-          style={{
-            background: "var(--bg-secondary)",
-            border: "1px solid var(--border-glass)",
-            borderRadius: "var(--ra-8)",
-            padding: "12px",
-          }}
-        >
+        <div className={styles.overviewFeatureTile}>
           <div
             style={{
-              fontWeight: "700",
-              color: "var(--colorSuccess)",
-              fontSize: "0.88rem",
+              fontWeight: "800",
+              color: "#10b981",
+              fontSize: "0.9rem",
               marginBottom: "4px",
             }}
           >
@@ -87,7 +68,7 @@ export default function MonorailOverviewPanel({
           <div
             style={{
               fontSize: "0.78rem",
-              color: "var(--text-muted)",
+              color: "var(--text-secondary)",
               lineHeight: "1.6",
             }}
           >

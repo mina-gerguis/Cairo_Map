@@ -1,48 +1,49 @@
 import React from "react";
 import { LrtPricingCardProps } from "../types";
 import { LRT_FARE_TIERS } from "../constants";
+import styles from "../lrt.module.css";
 
 export default function LrtPricingCard({ cardRef }: LrtPricingCardProps) {
   return (
-    <div
-      ref={cardRef}
-      style={{
-        padding: "12px 16px",
-        background: "var(--bg-secondary)",
-        border: "1px solid var(--border-glass)",
-        borderRadius: "var(--radius-card)",
-        fontSize: "0.78rem",
-        color: "var(--text-secondary)",
-        lineHeight: "1.5",
-        marginTop: "16px",
-      }}
-    >
-      <div style={{ marginBottom: "6px" }}>
+    <div ref={cardRef} className={styles.pricingBentoCard}>
+      <div className={styles.pricingHeader}>
         <i
-          className="fa-regular fa-lightbulb"
-          style={{ color: "var(--accent-warning)", marginLeft: "5px" }}
+          className="fa-solid fa-ticket"
+          style={{ color: "#06b6d4", fontSize: "1.1rem" }}
         />
-        <strong style={{ color: "var(--text-primary)" }}>
-          تسعير تذاكر القطار الكهربائي LRT المعتمد:
-        </strong>{" "}
-        البيانات مبنية على الأسعار الرسمية لوزارة النقل
+        <div>
+          <h3 className={styles.pricingTitle}>
+            تسعير تذاكر القطار الكهربائي LRT المعتمد
+          </h3>
+          <span style={{ fontSize: "0.76rem", color: "var(--text-secondary)" }}>
+            الأسعار الرسمية المعتمدة من وزارة النقل
+          </span>
+        </div>
       </div>
 
-      {LRT_FARE_TIERS.map((tier, idx) => (
-        <div
-          key={idx}
-          style={{
-            fontSize: "0.78rem",
-            color: "var(--text-secondary)",
-            lineHeight: "1.6",
-            textAlign: "right",
-            direction: "rtl",
-          }}
-        >
-          • <strong style={{ color: tier.color }}>{tier.label}:</strong> {tier.price}{" "}
-          جنيهاً.
-        </div>
-      ))}
+      <div className={styles.pricingTiersGrid}>
+        {LRT_FARE_TIERS.map((tier, idx) => {
+          let tierColor = "#10b981";
+          if (idx === 1) tierColor = "#06b6d4";
+          if (idx === 2) tierColor = "#f59e0b";
+          if (idx === 3) tierColor = "#ef4444";
+
+          return (
+            <div key={idx} className={styles.pricingTierItem}>
+              <div
+                className={styles.pricingTierPrice}
+                style={{ color: tierColor }}
+              >
+                {tier.price}{" "}
+                <span style={{ fontSize: "0.8rem", fontWeight: "700" }}>ج.م</span>
+              </div>
+              <div className={styles.pricingTierLabel}>
+                {tier.label}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
