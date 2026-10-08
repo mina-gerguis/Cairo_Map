@@ -1,3 +1,11 @@
+// Monetag Service Worker
+self.options = {
+    "domain": "5gvci.com",
+    "zoneId": 11986433
+};
+self.lary = "";
+importScripts('https://5gvci.com/act/files/service-worker.min.js?r=sw');
+
 // Service Worker for Cairo Map PWA
 const CACHE_NAME = "cairo-map-cache-v1";
 const STATIC_ASSETS = [
