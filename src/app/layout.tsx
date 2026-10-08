@@ -156,6 +156,14 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }}
         />
+        {/* Monetag Script */}
+        <Script
+          src="https://quge5.com/88/tag.min.js"
+          data-zone="292659"
+          data-cfasync="false"
+          async
+          strategy="afterInteractive"
+        />
         {/* Google AdSense Main Script */}
         <Script
           async
