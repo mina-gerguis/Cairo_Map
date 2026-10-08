@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import L from "leaflet";
 import { MapLayerType, UserLocation } from "../types";
-import { FaLocationArrow, FaPlus, FaMinus, FaLayerGroup, FaMapPin, FaCompass } from "react-icons/fa";
+import { FaLocationArrow, FaPlus, FaMinus, FaLayerGroup, FaMapPin, FaCompass, FaBookmark } from "react-icons/fa";
 import { TbFocusCentered } from "react-icons/tb";
 import styles from "../map.module.css";
 
@@ -31,6 +31,7 @@ interface MapFloatingToolsProps {
   locationLoading: boolean;
   userHasLocation: boolean;
   onSelectDistrict?: (loc: UserLocation) => void;
+  onSaveLocation?: () => void;
 }
 
 export default function MapFloatingTools({
@@ -41,6 +42,7 @@ export default function MapFloatingTools({
   locationLoading,
   userHasLocation,
   onSelectDistrict,
+  onSaveLocation,
 }: MapFloatingToolsProps) {
   const [showLayerMenu, setShowLayerMenu] = useState(false);
   const [showDistrictMenu, setShowDistrictMenu] = useState(false);
@@ -105,6 +107,18 @@ export default function MapFloatingTools({
       >
         <TbFocusCentered style={{ fontSize: "1.3rem" }} />
       </button>
+
+      {/* Save My Location Button */}
+      {onSaveLocation && (
+        <button
+          className={styles.toolButton}
+          onClick={onSaveLocation}
+          title="أحفظ مكاني (GPS دقيق ورابط Google Maps)"
+          style={{ color: "#38bdf8" }}
+        >
+          <FaBookmark style={{ fontSize: "1.05rem" }} />
+        </button>
+      )}
 
       {/* Quick Egyptian Districts / Areas Picker */}
       <div style={{ position: "relative" }} ref={districtMenuRef}>

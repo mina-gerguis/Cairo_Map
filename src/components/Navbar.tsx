@@ -87,6 +87,7 @@ export default function Navbar() {
       isDropdown: true,
       icon: "fa-solid fa-star-of-life",
       subItems: [
+        { href: "/save-location", label: "أحفظ مكاني", subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل", imgLogo: "cairo.webp" },
         { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: "cairo.webp" },
         { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.webp" },
         { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.webp" },

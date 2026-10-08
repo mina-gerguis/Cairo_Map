@@ -143,6 +143,15 @@ interface SiteServiceItem {
 
 const SITE_SERVICES: SiteServiceItem[] = [
   {
+    id: "save-location",
+    label: "أحفظ مكاني",
+    subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
+    href: "/save-location",
+    icon: "cairo.webp",
+    badge: "ميزة جديدة 🎯",
+    keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"]
+  },
+  {
     id: "metro",
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
@@ -778,6 +787,13 @@ export default function HomePage() {
   ];
 
   const mainServices = [
+    {
+      id: "save-location",
+      title: "أحفظ مكاني (GPS دقيق)",
+      desc: "احفظ مكان تواجدك أو ركنة سيارتك بدقة 100% بالميلي مع تسجيل الوقت والتاريخ ورابط مباشر لخرائط Google Maps.",
+      icon: "street",
+      link: "/save-location",
+    },
     {
       id: "places",
       title: "دليل الأماكن",

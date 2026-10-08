@@ -149,6 +149,8 @@ export default function RootLayout({
           name="google-site-verification"
           content="9R9Wjnu7iPmzSLWqsZyBs24_mmcGTRfprEE7hzxvNDk"
         />
+        {/* Monetag Verification */}
+        <meta name="monetag" content="15496dd2536b0b446474e82ce63e72c1" />
         {/* Global JSON-LD Schema */}
         <script
           type="application/ld+json"

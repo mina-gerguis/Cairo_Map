@@ -15,6 +15,7 @@ import MediaLightbox from "@/app/places/components/MediaLightbox";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
 import RequireAuthModal from "@/components/common/RequireAuthModal";
+import SaveLocationModal from "@/components/SaveLocationModal";
 import { handleSharePlace } from "@/app/places/utils";
 import styles from "./map.module.css";
 
@@ -107,6 +108,7 @@ function MapPageContent() {
   const [activeMediaIndex, setActiveMediaIndex] = useState<number | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [isSaveLocModalOpen, setIsSaveLocModalOpen] = useState(false);
 
   // Theme Sync
   useEffect(() => {
@@ -213,6 +215,7 @@ function MapPageContent() {
           locationLoading={locationLoading}
           userHasLocation={Boolean(userLocation)}
           onSelectDistrict={setUserLocationManual}
+          onSaveLocation={() => setIsSaveLocModalOpen(true)}
         />
 
         {/* Right Collapsible Places Sidebar */}
@@ -299,6 +302,17 @@ function MapPageContent() {
           placeName={fullDetailPoint.name}
         />
       )}
+
+      {/* ── Save My Location Modal ── */}
+      <SaveLocationModal
+        isOpen={isSaveLocModalOpen}
+        onClose={() => setIsSaveLocModalOpen(false)}
+        initialCoords={
+          userLocation
+            ? { lat: userLocation.lat, lng: userLocation.lng }
+            : null
+        }
+      />
 
       {/* ── Require Auth Modal ── */}
       <RequireAuthModal

@@ -79,6 +79,15 @@ interface SiteServiceItem {
 
 const SITE_SERVICES: SiteServiceItem[] = [
   {
+    id: "save-location",
+    label: "أحفظ مكاني",
+    subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
+    href: "/save-location",
+    icon: "cairo.webp",
+    badge: "ميزة جديدة",
+    keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"],
+  },
+  {
     id: "map",
     label: "خريطة الأماكن التفاعلية",
     subtitle: "خريطة حية للموقع وموقعي والأماكن",
