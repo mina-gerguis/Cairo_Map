@@ -149,20 +149,10 @@ export default function RootLayout({
           name="google-site-verification"
           content="9R9Wjnu7iPmzSLWqsZyBs24_mmcGTRfprEE7hzxvNDk"
         />
-        {/* Monetag Verification */}
-        <meta name="monetag" content="15496dd2536b0b446474e82ce63e72c1" />
         {/* Global JSON-LD Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }}
-        />
-        {/* Monetag Script */}
-        <Script
-          src="https://quge5.com/88/tag.min.js"
-          data-zone="292659"
-          data-cfasync="false"
-          async
-          strategy="afterInteractive"
         />
         {/* Google AdSense Main Script */}
         <Script
