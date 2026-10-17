@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { supabase } from "@/lib/supabase";
 import { FORGOT_PASSWORD_MESSAGES } from "../constants";
 import { UseForgotPasswordFormReturn } from "../types";
 
@@ -13,9 +12,65 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
   const [sentEmail, setSentEmail] = useState<string>("");
   const [countdown, setCountdown] = useState<number>(0);
   const [focusedField, setFocusedField] = useState<boolean>(false);
+  const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const [attemptsRemaining, setAttemptsRemaining] = useState<number>(3);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // 1. Initial IP and local storage rate limit check with 24-hour expiration
+  useEffect(() => {
+    const WINDOW_MS = 24 * 60 * 60 * 1000;
+
+    if (typeof window !== "undefined") {
+      const storedBlocked = localStorage.getItem("cairomap_forgot_pwd_blocked");
+      const storedBlockedAt = localStorage.getItem("cairomap_forgot_pwd_blocked_at");
+      const now = Date.now();
+
+      if (storedBlocked === "true") {
+        if (storedBlockedAt && now - Number(storedBlockedAt) > WINDOW_MS) {
+          // 24 hours have passed! Automatically unblock
+          localStorage.removeItem("cairomap_forgot_pwd_blocked");
+          localStorage.removeItem("cairomap_forgot_pwd_blocked_at");
+          setIsBlocked(false);
+          setError("");
+        } else {
+          setIsBlocked(true);
+          setError(FORGOT_PASSWORD_MESSAGES.RATE_LIMIT_BLOCKED);
+        }
+      }
+    }
+
+    // Verify with server IP rate limit status
+    fetch("/api/auth/forgot-password")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.blocked) {
+          setIsBlocked(true);
+          setError(FORGOT_PASSWORD_MESSAGES.RATE_LIMIT_BLOCKED);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("cairomap_forgot_pwd_blocked", "true");
+            if (!localStorage.getItem("cairomap_forgot_pwd_blocked_at")) {
+              localStorage.setItem("cairomap_forgot_pwd_blocked_at", String(Date.now()));
+            }
+          }
+        } else {
+          // If server reports not blocked (24 hours passed or user logged in), clear local lock
+          setIsBlocked(false);
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("cairomap_forgot_pwd_blocked");
+            localStorage.removeItem("cairomap_forgot_pwd_blocked_at");
+          }
+        }
+        if (typeof data?.remaining === "number") {
+          setAttemptsRemaining(data.remaining);
+        }
+      })
+      .catch(() => {
+        // Silent fallback
+      });
+  }, []);
+
+  // 2. Countdown timer for resending
   useEffect(() => {
     if (countdown > 0) {
       timerRef.current = setTimeout(() => {
@@ -28,8 +83,8 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
   }, [countdown]);
 
   const sendResetEmail = async (targetIdentifier: string) => {
-    if (!supabase) {
-      setError(FORGOT_PASSWORD_MESSAGES.DB_NOT_CONFIGURED);
+    if (isBlocked) {
+      setError(FORGOT_PASSWORD_MESSAGES.RATE_LIMIT_BLOCKED);
       return;
     }
 
@@ -43,76 +98,41 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
     setError("");
 
     try {
-      let targetEmail = trimmed;
-      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
-
-      if (!isEmail) {
-        // Look up by username
-        const cleanUsername = trimmed.replace(/^@+/, "").toLowerCase().trim();
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("email, is_suspended")
-          .eq("username", cleanUsername)
-          .maybeSingle();
-
-        if (profileError || !profileData?.email) {
-          setError(FORGOT_PASSWORD_MESSAGES.USER_NOT_FOUND);
-          setLoading(false);
-          return;
-        }
-
-        if (profileData.is_suspended) {
-          setError(FORGOT_PASSWORD_MESSAGES.ACCOUNT_SUSPENDED);
-          setLoading(false);
-          return;
-        }
-
-        targetEmail = profileData.email;
-      } else {
-        // Pre-check if email is suspended
-        const { data: profileData } = await supabase
-          .from("profiles")
-          .select("is_suspended")
-          .eq("email", targetEmail)
-          .maybeSingle();
-
-        if (profileData?.is_suspended) {
-          setError(FORGOT_PASSWORD_MESSAGES.ACCOUNT_SUSPENDED);
-          setLoading(false);
-          return;
-        }
-      }
-
-      let baseUrl =
-        process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-        (typeof window !== "undefined" ? window.location.origin : "");
-      baseUrl = baseUrl.replace(/\/+$/, "");
-      const redirectTo = `${baseUrl}/reset-password`;
-
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(targetEmail, {
-        redirectTo,
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier: trimmed }),
       });
 
-      if (resetError) {
-        if (
-          resetError.message.toLowerCase().includes("rate limit") ||
-          resetError.message.toLowerCase().includes("security purposes") ||
-          resetError.status === 429
-        ) {
-          setError(FORGOT_PASSWORD_MESSAGES.RATE_LIMIT);
-        } else {
-          setError(resetError.message || FORGOT_PASSWORD_MESSAGES.SEND_ERROR);
+      const data = await res.json().catch(() => ({}));
+
+      // Check if IP is blocked after 3 attempts or 429
+      if (data?.blocked || res.status === 429) {
+        setIsBlocked(true);
+        setAttemptsRemaining(0);
+        setError(data?.error || FORGOT_PASSWORD_MESSAGES.RATE_LIMIT_BLOCKED);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("cairomap_forgot_pwd_blocked", "true");
+          localStorage.setItem("cairomap_forgot_pwd_blocked_at", String(Date.now()));
         }
-        setLoading(false);
         return;
       }
 
-      setSentEmail(targetEmail);
+      if (!res.ok || !data?.success) {
+        setError(data?.error || FORGOT_PASSWORD_MESSAGES.SEND_ERROR);
+        return;
+      }
+
+      if (typeof data?.attemptsRemaining === "number") {
+        setAttemptsRemaining(data.attemptsRemaining);
+      }
+
+      setSentEmail(trimmed);
       setSuccess(true);
       setCountdown(60);
     } catch (err: any) {
-      console.error("Forgot password error:", err);
-      setError(err?.message || FORGOT_PASSWORD_MESSAGES.SEND_ERROR);
+      console.error("Forgot password client error:", err);
+      setError(FORGOT_PASSWORD_MESSAGES.SEND_ERROR);
     } finally {
       setLoading(false);
     }
@@ -124,7 +144,7 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
   };
 
   const handleResend = async () => {
-    if (countdown > 0 || loading) return;
+    if (countdown > 0 || loading || isBlocked) return;
     await sendResetEmail(sentEmail || identifier);
   };
 
@@ -141,5 +161,7 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
     setFocusedField,
     handleSubmit,
     handleResend,
+    isBlocked,
+    attemptsRemaining,
   };
 };

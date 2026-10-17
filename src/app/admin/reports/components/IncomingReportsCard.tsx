@@ -695,6 +695,27 @@ export function IncomingReportsCard({
           </div>
         )}
 
+        {isContactMsg && item.subject && (
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "4px 12px",
+              borderRadius: "8px",
+              background: "rgba(99, 102, 241, 0.12)",
+              border: "1px solid rgba(99, 102, 241, 0.25)",
+              color: "#818cf8",
+              fontSize: "0.82rem",
+              fontWeight: 700,
+              marginBottom: "10px",
+            }}
+          >
+            <i className="bx bx-purchase-tag-alt"></i>
+            <span>التواصل بخصوص: {item.subject}</span>
+          </div>
+        )}
+
         <p className={styles.contentText}>{item.content}</p>
 
         {item.image_url && (

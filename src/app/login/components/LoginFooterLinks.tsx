@@ -14,13 +14,17 @@ export const LoginFooterLinks: React.FC = () => {
       </div>
 
       {/* Link to Signup */}
-      <Link href="/signup" className="btn btn-secondary w-full mb-2">
+      <Link href="/signup" className="btn btn-secondary w-full mb-2 text-black"
+        style={{
+          border: "1px solid rgba(0, 0, 0, 0.08)",
+        }}
+      >
         <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }} />
         <span>{LOGIN_TEXTS.SIGNUP_BUTTON}</span>
       </Link>
 
       {/* Guest Link */}
-      <Link href="/" className="btn btn-guest btn-no-hover">
+      <Link href="/" className="btn btn-guest btn-no-hover text-muted">
         <i className="bx bx-walk" style={{ fontSize: "1.3rem" }} />
         <span>{LOGIN_TEXTS.GUEST_BUTTON}</span>
       </Link>

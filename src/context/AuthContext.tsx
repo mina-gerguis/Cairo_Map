@@ -356,6 +356,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setMfaPending(false);
       await fetchProfile(currentSession.user.id, currentSession.user);
       
+      // Reset forgot password rate limit block when user is authenticated
+      if (typeof window !== "undefined" && localStorage.getItem("cairomap_forgot_pwd_blocked")) {
+        localStorage.removeItem("cairomap_forgot_pwd_blocked");
+        localStorage.removeItem("cairomap_forgot_pwd_blocked_at");
+        fetch("/api/auth/forgot-password", { method: "DELETE" }).catch(() => {});
+      }
+
       // Register active device session in database even on error
       await registerSession(currentSession.user.id);
       setIsSessionRegistered(true);

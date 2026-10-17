@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./contact.module.css";
+import { supabase } from "@/lib/supabase";
+import { CONTACT_SUBJECT_OPTIONS } from "@/data/contactReasons";
 import {
   FaEnvelope,
   FaMapMarkerAlt,
@@ -12,29 +14,123 @@ import {
   FaCheckCircle,
   FaExclamationCircle,
   FaHeadset,
+  FaSpinner,
 } from "react-icons/fa";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
     email: "",
-    subject: "inquiry",
+    contactType: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const email = "cairo.maps@hotmail.com";
+  // Auto-fill logged-in user profile details
+  useEffect(() => {
+    let isMounted = true;
+    async function loadUserData() {
+      try {
+        if (!supabase) return;
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user || !isMounted) return;
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name, phone, email")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (profile && isMounted) {
+          const parts = (profile.full_name || "").trim().split(/\s+/);
+          const fName = parts[0] || "";
+          const lName = parts.slice(1).join(" ") || "";
+          setFormData((prev) => ({
+            ...prev,
+            firstName: prev.firstName || fName,
+            lastName: prev.lastName || lName,
+            phone: prev.phone || profile.phone || "",
+            email: prev.email || profile.email || user.email || "",
+          }));
+        } else if (user.email && isMounted) {
+          setFormData((prev) => ({
+            ...prev,
+            email: prev.email || user.email || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Error loading user profile in contact page:", err);
+      }
+    }
+    loadUserData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
+    setErrorMessage(null);
+
+    if (
+      !formData.firstName.trim() ||
+      !formData.lastName.trim() ||
+      !formData.phone.trim() ||
+      !formData.email.trim() ||
+      !formData.contactType ||
+      !formData.message.trim()
+    ) {
+      setErrorMessage("يرجى ملء جميع الحقول المطلوبة واختيار سبب التواصل.");
+      return;
+    }
+
+    if (!supabase) {
+      setErrorMessage("تعذر الاتصال بقاعدة البيانات. برجاء المحاولة لاحقاً.");
+      return;
+    }
 
     setIsSubmitting(true);
-    // Simulate sending or Supabase insertion
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const { error } = await supabase.from("contact_messages").insert([
+        {
+          first_name: formData.firstName.trim(),
+          last_name: formData.lastName.trim(),
+          phone: formData.phone.trim(),
+          email: formData.email.trim(),
+          contact_type: formData.contactType,
+          message: formData.message.trim(),
+          user_id: user ? user.id : null,
+        },
+      ]);
+
+      if (error) throw error;
+
       setIsSent(true);
-      setFormData({ name: "", email: "", subject: "inquiry", message: "" });
-    }, 800);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        email: "",
+        contactType: "",
+        message: "",
+      });
+    } catch (err: any) {
+      console.error("Error submitting contact message:", err);
+      setErrorMessage("فشل إرسال الرسالة: " + (err.message || "حدث خطأ غير متوقع"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
@@ -86,8 +182,8 @@ export default function ContactPage() {
               </div>
               <div>
                 <div className={styles.contactLabel}>البريد الإلكتروني الرسمي</div>
-                <a href="mailto:support@cairomap.app" className={styles.contactValue}>
-                  support@cairomap.app
+                <a href={`mailto:${email}`} className={styles.contactValue}>
+                  {email}
                 </a>
               </div>
             </div>
@@ -98,23 +194,52 @@ export default function ContactPage() {
               </div>
               <div>
                 <div className={styles.contactLabel}>الموقع والمركز الرئيسي</div>
-                <div className={styles.contactValue}>القاهرة، جمهورية مصر العربية</div>
+                <div className={styles.contactValue}>الشرقية - العاشر من رمضان</div>
               </div>
             </div>
 
-            <div className={styles.contactItem}>
-              <div className={styles.contactIcon}>
-                <FaClock />
-              </div>
-              <div>
-                <div className={styles.contactLabel}>أوقات الاستجابة والدعم</div>
-                <div className={styles.contactValue}>الرد خلال 24 - 48 ساعة عمل</div>
-              </div>
-            </div>
 
             <div className={styles.socialBox}>
-              <div className={styles.socialTitle}>تابعنا وشبكة المطورين</div>
+              <div className={styles.socialTitle}>تابعنا على منصات التواصل</div>
               <div className={styles.socialLinks}>
+                <a
+                  href="https://www.whatsapp.com/channel/0029VbE5UzFGpLHIjyTobP3p"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialBtn}
+                  title="WhatsApp Channel"
+                >
+                  <i className="bx bxl-whatsapp" style={{ fontSize: "1.25rem", color: "#25d366" }}></i>
+                </a>
+                <a
+                  href="https://www.facebook.com/share/1LTxiYMaJm/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialBtn}
+                  title="Facebook"
+                >
+                  <i className="bx bxl-facebook-circle" style={{ fontSize: "1.25rem", color: "#1877f2" }}></i>
+                </a>
+                <a
+                  href="https://x.com/cairo_map"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialBtn}
+                  title="X (Twitter)"
+                >
+                  <svg width="18px" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </a>
+                <a
+                  href="https://instagram.com/map_cairo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.socialBtn}
+                  title="Instagram"
+                >
+                  <i className="bx bxl-instagram" style={{ fontSize: "1.25rem", color: "#e1306c" }}></i>
+                </a>
                 <a
                   href="https://www.linkedin.com/company/repo-dex"
                   target="_blank"
@@ -122,13 +247,13 @@ export default function ContactPage() {
                   className={styles.socialBtn}
                   title="RepoDex LinkedIn"
                 >
-                  <FaLinkedin />
+                  <FaLinkedin style={{ color: "#0a66c2" }} />
                 </a>
               </div>
             </div>
 
-            <div style={{ marginTop: "12px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
-              💡 إذا كنت تريد اقتراح إضافة مكان جديد أو تعديل بيانات محل أو محطة، يمكنك استخدام صفحة{" "}
+            <div style={{ marginTop: "12px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.5",textAlign:"center" }}>
+              💡 إذا كنت تريد إضافة مكان جديد أو تعديل بيانات محل أو محطة، فتوجه لصفحة{" "}
               <Link href="/propose-place" style={{ color: "var(--color-primary)", fontWeight: "bold" }}>
                 اقتراح مكان
               </Link>.
@@ -138,74 +263,125 @@ export default function ContactPage() {
           {/* Contact Form */}
           <div className={styles.formCard}>
             <h2 className={styles.formTitle}>أرسل رسالة مباشرة</h2>
-            <form onSubmit={handleSubmit}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>الاسم الكامل *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="مثال: أحمد محمد"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className={styles.inputField}
-                />
-              </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>البريد الإلكتروني *</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="example@domain.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className={styles.inputField}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>نوع الاستفسار</label>
-                <select
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className={styles.selectField}
-                >
-                  <option value="inquiry">استفسار عام</option>
-                  <option value="feedback">اقتراح أو فكرة تحسين</option>
-                  <option value="bug">الإبلاغ عن مشكلة تقنية</option>
-                  <option value="business">إعلانات وشراكات تجارية</option>
-                </select>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>نص الرسالة *</label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="اكتب تفاصيل رسالتك أو استفسارك هنا..."
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className={styles.textareaField}
-                />
-              </div>
-
-              <button type="submit" disabled={isSubmitting} className={styles.submitBtn}>
-                {isSubmitting ? (
-                  "جاري الإرسال..."
-                ) : (
-                  <>
-                    <FaPaperPlane /> إرسال الرسالة
-                  </>
-                )}
-              </button>
-
-              {isSent && (
-                <div className={styles.successMessage}>
-                  <FaCheckCircle style={{ marginLeft: "6px" }} />
-                  تم استلام رسالتك بنجاح! سيقوم فريق العمل بمراجعتها والرد عليك قريباً.
+            {isSent ? (
+              <div className={styles.successCard}>
+                <div className={styles.successIconBox}>
+                  <FaCheckCircle />
                 </div>
-              )}
-            </form>
+                <h3 className={styles.successTitle}>تم إرسال رسالتك بنجاح!</h3>
+                <p className={styles.successDescription}>
+                  شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بمراجعة رسالتك والرد عليك عبر بريدك الإلكتروني في أقرب وقت ممكن.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsSent(false)}
+                  className={styles.resetBtn}
+                >
+                  إرسال رسالة أخرى
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                {errorMessage && (
+                  <div className={styles.errorAlert}>
+                    <FaExclamationCircle />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+
+                <div className={styles.grid2Col}>
+                  <div>
+                    <label className={styles.formLabel}>الاسم الأول *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="مثال: أحمد"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                      className={styles.inputField}
+                    />
+                  </div>
+                  <div>
+                    <label className={styles.formLabel}>الاسم الأخير *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="مثال: محمد"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                      className={styles.inputField}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.grid2Col}>
+                  <div>
+                    <label className={styles.formLabel}>رقم الهاتف *</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="01XXXXXXXXX"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className={`${styles.inputField} ${styles.inputLtrRight}`}
+                    />
+                  </div>
+                  <div>
+                    <label className={styles.formLabel}>البريد الإلكتروني *</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="example@domain.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className={`${styles.inputField} ${styles.inputLtrRight}`}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>التواصل بخصوص *</label>
+                  <select
+                    required
+                    value={formData.contactType}
+                    onChange={(e) => setFormData({ ...formData, contactType: e.target.value })}
+                    className={styles.selectField}
+                  >
+                    <option value="">اختر موضوع التواصل...</option>
+                    {CONTACT_SUBJECT_OPTIONS.map((subject) => (
+                      <option key={subject} value={subject}>
+                        {subject}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>نص الرسالة *</label>
+                  <textarea
+                    required
+                    rows={4}
+                    placeholder="اكتب تفاصيل رسالتك أو استفسارك هنا..."
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className={styles.textareaField}
+                  />
+                </div>
+
+                <button type="submit" disabled={isSubmitting} className={styles.submitBtn}>
+                  {isSubmitting ? (
+                    <>
+                      <FaSpinner className={styles.spinner} /> جاري الإرسال...
+                    </>
+                  ) : (
+                    <>
+                      <FaPaperPlane /> إرسال الرسالة
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>

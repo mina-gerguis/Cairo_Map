@@ -204,6 +204,13 @@ export const useLoginForm = (): UseLoginFormReturn => {
       }
     }
 
+    // Clear forgot password attempts lock upon successful login
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("cairomap_forgot_pwd_blocked");
+      localStorage.removeItem("cairomap_forgot_pwd_blocked_at");
+    }
+    fetch("/api/auth/forgot-password", { method: "DELETE" }).catch(() => {});
+
     // Normal successful login
     router.push("/");
   };
@@ -240,6 +247,14 @@ export const useLoginForm = (): UseLoginFormReturn => {
           return;
         }
       }
+
+      // Clear forgot password attempts lock upon successful login
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("cairomap_forgot_pwd_blocked");
+        localStorage.removeItem("cairomap_forgot_pwd_blocked_at");
+      }
+      fetch("/api/auth/forgot-password", { method: "DELETE" }).catch(() => {});
+
       router.push("/");
     }
   };

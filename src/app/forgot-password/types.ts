@@ -11,4 +11,6 @@ export interface UseForgotPasswordFormReturn {
   setFocusedField: (focused: boolean) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   handleResend: () => Promise<void>;
+  isBlocked: boolean;
+  attemptsRemaining: number;
 }

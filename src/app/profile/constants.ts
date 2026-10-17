@@ -108,6 +108,8 @@ export const INITIAL_PROFILE_FORM: ProfileFormData = {
   interests: [],
 };
 
+export { CONTACT_SUBJECT_OPTIONS } from "@/data/contactReasons";
+
 export const INITIAL_CONTACT_FORM: ContactFormData = {
   firstName: "",
   lastName: "",

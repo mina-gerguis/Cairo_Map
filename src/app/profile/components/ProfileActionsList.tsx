@@ -16,6 +16,7 @@ import {
   ContactFormData,
 } from "../types";
 import { getProblemLabelAr } from "../utils";
+import { CONTACT_SUBJECT_OPTIONS } from "../constants";
 import styles from "../page.module.css";
 
 interface ProfileActionsListProps {
@@ -1282,7 +1283,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
         >
           <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
             <div className={styles.helpHeaderLeft}>
-              <div style={{ color: "var(--color-primary)" }}>
+              <div>
                 <i className={`bx bx-help-circle ${styles.cardIcon}`}></i>
               </div>
               <h3 className={styles.cardTitle}>التواصل والمساعدة</h3>
@@ -1402,7 +1403,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     className={`category-pill ${styles.socialPill}`}
                   >
                     <i className={`bx bxl-whatsapp ${styles.socialIconWhatsapp}`}></i>
-                    <span>قناة الواتساب</span>
                   </a>
                   <a
                     href="https://www.facebook.com/share/1LTxiYMaJm/?mibextid=wwXIfr"
@@ -1411,7 +1411,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     className={`category-pill ${styles.socialPill}`}
                   >
                     <i className={`bx bxl-facebook-circle ${styles.socialIconFacebook}`}></i>
-                    <span>فيسبوك</span>
                   </a>
                   <a
                     href="https://x.com/cairo_map"
@@ -1422,7 +1421,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     <svg width="20px" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
-                    <span>تويتر</span>
                   </a>
                   <a
                     href="https://instagram.com/map_cairo"
@@ -1431,7 +1429,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     className={`category-pill ${styles.socialPill}`}
                   >
                     <i className={`bx bxl-instagram ${styles.socialIconInstagram}`}></i>
-                    <span>إنستغرام</span>
                   </a>
                 </div>
               )}
@@ -1448,7 +1445,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                       <p className={styles.contactSuccessMsg}>
                         شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بالرد عليك في أقرب وقت.
                       </p>
-                      <button className="btn" onClick={() => setContactSubmitted(false)}>
+                      <button className="btn btn-secondary w-full" onClick={() => setContactSubmitted(false)}>
                         إرسال رسالة أخرى
                       </button>
                     </div>
@@ -1503,11 +1500,12 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                           setContactForm({ ...contactForm, contactType: e.target.value })
                         }
                       >
-                        <option value="">نوع التواصل...</option>
-                        <option value="إبلاغ">إبلاغ</option>
-                        <option value="شكوى">شكوى</option>
-                        <option value="طلب مساعدة">طلب مساعدة</option>
-                        <option value="اقتراح تطوير">اقتراح تطوير</option>
+                        <option value="">التواصل بخصوص...</option>
+                        {CONTACT_SUBJECT_OPTIONS.map((subject) => (
+                          <option key={subject} value={subject}>
+                            {subject}
+                          </option>
+                        ))}
                       </select>
                       <textarea
                         required

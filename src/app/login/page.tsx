@@ -25,8 +25,8 @@ export default function LoginPage() {
       <LoginGlassCard>
         {/* Error Notification Banner */}
         {form.error && (
-          <div className={styles.errorBanner} role="alert">
-            <span>⚠️</span>
+          <div className="error" role="alert">
+            <i className="bx bx-error-circle"></i>
             <span>{form.error}</span>
           </div>
         )}

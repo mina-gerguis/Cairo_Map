@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import DriftWall from "@/components/ui/ElasticMesh";
 import { DRIFT_WALL_ITEMS } from "@/app/login/constants";
-import { FORGOT_PASSWORD_TEXTS } from "./constants";
+import { FORGOT_PASSWORD_TEXTS, FORGOT_PASSWORD_MESSAGES } from "./constants";
 import { useForgotPasswordForm } from "./hooks/useForgotPasswordForm";
 import styles from "./forgot-password.module.css";
 
@@ -48,33 +48,43 @@ export default function ForgotPasswordPage() {
       <div className={styles.formContainer}>
         {/* Header */}
         <div className={styles.header}>
-          <div className={styles.logoWrapper}>
-            <img
-              src="/images/logo/darkMode_logo.webp"
-              alt="ماب القاهرة"
-              className={styles.logoImgDark}
-            />
-            <img
-              src="/images/logo/lightMode_logo.webp"
-              alt="ماب القاهرة"
-              className={styles.logoImgLight}
-            />
-          </div>
-          <h1 className={styles.title}>{FORGOT_PASSWORD_TEXTS.TITLE}</h1>
-          <p className={styles.subtitle}>{FORGOT_PASSWORD_TEXTS.SUBTITLE}</p>
+          <h1 className="mb-2 text-black">{FORGOT_PASSWORD_TEXTS.TITLE}</h1>
+          <p className="text-muted">{FORGOT_PASSWORD_TEXTS.SUBTITLE}</p>
         </div>
 
         {/* Glassmorphic Card */}
         <div className={styles.glassCard}>
-          {/* Error Banner */}
-          {form.error && (
-            <div className={styles.errorBanner} role="alert">
-              <span>⚠️</span>
+          {/* Error Banner (shown for non-blocked regular errors) */}
+          {form.error && !form.isBlocked && (
+            <div className="error" role="alert">
               <span>{form.error}</span>
             </div>
           )}
 
-          {!form.success ? (
+          {form.isBlocked ? (
+            /* Blocked State Screen */
+            <div className={styles.blockedContainer}>
+              <div className={styles.blockedIconWrapper}>
+                <i className="bx bx-shield-x" />
+              </div>
+              <h2 className={styles.blockedTitle}>{FORGOT_PASSWORD_TEXTS.BLOCKED_TITLE}</h2>
+              <p className={styles.blockedDesc}>
+                {form.error || FORGOT_PASSWORD_MESSAGES.RATE_LIMIT_BLOCKED}
+              </p>
+
+              <div className={styles.blockedActions}>
+                <Link href="/contact" className={styles.contactSupportBtn}>
+                  <i className="bx bx-support" style={{ fontSize: "1.2rem" }} />
+                  <span>{FORGOT_PASSWORD_TEXTS.CONTACT_SUPPORT_BTN}</span>
+                </Link>
+
+                <Link href="/login" className={styles.backToLoginBtn}>
+                  <i className="bx bx-arrow-back" style={{ fontSize: "1.1rem" }} />
+                  <span>{FORGOT_PASSWORD_TEXTS.BACK_TO_LOGIN}</span>
+                </Link>
+              </div>
+            </div>
+          ) : !form.success ? (
             /* Input Form */
             <form onSubmit={form.handleSubmit} className={styles.form}>
               <div className={styles.fieldGroup}>
@@ -94,13 +104,14 @@ export default function ForgotPasswordPage() {
                     placeholder={FORGOT_PASSWORD_TEXTS.IDENTIFIER_PLACEHOLDER}
                     className={`${styles.input} ${form.focusedField ? styles.inputFocused : ""}`}
                     autoComplete="email"
+                    disabled={form.loading || form.isBlocked}
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                disabled={form.loading || !form.identifier.trim()}
+                disabled={form.loading || !form.identifier.trim() || form.isBlocked}
                 className={styles.submitBtn}
               >
                 {form.loading ? (
@@ -119,23 +130,24 @@ export default function ForgotPasswordPage() {
           ) : (
             /* Success Confirmation Screen */
             <div className={styles.successContainer}>
-              <div className={styles.successIconWrapper}>
-                <i className="bx bx-mail-send" />
-              </div>
               <h2 className={styles.successTitle}>{FORGOT_PASSWORD_TEXTS.SUCCESS_TITLE}</h2>
               <p className={styles.successDesc}>
-                تم إرسال رابط استعادة كلمة المرور إلى:
-                <br />
-                <span className={styles.emailHighlight}>{form.sentEmail}</span>
+                {FORGOT_PASSWORD_TEXTS.SUCCESS_DESC}
+                {form.sentEmail && (
+                  <>
+                    <br />
+                    <span className={styles.emailHighlight}>{form.sentEmail}</span>
+                  </>
+                )}
               </p>
               <div className={styles.successNote}>
-                ℹ️ {FORGOT_PASSWORD_TEXTS.SUCCESS_NOTE}
+                 {FORGOT_PASSWORD_TEXTS.SUCCESS_NOTE}
               </div>
 
               <button
                 type="button"
                 onClick={form.handleResend}
-                disabled={form.countdown > 0 || form.loading}
+                disabled={form.countdown > 0 || form.loading || form.isBlocked}
                 className={styles.resendBtn}
               >
                 <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }} />
@@ -154,7 +166,7 @@ export default function ForgotPasswordPage() {
           )}
 
           {/* Bottom Login Link */}
-          {!form.success && (
+          {!form.success && !form.isBlocked && (
             <div className={styles.footerLinkWrapper}>
               <span>{FORGOT_PASSWORD_TEXTS.REMEMBER_PASSWORD}</span>{" "}
               <Link href="/login" className={styles.loginLink}>

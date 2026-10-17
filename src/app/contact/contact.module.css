@@ -1,7 +1,7 @@
 .container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: calc(var(--navbar-height) + 24px) 20px 80px;
+  padding: calc(var(--navbar-height)) 20px 80px;
   direction: rtl;
   font-family: var(--font-body);
 }
@@ -123,6 +123,7 @@
 
 .socialLinks {
   display: flex;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -166,6 +167,20 @@
   margin-bottom: 16px;
 }
 
+.grid2Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .grid2Col {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
 .formLabel {
   display: block;
   font-size: 0.85rem;
@@ -186,13 +201,25 @@
   font-size: 0.9rem;
   font-family: var(--font-body);
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputLtrRight {
+  direction: ltr;
+  text-align: right;
 }
 
 .inputField:focus,
 .textareaField:focus,
 .selectField:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 111, 238, 0.15);
+}
+
+.selectField option {
+  background: #18181b;
+  color: #f4f4f5;
+  padding: 10px;
 }
 
 .textareaField {
@@ -202,7 +229,7 @@
 
 .submitBtn {
   width: 100%;
-  padding: 12px 20px;
+  padding: 13px 20px;
   background: var(--color-primary);
   color: #fff;
   border: none;
@@ -218,23 +245,90 @@
   transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
-.submitBtn:hover {
+.submitBtn:hover:not(:disabled) {
   opacity: 0.9;
 }
 
-.submitBtn:active {
+.submitBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.submitBtn:active:not(:disabled) {
   transform: scale(0.99);
 }
 
-.successMessage {
-  padding: 16px;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorAlert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+}
+
+.successCard {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.successIconBox {
+  font-size: 3rem;
   color: #10b981;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.successDescription {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 440px;
+  margin: 0 auto 24px;
+}
+
+.resetBtn {
+  padding: 11px 24px;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
   border-radius: 10px;
   font-size: 0.9rem;
-  text-align: center;
-  margin-top: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s ease;
+}
+
+.resetBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 850px) {

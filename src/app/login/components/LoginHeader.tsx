@@ -19,7 +19,7 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({
       </div>
 
       {/* Main Title & Subtitle */}
-      <h1 className="font-display text-4xl font-black mb-2">{title}</h1>
+      <h1 className="font-display text-4xl font-black mb-2 text-black">{title}</h1>
       <p className="text-muted text-md font-sub">{subtitle}</p>
     </div>
   );

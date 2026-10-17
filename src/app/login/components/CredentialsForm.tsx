@@ -93,7 +93,7 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
       <button
         type="submit"
         disabled={loading}
-        className="btn btn-primary"
+        className="btn btn-primary bg-black text-white"
       >
         {loading ? (
           <>

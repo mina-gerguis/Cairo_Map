@@ -517,6 +517,7 @@
 
 .cardIcon {
   font-size: 1.3rem;
+  color: #8b8b8b;
 }
 
 .cardTitle {
@@ -818,13 +819,14 @@
 .helpExpandedContent {
   cursor: default;
   border-top: 1px solid var(--border-glass);
+  margin-top: 10px;
   padding: 20px 0;
 }
 
 .tabsContainer {
   display: flex;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2px;
+  background: rgba(43, 42, 42, 0.089);
+  padding: 4px;
   border-radius: 12px;
   margin-bottom: 20px;
 }
@@ -843,14 +845,15 @@
 }
 
 .tabBtnActive {
-  background: var(--color-secondary);
-  color: #fff;
+  background: var(--tab-active-bg);
+  color: var(--tab-active-color);
 }
 
 .faqList {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 0 10px;
 }
 
 .faqEmptyText {
@@ -971,7 +974,7 @@
   justify-content: center;
   gap: 8px;
   padding: 10px;
-  border: 1px solid var(--border-glass);
+
   text-decoration: none;
 }
 
@@ -980,22 +983,22 @@
 }
 
 .socialIconWhatsapp {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #25d366;
 }
 
 .socialIconFacebook {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #1877f2;
 }
 
 .socialIconTelegram {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #0088cc;
 }
 
 .socialIconInstagram {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #e1306c;
 }
 
@@ -1017,6 +1020,7 @@
 }
 
 .contactSuccessTitle {
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 800;
   margin-bottom: 8px;
