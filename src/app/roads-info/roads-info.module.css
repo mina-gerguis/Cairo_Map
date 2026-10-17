@@ -1,0 +1,1228 @@
+/* ============================================================================
+   ROADS INFO SERVICE MODULE - THEME AWARE (Dark & Light Mode)
+   ============================================================================ */
+
+.pageWrapper {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 60px;
+  background-color: var(--bgPrimary, #000000);
+  color: var(--text-primary, #f4f4f5);
+  overflow-x: hidden;
+  direction: rtl;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:global(html.light) .pageWrapper {
+  background-color: var(--bgPrimary, #ffffff);
+  color: var(--text-primary, #18181b);
+}
+
+.ambientGlow {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(139, 92, 246, 0.08) 50%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global(html.light) .ambientGlow {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(147, 197, 253, 0.15) 50%, transparent 80%);
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Hero Section ── */
+.heroSection {
+  padding: 40px 16px 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 9999px;
+  color: var(--color-secondary, #3b82f6);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+:global(html.light) .heroBadge {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: #1d4ed8;
+}
+
+.heroTitle {
+  font-family: var(--font-heading, "Cairo", sans-serif);
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.25;
+  margin-bottom: 12px;
+  color: var(--text-primary, #ffffff);
+}
+
+:global(html.light) .heroTitle {
+  color: #0f172a;
+}
+
+.heroSubtitle {
+  max-width: 720px;
+  margin: 0 auto 26px;
+  color: var(--text-secondary, #a1a1aa);
+  font-size: clamp(0.92rem, 1.8vw, 1.08rem);
+  line-height: 1.65;
+}
+
+:global(html.light) .heroSubtitle {
+  color: #475569;
+}
+
+.heroStatsGrid {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.heroStatCard {
+  background: var(--cardGlassBg, rgba(24, 24, 27, 0.7));
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 170px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+:global(html.light) .heroStatCard {
+  background: #ffffff;
+  border-color: rgba(226, 232, 240, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.heroStatIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.heroStatValue {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary, #ffffff);
+  line-height: 1.1;
+}
+
+:global(html.light) .heroStatValue {
+  color: #0f172a;
+}
+
+.heroStatLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #a1a1aa);
+}
+
+:global(html.light) .heroStatLabel {
+  color: #64748b;
+}
+
+/* ── Tabs Navigation ── */
+.tabsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg-secondary, rgba(15, 23, 42, 0.6));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  padding: 6px;
+  border-radius: 16px;
+  max-width: 600px;
+  margin: 0 auto 24px;
+  backdrop-filter: blur(10px);
+}
+
+:global(html.light) .tabsContainer {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.tabButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, #a1a1aa);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+:global(html.light) .tabButton {
+  color: #64748b;
+}
+
+.tabButtonActive {
+  background: var(--color-primary, #2563eb);
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+:global(html.light) .tabButtonActive {
+  background: var(--color-primary, #2563eb);
+  color: #ffffff !important;
+}
+
+.tabBadge {
+  background: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  font-size: 0.72rem;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+/* ── Search & Filter Card ── */
+.searchCard {
+  background: var(--cardGlassBg, rgba(24, 24, 27, 0.75));
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+:global(html.light) .searchCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.searchInputsRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .searchInputsRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.searchInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 14px;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 42px 12px 14px;
+  background: var(--inputBg, rgba(15, 23, 42, 0.6));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  border-radius: 12px;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.95rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+:global(html.light) .searchInput {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary, #3b82f6);
+}
+
+.filterSelect {
+  padding: 12px 16px;
+  background: var(--inputBg, rgba(15, 23, 42, 0.6));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  border-radius: 12px;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.9rem;
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+:global(html.light) .filterSelect {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.filterChipsRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 9999px;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+:global(html.light) .filterChip {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.filterChip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary, #ffffff);
+}
+
+:global(html.light) .filterChip:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.filterChipActive {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #60a5fa;
+}
+
+:global(html.light) .filterChipActive {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.4);
+  color: #1d4ed8;
+}
+
+/* ── Master Road Card ── */
+.selectedRoadContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.roadMasterCard {
+  background: linear-gradient(135deg, rgba(24, 24, 27, 0.85) 0%, rgba(9, 9, 11, 0.95) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+:global(html.light) .roadMasterCard {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.roadMasterCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+}
+
+.roadHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.roadTitleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.roadMainTitle {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--text-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+:global(html.light) .roadMainTitle {
+  color: #0f172a;
+}
+
+.roadTypeBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+:global(html.light) .roadTypeBadge {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.roadEndpoints {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 0.88rem;
+}
+
+:global(html.light) .roadEndpoints {
+  color: #64748b;
+}
+
+.roadStatsPills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.roadPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.84rem;
+  color: var(--text-primary, #e2e8f0);
+}
+
+:global(html.light) .roadPill {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.roadPillStrong {
+  font-weight: 700;
+  color: var(--color-secondary, #60a5fa);
+}
+
+:global(html.light) .roadPillStrong {
+  color: #2563eb;
+}
+
+.roadDescriptionText {
+  color: var(--text-secondary, #cbd5e1);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+:global(html.light) .roadDescriptionText {
+  color: #334155;
+}
+
+/* ── Speed Limits Grid ── */
+.speedLimitsSection {
+  margin-top: 12px;
+}
+
+.speedSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.speedSectionTitle {
+  font-size: 1.15rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary, #ffffff);
+}
+
+:global(html.light) .speedSectionTitle {
+  color: #0f172a;
+}
+
+.speedRadarBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+:global(html.light) .speedRadarBadge {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.speedsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.speedCard {
+  background: var(--cardGlassBg, rgba(15, 23, 42, 0.65));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+:global(html.light) .speedCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.speedCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+:global(html.light) .speedCard:hover {
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08);
+}
+
+.speedVehicleIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.speedVehicleName {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 2px;
+}
+
+:global(html.light) .speedVehicleName {
+  color: #0f172a;
+}
+
+.speedVehicleSub {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-bottom: 12px;
+}
+
+:global(html.light) .speedVehicleSub {
+  color: #64748b;
+}
+
+.speedGaugeWrapper {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 16px;
+  border-radius: 12px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:global(html.light) .speedGaugeWrapper {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.speedNumber {
+  font-size: 1.85rem;
+  font-weight: 900;
+  font-family: var(--font-heading, "Cairo", sans-serif);
+  line-height: 1;
+}
+
+.speedUnit {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary, #94a3b8);
+}
+
+:global(html.light) .speedUnit {
+  color: #64748b;
+}
+
+.speedNote {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-top: 8px;
+  line-height: 1.3;
+}
+
+:global(html.light) .speedNote {
+  color: #64748b;
+}
+
+/* ── Live Weather Section ── */
+.weatherCard {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.25) 0%, rgba(15, 23, 42, 0.8) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+:global(html.light) .weatherCard {
+  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+  border-color: #bfdbfe;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.05);
+}
+
+.weatherLeftGroup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.weatherIconLarge {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: rgba(59, 130, 246, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+:global(html.light) .weatherIconLarge {
+  background: #dbeafe;
+}
+
+.weatherInfoGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.weatherMainStatus {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.weatherTemp {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary, #ffffff);
+}
+
+:global(html.light) .weatherTemp {
+  color: #0f172a;
+}
+
+.weatherCondition {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #93c5fd;
+}
+
+:global(html.light) .weatherCondition {
+  color: #2563eb;
+}
+
+.weatherTipText {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #cbd5e1);
+  max-width: 500px;
+  line-height: 1.45;
+}
+
+:global(html.light) .weatherTipText {
+  color: #475569;
+}
+
+.weatherMetricsRow {
+  display: flex;
+  gap: 14px;
+}
+
+.weatherMetricItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--text-secondary, #cbd5e1);
+}
+
+:global(html.light) .weatherMetricItem {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+/* ── Roads Cards List (Selector) ── */
+.roadsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.roadCard {
+  background: var(--cardGlassBg, rgba(30, 41, 59, 0.6));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+:global(html.light) .roadCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.roadCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(30, 41, 59, 0.85);
+}
+
+:global(html.light) .roadCard:hover {
+  background: #f8fafc;
+  border-color: #93c5fd;
+}
+
+.roadCardActive {
+  border-color: #3b82f6;
+  background: rgba(30, 58, 138, 0.25);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+:global(html.light) .roadCardActive {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+}
+
+.roadCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.roadCardName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 4px;
+}
+
+:global(html.light) .roadCardName {
+  color: #0f172a;
+}
+
+.roadCardLength {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--color-secondary, #60a5fa);
+  font-weight: 700;
+}
+
+:global(html.light) .roadCardLength {
+  color: #2563eb;
+}
+
+.roadCardSpeedSummary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-secondary, rgba(15, 23, 42, 0.5));
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: 0.8rem;
+}
+
+:global(html.light) .roadCardSpeedSummary {
+  background: #f1f5f9;
+}
+
+/* ── Road News Section ── */
+.newsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.newsFiltersRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.newsCard {
+  background: var(--cardGlassBg, rgba(30, 41, 59, 0.7));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  transition: border-color 0.2s;
+}
+
+:global(html.light) .newsCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.newsCard:hover {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.newsIconCol {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.newsContentCol {
+  flex: 1;
+}
+
+.newsMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.newsSeverityBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.newsSeverityCritical {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+:global(html.light) .newsSeverityCritical {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.newsSeverityWarning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+:global(html.light) .newsSeverityWarning {
+  background: #fef3c7;
+  color: #d97706;
+  border-color: #fcd34d;
+}
+
+.newsSeverityInfo {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+:global(html.light) .newsSeverityInfo {
+  background: #e0f2fe;
+  color: #0284c7;
+  border-color: #bae6fd;
+}
+
+.newsRoadTag {
+  font-size: 0.75rem;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+:global(html.light) .newsRoadTag {
+  background: #f1f5f9;
+  color: #2563eb;
+}
+
+.newsDate {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-right: auto;
+}
+
+:global(html.light) .newsDate {
+  color: #64748b;
+}
+
+.newsTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 6px;
+}
+
+:global(html.light) .newsTitle {
+  color: #0f172a;
+}
+
+.newsSummary {
+  font-size: 0.88rem;
+  color: var(--text-secondary, #cbd5e1);
+  line-height: 1.55;
+}
+
+:global(html.light) .newsSummary {
+  color: #475569;
+}
+
+.newsSource {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+:global(html.light) .newsSource {
+  color: #64748b;
+}
+
+/* ── General Speed Guide & Emergency Cards ── */
+.guideContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.guideGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.guideCard {
+  background: var(--cardGlassBg, rgba(30, 41, 59, 0.7));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  padding: 20px;
+}
+
+:global(html.light) .guideCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.guideCardTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+:global(html.light) .guideCardTitle {
+  color: #0f172a;
+}
+
+.emergencyNumbersList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emergencyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--bg-secondary, rgba(15, 23, 42, 0.5));
+  border-radius: 10px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.05));
+}
+
+:global(html.light) .emergencyItem {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.emergencyNumberLink {
+  color: #38bdf8;
+  font-weight: 800;
+  font-size: 1.05rem;
+  direction: ltr;
+  text-decoration: none;
+}
+
+:global(html.light) .emergencyNumberLink {
+  color: #0284c7;
+}
+
+/* ── Trip Calculator Widget ── */
+.calculatorCard {
+  background: linear-gradient(135deg, rgba(24, 24, 27, 0.8) 0%, rgba(9, 9, 11, 0.9) 100%);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  border-radius: 18px;
+  padding: 22px;
+  margin-top: 16px;
+}
+
+:global(html.light) .calculatorCard {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.calcInputsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.calcResultBox {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+:global(html.light) .calcResultBox {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.calcResultItemVal {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-secondary, #60a5fa);
+}
+
+:global(html.light) .calcResultItemVal {
+  color: #2563eb;
+}
+
+.calcResultItemLbl {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+:global(html.light) .calcResultItemLbl {
+  color: #64748b;
+}
+
+/* ── Road Specific News Section (Inside Detail Card) ── */
+.roadSpecificNewsSection {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+}
+
+:global(html.light) .roadSpecificNewsSection {
+  border-top-color: #e2e8f0;
+}
+
+.roadSpecificNewsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.roadSpecificNewsTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary, #ffffff);
+}
+
+:global(html.light) .roadSpecificNewsTitle {
+  color: #0f172a;
+}
+
+.noRoadNewsBox {
+  background: var(--bg-secondary, rgba(15, 23, 42, 0.45));
+  border: 1px dashed var(--border-glass, rgba(255, 255, 255, 0.15));
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+:global(html.light) .noRoadNewsBox {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.noRoadNewsIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+:global(html.light) .noRoadNewsIcon {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.noRoadNewsTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 2px;
+}
+
+:global(html.light) .noRoadNewsTitle {
+  color: #0f172a;
+}
+
+.noRoadNewsDesc {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.4;
+}
+
+:global(html.light) .noRoadNewsDesc {
+  color: #64748b;
+}

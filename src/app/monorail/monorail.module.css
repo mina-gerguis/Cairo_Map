@@ -1,0 +1,601 @@
+/* ==========================================================================
+   Monorail Modern Stylesheet
+   Design System: Glassmorphism, Modern Bento Grid, Royal Blue & Emerald Palette
+   ========================================================================== */
+
+/* Main Outer Wrapper */
+.pageWrapper {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  direction: rtl;
+  padding-bottom: 60px;
+  background-color: var(--bgPrimary);
+}
+
+/* Monorail Ambient Glow in the background */
+.ambientGlow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 950px;
+  height: 420px;
+  background: radial-gradient(
+    ellipse 65% 55% at 50% 0%,
+    rgba(59, 130, 246, 0.18) 0%,
+    rgba(16, 185, 129, 0.12) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global(html.light) .ambientGlow {
+  background: radial-gradient(
+    ellipse 65% 55% at 50% 0%,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(16, 185, 129, 0.06) 50%,
+    transparent 100%
+  );
+}
+
+/* Content Container */
+.contentContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== 21ST.DEV BENTO LINES SLIDER ==================== */
+.sliderSection {
+  margin: 20px 0 24px;
+}
+
+.sliderTrack {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 580px) {
+  .sliderTrack {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bentoCard {
+  border-radius: var(--radius-card, 16px);
+  padding: 16px;
+  cursor: pointer;
+  outline: none;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  background: var(--bg-glass, rgba(24, 24, 27, 0.6));
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+:global(html.light) .bentoCard {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.bentoCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.2);
+}
+
+.bentoCardActive {
+  border-color: var(--line-color, #3b82f6) !important;
+  box-shadow: 0 0 20px -2px var(--line-glow, rgba(59, 130, 246, 0.3)) !important;
+  background: var(--line-bg, rgba(59, 130, 246, 0.08)) !important;
+}
+
+:global(html.light) .bentoCardActive {
+  background: var(--line-bg, rgba(59, 130, 246, 0.08)) !important;
+}
+
+.bentoCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.bentoIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+:global(html.light) .bentoIconBox {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.bentoPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+}
+
+.bentoCardTitle {
+  color: var(--text-primary);
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1.3;
+  margin: 0 0 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bentoCardSubtitle {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== SEARCH & ROUTE CALCULATOR CARD ==================== */
+.searchBentoCard {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 20;
+  box-shadow: var(--shadow-sm);
+}
+
+:global(html.light) .searchBentoCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9), 0 6px 20px -2px rgba(0, 0, 0, 0.05);
+}
+
+.searchBentoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.searchTitle {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.gpsBtn {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-secondary, #3b82f6);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.gpsBtn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.45);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.fieldLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px 0 42px;
+  border-radius: var(--ra-10, 10px);
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-family: inherit;
+  direction: rtl;
+  transition: all 0.2s ease;
+}
+
+:global(html.light) .searchInput {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  background: var(--bgPrimary);
+}
+
+.stationSelectedBadge {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.72rem;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.swapBtnWrapper {
+  display: flex;
+  justify-content: center;
+  margin: -6px 0;
+  position: relative;
+  z-index: 5;
+}
+
+.swapBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-secondary, #18181b);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 1rem;
+}
+
+:global(html.light) .swapBtn {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.swapBtn:hover {
+  transform: rotate(180deg) scale(1.08);
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.dropdownList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary, #18181b);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-card, 12px);
+  overflow: hidden;
+  z-index: 100;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-top: 6px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+:global(html.light) .dropdownList {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownItem {
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.15s ease;
+}
+
+:global(html.light) .dropdownItem {
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+
+.dropdownItem:hover {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+/* ==================== ROUTE RESULTS & METRICS ==================== */
+.routeResultCard {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px;
+  margin-top: 20px;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.3s ease;
+}
+
+:global(html.light) .routeResultCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 640px) {
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.metricTile {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.07));
+  border-radius: 12px;
+  padding: 12px 10px;
+  text-align: center;
+}
+
+:global(html.light) .metricTile {
+  background: rgba(248, 250, 252, 0.8);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.metricTileVal {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.metricTileLabel {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* Timeline Chips */
+.timelineChipsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+}
+
+.stationChip {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+/* ==================== LINE EXPLORER ==================== */
+.explorerSection {
+  margin-top: 36px;
+}
+
+.explorerHeader {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+:global(html.light) .explorerHeader {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.stationTimelineBox {
+  max-height: 560px;
+  overflow-y: auto;
+  padding: 12px 16px 12px 6px;
+  scrollbar-width: thin;
+}
+
+.stationNodeItem {
+  background: var(--bgPrimary, #18181b);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  margin-bottom: 6px;
+}
+
+:global(html.light) .stationNodeItem {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.stationNodeItem:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* ==================== OVERVIEW BENTO ==================== */
+.overviewBentoCard {
+  background: var(--bg-glass, rgba(20, 20, 24, 0.7));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px;
+  margin-top: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+:global(html.light) .overviewBentoCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .overviewGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.overviewFeatureTile {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.07));
+  border-radius: 12px;
+  padding: 14px;
+}
+
+:global(html.light) .overviewFeatureTile {
+  background: rgba(248, 250, 252, 0.8);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* ==================== BOTTOM REPORT BANNER ==================== */
+.calloutBanner {
+  background: radial-gradient(
+    135% 120% at 100% 0%,
+    rgba(59, 130, 246, 0.15) 0%,
+    rgba(16, 185, 129, 0.08) 50%,
+    rgba(20, 20, 24, 0.8) 100%
+  );
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-card, 16px);
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+:global(html.light) .calloutBanner {
+  background: radial-gradient(
+    135% 120% at 100% 0%,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(16, 185, 129, 0.05) 50%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.calloutBanner:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.calloutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+:global(html.light) .calloutBtn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.calloutBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}

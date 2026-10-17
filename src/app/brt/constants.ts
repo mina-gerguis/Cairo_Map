@@ -1,0 +1,207 @@
+import { BrtStation, StationPaletteItem } from "./types";
+
+export const STATION_PALETTE: StationPaletteItem[] = [
+  { color: "#e11d48", glow: "rgba(225, 29, 72, 0.35)", icon: "bx bx-bus" },
+  { color: "#3b82f6", glow: "rgba(59, 130, 246, 0.35)", icon: "bx bx-map-pin" },
+  { color: "#10b981", glow: "rgba(16, 185, 129, 0.35)", icon: "bx bx-navigation" },
+  { color: "#f59e0b", glow: "rgba(245, 158, 11, 0.35)", icon: "bx bx-compass" },
+  { color: "#8b5cf6", glow: "rgba(139, 92, 246, 0.35)", icon: "bx bx-trip" },
+  { color: "#06b6d4", glow: "rgba(6, 182, 212, 0.35)", icon: "bx bx-directions" },
+  { color: "#f97316", glow: "rgba(249, 115, 22, 0.35)", icon: "bx bx-transfer-alt" },
+  { color: "#ec4899", glow: "rgba(236, 72, 153, 0.35)", icon: "bx bx-map" },
+];
+
+export const POPULAR_DESTINATIONS = [
+  "كايرو فستيفال",
+  "المنيب",
+  "عدلي منصور",
+  "كارفور المعادي",
+  "محور 26 يوليو",
+  "بشتيل",
+  "المرج الغربية",
+  "شبرا الخيمة",
+];
+
+export const DEFAULT_BRT_STATIONS: BrtStation[] = [
+  {
+    name: "محطة عدلي منصور التبادلية (BRT)",
+    location: "شرق القاهرة - تقاطع الطريق الدائري مع طريق مصر الإسماعيلية ومحور الفريق الشاذلي",
+    governorate: "القاهرة",
+    sector: "شرق القاهرة",
+    type: "تبادلية كبرى (مترو 3 + LRT + سوبرجيت + قطار السويس)",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=Adly+Mansour+Central+Station",
+    landmarks: ["مترو الخط الثالث", "القطار الكهربائي الخفيف LRT", "محطة السوبرجيت", "طريق الإسماعيلية الصحراوي"],
+    routes: [
+      { destination: "طريق السويس", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "10", via: "موقف العاشر - كوبري السلام" },
+      { destination: "كايرو فستيفال سيتي", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "18", via: "طريق السويس - أكاديمية الشرطة" },
+      { destination: "المشير طنطاوي (المونوريل)", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "22", via: "كايرو فستيفال - التسعين الشمالي" },
+      { destination: "كارفور المعادي", fare: "20", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "35", via: "المشير طنطاوي - طريق العين السخنة" },
+      { destination: "المنيب (الخط الثاني للمترو)", fare: "25", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "50", via: "كارفور المعادي - الأوتوستراد - كوبري المنيب" },
+      { destination: "المرج الغربية", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "12", via: "مؤسسة الزكاة - ترعة الطوارئ" },
+      { destination: "مسطرد", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "20", via: "المرج - الخصوص - ترعة الإسماعيلية" },
+      { destination: "شبرا الخيمة", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "26", via: "مسطرد - بهتيم - الزراعي" },
+    ]
+  },
+  {
+    name: "محطة كايرو فستيفال سيتي (CFC)",
+    location: "القاهرة الجديدة - الدائري تقاطع شارع التسعين الجنوبي والداون تاون",
+    governorate: "القاهرة",
+    sector: "شرق القاهرة",
+    type: "محطة رئيسية للمراكز التجارية والأعمال",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=Cairo+Festival+City+Mall",
+    landmarks: ["كايرو فستيفال سيتي مول", "إيكيا مصر", "الداون تاون التجمع", "التسعين الجنوبي"],
+    routes: [
+      { destination: "عدلي منصور", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "18", via: "أكاديمية الشرطة - طريق السويس" },
+      { destination: "المشير طنطاوي", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "6", via: "التسعين الشمالي - محور المشير" },
+      { destination: "كارفور المعادي", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "14", via: "الجولف - طريق السخنة" },
+      { destination: "الأوتوستراد (صقر قريش)", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "20", via: "كارفور المعادي - البساتين" },
+      { destination: "المنيب", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "28", via: "الأوتوستراد - كورنيش المعادي" },
+      { destination: "محور 26 يوليو (أكتوبر)", fare: "25", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "48", via: "المنيب - المريوطية - صفط اللبن" },
+    ]
+  },
+  {
+    name: "محطة المشير طنطاوي التبادلية",
+    location: "مدينة نصر والتجمع - تقاطع الطريق الدائري مع محور المشير",
+    governorate: "القاهرة",
+    sector: "شرق القاهرة",
+    type: "تبادلية مع مونوريل شرق النيل 🚝",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=El+Mosheer+Tantawy+Axis",
+    landmarks: ["محور المشير طنطاوي", "مركز مصر للمعارض الدولية (EIEC)", "مسجد المشير", "استاد الدفاع الجوي", "محطة المونوريل"],
+    routes: [
+      { destination: "كايرو فستيفال سيتي", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "6", via: "التسعين الجنوبي" },
+      { destination: "طريق السويس", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "12", via: "أكاديمية الشرطة" },
+      { destination: "عدلي منصور", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "22", via: "طريق السويس - كوبري السلام" },
+      { destination: "كارفور المعادي", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "12", via: "قطامية هايتس - طريق السخنة" },
+      { destination: "المنيب", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "26", via: "المعادي - كوبري المنيب" },
+    ]
+  },
+  {
+    name: "محطة كارفور المعادي",
+    location: "المعادي والقطامية - الطريق الدائري أمام سيتي سنتر كارفور المعادي",
+    governorate: "القاهرة",
+    sector: "جنوب القاهرة",
+    type: "محطة رئيسية للمراكز التجارية والاستثمار",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=City+Centre+Maadi",
+    landmarks: ["سيتي سنتر كارفور المعادي", "كمبوند تيجان", "زهراء المعادي", "المنطقة الاستثمارية بالقطامية"],
+    routes: [
+      { destination: "الأوتوستراد (صقر قريش)", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "8", via: "البساتين - صقر قريش" },
+      { destination: "المنيب", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "16", via: "الأوتوستراد - دار السلام - كوبري المنيب" },
+      { destination: "المريوطية والهرم", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "24", via: "المنيب - القصبجي - ترعة المريوطية" },
+      { destination: "كايرو فستيفال سيتي", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "14", via: "طريق السخنة - قطامية" },
+      { destination: "عدلي منصور", fare: "20", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "35", via: "المشير - طريق السويس" },
+      { destination: "محور 26 يوليو", fare: "20", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "36", via: "المنيب - المنصورية - صفط" },
+    ]
+  },
+  {
+    name: "محطة المنيب التبادلية (BRT)",
+    location: "جنوب الجيزة - ميدان المنيب بجوار محطة المترو وموقف الصعيد الإقليمي",
+    governorate: "الجيزة",
+    sector: "جنوب القاهرة",
+    type: "تبادلية كبرى (مترو الخط الثاني + موقف الصعيد)",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=El+Mounib+Station",
+    landmarks: ["الخط الثاني للمترو", "موقف المنيب للأقاليم والصعيد", "شارع البحر الأعظم", "كوبري المنيب العلوي"],
+    routes: [
+      { destination: "المريوطية (الهرم)", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "8", via: "القصبجي - ترعة الزمر" },
+      { destination: "المنصورية (الأهرامات)", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "12", via: "المريوطية - مدخل سقارة" },
+      { destination: "محور 26 يوليو", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "20", via: "صفط اللبن - أرض اللواء" },
+      { destination: "بشتيل (محطة قطارات الصعيد)", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "26", via: "محور 26 يوليو - محور عرابي" },
+      { destination: "كارفور المعادي", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "16", via: "كوبري المنيب - الأوتوستراد" },
+      { destination: "كايرو فستيفال", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "28", via: "كارفور المعادي - المشير" },
+      { destination: "عدلي منصور", fare: "25", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "50", via: "المعادي - التجمع - طريق السويس" },
+    ]
+  },
+  {
+    name: "محطة محور 26 يوليو التبادلية",
+    location: "الجيزة - تقاطع الطريق الدائري مع محور 26 يوليو (أكتوبر والمهندسين)",
+    governorate: "الجيزة",
+    sector: "غرب القاهرة",
+    type: "تبادلية مع مونوريل غرب النيل (السادس من أكتوبر) 🚝",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=26th+of+July+Corridor",
+    landmarks: ["محور 26 يوليو", "مونوريل غرب النيل", "طريق مصر إسكندرية الصحراوي", "القرية الذكية والشيخ زايد"],
+    routes: [
+      { destination: "بشتيل (محطة القطارات)", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "7", via: "أرض اللواء - محور عرابي" },
+      { destination: "القومية العربية (المترو 3)", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "12", via: "بشتيل - إمبابة" },
+      { destination: "شبرا الخيمة", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "22", via: "الوراق - جزيرة محمد" },
+      { destination: "المريوطية", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "12", via: "صفط اللبن - المنصورية" },
+      { destination: "المنيب", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "20", via: "المنصورية - القصبجي" },
+      { destination: "كارفور المعادي", fare: "20", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "36", via: "المنيب - الأوتوستراد" },
+    ]
+  },
+  {
+    name: "محطة بشتيل (قطارات صعيد مصر)",
+    location: "الجيزة - الطريق الدائري أعلى محطة قطارات صعيد مصر المركزية ببشتيل",
+    governorate: "الجيزة",
+    sector: "غرب القاهرة",
+    type: "تبادلية كبرى مع محطة قطارات بشتيل وسكك حديد مصر 🚆",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=Bashtil+Train+Station",
+    landmarks: ["محطة قطارات صعيد مصر ببشتيل", "محور الفريق كمال عامر", "محور عرابي", "شارع السودان"],
+    routes: [
+      { destination: "القومية العربية (مترو 3)", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "5", via: "إمبابة - البوهي" },
+      { destination: "الوراق", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "9", via: "جزيرة الوراق - كوبري تحيا مصر" },
+      { destination: "شبرا الخيمة", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "15", via: "جزيرة محمد - الزراعي" },
+      { destination: "محور 26 يوليو", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "7", via: "أرض اللواء" },
+      { destination: "المنيب", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "26", via: "صفط اللبن - المريوطية" },
+      { destination: "عدلي منصور", fare: "25", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "45", via: "مسطرد - المرج" },
+    ]
+  },
+  {
+    name: "محطة شبرا الخيمة التبادلية (BRT)",
+    location: "القليوبية - الطريق الدائري أعلى طريق مصر الإسكندرية الزراعي ومحطة مترو شبرا",
+    governorate: "القليوبية",
+    sector: "شمال القاهرة",
+    type: "تبادلية كبرى (مترو الخط الثاني + قطارات شبرا + الزراعي)",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=Shubra+El+Kheima+Station",
+    landmarks: ["الخط الثاني لمترو الأنفاق", "محطة قطارات شبرا الخيمة", "طريق مصر الإسكندرية الزراعي", "ميدان المؤسسة"],
+    routes: [
+      { destination: "بهتيم ومسطرد", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "8", via: "بهتيم - مجمع البترول" },
+      { destination: "المرج الغربية", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "14", via: "مسطرد - الخصوص" },
+      { destination: "عدلي منصور", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "26", via: "المرج - مؤسسة الزكاة" },
+      { destination: "الوراق وبشتيل", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "15", via: "جزيرة محمد - محور روض الفرج" },
+      { destination: "محور 26 يوليو", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "22", via: "بشتيل - أرض اللواء" },
+      { destination: "المنيب", fare: "20", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "40", via: "المريوطية - صفط" },
+    ]
+  },
+  {
+    name: "محطة مسطرد",
+    location: "القليوبية - تقاطع الطريق الدائري مع ترعة الإسماعيلية وميدان مسطرد",
+    governorate: "القليوبية",
+    sector: "شمال القاهرة",
+    type: "تبادلية محاور ومواقف",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=Mostorod+Station",
+    landmarks: ["ميدان ومحور مسطرد الجديد", "مجمع شركات البترول", "ترعة الإسماعيلية", "محور الفريق العصار"],
+    routes: [
+      { destination: "المرج الغربية", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "7", via: "الخصوص - ترعة الجبل" },
+      { destination: "عدلي منصور", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "20", via: "المرج - مؤسسة الزكاة" },
+      { destination: "شبرا الخيمة", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "8", via: "بهتيم" },
+      { destination: "بشتيل والوراق", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "22", via: "شبرا الخيمة - جزيرة محمد" },
+      { destination: "كايرو فستيفال", fare: "20", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "38", via: "عدلي منصور - طريق السويس" },
+    ]
+  },
+  {
+    name: "محطة المرج الغربية التبادلية (BRT)",
+    location: "شمال شرق القاهرة - الطريق الدائري أمام محطة مترو المرج (الخط الأول)",
+    governorate: "القاهرة",
+    sector: "شمال القاهرة",
+    type: "تبادلية كبرى مع الخط الأول لمترو الأنفاق 🚇",
+    status: "تشغيل تجريبي",
+    map_url: "https://maps.google.com/?q=El+Marg+West+BRT+Station",
+    landmarks: ["الخط الأول لمترو الأنفاق", "موقف المرج الإقليمي لمدن القناة", "محور ترعة الطوارئ", "شارع ترعة الإسماعيلية"],
+    routes: [
+      { destination: "عدلي منصور", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "12", via: "مؤسسة الزكاة - كوبري السلام" },
+      { destination: "طريق السويس", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "20", via: "عدلي منصور - موقف العاشر" },
+      { destination: "كايرو فستيفال", fare: "20", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "30", via: "طريق السويس - أكاديمية الشرطة" },
+      { destination: "مسطرد", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "7", via: "الخصوص" },
+      { destination: "شبرا الخيمة", fare: "10", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "14", via: "مسطرد - بهتيم" },
+      { destination: "بشتيل", fare: "15", vehicleType: "أتوبيس ترددي كهربائي سريع", duration: "28", via: "شبرا - الوراق" },
+    ]
+  },
+];

@@ -1,0 +1,212 @@
+/**
+ * ============================================================================
+ * DESIGN SYSTEM — TYPOGRAPHY & FONT TOKENS (Tailwind Scale)
+ * ============================================================================
+ * Imports web font stylesheets, declares local @font-face rules, and maps
+ * font families, fluid scale sizes, and font weights matching Tailwind standards.
+ */
+
+/* ==========================================================================
+   1. External Font Imports
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Noto+Sans+Arabic:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+
+/* ==========================================================================
+   2. Local Font Declarations
+   ========================================================================== */
+
+/* --- Hagrid --- */
+@font-face {
+  font-family: "Hagrid";
+  src: url("/fonts/Hagrid.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- thmanyah Display --- */
+@font-face {
+  font-family: "thmanyah";
+  src: url("/fonts/thmanyah/display/Black.woff2") format("woff2");
+  font-weight: 900;
+  font-feature-settings: "ss01" 1;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah";
+  src: url("/fonts/thmanyah/display/Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-feature-settings: "ss01" 1;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah";
+  src: url("/fonts/thmanyah/display/Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-feature-settings: "ss01" 1;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah";
+  src: url("/fonts/thmanyah/display/Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-feature-settings: "ss01" 1;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah";
+  src: url("/fonts/thmanyah/display/Light.woff2") format("woff2");
+  font-weight: 300;
+  font-feature-settings: "ss01" 1;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- thmanyah Text --- */
+@font-face {
+  font-family: "thmanyah text";
+  src: url("/fonts/thmanyah/text/Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah text";
+  src: url("/fonts/thmanyah/text/Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah text";
+  src: url("/fonts/thmanyah/text/Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah text";
+  src: url("/fonts/thmanyah/text/Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "thmanyah text";
+  src: url("/fonts/thmanyah/text/Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   3. Typography Tokens (:root)
+   ========================================================================== */
+:root {
+  /* --- Font Family Stacks --- */
+  --font-sans: "IBM Plex Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-display: "thmanyah", var(--font-sans);
+  --font-heading: "Cairo", var(--font-sans);
+  --font-body: "IBM Plex Sans Arabic", var(--font-sans);
+  --font-sub: "thmanyah text", var(--font-sans);
+
+  /* --- Tailwind Font Size Scale --- */
+  --text-xs: 0.75rem;          /* 12px */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;         /* 14px */
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;           /* 16px */
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;         /* 18px */
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;          /* 20px */
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;          /* 24px */
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;        /* 30px */
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.25rem;         /* 36px */
+  --text-4xl--line-height: 2.5rem;
+  --text-5xl: 3rem;            /* 48px */
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.75rem;         /* 60px */
+  --text-6xl--line-height: 1;
+  --text-7xl: 4.5rem;          /* 72px */
+  --text-7xl--line-height: 1;
+  --text-8xl: 6rem;            /* 96px */
+  --text-8xl--line-height: 1;
+  --text-9xl: 8rem;            /* 128px */
+  --text-9xl--line-height: 1;
+
+  /* --- Tailwind Font Weight Scale --- */
+  --font-thin: 100;
+  --font-extralight: 200;
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* --- Backward Compatibility Aliases --- */
+  --fs-xss: var(--text-xs);
+  --fs-xs: var(--text-sm);
+  --fs-sm: var(--text-base);
+  --fs-md: var(--text-lg);
+  --fs-lg: var(--text-xl);
+  --fs-xl: var(--text-2xl);
+  --fs-2xl: var(--text-3xl);
+  --fs-3xl: var(--text-4xl);
+  --fs-4xl: var(--text-5xl);
+  --fs-5xl: var(--text-6xl);
+  --fs-6xl: var(--text-7xl);
+  --fs-7xl: var(--text-8xl);
+
+  --fw-light: var(--font-light);
+  --fw-normal: var(--font-normal);
+  --fw-medium: var(--font-medium);
+  --fw-semibold: var(--font-semibold);
+  --fw-bold: var(--font-bold);
+  --fw-extra-bold: var(--font-extrabold);
+  --fw-black: var(--font-black);
+}
+
+/* ==========================================================================
+   4. Semantic Element Font Bindings
+   ========================================================================== */
+h1,
+h2 {
+  font-family: var(--font-display);
+}
+
+h3,
+h4 {
+  font-family: var(--font-heading);
+}
+
+h5,
+h6,
+p,
+button,
+.sub-title {
+  font-family: var(--font-sub);
+}
