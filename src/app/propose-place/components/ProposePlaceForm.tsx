@@ -2,6 +2,7 @@ import React, { RefObject } from "react";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { CATEGORIES_STRUCTURE, FEATURES_LIST } from "@/data/places";
 import { MultiSelectSearch } from "@/components/ui/MultiSelectSearch";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { SERVICES_LIST } from "@/data/services";
 import { PlaceProposalFormData, CategoryItem } from "../types";
 import styles from "../propose-place.module.css";
@@ -24,7 +25,6 @@ interface ProposePlaceFormProps {
   onRemoveImage: (index: number) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
-
 export default function ProposePlaceForm({
   formRef,
   formData,
@@ -67,6 +67,7 @@ export default function ProposePlaceForm({
       <div className={styles.sectionGroup}>
         <h2 className={styles.sectionTitle}>
           <i className="bx bx-info-circle" /> البيانات الأساسية للمكان
+          <i className="icon-user"></i>
         </h2>
 
         <div className={styles.gridRow}>
@@ -141,7 +142,9 @@ export default function ProposePlaceForm({
                       }}
                       className={`${styles.pillBtn} ${isSelected ? styles.pillBtnActive : ""}`}
                     >
-                      <i className={`bx ${cat.icon}`} /> {cat.label} {isSelected && "✓"}
+                      <CategoryIcon icon={cat.icon} size={15} style={{ marginLeft: "2px" }} />
+                      <span>{cat.label}</span>
+                      {isSelected && <span style={{ marginRight: "4px" }}>✓</span>}
                     </button>
                   );
                 })}
@@ -434,7 +437,7 @@ export default function ProposePlaceForm({
       <button
         type="submit"
         disabled={isSubmitDisabled}
-        className={`btn btn-primary ${styles.submitBtn}`}
+        className="btn btn-primary"
         style={{
           opacity: isSubmitDisabled ? 0.6 : 1,
           cursor: isSubmitDisabled ? "not-allowed" : "pointer",

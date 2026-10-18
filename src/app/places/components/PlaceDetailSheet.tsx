@@ -15,6 +15,7 @@ import {
 import { FEATURES_LIST } from "@/data/places";
 import { PlaceDetailSheetProps } from "../types";
 import { CATEGORY_ICONS, CATEGORY_LABELS } from "../constants";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import ImageWithSkeleton from "./ImageWithSkeleton";
 
 export default function PlaceDetailSheet({
@@ -774,11 +775,9 @@ export default function PlaceDetailSheet({
                             gap: "6px",
                           }}
                         >
-                          <i
-                            className={`bx ${
-                              CATEGORY_ICONS[subCatKey] || "bx-tag"
-                            }`}
-                            style={{ fontSize: "0.95rem" }}
+                          <CategoryIcon
+                            icon={CATEGORY_ICONS[subCatKey]}
+                            size={15}
                           />
                           {CATEGORY_LABELS[subCatKey] || subCatKey}
                         </span>

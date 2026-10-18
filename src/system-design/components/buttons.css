@@ -3,25 +3,25 @@
  * DESIGN SYSTEM — BUTTON COMPONENTS
  * ============================================================================
 */
-  :root {
-    --btn-border-color: rgba(255, 255, 255, 0.2);
-    /* main btn background & text color */
-    --btn-primary: #ffffff;
-    --btn-primary-color: #000000;
-    /* second button */
-    --btn-secondary: rgba(143, 143, 143, 0.06);
-    --btn-secondary-color: #ffffff;
-  }
+:root {
+  --btn-border-color: rgba(255, 255, 255, 0.2);
+  /* main btn background & text color */
+  --btn-primary: #ffffff;
+  --btn-primary-color: #000000;
+  /* second button */
+  --btn-secondary: rgba(143, 143, 143, 0.06);
+  --btn-secondary-color: #ffffff;
+}
 
-  html.light {
-    --btn-border-color: rgba(0, 0, 0, 0.2);
-    /* main btn background & text color */
-    --btn-primary: #000000;
-    --btn-primary-color: #ffffff;
-    /* second button */
-    --btn-secondary: rgba(143, 143, 143, 0.06);
-    --btn-secondary-color: #000000;
-  }
+html.light {
+  --btn-border-color: rgba(0, 0, 0, 0.2);
+  /* main btn background & text color */
+  --btn-primary: #000000;
+  --btn-primary-color: #ffffff;
+  /* second button */
+  --btn-secondary: rgba(143, 143, 143, 0.06);
+  --btn-secondary-color: #000000;
+}
 
 /* ==========================================================================
    1. Base Button
@@ -84,6 +84,12 @@
   background: var(--btn-primary);
   border-color: var(--btn-border-color);
   color: var(--btn-primary-color);
+}
+
+.btn-blue {
+  background: var(--color-primary);
+  border-color: var(--mainBtnBorder);
+  color: #ffffff !important;
 }
 
 /* --- Guest --- */
@@ -189,6 +195,7 @@ html.light .btn-danger {
 html.light .btn-danger:hover {
   color: #ffffff;
 }
+
 /* --- Export --- */
 .btn-export {
   background: rgb(16, 185, 129);

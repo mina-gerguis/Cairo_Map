@@ -485,12 +485,12 @@
 .sectionCard {
   background-color: var(--bgPrimary);
   border: 1px solid var(--border-glass);
-  border-radius: var(--ra-10);
-  padding: 20px;
+  border-radius: var(--ra-20);
+  padding: 15px 20px;
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--font-heading);
 }
 
@@ -512,25 +512,23 @@
 .cardContent {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 
 .cardIcon {
-  font-size: 1.3rem;
-  color: #8b8b8b;
+  color: var(--text-primary);
+  margin-top: 6px;
+}
+
+.icon {
+  size: 42px;
 }
 
 .cardTitle {
-  margin: 0;
-  font-family: var(--font-heading);
+  font-family: var(--font-sub);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-primary);
-}
-
-.chevronIcon {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
 }
 
 .dividerDashed {

@@ -11,7 +11,7 @@ export interface CategoryItem {
 export interface SubCategoryItem {
   name: string;
   label: string;
-  icon: string;
+  icon: string | any;
 }
 
 export interface MainCategoryItem {
@@ -99,7 +99,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
       { name: 'car_dealer', label: 'معارض سيارات', icon: 'bx bx-car' },
       { name: 'tire_shop', label: 'كاوتش', icon: 'bx bx-analyse' },
       { name: 'car_wash', label: 'مغاسل سيارات', icon: 'bx bx-water' },
-      { name: 'parking', label: 'مواقف سيارات', icon: 'fa-solid fa-car-tunnel' },
+      { name: 'parking', label: 'مواقف سيارات', icon: "<CircleParking />" },
     ]
   },
   // Tourism
@@ -164,7 +164,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
     color: '#8e8e93',
     subCategories: [
       { name: 'government_office', label: 'مصالح حكومية', icon: 'bx bx-buildings' },
-      { name: 'police_station', label: 'قسم شرطة', icon: 'bx bx-shield' },
+      { name: 'police_station', label: 'قسم شرطة', icon: '<Siren />' },
       { name: 'fire_station', label: 'مطافي', icon: 'bx bx-fridge' },
       { name: 'court', label: 'محاكم', icon: 'bx bx-briefcase' },
       { name: 'post_office', label: 'بريد', icon: 'bx bx-envelope' },

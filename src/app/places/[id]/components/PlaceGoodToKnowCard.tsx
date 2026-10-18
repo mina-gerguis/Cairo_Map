@@ -4,6 +4,7 @@ import React from "react";
 import { FEATURES_LIST } from "@/data/places";
 import { PlaceGoodToKnowCardProps } from "../types";
 import { CATEGORY_ICONS, CATEGORY_LABELS } from "../constants";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 
 export default function PlaceGoodToKnowCard({
   place,
@@ -185,10 +186,10 @@ export default function PlaceGoodToKnowCard({
                     gap: "6px",
                   }}
                 >
-                  <i
-                    className={`bx ${CATEGORY_ICONS[subCatKey] || "bx-tag"}`}
-                    style={{ fontSize: "0.95rem" }}
-                  ></i>
+                  <CategoryIcon
+                    icon={CATEGORY_ICONS[subCatKey]}
+                    size={15}
+                  />
                   {CATEGORY_LABELS[subCatKey] || subCatKey}
                 </span>
               ))}

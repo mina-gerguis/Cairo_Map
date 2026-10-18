@@ -366,23 +366,7 @@ export function MultiSelectSearch({
             <button
               type="button"
               onClick={handleAddNewOption}
-              style={{
-                width: "100%",
-                background: "rgba(16, 185, 129, 0.1)",
-                color: "var(--colorSuccess)",
-                border: "1px dashed rgba(16, 185, 129, 0.4)",
-                borderRadius: "8px",
-                padding: "10px",
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                cursor: "pointer",
-                textAlign: "center",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                marginTop: "4px"
-              }}
+             className="btn btn-blue fs-sm"
             >
               <i className="bx bx-plus-circle" style={{ fontSize: "1.1rem" }}></i>
               إضافة "{searchQuery.trim()}" كخدمة جديدة

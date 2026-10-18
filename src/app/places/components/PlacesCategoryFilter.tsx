@@ -4,6 +4,7 @@ import React from "react";
 import { CATEGORIES_STRUCTURE, formatBoxIcon } from "@/data/places";
 import { PlacesCategoryFilterProps } from "../types";
 import { CATEGORY_ICONS, CATEGORY_LABELS } from "../constants";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 
 export default function PlacesCategoryFilter({
   selectedCategory,
@@ -120,9 +121,10 @@ export default function PlacesCategoryFilter({
                 fontSize: "0.8rem",
               }}
             >
-              <i
-                className={`bx ${CATEGORY_ICONS[cat] || "bx-category"}`}
-                style={{ fontSize: "1.1rem" }}
+              <CategoryIcon
+                icon={CATEGORY_ICONS[cat]}
+                fallback="bx bx-category"
+                size={17}
               />
               {CATEGORY_LABELS[cat] || cat}
             </button>
@@ -182,7 +184,7 @@ export default function PlacesCategoryFilter({
                 fontSize: "0.78rem",
               }}
             >
-              <i className={`${sub.icon}`} style={{ fontSize: "1rem" }} />
+              <CategoryIcon icon={sub.icon} size={16} />
               {sub.label}
             </button>
           ))}

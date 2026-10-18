@@ -17,6 +17,7 @@ import {
 } from "../types";
 import { getProblemLabelAr } from "../utils";
 import { CONTACT_SUBJECT_OPTIONS } from "../constants";
+import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb } from 'lucide-react';
 import styles from "../page.module.css";
 
 interface ProfileActionsListProps {
@@ -325,6 +326,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
   return (
     <>
       {/* ─── Theme, Favorites, Notifications, Add Places ─── */}
+      <h1 className="text-secondary fw-600 fs-xl pb-1">الأنشطة</h1>
       <div className={styles.sectionCard}>
         {/* Subscription Upgrade Card */}
         {user && (
@@ -338,8 +340,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               style={{ cursor: isOwnProfile ? "pointer" : "default" }}
             >
               <div className={styles.cardContent}>
-                <div style={{ color: "var(--accent-gold, #eab308)" }}>
-                  <i className={`bx bxs-crown ${styles.cardIcon}`}></i>
+                <div className={styles.cardIcon}>
+                  <ChessKing size={22}/>
                 </div>
                 <div>
                   <h3 className={styles.cardTitle}>ترقية الاشتراك</h3>
@@ -378,6 +380,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     color: "var(--color-secondary)",
                     fontWeight: "bold",
                     fontSize: "0.8rem",
+                    fontFamily: "var(--font-sub)",  
                   }}
                 >
                   {!profileExpired && profile?.subscription_tier === "mishwar"
@@ -398,14 +401,12 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
         {/* Theme (Dark / Light Mode) */}
         <div className={styles.cardContainer} onClick={toggleTheme}>
           <div className={styles.cardContent}>
-            <div style={{ color: "var(--color-primary)" }}>
-              <i
-                className={`bx ${theme === "dark" ? "bx-sun" : "bx-moon"} ${styles.cardIcon}`}
-              ></i>
+            <div className={styles.cardIcon}>
+                {theme === "dark" ? <Sun size={22} /> : <Moon size={22} />}
             </div>
             <div>
               <h3 className={styles.cardTitle}>
-                {theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
+                {theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}
               </h3>
             </div>
           </div>
@@ -421,8 +422,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               onClick={() => router.push("/favorites")}
             >
               <div className={styles.cardContent}>
-                <div style={{ color: "var(--accent-red)" }}>
-                  <i className={`bx bxs-heart ${styles.cardIcon}`}></i>
+                <div className={styles.cardIcon}>
+                   <HeartPlus size={22} /> 
                 </div>
                 <div>
                   <h3 className={styles.cardTitle}>الأماكن المفضلة</h3>
@@ -447,8 +448,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               onClick={onOpenRemindersModal}
             >
               <div className={styles.cardContent}>
-                <div style={{ color: "#34c759" }}>
-                  <i className={`bx bx-notepad ${styles.cardIcon}`}></i>
+                <div className={styles.cardIcon}>
+                   <Bookmark size={22} />
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <h3 className={styles.cardTitle}>التذكيرات والملاحظات</h3>
@@ -483,8 +484,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             >
               <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
                 <div className={styles.notifHeaderLeft}>
-                  <div style={{ color: "var(--color-secondary)" }}>
-                    <i className={`bx bxs-bell ${styles.cardIcon}`}></i>
+                  <div className={styles.cardIcon}>
+                     <Bell size={22} />
                   </div>
                   <div>
                     <h3 className={styles.cardTitle}>الإشعارات</h3>
@@ -605,8 +606,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               }}
             >
               <div className={styles.cardContent}>
-                <div style={{ color: "var(--accent-secondary)" }}>
-                  <i className={`bx bx-map-pin ${styles.cardIcon}`}></i>
+                <div className={styles.cardIcon}>
+                  <Store size={22} />  
                 </div>
                 <div>
                   <h3 className={styles.cardTitle}>اقتراحات الأماكن</h3>
@@ -630,8 +631,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             >
               <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
                 <div className={styles.notifHeaderLeft}>
-                  <div style={{ color: "var(--color-primary)" }}>
-                    <i className={`bx bx-history ${styles.cardIcon}`}></i>
+                  <div className={styles.cardIcon}>
+                    <GalleryHorizontalEnd size={22}   /> 
                   </div>
                   <div>
                     <h3 className={styles.cardTitle}>سجل الإجراءات</h3>
@@ -1175,12 +1176,13 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
       </div>
 
       {/* ─── Security & 2FA ─── */}
+      <h1 className="text-secondary fw-600 fs-xl pb-1">الأمان</h1>
       {user && isOwnProfile && (
         <div className={styles.sectionCard}>
           <div className={styles.cardContainer} onClick={onOpenPasswordModal}>
             <div className={styles.cardContent}>
-              <div style={{ color: "#30b0c7" }}>
-                <i className={`bx bx-lock-alt ${styles.cardIcon}`}></i>
+              <div className={styles.cardIcon}>
+                <ShieldLock size={22} />
               </div>
               <div>
                 <h3 className={styles.cardTitle}>تغيير كلمة المرور</h3>
@@ -1193,8 +1195,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
 
           <div className={styles.cardContainer} onClick={onOpen2FAModal}>
             <div className={styles.cardContent}>
-              <div style={{ color: "var(--accent-secondary)" }}>
-                <i className={`bx bx-key ${styles.cardIcon}`}></i>
+              <div className={styles.cardIcon}>
+                <ScanFace size={22} />
               </div>
               <div>
                 <h3 className={styles.cardTitle}>
@@ -1213,8 +1215,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
 
           <div className={styles.cardContainer} onClick={onOpenDevicesModal}>
             <div className={styles.cardContent}>
-              <div style={{ color: "#30b0c7" }}>
-                <i className={`bx bx-devices ${styles.cardIcon}`}></i>
+              <div className={styles.cardIcon}>
+                <TabletSmartphone size={22} />
               </div>
               <div>
                 <h3 className={styles.cardTitle}>إدارة الأجهزة</h3>
@@ -1226,6 +1228,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
       )}
 
       {/* ─── Suggestions & Bug Reports ─── */}
+      <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">الاقتراحات والبلاغات</h1>  
       {user && isOwnProfile && (
         <div className={styles.sectionCard}>
           <div
@@ -1239,8 +1242,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             }}
           >
             <div className={styles.cardContent}>
-              <div style={{ color: "var(--color-primary)" }}>
-                <i className={`bx bx-message-square-detail ${styles.cardIcon}`}></i>
+              <div className={styles.cardIcon}>
+                <Lightbulb size={22} />
               </div>
               <div>
                 <h3 className={styles.cardTitle}>تقديم اقتراح لتحسين التطبيق</h3>
