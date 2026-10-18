@@ -84,11 +84,12 @@ export const useProfileSecurity = ({
     }
   };
 
+  const userId = user?.id;
   useEffect(() => {
-    if (user) {
+    if (userId) {
       fetchMfaStatus();
     }
-  }, [user]);
+  }, [userId]);
 
   const fetchDevices = async () => {
     if (!supabase || !user) return;

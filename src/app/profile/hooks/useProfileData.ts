@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
@@ -19,6 +19,9 @@ import { getFavoritedLandmarksAsItems } from "../utils";
 export const useProfileData = () => {
   const router = useRouter();
   const { user, loading: authLoading, refreshProfile } = useAuth();
+  const userId = user?.id;
+  const userEmail = user?.email;
+  const hasLoadedRef = useRef(false);
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [formData, setFormData] = useState<ProfileFormData>(INITIAL_PROFILE_FORM);
@@ -38,7 +41,7 @@ export const useProfileData = () => {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [message, setMessage] = useState<ProfileAlertMessage | null>(null);
 
-  const isOwnProfile = Boolean(!profileUserId || (user && profileUserId === user.id));
+  const isOwnProfile = Boolean(!profileUserId || (userId && profileUserId === userId));
 
   // Time-based greeting calculation
   useEffect(() => {
@@ -103,14 +106,18 @@ export const useProfileData = () => {
     }
   };
 
-  const fetchProfileData = useCallback(async (targetId?: string) => {
-    if (!supabase || !user) return;
-    setLoading(true);
+  const fetchProfileData = useCallback(async (targetId?: string, forceLoading = false) => {
+    if (!supabase || !userId) return;
+    
+    // Only show full-screen loader on initial load or if explicitly forced
+    if (!hasLoadedRef.current || forceLoading) {
+      setLoading(true);
+    }
 
     const queryUserId =
       targetId ||
       (typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("id") : null) ||
-      user.id;
+      userId;
 
     // Auto-check and reset expired subscription in DB
     try {
@@ -142,12 +149,12 @@ export const useProfileData = () => {
             }
           : profileData;
 
-        setProfile({ ...updatedProfileData, email: updatedProfileData.email || user.email });
+        setProfile({ ...updatedProfileData, email: updatedProfileData.email || userEmail });
         setFormData({
           fullName: updatedProfileData.full_name || "",
           username: updatedProfileData.username || "",
           phone: updatedProfileData.phone?.replace("+20", "") || "",
-          email: updatedProfileData.email || user.email || "",
+          email: updatedProfileData.email || userEmail || "",
           governorate: updatedProfileData.governorate || "",
           city: updatedProfileData.city || "",
           dob: updatedProfileData.dob || "",
@@ -238,14 +245,15 @@ export const useProfileData = () => {
       setLoadingReminders(false);
     }
 
+    hasLoadedRef.current = true;
     setLoading(false);
-  }, [user]);
+  }, [userId, userEmail]);
 
   useEffect(() => {
     if (authLoading) return;
     fetchFAQs();
 
-    let queryUserId = user?.id || null;
+    let queryUserId = userId || null;
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const urlUserId = params.get("id");
@@ -255,7 +263,7 @@ export const useProfileData = () => {
     }
     setProfileUserId(queryUserId);
 
-    if (!user) {
+    if (!userId) {
       setLoading(false);
       return;
     }
@@ -270,7 +278,7 @@ export const useProfileData = () => {
     return () => {
       window.removeEventListener("favorites_updated", handleFavsUpdated);
     };
-  }, [user, authLoading, fetchProfileData]);
+  }, [userId, authLoading, fetchProfileData]);
 
   const handleAvatarFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

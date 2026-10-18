@@ -5,13 +5,14 @@ import Image from "next/image";
 import clsx from "clsx";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import { UserProfile, BalanceTransaction, ProfileAlertMessage } from "../../types";
-import { SUPPORTED_PAYMENT_PROVIDERS } from "../../constants";
 import { formatNumber } from "../../utils";
 import styles from "../../page.module.css";
+import { ChevronRight } from "lucide-react";
 
 interface ProfileWalletModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenPointsModal?: () => void;
   profile: UserProfile | null;
   walletTab: "main" | "deposit" | "withdraw" | "history";
   setWalletTab: (tab: "main" | "deposit" | "withdraw" | "history") => void;
@@ -49,6 +50,7 @@ interface ProfileWalletModalProps {
 export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
   isOpen,
   onClose,
+  onOpenPointsModal,
   profile,
   walletTab,
   setWalletTab,
@@ -107,8 +109,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "start",
             alignItems: "center",
+            gap: "10px",
             marginBottom: "20px",
           }}
         >
@@ -118,14 +121,11 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               className="btn-close"
               style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
             >
-              <i
-                className="bx bx-arrow-back"
-                style={{ fontSize: "1.2rem", transform: "scaleX(-1)" }}
-              ></i>
+              <ChevronRight size={18} />
             </button>
           ) : (
-            <button onClick={onClose} className="btn-close">
-              <i className="bx bx-x"></i>
+            <button onClick={onClose} className="btn-close border-none">
+              <ChevronRight size={18} />
             </button>
           )}
           <h3
@@ -134,10 +134,10 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               fontSize: "1.15rem",
               fontWeight: "700",
               color: "var(--text-primary)",
-              fontFamily: "var(--font-cairo)",
+              fontFamily: "var(--font-heading)",
             }}
           >
-            {walletTab === "main" && "المحفظة المالية"}
+            {walletTab === "main" && "رصيد ماب القاهرة"}
             {walletTab === "deposit" && "طلب إيداع رصيد"}
             {walletTab === "withdraw" && "طلب سحب رصيد"}
             {walletTab === "history" && "سجل المعاملات"}
@@ -157,84 +157,344 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 alignItems: "center",
               }}
             >
-              <div
-                style={{
-                  width: "160px",
-                  height: "100px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "14px",
-                }}
-              >
-                <Image
-                  src="/images/profile/egyptianPounds3d.webp"
-                  alt="رصيد المحفظة"
-                  draggable={false}
-                  width={100}
-                  height={100}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none" }}
-                />
-              </div>
               <span
                 style={{
-                  fontSize: "0.8rem",
-                  color: "var(--text-secondary)",
+                  fontFamily: "var(--font-heading)",
+                  fontSize: "2.4rem",
                   fontWeight: "700",
-                  fontFamily: "var(--font-cairo)",
+                  color: "var(--text-primary)",
+                  margin: "4px 0",
                 }}
               >
-                رصيد المحفظة الحالي
-              </span>
-              <span style={{ fontSize: "2.4rem", fontWeight: "900", color: "#10b981", margin: "4px 0" }}>
                 {formatNumber(profile?.balance ?? 0, 2)} ج.م
               </span>
             </div>
 
-            {/* Actions Buttons */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "24px" }}>
-              <div style={{ display: "flex", gap: "12px", width: "100%" }}>
-                <button
-                  type="button"
-                  onClick={() => setWalletTab("deposit")}
-                  className={clsx("btn", styles.actionsButton)}
-                  style={{
-                    background: "rgba(16, 185, 129, 0.1)",
-                    color: "#10b981",
-                    border: "1px solid rgba(16, 185, 129, 0.2)",
-                  }}
-                >
-                  <PiHandWithdrawBold style={{ fontSize: "1.1rem" }} />
-                  إيداع
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setWalletTab("withdraw")}
-                  className={clsx("btn", styles.actionsButton)}
-                  style={{
-                    background: "rgba(239, 68, 68, 0.1)",
-                    color: "#f87171",
-                    border: "1px solid rgba(29, 26, 26, 0.2)",
-                  }}
-                >
-                  <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
-                  سحب
-                </button>
+            {/* Points Overview Card */}
+            <div
+              onClick={() => {
+                if (onOpenPointsModal) {
+                  onOpenPointsModal();
+                }
+              }}
+              className={clsx("glass-panel", styles.walletSubCard)}
+              style={{
+                width: "100%",
+                background: "rgba(251, 191, 36, 0.08)",
+                border: "1px solid rgba(251, 191, 36, 0.28)",
+                borderRadius: "16px",
+                padding: "14px 18px",
+                cursor: onOpenPointsModal ? "pointer" : "default",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "20px",
+                textAlign: "right",
+              }}
+              title={onOpenPointsModal ? "اضغط لعرض تفاصيل وتحويل النقاط" : "رصيد النقاط"}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <i className="bx bxs-coin" style={{ color: "#f59e0b", fontSize: "1.4rem" }}></i>
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "#b38001" }}>
+                    رصيد النقاط
+                  </div>
+                  <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "#b38001" }}>
+                    {formatNumber(profile?.points ?? 0)}{" "}
+                    <span style={{ fontSize: "0.8rem", fontWeight: "600" }}>نقطة</span>
+                  </div>
+                </div>
               </div>
+
+              {onOpenPointsModal && (
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontWeight: "600" }}>
+                    تحويل النقاط
+                  </span>
+                  <i className="bx bx-chevron-left" style={{ color: "#b38001", fontSize: "1.2rem" }}></i>
+                </div>
+              )}
+            </div>
+
+            {/* Actions Buttons */}
+            <div style={{ display: "flex", gap: "12px", width: "100%", marginBottom: "20px" }}>
               <button
                 type="button"
-                onClick={() => setWalletTab("history")}
-                className="btn"
+                onClick={() => setWalletTab("deposit")}
+                className={clsx("btn", styles.actionsButton)}
                 style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  fontSize: "0.9rem",
-                  border: "1px solid var(--border-glass)",
+                  background: "rgba(16, 185, 129, 0.1)",
+                  color: "#10b981",
+                  border: "1px solid rgba(16, 185, 129, 0.2)",
                 }}
               >
-                <i className="bx bx-history" style={{ fontSize: "1.1rem" }}></i>
-                سجل المعاملات المالية
+                <PiHandWithdrawBold style={{ fontSize: "1.1rem" }} />
+                إيداع
               </button>
+              <button
+                type="button"
+                onClick={() => setWalletTab("withdraw")}
+                className={clsx("btn", styles.actionsButton)}
+                style={{
+                  background: "rgba(239, 68, 68, 0.1)",
+                  color: "#f87171",
+                  border: "1px solid rgba(29, 26, 26, 0.2)",
+                }}
+              >
+                <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
+                سحب
+              </button>
+            </div>
+
+            {/* Transactions History Section */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                borderTop: "1px solid var(--border-glass)",
+                paddingTop: "18px",
+                marginBottom: "10px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "4px",
+                }}
+              >
+                <h4
+                  className="sub-title"
+                  style={{
+                    margin: 0,
+                    fontSize: "0.95rem",
+                    fontWeight: "800",
+                    color: "var(--text-primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <i className="bx bx-history" style={{ fontSize: "1.15rem", color: "var(--color-primary)" }}></i>
+                  سجل المعاملات
+                </h4>
+                {userTransactions.length > 0 && (
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                    ({userTransactions.length} معاملة)
+                  </span>
+                )}
+              </div>
+
+              {loadingTransactions ? (
+                <div style={{ textAlign: "center", padding: "30px 0" }}>
+                  <i
+                    className="bx bx-loader-alt bx-spin"
+                    style={{ fontSize: "1.8rem", color: "var(--color-primary)" }}
+                  ></i>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "0.8rem", marginTop: "8px" }}>
+                    جاري تحميل كشف الحساب...
+                  </p>
+                </div>
+              ) : userTransactions.length === 0 ? (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "30px 0",
+                    border: "1px dashed var(--border-glass)",
+                    borderRadius: "12px",
+                  }}
+                >
+                  <i
+                    className="bx bx-receipt"
+                    style={{ fontSize: "2rem", color: "var(--text-muted)", marginBottom: "6px" }}
+                  ></i>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "0.82rem", margin: 0 }}>
+                    لا توجد معاملات سابقة حالياً.
+                  </p>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                    maxHeight: "360px",
+                    overflowY: "auto",
+                    paddingLeft: "4px",
+                  }}
+                >
+                  {userTransactions.map((tx) => (
+                    <div
+                      key={tx.id}
+                      style={{
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px solid var(--border-glass)",
+                        borderRadius: "12px",
+                        padding: "12px 14px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              background:
+                                tx.type === "deposit"
+                                  ? "rgba(16, 185, 129, 0.12)"
+                                  : "rgba(239, 68, 68, 0.12)",
+                              color: tx.type === "deposit" ? "#10b981" : "#f87171",
+                            }}
+                          >
+                            <i
+                              className={
+                                tx.type === "deposit" ? "bx bx-plus-circle" : "bx bx-minus-circle"
+                              }
+                              style={{ fontSize: "1.1rem" }}
+                            ></i>
+                          </span>
+                          <div>
+                            <span
+                              style={{
+                                fontSize: "0.82rem",
+                                fontWeight: "bold",
+                                color: "var(--text-primary)",
+                              }}
+                            >
+                              {tx.type === "deposit" ? "إيداع رصيد" : "سحب رصيد"}
+                            </span>
+                            <span
+                              style={{ display: "block", fontSize: "0.68rem", color: "var(--text-muted)" }}
+                            >
+                              {new Date(tx.created_at).toLocaleDateString("ar-EG", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div style={{ textAlign: "left" }}>
+                          <span
+                            style={{
+                              fontSize: "0.95rem",
+                              fontWeight: "900",
+                              color: tx.type === "deposit" ? "#10b981" : "#f87171",
+                            }}
+                          >
+                            {tx.type === "deposit" ? "+" : "-"} {formatNumber(tx.amount, 2)} ج.م
+                          </span>
+                          <span
+                            style={{
+                              display: "block",
+                              fontSize: "0.68rem",
+                              fontWeight: "bold",
+                              padding: "2px 6px",
+                              borderRadius: "6px",
+                              textAlign: "center",
+                              marginTop: "4px",
+                              background:
+                                tx.status === "approved"
+                                  ? "rgba(16, 185, 129, 0.1)"
+                                  : tx.status === "rejected"
+                                  ? "rgba(239, 68, 68, 0.1)"
+                                  : "rgba(251, 191, 36, 0.1)",
+                              color:
+                                tx.status === "approved"
+                                  ? "#10b981"
+                                  : tx.status === "rejected"
+                                  ? "#f87171"
+                                  : "#fbbf24",
+                            }}
+                          >
+                            {tx.status === "pending" && "معلقة"}
+                            {tx.status === "approved" && "مقبولة"}
+                            {tx.status === "rejected" && "مرفوضة"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          borderTop: "1px solid rgba(255,255,255,0.03)",
+                          paddingTop: "8px",
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                          fontSize: "0.72rem",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
+                        <span>
+                          وسيلة الدفع:{" "}
+                          <strong>
+                            {tx.method === "instapay" && "انستا باي"}
+                            {tx.method === "vodafone_cash" && "محفظة كاش"}
+                            {tx.method === "bank_transfer" && "تحويل بنكي"}
+                          </strong>
+                        </span>
+                        {tx.provider_number && (
+                          <span>
+                            الحساب/الرقم: <strong>{tx.provider_number}</strong>
+                          </span>
+                        )}
+                        {tx.transaction_id && (
+                          <span>
+                            رقم العملية: <strong>{tx.transaction_id}</strong>
+                          </span>
+                        )}
+                      </div>
+
+                      {tx.admin_notes &&
+                        (tx.status === "rejected" ? (
+                          <div
+                            style={{
+                              background: "rgba(239, 68, 68, 0.05)",
+                              border: "1px solid rgba(239, 68, 68, 0.1)",
+                              borderRadius: "8px",
+                              padding: "8px 10px",
+                              fontSize: "0.72rem",
+                              color: "#f87171",
+                            }}
+                          >
+                            <strong>تم رفض طلبك لأن</strong> {tx.admin_notes}
+                          </div>
+                        ) : (
+                          <div
+                            style={{
+                              background: "rgba(59, 130, 246, 0.05)",
+                              border: "1px solid rgba(59, 130, 246, 0.1)",
+                              borderRadius: "8px",
+                              padding: "8px 10px",
+                              fontSize: "0.72rem",
+                              color: "#60a5fa",
+                            }}
+                          >
+                            <strong>تم استخدام الرصيد في</strong> {tx.admin_notes}
+                          </div>
+                        ))}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         )}
@@ -747,336 +1007,6 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               )}
             </button>
           </form>
-        )}
-
-        {/* TAB 4: TRANSACTION HISTORY */}
-        {walletTab === "history" && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-              marginBottom: "20px",
-              maxHeight: "50vh",
-              overflowY: "auto",
-              paddingLeft: "4px",
-            }}
-          >
-            {loadingTransactions ? (
-              <div style={{ textAlign: "center", padding: "30px 0" }}>
-                <i
-                  className="bx bx-loader-alt bx-spin"
-                  style={{ fontSize: "1.8rem", color: "var(--color-primary)" }}
-                ></i>
-                <p style={{ color: "var(--text-secondary)", fontSize: "0.8rem", marginTop: "8px" }}>
-                  جاري تحميل كشف الحساب...
-                </p>
-              </div>
-            ) : userTransactions.length === 0 ? (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "40px 0",
-                  border: "1px dashed var(--border-glass)",
-                  borderRadius: "12px",
-                }}
-              >
-                <i
-                  className="bx bx-receipt"
-                  style={{ fontSize: "2.4rem", color: "var(--text-muted)", marginBottom: "8px" }}
-                ></i>
-                <p style={{ color: "var(--text-secondary)", fontSize: "0.82rem", margin: 0 }}>
-                  لا توجد معاملات سابقة حالياً.
-                </p>
-              </div>
-            ) : (
-              userTransactions.map((tx) => (
-                <div
-                  key={tx.id}
-                  style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--border-glass)",
-                    borderRadius: "12px",
-                    padding: "12px 14px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <span
-                        style={{
-                          width: "30px",
-                          height: "30px",
-                          borderRadius: "50%",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          background:
-                            tx.type === "deposit"
-                              ? "rgba(16, 185, 129, 0.12)"
-                              : "rgba(239, 68, 68, 0.12)",
-                          color: tx.type === "deposit" ? "#10b981" : "#f87171",
-                        }}
-                      >
-                        <i
-                          className={
-                            tx.type === "deposit" ? "bx bx-plus-circle" : "bx bx-minus-circle"
-                          }
-                          style={{ fontSize: "1.1rem" }}
-                        ></i>
-                      </span>
-                      <div>
-                        <span
-                          style={{
-                            fontSize: "0.82rem",
-                            fontWeight: "bold",
-                            color: "var(--text-primary)",
-                          }}
-                        >
-                          {tx.type === "deposit" ? "إيداع رصيد" : "سحب رصيد"}
-                        </span>
-                        <span
-                          style={{ display: "block", fontSize: "0.68rem", color: "var(--text-muted)" }}
-                        >
-                          {new Date(tx.created_at).toLocaleDateString("ar-EG", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div style={{ textAlign: "left" }}>
-                      <span
-                        style={{
-                          fontSize: "0.95rem",
-                          fontWeight: "900",
-                          color: tx.type === "deposit" ? "#10b981" : "#f87171",
-                        }}
-                      >
-                        {tx.type === "deposit" ? "+" : "-"} {formatNumber(tx.amount, 2)} ج.م
-                      </span>
-                      <span
-                        style={{
-                          display: "block",
-                          fontSize: "0.68rem",
-                          fontWeight: "bold",
-                          padding: "2px 6px",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          marginTop: "4px",
-                          background:
-                            tx.status === "approved"
-                              ? "rgba(16, 185, 129, 0.1)"
-                              : tx.status === "rejected"
-                              ? "rgba(239, 68, 68, 0.1)"
-                              : "rgba(251, 191, 36, 0.1)",
-                          color:
-                            tx.status === "approved"
-                              ? "#10b981"
-                              : tx.status === "rejected"
-                              ? "#f87171"
-                              : "#fbbf24",
-                        }}
-                      >
-                        {tx.status === "pending" && "معلقة"}
-                        {tx.status === "approved" && "مقبولة"}
-                        {tx.status === "rejected" && "مرفوضة"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      borderTop: "1px solid rgba(255,255,255,0.03)",
-                      paddingTop: "8px",
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: "10px",
-                      fontSize: "0.72rem",
-                      color: "var(--text-secondary)",
-                    }}
-                  >
-                    <span>
-                      وسيلة الدفع:{" "}
-                      <strong>
-                        {tx.method === "instapay" && "انستا باي"}
-                        {tx.method === "vodafone_cash" && "محفظة كاش"}
-                        {tx.method === "bank_transfer" && "تحويل بنكي"}
-                      </strong>
-                    </span>
-                    {tx.provider_number && (
-                      <span>
-                        الحساب/الرقم: <strong>{tx.provider_number}</strong>
-                      </span>
-                    )}
-                    {tx.transaction_id && (
-                      <span>
-                        رقم العملية: <strong>{tx.transaction_id}</strong>
-                      </span>
-                    )}
-                  </div>
-
-                  {tx.admin_notes &&
-                    (tx.status === "rejected" ? (
-                      <div
-                        style={{
-                          background: "rgba(239, 68, 68, 0.05)",
-                          border: "1px solid rgba(239, 68, 68, 0.1)",
-                          borderRadius: "8px",
-                          padding: "8px 10px",
-                          fontSize: "0.72rem",
-                          color: "#f87171",
-                        }}
-                      >
-                        <strong>تم رفض طلبك لأن</strong> {tx.admin_notes}
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          background: "rgba(59, 130, 246, 0.05)",
-                          border: "1px solid rgba(59, 130, 246, 0.1)",
-                          borderRadius: "8px",
-                          padding: "8px 10px",
-                          fontSize: "0.72rem",
-                          color: "#60a5fa",
-                        }}
-                      >
-                        <strong>تم استخدام الرصيد في</strong> {tx.admin_notes}
-                      </div>
-                    ))}
-                </div>
-              ))
-            )}
-          </div>
-        )}
-
-        {/* Explanation Sections */}
-        {walletTab === "main" && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px",
-              borderTop: "1px solid var(--border-glass)",
-              paddingTop: "20px",
-            }}
-          >
-            <div>
-              <h4
-                className="sub-title"
-                style={{
-                  margin: "0 0 8px",
-                  fontSize: "0.92rem",
-                  fontWeight: "800",
-                  color: "#10b981",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                }}
-              >
-                <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
-                ما هو رصيد المحفظة؟
-              </h4>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: "0.8rem",
-                  color: "var(--text-secondary)",
-                  lineHeight: "1.6",
-                }}
-              >
-                هو رصيد مالي حقيقي بالجنيه المصري (EGP) يتم شحنه في حسابك، أو تحويل النقاط المكتسبة
-                إليه. يمكنك استخدامه في شراء المنتجات المميزة، دفع اشتراكات الدليل، أو سحبه نقداً.
-              </p>
-            </div>
-
-            <div>
-              <h4
-                className="sub-title"
-                style={{
-                  margin: "0 0 12px",
-                  fontSize: "0.92rem",
-                  fontWeight: "800",
-                  color: "var(--text-primary)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                }}
-              >
-                <i className="bx bx-credit-card-front" style={{ fontSize: "1.1rem" }}></i>
-                طرق الشحن والسحب المدعومة
-              </h4>
-              <p
-                style={{
-                  margin: "0 0 12px",
-                  fontSize: "0.78rem",
-                  color: "var(--text-muted)",
-                  lineHeight: "1.5",
-                }}
-              >
-                يمكنك استخدام الطرق التالية للشحن أو سحب مستحقاتك وأرصدتك المالية:
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  background: "rgba(255,255,255,0.02)",
-                  padding: "12px",
-                  borderRadius: "16px",
-                  border: "1px solid var(--border-glass)",
-                }}
-              >
-                {SUPPORTED_PAYMENT_PROVIDERS.map((pay) => (
-                  <div
-                    key={pay.name}
-                    title={pay.title}
-                    style={{
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid var(--border-glass)",
-                      borderRadius: "8px",
-                      padding: "6px 10px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    <Image
-                      src={pay.icon}
-                      alt={pay.title}
-                      width={20}
-                      height={20}
-                      style={{ objectFit: "contain", borderRadius: "4px" }}
-                    />
-                    <span
-                      style={{
-                        fontSize: "0.75rem",
-                        color: "var(--text-primary)",
-                        fontWeight: "500",
-                        fontFamily: "var(--font-body)",
-                      }}
-                    >
-                      {pay.title}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         )}
       </div>
     </div>

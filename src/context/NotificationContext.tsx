@@ -99,7 +99,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     return () => {
       if (supabase) supabase.removeChannel(subscription);
     };
-  }, [user]);
+  }, [user?.id]);
 
   const markAsRead = async (id: string) => {
     if (!supabase || !user) return;

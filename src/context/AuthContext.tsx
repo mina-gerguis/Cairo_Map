@@ -317,7 +317,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } else {
         // MFA not required OR MFA already verified (aal2)
         setSession(currentSession);
-        setUser(currentSession.user);
+        setUser((prev) => {
+          if (prev && currentSession.user && prev.id === currentSession.user.id && prev.updated_at === currentSession.user.updated_at) {
+            return prev;
+          }
+          return currentSession.user;
+        });
         setMfaPending(false);
         await fetchProfile(currentSession.user.id, currentSession.user);
         
@@ -352,7 +357,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (err) {}
 
       setSession(currentSession);
-      setUser(currentSession.user);
+      setUser((prev) => {
+        if (prev && currentSession.user && prev.id === currentSession.user.id && prev.updated_at === currentSession.user.updated_at) {
+          return prev;
+        }
+        return currentSession.user;
+      });
       setMfaPending(false);
       await fetchProfile(currentSession.user.id, currentSession.user);
       
@@ -383,7 +393,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "TOKEN_REFRESHED") {
+        if (session) {
+          setSession(session);
+          setUser((prev) => {
+            if (prev && session.user && prev.id === session.user.id && prev.updated_at === session.user.updated_at) {
+              return prev;
+            }
+            return session.user;
+          });
+        }
+        return;
+      }
       await checkAuthAndMfa(session);
     });
 

@@ -1286,7 +1286,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
         >
           <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
             <div className={styles.helpHeaderLeft}>
-              <div>
+              <div className={styles.cardIcon}>
                 <BadgeQuestionMark size={22} />
               </div>
               <h3 className={styles.cardTitle}>التواصل والمساعدة</h3>

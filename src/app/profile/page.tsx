@@ -258,6 +258,11 @@ export default function ProfilePage() {
       <ProfileWalletModal
         isOpen={wallet.showWalletModal}
         onClose={() => wallet.setShowWalletModal(false)}
+        onOpenPointsModal={() => {
+          wallet.setShowWalletModal(false);
+          wallet.setShowPointsModal(true);
+          wallet.setShowConvertSection(false);
+        }}
         profile={profile}
         walletTab={wallet.walletTab}
         setWalletTab={wallet.setWalletTab}

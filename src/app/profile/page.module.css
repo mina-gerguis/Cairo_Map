@@ -810,7 +810,7 @@
 .helpHeaderLeft {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 
 
@@ -2098,6 +2098,125 @@
 
 .deactivateDeviceBtn:active {
   transform: scale(0.95);
+}
+
+/* ─── Noon-style Balance Card ─── */
+.noonBalanceCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  direction: rtl;
+  padding: 14px 20px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  margin-bottom: 24px;
+  margin-top: 8px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  user-select: none;
+  font-family: var(--font-cairo, var(--font-heading), sans-serif);
+}
+
+:global(html:not(.light)) .noonBalanceCard {
+  background: var(--card-glass, #18181b);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+:global(html:not(.light)) .noonBalanceCard:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.noonBalanceCard:active {
+  transform: scale(0.99);
+}
+
+.noonBalanceRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.noonBalanceIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e293b;
+  font-size: 1.35rem;
+}
+
+:global(html:not(.light)) .noonBalanceIcon {
+  color: #f3f4f6;
+}
+
+.noonBalanceTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.2px;
+}
+
+:global(html:not(.light)) .noonBalanceTitle {
+  color: #f3f4f6;
+}
+
+.noonBalancePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f3f6;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  direction: rtl;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+:global(html:not(.light)) .noonBalancePill {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.noonBalancePill:hover {
+  background: #e5e7eb;
+}
+
+:global(html:not(.light)) .noonBalancePill:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.noonBalanceAmount {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  direction: rtl;
+  letter-spacing: -0.2px;
+}
+
+:global(html:not(.light)) .noonBalanceAmount {
+  color: #ffffff;
+}
+
+.noonBalanceChevron {
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scaleX(1);
+}
+
+:global(html:not(.light)) .noonBalanceChevron {
+  color: #94a3b8;
+}
+
+.walletSubCard {
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.walletSubCard:hover {
+  border-color: rgba(251, 191, 36, 0.45) !important;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.12);
 }
 
 /* ─── Profile Badges Container & Pill Styles ─── */
