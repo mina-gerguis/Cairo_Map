@@ -17,7 +17,7 @@ import {
 } from "../types";
 import { getProblemLabelAr } from "../utils";
 import { CONTACT_SUBJECT_OPTIONS } from "../constants";
-import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb } from 'lucide-react';
+import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash } from 'lucide-react';
 import styles from "../page.module.css";
 
 interface ProfileActionsListProps {
@@ -341,33 +341,32 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             >
               <div className={styles.cardContent}>
                 <div className={styles.cardIcon}>
-                  <ChessKing size={22}/>
+                  <ChessKing size={22} />
                 </div>
                 <div>
                   <h3 className={styles.cardTitle}>ترقية الاشتراك</h3>
                   <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "2px" }}>
                     {profileExpired ||
-                    !profile?.subscription_tier ||
-                    profile?.subscription_tier === "free"
+                      !profile?.subscription_tier ||
+                      profile?.subscription_tier === "free"
                       ? "الباقة المجانية"
                       : profile?.subscription_tier === "mishwar"
-                      ? profile?.subscription_status === "cancelled"
-                        ? "باقة المشوار"
-                        : "باقة المشوار "
-                      : profile?.subscription_tier === "silver"
-                      ? profile?.subscription_status === "cancelled"
-                        ? "الباقة الفضية "
-                        : "الباقة الفضية"
-                      : profile?.subscription_tier === "gold"
-                      ? profile?.subscription_status === "cancelled"
-                        ? "الباقة الذهبية"
-                        : "الباقة الذهبية"
-                      : "الباقة المجانية"}
+                        ? profile?.subscription_status === "cancelled"
+                          ? "باقة المشوار"
+                          : "باقة المشوار "
+                        : profile?.subscription_tier === "silver"
+                          ? profile?.subscription_status === "cancelled"
+                            ? "الباقة الفضية "
+                            : "الباقة الفضية"
+                          : profile?.subscription_tier === "gold"
+                            ? profile?.subscription_status === "cancelled"
+                              ? "الباقة الذهبية"
+                              : "الباقة الذهبية"
+                            : "الباقة المجانية"}
                     {!profileExpired &&
                       profile?.subscription_tier !== "free" &&
                       profile?.subscription_end &&
-                      ` (${
-                        profile?.subscription_status === "cancelled" ? "ستنتهي في" : "ينتهي في"
+                      ` (${profile?.subscription_status === "cancelled" ? "ستنتهي في" : "ينتهي في"
                       } ${new Date(profile.subscription_end).toLocaleDateString("ar-EG")})`}
                   </p>
                 </div>
@@ -380,16 +379,16 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     color: "var(--color-secondary)",
                     fontWeight: "bold",
                     fontSize: "0.8rem",
-                    fontFamily: "var(--font-sub)",  
+                    fontFamily: "var(--font-sub)",
                   }}
                 >
                   {!profileExpired && profile?.subscription_tier === "mishwar"
                     ? "المشوار"
                     : !profileExpired && profile?.subscription_tier === "silver"
-                    ? "الفضية"
-                    : !profileExpired && profile?.subscription_tier === "gold"
-                    ? "الذهبية"
-                    : "ترقية"}
+                      ? "الفضية"
+                      : !profileExpired && profile?.subscription_tier === "gold"
+                        ? "الذهبية"
+                        : "ترقية"}
                 </span>
                 {isOwnProfile && <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>}
               </div>
@@ -402,7 +401,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
         <div className={styles.cardContainer} onClick={toggleTheme}>
           <div className={styles.cardContent}>
             <div className={styles.cardIcon}>
-                {theme === "dark" ? <Sun size={22} /> : <Moon size={22} />}
+              {theme === "dark" ? <Sun size={22} /> : <Moon size={22} />}
             </div>
             <div>
               <h3 className={styles.cardTitle}>
@@ -423,7 +422,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             >
               <div className={styles.cardContent}>
                 <div className={styles.cardIcon}>
-                   <HeartPlus size={22} /> 
+                  <HeartPlus size={22} />
                 </div>
                 <div>
                   <h3 className={styles.cardTitle}>الأماكن المفضلة</h3>
@@ -449,7 +448,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             >
               <div className={styles.cardContent}>
                 <div className={styles.cardIcon}>
-                   <Bookmark size={22} />
+                  <Bookmark size={22} />
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <h3 className={styles.cardTitle}>التذكيرات والملاحظات</h3>
@@ -485,7 +484,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
                 <div className={styles.notifHeaderLeft}>
                   <div className={styles.cardIcon}>
-                     <Bell size={22} />
+                    <Bell size={22} />
                   </div>
                   <div>
                     <h3 className={styles.cardTitle}>الإشعارات</h3>
@@ -498,9 +497,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     </span>
                   )}
                   <i
-                    className={`bx bx-chevron-${
-                      isNotificationsExpanded ? "down" : "left"
-                    } ${styles.chevronIcon}`}
+                    className={`bx bx-chevron-${isNotificationsExpanded ? "down" : "left"
+                      } ${styles.chevronIcon}`}
                   ></i>
                 </div>
               </div>
@@ -551,24 +549,22 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             if (!notif.is_read) markAsRead(notif.id);
                             onSelectNotification(notif);
                           }}
-                          className={`${styles.notifItem} ${
-                            notif.is_read ? styles.notifItemRead : styles.notifItemUnread
-                          }`}
+                          className={`${styles.notifItem} ${notif.is_read ? styles.notifItemRead : styles.notifItemUnread
+                            }`}
                         >
                           <div className={styles.notifEmoji}>
                             {notif.type === "success"
                               ? "✅"
                               : notif.type === "warning"
-                              ? "⚠️"
-                              : "🔔"}
+                                ? "⚠️"
+                                : "🔔"}
                           </div>
                           <div className={styles.notifItemBody}>
                             <h5
-                              className={`${styles.notifItemTitle} ${
-                                notif.is_read
+                              className={`${styles.notifItemTitle} ${notif.is_read
                                   ? styles.notifItemTitleRead
                                   : styles.notifItemTitleUnread
-                              }`}
+                                }`}
                             >
                               {notif.title}
                             </h5>
@@ -607,7 +603,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             >
               <div className={styles.cardContent}>
                 <div className={styles.cardIcon}>
-                  <Store size={22} />  
+                  <Store size={22} />
                 </div>
                 <div>
                   <h3 className={styles.cardTitle}>اقتراحات الأماكن</h3>
@@ -632,7 +628,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
                 <div className={styles.notifHeaderLeft}>
                   <div className={styles.cardIcon}>
-                    <GalleryHorizontalEnd size={22}   /> 
+                    <GalleryHorizontalEnd size={22} />
                   </div>
                   <div>
                     <h3 className={styles.cardTitle}>سجل الإجراءات</h3>
@@ -643,19 +639,18 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                     userReports.filter((r) => r.status === "pending").length +
                     userAppFeedbacks.filter((f) => f.status === "pending").length >
                     0 && (
-                    <span
-                      className={styles.notifBadgeRed}
-                      style={{ background: "var(--color-primary)" }}
-                    >
-                      {userProposals.filter((p) => p.status === "pending").length +
-                        userReports.filter((r) => r.status === "pending").length +
-                        userAppFeedbacks.filter((f) => f.status === "pending").length}
-                    </span>
-                  )}
+                      <span
+                        className={styles.notifBadgeRed}
+                        style={{ background: "var(--color-primary)" }}
+                      >
+                        {userProposals.filter((p) => p.status === "pending").length +
+                          userReports.filter((r) => r.status === "pending").length +
+                          userAppFeedbacks.filter((f) => f.status === "pending").length}
+                      </span>
+                    )}
                   <i
-                    className={`bx bx-chevron-${
-                      isRequestsExpanded ? "down" : "left"
-                    } ${styles.chevronIcon}`}
+                    className={`bx bx-chevron-${isRequestsExpanded ? "down" : "left"
+                      } ${styles.chevronIcon}`}
                   ></i>
                 </div>
               </div>
@@ -1176,108 +1171,113 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
       </div>
 
       {/* ─── Security & 2FA ─── */}
-      <h1 className="text-secondary fw-600 fs-xl pb-1">الأمان</h1>
       {user && isOwnProfile && (
-        <div className={styles.sectionCard}>
-          <div className={styles.cardContainer} onClick={onOpenPasswordModal}>
-            <div className={styles.cardContent}>
-              <div className={styles.cardIcon}>
-                <ShieldLock size={22} />
+        <>
+          <h1 className="text-secondary fw-600 fs-xl pb-1">الأمان</h1>
+          <div className={styles.sectionCard}>
+            <div className={styles.cardContainer} onClick={onOpenPasswordModal}>
+              <div className={styles.cardContent}>
+                <div className={styles.cardIcon}>
+                  <ShieldLock size={22} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>تغيير كلمة المرور</h3>
+                </div>
               </div>
-              <div>
-                <h3 className={styles.cardTitle}>تغيير كلمة المرور</h3>
-              </div>
-            </div>
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-          </div>
-
-          <hr className={styles.dividerDashed} />
-
-          <div className={styles.cardContainer} onClick={onOpen2FAModal}>
-            <div className={styles.cardContent}>
-              <div className={styles.cardIcon}>
-                <ScanFace size={22} />
-              </div>
-              <div>
-                <h3 className={styles.cardTitle}>
-                  المصادقة الثنائية ({activeCount} من 3)
-                </h3>
-              </div>
-            </div>
-            {activeCount > 0 ? (
-              <i className={`bx bxs-check-circle ${styles.mfaCheckIcon}`}></i>
-            ) : (
               <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-            )}
-          </div>
-
-          <hr className={styles.dividerDashed} />
-
-          <div className={styles.cardContainer} onClick={onOpenDevicesModal}>
-            <div className={styles.cardContent}>
-              <div className={styles.cardIcon}>
-                <TabletSmartphone size={22} />
-              </div>
-              <div>
-                <h3 className={styles.cardTitle}>إدارة الأجهزة</h3>
-              </div>
             </div>
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+
+            <hr className={styles.dividerDashed} />
+
+            <div className={styles.cardContainer} onClick={onOpen2FAModal}>
+              <div className={styles.cardContent}>
+                <div className={styles.cardIcon}>
+                  <ScanFace size={22} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>
+                    المصادقة الثنائية ({activeCount} من 3)
+                  </h3>
+                </div>
+              </div>
+              {activeCount > 0 ? (
+                <i className={`bx bxs-check-circle ${styles.mfaCheckIcon}`}></i>
+              ) : (
+                <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+              )}
+            </div>
+
+            <hr className={styles.dividerDashed} />
+
+            <div className={styles.cardContainer} onClick={onOpenDevicesModal}>
+              <div className={styles.cardContent}>
+                <div className={styles.cardIcon}>
+                  <TabletSmartphone size={22} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>إدارة الأجهزة</h3>
+                </div>
+              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* ─── Suggestions & Bug Reports ─── */}
-      <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">الاقتراحات والبلاغات</h1>  
       {user && isOwnProfile && (
-        <div className={styles.sectionCard}>
-          <div
-            className={styles.cardContainer}
-            onClick={() => {
-              if (isLimitReached) {
-                onShowLimitMessage();
-              } else {
-                onOpenSuggestionModal();
-              }
-            }}
-          >
-            <div className={styles.cardContent}>
-              <div className={styles.cardIcon}>
-                <Lightbulb size={22} />
+        <>
+          <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">الاقتراحات والبلاغات</h1>
+          <div className={styles.sectionCard}>
+            <div
+              className={styles.cardContainer}
+              onClick={() => {
+                if (isLimitReached) {
+                  onShowLimitMessage();
+                } else {
+                  onOpenSuggestionModal();
+                }
+              }}
+            >
+              <div className={styles.cardContent}>
+                <div className={styles.cardIcon}>
+                  <Lightbulb size={22} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>تقديم اقتراح لتحسين التطبيق</h3>
+                </div>
               </div>
-              <div>
-                <h3 className={styles.cardTitle}>تقديم اقتراح لتحسين التطبيق</h3>
-              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             </div>
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-          </div>
 
-          <hr className={styles.dividerDashed} />
+            <hr className={styles.dividerDashed} />
 
-          <div
-            className={styles.cardContainer}
-            onClick={() => {
-              if (isLimitReached) {
-                onShowLimitMessage();
-              } else {
-                onOpenBugReportModal();
-              }
-            }}
-          >
-            <div className={styles.cardContent}>
-              <div style={{ color: "#ff3b30" }}>
-                <i className={`bx bx-bug ${styles.cardIcon}`}></i>
+            <div
+              className={styles.cardContainer}
+              onClick={() => {
+                if (isLimitReached) {
+                  onShowLimitMessage();
+                } else {
+                  onOpenBugReportModal();
+                }
+              }}
+            >
+              <div className={styles.cardContent}>
+                <div className={styles.cardIcon}>
+                  <Bug size={22} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>الإبلاغ عن مشكلة في التطبيق</h3>
+                </div>
               </div>
-              <div>
-                <h3 className={styles.cardTitle}>الإبلاغ عن مشكلة في التطبيق</h3>
-              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             </div>
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
-        </div>
+        </>
       )}
 
       {/* ─── Help & Support ─── */}
+      <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">التواصل والمساعدة</h1>
       <div id="help-section" className={styles.sectionCard}>
         <div
           className={`${styles.cardContainer} ${isHelpExpanded ? styles.helpCardExpanded : ""}`}
@@ -1287,14 +1287,13 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
           <div className={styles.cardContent} style={{ justifyContent: "space-between" }}>
             <div className={styles.helpHeaderLeft}>
               <div>
-                <i className={`bx bx-help-circle ${styles.cardIcon}`}></i>
+                <BadgeQuestionMark size={22} />
               </div>
               <h3 className={styles.cardTitle}>التواصل والمساعدة</h3>
             </div>
             <i
-              className={`bx ${isHelpExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${
-                styles.chevronIcon
-              }`}
+              className={`bx ${isHelpExpanded ? "bx-chevron-up" : "bx-chevron-down"} ${styles.chevronIcon
+                }`}
             ></i>
           </div>
 
@@ -1316,9 +1315,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                 </button>
                 <button
                   onClick={() => setHelpTab("contact")}
-                  className={`${styles.tabBtn} ${
-                    helpTab === "contact" ? styles.tabBtnActive : ""
-                  }`}
+                  className={`${styles.tabBtn} ${helpTab === "contact" ? styles.tabBtnActive : ""
+                    }`}
                 >
                   مراسلتنا
                 </button>
@@ -1540,8 +1538,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
         <Link href="/privacy" style={{ textDecoration: "none" }}>
           <div className={styles.cardContainer}>
             <div className={styles.cardContent}>
-              <div style={{ color: "#00d2ff" }} className={styles.iconWrapper}>
-                <i className={`bx bx-shield-quarter ${styles.cardIcon}`}></i>
+              <div className={styles.cardIcon}>
+                <Shield size={22} />
               </div>
               <h3 className={styles.cardTitle}>سياسة الخصوصية</h3>
             </div>
@@ -1555,8 +1553,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
         <Link href="/terms" style={{ textDecoration: "none" }}>
           <div className={styles.cardContainer}>
             <div className={styles.cardContent}>
-              <div style={{ color: "#a51c87ff" }}>
-                <i className={`bx bx-file ${styles.cardIcon}`}></i>
+              <div className={styles.cardIcon}>
+                <BookMarked size={22} />
               </div>
               <h3 className={styles.cardTitle}>شروط الاستخدام</h3>
             </div>
@@ -1567,35 +1565,38 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
 
       {/* ─── Advanced Settings: Logout & Delete Account ─── */}
       {user && isOwnProfile && (
-        <div className={styles.sectionCard}>
-          <div className={styles.cardContainer} onClick={onOpenLogoutModal}>
-            <div className={styles.cardContent}>
-              <div style={{ color: "#ff3b30" }}>
-                <i className={`bx bx-log-out ${styles.cardIcon}`}></i>
+        <>
+          <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">الإعدادات المتقدمة</h1>
+          <div className={styles.sectionCard}>
+            <div className={styles.cardContainer} onClick={onOpenLogoutModal}>
+              <div className={styles.cardContent}>
+                <div className={styles.cardIcon}>
+                  <LogOut size={22} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>تسجيل الخروج</h3>
+                </div>
               </div>
-              <div>
-                <h3 className={styles.cardTitle}>تسجيل الخروج</h3>
-              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             </div>
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-          </div>
 
-          <hr className={styles.dividerDashed} />
+            <hr className={styles.dividerDashed} />
 
-          <div className={styles.cardContainer} onClick={onOpenDeleteModal}>
-            <div className={styles.cardContent}>
-              <div style={{ color: "#ff3b30" }}>
-                <i className={`bx bx-user-minus ${styles.cardIcon}`}></i>
+            <div className={styles.cardContainer} onClick={onOpenDeleteModal}>
+              <div className={styles.cardContent}>
+                <div className={styles.cardIcon}>
+                  <Trash size={22} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle} style={{ color: "#ff3b30" }}>
+                    حذف الحساب
+                  </h3>
+                </div>
               </div>
-              <div>
-                <h3 className={styles.cardTitle} style={{ color: "#ff3b30" }}>
-                  حذف الحساب
-                </h3>
-              </div>
+              <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             </div>
-            <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
           </div>
-        </div>
+        </>
       )}
     </>
   );

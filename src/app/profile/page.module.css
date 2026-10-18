@@ -1795,7 +1795,7 @@
 .footerCard {
   background-color: var(--bg-glass);
   border: 1px solid var(--border-glass);
-  border-radius: var(--ra-10);
+  border-radius: var(--ra-20);
   padding: 24px;
   margin-top: 10px;
   margin-bottom: 30px;
@@ -1865,7 +1865,6 @@
 }
 
 .socialIconWrapper:hover {
-  transform: translateY(-2px);
   color: var(--text-primary);
   background-color: var(--bg-glass-active);
 }
