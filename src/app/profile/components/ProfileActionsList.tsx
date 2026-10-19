@@ -17,7 +17,7 @@ import {
 } from "../types";
 import { getProblemLabelAr } from "../utils";
 import { CONTACT_SUBJECT_OPTIONS } from "../constants";
-import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash } from 'lucide-react';
+import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash, BookmarkCheck, Shredder } from 'lucide-react';
 import styles from "../page.module.css";
 
 interface ProfileActionsListProps {
@@ -515,9 +515,9 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             e.stopPropagation();
                             markAllAsRead();
                           }}
-                          className={`btn btn-ra-24 ${styles.notifBtnSmall}`}
+                          className={`${styles.notifBtnSmall}`}
                         >
-                          قراءة الكل
+                          <BookmarkCheck size={20} />
                         </button>
                       )}
                       {notifications.length > 0 && (
@@ -526,9 +526,9 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             e.stopPropagation();
                             deleteAll();
                           }}
-                          className={`btn btn-danger btn-ra-24 ${styles.notifBtnDeleteAll}`}
+                          className={`btn btn-danger ${styles.notifBtnDeleteAll}`}
                         >
-                          حذف الكل
+                         <Shredder size={20}/>
                         </button>
                       )}
                     </div>
@@ -1585,7 +1585,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
             <div className={styles.cardContainer} onClick={onOpenDeleteModal}>
               <div className={styles.cardContent}>
                 <div className={styles.cardIcon}>
-                  <Trash size={22} />
+                  <Trash size={22} style={{ color: "#ff3b30" }} />
                 </div>
                 <div>
                   <h3 className={styles.cardTitle} style={{ color: "#ff3b30" }}>

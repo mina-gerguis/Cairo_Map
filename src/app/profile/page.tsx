@@ -244,6 +244,10 @@ export default function ProfilePage() {
       <ProfilePointsModal
         isOpen={wallet.showPointsModal}
         onClose={() => wallet.setShowPointsModal(false)}
+        onBack={() => {
+          wallet.setShowPointsModal(false);
+          wallet.setShowWalletModal(true);
+        }}
         profile={profile}
         showConvertSection={wallet.showConvertSection}
         setShowConvertSection={wallet.setShowConvertSection}

@@ -122,7 +122,7 @@ html.light {
     linear-gradient(180deg, #ffffff 0%, #fcfcfc 100%);
 
   /* --- Typography Colors --- */
-  --color-foreground: #18181b;
+  --color-foreground: #000000;
   --text-secondary: #52525b;
   --text-muted: #7a7771;
   --text-muted: #7a7771;

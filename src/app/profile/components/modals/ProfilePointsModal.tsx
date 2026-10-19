@@ -8,10 +8,12 @@ import { CiShop } from "react-icons/ci";
 import { UserProfile, ProfileAlertMessage } from "../../types";
 import { formatNumber } from "../../utils";
 import styles from "../../page.module.css";
+import { ChevronRight } from "lucide-react";
 
 interface ProfilePointsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onBack?: () => void;
   profile: UserProfile | null;
   showConvertSection: boolean;
   setShowConvertSection: (show: boolean) => void;
@@ -25,6 +27,7 @@ interface ProfilePointsModalProps {
 export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
   isOpen,
   onClose,
+  onBack,
   profile,
   showConvertSection,
   setShowConvertSection,
@@ -66,8 +69,8 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             marginBottom: "20px",
           }}
         >
-          <button onClick={onClose} className="btn-close">
-            <i className="bx bx-x"></i>
+          <button onClick={onBack ?? onClose} className="btn-close">
+            <ChevronRight size={18} />
           </button>
           <h3
             style={{
@@ -104,7 +107,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             }}
           >
             <Image
-              src="/images/profile/coin3dMapcairo.webp"
+              src="/images/profile/coin3dMapcairo.png"
               alt="عملة ماب القاهرة"
               draggable={false}
               width={100}

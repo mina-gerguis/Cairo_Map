@@ -587,7 +587,7 @@
 }
 
 .notifExpandedTitle {
-  font-family: var(--font-cairo);
+  font-family: var(--font-sub);
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
@@ -596,6 +596,7 @@
 
 .notifActions {
   display: flex;
+  justify-content: flex-end;
   gap: 8px;
   width: 60%;
 }
@@ -603,16 +604,16 @@
 .notifBtnSmall {
   background-color: rgba(108, 99, 255, 0.08);
   border: 1px solid rgba(108, 99, 255, 0.2);
+  border-radius: var(--ra-14);
   color: var(--color-foreground);
   padding: 6px 12px;
-  font-size: 0.8rem;
   height: auto;
+  cursor: pointer;
 }
 
 .notifBtnDeleteAll {
-  width: 100%;
   padding: 6px 12px;
-  font-size: 0.8rem;
+  border-radius: var(--ra-14);
   height: auto;
   border: 1px solid rgba(255, 59, 48, 0.3);
 }

@@ -51,7 +51,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
                 router.push("/login");
               },
               bgColor: "var(--accentBtn)",
-              textColor: "var(--color-bg)",
+              textColor: "var(--color-foreground)",
             }
             : {
               label: "🚀 اشترك أو رقّي حسابك الآن",

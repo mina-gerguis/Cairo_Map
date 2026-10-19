@@ -169,7 +169,6 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                   readOnly
                   className={`input-fields ${styles.inputDobDisabled}`}
                   value={formData.dob}
-                  style={{ maxWidth: "90%", width: "100%" }}
                 />
                 <p className={styles.dobWarningText}>
                   لا يمكنك تغير تاريخ ميلادك اذا كنت قد ادخلت تاريخ ميلادك خطا فيرجى{" "}
