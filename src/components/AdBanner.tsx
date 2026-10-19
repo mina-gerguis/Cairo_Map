@@ -245,7 +245,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
         borderRadius: "16px",
         padding: "16px",
         background: adType === "sponsor"
-          ? (adData.image ? "var(--bgPrimary, #0f172a)" : adTheme.bgGradient)
+          ? (adData.image ? "var(--color-bg, #0f172a)" : adTheme.bgGradient)
           : "var(--bg-glass-card, rgba(255, 255, 255, 0.03))",
         border: `1px solid ${adType === "sponsor" ? adTheme.borderColor : "var(--border-glass, rgba(255, 255, 255, 0.08))"}`,
         boxShadow: isLight ? "0 4px 20px rgba(0, 0, 0, 0.05)" : "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
@@ -357,7 +357,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
               cursor: "pointer",
               border: "none",
               background: adType === "sponsor" ? "var(--bg-glass-active, rgba(255,255,255,0.1))" : "transparent",
-              color: adType === "sponsor" ? "var(--text-primary, #fff)" : "var(--text-muted, #94a3b8)",
+              color: adType === "sponsor" ? "var(--color-foreground, #fff)" : "var(--text-muted, #94a3b8)",
               transition: "all 0.2s",
             }}
           >
@@ -372,7 +372,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
               cursor: "pointer",
               border: "none",
               background: adType === "adsense" ? "var(--bg-glass-active, rgba(255,255,255,0.1))" : "transparent",
-              color: adType === "adsense" ? "var(--text-primary, #fff)" : "var(--text-muted, #94a3b8)",
+              color: adType === "adsense" ? "var(--color-foreground, #fff)" : "var(--text-muted, #94a3b8)",
               transition: "all 0.2s",
             }}
           >
@@ -385,7 +385,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
       {adType === "sponsor" && (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", zIndex: 2 }}>
           <div style={{ flex: "1 1 200px" }}>
-            <h4 style={{ margin: "0 0 6px 0", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary, #fff)", display: "flex", alignItems: "center", gap: "6px" }}>
+            <h4 style={{ margin: "0 0 6px 0", fontSize: "1.1rem", fontWeight: "800", color: "var(--color-foreground, #fff)", display: "flex", alignItems: "center", gap: "6px" }}>
               {adData.icon && <span>{adData.icon}</span>}
               <span>{adData.title}</span>
             </h4>

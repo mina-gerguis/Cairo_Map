@@ -146,7 +146,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub);
   font-weight: 700;
   font-size: 0.92rem;
@@ -190,7 +190,7 @@
 .searchTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -226,7 +226,7 @@
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 12px;
   padding: 0 44px 0 44px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-body);
   font-size: 0.92rem;
   outline: none;
@@ -279,7 +279,7 @@
 
 .clearBtn:hover {
   background: rgba(255, 255, 255, 0.15);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modernSelect {
@@ -289,7 +289,7 @@
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 12px;
   padding: 0 16px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-body);
   font-size: 0.92rem;
   outline: none;
@@ -340,7 +340,7 @@
 
 .chipTag:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
@@ -360,7 +360,7 @@
 .resultsHeader {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -431,7 +431,7 @@
 .garageName {
   font-size: 1.08rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0;
   font-family: var(--font-sub);
 }
@@ -713,7 +713,7 @@
 .calloutTitle {
   font-size: 1.08rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 4px;
   font-family: var(--font-sub);
 }
@@ -798,11 +798,23 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

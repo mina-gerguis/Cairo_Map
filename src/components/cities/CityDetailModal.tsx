@@ -142,13 +142,13 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
         }
 
         .city-modal-shell {
-          background-color: var(--bgPrimary);
-          color: var(--text-primary);
+          background-color: var(--color-bg);
+          color: var(--color-foreground);
           border: 1px solid var(--border-color);
         }
 
         .city-modal-text-primary {
-          color: var(--text-primary);
+          color: var(--color-foreground);
         }
 
         .city-modal-textSecondary {
@@ -160,7 +160,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
         }
 
         .city-modal-landmark-card {
-          background-color: var(--bgPrimary);
+          background-color: var(--color-bg);
           border: 1px solid var(--border-color);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
@@ -495,7 +495,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                     fontSize: "1.2rem",
                     fontWeight: "800",
                     margin: 0,
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",

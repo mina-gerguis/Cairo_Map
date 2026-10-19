@@ -73,7 +73,7 @@ export const ProfileBadges: React.FC<ProfileBadgesProps> = ({
             />
           </svg>
         </div>
-        <span className={styles.noonBalanceTitle}>رصيد ماب</span>
+        <span className={styles.noonBalanceTitle}>رصيد الماب</span>
       </div>
 
       {/* Left side: Amount Pill Badge */}

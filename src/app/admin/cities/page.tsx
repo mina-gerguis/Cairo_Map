@@ -561,7 +561,7 @@ export default function AdminCitiesPage() {
   );
 
   return (
-    <div style={{ padding: "16px 0", color: "var(--text-primary, #fff)", maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
+    <div style={{ padding: "16px 0", color: "var(--color-foreground, #fff)", maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
       {/* Toast Notification */}
       {toastMessage && (
         <div
@@ -604,7 +604,7 @@ export default function AdminCitiesPage() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 6px 0", color: "var(--text-primary)" }}>
+          <h1 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 6px 0", color: "var(--color-foreground)" }}>
             🏙️ إدارة المدن الشهيرة والمعالم السياحية
           </h1>
           <p style={{ fontSize: "0.9rem", color: "var(--text-muted, #94a3b8)", margin: 0 }}>
@@ -754,10 +754,10 @@ export default function AdminCitiesPage() {
                     marginBottom: "12px",
                   }}
                 >
-                  <div>👥 السكان: <strong style={{ color: "var(--text-primary)" }}>{city.population || "-"}</strong></div>
-                  <div>📐 المساحة: <strong style={{ color: "var(--text-primary)" }}>{city.area || "-"}</strong></div>
-                  <div>🏙️ الكثافة: <strong style={{ color: "var(--text-primary)" }}>{city.density || "-"}</strong></div>
-                  <div>🌡️ الحرارة: <strong style={{ color: "var(--text-primary)" }}>{city.temperature || "-"}</strong></div>
+                  <div>👥 السكان: <strong style={{ color: "var(--color-foreground)" }}>{city.population || "-"}</strong></div>
+                  <div>📐 المساحة: <strong style={{ color: "var(--color-foreground)" }}>{city.area || "-"}</strong></div>
+                  <div>🏙️ الكثافة: <strong style={{ color: "var(--color-foreground)" }}>{city.density || "-"}</strong></div>
+                  <div>🌡️ الحرارة: <strong style={{ color: "var(--color-foreground)" }}>{city.temperature || "-"}</strong></div>
                 </div>
 
                 <p
@@ -825,7 +825,7 @@ export default function AdminCitiesPage() {
               maxHeight: "85vh",
               overflowY: "auto",
               padding: "24px",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               position: "relative",
             }}
             onClick={(e) => e.stopPropagation()}
@@ -904,7 +904,7 @@ export default function AdminCitiesPage() {
                       />
                       <div>
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                          <h5 style={{ fontSize: "1.05rem", fontWeight: "800", margin: 0, color: "var(--text-primary)" }}>
+                          <h5 style={{ fontSize: "1.05rem", fontWeight: "800", margin: 0, color: "var(--color-foreground)" }}>
                             {lm.name}
                           </h5>
                           {/* <span
@@ -1205,7 +1205,7 @@ export default function AdminCitiesPage() {
                       onChange={(e) => setLandmarkIsPopular(e.target.checked)}
                       style={{ width: "18px", height: "18px", accentColor: "var(--mainBtn)" }}
                     />
-                    <span style={{ fontFamily: "var(--font-sub)", color: "var(--text-primary)", fontWeight: "700" }}>علامة "شائع" (الأكثر رواجاً)</span>
+                    <span style={{ fontFamily: "var(--font-sub)", color: "var(--color-foreground)", fontWeight: "700" }}>علامة "شائع" (الأكثر رواجاً)</span>
                   </label>
                 </div>
               </div>

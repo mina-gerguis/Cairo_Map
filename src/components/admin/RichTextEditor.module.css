@@ -36,7 +36,7 @@
 .toolbarBtn {
   background: transparent;
   border: 1px solid transparent;
-  color: var(--text-primary, #f4f4f5);
+  color: var(--color-foreground, #f4f4f5);
   border-radius: 8px;
   padding: 0.4rem 0.55rem;
   font-size: 1.1rem;
@@ -66,7 +66,7 @@
 
 .toolbarSelect {
   background-color: var(--bg-secondary, #18181b);
-  color: var(--text-primary, #f4f4f5);
+  color: var(--color-foreground, #f4f4f5);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
   border-radius: 8px;
   padding: 0.35rem 0.6rem;
@@ -126,7 +126,7 @@
 /* ── Content Area ── */
 .editableContent {
   padding: 1.2rem;
-  color: var(--text-primary, #f4f4f5);
+  color: var(--color-foreground, #f4f4f5);
   font-size: 1.05rem;
   line-height: 1.8;
   outline: none;
@@ -166,7 +166,7 @@
 .sourceTextarea {
   width: 100%;
   padding: 1.2rem;
-  background-color: var(--bgPrimary, #000000);
+  background-color: var(--color-bg, #000000);
   color: var(--color-primary, #006FEE);
   font-family: monospace, monospace;
   font-size: 0.95rem;
@@ -198,7 +198,7 @@
   width: 100%;
   max-width: 480px;
   box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.5));
-  color: var(--text-primary, #f4f4f5);
+  color: var(--color-foreground, #f4f4f5);
   backdrop-filter: blur(16px);
 }
 
@@ -209,7 +209,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--text-primary, #f4f4f5);
+  color: var(--color-foreground, #f4f4f5);
 }
 
 .modalTitle i {
@@ -228,7 +228,7 @@
   border-radius: 10px;
   border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
   background-color: var(--bg-secondary, #18181b);
-  color: var(--text-primary, #f4f4f5);
+  color: var(--color-foreground, #f4f4f5);
   font-size: 0.95rem;
   outline: none;
   margin-bottom: 1.25rem;
@@ -260,7 +260,7 @@
 
 .modalbtn-cancel:hover {
   background-color: var(--hoverBtn);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modalSubmitBtn {

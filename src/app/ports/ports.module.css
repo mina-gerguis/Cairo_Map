@@ -100,10 +100,13 @@
 }
 
 @keyframes pulseDot {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.35);
     opacity: 0.6;
@@ -262,7 +265,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub);
   font-weight: 800;
   font-size: 0.92rem;
@@ -307,7 +310,7 @@
 .searchTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -357,7 +360,7 @@
 
 .clearBtn:hover {
   background: rgba(255, 255, 255, 0.16);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 /* Autocomplete Dropdown */
@@ -366,7 +369,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--bg-primary, #18181b);
+  background: var(--color-bg, #18181b);
   border: 1px solid var(--border-glass);
   border-radius: 14px;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
@@ -409,7 +412,7 @@
 
 .autocompletePortName {
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.95rem;
 }
 
@@ -464,7 +467,7 @@
 
 .chipTag:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
@@ -513,7 +516,7 @@
 
 .filterPillBtn:hover {
   border-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .filterPillBtnActive {
@@ -588,7 +591,7 @@
   margin: 0 0 6px 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub);
 }
 
@@ -694,7 +697,7 @@
 .highlightValue {
   font-size: 0.84rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   line-height: 1.45;
 }
 
@@ -710,8 +713,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .sectionBlock {
@@ -723,7 +733,7 @@
 .sectionTitle {
   font-size: 0.84rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -835,7 +845,7 @@
 .paywallTitle {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 12px;
   font-family: var(--font-sub);
 }
@@ -864,7 +874,7 @@
 
 .paywallFeaturesTitle {
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.88rem;
   margin-bottom: 10px;
   display: flex;
@@ -911,8 +921,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingText {
@@ -966,7 +981,7 @@
 .reportBannerTitle {
   font-size: 0.98rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 4px;
 }
 
@@ -1041,7 +1056,7 @@
 }
 
 .modalBox {
-  background: var(--bgPrimary);
+  background: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 20px;
   width: 100%;
@@ -1084,7 +1099,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modalCloseBtn {
@@ -1102,7 +1117,7 @@
 }
 
 .modalCloseBtn:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modalBody {
@@ -1170,7 +1185,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1209,7 +1224,7 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: var(--bgPrimary);
+  background: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 12px;
   max-height: 230px;
@@ -1256,7 +1271,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1277,7 +1292,7 @@
 .dropdownOptionTitle {
   font-size: 0.86rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .dropdownOptionDesc {
@@ -1302,7 +1317,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1358,7 +1373,7 @@
 .modalUploadPromptTitle {
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modalUploadPromptDesc {
@@ -1394,7 +1409,7 @@
 .modalFileName {
   font-size: 0.84rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1479,7 +1494,7 @@
 }
 
 .btnCancelModal:hover:not(:disabled) {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -1561,7 +1576,7 @@
   margin: 0 0 8px;
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .stateDescText {
@@ -1572,11 +1587,25 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

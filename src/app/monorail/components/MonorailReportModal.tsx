@@ -55,7 +55,7 @@ export default function MonorailReportModal({
       <div
         ref={modalBoxRef}
         style={{
-          backgroundColor: "var(--bgPrimary)",
+          backgroundColor: "var(--color-bg)",
           borderRadius: "var(--radius-card)",
           border: "1px solid var(--border-glass)",
           width: "100%",
@@ -84,7 +84,7 @@ export default function MonorailReportModal({
               margin: 0,
               fontSize: "1.05rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               display: "flex",
               alignItems: "center",
               gap: "8px",
@@ -129,7 +129,7 @@ export default function MonorailReportModal({
                 style={{
                   margin: "0 0 8px",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تم إرسال بلاغك بنجاح!
@@ -222,7 +222,7 @@ export default function MonorailReportModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                     display: "block",
                   }}
@@ -330,7 +330,7 @@ export default function MonorailReportModal({
                     style={{
                       fontSize: "0.82rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                       display: "block",
                     }}
@@ -400,7 +400,7 @@ export default function MonorailReportModal({
                             padding: "8px 12px",
                             cursor: "pointer",
                             fontSize: "0.85rem",
-                            color: "var(--text-primary)",
+                            color: "var(--color-foreground)",
                             borderBottom: "1px solid rgba(255,255,255,0.03)",
                           }}
                           onMouseEnter={(e) =>
@@ -424,7 +424,7 @@ export default function MonorailReportModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                     display: "block",
                   }}
@@ -455,7 +455,7 @@ export default function MonorailReportModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                     display: "block",
                   }}
@@ -484,7 +484,7 @@ export default function MonorailReportModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                     display: "block",
                   }}
@@ -615,7 +615,7 @@ export default function MonorailReportModal({
                     flex: 1,
                     background: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontSize: "0.85rem",
                   }}
                 >

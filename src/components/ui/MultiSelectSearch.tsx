@@ -154,7 +154,7 @@ export function MultiSelectSearch({
   return (
     <div ref={containerRef} style={{ position: "relative", width: "100%", textAlign: "right" }} dir="rtl">
       {label && (
-        <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)", display: "block" }}>
+        <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--color-foreground)", display: "block" }}>
           {label}
         </label>
       )}
@@ -323,13 +323,13 @@ export function MultiSelectSearch({
                       borderRadius: "8px",
                       cursor: "pointer",
                       background: isChecked ? "rgba(0, 111, 238, 0.08)" : "transparent",
-                      color: isChecked ? "var(--text-primary)" : "var(--text-secondary)",
+                      color: isChecked ? "var(--color-foreground)" : "var(--text-secondary)",
                       transition: "all 0.15s ease"
                     }}
                     onMouseEnter={(e) => {
                       if (!isChecked) {
                         e.currentTarget.style.background = "var(--hoverBtn, rgba(39, 39, 42, 0.8))";
-                        e.currentTarget.style.color = "var(--text-primary)";
+                        e.currentTarget.style.color = "var(--color-foreground)";
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -366,7 +366,7 @@ export function MultiSelectSearch({
             <button
               type="button"
               onClick={handleAddNewOption}
-             className="btn btn-blue fs-sm"
+              className="btn btn-blue fs-sm"
             >
               <i className="bx bx-plus-circle" style={{ fontSize: "1.1rem" }}></i>
               إضافة "{searchQuery.trim()}" كخدمة جديدة

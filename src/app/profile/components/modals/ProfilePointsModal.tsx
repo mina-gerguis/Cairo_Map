@@ -46,7 +46,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
           width: "100%",
           padding: "24px 28px",
           borderRadius: "16px",
-          background: "var(--bgPrimary)",
+          background: "var(--color-bg)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           border: "1px solid var(--border-glass)",
@@ -74,7 +74,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
               margin: 0,
               fontSize: "1.15rem",
               fontWeight: "700",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontFamily: "var(--font-cairo)",
             }}
           >
@@ -195,7 +195,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                 fontSize: "0.9rem",
                 fontFamily: "var(--font-heading)",
                 fontWeight: "700",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               تحويل النقاط إلى رصيد محفظة كاش
@@ -432,7 +432,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                   style={{ color: "#3b82f6", fontSize: "1.05rem", marginTop: "3px" }}
                 ></i>
                 <div>
-                  <span style={{ fontWeight: "bold", color: "var(--text-primary)" }}>
+                  <span style={{ fontWeight: "bold", color: "var(--color-foreground)" }}>
                     الهدايا والمكافآت:
                   </span>{" "}
                   الجوائز اليومية والمسابقات والفعاليات المنظمة.

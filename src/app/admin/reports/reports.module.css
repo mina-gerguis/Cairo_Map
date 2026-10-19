@@ -16,6 +16,7 @@
     opacity: 0;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -55,7 +56,7 @@
 .headerTitle {
   font-size: 1.55rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 4px 0;
   letter-spacing: -0.02em;
 }
@@ -70,7 +71,7 @@
 .refreshBtn {
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   padding: 9px 18px;
   border-radius: 10px;
   font-size: 0.85rem;
@@ -217,7 +218,7 @@
 
 .categoryPill:hover {
   background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .categoryPillActive {
@@ -271,7 +272,7 @@
   background: rgba(0, 0, 0, 0.15);
   border: 1px solid var(--border-glass);
   border-radius: 10px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.86rem;
   outline: none;
   transition: all 0.2s ease;
@@ -372,7 +373,7 @@
   margin: 0 0 6px 0;
   font-size: 1.02rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   line-height: 1.45;
 }
 
@@ -414,7 +415,7 @@
 .expandBtn {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 0.8rem;
@@ -471,7 +472,7 @@
 .contentText {
   margin: 0;
   font-size: 0.9rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   white-space: pre-line;
   line-height: 1.65;
 }
@@ -567,7 +568,7 @@
 
 .emptyStateTitle {
   margin: 0 0 6px 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 1.05rem;
   font-weight: 800;
 }

@@ -37,7 +37,7 @@ export function RoadTripCalculator({
       <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
         <i className="bx bx-calculator" style={{ fontSize: "1.5rem", color: "#60a5fa" }} />
         <div>
-          <h3 style={{ fontSize: "1.1rem", fontWeight: "700", margin: 0, color: "var(--text-primary)" }}>
+          <h3 style={{ fontSize: "1.1rem", fontWeight: "700", margin: 0, color: "var(--color-foreground)" }}>
             حاسبة زمن الرحلة وتكلفة الوقود التقديرية
           </h3>
           <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)" }}>

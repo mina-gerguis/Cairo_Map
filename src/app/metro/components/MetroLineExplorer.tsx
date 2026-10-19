@@ -69,7 +69,7 @@ export default function MetroLineExplorer({
 
         <div className={styles.metricTile} style={{ flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
           <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: "600" }}> المحطات</span>
-          <span style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)" }}>
+          <span style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)" }}>
             {currentExplorerStations.length > 0 ? `${currentExplorerStations.length} محطة` : "تحت الإنشاء"}
           </span>
         </div>
@@ -77,7 +77,7 @@ export default function MetroLineExplorer({
 
       {/* Detailed stops vertical timeline */}
       <div className="bg-secondary border border-glass rounded-lg p-4">
-        
+
         <div
           style={{
             display: "flex",
@@ -93,7 +93,7 @@ export default function MetroLineExplorer({
               fontSize: "0.95rem",
               fontWeight: "800",
               margin: 0,
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontFamily: "var(--font-sub, inherit)",
             }}
           >
@@ -146,19 +146,19 @@ export default function MetroLineExplorer({
                           backgroundColor: isUnderConstruction
                             ? "transparent"
                             : isTransfer
-                            ? "#f59e0b"
-                            : color,
+                              ? "#f59e0b"
+                              : color,
                           border: isUnderConstruction
                             ? `2px dashed #ef4444`
                             : isFirst || isLast
-                            ? `2px solid var(--bgPrimary, #18181b)`
-                            : "none",
+                              ? `2px solid var(--color-bg, #18181b)`
+                              : "none",
                           boxShadow:
                             isUnderConstruction
                               ? "none"
                               : isFirst || isLast
-                              ? `0 0 0 2px ${color}`
-                              : "none",
+                                ? `0 0 0 2px ${color}`
+                                : "none",
                         }}
                       />
                     </div>
@@ -182,8 +182,8 @@ export default function MetroLineExplorer({
                           color: isUnderConstruction
                             ? "#ef4444"
                             : isFirst || isLast
-                            ? "var(--text-primary)"
-                            : "var(--text-primary)",
+                              ? "var(--color-foreground)"
+                              : "var(--color-foreground)",
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "6px",
@@ -192,9 +192,8 @@ export default function MetroLineExplorer({
                       >
                         {station}
                         <i
-                          className={`bx ${
-                            expandedStation === station ? "bx-chevron-up" : "bx-chevron-down"
-                          }`}
+                          className={`bx ${expandedStation === station ? "bx-chevron-up" : "bx-chevron-down"
+                            }`}
                           style={{
                             fontSize: "0.95rem",
                             color:
@@ -258,8 +257,8 @@ export default function MetroLineExplorer({
                                 {l === "line1"
                                   ? "الخط الأول"
                                   : l === "line2"
-                                  ? "الخط الثاني"
-                                  : "الخط الثالث"}
+                                    ? "الخط الثاني"
+                                    : "الخط الثالث"}
                               </button>
                             ))}
                         </div>
@@ -303,7 +302,7 @@ export default function MetroLineExplorer({
                               style={{
                                 fontSize: "0.74rem",
                                 background: "rgba(255, 255, 255, 0.05)",
-                                color: "var(--text-primary)",
+                                color: "var(--color-foreground)",
                                 padding: "4px 10px",
                                 borderRadius: "6px",
                                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",

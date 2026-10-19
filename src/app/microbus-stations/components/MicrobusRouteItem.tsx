@@ -55,7 +55,7 @@ export default function MicrobusRouteItem({
             {/* <div className={styles.metricTile}>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>نوع الميكوباص</span>
-                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                   {route.vehicleType || "ميكروباص"}
                 </span>
               </div>
@@ -65,7 +65,7 @@ export default function MicrobusRouteItem({
             <div className={styles.metricTile}>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>وقت الوصول</span>
-                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                   {route.duration ? `${route.duration} دقيقة` : "30-45 دقيقة"}
                   <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginRight: "5px" }}>تقريبا</span>
                 </span>

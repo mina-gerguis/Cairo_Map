@@ -25,7 +25,7 @@ export default function PhoneCard({
             borderRadius: "var(--radius-full)",
             objectFit: "cover",
             flexShrink: 0,
-            background: "var(--bg-primary)",
+            background: "var(--color-bg)",
           }}
         />
 
@@ -44,7 +44,7 @@ export default function PhoneCard({
                 margin: 0,
                 fontSize: "0.92rem",
                 fontWeight: "700",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -114,7 +114,7 @@ export default function PhoneCard({
             style={{
               background: "transparent",
               border: "none",
-              color: isCopied ? "var(--colorSuccess)" : "var(--text-muted)",
+              color: isCopied ? "var(--color-success)" : "var(--text-muted)",
               cursor: "pointer",
               padding: "2px 6px",
               borderRadius: "4px",

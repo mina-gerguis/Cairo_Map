@@ -96,7 +96,7 @@
 .title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 8px 0;
   font-family: var(--font-display, var(--font-main, sans-serif));
   letter-spacing: -0.3px;

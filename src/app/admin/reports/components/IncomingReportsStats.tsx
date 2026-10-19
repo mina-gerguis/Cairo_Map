@@ -16,7 +16,7 @@ export function IncomingReportsStats({ stats }: IncomingReportsStatsProps) {
           <i className="bx bx-collection"></i> إجمالي الوارد
         </span>
         <div className={styles.statCountRow}>
-          <span className={styles.statCount} style={{ color: "var(--text-primary)" }}>
+          <span className={styles.statCount} style={{ color: "var(--color-foreground)" }}>
             {stats.total}
           </span>
           <span className={styles.statUnit}>بلاغ ورسالة</span>

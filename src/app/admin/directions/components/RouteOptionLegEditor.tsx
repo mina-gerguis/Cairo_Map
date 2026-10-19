@@ -45,7 +45,7 @@ export function RouteOptionLegEditor({
       <div className={styles.legHeader}>
         <span className={styles.legTitle}>
           <i className="bx bx-current-location" />
-          <span className="sub-title" style={{ color: "var(--text-primary)" }}>
+          <span className="sub-title" style={{ color: "var(--color-foreground)" }}>
             المرحلة رقم {legIndex + 1}
           </span>
         </span>
@@ -123,9 +123,8 @@ export function RouteOptionLegEditor({
                   key={item.key}
                   type="button"
                   onClick={() => onUpdateField("vehicleType", item.key)}
-                  className={`${styles.quickVehicleBtn} ${
-                    isSelected ? styles.quickVehicleBtnActive : ""
-                  }`}
+                  className={`${styles.quickVehicleBtn} ${isSelected ? styles.quickVehicleBtnActive : ""
+                    }`}
                   title={`اختيار أيقونة ${item.label}`}
                 >
                   <img

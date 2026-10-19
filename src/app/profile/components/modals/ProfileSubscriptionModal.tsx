@@ -58,7 +58,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
           width: "100%",
           padding: "24px 28px",
           borderRadius: "16px",
-          background: "var(--bgPrimary)",
+          background: "var(--color-bg)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
@@ -85,7 +85,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
             style={{
               fontSize: "1.3rem",
               fontWeight: "900",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               margin: 0,
               display: "flex",
               alignItems: "center",
@@ -121,7 +121,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               style={{
                 fontSize: "1.1rem",
                 fontWeight: "bold",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 marginTop: "2px",
               }}
             >
@@ -130,16 +130,16 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                   ? " باقة المشوار (بانتظار الإلغاء)"
                   : " باقة المشوار (نشط)"
                 : effectiveTier === "silver"
-                ? profile?.subscription_status === "cancelled"
-                  ? " الباقة الفضية (بانتظار الإلغاء)"
-                  : " الباقة الفضية (نشط)"
-                : effectiveTier === "gold"
-                ? profile?.subscription_status === "cancelled"
-                  ? " الباقة الذهبية (بانتظار الإلغاء)"
-                  : " الباقة الذهبية (نشط)"
-                : isExpired
-                ? "الباقة المجانية (انتهت صلاحية الباقة السابقة)"
-                : "الباقة المجانية"}
+                  ? profile?.subscription_status === "cancelled"
+                    ? " الباقة الفضية (بانتظار الإلغاء)"
+                    : " الباقة الفضية (نشط)"
+                  : effectiveTier === "gold"
+                    ? profile?.subscription_status === "cancelled"
+                      ? " الباقة الذهبية (بانتظار الإلغاء)"
+                      : " الباقة الذهبية (نشط)"
+                    : isExpired
+                      ? "الباقة المجانية (انتهت صلاحية الباقة السابقة)"
+                      : "الباقة المجانية"}
             </div>
             {profile?.subscription_tier !== "free" && profile?.subscription_end && (
               <div
@@ -154,13 +154,13 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               >
                 {isExpired
                   ? `انتهت الصلاحية بتاريخ: ${new Date(
-                      profile.subscription_end
-                    ).toLocaleDateString("ar-EG")} (تم العودة للباقة المجانية)`
+                    profile.subscription_end
+                  ).toLocaleDateString("ar-EG")} (تم العودة للباقة المجانية)`
                   : profile?.subscription_status === "cancelled"
-                  ? `تم إلغاء التجديد التلقائي. ستنتهي في: ${new Date(
+                    ? `تم إلغاء التجديد التلقائي. ستنتهي في: ${new Date(
                       profile.subscription_end
                     ).toLocaleDateString("ar-EG")}`
-                  : `تاريخ انتهاء الصلاحية: ${new Date(
+                    : `تاريخ انتهاء الصلاحية: ${new Date(
                       profile.subscription_end
                     ).toLocaleDateString("ar-EG")}`}
               </div>
@@ -320,7 +320,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                   fontFamily: "var(--font-heading)",
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: "0 0 8px",
                 }}
               >
@@ -330,7 +330,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   marginBottom: "16px",
                 }}
               >
@@ -419,7 +419,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: "0 0 8px",
                 }}
               >
@@ -429,7 +429,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   marginBottom: "16px",
                 }}
               >
@@ -492,8 +492,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               {subscribing && selectedPlanId === "mishwar"
                 ? "جاري التفعيل..."
                 : effectiveTier === "mishwar"
-                ? "باقتك الحالية"
-                : "اشترك الآن"}
+                  ? "باقتك الحالية"
+                  : "اشترك الآن"}
             </button>
           </div>
 
@@ -523,7 +523,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: "0 0 8px",
                 }}
               >
@@ -533,7 +533,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   marginBottom: "16px",
                 }}
               >
@@ -571,7 +571,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                       key={idx}
                       style={
                         hasEmoji
-                          ? { color: "var(--text-primary)", fontWeight: "bold" }
+                          ? { color: "var(--color-foreground)", fontWeight: "bold" }
                           : undefined
                       }
                     >
@@ -623,8 +623,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               {subscribing && selectedPlanId === "silver"
                 ? "جاري التفعيل..."
                 : effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod
-                ? "باقتك الحالية"
-                : "اشترك الآن"}
+                  ? "باقتك الحالية"
+                  : "اشترك الآن"}
             </button>
           </div>
 
@@ -671,7 +671,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: "0 0 8px",
                 }}
               >
@@ -681,7 +681,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   marginBottom: "16px",
                 }}
               >
@@ -719,7 +719,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                       key={idx}
                       style={
                         hasEmoji
-                          ? { color: "var(--text-primary)", fontWeight: "bold" }
+                          ? { color: "var(--color-foreground)", fontWeight: "bold" }
                           : undefined
                       }
                     >
@@ -762,8 +762,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               {subscribing && selectedPlanId === "gold"
                 ? "جاري التفعيل..."
                 : effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod
-                ? "باقتك الحالية"
-                : "اشترك الآن"}
+                  ? "باقتك الحالية"
+                  : "اشترك الآن"}
             </button>
           </div>
         </div>

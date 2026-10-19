@@ -20,7 +20,7 @@ export default function AdminBrtStationsPage() {
   return (
     <Suspense
       fallback={
-        <div style={{ padding: "2rem", color: "var(--color-textSecondary)" }}>
+        <div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>
           جاري التحميل...
         </div>
       }

@@ -1238,7 +1238,7 @@ export default function PlannerPage() {
             <img src="images/icons3d/lockPage.webp" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
           </div>
 
-          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--text-primary)", marginBottom: "14px" }}>
+          <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-foreground)", marginBottom: "14px" }}>
             ميزة البحث عن خطوط المواصلات تتطلب اشتراك في الباقة الذهبية
           </h2>
 
@@ -1255,7 +1255,7 @@ export default function PlannerPage() {
             margin: "0 auto 24px",
             maxWidth: "420px"
           }}>
-            <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.9rem", marginBottom: "8px" }}>ميزات الباقة الذهبية :</div>
+            <div style={{ fontWeight: "700", color: "var(--color-foreground)", fontSize: "0.9rem", marginBottom: "8px" }}>ميزات الباقة الذهبية :</div>
             <ul style={{ paddingRight: "16px", margin: 0, fontSize: "0.85rem", color: "#94a3b8", lineHeight: "1.6", display: "flex", flexDirection: "column", gap: "6px" }}>
               <li>✨ توليد خطط رحلات متكاملة بناءً على الميزانية واهتماماتك</li>
               <li>✨ ربط حي ومباشر بكافة الأماكن المضافة من الإدارة في الموقع</li>
@@ -1307,7 +1307,7 @@ export default function PlannerPage() {
                 padding: "var(--padding-btn)",
                 borderRadius: "var(--radiusBtn)",
                 background: "var(--btn-cancel)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 textDecoration: "none",
                 fontWeight: "bold",
                 fontSize: "0.9rem",
@@ -1454,7 +1454,7 @@ export default function PlannerPage() {
               background: "rgba(59, 130, 246, 0.08)",
               border: "1px solid rgba(59, 130, 246, 0.2)",
               fontSize: "0.78rem",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               display: "flex",
               alignItems: "center",
               gap: "8px"
@@ -1473,7 +1473,7 @@ export default function PlannerPage() {
                 borderRadius: "12px",
                 background: "rgba(245, 158, 11, 0.12)",
                 border: "1px solid rgba(245, 158, 11, 0.35)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 fontSize: "0.82rem",
                 display: "flex",
                 flexDirection: "column",
@@ -1654,7 +1654,7 @@ export default function PlannerPage() {
                   <i className="bx bx-chip bx-spin" style={{ fontSize: "1.2rem" }} />
                   <span>معالجة الطلب الذكي:</span>
                 </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--text-primary)", paddingRight: "8px" }}>
+                <div style={{ fontSize: "0.82rem", color: "var(--color-foreground)", paddingRight: "8px" }}>
                   {aiThinkingStep}
                 </div>
               </div>
@@ -1680,7 +1680,7 @@ export default function PlannerPage() {
                   </button>
                 </div>
 
-                <p style={{ margin: "0 0 10px", fontSize: "0.85rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
+                <p style={{ margin: "0 0 10px", fontSize: "0.85rem", color: "var(--color-foreground)", lineHeight: "1.6" }}>
                   {aiExplanation.summary}
                 </p>
 
@@ -1703,7 +1703,7 @@ export default function PlannerPage() {
 
                 {/* Personalized Travel Tips */}
                 <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "8px" }}>
-                  <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "4px" }}>
+                  <div style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--color-foreground)", marginBottom: "4px" }}>
                     💡 إرشادات ونصائح مخصصة للرحلة:
                   </div>
                   <ul className="ai-tips-list">
@@ -1931,8 +1931,8 @@ export default function PlannerPage() {
                   alignItems: "center",
                   gap: "6px",
                   background: optimized ? "rgba(16, 185, 129, 0.15)" : undefined,
-                  borderColor: optimized ? "var(--colorSuccess)" : undefined,
-                  color: optimized ? "var(--colorSuccess)" : undefined
+                  borderColor: optimized ? "var(--color-success)" : undefined,
+                  color: optimized ? "var(--color-success)" : undefined
                 }}
               >
                 <i className="bx bx-directions" /> {optimized ? "تم الترتيب الذكي للأماكن" : "الترتيب التلقائي للمسار ⚡"}
@@ -1944,7 +1944,7 @@ export default function PlannerPage() {
           {selectedPlaces.length > 0 && (
             <div className="glass-panel-luxury">
               <h2 className="card-section-title">
-                <i className="bx bx-info-square" style={{ color: "var(--colorSuccess)" }} />
+                <i className="bx bx-info-square" style={{ color: "var(--color-success)" }} />
                 توصيات وقرارات ذكية 💡
               </h2>
 
@@ -1990,7 +1990,7 @@ export default function PlannerPage() {
               <div className="budget-progress-container" style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "14px", marginTop: "16px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.85rem" }}>
                   <span style={{ fontWeight: "700" }}>مؤشر استهلاك الميزانية:</span>
-                  <span style={{ fontWeight: "800", color: remainingBudget < 0 ? "var(--accent-red)" : "var(--colorSuccess)" }}>
+                  <span style={{ fontWeight: "800", color: remainingBudget < 0 ? "var(--accent-red)" : "var(--color-success)" }}>
                     {totalCostEst} جنيه من أصل {budget} جنيه
                   </span>
                 </div>
@@ -2020,7 +2020,7 @@ export default function PlannerPage() {
                   </div>
                   <div className="budget-item">
                     <div className="budget-item-title">💵 المتبقي</div>
-                    <div className="budget-item-value" style={{ color: remainingBudget < 0 ? "var(--accent-red)" : "var(--colorSuccess)" }}>
+                    <div className="budget-item-value" style={{ color: remainingBudget < 0 ? "var(--accent-red)" : "var(--color-success)" }}>
                       {remainingBudget} ج.م
                     </div>
                   </div>
@@ -2091,7 +2091,7 @@ export default function PlannerPage() {
                       <div className="timeline-card">
                         <div className="timeline-card-content">
                           <div className="timeline-card-title" style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                            <Link href={`/places/${stop.place.id}`} target="_blank" style={{ color: "var(--text-primary)", textDecoration: "none", fontWeight: "bold" }}>
+                            <Link href={`/places/${stop.place.id}`} target="_blank" style={{ color: "var(--color-foreground)", textDecoration: "none", fontWeight: "bold" }}>
                               {stop.place.name}
                             </Link>
                             <span className="meta-pill meta-pill-accent">{stop.place.categoryLabel}</span>
@@ -2270,7 +2270,7 @@ export default function PlannerPage() {
               <i className={`bx ${gpsLoading ? "bx-loader-alt bx-spin" : "bx-current-location"}`} />
             </div>
 
-            <h2 style={{ fontSize: "1.35rem", fontWeight: "800", marginBottom: "10px", color: "var(--text-primary)" }}>
+            <h2 style={{ fontSize: "1.35rem", fontWeight: "800", marginBottom: "10px", color: "var(--color-foreground)" }}>
               تفعيل موقع الـ GPS إجباري 📍
             </h2>
 

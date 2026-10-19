@@ -423,7 +423,7 @@ export default function PlacesSuggestionsPage() {
       {/* ─── PROPOSALS MODERATION SECTION ─── */}
       <div className="glass-panel" style={{ padding: "28px 20px", borderRadius: "15px", marginBottom: "32px", border: "1px solid rgba(108, 99, 255, 0.3)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
             <i className="bx bx-map-pin" style={{ color: "var(--color-primary)" }}></i> مراجعة اقتراحات الأماكن
           </h2>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -516,7 +516,7 @@ export default function PlacesSuggestionsPage() {
                   </div>
 
                   <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "8px", flexGrow: 1 }}>
-                    <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "800", margin: 0, color: "var(--text-primary)" }}>{prop.name}</h3>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "800", margin: 0, color: "var(--color-foreground)" }}>{prop.name}</h3>
 
                     {prop.description && (
                       <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", margin: 0, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
@@ -542,7 +542,7 @@ export default function PlacesSuggestionsPage() {
                           style={{ width: "26px", height: "26px", borderRadius: "50%", objectFit: "cover" }}
                         />
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                          <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                          <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                             {prop.user_profile?.full_name || prop.user_profile?.username || "مستخدم ماب القاهرة"}
                           </span>
                         </div>
@@ -625,7 +625,7 @@ export default function PlacesSuggestionsPage() {
               </div>
 
               <div style={{ textAlign: "center", flex: 1, minWidth: 0, padding: "0 10px" }}>
-                <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--text-primary)" }}>
+                <h3 style={{ fontSize: "1.05rem", fontWeight: "bold", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--color-foreground)" }}>
                   {selectedProposalDetails.name}
                 </h3>
                 <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
@@ -638,7 +638,7 @@ export default function PlacesSuggestionsPage() {
                 style={{
                   background: "rgba(109, 107, 107, 0.12)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   borderRadius: "50%",
                   width: "36px",
                   height: "36px",
@@ -679,7 +679,7 @@ export default function PlacesSuggestionsPage() {
 
                     {/* Title Area */}
                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 6px" }}>
+                      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", fontWeight: "800", color: "var(--color-foreground)", margin: "0 0 6px" }}>
                         {selectedProposalDetails.name}
                       </h2>
                       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", color: "var(--text-muted)", fontSize: "0.9rem" }}>
@@ -847,7 +847,7 @@ export default function PlacesSuggestionsPage() {
 
                     {/* Proposer Banner Card */}
                     <div style={{ marginBottom: "24px" }}>
-                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>صاحب الاقتراح</h3>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--color-foreground)" }}>صاحب الاقتراح</h3>
                       <div style={{ background: "rgba(108, 99, 255, 0.08)", border: "1px solid rgba(108, 99, 255, 0.2)", borderRadius: "14px", padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           <img
@@ -858,7 +858,7 @@ export default function PlacesSuggestionsPage() {
                             style={{ width: "42px", height: "42px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--color-primary)" }}
                           />
                           <div>
-                            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                            <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                               {selectedProposalDetails.user_profile?.full_name || selectedProposalDetails.user_profile?.username || "مستخدم ماب القاهرة"}
                             </div>
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -883,7 +883,7 @@ export default function PlacesSuggestionsPage() {
                     {/* Description Section */}
                     {selectedProposalDetails.description && (
                       <div style={{ marginBottom: "24px" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>الوصف</h3>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--color-foreground)" }}>الوصف</h3>
                         <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px", color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: "1.6" }}>
                           {selectedProposalDetails.description}
                         </div>
@@ -893,7 +893,7 @@ export default function PlacesSuggestionsPage() {
                     {/* Services section */}
                     {selectedProposalDetails.services && selectedProposalDetails.services.length > 0 && (
                       <div style={{ marginBottom: "24px" }}>
-                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>الخدمات المتاحة</h3>
+                        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--color-foreground)" }}>الخدمات المتاحة</h3>
                         <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px 20px" }}>
                           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                             {selectedProposalDetails.services.map((serviceName: string) => (
@@ -923,7 +923,7 @@ export default function PlacesSuggestionsPage() {
 
                     {/* Details Card (Phone, Maps Link, Address) */}
                     <div style={{ marginBottom: "24px" }}>
-                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>التفاصيل الجغرافية والاتصال</h3>
+                      <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: "700", marginBottom: "12px", color: "var(--color-foreground)" }}>التفاصيل الجغرافية والاتصال</h3>
                       <div style={{ background: "rgba(255, 255, 255, 0.04)", border: "1px solid var(--border-glass)", borderRadius: "14px", overflow: "hidden", display: "flex", flexDirection: "column" }}>
                         {/* Phone Row */}
                         {selectedProposalDetails.phone && (
@@ -950,7 +950,7 @@ export default function PlacesSuggestionsPage() {
                         {/* Full Address Row */}
                         <div style={{ display: "flex", flexDirection: "column", padding: "14px 16px" }}>
                           <span style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "6px" }}>العنوان بالتفصيل</span>
-                          <span style={{ fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: "600" }}>
+                          <span style={{ fontSize: "0.95rem", color: "var(--color-foreground)", fontWeight: "600" }}>
                             {selectedProposalDetails.address || "لا يوجد عنوان تفصيلي مكتوب"}
                           </span>
                         </div>
@@ -995,7 +995,7 @@ export default function PlacesSuggestionsPage() {
                 style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--color-primary)" }}
               />
               <div>
-                <h4 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                   {selectedUserProfile.full_name || "غير محدد"}
                 </h4>
                 <div style={{ fontSize: "0.85rem", color: "var(--color-primary)", direction: "ltr", textAlign: "right" }}>
@@ -1008,33 +1008,33 @@ export default function PlacesSuggestionsPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-secondary)", marginBottom: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                 <span>📧 البريد الإلكتروني:</span>
-                <strong style={{ color: "var(--text-primary)" }}>{selectedUserProfile.email || "غير متوفر"}</strong>
+                <strong style={{ color: "var(--color-foreground)" }}>{selectedUserProfile.email || "غير متوفر"}</strong>
               </div>
 
               {selectedUserProfile.phone && (
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>📞 رقم الهاتف:</span>
-                  <strong style={{ color: "var(--text-primary)", direction: "ltr" }}>{selectedUserProfile.phone}</strong>
+                  <strong style={{ color: "var(--color-foreground)", direction: "ltr" }}>{selectedUserProfile.phone}</strong>
                 </div>
               )}
 
               {(selectedUserProfile.governorate || selectedUserProfile.city) && (
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>📍 المحافظة / المدينة:</span>
-                  <strong style={{ color: "var(--text-primary)" }}>{selectedUserProfile.governorate || ""} {selectedUserProfile.city ? `(${selectedUserProfile.city})` : ""}</strong>
+                  <strong style={{ color: "var(--color-foreground)" }}>{selectedUserProfile.governorate || ""} {selectedUserProfile.city ? `(${selectedUserProfile.city})` : ""}</strong>
                 </div>
               )}
 
               {selectedUserProfile.dob && (
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>🎂 تاريخ الميلاد:</span>
-                  <strong style={{ color: "var(--text-primary)" }}>{selectedUserProfile.dob}</strong>
+                  <strong style={{ color: "var(--color-foreground)" }}>{selectedUserProfile.dob}</strong>
                 </div>
               )}
 
               {selectedUserProfile.interests && selectedUserProfile.interests.length > 0 && (
                 <div style={{ padding: "10px 14px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "12px" }}>
-                  <div style={{ marginBottom: "8px", fontWeight: "700", color: "var(--text-primary)", fontSize: "0.88rem" }}>🎯 الاهتمامات:</div>
+                  <div style={{ marginBottom: "8px", fontWeight: "700", color: "var(--color-foreground)", fontSize: "0.88rem" }}>🎯 الاهتمامات:</div>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {selectedUserProfile.interests.map((intKey: string, i: number) => {
                       const item = getInterestObj(intKey);
@@ -1066,14 +1066,14 @@ export default function PlacesSuggestionsPage() {
               {selectedUserProfile.bio && (
                 <div style={{ padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <div style={{ marginBottom: "4px" }}>📝 نبذة شخصية:</div>
-                  <div style={{ color: "var(--text-primary)", fontStyle: "italic" }}>"{selectedUserProfile.bio}"</div>
+                  <div style={{ color: "var(--color-foreground)", fontStyle: "italic" }}>"{selectedUserProfile.bio}"</div>
                 </div>
               )}
 
               {selectedUserProfile.created_at && (
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "rgba(108, 99, 255, 0.08)", border: "1px solid var(--border-glass)", borderRadius: "10px" }}>
                   <span>📅 تاريخ الانضمام:</span>
-                  <strong style={{ color: "var(--text-primary)" }}>
+                  <strong style={{ color: "var(--color-foreground)" }}>
                     {new Date(selectedUserProfile.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </strong>
                 </div>

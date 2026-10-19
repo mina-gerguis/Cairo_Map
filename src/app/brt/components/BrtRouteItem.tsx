@@ -55,7 +55,7 @@ export default function BrtRouteItem({
             <div className={styles.metricTile}>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>زمن الرحلة</span>
-                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                   {route.duration ? `~${route.duration} دقيقة` : "15-25 دقيقة"}
                   <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginRight: "5px" }}>تقريباً</span>
                 </span>
@@ -76,7 +76,7 @@ export default function BrtRouteItem({
             <div className={styles.metricTile}>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                 <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>نوع الوسيلة</span>
-                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                <span style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                   {route.vehicleType || "أتوبيس ترددي مكيف"}
                 </span>
               </div>

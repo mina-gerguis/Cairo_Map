@@ -75,7 +75,7 @@ export function ParkingSuggestModal({
       <div
         className="metro-animate-slide-up"
         style={{
-          backgroundColor: "var(--bgPrimary)",
+          backgroundColor: "var(--color-bg)",
           border: "1px solid var(--border-glass)",
           borderRadius: "var(--radius-card)",
           width: "100%",
@@ -96,7 +96,7 @@ export function ParkingSuggestModal({
             borderBottom: "1px solid var(--border-glass)",
             position: "sticky",
             top: 0,
-            backgroundColor: "var(--bgPrimary)",
+            backgroundColor: "var(--color-bg)",
             zIndex: 10,
           }}
         >
@@ -123,7 +123,7 @@ export function ParkingSuggestModal({
                   margin: 0,
                   fontSize: "1.1rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 اقتراح إضافة جراج جديد
@@ -159,7 +159,7 @@ export function ParkingSuggestModal({
               <h4
                 style={{
                   margin: "0 0 8px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   fontWeight: "700",
                 }}
               >
@@ -209,7 +209,7 @@ export function ParkingSuggestModal({
               <h4
                 style={{
                   margin: "0 0 8px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   fontWeight: "800",
                   fontSize: "1.2rem",
                 }}
@@ -295,7 +295,7 @@ export function ParkingSuggestModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -314,7 +314,7 @@ export function ParkingSuggestModal({
                     borderRadius: "10px",
                     backgroundColor: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontSize: "0.92rem",
                     fontFamily: "var(--font-cairo)",
                     outline: "none",
@@ -336,7 +336,7 @@ export function ParkingSuggestModal({
                       display: "block",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -351,7 +351,7 @@ export function ParkingSuggestModal({
                       borderRadius: "10px",
                       backgroundColor: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       fontSize: "0.9rem",
                       fontFamily: "var(--font-cairo)",
                       outline: "none",
@@ -365,8 +365,8 @@ export function ParkingSuggestModal({
                           key={a}
                           value={a}
                           style={{
-                            backgroundColor: "var(--bgPrimary)",
-                            color: "var(--text-primary)",
+                            backgroundColor: "var(--color-bg)",
+                            color: "var(--color-foreground)",
                           }}
                         >
                           {a}
@@ -381,7 +381,7 @@ export function ParkingSuggestModal({
                       display: "block",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -396,7 +396,7 @@ export function ParkingSuggestModal({
                       borderRadius: "10px",
                       backgroundColor: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       fontSize: "0.9rem",
                       fontFamily: "var(--font-cairo)",
                       outline: "none",
@@ -408,8 +408,8 @@ export function ParkingSuggestModal({
                         key={t}
                         value={t}
                         style={{
-                          backgroundColor: "var(--bgPrimary)",
-                          color: "var(--text-primary)",
+                          backgroundColor: "var(--color-bg)",
+                          color: "var(--color-foreground)",
                         }}
                       >
                         {t}
@@ -426,7 +426,7 @@ export function ParkingSuggestModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -446,7 +446,7 @@ export function ParkingSuggestModal({
                     borderRadius: "10px",
                     backgroundColor: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontSize: "0.92rem",
                     fontFamily: "var(--font-cairo)",
                     outline: "none",
@@ -468,7 +468,7 @@ export function ParkingSuggestModal({
                       display: "block",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -486,7 +486,7 @@ export function ParkingSuggestModal({
                       borderRadius: "10px",
                       backgroundColor: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       fontSize: "0.9rem",
                       fontFamily: "var(--font-cairo)",
                       outline: "none",
@@ -500,7 +500,7 @@ export function ParkingSuggestModal({
                       display: "block",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -518,7 +518,7 @@ export function ParkingSuggestModal({
                       borderRadius: "10px",
                       backgroundColor: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       fontSize: "0.9rem",
                       fontFamily: "var(--font-cairo)",
                       outline: "none",
@@ -541,7 +541,7 @@ export function ParkingSuggestModal({
                       display: "block",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -559,7 +559,7 @@ export function ParkingSuggestModal({
                       borderRadius: "10px",
                       backgroundColor: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       fontSize: "0.88rem",
                       fontFamily: "var(--font-cairo)",
                       outline: "none",
@@ -575,7 +575,7 @@ export function ParkingSuggestModal({
                       display: "block",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -593,7 +593,7 @@ export function ParkingSuggestModal({
                       borderRadius: "10px",
                       backgroundColor: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       fontSize: "0.9rem",
                       fontFamily: "var(--font-cairo)",
                       outline: "none",
@@ -609,7 +609,7 @@ export function ParkingSuggestModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "8px",
                   }}
                 >
@@ -664,7 +664,7 @@ export function ParkingSuggestModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -682,7 +682,7 @@ export function ParkingSuggestModal({
                     borderRadius: "10px",
                     backgroundColor: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontSize: "0.9rem",
                     fontFamily: "var(--font-cairo)",
                     outline: "none",
@@ -698,7 +698,7 @@ export function ParkingSuggestModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -774,7 +774,7 @@ export function ParkingSuggestModal({
                       style={{
                         fontSize: "0.85rem",
                         fontWeight: "700",
-                        color: "var(--text-primary)",
+                        color: "var(--color-foreground)",
                       }}
                     >
                       اضغط لاختيار صورة أو اسحبها هنا
@@ -827,7 +827,7 @@ export function ParkingSuggestModal({
                         style={{
                           fontSize: "0.82rem",
                           fontWeight: "700",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",

@@ -150,7 +150,7 @@ export default function PlaceCard({
             fontSize: "1.05rem",
             fontWeight: "800",
             marginBottom: "4px",
-            color: "var(--text-primary)",
+            color: "var(--color-foreground)",
           }}
         >
           {place.name}

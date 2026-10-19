@@ -48,14 +48,14 @@
 
 .backIcon {
   font-size: 1.8rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .headerTitle {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 /* Main Content Area */
@@ -179,7 +179,7 @@
 .lockTitle {
   margin: 0 0 10px;
   font-size: 1.3rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .lockDesc {
@@ -218,7 +218,7 @@
 .emptyTitle {
   margin: 0;
   font-size: 1rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 600;
 }
 
@@ -265,7 +265,7 @@
 
 .tabButtonInactive {
   background: var(--secondBtn);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .tabBadgeActive {
@@ -356,7 +356,7 @@
 .cardName {
   font-size: 1.05rem;
   margin: 0 0 4px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;

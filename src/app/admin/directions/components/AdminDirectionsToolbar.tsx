@@ -54,7 +54,7 @@ export function AdminDirectionsToolbar({
               cursor: "pointer",
               fontSize: "0.88rem",
               fontWeight: "700",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               userSelect: "none"
             }}
           >
@@ -118,7 +118,7 @@ export function AdminDirectionsToolbar({
             >
               إلغاء التحديد
             </button>
-          </> 
+          </>
         )}
 
         {totalCount > 0 && (
@@ -132,7 +132,7 @@ export function AdminDirectionsToolbar({
                 fontSize: "0.78rem",
                 background: "rgba(255, 255, 255, 0.04)",
                 border: "1px solid var(--border-glass)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 borderRadius: "8px",
                 display: "inline-flex",
                 alignItems: "center",
@@ -151,7 +151,7 @@ export function AdminDirectionsToolbar({
                 fontSize: "0.78rem",
                 background: "rgba(255, 255, 255, 0.04)",
                 border: "1px solid var(--border-glass)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 borderRadius: "8px",
                 display: "inline-flex",
                 alignItems: "center",

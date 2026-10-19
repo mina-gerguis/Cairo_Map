@@ -16,7 +16,7 @@ export function AdminDirectionsLoading() {
       }}
     >
       <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "2.5rem", color: "var(--color-primary, #6366f1)" }} />
-      <span style={{ fontWeight: "bold", color: "var(--text-primary)" }}>
+      <span style={{ fontWeight: "bold", color: "var(--color-foreground)" }}>
         جاري تحميل إدارة خطوط المواصلات...
       </span>
     </div>

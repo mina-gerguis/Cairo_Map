@@ -38,7 +38,7 @@ export default function PhonesSection({
             style={{
               fontSize: "1.15rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               margin: 0,
             }}
           >
@@ -86,11 +86,10 @@ export default function PhonesSection({
               selectedSpecialty === "all"
                 ? "var(--tab-active-bg)"
                 : "var(--bg-secondary)",
-            border: `1px solid ${
-              selectedSpecialty === "all"
-                ? "var(--tab-active-border)"
-                : "var(--border-glass)"
-            }`,
+            border: `1px solid ${selectedSpecialty === "all"
+              ? "var(--tab-active-border)"
+              : "var(--border-glass)"
+              }`,
             color: selectedSpecialty === "all" ? "var(--tab-active-color)" : "var(--text-secondary)",
             padding: "4px 12px",
             borderRadius: "6px",
@@ -113,9 +112,8 @@ export default function PhonesSection({
               onClick={() => setSelectedSpecialty(spec)}
               style={{
                 background: active ? "var(--tab-active-bg)" : "var(--bg-secondary)",
-                border: `1px solid ${
-                  active ? "var(--tab-active-border)" : "var(--border-glass)"
-                }`,
+                border: `1px solid ${active ? "var(--tab-active-border)" : "var(--border-glass)"
+                  }`,
                 color: active ? "var(--tab-active-color)" : "var(--text-secondary)",
                 padding: "4px 12px",
                 borderRadius: "6px",
@@ -142,7 +140,7 @@ export default function PhonesSection({
           <h3 className="sub-title"
             style={{
               fontWeight: "700",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               marginBottom: "4px",
 
             }}
@@ -192,7 +190,7 @@ export default function PhonesSection({
             style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontSize: "0.85rem",
               fontWeight: "700",
               padding: "8px 24px",

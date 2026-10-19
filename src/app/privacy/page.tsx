@@ -133,16 +133,16 @@ export default function PrivacyPage() {
             margin: "6px 0 0 0",
           }}>
             <li>
-              <strong style={{ color: "var(--text-primary)" }}>توفير وتطوير الخدمات:</strong> تمكينك من البحث السريع عن أرقام الطوارئ، الهواتف، العناوين، ومحطات المترو والقطارات وحافلات النقل.
+              <strong style={{ color: "var(--color-foreground)" }}>توفير وتطوير الخدمات:</strong> تمكينك من البحث السريع عن أرقام الطوارئ، الهواتف، العناوين، ومحطات المترو والقطارات وحافلات النقل.
             </li>
             <li>
-              <strong style={{ color: "var(--text-primary)" }}>التخصيص الذكي:</strong> ترتيب وترشيح الفروع الأقرب لمحيطك الجغرافي تلقائياً لتوفير الوقت والجهد.
+              <strong style={{ color: "var(--color-foreground)" }}>التخصيص الذكي:</strong> ترتيب وترشيح الفروع الأقرب لمحيطك الجغرافي تلقائياً لتوفير الوقت والجهد.
             </li>
             <li>
-              <strong style={{ color: "var(--text-primary)" }}>الأمان ومكافحة الاحتيال:</strong> التحقق من مصداقية الحسابات ومنع التعليقات المضللة أو الهجمات الضارة على التقييمات.
+              <strong style={{ color: "var(--color-foreground)" }}>الأمان ومكافحة الاحتيال:</strong> التحقق من مصداقية الحسابات ومنع التعليقات المضللة أو الهجمات الضارة على التقييمات.
             </li>
             <li>
-              <strong style={{ color: "var(--text-primary)" }}>التواصل والتنبيهات:</strong> إرسال إشعارات التحديثات الحيوية، استعادة كلمة المرور، والتنبيهات الخدمية التي تهمك.
+              <strong style={{ color: "var(--color-foreground)" }}>التواصل والتنبيهات:</strong> إرسال إشعارات التحديثات الحيوية، استعادة كلمة المرور، والتنبيهات الخدمية التي تهمك.
             </li>
           </ul>
         </div>
@@ -168,7 +168,7 @@ export default function PrivacyPage() {
           }}>
             <i className="bx bx-check-shield" style={{ fontSize: "1.8rem", color: "var(--color-primary)", marginTop: "2px" }}></i>
             <div>
-              <h4 style={{ margin: "0 0 4px 0", fontSize: "1.05rem", color: "var(--text-primary)", fontWeight: "700" }}>ضمانة الحماية الرقمية</h4>
+              <h4 style={{ margin: "0 0 4px 0", fontSize: "1.05rem", color: "var(--color-foreground)", fontWeight: "700" }}>ضمانة الحماية الرقمية</h4>
               <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
                 جميع الاتصالات مشفرة ببروتوكول HTTPS/TLS المتقدم، وتخزن كلمات المرور والبيانات الحساسة باستخدام خوارزميات التشفير غير القابلة للعكس (Hashing)، مع استضافة آمنة عبر بنية سحابية موثوقة.
               </p>
@@ -235,7 +235,7 @@ export default function PrivacyPage() {
             alignItems: "center",
             gap: "8px",
             border: "none",
-            color: "var(--text-primary)",
+            color: "var(--color-foreground)",
             textDecoration: "none",
             fontWeight: "600",
             fontSize: "0.9rem",
@@ -327,7 +327,7 @@ export default function PrivacyPage() {
             fontSize: "clamp(1.8rem, 4vw, 2.4rem)",
             fontWeight: "900",
             marginBottom: "12px",
-            color: "var(--text-primary)",
+            color: "var(--color-foreground)",
             letterSpacing: "-0.02em",
           }}
         >
@@ -345,7 +345,7 @@ export default function PrivacyPage() {
             lineHeight: "1.7",
           }}
         >
-          نلتزم في منصة <strong style={{ color: "var(--text-primary)" }}>ماب القاهرة</strong> بحماية بياناتك الشخصية وتوفير بيئة تصفح واستكشاف آمنة وشفافة بالكامل.
+          نلتزم في منصة <strong style={{ color: "var(--color-foreground)" }}>ماب القاهرة</strong> بحماية بياناتك الشخصية وتوفير بيئة تصفح واستكشاف آمنة وشفافة بالكامل.
         </p>
       </div>
 
@@ -388,7 +388,7 @@ export default function PrivacyPage() {
             >
               <i className={item.icon}></i>
             </div>
-            <h3 style={{ fontSize: "1.05rem", fontWeight: "700", margin: 0, color: "var(--text-primary)" }}>
+            <h3 style={{ fontSize: "1.05rem", fontWeight: "700", margin: 0, color: "var(--color-foreground)" }}>
               {item.title}
             </h3>
             <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.6" }}>
@@ -430,7 +430,7 @@ export default function PrivacyPage() {
                 <h2 style={{
                   fontSize: "1.2rem",
                   fontWeight: "700",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: 0,
                 }}>
                   {sec.title}
@@ -480,7 +480,7 @@ export default function PrivacyPage() {
         >
           <i className="bx bx-envelope"></i>
         </div>
-        <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>
+        <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--color-foreground)" }}>
           هل لديك أي استفسار حول خصوصية بياناتك؟
         </h3>
         <p style={{ fontSize: "0.92rem", color: "var(--text-secondary)", maxWidth: "520px", margin: "0 auto 18px", lineHeight: "1.6" }}>

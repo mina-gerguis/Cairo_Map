@@ -12,7 +12,7 @@ export default function MicrobusBottomBanner({
     <div onClick={onOpenMissingRouteModal} className={styles.calloutBanner}>
       <div style={{ flex: "1 1 300px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
-          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", fontFamily: "var(--font-sub)" }}>
+          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)", fontFamily: "var(--font-sub)" }}>
             عايز تضيف موقف أو خط سير مش موجود وأنت عارف تفاصيله ..؟
           </h3>
         </div>

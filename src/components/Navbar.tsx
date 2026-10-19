@@ -189,7 +189,7 @@ export default function Navbar() {
                           <i className={sub.icon} style={{ fontSize: "1.1rem" }} />
                         )}
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                          <span className="sub-title" style={{ fontWeight: "700", fontSize: "0.88rem", color: "var(--text-primary)" }}>{sub.label}</span>
+                          <span className="sub-title" style={{ fontWeight: "700", fontSize: "0.88rem", color: "var(--color-foreground)" }}>{sub.label}</span>
                           {sub.subtitle && (
                             <span style={{ fontSize: "0.65rem", color: "var(--text-secondary)", marginTop: "1px" }}>{sub.subtitle}</span>
                           )}
@@ -260,7 +260,7 @@ export default function Navbar() {
                 <>
                   <div className="heroui-dropdown-header">
                     <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>تم تسجيل الدخول كـ</p>
-                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {profile?.username || user.user_metadata?.username || "حسابي"}
                     </p>
                   </div>

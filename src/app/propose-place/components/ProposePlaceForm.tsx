@@ -118,7 +118,7 @@ export default function ProposePlaceForm({
           {/* Sub Categories Pill Toggle */}
           {formData.category && availableSubCategories.length > 0 && (
             <div className={`${styles.fullCol} ${styles.pillsBox}`}>
-              <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--text-primary)" }}>
+              <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--color-foreground)" }}>
                 التصنيفات الفرعية التابعة للقسم الرئيسي
               </label>
               <div className={styles.pillsWrap}>
@@ -169,7 +169,7 @@ export default function ProposePlaceForm({
 
           {/* Features Selection */}
           <div className={`${styles.fullCol} ${styles.pillsBox}`}>
-            <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--text-primary)" }}>
+            <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--color-foreground)" }}>
               مميزات إضافية للمكان (اختر كل ما ينطبق)
             </label>
             <div className={styles.pillsWrap}>
@@ -454,8 +454,8 @@ export default function ProposePlaceForm({
             {isEditMode
               ? "إعادة إرسال للمراجعة"
               : limitReached
-              ? "الحد الأقصى معلق (اختر مكان لتعديله)"
-              : "إرسال الاقتراح للإدارة"}
+                ? "الحد الأقصى معلق (اختر مكان لتعديله)"
+                : "إرسال الاقتراح للإدارة"}
           </>
         )}
       </button>

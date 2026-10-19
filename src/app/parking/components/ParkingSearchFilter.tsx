@@ -14,7 +14,7 @@ export function ParkingSearchFilter({
     <div
       className="metro-animate-slide-up metro-delay-200"
       style={{
-        backgroundColor: "var(--bgPrimary)",
+        backgroundColor: "var(--color-bg)",
         border: "1px solid var(--border-glass)",
         borderRadius: "15px",
         padding: "20px",
@@ -49,7 +49,7 @@ export function ParkingSearchFilter({
               backgroundColor: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "10px",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontSize: "0.9rem",
               fontFamily: "var(--font-cairo)",
               outline: "none",
@@ -77,7 +77,7 @@ export function ParkingSearchFilter({
               backgroundColor: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "10px",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontSize: "0.9rem",
               fontFamily: "var(--font-cairo)",
               outline: "none",
@@ -87,8 +87,8 @@ export function ParkingSearchFilter({
             <option
               value="all"
               style={{
-                backgroundColor: "var(--bgPrimary)",
-                color: "var(--text-primary)",
+                backgroundColor: "var(--color-bg)",
+                color: "var(--color-foreground)",
               }}
             >
               جميع المناطق
@@ -100,8 +100,8 @@ export function ParkingSearchFilter({
                   key={area}
                   value={area}
                   style={{
-                    backgroundColor: "var(--bgPrimary)",
-                    color: "var(--text-primary)",
+                    backgroundColor: "var(--color-bg)",
+                    color: "var(--color-foreground)",
                   }}
                 >
                   {area}

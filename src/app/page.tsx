@@ -856,7 +856,7 @@ export default function HomePage() {
   const categoryCards = CATEGORIES_STRUCTURE;
 
   return (
-    <main style={{ minHeight: "100vh", backgroundColor: "var(--bgPrimary)", color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
+    <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-foreground)", fontFamily: "var(--font-heading)" }}>
       {/* ── 1. HERO SECTION ── */}
       <section style={{
         position: "relative",
@@ -944,7 +944,7 @@ export default function HomePage() {
                     background: "transparent",
                     border: "none",
                     outline: "none",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontSize: "1rem",
                     fontFamily: "var(--font-heading)"
                   }}
@@ -975,7 +975,7 @@ export default function HomePage() {
                     fontFamily: "inherit",
                     fontSize: "0.75rem",
                     fontWeight: "bold",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -986,7 +986,7 @@ export default function HomePage() {
                     fontFamily: "inherit",
                     fontSize: "0.75rem",
                     fontWeight: "bold",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1047,7 +1047,7 @@ export default function HomePage() {
                           border: "1px solid var(--border-glass)",
                           marginBottom: "6px",
                           textDecoration: "none",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           transition: "var(--transition-fast)"
                         }}
                       >
@@ -1116,7 +1116,7 @@ export default function HomePage() {
                           border: "1px solid var(--border-glass)",
                           marginBottom: "6px",
                           textDecoration: "none",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           transition: "var(--transition-fast)"
                         }}
                       >
@@ -1180,7 +1180,7 @@ export default function HomePage() {
                             backgroundColor: "var(--hoverBtn)",
                             border: "1px solid var(--border-glass)",
                             textDecoration: "none",
-                            color: "var(--text-primary)",
+                            color: "var(--color-foreground)",
                             fontSize: "0.85rem"
                           }}
                         >
@@ -1203,7 +1203,7 @@ export default function HomePage() {
                     <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
                       <FaInbox style={{ fontSize: "2rem", marginBottom: "6px" }} />
                     </div>
-                    <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--text-primary)", marginBottom: "4px" }}>
+                    <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--color-foreground)", marginBottom: "4px" }}>
                       عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                     </div>
                     <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }}>
@@ -1218,7 +1218,7 @@ export default function HomePage() {
                           borderRadius: "8px",
                           backgroundColor: "var(--hoverBtn)",
                           border: "1px solid var(--border-glass)",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           fontSize: "0.82rem",
                           cursor: "pointer",
                           fontFamily: "var(--font-sub)"
@@ -1347,7 +1347,7 @@ export default function HomePage() {
       <section style={{ padding: "60px 20px 40px 20px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
 
-          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--text-primary)" }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--color-foreground)" }}>
             المدن الشهيرة
           </h2>
           <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1rem", maxWidth: "650px", margin: "0 auto", lineHeight: "1.6" }}>
@@ -1465,7 +1465,7 @@ export default function HomePage() {
                 borderRadius: "50%",
                 backgroundColor: "var(--bg-glass-card)",
                 border: "1px solid var(--border-glass-bright)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1521,7 +1521,7 @@ export default function HomePage() {
                 borderRadius: "50%",
                 backgroundColor: "var(--bg-glass-card)",
                 border: "1px solid var(--border-glass-bright)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1604,7 +1604,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--text-primary)", marginBottom: "10px" }}>
+                <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--color-foreground)", marginBottom: "10px" }}>
                   {service.title}
                 </h2>
                 <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "24px" }}>
@@ -1686,7 +1686,7 @@ export default function HomePage() {
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--text-primary)", textAlign: "center" }}>
+              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--color-foreground)", textAlign: "center" }}>
                 مدونة ومقالات خريطة القاهرة
               </h2>
               <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>
@@ -1730,7 +1730,7 @@ export default function HomePage() {
                 href={`/blog/${encodeURIComponent(post.slug || post.id)}`}
                 style={{
                   textDecoration: "none",
-                  backgroundColor: "var(--bgPrimary)",
+                  backgroundColor: "var(--color-bg)",
                   border: "1px solid var(--border-glass)",
                   borderRadius: "var(--cardGlassRadius)",
                   padding: "18px",
@@ -1745,7 +1745,7 @@ export default function HomePage() {
                   <span style={{ fontSize: "0.78rem", color: "var(--color-secondary)", fontWeight: "700", display: "block", marginBottom: "6px", fontFamily: "var(--font-body)" }}>
                     {post.category || "مقالات خريطة القاهرة"}
                   </span>
-                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--text-primary)", margin: "0 0 8px 0", lineHeight: "1.45" }}>
+                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--color-foreground)", margin: "0 0 8px 0", lineHeight: "1.45" }}>
                     {post.title}
                   </h2>
                   {post.excerpt && (
@@ -1782,7 +1782,7 @@ export default function HomePage() {
             <Image src="/images/icons3d/robot.webp" alt="الذكاء الاصطناعي لماب القاهرة" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
-          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--text-primary)" }}>
+          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-foreground)" }}>
             محتار تخرج فين النهاردة؟ اترك التخطيط للذكاء الاصطناعي!
           </h2>
           <p className="sub-title" style={{ fontSize: "1rem", color: "var(--text-secondary)", margin: "0 8px 28px 8px", lineHeight: "1.7", textAlign: "center" }}>
@@ -1810,7 +1810,7 @@ export default function HomePage() {
       {/* ── 6. PROPOSE PLACE CTA ── */}
       <section style={{
         padding: "60px 20px",
-        backgroundColor: "var(--bgPrimary)",
+        backgroundColor: "var(--color-bg)",
         borderTop: "1px solid var(--border-glass)",
         textAlign: "center"
       }}>

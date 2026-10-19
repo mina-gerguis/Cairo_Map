@@ -121,7 +121,7 @@ const DEFAULT_METRO_PRICES = [
 
 export default function AdminMetroPage() {
   return (
-    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-textSecondary)" }}>جاري التحميل...</div>}>
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>جاري التحميل...</div>}>
       <AdminMetroInner />
     </Suspense>
   );
@@ -634,7 +634,7 @@ function AdminMetroInner() {
           {/* Header Action Row */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
             <div>
-              <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--text-primary)" }}>إدارة محطات المترو</h2>
+              <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--color-foreground)" }}>إدارة محطات المترو</h2>
               <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
                 إضافة وتعديل وحذف محطات مترو الأنفاق في خطوطها الستة.
               </p>
@@ -687,9 +687,9 @@ function AdminMetroInner() {
                       fontWeight: "400",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
-                      background: adminActiveLine === opt.id ? "var(--text-primary)" : "transparent",
+                      background: adminActiveLine === opt.id ? "var(--color-foreground)" : "transparent",
                       border: "none",
-                      color: adminActiveLine === opt.id ? "var(--bgMode)" : "var(--text-primary)",
+                      color: adminActiveLine === opt.id ? "var(--bgMode)" : "var(--color-foreground)",
                       whiteSpace: "nowrap"
 
                     }}
@@ -738,7 +738,7 @@ function AdminMetroInner() {
                             {station.station_order}
                           </span>
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--text-primary)" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--color-foreground)" }}>
                           {station.name}
                         </td>
                         <td className={styles.adminTd} style={{ width: "10%" }}>
@@ -762,7 +762,7 @@ function AdminMetroInner() {
                                 <span key={lIdx} style={{
                                   fontSize: "0.73rem",
                                   background: "rgba(255,255,255,0.02)",
-                                  color: "var(--text-primary, #e2e8f0)",
+                                  color: "var(--color-foreground, #e2e8f0)",
                                   padding: "2px 6px",
                                   borderRadius: "6px",
                                   display: "inline-flex",
@@ -831,7 +831,7 @@ function AdminMetroInner() {
       {activeSection === "pricing" && (
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ marginBottom: "24px" }}>
-            <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--text-primary)" }}>إدارة أسعار تذاكر المترو</h2>
+            <h2 style={{ margin: 0, fontSize: "1.4rem", fontWeight: "900", color: "var(--color-foreground)" }}>إدارة أسعار تذاكر المترو</h2>
             <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: "4px 0 0 0" }}>
               تعديل شرائح أسعار التذاكر بناءً على عدد محطات الرحلة التي يقطعها العميل.
             </p>

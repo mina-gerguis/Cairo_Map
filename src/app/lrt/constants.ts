@@ -166,8 +166,8 @@ export const PROBLEM_OPTIONS = [
 ];
 
 export const LRT_FARE_TIERS = [
-  { maxStations: 3, price: 10, label: "حتى 3 محطات", color: "var(--colorSuccess)" },
-  { maxStations: 7, price: 15, label: "من 4 إلى 7 محطات", color: "var(--colorSuccess)" },
+  { maxStations: 3, price: 10, label: "حتى 3 محطات", color: "var(--color-success)" },
+  { maxStations: 7, price: 15, label: "من 4 إلى 7 محطات", color: "var(--color-success)" },
   { maxStations: 12, price: 20, label: "من 8 إلى 12 محطة", color: "var(--accent-warning)" },
   { maxStations: Infinity, price: 25, label: "13 محطة فأكثر", color: "var(--accent-danger)" },
 ];

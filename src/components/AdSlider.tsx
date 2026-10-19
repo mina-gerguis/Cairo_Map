@@ -315,7 +315,7 @@ export default function AdSlider({
           borderRadius: isMobile ? "8px" : "8px",
           overflow: "hidden",
           background: currentSlide.image
-            ? "var(--bgPrimary, #0f172a)"
+            ? "var(--color-bg, #0f172a)"
             : (currentSlideTheme.bgGradient || "var(--bg-glass-card, rgba(15, 23, 42, 0.6))"),
           border: `1px solid ${currentSlideTheme.borderColor || "var(--border-glass, rgba(255, 255, 255, 0.08))"}`,
           boxShadow: isLight ? "0 4px 20px rgba(0, 0, 0, 0.05)" : "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
@@ -480,7 +480,7 @@ export default function AdSlider({
                           padding: isMobile ? "2px 7px" : "3px 10px",
                           borderRadius: "6px",
                           backgroundColor: "#aaaaaa3f",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           backdropFilter: "blur(6px)",
                           border: `1px solid ${isLight ? "rgba(0,0,0,0.05)" : "rgba(255, 255, 255, 0.05)"}`,
                         }}
@@ -507,7 +507,7 @@ export default function AdSlider({
                       margin: isMobile ? "0 0 4px 0" : "0 0 6px 0",
                       fontSize: isMobile ? "0.95rem" : "clamp(1.05rem, 2.2vw, 1.3rem)",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       lineHeight: "1.4",
                       textShadow: currentSlide.image ? (isLight ? "0 1px 2px rgba(255,255,255,0.9)" : "0 2px 4px rgba(0,0,0,0.8)") : "none",
                     }}

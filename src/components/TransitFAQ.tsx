@@ -91,7 +91,7 @@ export default function TransitFAQ() {
   return (
     <div
       style={{
-        backgroundColor: "var(--bgPrimary)",
+        backgroundColor: "var(--color-bg)",
         border: "1px solid var(--borderGlass)",
         borderRadius: "var(--radius-xs)",
         padding: "20px",
@@ -214,7 +214,7 @@ export default function TransitFAQ() {
                         gap: "8px",
                         padding: "6px 12px",
                         borderRadius: "8px",
-                        background: "var(--bgPrimary)",
+                        background: "var(--color-bg)",
                         border: "1px solid var(--borderGlass)",
                         color: "var(--textPrimary)",
                         textDecoration: "none",
@@ -228,7 +228,7 @@ export default function TransitFAQ() {
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.borderColor = "var(--borderGlass)";
-                        e.currentTarget.style.background = "var(--bgPrimary)";
+                        e.currentTarget.style.background = "var(--color-bg)";
                       }}
                     >
                       <Image

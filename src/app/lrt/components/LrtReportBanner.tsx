@@ -27,7 +27,7 @@ export default function LrtReportBanner({
               margin: 0,
               fontSize: "1.02rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
             }}
           >
             الإبلاغ عن مشكلة فى بيانات القطار الكهربائي LRT

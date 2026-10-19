@@ -86,7 +86,7 @@ export default function LrtLineExplorer({
               <span
                 className={styles.tabLabel}
                 style={{
-                  color: active ? "var(--text-primary)" : "var(--text-secondary)",
+                  color: active ? "var(--color-foreground)" : "var(--text-secondary)",
                 }}
               >
                 {tab.label}
@@ -148,10 +148,10 @@ export default function LrtLineExplorer({
             const details =
               staticDetails || dbLandmarks
                 ? {
-                    landmarks: dbLandmarks || staticDetails?.landmarks || [],
-                    type: staticDetails?.type || "عادية",
-                    status: station.status || staticDetails?.status || "تشغيل فعلي",
-                  }
+                  landmarks: dbLandmarks || staticDetails?.landmarks || [],
+                  type: staticDetails?.type || "عادية",
+                  status: station.status || staticDetails?.status || "تشغيل فعلي",
+                }
                 : null;
 
             return (
@@ -175,11 +175,11 @@ export default function LrtLineExplorer({
                     height: "14px",
                     borderRadius: "50%",
                     background:
-                      details?.status === "تحت الإنشاء" ? "var(--bgPrimary)" : color,
+                      details?.status === "تحت الإنشاء" ? "var(--color-bg)" : color,
                     border:
                       details?.status === "تحت الإنشاء"
                         ? `3px dashed ${color}`
-                        : `3.5px solid var(--bgPrimary, #000)`,
+                        : `3.5px solid var(--color-bg, #000)`,
                     zIndex: 2,
                     boxShadow: isExpanded ? `0 0 10px ${color}` : `0 0 6px ${color}40`,
                     transition: "all 0.3s ease",
@@ -189,9 +189,8 @@ export default function LrtLineExplorer({
                 {/* Content Box */}
                 <div
                   onClick={() => onToggleStation(station.name)}
-                  className={`${styles.stationNodeCard} ${
-                    isExpanded ? styles.stationNodeCardExpanded : ""
-                  }`}
+                  className={`${styles.stationNodeCard} ${isExpanded ? styles.stationNodeCardExpanded : ""
+                    }`}
                   style={
                     {
                       "--node-color": color,
@@ -216,7 +215,7 @@ export default function LrtLineExplorer({
                           color:
                             details?.status === "تحت الإنشاء"
                               ? "var(--text-secondary)"
-                              : "var(--text-primary)",
+                              : "var(--color-foreground)",
                         }}
                       >
                         {station.name}
@@ -293,7 +292,7 @@ export default function LrtLineExplorer({
                                 border: "1px solid rgba(6, 182, 212, 0.15)",
                               }}
                             >
-                              <strong style={{ color: "var(--text-primary)" }}>
+                              <strong style={{ color: "var(--color-foreground)" }}>
                                 🔗 طبيعة المحطة:
                               </strong>{" "}
                               {details.type}

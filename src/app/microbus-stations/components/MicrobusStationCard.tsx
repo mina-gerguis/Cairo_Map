@@ -89,7 +89,7 @@ export default function MicrobusStationCard({
             <h4 style={{
               fontSize: "0.88rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               margin: 0,
               fontFamily: "var(--font-sub)",
               display: "flex",

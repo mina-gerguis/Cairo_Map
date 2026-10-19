@@ -29,7 +29,7 @@ export function AdminMicrobusStationsHeader({
           style={{
             fontSize: "1.85rem",
             fontWeight: "900",
-            color: "var(--text-primary, #fff)",
+            color: "var(--color-foreground, #fff)",
             marginBottom: "6px"
           }}
         >

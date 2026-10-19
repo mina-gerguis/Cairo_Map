@@ -69,10 +69,10 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
         mfaStep === "selection"
           ? "المصادقة الثنائية"
           : mfaStep === "enroll"
-          ? "تفعيل المصادقة الثنائية"
-          : "إلغاء تفعيل المصادقة الثنائية"
+            ? "تفعيل المصادقة الثنائية"
+            : "إلغاء تفعيل المصادقة الثنائية"
       }
-      titleColor={mfaStep === "unenroll_confirm" ? "#ff3b30" : "var(--text-primary)"}
+      titleColor={mfaStep === "unenroll_confirm" ? "#ff3b30" : "var(--color-foreground)"}
       iconSrc="/images/icons3d/padlock.webp"
       borderColor={
         mfaStep === "unenroll_confirm" ? "rgba(255, 59, 48, 0.25)" : "var(--modelCardBorder)"
@@ -80,19 +80,19 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
       primaryButton={
         mfaStep === "selection"
           ? {
-              label: "إغلاق",
-              onClick: onClose,
-              bgColor: "var(--btn-cancel)",
-              textColor: "var(--text-primary)",
-            }
+            label: "إغلاق",
+            onClick: onClose,
+            bgColor: "var(--btn-cancel)",
+            textColor: "var(--color-foreground)",
+          }
           : mfaStep === "enroll"
-          ? {
+            ? {
               label: mfaLoading ? "جاري التفعيل..." : "تأكيد وتفعيل",
               onClick: handleVerifyTOTP,
               bgColor: "var(--mainBtn)",
               disabled: mfaLoading || verificationCode.length !== 6,
             }
-          : {
+            : {
               label: mfaLoading ? "جاري الإلغاء..." : "تأكيد الإلغاء",
               onClick: handleUnenrollTOTP,
               bgColor: "#ff3b30",
@@ -102,13 +102,13 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
       secondaryButton={
         mfaStep === "enroll"
           ? {
-              label: "رجوع",
-              onClick: () => setMfaStep("selection"),
-              bgColor: "var(--btn-cancel)",
-              disabled: mfaLoading,
-            }
+            label: "رجوع",
+            onClick: () => setMfaStep("selection"),
+            bgColor: "var(--btn-cancel)",
+            disabled: mfaLoading,
+          }
           : mfaStep === "unenroll_confirm"
-          ? {
+            ? {
               label: "تراجع",
               onClick: () => {
                 setMfaStep("selection");
@@ -119,7 +119,7 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
               bgColor: "var(--btn-cancel)",
               disabled: mfaLoading,
             }
-          : undefined
+            : undefined
       }
     >
       <div style={{ textAlign: "right" }}>
@@ -168,11 +168,10 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
               {/* Authenticator App */}
               <div
                 onClick={() => (activeMfaFactors.totp ? null : handleEnrollTOTP())}
-                className={`${styles.mfaOptionBase} ${
-                  activeMfaFactors.totp
-                    ? styles.mfaOptionItemActive
-                    : styles.mfaOptionItemInactive
-                }`}
+                className={`${styles.mfaOptionBase} ${activeMfaFactors.totp
+                  ? styles.mfaOptionItemActive
+                  : styles.mfaOptionItemInactive
+                  }`}
               >
                 <div className={styles.mfaOptionLeft}>
                   <div
@@ -199,11 +198,10 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
                 </div>
                 {mfaLoading ? (
                   <div
-                    className={`spinner ${
-                      activeMfaFactors.totp
-                        ? styles.mfaSpinnerActive
-                        : styles.mfaSpinnerInactive
-                    }`}
+                    className={`spinner ${activeMfaFactors.totp
+                      ? styles.mfaSpinnerActive
+                      : styles.mfaSpinnerInactive
+                      }`}
                   />
                 ) : activeMfaFactors.totp ? (
                   <button onClick={handleUnenrollClick} className={styles.mfaUnenrollBtn}>

@@ -21,7 +21,7 @@ export default function MetroReportBanner({
               margin: "0 0 4px",
               fontSize: "1.05rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontFamily: "var(--font-sub, inherit)",
             }}
           >

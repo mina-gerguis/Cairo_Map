@@ -39,7 +39,7 @@ export function DeleteReportModal({ item, isDeleting, onConfirm, onClose }: Dele
         >
           <i className="bx bx-trash"></i>
         </div>
-        <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "8px", color: "var(--text-primary)" }}>
+        <h3 style={{ fontSize: "1.1rem", fontWeight: "800", marginBottom: "8px", color: "var(--color-foreground)" }}>
           هل أنت متأكد من حذف هذا البلاغ؟
         </h3>
         <p style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginBottom: "20px" }}>

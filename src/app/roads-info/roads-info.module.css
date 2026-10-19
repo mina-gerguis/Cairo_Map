@@ -6,16 +6,16 @@
   position: relative;
   min-height: 100vh;
   padding-bottom: 60px;
-  background-color: var(--bgPrimary, #000000);
-  color: var(--text-primary, #f4f4f5);
+  background-color: var(--color-bg, #000000);
+  color: var(--color-foreground, #f4f4f5);
   overflow-x: hidden;
   direction: rtl;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 :global(html.light) .pageWrapper {
-  background-color: var(--bgPrimary, #ffffff);
-  color: var(--text-primary, #18181b);
+  background-color: var(--color-bg, #ffffff);
+  color: var(--color-foreground, #18181b);
 }
 
 .ambientGlow {
@@ -76,7 +76,7 @@
   font-weight: 900;
   line-height: 1.25;
   margin-bottom: 12px;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 :global(html.light) .heroTitle {
@@ -139,7 +139,7 @@
 .heroStatValue {
   font-size: 1.2rem;
   font-weight: 800;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   line-height: 1.1;
 }
 
@@ -269,7 +269,7 @@
   background: var(--inputBg, rgba(15, 23, 42, 0.6));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
   border-radius: 12px;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   font-size: 0.95rem;
   outline: none;
   font-family: inherit;
@@ -291,7 +291,7 @@
   background: var(--inputBg, rgba(15, 23, 42, 0.6));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
   border-radius: 12px;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   font-size: 0.9rem;
   outline: none;
   font-family: inherit;
@@ -336,7 +336,7 @@
 
 .filterChip:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 :global(html.light) .filterChip:hover {
@@ -408,7 +408,7 @@
 .roadMainTitle {
   font-size: 1.45rem;
   font-weight: 800;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -462,7 +462,7 @@
   border-radius: 10px;
   padding: 8px 14px;
   font-size: 0.84rem;
-  color: var(--text-primary, #e2e8f0);
+  color: var(--color-foreground, #e2e8f0);
 }
 
 :global(html.light) .roadPill {
@@ -511,7 +511,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 :global(html.light) .speedSectionTitle {
@@ -587,7 +587,7 @@
 .speedVehicleName {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin-bottom: 2px;
 }
 
@@ -707,7 +707,7 @@
 .weatherTemp {
   font-size: 1.75rem;
   font-weight: 800;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 :global(html.light) .weatherTemp {
@@ -816,7 +816,7 @@
 .roadCardName {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin-bottom: 4px;
 }
 
@@ -979,7 +979,7 @@
 .newsTitle {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin-bottom: 6px;
 }
 
@@ -1040,7 +1040,7 @@
 .guideCardTitle {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1166,7 +1166,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 :global(html.light) .roadSpecificNewsTitle {
@@ -1209,7 +1209,7 @@
 .noRoadNewsTitle {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin-bottom: 2px;
 }
 

@@ -16,7 +16,7 @@
   border-radius: var(--inputRadius);
   outline: none;
   background: var(--inputBg);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;

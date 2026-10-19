@@ -111,7 +111,7 @@ export default function LrtSearchCard({
                       <span
                         style={{
                           fontWeight: "800",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           fontSize: "0.92rem",
                         }}
                       >

@@ -248,7 +248,7 @@ export default function WeatherComfortWidget() {
             </div>
 
             <div style={{ flex: 1, minWidth: "240px" }}>
-              <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-sub)" }}>
+              <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-sub)" }}>
                 <span>درجة الحرارة غير متاحة (الموقع غير مفعل)</span>
               </div>
               <p style={{ margin: "4px 0 10px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
@@ -284,7 +284,7 @@ export default function WeatherComfortWidget() {
                   style={{
                     background: "var(--btn-secondary)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
                     fontSize: "0.8rem",
@@ -382,7 +382,7 @@ export default function WeatherComfortWidget() {
               style={{
                 fontSize: "0.88rem",
                 fontWeight: "700",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 display: "flex",
                 alignItems: "center",
                 flexWrap: "wrap",
@@ -415,7 +415,7 @@ export default function WeatherComfortWidget() {
             style={{
               background: "rgba(255, 255, 255, 0.08)",
               border: "none",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               padding: "12px",
               borderRadius: "8px",
               fontSize: "0.8rem",

@@ -82,7 +82,7 @@ export default function LrtRouteCalculator({
                       style={{
                         fontSize: "0.92rem",
                         fontWeight: "700",
-                        color: "var(--text-primary)",
+                        color: "var(--color-foreground)",
                       }}
                     >
                       {s}
@@ -140,7 +140,7 @@ export default function LrtRouteCalculator({
                       style={{
                         fontSize: "0.92rem",
                         fontWeight: "700",
-                        color: "var(--text-primary)",
+                        color: "var(--color-foreground)",
                       }}
                     >
                       {s}
@@ -172,7 +172,7 @@ export default function LrtRouteCalculator({
               style={{
                 fontSize: "1.05rem",
                 fontWeight: "800",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 margin: 0,
                 display: "flex",
                 alignItems: "center",
@@ -221,7 +221,7 @@ export default function LrtRouteCalculator({
             <div className={styles.metricTile}>
               <div
                 className={styles.metricTileValue}
-                style={{ color: "var(--text-primary)" }}
+                style={{ color: "var(--color-foreground)" }}
               >
                 {result.count}
               </div>
@@ -358,7 +358,7 @@ export default function LrtRouteCalculator({
                     }}
                   >
                     لقد وصلت بنجاح إلى وجهتك محطة{" "}
-                    <strong style={{ color: "var(--text-primary)" }}>
+                    <strong style={{ color: "var(--color-foreground)" }}>
                       {result.stations[currentStepIndex]}
                     </strong>
                     .
@@ -393,8 +393,8 @@ export default function LrtRouteCalculator({
               const isPassed = isTripActive && idx < currentStepIndex;
               const isCurrent = isTripActive && idx === currentStepIndex;
 
-              let bg = "var(--bgPrimary)";
-              let color = "var(--text-primary)";
+              let bg = "var(--color-bg)";
+              let color = "var(--color-foreground)";
               let border = "1px solid var(--border-glass)";
               let boxShadow = "none";
               let icon: string | null = null;

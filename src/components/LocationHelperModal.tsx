@@ -108,7 +108,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
       >
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-foreground)", margin: 0 }}>
             📍 تفعيل الموقع الجغرافي
           </h2>
           <button
@@ -209,7 +209,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
         {/* Step-by-Step Instructions Content */}
         <div style={{ minHeight: "180px", marginBottom: "20px", textAlign: "start" }}>
           {activeTab === "ios" && (
-            <ol style={{ listStyle: "auto", paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
+            <ol style={{ listStyle: "auto", paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--color-foreground)", lineHeight: "1.6" }}>
               <li style={{ listStyle: "auto" }}>افتح تطبيق <strong>الإعدادات (Settings) ⚙️</strong> في جهازك.</li>
               <li style={{ listStyle: "auto" }}>اذهب إلى <strong>الخصوصية والأمن (Privacy & Security)</strong> &larr; <strong>خدمات الموقع (Location Services)</strong> وتأكد من تفعيلها في الأعلى.</li>
               <li style={{ listStyle: "auto" }}>قم بالتمرير للأسفل في نفس القائمة واختر المتصفح الذي تستخدمه حالياً (مثل <strong>Safari</strong> أو <strong>Chrome</strong>).</li>
@@ -219,7 +219,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
           )}
 
           {activeTab === "android" && (
-            <ol style={{ paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
+            <ol style={{ paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--color-foreground)", lineHeight: "1.6" }}>
               <li style={{ listStyle: "auto" }}>اسحب لوحة التنبيهات وتأكد من تفعيل <strong>الموقع الجغرافي (Location / GPS)</strong>.</li>
               <li style={{ listStyle: "auto" }}>افتح <strong>إعدادات الهاتف (Settings)</strong> &larr; <strong>التطبيقات (Apps)</strong>.</li>
               <li style={{ listStyle: "auto" }}>اختر متصفحك الحالي من القائمة (مثل <strong>Chrome</strong> أو <strong>Samsung Internet</strong>).</li>
@@ -230,7 +230,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
           )}
 
           {activeTab === "desktop" && (
-            <ol style={{ listStyle: "auto", paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--text-primary)", lineHeight: "1.6" }}>
+            <ol style={{ listStyle: "auto", paddingRight: "20px", margin: 0, display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.88rem", color: "var(--color-foreground)", lineHeight: "1.6" }}>
               <li style={{ listStyle: "auto" }}>اضغط على أيقونة <strong>القفل 🔒</strong> أو <strong>الإعدادات ⚙️</strong> الموجودة بجانب رابط الموقع في شريط عنوان المتصفح (بالأعلى).</li>
               <li style={{ listStyle: "auto" }}>ستظهر لك قائمة أذونات الموقع، ابحث عن <strong>الموقع الجغرافي (Location)</strong> وقم بتغييره الإذن إلى <strong>سماح (Allow)</strong>.</li>
               <li style={{ listStyle: "auto" }}>إذا لم تجده، ادخل على <strong>إعدادات الموقع (Site Settings)</strong> وقم بالسماح للوصول للموقع.</li>
@@ -314,7 +314,7 @@ export default function LocationHelperModal({ isOpen, onClose, onSuccess }: Loca
               borderRadius: "var(--radiusBtn)",
               border: "1px solid var(--border-glass)",
               background: "var(--btn-cancel)",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontSize: "0.95rem",
               fontWeight: "700",
               fontFamily: "var(--font-sub)",

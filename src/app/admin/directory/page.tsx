@@ -519,7 +519,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         {!isSubComponent ? (
           <div>
-            <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
+            <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--color-foreground, #fff)", marginBottom: "6px" }}>
               دليل الهاتف والأكواد
             </h1>
             <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
@@ -817,7 +817,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                   fontWeight: isSelected ? "700" : "500",
                   background: isSelected ? meta.activeBg : "var(--bg-glass)",
                   border: isSelected ? `1px solid ${meta.activeBorder}` : "1px solid var(--border-glass)",
-                  color: isSelected ? "var(--text-primary)" : "var(--text-secondary)",
+                  color: isSelected ? "var(--color-foreground)" : "var(--text-secondary)",
                   transition: "all 0.2s ease",
                   whiteSpace: "nowrap",
                 }}
@@ -1028,7 +1028,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                             </div>
                           )}
                         </td>
-                        <td className={styles.adminTd} style={{ color: "var(--text-primary)", fontWeight: "700" }}>
+                        <td className={styles.adminTd} style={{ color: "var(--color-foreground)", fontWeight: "700" }}>
                           {entry.specialty}
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700", direction: "ltr", textAlign: "right", color: "var(--color-secondary)", width: "20%" }}>{entry.phone_number}</td>
@@ -1162,7 +1162,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                         ) : (
                           <div>
                             <div style={{ fontSize: "1.8rem", marginBottom: "8px" }}>📱</div>
-                            <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--text-primary)", marginBottom: "6px" }}>
+                            <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--color-foreground)", marginBottom: "6px" }}>
                               لا توجد أكواد مسجلة لشركة {COMPANY_LABELS[selectedCompanyTab] || "المحددة"} حالياً
                             </div>
                             <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", margin: "0 0 16px" }}>
@@ -1219,7 +1219,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                               fontWeight: "700",
                               background: COMPANY_META[item.company]?.activeBg || "rgba(255, 255, 255, 0.05)",
                               border: `1px solid ${COMPANY_META[item.company]?.activeBorder || "var(--border-glass)"}`,
-                              color: COMPANY_META[item.company]?.color || "var(--text-primary)",
+                              color: COMPANY_META[item.company]?.color || "var(--color-foreground)",
                             }}
                           >
                             {COMPANY_META[item.company]?.logo && (
@@ -1232,7 +1232,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                             {COMPANY_LABELS[item.company] || item.company}
                           </span>
                         </td>
-                        <td className={styles.adminTd} style={{ color: "var(--text-primary)", fontWeight: "700" }}>
+                        <td className={styles.adminTd} style={{ color: "var(--color-foreground)", fontWeight: "700" }}>
                           {item.icon && <i className={formatBoxIcon(item.icon)} style={{ marginLeft: "8px", fontSize: "1.1rem", verticalAlign: "middle", color: "#818cf8" }}></i>}
                           {item.section_name}
                         </td>

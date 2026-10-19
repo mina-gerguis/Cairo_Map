@@ -74,7 +74,7 @@ export default function MicrobusMissingModal({
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           paddingBottom: "var(--pd-8)"
         }}>
-          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-sub)" }}>
+          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-sub)" }}>
             اقتراح خط سرفيس جديد
           </h3>
           <button

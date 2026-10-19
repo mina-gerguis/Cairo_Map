@@ -61,7 +61,7 @@ export default function LrtReportModal({
       <div
         ref={modalBoxRef}
         style={{
-          backgroundColor: "var(--bgPrimary)",
+          backgroundColor: "var(--color-bg)",
           borderRadius: "var(--radius-card)",
           border: "1px solid var(--border-glass)",
           width: "100%",
@@ -91,7 +91,7 @@ export default function LrtReportModal({
               margin: 0,
               fontSize: "1.05rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               display: "flex",
               alignItems: "center",
               gap: "8px",
@@ -138,7 +138,7 @@ export default function LrtReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.15rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تم استلام بلاغك بنجاح!
@@ -195,7 +195,7 @@ export default function LrtReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.1rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تم الوصول للحد الأقصى من البلاغات المعلقة
@@ -242,7 +242,7 @@ export default function LrtReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.1rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تسجيل الدخول مطلوب
@@ -276,7 +276,7 @@ export default function LrtReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "8px",
                   }}
                 >
@@ -304,8 +304,8 @@ export default function LrtReportModal({
                       padding: "8px 4px",
                       borderRadius: "8px",
                       border: `1px solid ${targetScope === "general"
-                          ? "var(--color-secondary)"
-                          : "var(--border-glass)"
+                        ? "var(--color-secondary)"
+                        : "var(--border-glass)"
                         }`,
                       background:
                         targetScope === "general"
@@ -313,7 +313,7 @@ export default function LrtReportModal({
                           : "var(--bg-secondary)",
                       color:
                         targetScope === "general"
-                          ? "var(--text-primary)"
+                          ? "var(--color-foreground)"
                           : "var(--text-secondary)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
@@ -334,8 +334,8 @@ export default function LrtReportModal({
                       padding: "8px 4px",
                       borderRadius: "8px",
                       border: `1px solid ${targetScope === "station"
-                          ? "var(--color-secondary)"
-                          : "var(--border-glass)"
+                        ? "var(--color-secondary)"
+                        : "var(--border-glass)"
                         }`,
                       background:
                         targetScope === "station"
@@ -343,7 +343,7 @@ export default function LrtReportModal({
                           : "var(--bg-secondary)",
                       color:
                         targetScope === "station"
-                          ? "var(--text-primary)"
+                          ? "var(--color-foreground)"
                           : "var(--text-secondary)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
@@ -367,8 +367,8 @@ export default function LrtReportModal({
                         padding: "8px 4px",
                         borderRadius: "8px",
                         border: `1px solid ${targetScope === "route"
-                            ? "var(--color-secondary)"
-                            : "var(--border-glass)"
+                          ? "var(--color-secondary)"
+                          : "var(--border-glass)"
                           }`,
                         background:
                           targetScope === "route"
@@ -376,7 +376,7 @@ export default function LrtReportModal({
                             : "var(--bg-secondary)",
                         color:
                           targetScope === "route"
-                            ? "var(--text-primary)"
+                            ? "var(--color-foreground)"
                             : "var(--text-secondary)",
                         fontWeight: "700",
                         fontSize: "0.8rem",
@@ -400,7 +400,7 @@ export default function LrtReportModal({
                       alignItems: "center",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -438,7 +438,7 @@ export default function LrtReportModal({
                         padding: "10px 36px 10px 36px",
                         borderRadius: "10px",
                         background: "var(--bg-secondary)",
-                        color: "var(--text-primary)",
+                        color: "var(--color-foreground)",
                         border: selectedStation
                           ? "1px solid var(--color-secondary)"
                           : "1px solid var(--border-glass)",
@@ -584,7 +584,7 @@ export default function LrtReportModal({
                                     fontWeight: isSelected ? "700" : "600",
                                     color: isSelected
                                       ? "var(--color-secondary)"
-                                      : "var(--text-primary)",
+                                      : "var(--color-foreground)",
                                   }}
                                 >
                                   {st.name}
@@ -632,7 +632,7 @@ export default function LrtReportModal({
                                   <span
                                     style={{
                                       fontSize: "0.75rem",
-                                      color: "var(--colorSuccess)",
+                                      color: "var(--color-success)",
                                       fontWeight: "700",
                                     }}
                                   >
@@ -658,7 +658,7 @@ export default function LrtReportModal({
                     background: "rgba(6, 182, 212, 0.06)",
                     border: "1px solid rgba(6, 182, 212, 0.2)",
                     fontSize: "0.84rem",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     lineHeight: "1.6",
                   }}
                 >
@@ -687,7 +687,7 @@ export default function LrtReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -702,7 +702,7 @@ export default function LrtReportModal({
                     padding: "10px 14px",
                     borderRadius: "10px",
                     background: "var(--bg-secondary)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-cairo)",
                     fontSize: "0.9rem",
@@ -728,7 +728,7 @@ export default function LrtReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -746,7 +746,7 @@ export default function LrtReportModal({
                     padding: "12px",
                     borderRadius: "10px",
                     background: "var(--bg-secondary)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-cairo)",
                     fontSize: "0.9rem",
@@ -764,7 +764,7 @@ export default function LrtReportModal({
                     alignItems: "center",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -860,7 +860,7 @@ export default function LrtReportModal({
                         style={{
                           fontSize: "0.88rem",
                           fontWeight: "700",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           marginBottom: "3px",
                         }}
                       >
@@ -917,7 +917,7 @@ export default function LrtReportModal({
                         style={{
                           fontSize: "0.86rem",
                           fontWeight: "700",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -943,7 +943,7 @@ export default function LrtReportModal({
                             : ""}
                         </span>
                         <span>•</span>
-                        <span style={{ color: "var(--colorSuccess)", fontWeight: "600" }}>
+                        <span style={{ color: "var(--color-success)", fontWeight: "600" }}>
                           جاهزة للإرسال ✔
                         </span>
                       </div>
@@ -958,7 +958,7 @@ export default function LrtReportModal({
                           borderRadius: "8px",
                           background: "rgba(255, 255, 255, 0.05)",
                           border: "1px solid var(--border-glass)",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           fontSize: "0.75rem",
                           fontWeight: "600",
                           display: "flex",

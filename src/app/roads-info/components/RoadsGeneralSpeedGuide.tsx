@@ -75,7 +75,7 @@ export function RoadsGeneralSpeedGuide({ roads }: RoadsGeneralSpeedGuideProps) {
               <div key={idx} className={styles.emergencyItem}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <i className={em.icon} style={{ fontSize: "1.2rem", color: em.color }} />
-                  <span style={{ fontSize: "0.86rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                  <span style={{ fontSize: "0.86rem", fontWeight: "600", color: "var(--color-foreground)" }}>
                     {em.name}
                   </span>
                 </div>

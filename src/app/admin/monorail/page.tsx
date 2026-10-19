@@ -54,7 +54,7 @@ const DEFAULT_MONORAIL: any[] = [
 
 export default function AdminMonorailPage() {
   return (
-    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-textSecondary)" }}>جاري التحميل...</div>}>
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>جاري التحميل...</div>}>
       <AdminMonorailInner />
     </Suspense>
   );
@@ -377,7 +377,7 @@ function AdminMonorailInner() {
       {/* Upper Status/Welcome banner */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--color-foreground, #fff)", marginBottom: "6px" }}>
             إدارة شبكة المونوريل
           </h1>
           <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
@@ -571,7 +571,7 @@ function AdminMonorailInner() {
                               <span key={lIdx} style={{
                                 fontSize: "0.73rem",
                                 background: "rgba(255,255,255,0.02)",
-                                color: "var(--text-primary, #e2e8f0)",
+                                color: "var(--color-foreground, #e2e8f0)",
                                 padding: "2px 6px",
                                 borderRadius: "6px",
                                 display: "inline-flex",

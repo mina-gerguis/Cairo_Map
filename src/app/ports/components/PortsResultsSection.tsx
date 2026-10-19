@@ -56,7 +56,7 @@ export default function PortsResultsSection({
       ) : (
         <div className={styles.emptyNoticeCard}>
           <div style={{ fontSize: "2rem", marginBottom: "10px" }}>⚓</div>
-          <p style={{ margin: 0, fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
+          <p style={{ margin: 0, fontWeight: "700", color: "var(--color-foreground)", marginBottom: "6px" }}>
             لا توجد موانئ مطابقة لبحثك {searchQuery ? `"${searchQuery}"` : ""}
           </p>
           <span style={{ fontSize: "0.86rem", color: "var(--text-muted)" }}>

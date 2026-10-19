@@ -59,11 +59,11 @@ export const useProfileData = () => {
       const saved = localStorage.getItem("dftry_theme") as "dark" | "light" | null;
       const initial = saved ?? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
       setTheme(initial);
-      document.body.style.setProperty("background-color", initial === "light" ? "#ededed" : "var(--bgPrimary)", "important");
+      document.body.style.setProperty("background-color", initial === "light" ? "#ededed" : "var(--color-bg)", "important");
 
       const handleThemeChange = (e: any) => {
         setTheme(e.detail);
-        document.body.style.setProperty("background-color", e.detail === "light" ? "#ededed" : "var(--bgPrimary)", "important");
+        document.body.style.setProperty("background-color", e.detail === "light" ? "#ededed" : "var(--color-bg)", "important");
       };
       window.addEventListener("themechange", handleThemeChange);
       return () => {
@@ -108,7 +108,7 @@ export const useProfileData = () => {
 
   const fetchProfileData = useCallback(async (targetId?: string, forceLoading = false) => {
     if (!supabase || !userId) return;
-    
+
     // Only show full-screen loader on initial load or if explicitly forced
     if (!hasLoadedRef.current || forceLoading) {
       setLoading(true);
@@ -142,11 +142,11 @@ export const useProfileData = () => {
 
         const updatedProfileData = isExpired
           ? {
-              ...profileData,
-              subscription_tier: "free",
-              subscription_status: "expired",
-              subscription_period: null,
-            }
+            ...profileData,
+            subscription_tier: "free",
+            subscription_status: "expired",
+            subscription_period: null,
+          }
           : profileData;
 
         setProfile({ ...updatedProfileData, email: updatedProfileData.email || userEmail });

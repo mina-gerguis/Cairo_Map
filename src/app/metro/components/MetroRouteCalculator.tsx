@@ -66,13 +66,13 @@ export default function MetroRouteCalculator({
         <div className={styles.inputWrapper} style={{ zIndex: showFromList ? 30 : 2 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
             <label className={styles.fieldLabel} style={{ margin: 0 }}>
-              <i className="fa-solid fa-circle-dot" style={{ color: "var(--colorSuccess, #10b981)" }}></i>
+              <i className="fa-solid fa-circle-dot" style={{ color: "var(--color-success, #10b981)" }}></i>
               <span>هركب من</span>
               {nearestDistance && selectedFrom && (
                 <span
                   style={{
                     fontSize: "0.72rem",
-                    color: "var(--colorSuccess, #10b981)",
+                    color: "var(--color-success, #10b981)",
                     fontWeight: "700",
                     marginRight: "6px",
                     background: "rgba(16, 185, 129, 0.12)",
@@ -134,7 +134,7 @@ export default function MetroRouteCalculator({
                     className={styles.dropdownItem}
                   >
                     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                         {s.name}
                       </span>
                       {matchedLandmark && (
@@ -248,10 +248,10 @@ export default function MetroRouteCalculator({
                   <div
                     key={s.name}
                     onMouseDown={() => onSelectTo(s.name)}
-                    className={styles.dropdownItem} 
+                    className={styles.dropdownItem}
                   >
                     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                         {s.name}
                       </span>
                       {matchedLandmark && (
@@ -316,7 +316,7 @@ export default function MetroRouteCalculator({
           {!result.found ? (
             <div style={{ textAlign: "center", color: "var(--text-secondary)", padding: "20px 0" }}>
               <div style={{ fontSize: "2.2rem", marginBottom: "8px" }}>😕</div>
-              <h4 style={{ fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
+              <h4 style={{ fontWeight: "700", color: "var(--color-foreground)", marginBottom: "6px" }}>
                 عذراً، تعذر العثور على مسار
               </h4>
               <p style={{ fontSize: "0.88rem", margin: 0 }}>{result.description}</p>
@@ -451,7 +451,7 @@ export default function MetroRouteCalculator({
 
                   <div style={{ fontSize: "0.95rem", fontWeight: "600", color: "var(--text-secondary)" }}>
                     أنت الآن في محطة:{" "}
-                    <strong style={{ color: "var(--text-primary)", fontSize: "1.1rem" }}>
+                    <strong style={{ color: "var(--color-foreground)", fontSize: "1.1rem" }}>
                       {result.detailedPath[currentStepIndex]?.station}
                     </strong>
                     <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginRight: "8px" }}>
@@ -534,7 +534,7 @@ export default function MetroRouteCalculator({
                   style={{
                     fontSize: "0.95rem",
                     fontWeight: "800",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     margin: "0 0 14px",
                     fontFamily: "var(--font-sub, inherit)",
                   }}
@@ -593,21 +593,21 @@ export default function MetroRouteCalculator({
                                   backgroundColor: isUnderConstruction
                                     ? "transparent"
                                     : isFirst || isLast
-                                    ? activeColor
-                                    : isTransfer
-                                    ? "#f59e0b"
-                                    : activeColor,
+                                      ? activeColor
+                                      : isTransfer
+                                        ? "#f59e0b"
+                                        : activeColor,
                                   border: isUnderConstruction
                                     ? `2px dashed #ef4444`
                                     : isFirst || isLast
-                                    ? `2px solid var(--bgPrimary, #18181b)`
-                                    : "none",
+                                      ? `2px solid var(--color-bg, #18181b)`
+                                      : "none",
                                   boxShadow:
                                     isUnderConstruction
                                       ? "none"
                                       : isFirst || isLast
-                                      ? `0 0 0 2px ${activeColor}`
-                                      : "none",
+                                        ? `0 0 0 2px ${activeColor}`
+                                        : "none",
                                 }}
                               />
                             )}
@@ -632,22 +632,22 @@ export default function MetroRouteCalculator({
                                   color: isUnderConstruction
                                     ? "#ef4444"
                                     : isCurrent
-                                    ? "var(--color-secondary, #3b82f6)"
-                                    : isFirst || isLast
-                                    ? "var(--text-primary)"
-                                    : "var(--text-secondary)",
+                                      ? "var(--color-secondary, #3b82f6)"
+                                      : isFirst || isLast
+                                        ? "var(--color-foreground)"
+                                        : "var(--text-secondary)",
                                 }}
                               >
                                 {node.station}
                               </span>
                               {isFirst && (
                                 <span style={{ fontSize: "0.7rem", color: "#10b981", background: "rgba(16, 185, 129, 0.12)", padding: "1px 6px", borderRadius: "4px", fontWeight: "700" }}>
-                                 ركبت من
+                                  ركبت من
                                 </span>
                               )}
                               {isLast && (
                                 <span style={{ fontSize: "0.7rem", color: "#ef4444", background: "rgba(239, 68, 68, 0.12)", padding: "1px 6px", borderRadius: "4px", fontWeight: "700" }}>
-                                الواجهة النهائية
+                                  الواجهة النهائية
                                 </span>
                               )}
                             </div>

@@ -55,7 +55,7 @@ export default function DirectoryModal({
               margin: 0,
               fontSize: "1.05rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               display: "flex",
               alignItems: "center",
               gap: "8px",
@@ -116,7 +116,7 @@ export default function DirectoryModal({
                 style={{
                   margin: "0 0 8px",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تم إرسال طلبك بنجاح!
@@ -319,7 +319,7 @@ export default function DirectoryModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "4px",
                     display: "block",
                   }}
@@ -349,7 +349,7 @@ export default function DirectoryModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "4px",
                     display: "block",
                   }}
@@ -385,7 +385,7 @@ export default function DirectoryModal({
                     style={{
                       fontSize: "0.82rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "4px",
                       display: "block",
                     }}
@@ -427,7 +427,7 @@ export default function DirectoryModal({
                     style={{
                       fontSize: "0.82rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "4px",
                       display: "block",
                     }}
@@ -455,7 +455,7 @@ export default function DirectoryModal({
                               : "1px solid var(--border-glass)",
                           background:
                             itemCompany === key ? meta.bg : "var(--bg-secondary)",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           fontSize: "0.75rem",
                           fontWeight: "700",
                           cursor: "pointer",
@@ -485,7 +485,7 @@ export default function DirectoryModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "4px",
                     display: "block",
                   }}
@@ -512,7 +512,7 @@ export default function DirectoryModal({
                   style={{
                     fontSize: "0.82rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "4px",
                     display: "block",
                   }}
@@ -631,7 +631,7 @@ export default function DirectoryModal({
                     flex: 1,
                     background: "var(--bg-secondary)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontSize: "0.85rem",
                   }}
                 >

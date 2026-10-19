@@ -125,7 +125,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub, inherit);
   font-weight: 700;
   font-size: 0.92rem;
@@ -178,7 +178,7 @@
 .searchTitle {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -290,7 +290,7 @@
   border-radius: 50%;
   background: var(--bg-glass, rgba(30, 30, 38, 0.85));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -408,7 +408,7 @@
 .metricTileVal {
   font-size: 0.92rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0;
 }
 
@@ -430,7 +430,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.85rem;
   line-height: 1.5;
 }
@@ -488,7 +488,7 @@
 
 .actionButton:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .actionButtonPrimary {
@@ -547,7 +547,7 @@
 .stationName {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0;
   font-family: var(--font-sub, inherit);
 }
@@ -582,7 +582,7 @@
 }
 
 .branchTabActive {
-  background: var(--text-primary) !important;
+  background: var(--color-foreground) !important;
   color: var(--bgMode, #18181b) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
@@ -626,7 +626,7 @@
   margin-top: 2px;
   position: relative;
   z-index: 2;
-  background: var(--bgPrimary, #18181b);
+  background: var(--color-bg, #18181b);
 }
 
 .timelineContent {
@@ -658,12 +658,10 @@
 
 /* ==================== 21ST.DEV CALLOUT BANNER ==================== */
 .calloutBanner {
-  background: radial-gradient(
-    135% 120% at 100% 0%,
-    rgba(59, 130, 246, 0.15) 0%,
-    rgba(139, 92, 246, 0.08) 50%,
-    rgba(20, 20, 24, 0.8) 100%
-  );
+  background: radial-gradient(135% 120% at 100% 0%,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(139, 92, 246, 0.08) 50%,
+      rgba(20, 20, 24, 0.8) 100%);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   border-radius: var(--radius-card, 16px);
   padding: 22px 24px;
@@ -679,12 +677,10 @@
 }
 
 :global(html.light) .calloutBanner {
-  background: radial-gradient(
-    135% 120% at 100% 0%,
-    rgba(59, 130, 246, 0.1) 0%,
-    rgba(139, 92, 246, 0.05) 50%,
-    rgba(255, 255, 255, 0.95) 100%
-  );
+  background: radial-gradient(135% 120% at 100% 0%,
+      rgba(59, 130, 246, 0.1) 0%,
+      rgba(139, 92, 246, 0.05) 50%,
+      rgba(255, 255, 255, 0.95) 100%);
   border-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -700,7 +696,7 @@
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;

@@ -57,7 +57,7 @@ export default function MicrobusPaywall({
             />
           </div>
 
-          <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px", fontFamily: "var(--font-sub)" }}>
+          <h2 style={{ fontSize: "1.4rem", fontWeight: "800", color: "var(--color-foreground)", marginBottom: "12px", fontFamily: "var(--font-sub)" }}>
             اشترك في الباقة الذهبية للوصول الكامل
           </h2>
 
@@ -69,7 +69,7 @@ export default function MicrobusPaywall({
             textAlign: "right",
             margin: "18px 0 24px"
           }}>
-            <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.88rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ fontWeight: "800", color: "var(--color-foreground)", fontSize: "0.88rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
               <i className="bx bxs-award" style={{ color: "#fbbf24" }} />
               <span>ماذا ستحصل في الباقة الذهبية؟</span>
             </div>

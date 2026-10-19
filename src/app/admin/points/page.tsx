@@ -469,7 +469,7 @@ function AdminPointsPageInner() {
         >
           <i className="bx bxs-error-circle" style={{ fontSize: "3rem", color: "#ff3b30" }}></i>
         </div>
-        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--text-primary)" }}>صلاحيات غير كافية</h2>
+        <h2 style={{ fontSize: "1.5rem", marginBottom: "16px", color: "var(--color-foreground)" }}>صلاحيات غير كافية</h2>
         <p style={{ color: "var(--text-secondary)", marginBottom: "32px", lineHeight: "1.6" }}>
           عفواً، حسابك لا يمتلك صلاحيات المسؤول للوصول إلى هذه الصفحة. يرجى التواصل مع الإدارة إذا كنت تعتقد أن هذا خطأ.
         </p>
@@ -482,7 +482,7 @@ function AdminPointsPageInner() {
       {/* Page Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
         <div>
-          <h1 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--text-primary)", margin: 0 }}>
+          <h1 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--color-foreground)", margin: 0 }}>
             إدارة النقاط والأرصدة والعمليات المالية
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.88rem", marginTop: "4px" }}>
@@ -854,7 +854,7 @@ function AdminPointsPageInner() {
                     {filteredRequests.map((req) => (
                       <tr key={req.id} className={styles.adminTr}>
                         <td className={styles.adminTd}>
-                          <div style={{ fontWeight: "700", color: "var(--text-primary)" }}>
+                          <div style={{ fontWeight: "700", color: "var(--color-foreground)" }}>
                             {req.profiles?.full_name || "اسم غير متوفر"}
                           </div>
                           <span style={{ fontSize: "0.75rem", color: "var(--color-primary)", display: "block" }}>
@@ -878,7 +878,7 @@ function AdminPointsPageInner() {
                             {req.type === "deposit" ? "إيداع" : "سحب"}
                           </span>
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "900", color: "var(--text-primary)", fontSize: "0.95rem" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "900", color: "var(--color-foreground)", fontSize: "0.95rem" }}>
                           {req.amount?.toFixed(2)} ج.م
                         </td>
                         <td className={styles.adminTd} style={{ fontSize: "0.78rem", lineHeight: "1.5" }}>
@@ -1034,7 +1034,7 @@ function AdminPointsPageInner() {
           >
             {/* Modal Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.25rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 تحديث النقاط والأرصدة
               </h3>
               <button
@@ -1086,7 +1086,7 @@ function AdminPointsPageInner() {
                 <i className="bx bx-user"></i>
               </div>
               <div>
-                <h4 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: 0, fontSize: "1rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                   {selectedUser.full_name || "بدون اسم"}
                 </h4>
                 <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", direction: "ltr", textAlign: "right" }}>
@@ -1304,7 +1304,7 @@ function AdminPointsPageInner() {
               width: "100%",
               padding: "24px 28px",
               borderRadius: "20px",
-              background: "var(--bgPrimary)",
+              background: "var(--color-bg)",
               border: "1px solid var(--border-glass)",
               boxShadow: "0 20px 50px rgba(0,0,0,0.4)",
               direction: "rtl",
@@ -1319,7 +1319,7 @@ function AdminPointsPageInner() {
               >
                 <i className="bx bx-x"></i>
               </button>
-              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--text-primary)", fontFamily: "var(--font-heading)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: "700", color: "var(--color-foreground)", fontFamily: "var(--font-heading)" }}>
                 تحديد سبب رفض العملية
               </h3>
               <div style={{ width: "38px" }}></div>
@@ -1365,7 +1365,7 @@ function AdminPointsPageInner() {
                           background: "var(--bg-secondary, rgba(255,255,255,0.05))",
                           border: "1px solid var(--border-glass, rgba(255,255,255,0.1))",
                           fontSize: "0.8rem",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           cursor: "pointer",
                           transition: "all 0.2s ease",
                           maxWidth: "100%",
@@ -1452,7 +1452,7 @@ function AdminPointsPageInner() {
 
 export default function AdminPointsPage() {
   return (
-    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-textSecondary)", direction: "rtl", textAlign: "center" }}>جاري التحميل...</div>}>
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)", direction: "rtl", textAlign: "center" }}>جاري التحميل...</div>}>
       <AdminPointsPageInner />
     </Suspense>
   );

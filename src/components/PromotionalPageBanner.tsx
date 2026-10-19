@@ -27,7 +27,7 @@ export default function PromotionalPageBanner({
         justifyContent: "space-between",
         gap: "12px",
         flexWrap: "wrap",
-        color: "var(--text-primary)",
+        color: "var(--color-foreground)",
         boxShadow: "0 4px 20px rgba(245, 158, 11, 0.08)",
         direction: "rtl",
       }}

@@ -27,7 +27,7 @@ export default function MonorailReportBanner({
               margin: 0,
               fontSize: "1.02rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
             }}
           >
             الإبلاغ عن مشكلة فى بيانات خطوط المونوريل

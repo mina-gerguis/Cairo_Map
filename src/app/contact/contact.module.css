@@ -34,7 +34,7 @@
 .title {
   font-size: clamp(1.8rem, 4vw, 2.4rem);
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 12px;
 }
 
@@ -66,7 +66,7 @@
 .infoTitle {
   font-size: 1.2rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-bottom: 1px solid var(--border-glass);
   padding-bottom: 12px;
 }
@@ -99,7 +99,7 @@
 .contactValue {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -133,7 +133,7 @@
   border-radius: 10px;
   background: var(--bg-secondary, rgba(255, 255, 255, 0.05));
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,7 +159,7 @@
 .formTitle {
   font-size: 1.2rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 18px;
 }
 
@@ -185,7 +185,7 @@
   display: block;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 6px;
 }
 
@@ -197,7 +197,7 @@
   background: var(--bg-secondary, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--border-glass);
   border-radius: 10px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.9rem;
   font-family: var(--font-body);
   outline: none;
@@ -266,6 +266,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -301,7 +302,7 @@
 .successTitle {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 10px;
 }
 
@@ -317,7 +318,7 @@
   padding: 11px 24px;
   background: var(--bg-secondary, rgba(255, 255, 255, 0.08));
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 700;

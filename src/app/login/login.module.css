@@ -215,7 +215,7 @@
 }
 
 .togglePasswordBtn:hover {
-  color: var(--text-primary, #111827);
+  color: var(--color-foreground, #111827);
 }
 
 .checkboxWrapper {
@@ -274,7 +274,7 @@
   margin: 0;
   font-size: 1.2rem;
   font-weight: 800;
-  color: var(--text-primary, #111827);
+  color: var(--color-foreground, #111827);
 }
 
 .mfaSubtitle {
@@ -302,7 +302,7 @@
   border-radius: 12px;
   border: 2px solid rgba(108, 99, 255, 0.2);
   background: rgba(108, 99, 255, 0.05);
-  color: var(--text-primary, #111827);
+  color: var(--color-foreground, #111827);
   outline: none;
   transition: all 0.2s ease;
 }
@@ -362,7 +362,7 @@
 
 .mfaCancelBtn:hover {
   background: rgba(143, 143, 143, 0.15);
-  color: var(--text-primary, #111827);
+  color: var(--color-foreground, #111827);
 }
 
 /* ── Footer Links ── */
@@ -415,6 +415,7 @@
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

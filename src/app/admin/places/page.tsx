@@ -2294,7 +2294,7 @@ export default function AdminDashboard() {
             <div style={{ background: "rgba(18, 24, 52, 0.95)", borderRadius: "24px", padding: "32px", width: "100%", maxWidth: "520px", border: "1px solid rgba(108, 99, 255, 0.3)", boxShadow: "0 24px 80px rgba(0,0,0,0.6)", maxHeight: "90vh", overflowY: "auto" }}>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+                <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1.3rem", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "8px" }}>
                   <span>🏷️</span> إضافة تصنيف جديد
                 </h3>
                 <button onClick={() => setShowAddCategoryModal(false)} style={{ background: "none", border: "none", color: "var(--text-muted)", fontSize: "1.5rem", cursor: "pointer" }}>✕</button>
@@ -2337,7 +2337,7 @@ export default function AdminDashboard() {
                       <i className={newCatIcon}></i>
                     </div>
                     <div>
-                      <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--text-primary)" }}>الأيقونة المحددة:</div>
+                      <div style={{ fontSize: "0.88rem", fontWeight: "700", color: "var(--color-foreground)" }}>الأيقونة المحددة:</div>
                       <code style={{ fontSize: "0.8rem", color: "var(--color-primary)", direction: "ltr" }}>{newCatIcon}</code>
                     </div>
                   </div>
@@ -2358,7 +2358,7 @@ export default function AdminDashboard() {
                           borderRadius: "10px",
                           border: newCatIcon === item.icon ? "2px solid var(--color-primary)" : "1px solid var(--border-glass)",
                           background: newCatIcon === item.icon ? "rgba(108, 99, 255, 0.2)" : "rgba(255,255,255,0.03)",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           fontSize: "0.8rem",
                           cursor: "pointer",
                           transition: "all 0.2s ease"
@@ -2403,7 +2403,7 @@ export default function AdminDashboard() {
 
       <div style={{ marginBottom: "24px", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--color-foreground, #fff)", marginBottom: "6px" }}>
             إدارة الأماكن
           </h1>
           <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>
@@ -2436,7 +2436,7 @@ export default function AdminDashboard() {
       {showExcelImport && (
         <div className="ios-sheet" style={{ maxWidth: "100%", padding: "18px 24px", marginBottom: "40px", borderRadius: "15px", border: "1px solid rgba(52, 199, 89, 0.3)", animation: "slide-in-section 0.4s ease", overflow: "auto" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "15px" }}>
-            <h5 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
+            <h5 style={{ fontSize: "1.3rem", fontWeight: "800", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
               <i className="bx bx-file" style={{ color: "#34c759", fontSize: "1.6rem" }}></i> استيراد الأماكن من ملف Excel / CSV
             </h5>
           </div>
@@ -2452,7 +2452,7 @@ export default function AdminDashboard() {
               <i className="bx bx-download"></i> تحميل نموذج Excel التجريبي
             </button>
 
-            <summary style={{ cursor: "pointer", fontWeight: "700", fontSize: "0.92rem", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px" }}>
+            <summary style={{ cursor: "pointer", fontWeight: "700", fontSize: "0.92rem", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "8px" }}>
               <i className="bx bx-help-circle" style={{ color: "#007aff", fontSize: "1.2rem" }}></i>
               دليل أسماء التصنيفات الفرعية وطرق كتابة مواعيد العمل (اضغط للعرض)
             </summary>
@@ -2491,7 +2491,7 @@ export default function AdminDashboard() {
               type="file"
               accept=".xlsx, .xls, .csv"
               onChange={handleExcelUpload}
-              style={{ display: "block", marginTop: "10px", fontSize: "0.85rem", backgroundColor: "var(--secondBtn)", color: "var(--text-primary)", borderRadius: "8px", border: "1px solid var(--border-primary)", padding: "6px 14px", fontFamily: "var(--font-body)" }}
+              style={{ display: "block", marginTop: "10px", fontSize: "0.85rem", backgroundColor: "var(--secondBtn)", color: "var(--color-foreground)", borderRadius: "8px", border: "1px solid var(--border-primary)", padding: "6px 14px", fontFamily: "var(--font-body)" }}
             />
           </div>
 
@@ -2750,7 +2750,7 @@ export default function AdminDashboard() {
                                   </span>
                                   {p.changedFields && p.changedFields.length > 0 && (
                                     <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "2px", fontWeight: "normal" }}>
-                                      تعديل في: <span style={{ color: "var(--text-primary)", fontWeight: "600" }}>{p.changedFields.join("، ")}</span>
+                                      تعديل في: <span style={{ color: "var(--color-foreground)", fontWeight: "600" }}>{p.changedFields.join("، ")}</span>
                                     </div>
                                   )}
                                 </div>
@@ -2877,7 +2877,7 @@ export default function AdminDashboard() {
             </div>
 
             <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
-              <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-primary)", display: "block" }}>
+              <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--color-foreground)", display: "block" }}>
                 التصنيفات الفرعية التابعة للقسم الرئيسي (تحدد نوع ومكان ظهور المحتوى بالتفصيل)
               </label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -2899,7 +2899,7 @@ export default function AdminDashboard() {
                       }}
                       style={{
                         background: isSelected ? "var(--color-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
-                        color: isSelected ? "#fff" : "var(--text-primary)",
+                        color: isSelected ? "#fff" : "var(--color-foreground)",
                         border: isSelected ? "none" : "1px solid var(--border-glass)",
                         padding: "6px 14px",
                         borderRadius: "20px",
@@ -2990,7 +2990,7 @@ export default function AdminDashboard() {
             </div>
 
             <div style={{ gridColumn: "1 / -1", background: "rgba(46, 204, 113, 0.05)", padding: "16px", borderRadius: "14px", border: "1px solid var(--border-glass)" }}>
-              <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--text-primary)", display: "block" }}>
+              <label className="help-label" style={{ fontSize: "1rem", fontWeight: "700", marginBottom: "10px", color: "var(--color-foreground)", display: "block" }}>
                 معلومات مفيدة (المميزات والخدمات المتاحة بالمكان)
               </label>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -3007,7 +3007,7 @@ export default function AdminDashboard() {
                       }}
                       style={{
                         background: isSelected ? "#2ecc71" : "rgba(255, 255, 255, 0.06)",
-                        color: isSelected ? "#fff" : "var(--text-primary)",
+                        color: isSelected ? "#fff" : "var(--color-foreground)",
                         border: isSelected ? "none" : "1px solid var(--border-glass)",
                         padding: "6px 14px",
                         borderRadius: "20px",
@@ -3088,7 +3088,7 @@ export default function AdminDashboard() {
 
             {/* Working Hours UI */}
             <div style={{ gridColumn: "1 / -1", background: "rgba(120, 120, 120, 0.05)", padding: "16px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-              <label className="help-label" style={{ fontSize: "1.1rem", marginBottom: "12px", color: "var(--text-primary)" }}>ساعات العمل</label>
+              <label className="help-label" style={{ fontSize: "1.1rem", marginBottom: "12px", color: "var(--color-foreground)" }}>ساعات العمل</label>
 
               <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
                 <button type="button" onClick={() => setScheduleType("24/7")} className={`btn ${scheduleType === "24/7" ? "btn-primary" : "var(--btn-cancel)"}`} style={{ flex: 1, background: scheduleType === "24/7" ? "var(--color-secondary)" : "var(--btn-cancel)" }}>مفتوح 24 ساعة</button>
@@ -3236,7 +3236,7 @@ export default function AdminDashboard() {
             gap: "12px",
             animation: "fadeIn 0.2s ease"
           }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "var(--text-primary)", fontSize: "0.92rem", fontWeight: "600" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "var(--color-foreground)", fontSize: "0.92rem", fontWeight: "600" }}>
               <i className="bx bx-check-square" style={{ fontSize: "1.3rem", color: "var(--color-primary)" }} />
               <span>تم تحديد <strong>{selectedPlaceIds.length}</strong> {selectedPlaceIds.length === 1 ? "مكان" : "أماكن"}</span>
             </div>
@@ -3347,7 +3347,7 @@ export default function AdminDashboard() {
                           <div style={{ width: "44px", height: "44px", borderRadius: "10px", background: "rgba(99,102,241,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>🖼️</div>
                         )}
                       </td>
-                      <td className={styles.adminTd} style={{ fontWeight: "700", color: "var(--text-primary)" }}>
+                      <td className={styles.adminTd} style={{ fontWeight: "700", color: "var(--color-foreground)" }}>
                         <div style={{ fontSize: "0.95rem" }}>{place.name}</div>
                         {place.name_en && (
                           <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: "500", marginTop: "2px", direction: "ltr", textAlign: "right" }}>
@@ -3383,7 +3383,7 @@ export default function AdminDashboard() {
                         </div>
                       </td>
                       <td className={styles.adminTd}>
-                        <div style={{ color: "var(--text-primary)", fontSize: "0.88rem" }}>{place.city} / {place.governorate}</div>
+                        <div style={{ color: "var(--color-foreground)", fontSize: "0.88rem" }}>{place.city} / {place.governorate}</div>
                         <span className={`${styles.badge} ${styles.badgeInfo}`} style={{ marginTop: "4px", fontSize: "0.72rem" }}>
                           <i className="bx bx-buildings" /> {place.branches ? place.branches.length : 1} فروع
                         </span>
@@ -3446,7 +3446,7 @@ export default function AdminDashboard() {
           <div className="glass-panel" style={{ width: "100%", maxWidth: "940px", maxHeight: "90vh", overflowY: "auto", padding: "30px", background: "var(--bg-glass)", border: "1px solid var(--border-glass)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "14px" }}>
               <div>
-                <h5 style={{ fontSize: "1.2rem", fontWeight: "600", color: "var(--text-primary)", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+                <h5 style={{ fontSize: "1.2rem", fontWeight: "600", color: "var(--color-foreground)", margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
                   <RiEditFill />
                   تعديل بيانات : {editingPlace.name}
                 </h5>
@@ -3522,7 +3522,7 @@ export default function AdminDashboard() {
                         }}
                         style={{
                           background: isSelected ? "var(--color-primary, #6c63ff)" : "rgba(255, 255, 255, 0.06)",
-                          color: isSelected ? "#fff" : "var(--text-primary)",
+                          color: isSelected ? "#fff" : "var(--color-foreground)",
                           border: isSelected ? "none" : "1px solid var(--border-glass)",
                           padding: "6px 14px",
                           borderRadius: "10px",
@@ -3629,7 +3629,7 @@ export default function AdminDashboard() {
                         }}
                         style={{
                           background: isSelected ? "#2ecc71" : "rgba(255, 255, 255, 0.06)",
-                          color: isSelected ? "#fff" : "var(--text-primary)",
+                          color: isSelected ? "#fff" : "var(--color-foreground)",
                           border: isSelected ? "none" : "1px solid var(--border-glass)",
                           padding: "6px 14px",
                           borderRadius: "10px",
@@ -3714,7 +3714,7 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ gridColumn: "1 / -1", background: "rgba(108, 99, 255, 0.06)", padding: "20px", borderRadius: "18px", border: "1px solid var(--border-glass)" }}>
-                <label className="help-label" style={{ fontSize: "1.1rem", fontWeight: "600", marginBottom: "12px", color: "var(--text-primary)", display: "block" }}>⏰ مواعيد العمل</label>
+                <label className="help-label" style={{ fontSize: "1.1rem", fontWeight: "600", marginBottom: "12px", color: "var(--color-foreground)", display: "block" }}>⏰ مواعيد العمل</label>
 
                 <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
                   <button type="button" onClick={() => setEditScheduleType("24/7")} className={`btn ${editScheduleType === "24/7" ? "btn-primary" : ""}`} style={{ flex: 1, padding: "10px" }}>مفتوح 24 ساعة</button>
@@ -3725,7 +3725,7 @@ export default function AdminDashboard() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {editScheduleData.map((dayData, index) => (
                       <div key={dayData.day} style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", background: "rgba(255,255,255,0.03)", padding: "10px 14px", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
-                        <div style={{ width: "80px", fontWeight: "bold", color: "var(--text-primary)" }}>{dayData.day}</div>
+                        <div style={{ width: "80px", fontWeight: "bold", color: "var(--color-foreground)" }}>{dayData.day}</div>
                         <select
                           className="input-fields help-select"
                           style={{ width: "100px", padding: "6px 10px" }}
@@ -3792,7 +3792,7 @@ export default function AdminDashboard() {
           <div className="glass-panel" style={{ width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto", position: "relative", padding: "20px" }}>
             <button
               onClick={() => setSelectedPlaceForBranch(null)}
-              style={{ position: "absolute", top: "20px", left: "20px", background: "rgba(120,120,120,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "var(--text-primary)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+              style={{ position: "absolute", top: "20px", left: "20px", background: "rgba(120,120,120,0.2)", border: "none", borderRadius: "50%", width: "36px", height: "36px", color: "var(--color-foreground)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
             >
               ✕
             </button>
@@ -3805,7 +3805,7 @@ export default function AdminDashboard() {
                 {(selectedPlaceForBranch.branches || []).map(b => (
                   <div key={b.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px", background: "rgba(120,120,120,0.05)", borderRadius: "8px", border: "1px solid var(--border-glass)" }}>
                     <div>
-                      <div style={{ fontWeight: "bold", fontSize: "1.05rem" }}>{b.name} {b.is_main ? <span style={{ color: "var(--colorSuccess)", fontSize: "0.8rem", marginLeft: "8px" }}>(فرع رئيسي)</span> : ""}</div>
+                      <div style={{ fontWeight: "bold", fontSize: "1.05rem" }}>{b.name} {b.is_main ? <span style={{ color: "var(--color-success)", fontSize: "0.8rem", marginLeft: "8px" }}>(فرع رئيسي)</span> : ""}</div>
                       <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>{b.city} / {b.governorate}</div>
                     </div>
                     <div style={{ display: "flex", gap: "10px" }}>
@@ -3824,7 +3824,7 @@ export default function AdminDashboard() {
             {/* Add New Branch Form */}
             <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "20px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <h3 style={{ fontSize: "1.1rem", color: "var(--text-primary)" }}>{editingBranchId ? "تعديل الفرع" : "إضافة فرع جديد"}</h3>
+                <h3 style={{ fontSize: "1.1rem", color: "var(--color-foreground)" }}>{editingBranchId ? "تعديل الفرع" : "إضافة فرع جديد"}</h3>
                 {editingBranchId && (
                   <button
                     type="button"

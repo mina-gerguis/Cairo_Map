@@ -82,7 +82,7 @@ export function RoadSpeedLimitsSection({
             style={{ fontSize: "1.3rem", color: "#60a5fa", marginTop: "2px", flexShrink: 0 }}
           />
           <div>
-            <strong style={{ color: "var(--text-primary)", display: "block", marginBottom: "4px" }}>
+            <strong style={{ color: "var(--color-foreground)", display: "block", marginBottom: "4px" }}>
               تنبيهات وإرشادات الرادار والكاميرات الذكية:
             </strong>
             {radarInfo}

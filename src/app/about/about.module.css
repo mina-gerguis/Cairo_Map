@@ -37,7 +37,7 @@
 .title {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 16px;
   line-height: 1.3;
 }
@@ -84,7 +84,7 @@
 .statNumber {
   font-size: 1.8rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 4px;
 }
 
@@ -126,7 +126,7 @@
 .sectionTitle {
   font-size: 1.35rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .paragraph {
@@ -163,7 +163,7 @@
 .featureTitle {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -189,7 +189,7 @@
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 0.85rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 600;
 }
 
@@ -205,7 +205,7 @@
 .ctaTitle {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 12px;
 }
 
@@ -243,7 +243,7 @@
 .secondaryBtn {
   background: var(--bg-glass-card);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   padding: 10px 24px;
   border-radius: 12px;
   font-weight: 700;
@@ -261,9 +261,11 @@
   .container {
     padding: calc(var(--navbar-height) + 16px) 14px 60px;
   }
+
   .contentBlock {
     padding: 24px 16px;
   }
+
   .heroSection {
     padding: 30px 14px;
   }

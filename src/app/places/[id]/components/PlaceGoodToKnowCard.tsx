@@ -21,7 +21,7 @@ export default function PlaceGoodToKnowCard({
           fontSize: "1.1rem",
           fontWeight: "700",
           marginBottom: "12px",
-          color: "var(--text-primary)",
+          color: "var(--color-foreground)",
         }}
       >
         معلومات مفيدة
@@ -49,7 +49,7 @@ export default function PlaceGoodToKnowCard({
                   alignItems: "center",
                   gap: "10px",
                   fontSize: "0.92rem",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 <span style={{ fontSize: "1.1rem" }}>{feat.icon}</span>
@@ -65,7 +65,7 @@ export default function PlaceGoodToKnowCard({
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "0.92rem",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>🥗</span>
@@ -77,7 +77,7 @@ export default function PlaceGoodToKnowCard({
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "0.92rem",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>👥</span>
@@ -89,7 +89,7 @@ export default function PlaceGoodToKnowCard({
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "0.92rem",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>💳</span>
@@ -101,7 +101,7 @@ export default function PlaceGoodToKnowCard({
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "0.92rem",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>📶</span>
@@ -116,7 +116,7 @@ export default function PlaceGoodToKnowCard({
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "0.92rem",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>✔️</span>
@@ -128,7 +128,7 @@ export default function PlaceGoodToKnowCard({
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "0.92rem",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>♿</span>
@@ -140,7 +140,7 @@ export default function PlaceGoodToKnowCard({
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "0.92rem",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
               }}
             >
               <span style={{ fontSize: "1.1rem" }}>👨‍👩‍👧‍👦</span>
@@ -175,7 +175,7 @@ export default function PlaceGoodToKnowCard({
                   key={subCatKey}
                   style={{
                     background: "rgba(255,255,255,0.06)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     border: "1px solid var(--border-glass)",
                     padding: "4px 12px",
                     borderRadius: "16px",

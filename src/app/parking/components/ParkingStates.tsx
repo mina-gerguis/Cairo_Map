@@ -75,7 +75,7 @@ export function ParkingLockState({ user, headerRef, cardRef }: ModernParkingLock
             style={{
               fontSize: "1.35rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               marginBottom: "12px",
               fontFamily: "var(--font-sub)",
             }}
@@ -110,7 +110,7 @@ export function ParkingLockState({ user, headerRef, cardRef }: ModernParkingLock
             <div
               style={{
                 fontWeight: "800",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 fontSize: "0.88rem",
                 marginBottom: "10px",
                 display: "flex",

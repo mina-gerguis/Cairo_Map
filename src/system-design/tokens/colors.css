@@ -17,14 +17,15 @@
   --colorMuted: #a1a1aa;
 
   /* --- Status & Feedback Palettes --- */
-  --colorSuccess: #10b981;
+  --color-success: #10b981;
   --colorWarning: #ffa500;
   --colorDanger: #ff0000;
+  --color-error: #ff0000;
   --colorInfo: #0000ff;
 
   /* --- Canvas & Background Layers --- */
   --bgMode: #000000;
-  --bgPrimary: #000000;
+  --color-bg: #000000;
   --bg-secondary: #070707;
   --bgThird: #121212;
   --bg-glass: rgba(0, 0, 0, 0.70);
@@ -38,7 +39,7 @@
     linear-gradient(180deg, var(--bgMode) 0%, var(--bgMode) 100%);
 
   /* --- Typography Colors --- */
-  --text-primary: #f4f4f5;
+  --color-foreground: #f4f4f5;
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
   --text-muted: #71717a;
@@ -107,7 +108,7 @@
 html.light {
   /* --- Canvas & Background Layers --- */
   --bgMode: #ffffff;
-  --bgPrimary: #ffffff;
+  --color-bg: #ffffff;
   --bg-secondary: #f4f4f5;
   --bgThird: #f8f8f8;
   --bg-glass: rgba(255, 255, 255, 0.80);
@@ -121,7 +122,7 @@ html.light {
     linear-gradient(180deg, #ffffff 0%, #fcfcfc 100%);
 
   /* --- Typography Colors --- */
-  --text-primary: #18181b;
+  --color-foreground: #18181b;
   --text-secondary: #52525b;
   --text-muted: #7a7771;
   --text-muted: #7a7771;

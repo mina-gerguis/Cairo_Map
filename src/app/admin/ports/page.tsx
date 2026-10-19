@@ -144,7 +144,7 @@ const DEFAULT_PORTS: any[] = [
 
 export default function AdminPortsPage() {
   return (
-    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-textSecondary)" }}>جاري التحميل...</div>}>
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>جاري التحميل...</div>}>
       <AdminPortsInner />
     </Suspense>
   );
@@ -489,7 +489,7 @@ function AdminPortsInner() {
       {/* Header section */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--text-primary, #fff)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--color-foreground, #fff)", marginBottom: "6px" }}>
             إدارة الموانئ البحرية
           </h1>
           <p style={{ color: "var(--text-muted, #94a3b8)", fontSize: "0.9rem", margin: 0 }}>

@@ -78,8 +78,8 @@ export default function CustomModal({
       >
         <div
           style={{
-            backgroundColor: "var(--bgPrimary)",
-            color: "var(--text-primary)",
+            backgroundColor: "var(--color-bg)",
+            color: "var(--color-foreground)",
             border: `1px solid ${borderColor}`,
             borderRadius: "var(--modelCardRadius)",
             padding: "32px 24px 24px 24px",
@@ -114,7 +114,7 @@ export default function CustomModal({
             </div>
           )}
 
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--text-primary)" }}>
+          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--color-foreground)" }}>
             {title}
           </h2>
 
@@ -149,7 +149,7 @@ export default function CustomModal({
                     padding: "var(--padding-btn)",
                     borderRadius: "var(--radiusBtn)",
                     border: primaryButton.borderColor ? `1px solid ${primaryButton.borderColor}` : "none",
-                    backgroundColor: primaryButton.bgColor || "var(--mainBtn)",
+                    backgroundColor: "var(--btn-primary)",
                     color: primaryButton.textColor || "#ffffff",
                     fontWeight: "700",
                     fontFamily: "var(--font-display)",
@@ -177,7 +177,7 @@ export default function CustomModal({
                     borderRadius: "var(--radiusBtn)",
                     border: secondaryButton.borderColor || "1px solid var(--btn-cancel)",
                     backgroundColor: secondaryButton.bgColor || "var(--btn-cancel)",
-                    color: secondaryButton.textColor || "var(--text-primary)",
+                    color: secondaryButton.textColor || "var(--color-foreground)",
                     fontWeight: "600",
                     fontFamily: "var(--font-display)",
                     fontSize: "0.95rem",

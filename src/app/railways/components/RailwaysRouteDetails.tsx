@@ -45,7 +45,7 @@ export default function RailwaysRouteDetails({
         </div>
 
         <div className={styles.metricTile}>
-          <div className={styles.metricValue} style={{ color: "var(--text-primary)" }}>
+          <div className={styles.metricValue} style={{ color: "var(--color-foreground)" }}>
             {route.duration || "حسب نوع القطار"}
           </div>
           <div className={styles.metricLabel}>متوسط وقت السفر</div>
@@ -106,13 +106,13 @@ export default function RailwaysRouteDetails({
                           border: isUnderConstruction
                             ? "2px dashed #ef4444"
                             : isFirst || isLast
-                            ? "2px solid var(--bgPrimary, #18181b)"
-                            : "none",
+                              ? "2px solid var(--color-bg, #18181b)"
+                              : "none",
                           boxShadow: isUnderConstruction
                             ? "none"
                             : isFirst || isLast
-                            ? `0 0 0 2px ${color}`
-                            : "none",
+                              ? `0 0 0 2px ${color}`
+                              : "none",
                         }}
                       />
                     </div>
@@ -125,8 +125,8 @@ export default function RailwaysRouteDetails({
                           color: isUnderConstruction
                             ? "#ef4444"
                             : isFirst || isLast
-                            ? "var(--text-primary)"
-                            : "var(--text-secondary)",
+                              ? "var(--color-foreground)"
+                              : "var(--text-secondary)",
                         }}
                       >
                         {stop.name}
@@ -177,7 +177,7 @@ export default function RailwaysRouteDetails({
         <div className={styles.tipCard}>
           <i className="bx bxs-info-circle" style={{ color, fontSize: "1.2rem", flexShrink: 0, marginTop: "2px" }} />
           <div>
-            <strong style={{ color: "var(--text-primary)" }}>نصيحة السفر: </strong>
+            <strong style={{ color: "var(--color-foreground)" }}>نصيحة السفر: </strong>
             <span style={{ color: "var(--text-secondary)" }}>{route.tips}</span>
           </div>
         </div>

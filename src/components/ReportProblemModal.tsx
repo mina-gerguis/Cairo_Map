@@ -572,7 +572,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
             borderRadius: "10px",
             border: "none",
             background: hoursType === "custom" ? "var(--color-secondary)" : "rgba(255, 255, 255, 0.05)",
-            color: hoursType === "custom" ? "#fff" : "var(--text-primary)",
+            color: hoursType === "custom" ? "#fff" : "var(--color-foreground)",
             fontWeight: "bold",
             fontSize: "0.85rem",
             cursor: "pointer"
@@ -589,7 +589,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
             borderRadius: "10px",
             border: "none",
             background: hoursType === "24/7" ? "var(--color-secondary)" : "rgba(255, 255, 255, 0.05)",
-            color: hoursType === "24/7" ? "#fff" : "var(--text-primary)",
+            color: hoursType === "24/7" ? "#fff" : "var(--color-foreground)",
             fontWeight: "bold",
             fontSize: "0.85rem",
             cursor: "pointer"
@@ -610,7 +610,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                   onChange={(e) => handleDayWorkingChange(idx, e.target.checked)}
                   style={{ cursor: "pointer", width: "16px", height: "16px" }}
                 />
-                <span style={{ fontSize: "0.9rem", fontWeight: "600", color: sched.isWorking ? "var(--text-primary)" : "var(--text-muted)" }}>{sched.day}</span>
+                <span style={{ fontSize: "0.9rem", fontWeight: "600", color: sched.isWorking ? "var(--color-foreground)" : "var(--text-muted)" }}>{sched.day}</span>
               </div>
 
               {sched.isWorking ? (
@@ -626,7 +626,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                   <select
                     value={sched.openPeriod}
                     onChange={(e) => handleDayPeriodChange(idx, "openPeriod", e.target.value as "ص" | "م")}
-                    style={{ background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", border: "1px solid var(--border-glass)", borderRadius: "8px", padding: "5px", fontSize: "0.85rem", cursor: "pointer" }}
+                    style={{ background: "rgba(255,255,255,0.05)", color: "var(--color-foreground)", border: "1px solid var(--border-glass)", borderRadius: "8px", padding: "5px", fontSize: "0.85rem", cursor: "pointer" }}
                   >
                     <option value="ص" style={{ background: "#222" }}>ص</option>
                     <option value="م" style={{ background: "#222" }}>م</option>
@@ -643,7 +643,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                   <select
                     value={sched.closePeriod}
                     onChange={(e) => handleDayPeriodChange(idx, "closePeriod", e.target.value as "ص" | "م")}
-                    style={{ background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", border: "1px solid var(--border-glass)", borderRadius: "8px", padding: "5px", fontSize: "0.85rem", cursor: "pointer" }}
+                    style={{ background: "rgba(255,255,255,0.05)", color: "var(--color-foreground)", border: "1px solid var(--border-glass)", borderRadius: "8px", padding: "5px", fontSize: "0.85rem", cursor: "pointer" }}
                   >
                     <option value="ص" style={{ background: "#222" }}>ص</option>
                     <option value="م" style={{ background: "#222" }}>م</option>
@@ -712,15 +712,15 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
             borderRadius: "12px",
             background: "rgba(255, 255, 255, 0.05)",
             border: "1px solid var(--border-glass)",
-            color: "var(--text-primary)",
+            color: "var(--color-foreground)",
             fontFamily: "var(--font-cairo)",
             fontSize: "0.95rem",
             cursor: "pointer"
           }}
         >
-          <option value="" style={{ color: "var(--text-primary)", background: "var(--bg-secondary)" }}>-- اختر القسم الرئيسي --</option>
+          <option value="" style={{ color: "var(--color-foreground)", background: "var(--bg-secondary)" }}>-- اختر القسم الرئيسي --</option>
           {CATEGORIES_STRUCTURE.map(main => (
-            <option key={main.name} value={main.name} style={{ background: "var(--bg-secondary)", color: "var(--text-primary)" }}>
+            <option key={main.name} value={main.name} style={{ background: "var(--bg-secondary)", color: "var(--color-foreground)" }}>
               {main.emoji ? `${main.emoji} ` : ''}{main.label}
             </option>
           ))}
@@ -747,15 +747,15 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                     borderRadius: "12px",
                     background: "rgba(255, 255, 255, 0.05)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontFamily: "var(--font-cairo)",
                     fontSize: "0.95rem",
                     cursor: "pointer"
                   }}
                 >
-                  <option value="" style={{ background: "var(--bg-secondary)", color: "var(--text-primary)" }}>-- اختر الفئة الفرعية (اختياري) --</option>
+                  <option value="" style={{ background: "var(--bg-secondary)", color: "var(--color-foreground)" }}>-- اختر الفئة الفرعية (اختياري) --</option>
                   {activeMain.subCategories.map(sub => (
-                    <option key={sub.name} value={sub.name} style={{ background: "var(--bg-secondary)", color: "var(--text-primary)" }}>
+                    <option key={sub.name} value={sub.name} style={{ background: "var(--bg-secondary)", color: "var(--color-foreground)" }}>
                       {sub.label}
                     </option>
                   ))}
@@ -799,7 +799,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                 </div>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", fontWeight: "600" }}>الفئة الجديدة المحددة</span>
-                  <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                  <span style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                     {activeMain ? `${activeMain.emoji || ''} ${activeMain.label}` : ''}
                     {activeSub ? ` 🡠 ${activeSub.label}` : ''}
                   </span>
@@ -866,7 +866,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
             fontFamily: "var(--font-cairo)",
             fontWeight: "700",
             fontSize: "1.15rem",
-            color: "var(--text-primary)"
+            color: "var(--color-foreground)"
           }}>
             الإبلاغ عن مشكلة
           </span>
@@ -908,7 +908,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
               <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "rgba(255, 149, 0, 0.12)", color: "#ff9500", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", fontSize: "2.2rem" }}>
                 <i className="bx bx-error"></i>
               </div>
-              <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>لقد وصلت للحد الأقصى (5 طلبات معلقة)</h3>
+              <h3 style={{ fontSize: "1.2rem", fontWeight: "700", marginBottom: "8px", color: "var(--color-foreground)" }}>لقد وصلت للحد الأقصى (5 طلبات معلقة)</h3>
               <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
                 لا يمكنك تقديم بلاغات جديدة حالياً. يرجى الانتظار حتى تقوم الإدارة بمراجعة واعتماد أو رفض طلباتك السابقة.
               </p>
@@ -924,7 +924,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
 
               {/* Subtitle */}
               <div style={{ marginBottom: "20px" }}>
-                <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 4px" }}>
+                <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-foreground)", margin: "0 0 4px" }}>
                   ما المشكلة المطلوب الإبلاغ عنها حول {place.name}؟
                 </h3>
               </div>
@@ -948,7 +948,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                         transition: "background 0.2s"
                       }}
                     >
-                      <span style={{ fontSize: "0.95rem", fontWeight: isSelected ? "700" : "500", color: isSelected ? "var(--color-secondary)" : "var(--text-primary)" }}>
+                      <span style={{ fontSize: "0.95rem", fontWeight: isSelected ? "700" : "500", color: isSelected ? "var(--color-secondary)" : "var(--color-foreground)" }}>
                         {prob.label}
                       </span>
                       {isSelected ? (
@@ -976,7 +976,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                   {selectedProblem === "other" && (
                     <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "20px" }}>
                       <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid var(--border-glass)", borderRadius: "14px", padding: "16px" }}>
-                        <label style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--text-primary)", display: "block", marginBottom: "12px" }}>
+                        <label style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", display: "block", marginBottom: "12px" }}>
                           اختر جميع الأقسام التي تود تعديلها أو الإبلاغ عنها:
                         </label>
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "10px" }}>
@@ -1005,7 +1005,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                                   borderRadius: "10px",
                                   background: isChecked ? "rgba(0, 122, 255, 0.12)" : "rgba(255, 255, 255, 0.03)",
                                   border: `1px solid ${isChecked ? "var(--color-secondary)" : "var(--border-glass)"}`,
-                                  color: isChecked ? "var(--color-secondary)" : "var(--text-primary)",
+                                  color: isChecked ? "var(--color-secondary)" : "var(--color-foreground)",
                                   fontWeight: isChecked ? "700" : "500",
                                   fontSize: "0.85rem",
                                   cursor: "pointer",
@@ -1121,7 +1121,7 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
                       ) : (
                         <>
                           <i className={isUploading ? "bx bx-loader-alt bx-spin" : "bx bx-camera"} style={{ fontSize: "1.8rem", color: "var(--text-muted)" }}></i>
-                          <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-primary)" }}>
+                          <span style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--color-foreground)" }}>
                             {isUploading ? "جاري رفع الصورة..." : "إضافة صورة"}
                           </span>
                         </>

@@ -137,8 +137,8 @@ export default function MonorailRouteCalculator({
                 const q = normalizeArabic(fromQuery.trim());
                 const matchedLandmark = q
                   ? details?.landmarks?.find((l) =>
-                      normalizeArabic(l).includes(q)
-                    )
+                    normalizeArabic(l).includes(q)
+                  )
                   : null;
                 const lineCfg = MONORAIL_LINES_CONFIG.find(
                   (l) => l.id === s.line_type
@@ -155,7 +155,7 @@ export default function MonorailRouteCalculator({
                         style={{
                           fontSize: "0.92rem",
                           fontWeight: "700",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                         }}
                       >
                         {s.name}
@@ -252,8 +252,8 @@ export default function MonorailRouteCalculator({
                 const q = normalizeArabic(toQuery.trim());
                 const matchedLandmark = q
                   ? details?.landmarks?.find((l) =>
-                      normalizeArabic(l).includes(q)
-                    )
+                    normalizeArabic(l).includes(q)
+                  )
                   : null;
                 const lineCfg = MONORAIL_LINES_CONFIG.find(
                   (l) => l.id === s.line_type
@@ -270,7 +270,7 @@ export default function MonorailRouteCalculator({
                         style={{
                           fontSize: "0.92rem",
                           fontWeight: "700",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                         }}
                       >
                         {s.name}
@@ -323,7 +323,7 @@ export default function MonorailRouteCalculator({
             </div>
 
             <div className={styles.metricTile}>
-              <div className={styles.metricTileVal} style={{ color: "var(--text-primary)" }}>
+              <div className={styles.metricTileVal} style={{ color: "var(--color-foreground)" }}>
                 {routeResult.count}
               </div>
               <div className={styles.metricTileLabel}>عدد المحطات</div>
@@ -370,7 +370,7 @@ export default function MonorailRouteCalculator({
                 border: "1px solid var(--border-glass)",
                 borderRadius: "8px",
                 padding: "8px 14px",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 fontWeight: "700",
                 fontSize: "0.82rem",
                 cursor: "pointer",
@@ -450,7 +450,7 @@ export default function MonorailRouteCalculator({
                       borderRadius: "8px",
                       background: "rgba(255, 255, 255, 0.08)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       fontWeight: "700",
                       fontSize: "0.82rem",
                       cursor: "pointer",
@@ -494,8 +494,8 @@ export default function MonorailRouteCalculator({
               const isPassed = isTripActive && idx < currentStepIndex;
               const isCurrent = isTripActive && idx === currentStepIndex;
 
-              let bg = "var(--bgPrimary)";
-              let color = "var(--text-primary)";
+              let bg = "var(--color-bg)";
+              let color = "var(--color-foreground)";
               let border = "1px solid var(--border-glass)";
 
               if (isTripActive) {

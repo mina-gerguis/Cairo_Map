@@ -121,7 +121,7 @@ export default function RailwaysReportModal({
               >
                 <i className="bx bx-check" />
               </div>
-              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h5 style={{ margin: "0 0 8px", fontSize: "1.1rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 تم استلام بلاغك بنجاح!
               </h5>
               <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
@@ -140,7 +140,7 @@ export default function RailwaysReportModal({
                 alt="error"
                 style={{ width: "70px", height: "70px", objectFit: "contain", margin: "0 auto 12px" }}
               />
-              <h5 style={{ margin: "0 0 8px", fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h5 style={{ margin: "0 0 8px", fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 تم الوصول للحد الأقصى من البلاغات المعلقة
               </h5>
               <p style={{ margin: "0 0 16px", fontSize: "0.85rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
@@ -168,7 +168,7 @@ export default function RailwaysReportModal({
               >
                 <i className="bx bx-user" />
               </div>
-              <h5 style={{ margin: "0 0 8px", fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h5 style={{ margin: "0 0 8px", fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 تسجيل الدخول مطلوب
               </h5>
               <p style={{ margin: "0 0 18px", fontSize: "0.86rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>
@@ -347,7 +347,7 @@ export default function RailwaysReportModal({
                   className={styles.dropdownTrigger}
                 >
                   <div>
-                    <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                    <div style={{ fontSize: "0.86rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                       {currentProblemOption.title}
                     </div>
                     <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)" }}>
@@ -372,7 +372,7 @@ export default function RailwaysReportModal({
                         }}
                       >
                         <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: "0.84rem", fontWeight: opt.id === problemType ? "800" : "600", color: "var(--text-primary)" }}>
+                          <div style={{ fontSize: "0.84rem", fontWeight: opt.id === problemType ? "800" : "600", color: "var(--color-foreground)" }}>
                             {opt.title}
                           </div>
                           <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
@@ -454,7 +454,7 @@ export default function RailwaysReportModal({
                     >
                       <i className="bx bx-cloud-upload" />
                     </div>
-                    <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                    <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                       اضغط لاختيار صورة أو اسحبها هنا
                     </div>
                     <div style={{ fontSize: "0.74rem", color: "var(--text-muted)" }}>

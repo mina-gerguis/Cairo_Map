@@ -19,23 +19,19 @@
   width: 100%;
   max-width: 900px;
   height: 380px;
-  background: radial-gradient(
-    ellipse 60% 50% at 50% 0%,
-    rgba(59, 130, 246, 0.18),
-    rgba(16, 185, 129, 0.05) 50%,
-    transparent 80%
-  );
+  background: radial-gradient(ellipse 60% 50% at 50% 0%,
+      rgba(59, 130, 246, 0.18),
+      rgba(16, 185, 129, 0.05) 50%,
+      transparent 80%);
   pointer-events: none;
   z-index: 0;
 }
 
 :global(html.light) .ambientGlow {
-  background: radial-gradient(
-    ellipse 60% 50% at 50% 0%,
-    rgba(59, 130, 246, 0.08),
-    rgba(16, 185, 129, 0.03) 50%,
-    transparent 80%
-  );
+  background: radial-gradient(ellipse 60% 50% at 50% 0%,
+      rgba(59, 130, 246, 0.08),
+      rgba(16, 185, 129, 0.03) 50%,
+      transparent 80%);
 }
 
 /* Optional Back Button */
@@ -51,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   text-decoration: none;
   transition: all 0.2s ease;
   z-index: 10;
@@ -60,7 +56,7 @@
 :global(html.light) .backBtnCircle {
   background: rgba(0, 0, 0, 0.04);
   border-color: rgba(0, 0, 0, 0.08);
-  color: var(--text-primary, #18181b);
+  color: var(--color-foreground, #18181b);
 }
 
 .backBtnCircle:hover {
@@ -107,11 +103,13 @@
 }
 
 @keyframes pulseDot {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.35);
     opacity: 0.6;

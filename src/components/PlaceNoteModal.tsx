@@ -142,11 +142,11 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
 
         {/* Title */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", margin: 0, fontFamily: "var(--font-cairo)" }}>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-foreground)", margin: 0, fontFamily: "var(--font-cairo)" }}>
             📝 إضافة تذكير / ملاحظة
           </h3>
           <button onClick={onClose} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", color: "var(--text-muted)", fontSize: "1.4rem", cursor: "pointer", display: "flex", alignItems: "center", padding: "8px", borderRadius: "50%" }}>
-            <i className="bx bx-x" style={{ fontSize: "1.2rem", color: "var(--text-primary)" }}></i>
+            <i className="bx bx-x" style={{ fontSize: "1.2rem", color: "var(--color-foreground)" }}></i>
           </button>
         </div>
 
@@ -172,7 +172,7 @@ export default function PlaceNoteModal({ isOpen, onClose, placeId, placeName, on
             <h4 style={{
               fontSize: "1.15rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               marginBottom: "10px",
               fontFamily: "var(--font-cairo)"
             }}>

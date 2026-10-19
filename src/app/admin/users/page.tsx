@@ -1104,7 +1104,7 @@ export default function AdminUsersPage() {
     return (
       <div className={styles.adminAccessDenied}>
         <i className="bx bx-lock-alt" style={{ fontSize: "4rem", color: "var(--accent-red)" }} />
-        <h2 style={{ marginTop: "16px", color: "var(--text-primary)" }}>عفواً، الدخول غير مصرح به</h2>
+        <h2 style={{ marginTop: "16px", color: "var(--color-foreground)" }}>عفواً، الدخول غير مصرح به</h2>
         <p style={{ color: "var(--text-secondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
         <button onClick={() => router.push("/")} className={styles.backBtn} style={{ marginTop: "16px" }}>
           العودة للرئيسية
@@ -1668,7 +1668,7 @@ export default function AdminUsersPage() {
 
                       {/* Location & Demographics */}
                       <td className={styles.adminTd}>
-                        <div style={{ fontWeight: "700", color: "var(--text-primary)", fontSize: "0.88rem" }}>
+                        <div style={{ fontWeight: "700", color: "var(--color-foreground)", fontSize: "0.88rem" }}>
                           📍 {u.governorate ? `${u.governorate} ${u.city ? `• ${u.city}` : ""}` : "غير محددة"}
                         </div>
                         <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "4px" }}>
@@ -1710,7 +1710,7 @@ export default function AdminUsersPage() {
 
                       {/* Registration Date */}
                       <td className={styles.adminTd}>
-                        <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--text-primary)" }}>
+                        <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                           {new Date(u.created_at).toLocaleDateString("ar-EG")}
                         </div>
                         <div style={{ fontSize: "0.74rem", color: "var(--text-muted)", marginTop: "2px" }}>
@@ -2016,7 +2016,7 @@ export default function AdminUsersPage() {
                 )}
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                    <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                       {viewUser.full_name || "مستخدم بدون اسم"}
                     </h3>
                     {viewUser.is_admin && (
@@ -3162,7 +3162,7 @@ export default function AdminUsersPage() {
       >
         {!suspendTarget?.is_suspended ? (
           <div style={{ marginTop: "12px", width: "100%", textAlign: "right" }}>
-            <label style={{ display: "block", fontSize: "0.86rem", fontWeight: "700", color: "var(--text-primary)", marginBottom: "6px" }}>
+            <label style={{ display: "block", fontSize: "0.86rem", fontWeight: "700", color: "var(--color-foreground)", marginBottom: "6px" }}>
               سبب الإيقاف (اختياري، يظهر للمستخدم في شاشة الدخول):
             </label>
             <input

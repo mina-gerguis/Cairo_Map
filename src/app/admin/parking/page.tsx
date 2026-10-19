@@ -13,7 +13,7 @@ const DEFAULT_PARKING: any[] = [];
 
 export default function AdminParkingPage() {
   return (
-    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-textSecondary)" }}>جاري التحميل...</div>}>
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>جاري التحميل...</div>}>
       <AdminParkingInner />
     </Suspense>
   );
@@ -342,7 +342,7 @@ function AdminParkingInner() {
       {/* Sub header operations */}
       <div className={styles.sectionHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
-          <h2 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--text-primary)", margin: 0, }}>
+          <h2 style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-foreground)", margin: 0, }}>
             إدارة الجراجات وخدمة
           </h2>
           <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "4px", margin: 0 }}>

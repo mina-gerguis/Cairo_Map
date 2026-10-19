@@ -9,7 +9,7 @@
   overflow-x: hidden;
   direction: rtl;
   padding-bottom: 60px;
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
 }
 
 .ambientGlow {
@@ -20,23 +20,19 @@
   width: 100%;
   max-width: 960px;
   height: 420px;
-  background: radial-gradient(
-    ellipse 65% 55% at 50% 0%,
-    rgba(59, 130, 246, 0.18),
-    rgba(234, 179, 8, 0.08) 50%,
-    transparent 80%
-  );
+  background: radial-gradient(ellipse 65% 55% at 50% 0%,
+      rgba(59, 130, 246, 0.18),
+      rgba(234, 179, 8, 0.08) 50%,
+      transparent 80%);
   pointer-events: none;
   z-index: 0;
 }
 
 :global(html.light) .ambientGlow {
-  background: radial-gradient(
-    ellipse 65% 55% at 50% 0%,
-    rgba(59, 130, 246, 0.12),
-    rgba(234, 179, 8, 0.04) 50%,
-    transparent 80%
-  );
+  background: radial-gradient(ellipse 65% 55% at 50% 0%,
+      rgba(59, 130, 246, 0.12),
+      rgba(234, 179, 8, 0.04) 50%,
+      transparent 80%);
 }
 
 .contentContainer {
@@ -49,7 +45,7 @@
 
 /* ==================== HERO / HEADER ==================== */
 .heroBanner {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   padding: 28px 20px 24px;
   text-align: center;
   position: relative;
@@ -70,7 +66,7 @@
   border-radius: 50%;
   background: var(--bg-glass-card, rgba(255, 255, 255, 0.05));
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -92,7 +88,7 @@
   font-family: var(--font-display, var(--font-cairo));
   font-size: clamp(1.6rem, 5vw, 2.2rem);
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   letter-spacing: -0.5px;
   margin: 0 0 10px;
   gap: 12px;
@@ -193,19 +189,19 @@
 }
 
 .tabBtn:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   background: rgba(255, 255, 255, 0.03);
 }
 
 .tabBtnActive {
   background: var(--bg-glass-active, rgba(39, 39, 42, 0.9)) !important;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 :global(html.light) .tabBtnActive {
   background: #ffffff !important;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -271,7 +267,7 @@
 .reportBannerTitle {
   font-size: 0.98rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 4px;
 }
 
@@ -310,7 +306,7 @@
 
 /* ==================== SEARCH CARD & CATEGORY CHIPS ==================== */
 .searchCard {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 16px;
   padding: 18px;
@@ -343,7 +339,7 @@
 .searchHeaderTitle {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0;
 }
 
@@ -363,7 +359,7 @@
   padding: 13px 44px 13px 40px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.04);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border: 1px solid var(--border-glass);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.92rem;
@@ -377,7 +373,7 @@
 
 .searchInput:focus {
   border-color: var(--color-secondary);
-  background: var(--bgPrimary);
+  background: var(--color-bg);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
@@ -410,7 +406,7 @@
 }
 
 .clearBtn:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .filterChipsScroll {
@@ -440,7 +436,7 @@
 }
 
 .filterChip:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-color: rgba(59, 130, 246, 0.3);
 }
 
@@ -473,7 +469,7 @@
 .loadingBox {
   text-align: center;
   padding: 48px 20px;
-  background: var(--bgPrimary);
+  background: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 16px;
 }
@@ -495,7 +491,7 @@
 }
 
 .emptyState {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px dashed var(--border-glass);
   border-radius: 16px;
   padding: 40px 20px;
@@ -518,7 +514,7 @@
 .emptyStateTitle {
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 6px;
 }
 
@@ -532,7 +528,7 @@
 
 /* ==================== AIRPORT CARD ==================== */
 .airportCard {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 16px;
   padding: 18px 20px;
@@ -613,7 +609,7 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   line-height: 1.35;
 }
 
@@ -661,7 +657,7 @@
 
 .badgeCode {
   font-size: 0.72rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 800;
   background: var(--bg-secondary);
   padding: 3px 10px;
@@ -703,7 +699,7 @@
 
 .locationGov {
   display: block;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.85rem;
   font-weight: 800;
 }
@@ -749,7 +745,7 @@
 }
 
 .quickStatValue {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 700;
 }
 
@@ -771,7 +767,7 @@
 }
 
 .sectionHeader {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 800;
   font-size: 0.86rem;
   display: flex;
@@ -806,7 +802,7 @@
 
 .specCardTitle {
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.82rem;
   margin-bottom: 8px;
   border-bottom: 1px solid var(--border-glass);
@@ -906,7 +902,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 700;
   font-size: 0.86rem;
   text-decoration: none;
@@ -1007,7 +1003,7 @@
 }
 
 .guideCard {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 16px;
   padding: 22px;
@@ -1049,7 +1045,7 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .guideCardSubtitle {
@@ -1187,7 +1183,7 @@
 }
 
 .tipTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.88rem;
   font-weight: 800;
 }
@@ -1215,7 +1211,7 @@
 }
 
 .modalBox {
-  background: var(--bgPrimary);
+  background: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 20px;
   width: 100%;
@@ -1258,7 +1254,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modalCloseBtn {
@@ -1276,7 +1272,7 @@
 }
 
 .modalCloseBtn:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modalBody {
@@ -1344,7 +1340,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1383,7 +1379,7 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: var(--bgPrimary);
+  background: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 12px;
   max-height: 230px;
@@ -1440,7 +1436,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1461,7 +1457,7 @@
 .dropdownOptionTitle {
   font-size: 0.86rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .dropdownOptionDesc {
@@ -1486,7 +1482,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1542,7 +1538,7 @@
 .modalUploadPromptTitle {
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .modalUploadPromptDesc {
@@ -1578,7 +1574,7 @@
 .modalFileName {
   font-size: 0.84rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1663,7 +1659,7 @@
 }
 
 .btnCancelModal:hover:not(:disabled) {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -1745,7 +1741,7 @@
   margin: 0 0 8px;
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .stateDescText {
@@ -1759,13 +1755,13 @@
 .paywallWrapper {
   min-height: 100vh;
   padding-bottom: 50px;
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   direction: rtl;
   text-align: right;
 }
 
 .paywallHeader {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   padding: 24px 20px 24px;
   text-align: center;
   position: relative;
@@ -1794,7 +1790,7 @@
 }
 
 .paywallCard {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 16px;
   padding: 44px 28px;
@@ -1827,7 +1823,7 @@
 .paywallTitle {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 12px;
   line-height: 1.4;
 }
@@ -1852,7 +1848,7 @@
 
 .featuresTitle {
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.92rem;
   margin-bottom: 10px;
 }
@@ -1927,14 +1923,14 @@
 }
 
 .homeReturnBtn:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   background: rgba(255, 255, 255, 0.06);
 }
 
 /* ==================== AUTH LOADING SCREEN ==================== */
 .authLoadingScreen {
   min-height: 100vh;
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1960,16 +1956,35 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

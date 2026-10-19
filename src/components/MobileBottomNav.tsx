@@ -674,7 +674,7 @@ export default function MobileBottomNav() {
                   decoding="async"
                   style={{
                     width: "25px", height: "25px", borderRadius: "50%", objectFit: "cover",
-                    border: displayActiveIndex === 4 ? "2px solid var(--text-primary)" : "1px solid transparent",
+                    border: displayActiveIndex === 4 ? "2px solid var(--color-foreground)" : "1px solid transparent",
                     transition: "border-color 0.2s",
                   }}
                 />
@@ -758,7 +758,7 @@ export default function MobileBottomNav() {
                             border: "1px solid var(--border-glass)",
                             marginBottom: "8px",
                             textDecoration: "none",
-                            color: "var(--text-primary)",
+                            color: "var(--color-foreground)",
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -803,7 +803,7 @@ export default function MobileBottomNav() {
                         gap: "8px",
                         fontSize: "0.85rem",
                         fontWeight: "700",
-                        color: "var(--text-primary)",
+                        color: "var(--color-foreground)",
                         padding: "6px 4px",
                         marginBottom: "6px",
                         fontFamily: "var(--font-body)"
@@ -827,7 +827,7 @@ export default function MobileBottomNav() {
                             border: "1px solid var(--border-glass)",
                             marginBottom: "8px",
                             textDecoration: "none",
-                            color: "var(--text-primary)",
+                            color: "var(--color-foreground)",
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -891,7 +891,7 @@ export default function MobileBottomNav() {
                               backgroundColor: "var(--bg-glass-card)",
                               border: "1px solid var(--border-glass)",
                               textDecoration: "none",
-                              color: "var(--text-primary)",
+                              color: "var(--color-foreground)",
                               fontSize: "0.84rem",
                               fontFamily: "var(--font-body)"
                             }}
@@ -915,7 +915,7 @@ export default function MobileBottomNav() {
                       marginTop: "12px"
                     }}>
                       <div style={{ fontSize: "2.4rem", marginBottom: "8px" }}>🔍</div>
-                      <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "6px", fontFamily: "var(--font-display)" }}>
+                      <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)", marginBottom: "6px", fontFamily: "var(--font-display)" }}>
                         عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                       </h4>
                       <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", maxWidth: "320px", margin: "0 auto 16px auto", lineHeight: "1.6", fontFamily: "var(--font-body)" }}>
@@ -932,7 +932,7 @@ export default function MobileBottomNav() {
                             borderRadius: "10px",
                             backgroundColor: "var(--bg-secondary)",
                             border: "1px solid var(--border-glass)",
-                            color: "var(--text-primary)",
+                            color: "var(--color-foreground)",
                             fontWeight: "700",
                             fontSize: "0.86rem",
                             cursor: "pointer",
@@ -1014,7 +1014,7 @@ export default function MobileBottomNav() {
               ) : (
                 /* TRENDING SEARCHES */
                 <div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--text-primary)" }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--color-foreground)" }}>
                     📈 عمليات بحث شائعة
                   </h3>
                   <div className="trending-tags" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>

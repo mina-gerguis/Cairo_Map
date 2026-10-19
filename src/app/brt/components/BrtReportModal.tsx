@@ -70,7 +70,7 @@ export default function BrtReportModal({
           borderBottom: "1px solid rgba(255,255,255,0.08)",
           paddingBottom: "14px"
         }}>
-          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", fontFamily: "var(--font-sub)" }}>
+          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)", fontFamily: "var(--font-sub)" }}>
             إبلاغ عن خطأ في مسار {reportingRouteDestination}
           </h3>
           <button

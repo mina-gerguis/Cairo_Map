@@ -85,7 +85,7 @@ const DEFAULT_ROUTES: RailwayRoute[] = [
 
 export default function AdminRailwaysPage() {
   return (
-    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-textSecondary)" }}>جاري التحميل...</div>}>
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>جاري التحميل...</div>}>
       <AdminRailwaysInner />
     </Suspense>
   );
@@ -615,7 +615,7 @@ function AdminRailwaysInner() {
       {/* Page Title */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: "1.6rem", fontWeight: "900", color: "var(--text-primary)" }}>إدارة سكك حديد مصر (ENR)</h1>
+          <h1 style={{ margin: 0, fontSize: "1.6rem", fontWeight: "900", color: "var(--color-foreground)" }}>إدارة سكك حديد مصر (ENR)</h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginTop: "4px" }}>
             إضافة وتعديل خطوط ومحطات القطار، والتحكم في حالة التشغيل للخطوط الرئيسية.
           </p>
@@ -648,9 +648,9 @@ function AdminRailwaysInner() {
           className="btn"
           style={{
             padding: "8px 16px",
-            background: activeSection === "lines" ? "var(--text-primary)" : "transparent",
-            color: activeSection === "lines" ? "var(--bgPrimary)" : "var(--text-secondary)",
-            border: activeSection === "lines" ? "1px solid var(--bgPrimary)" : "1px solid transparent",
+            background: activeSection === "lines" ? "var(--color-foreground)" : "transparent",
+            color: activeSection === "lines" ? "var(--color-bg)" : "var(--text-secondary)",
+            border: activeSection === "lines" ? "1px solid var(--color-bg)" : "1px solid transparent",
             borderRadius: "8px",
             fontWeight: "bold",
             cursor: "pointer"
@@ -663,9 +663,9 @@ function AdminRailwaysInner() {
           className="btn"
           style={{
             padding: "8px 16px",
-            background: activeSection === "stations" ? "var(--text-primary)" : "transparent",
-            color: activeSection === "stations" ? "var(--bgPrimary)" : "var(--text-secondary)",
-            border: activeSection === "stations" ? "1px solid var(--bgPrimary)" : "1px solid transparent",
+            background: activeSection === "stations" ? "var(--color-foreground)" : "transparent",
+            color: activeSection === "stations" ? "var(--color-bg)" : "var(--text-secondary)",
+            border: activeSection === "stations" ? "1px solid var(--color-bg)" : "1px solid transparent",
             borderRadius: "8px",
             fontWeight: "bold",
             cursor: "pointer"
@@ -800,7 +800,7 @@ function AdminRailwaysInner() {
           {activeRoute && (
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--text-primary)", width: "50%" }}>
+                <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "800", color: "var(--color-foreground)", width: "50%" }}>
                   محطات التوقف لخط: <span style={{ color: "var(--color-primary)" }}>{activeRoute.name}</span>
                 </h3>
               </div>
@@ -825,7 +825,7 @@ function AdminRailwaysInner() {
                       return (
                         <tr key={index} className={styles.adminTr}>
                           <td className={styles.adminTd} style={{ textAlign: "center", fontWeight: "bold" }}>{index + 1}</td>
-                          <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--text-primary)" }}>{stop.name}</td>
+                          <td className={styles.adminTd} style={{ fontWeight: "bold", color: "var(--color-foreground)" }}>{stop.name}</td>
                           <td className={styles.adminTd}>
                             <span style={{
                               padding: "4px 10px",
@@ -848,7 +848,7 @@ function AdminRailwaysInner() {
                                 style={{
                                   padding: "4px 8px",
                                   background: "var(--bg-secondary)",
-                                  color: "var(--text-primary)",
+                                  color: "var(--color-foreground)",
                                   fontSize: "0.8rem",
                                   opacity: isFirst ? 0.3 : 1,
                                   cursor: isFirst ? "not-allowed" : "pointer"
@@ -862,7 +862,7 @@ function AdminRailwaysInner() {
                                 className="btn"
                                 style={{
                                   background: "var(--bg-secondary)",
-                                  color: "var(--text-primary)",
+                                  color: "var(--color-foreground)",
                                   padding: "4px 8px",
                                   fontSize: "0.8rem",
                                   opacity: isLast ? 0.3 : 1,

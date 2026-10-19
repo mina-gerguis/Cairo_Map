@@ -41,7 +41,7 @@ export function RoadsReportBanner({ onOpenReport }: RoadsReportBannerProps) {
           <i className="bx bx-error-alt" />
         </div>
         <div>
-          <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--text-primary)" }}>
+          <div style={{ fontSize: "0.95rem", fontWeight: "700", color: "var(--color-foreground)" }}>
             هل لاحظت تغييراً في سرعة رادار أو كارتة طريق؟
           </div>
           <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)" }}>

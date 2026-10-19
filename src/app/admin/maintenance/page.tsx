@@ -670,11 +670,10 @@ export default function AdminMaintenancePage() {
                 ? "rgba(239, 68, 68, 0.12)"
                 : "rgba(16, 185, 129, 0.12)",
             color: statusMessage.type === "error" ? "#ef4444" : "#10b981",
-            border: `1px solid ${
-              statusMessage.type === "error"
-                ? "rgba(239, 68, 68, 0.3)"
-                : "rgba(16, 185, 129, 0.3)"
-            }`,
+            border: `1px solid ${statusMessage.type === "error"
+              ? "rgba(239, 68, 68, 0.3)"
+              : "rgba(16, 185, 129, 0.3)"
+              }`,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -684,9 +683,8 @@ export default function AdminMaintenancePage() {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <i
-              className={`bx ${
-                statusMessage.type === "error" ? "bx-error-circle" : "bx-check-circle"
-              }`}
+              className={`bx ${statusMessage.type === "error" ? "bx-error-circle" : "bx-check-circle"
+                }`}
               style={{ fontSize: "1.3rem" }}
             />
             <span>{statusMessage.text}</span>
@@ -1041,7 +1039,7 @@ export default function AdminMaintenancePage() {
                     cursor: "pointer",
                     fontWeight: 700,
                     fontSize: "0.88rem",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                   }}
                 >
                   <input
@@ -1534,7 +1532,7 @@ export default function AdminMaintenancePage() {
           >
             {/* Close Button Header */}
             <div className={styles.maintPreviewModalHeader}>
-              <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--text-primary)" }}>
+              <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--color-foreground)" }}>
                 معاينة حية: كيف تظهر شاشة الصيانة للزوار
               </span>
               <button
@@ -1542,7 +1540,7 @@ export default function AdminMaintenancePage() {
                 style={{
                   background: "var(--bg-muted)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   borderRadius: "50%",
                   width: "30px",
                   height: "30px",
@@ -1617,7 +1615,7 @@ export default function AdminMaintenancePage() {
                 >
                   <i className="bx bx-edit" style={{ fontSize: "1.2rem" }} />
                 </div>
-                <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--text-primary)" }}>
+                <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--color-foreground)" }}>
                   تعديل بيانات صيانة: {getPageInfo(editingItem.page_path).label}
                 </h3>
               </div>
@@ -1700,7 +1698,7 @@ export default function AdminMaintenancePage() {
                     cursor: "pointer",
                     fontSize: "0.88rem",
                     fontWeight: 700,
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                   }}
                 >
                   <input
@@ -1800,7 +1798,7 @@ export default function AdminMaintenancePage() {
                   <i className="bx bx-shield-quarter" />
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary)" }}>
+                  <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "var(--color-foreground)" }}>
                     قفل جميع الصفحات ما عدا صفحات محددة
                   </h3>
                   <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)" }}>
@@ -1938,14 +1936,13 @@ export default function AdminMaintenancePage() {
                         <div
                           key={page.path}
                           onClick={() => handleToggleExcludePath(page.path)}
-                          className={`${styles.maintExceptItem} ${
-                            isSelected ? styles.maintExceptItemActive : ""
-                          }`}
+                          className={`${styles.maintExceptItem} ${isSelected ? styles.maintExceptItemActive : ""
+                            }`}
                         >
                           <input
                             type="checkbox"
                             checked={isSelected}
-                            onChange={() => {}} // handled by parent onClick
+                            onChange={() => { }} // handled by parent onClick
                             style={{ accentColor: "#10b981", cursor: "pointer" }}
                           />
                           <i className={page.icon} style={{ fontSize: "1rem" }} />
@@ -2035,7 +2032,7 @@ export default function AdminMaintenancePage() {
                     cursor: "pointer",
                     fontSize: "0.86rem",
                     fontWeight: 700,
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                   }}
                 >
                   <input

@@ -24,7 +24,7 @@ export default function IncomingReportsRedirectPage() {
           margin: "0 auto 16px",
         }}
       />
-      <h2 style={{ fontSize: "1.2rem", color: "var(--text-primary)", marginBottom: "8px" }}>
+      <h2 style={{ fontSize: "1.2rem", color: "var(--color-foreground)", marginBottom: "8px" }}>
         جاري تحويلك إلى صفحة البلاغات...
       </h2>
       <p style={{ fontSize: "0.9rem" }}>

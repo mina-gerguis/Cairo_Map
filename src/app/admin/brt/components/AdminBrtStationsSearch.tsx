@@ -110,7 +110,7 @@ export function AdminBrtStationsSearch({
             whiteSpace: "nowrap"
           }}
         >
-          إجمالي النتائج: <strong style={{ color: "var(--text-primary, #fff)" }}>{totalCount}</strong> محطة
+          إجمالي النتائج: <strong style={{ color: "var(--color-foreground, #fff)" }}>{totalCount}</strong> محطة
         </div>
       </div>
 

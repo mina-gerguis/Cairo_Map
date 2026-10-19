@@ -7,6 +7,7 @@ import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { UserProfile, ProfileFormData } from "../types";
 import { PROFILE_AVATARS, AVAILABLE_INTERESTS } from "../constants";
 import styles from "../page.module.css";
+import { LogIn } from "lucide-react";
 
 interface ProfileCardProps {
   user: any;
@@ -40,9 +41,8 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
 
   return (
     <div
-      className={`glass-panel ${styles.profileCard} ${
-        isProfileExpanded ? styles.profileCardExpanded : ""
-      }`}
+      className={`glass-panel ${styles.profileCard} ${isProfileExpanded ? styles.profileCardExpanded : ""
+        }`}
       onClick={() => setIsProfileExpanded(!isProfileExpanded)}
     >
       {!user ? (
@@ -65,10 +65,10 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
               borderRadius: "8px",
             }}
           >
-            <i className={`bx bx-log-in ${styles.guestLoginIcon}`}></i> تسجيل الدخول
+            <LogIn size={20} color="#fff" /> تسجيل الدخول
           </Link>
           <Link href="/signup" className={styles.guestSignupLink}>
-            ليس لديك حساب؟ إنشاء حساب جديد
+            ليس لديك حساب؟ إنشاء حساب جديد الأن
           </Link>
         </div>
       ) : (
@@ -88,9 +88,8 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
           </div>
           <i
-            className={`bx ${
-              isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"
-            } ${styles.profileChevron}`}
+            className={`bx ${isProfileExpanded ? "bx-chevron-up" : "bx-chevron-down"
+              } ${styles.profileChevron}`}
           ></i>
         </div>
       )}
@@ -138,13 +137,12 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                       <div
                         key={i}
                         onClick={() => setFormData((prev) => ({ ...prev, avatarUrl: url }))}
-                        className={`${styles.avatarPresetItem} ${
-                          formData.avatarUrl === url
+                        className={`${styles.avatarPresetItem} ${formData.avatarUrl === url
                             ? styles.avatarPresetItemActive
                             : formData.avatarUrl
-                            ? styles.avatarPresetItemDimmed
-                            : ""
-                        }`}
+                              ? styles.avatarPresetItemDimmed
+                              : ""
+                          }`}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={url} alt={`Avatar ${i}`} className={styles.avatarPresetImg} />
@@ -171,11 +169,11 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                   readOnly
                   className={`input-fields ${styles.inputDobDisabled}`}
                   value={formData.dob}
-                  style={{ maxWidth: "99%", width: "100%" }}
+                  style={{ maxWidth: "90%", width: "100%" }}
                 />
                 <p className={styles.dobWarningText}>
                   لا يمكنك تغير تاريخ ميلادك اذا كنت قد ادخلت تاريخ ميلادك خطا فيرجى{" "}
-                  <Link href="/help" className={styles.dobWarningLink}>
+                  <Link href="/contact" className={styles.dobWarningLink}>
                     التواصل مع الإدارة للتغير
                   </Link>
                 </p>
@@ -184,11 +182,10 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 <label className="help-label">اسم المستخدم (مرة كل 30 يوم)</label>
                 <input
                   type="text"
-                  className={`input-fields ${styles.usernameInput} ${
-                    formData.username.length > 0 && formData.username.length < 3
+                  className={`input-fields ${styles.usernameInput} ${formData.username.length > 0 && formData.username.length < 3
                       ? styles.usernameInputInvalid
                       : ""
-                  }`}
+                    }`}
                   value={formData.username}
                   onChange={(e) =>
                     setFormData({
@@ -200,11 +197,11 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 {formData.username.length > 0 &&
                   (formData.username.length < 3 ? (
                     <p className={styles.usernameWarningText}>
-                      ⚠️ اسم المستخدم يجب أن يكون 3 حروف على الأقل.
+                       اسم المستخدم يجب أن يكون 3 حروف على الأقل.
                     </p>
                   ) : /^\d+$/.test(formData.username) || !/[a-z]/i.test(formData.username) ? (
                     <p className={styles.usernameWarningText}>
-                      ⚠️ اسم المستخدم لا يمكن أن يتكون من أرقام فقط (يجب أن يحتوي على حروف إنجليزية).
+                       اسم المستخدم لا يمكن أن يتكون من أرقام فقط (يجب أن يحتوي على حروف إنجليزية).
                     </p>
                   ) : null)}
               </div>
@@ -287,9 +284,8 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                     return (
                       <button
                         key={interest.id}
-                        className={`category-pill ${isSelected ? "active" : ""} ${
-                          styles.interestPillBtn
-                        }`}
+                        className={`category-pill ${isSelected ? "active" : ""} ${styles.interestPillBtn
+                          }`}
                         onClick={() => {
                           if (isSelected) {
                             setFormData({
@@ -348,6 +344,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
           ) : (
             <div className={styles.formGap}>
+              {/* username */}
               <div className={styles.infoRow}>
                 <span className={styles.infoLabel}>اسم المستخدم</span>
                 <div className={styles.usernameWrapper}>
@@ -364,13 +361,32 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                     title="نسخ اسم المستخدم"
                   >
                     <i
-                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${
-                        copied ? styles.copiedIcon : ""
-                      }`}
+                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${copied ? styles.copiedIcon : ""
+                        }`}
                     />
                   </button>
                 </div>
               </div>
+              {/* Email */}
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>البريد الإلكتروني</span>
+                <div className={styles.usernameWrapper}>
+                  <span className={styles.infoValue}>{profile?.email}</span>
+                  <button
+                    className={styles.copyButton}
+                    onClick={() => {
+                      if (profile?.email) {
+                        navigator.clipboard.writeText(profile.email);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }
+                    }}
+                    title="نسخ البريد الإلكتروني"
+                  >
+                  </button>
+                </div>
+              </div>
+              {/* phone */}
               <div className={styles.infoRow}>
                 <span className={styles.infoLabel}>رقم الهاتف</span>
                 <span
@@ -387,16 +403,19 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                   {profile?.phone}
                 </span>
               </div>
+              {/* Birth Date */}
               {profile?.dob && (
                 <div className={styles.infoRow}>
                   <span className={styles.infoLabel}>تاريخ الميلاد</span>
                   <span className={styles.infoValue}>{profile.dob}</span>
                 </div>
               )}
+              {/* gender */}
               <div className={styles.infoRow}>
                 <span className={styles.infoLabel}>الجنس</span>
                 <span className={styles.infoValue}>{profile?.gender}</span>
               </div>
+              {/* governate */}
               <div className={styles.infoRow}>
                 <span className={styles.infoLabel}>المنطقة</span>
                 <span className={styles.infoValue}>
@@ -424,22 +443,14 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                     })}
                   </div>
                 ) : (
-                  <div className={styles.noInterestsCard}>
+                  <div className={styles.noInterestsCard} onClick={(e) => {
+                    e.stopPropagation();
+                    setEditMode(true);
+                  }}>
                     <p className={styles.noInterestsText}>
                       قم بإضافة اهتماماتك الآن لنتمكن من إرسال أقوى العروض والإشعارات التي تناسبك
                       خصيصاً!
                     </p>
-                    {isOwnProfile && (
-                      <button
-                        className={`btn btn-secondary ${styles.addInterestsBtn}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditMode(true);
-                        }}
-                      >
-                        أضف الآن
-                      </button>
-                    )}
                   </div>
                 )}
               </div>

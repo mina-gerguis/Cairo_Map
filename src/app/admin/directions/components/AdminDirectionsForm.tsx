@@ -246,7 +246,7 @@ export function AdminDirectionsForm({
                 style={{
                   fontSize: "1.05rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: 0,
                   fontFamily: 'var(--font-sub)'
                 }}

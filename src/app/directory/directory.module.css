@@ -41,7 +41,7 @@
 }
 
 .sliderCardTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.92rem;
@@ -183,7 +183,7 @@
 
 .accordionContent {
   padding: 8px 16px;
-  background: var(--bgPrimary);
+  background: var(--color-bg);
   border-top: 1px solid var(--border-glass);
 }
 
@@ -206,7 +206,7 @@
 }
 
 .modalBox {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border-radius: var(--radius-card, 12px);
   border: 1px solid var(--border-glass);
   width: 100%;

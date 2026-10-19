@@ -190,7 +190,7 @@ export default function DirectorySearchPanel({
                     style={{
                       fontSize: "0.92rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                     }}
                   >
                     {entry.name}
@@ -256,7 +256,7 @@ export default function DirectorySearchPanel({
                 borderRadius: "6px",
                 border: "1px solid var(--border-glass)",
                 background: "var(--bg-secondary)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 cursor: "pointer",
               }}
             >

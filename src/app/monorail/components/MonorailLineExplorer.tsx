@@ -52,7 +52,7 @@ export default function MonorailLineExplorer({
               style={{
                 fontSize: "1.15rem",
                 fontWeight: "800",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 margin: 0,
               }}
             >
@@ -148,7 +148,7 @@ export default function MonorailLineExplorer({
           <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>
             طول المسار
           </div>
-          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>
+          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)", marginTop: "2px" }}>
             {selectedLineObj.length}
           </div>
         </div>
@@ -165,7 +165,7 @@ export default function MonorailLineExplorer({
           <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", fontWeight: "600" }}>
             زمن المسار كاملاً
           </div>
-          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)", marginTop: "2px" }}>
+          <div style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)", marginTop: "2px" }}>
             {selectedLineObj.time}
           </div>
         </div>
@@ -238,7 +238,7 @@ export default function MonorailLineExplorer({
                       style={{
                         fontSize: "0.95rem",
                         fontWeight: "800",
-                        color: isUnderConstruction ? "#ef4444" : "var(--text-primary)",
+                        color: isUnderConstruction ? "#ef4444" : "var(--color-foreground)",
                       }}
                     >
                       {station}

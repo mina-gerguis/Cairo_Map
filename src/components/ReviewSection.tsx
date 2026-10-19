@@ -222,7 +222,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
   return (
     <div id="reviews-section" style={{ marginTop: "40px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "24px" }}>
-      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "20px", color: "var(--text-primary)" }}>
+      <h2 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "20px", color: "var(--color-foreground)" }}>
         التقييمات والتعليقات ({filteredAndSortedReviews.length !== reviews.length ? `${filteredAndSortedReviews.length} من ${reviews.length}` : reviews.length})
       </h2>
 
@@ -327,7 +327,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
 
               </div>
               {review.comment && (
-                <p style={{ color: "var(--text-primary)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px", paddingRight: review.branches ? "4px" : "0" }}>
+                <p style={{ color: "var(--color-foreground)", fontSize: "0.95rem", lineHeight: "1.5", marginTop: "10px", paddingRight: review.branches ? "4px" : "0" }}>
                   {review.comment}
                 </p>
               )}

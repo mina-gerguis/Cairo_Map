@@ -1,7 +1,7 @@
 .pageShell {
   min-height: 100vh;
-  background-color: var(--bgPrimary);
-  color: var(--text-primary);
+  background-color: var(--color-bg);
+  color: var(--color-foreground);
   display: flex;
   flex-direction: column;
   padding-bottom: 50px;
@@ -9,7 +9,7 @@
 
 /* Header Banner - Metro Style */
 .headerBanner {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   padding: 24px 20px 24px;
   text-align: center;
   position: relative;
@@ -23,7 +23,7 @@
   font-family: var(--font-main);
   font-size: clamp(1.6rem, 5vw, 2.2rem);
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 10px;
   letter-spacing: -0.5px;
 }
@@ -102,7 +102,7 @@
 
 /* Search Card */
 .searchCard {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 20px;
@@ -151,7 +151,7 @@
 .featuredCard {
   display: flex;
   flex-direction: column;
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   overflow: hidden;
@@ -217,7 +217,7 @@
   font-weight: 800;
   line-height: 1.45;
   margin: 0 0 10px 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -275,7 +275,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
 }
 
@@ -286,7 +286,7 @@
 }
 
 .blogCard {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   overflow: hidden;
@@ -365,7 +365,7 @@
   font-weight: 700;
   line-height: 1.4;
   margin: 0 0 6px 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -422,7 +422,7 @@
 .loginPromptCard {
   text-align: center;
   padding: 45px 20px;
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   color: var(--text-secondary);
@@ -446,7 +446,7 @@
 .loginPromptCard h4 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 6px;
 }
 

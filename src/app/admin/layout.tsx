@@ -967,7 +967,7 @@ export default function AdminLayout({
                 {globalSearchQuery && (
                   <button
                     onClick={() => { setGlobalSearchQuery(""); setShowGlobalResults(false); }}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-textSecondary)", display: "flex", alignItems: "center" }}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-foregroundSecondary)", display: "flex", alignItems: "center" }}
                   >
                     <i className="bx bx-x" style={{ fontSize: "1.1rem" }} />
                   </button>

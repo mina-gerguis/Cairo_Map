@@ -84,7 +84,7 @@ export function RoadsReportModal({
           overflowY: "auto",
           padding: "24px",
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-          color: "var(--text-primary, #fff)",
+          color: "var(--color-foreground, #fff)",
         }}
       >
         {/* Header */}
@@ -115,7 +115,7 @@ export function RoadsReportModal({
               <i className="bx bx-error-alt" />
             </div>
             <div>
-              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                 إبلاغ عن تعديل أو مشكلة في الطريق
               </h3>
               <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-secondary)" }}>
@@ -186,7 +186,7 @@ export function RoadsReportModal({
                 borderRadius: "10px",
                 background: "var(--inputBg, rgba(15, 23, 42, 0.8))",
                 border: "1px solid var(--border-glass)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 outline: "none",
                 fontFamily: "inherit",
               }}
@@ -226,7 +226,7 @@ export function RoadsReportModal({
                   alignItems: "center",
                   gap: "8px",
                   fontSize: "0.82rem",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 <i className={opt.icon} style={{ color: problemType === opt.id ? "#60a5fa" : "var(--text-secondary)" }} />
@@ -249,7 +249,7 @@ export function RoadsReportModal({
               borderRadius: "10px",
               background: "var(--inputBg, rgba(15, 23, 42, 0.8))",
               border: "1px solid var(--border-glass)",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               outline: "none",
               fontFamily: "inherit",
               resize: "vertical",

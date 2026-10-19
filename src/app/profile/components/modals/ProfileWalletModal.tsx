@@ -92,8 +92,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
           maxWidth: "480px",
           width: "100%",
           padding: "24px 28px",
-          borderRadius: "16px",
-          background: "var(--bgPrimary)",
+          background: "var(--color-bg)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
@@ -133,8 +132,8 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               margin: 0,
               fontSize: "1.15rem",
               fontWeight: "700",
-              color: "var(--text-primary)",
-              fontFamily: "var(--font-heading)",
+              color: "var(--color-foreground)",
+              fontFamily: "var(--font-sub)",
             }}
           >
             {walletTab === "main" && "رصيد ماب القاهرة"}
@@ -162,7 +161,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontFamily: "var(--font-heading)",
                   fontSize: "2.4rem",
                   fontWeight: "700",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: "4px 0",
                 }}
               >
@@ -180,9 +179,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               className={clsx("glass-panel", styles.walletSubCard)}
               style={{
                 width: "100%",
-                background: "rgba(251, 191, 36, 0.08)",
-                border: "1px solid rgba(251, 191, 36, 0.28)",
-                borderRadius: "16px",
+                background: "var(--color-foreground)",
+                border: "1px solid var(--border-glass)",
+                borderRadius: "12px",
                 padding: "14px 18px",
                 cursor: onOpenPointsModal ? "pointer" : "default",
                 display: "flex",
@@ -194,12 +193,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               title={onOpenPointsModal ? "اضغط لعرض تفاصيل وتحويل النقاط" : "رصيد النقاط"}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <i className="bx bxs-coin" style={{ color: "#f59e0b", fontSize: "1.4rem" }}></i>
+                <i className="bx bxs-coin" style={{ color: "var(--color-bg)", fontSize: "1.4rem" }}></i>
                 <div>
-                  <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "#b38001" }}>
-                    رصيد النقاط
-                  </div>
-                  <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "#b38001" }}>
+                  <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-bg)" }}>
                     {formatNumber(profile?.points ?? 0)}{" "}
                     <span style={{ fontSize: "0.8rem", fontWeight: "600" }}>نقطة</span>
                   </div>
@@ -208,10 +204,10 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
 
               {onOpenPointsModal && (
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontWeight: "600" }}>
+                  <span style={{ fontSize: "0.78rem", color: "var(--color-bg)", fontWeight: "600" }}>
                     تحويل النقاط
                   </span>
-                  <i className="bx bx-chevron-left" style={{ color: "#b38001", fontSize: "1.2rem" }}></i>
+                  <i className="bx bx-chevron-left" style={{ color: "var(--color-bg)", fontSize: "1.2rem" }}></i>
                 </div>
               )}
             </div>
@@ -221,12 +217,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               <button
                 type="button"
                 onClick={() => setWalletTab("deposit")}
-                className={clsx("btn", styles.actionsButton)}
-                style={{
-                  background: "rgba(16, 185, 129, 0.1)",
-                  color: "#10b981",
-                  border: "1px solid rgba(16, 185, 129, 0.2)",
-                }}
+                className={clsx("btn", "btn-primary", styles.actionsButton)}
               >
                 <PiHandWithdrawBold style={{ fontSize: "1.1rem" }} />
                 إيداع
@@ -234,12 +225,8 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               <button
                 type="button"
                 onClick={() => setWalletTab("withdraw")}
-                className={clsx("btn", styles.actionsButton)}
-                style={{
-                  background: "rgba(239, 68, 68, 0.1)",
-                  color: "#f87171",
-                  border: "1px solid rgba(29, 26, 26, 0.2)",
-                }}
+                className={clsx("btn", "btn-secondary", styles.actionsButton)}
+
               >
                 <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
                 سحب
@@ -271,7 +258,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     margin: 0,
                     fontSize: "0.95rem",
                     fontWeight: "800",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     display: "flex",
                     alignItems: "center",
                     gap: "6px",
@@ -373,7 +360,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                               style={{
                                 fontSize: "0.82rem",
                                 fontWeight: "bold",
-                                color: "var(--text-primary)",
+                                color: "var(--color-foreground)",
                               }}
                             >
                               {tx.type === "deposit" ? "إيداع رصيد" : "سحب رصيد"}
@@ -415,14 +402,14 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                                 tx.status === "approved"
                                   ? "rgba(16, 185, 129, 0.1)"
                                   : tx.status === "rejected"
-                                  ? "rgba(239, 68, 68, 0.1)"
-                                  : "rgba(251, 191, 36, 0.1)",
+                                    ? "rgba(239, 68, 68, 0.1)"
+                                    : "rgba(251, 191, 36, 0.1)",
                               color:
                                 tx.status === "approved"
                                   ? "#10b981"
                                   : tx.status === "rejected"
-                                  ? "#f87171"
-                                  : "#fbbf24",
+                                    ? "#f87171"
+                                    : "#fbbf24",
                             }}
                           >
                             {tx.status === "pending" && "معلقة"}
@@ -456,36 +443,25 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                             الحساب/الرقم: <strong>{tx.provider_number}</strong>
                           </span>
                         )}
-                        {tx.transaction_id && (
-                          <span>
-                            رقم العملية: <strong>{tx.transaction_id}</strong>
-                          </span>
-                        )}
                       </div>
 
                       {tx.admin_notes &&
                         (tx.status === "rejected" ? (
                           <div
                             style={{
-                              background: "rgba(239, 68, 68, 0.05)",
-                              border: "1px solid rgba(239, 68, 68, 0.1)",
-                              borderRadius: "8px",
-                              padding: "8px 10px",
+                              padding: "8px",
                               fontSize: "0.72rem",
-                              color: "#f87171",
+                              color: "var(--color-error)",
                             }}
                           >
-                            <strong>تم رفض طلبك لأن</strong> {tx.admin_notes}
+                            <strong> تم رفض  طلب السحب بسبب وجود مشكلة في </strong> {tx.admin_notes}
                           </div>
                         ) : (
                           <div
                             style={{
-                              background: "rgba(59, 130, 246, 0.05)",
-                              border: "1px solid rgba(59, 130, 246, 0.1)",
-                              borderRadius: "8px",
-                              padding: "8px 10px",
+                              padding: "8px",
                               fontSize: "0.72rem",
-                              color: "#60a5fa",
+                              color: "var(--color-primary)",
                             }}
                           >
                             <strong>تم استخدام الرصيد في</strong> {tx.admin_notes}
@@ -508,20 +484,28 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
             {pendingTransactionsCount >= 2 && (
               <div
                 style={{
-                  background: "rgba(239, 68, 68, 0.08)",
-                  border: "1px solid rgba(239, 68, 68, 0.15)",
-                  borderRadius: "12px",
-                  padding: "12px 16px",
                   fontSize: "0.85rem",
-                  color: "#f87171",
+                  color: "var(--color-error)",
                   lineHeight: "1.6",
                   textAlign: "right",
                 }}
               >
-                <i className="bx bx-error" style={{ marginLeft: "8px", verticalAlign: "middle" }}></i>
-                <strong>تنبيه هام (الحد الأقصى للطلبات المعلقة):</strong> لديك حالياً{" "}
+                لديك حالياً{" "}
                 <strong>{pendingTransactionsCount}</strong> طلبات معلقة قيد المراجعة. لا يمكنك تقديم
                 طلب إيداع جديد حتى تقوم الإدارة بمراجعة طلباتك الحالية.
+              </div>
+            )}
+
+            {depositStatus && (
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  color: depositStatus.type === "success" ? "var(--color-success)" : "var(--color-error)",
+                }}
+              >
+                {depositStatus.text}
               </div>
             )}
             <div>
@@ -531,7 +515,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 طريقة الإيداع
@@ -565,9 +549,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               {depositMethod === "instapay" && (
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي: <br />
-                  العنوان: <strong style={{ color: "var(--text-primary)" }}>cairomap@instapay</strong>
+                  العنوان: <strong style={{ color: "var(--color-foreground)" }}>cairomap@instapay</strong>
                   <br />
-                  الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina G***** A</strong>
+                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina G***** A</strong>
                   <br />
                   الرابط السريع :{" "}
                   <a
@@ -585,18 +569,18 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بالتحويل عبر تطبيق تيلدا إلى التاج (Tag) التالي:
                   <br />
-                  التاج: <strong style={{ color: "var(--text-primary)" }}>@minagerguis</strong>
+                  التاج: <strong style={{ color: "var(--color-foreground)" }}>@minagerguis</strong>
                   <br />
-                  الاسم: <strong style={{ color: "var(--text-primary)" }}>Mina Gerguis</strong>
+                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerguis</strong>
                 </p>
               )}
               {depositMethod === "vodafone_cash" && (
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بتحويل رصيد كاش إلى رقم المحفظة التالي:
                   <br />
-                  الرقم: <strong style={{ color: "var(--text-primary)" }}>01020372317</strong>
+                  الرقم: <strong style={{ color: "var(--color-foreground)" }}>01020372317</strong>
                   <br />
-                  الاسم: <strong style={{ color: "var(--text-primary)" }}>مينا جرجس</strong>
+                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>مينا جرجس</strong>
                 </p>
               )}
               {depositMethod === "bank_transfer" && (
@@ -604,13 +588,13 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   قم بالتحويل البنكي المباشر للحساب التالي:
                   <br />
                   البنك:{" "}
-                  <strong style={{ color: "var(--text-primary)" }}>
+                  <strong style={{ color: "var(--color-foreground)" }}>
                     بنك قطر الوطني الأهلي (QNB)
                   </strong>
                   <br />
-                  رقم الحساب: <strong style={{ color: "var(--text-primary)" }}>1020670700235</strong>
+                  رقم الحساب: <strong style={{ color: "var(--color-foreground)" }}>1020670700235</strong>
                   <br />
-                  الاسم: <strong style={{ color: "var(--text-primary)" }}>مينا جرجس</strong>
+                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>مينا جرجس</strong>
                 </p>
               )}
             </div>
@@ -622,7 +606,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 المبلغ المراد شحنه (بالجنيه المصري)
@@ -647,7 +631,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 الرقم/الحساب الذي قمت بالتحويل منه
@@ -671,7 +655,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 إرفاق صورة إيصال التحويل
@@ -733,35 +717,12 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   lineHeight: "1.5",
                 }}
               >
-                **ملاحظات هامة:**
+                <strong>ملاحظات هامة:</strong>
                 <br />• يتم مراجعة طلبات الشحن يدوياً وسيتم شحن رصيدك في أقرب وقت ممكن.
                 <br />• تستغرق عملية الشحن من 5 دقائق إلى 24 ساعة.
                 <br />• في حالة وجود أي خطأ، يرجى التواصل مع الدعم
               </p>
             </div>
-
-            {depositStatus && (
-              <div
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: "10px",
-                  fontSize: "0.8rem",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  background:
-                    depositStatus.type === "success"
-                      ? "rgba(16, 185, 129, 0.12)"
-                      : "rgba(239, 68, 68, 0.12)",
-                  color: depositStatus.type === "success" ? "#10b981" : "#f87171",
-                  border:
-                    depositStatus.type === "success"
-                      ? "1px solid rgba(16, 185, 129, 0.2)"
-                      : "1px solid rgba(239, 68, 68, 0.2)",
-                }}
-              >
-                {depositStatus.text}
-              </div>
-            )}
 
             <button
               type="submit"
@@ -773,12 +734,12 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 fontSize: "0.9rem",
                 ...(pendingTransactionsCount >= 2
                   ? {
-                      opacity: 0.35,
-                      cursor: "not-allowed",
-                      background: "rgba(255, 255, 255, 0.05)",
-                      color: "var(--text-muted, #8e8e93)",
-                      borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))",
-                    }
+                    opacity: 0.35,
+                    cursor: "not-allowed",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    color: "var(--text-muted, #8e8e93)",
+                    borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))",
+                  }
                   : {}),
               }}
             >
@@ -789,8 +750,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 </>
               ) : (
                 <>
-                  <i className="fa-solid fa-cloud-arrow-up" style={{ marginLeft: "6px" }}></i>
-                  تأكيد
+                  تأكيد الأيداع
                 </>
               )}
             </button>
@@ -806,22 +766,31 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
             {pendingTransactionsCount >= 2 && (
               <div
                 style={{
-                  background: "rgba(239, 68, 68, 0.08)",
-                  border: "1px solid rgba(239, 68, 68, 0.15)",
-                  borderRadius: "12px",
-                  padding: "12px 16px",
                   fontSize: "0.85rem",
-                  color: "#f87171",
+                  color: "var(--color-error)",
                   lineHeight: "1.6",
                   textAlign: "right",
                 }}
               >
-                <i className="bx bx-error" style={{ marginLeft: "8px", verticalAlign: "middle" }}></i>
-                <strong>تنبيه هام (الحد الأقصى للطلبات المعلقة):</strong> لديك حالياً{" "}
+                لديك حالياً{" "}
                 <strong>{pendingTransactionsCount}</strong> طلبات معلقة قيد المراجعة. لا يمكنك تقديم
                 طلب سحب جديد حتى تقوم الإدارة بمراجعة طلباتك الحالية.
               </div>
             )}
+
+            {withdrawStatus && (
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  color: withdrawStatus.type === "success" ? "var(--color-success)" : "var(--color-error)",
+                }}
+              >
+                {withdrawStatus.text}
+              </div>
+            )}
+
             <div
               style={{
                 background: "rgba(255,255,255,0.03)",
@@ -835,7 +804,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               <span style={{ color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                 الرصيد المتاح للسحب
               </span>
-              <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "#10b981" }}>
+              <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "var(--color-foreground)" }}>
                 {formatNumber(profile?.balance ?? 0, 2)} ج.م
               </h4>
               <p style={{ margin: "6px 0 0 0", color: "var(--text-muted)", fontSize: "0.72rem" }}>
@@ -850,7 +819,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 طريقة استلام الرصيد
@@ -875,7 +844,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 المبلغ المراد سحبه (بالجنيه المصري)
@@ -900,7 +869,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 {withdrawMethod === "instapay" && "عنوان انستا باي المستلم (IPA)"}
@@ -915,10 +884,10 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   withdrawMethod === "instapay"
                     ? "مثال: name@instapay"
                     : withdrawMethod === "telda"
-                    ? "مثال: @username"
-                    : withdrawMethod === "vodafone_cash"
-                    ? "مثال: 010xxxxxxxx"
-                    : "أدخل رقم الحساب أو الآيبان كامل"
+                      ? "مثال: @username"
+                      : withdrawMethod === "vodafone_cash"
+                        ? "مثال: 010xxxxxxxx"
+                        : "أدخل رقم الحساب أو الآيبان كامل"
                 }
                 className="input-fields"
                 value={withdrawRecipient}
@@ -935,7 +904,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     fontSize: "0.85rem",
                     fontWeight: "bold",
                     marginBottom: "6px",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                   }}
                 >
                   اسم المستلم بالكامل (ثلاثي على الأقل)
@@ -952,29 +921,6 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               </div>
             )}
 
-            {withdrawStatus && (
-              <div
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: "10px",
-                  fontSize: "0.8rem",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  background:
-                    withdrawStatus.type === "success"
-                      ? "rgba(16, 185, 129, 0.12)"
-                      : "rgba(239, 68, 68, 0.12)",
-                  color: withdrawStatus.type === "success" ? "#10b981" : "#f87171",
-                  border:
-                    withdrawStatus.type === "success"
-                      ? "1px solid rgba(16, 185, 129, 0.2)"
-                      : "1px solid rgba(239, 68, 68, 0.2)",
-                }}
-              >
-                {withdrawStatus.text}
-              </div>
-            )}
-
             <button
               type="submit"
               disabled={isSubmittingWithdraw || pendingTransactionsCount >= 2}
@@ -985,16 +931,13 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 fontSize: "0.9rem",
                 ...(pendingTransactionsCount >= 2
                   ? {
-                      opacity: 0.35,
-                      cursor: "not-allowed",
-                      background: "rgba(255, 255, 255, 0.05)",
-                      color: "var(--text-muted, #8e8e93)",
-                      borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))",
-                    }
-                  : {
-                      background: "var(--color-primary)",
-                      borderColor: "var(--color-primary)",
-                    }),
+                    opacity: 0.35,
+                    cursor: "not-allowed !important",
+                    background: "rgba(0, 0, 0, 0.77)",
+                    color: "#fff",
+                    borderColor: "var(--border-glass, rgba(255, 255, 255, 0.1))",
+                  }
+                  : undefined),
               }}
             >
               {isSubmittingWithdraw ? (

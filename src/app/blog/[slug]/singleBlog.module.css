@@ -1,7 +1,7 @@
 .pageShell {
   min-height: 100vh;
-  background-color: var(--bgPrimary);
-  color: var(--text-primary);
+  background-color: var(--color-bg);
+  color: var(--color-foreground);
   display: flex;
   flex-direction: column;
   padding-bottom: 60px;
@@ -9,7 +9,7 @@
 
 /* Header Banner - Metro Style */
 .headerBanner {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   padding: 24px 20px 24px;
   text-align: center;
   position: relative;
@@ -48,13 +48,13 @@
 }
 
 .breadcrumb span {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 700;
 }
 
 /* Header Section */
 .articleHeader {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 24px;
@@ -82,7 +82,7 @@
   font-weight: 800;
   line-height: 1.4;
   margin: 0 0 16px 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
   letter-spacing: -0.3px;
   word-break: break-word;
@@ -117,7 +117,7 @@
   display: block;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-body);
 }
 
@@ -171,7 +171,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 14px 18px;
@@ -192,7 +192,7 @@
   border-radius: 10px;
   border: 1px solid var(--border-glass);
   background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
@@ -235,7 +235,7 @@
   border-radius: 10px;
   border: 1px solid var(--border-glass);
   background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,7 +266,7 @@
 
 /* Article Body Card Container */
 .articleCard {
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 28px 24px;
@@ -277,7 +277,7 @@
 .articleBody {
   font-size: 1rem;
   line-height: 1.85;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-body);
 }
 
@@ -285,7 +285,7 @@
   font-size: 1.35rem;
   font-weight: 800;
   margin: 1.8rem 0 1rem 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-right: 4px solid var(--color-secondary);
   padding-right: 10px;
   font-family: var(--font-display);
@@ -295,13 +295,13 @@
   font-size: 1.15rem;
   font-weight: 700;
   margin: 1.5rem 0 0.8rem 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
 }
 
 .articleBody p {
   margin-bottom: 1.2rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .articleBody ul,
@@ -312,7 +312,7 @@
 
 .articleBody li {
   margin-bottom: 0.4rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .articleBody blockquote {
@@ -376,7 +376,7 @@
 /* Comments Section */
 .commentsSection {
   margin-top: 28px;
-  background-color: var(--bgPrimary);
+  background-color: var(--color-bg);
   border: 1px solid var(--border-glass);
   border-radius: 15px;
   padding: 24px;
@@ -390,7 +390,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
 }
 
@@ -425,7 +425,7 @@
   border-radius: 12px;
   border: 1px solid var(--border-glass);
   background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.9rem;
   outline: none;
   resize: vertical;
@@ -537,7 +537,7 @@
 .commentAuthor {
   font-size: 0.86rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .commentTime {
@@ -557,7 +557,7 @@
 
 .commentBody {
   font-size: 0.88rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0;
   line-height: 1.5;
 }
@@ -582,7 +582,7 @@
 
 .errorBox h2 {
   font-size: 1.3rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 8px;
 }
 

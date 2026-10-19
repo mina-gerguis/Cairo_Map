@@ -41,7 +41,7 @@
 }
 
 .routeTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 800;
   font-size: 1.05rem;
   font-family: var(--font-sub);
@@ -192,4 +192,3 @@
     gap: 6px;
   }
 }
-

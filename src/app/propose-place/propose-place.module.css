@@ -20,23 +20,19 @@
   width: 100%;
   max-width: 900px;
   height: 420px;
-  background: radial-gradient(
-    ellipse 60% 50% at 50% 0%,
-    rgba(108, 99, 255, 0.2),
-    rgba(16, 185, 129, 0.08) 50%,
-    transparent 80%
-  );
+  background: radial-gradient(ellipse 60% 50% at 50% 0%,
+      rgba(108, 99, 255, 0.2),
+      rgba(16, 185, 129, 0.08) 50%,
+      transparent 80%);
   pointer-events: none;
   z-index: 0;
 }
 
 :global(html.light) .ambientGlow {
-  background: radial-gradient(
-    ellipse 60% 50% at 50% 0%,
-    rgba(108, 99, 255, 0.1),
-    rgba(16, 185, 129, 0.04) 50%,
-    transparent 80%
-  );
+  background: radial-gradient(ellipse 60% 50% at 50% 0%,
+      rgba(108, 99, 255, 0.1),
+      rgba(16, 185, 129, 0.04) 50%,
+      transparent 80%);
 }
 
 .contentContainer {
@@ -87,11 +83,13 @@
 }
 
 @keyframes pulseDot {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.35);
     opacity: 0.6;
@@ -309,7 +307,7 @@
 
 .pillBtn {
   background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
   padding: 6px 14px;
   border-radius: 999px;
@@ -510,7 +508,7 @@
 .successTitle {
   font-size: 1.55rem;
   font-weight: 900;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 12px;
   font-family: var(--font-sub, var(--font-almarai, sans-serif));
 }
@@ -547,7 +545,7 @@
 .historyTitle {
   font-size: 1.3rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -580,7 +578,7 @@
 
 .refreshBtn:hover {
   background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 :global(html.light) .refreshBtn {
@@ -658,7 +656,7 @@
   font-size: 1.1rem;
   font-weight: 800;
   margin: 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub, var(--font-almarai, sans-serif));
 }
 
@@ -725,7 +723,7 @@
   padding: 8px 12px;
   border-radius: 10px;
   font-size: 0.83rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-top: 8px;
 }
 

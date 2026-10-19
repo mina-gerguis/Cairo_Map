@@ -270,7 +270,7 @@ export default function MetroInterchangeGuide({
                       background: isSelected
                         ? "rgba(59, 130, 246, 0.16)"
                         : "rgba(255, 255, 255, 0.03)",
-                      color: isSelected ? "var(--text-primary)" : "var(--text-secondary)",
+                      color: isSelected ? "var(--color-foreground)" : "var(--text-secondary)",
                       whiteSpace: "nowrap",
                       transition: "all 0.2s ease",
                     }}
@@ -318,7 +318,7 @@ export default function MetroInterchangeGuide({
                   style={{
                     fontSize: "1.1rem",
                     fontWeight: "800",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     margin: 0,
                     fontFamily: "var(--font-sub, inherit)",
                     display: "flex",
@@ -379,7 +379,7 @@ export default function MetroInterchangeGuide({
                 <i className="fa-regular fa-clock" style={{ color: "#3b82f6", fontSize: "1rem" }}></i>
                 <div>
                   <div style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>زمن التحويل التقديري</div>
-                  <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                  <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                     {activeStation.estTime}
                   </div>
                 </div>
@@ -389,7 +389,7 @@ export default function MetroInterchangeGuide({
                 <i className="fa-solid fa-wheelchair" style={{ color: "#10b981", fontSize: "1rem" }}></i>
                 <div>
                   <div style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>المصاعد والسلالم الكهربائية</div>
-                  <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                  <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                     {activeStation.hasElevator ? "متوفرة بالكامل" : "سلالم عادية"}
                   </div>
                 </div>
@@ -400,7 +400,7 @@ export default function MetroInterchangeGuide({
                   <i className="fa-solid fa-bus-simple" style={{ color: "#f59e0b", fontSize: "1rem" }}></i>
                   <div>
                     <div style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>الربط بوسائل النقل الأخرى</div>
-                    <div style={{ fontSize: "0.76rem", fontWeight: "700", color: "var(--text-primary)", lineHeight: 1.3 }}>
+                    <div style={{ fontSize: "0.76rem", fontWeight: "700", color: "var(--color-foreground)", lineHeight: 1.3 }}>
                       {activeStation.externalHub}
                     </div>
                   </div>
@@ -414,7 +414,7 @@ export default function MetroInterchangeGuide({
                 style={{
                   fontSize: "0.88rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   margin: "0 0 10px 0",
                   display: "flex",
                   alignItems: "center",
@@ -458,7 +458,7 @@ export default function MetroInterchangeGuide({
                     >
                       {idx + 1}
                     </span>
-                    <span style={{ fontSize: "0.82rem", color: "var(--text-primary)", lineHeight: 1.5 }}>
+                    <span style={{ fontSize: "0.82rem", color: "var(--color-foreground)", lineHeight: 1.5 }}>
                       {step}
                     </span>
                   </div>
@@ -528,7 +528,7 @@ export default function MetroInterchangeGuide({
               <i className="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div>
-              <h4 style={{ margin: 0, fontSize: "0.9rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h4 style={{ margin: 0, fontSize: "0.9rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 القاعدة الأهم: إياك وتمرير تذكرتك في بوابات الخروج!
               </h4>
               <p style={{ margin: "4px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
@@ -565,7 +565,7 @@ export default function MetroInterchangeGuide({
                   الأسهل والأسرع
                 </span>
               </div>
-              <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 1. محطات الرصيف الجزيرة (الأوسط)
               </h4>
               <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -581,7 +581,7 @@ export default function MetroInterchangeGuide({
                   lineHeight: 1.5,
                 }}
               >
-                <strong style={{ color: "var(--text-primary)" }}>طريقة التبديل:</strong> انزل من القطار والتفت للجانب المقابل من نفس الرصيف، واركب القطار المتجه للاتجاه المعاكس فوراً دون صعود أو نزول أي سلالم!
+                <strong style={{ color: "var(--color-foreground)" }}>طريقة التبديل:</strong> انزل من القطار والتفت للجانب المقابل من نفس الرصيف، واركب القطار المتجه للاتجاه المعاكس فوراً دون صعود أو نزول أي سلالم!
               </div>
             </div>
 
@@ -611,7 +611,7 @@ export default function MetroInterchangeGuide({
                   الأكثر شيوعاً
                 </span>
               </div>
-              <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 2. المحطات النفقية والعلوية (الرصيفان الجانبيان)
               </h4>
               <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -627,7 +627,7 @@ export default function MetroInterchangeGuide({
                   lineHeight: 1.5,
                 }}
               >
-                <strong style={{ color: "var(--text-primary)" }}>طريقة التبديل:</strong> اصعد بالسلم أو المصعد لصالة التوزيع العلوية، وسر للممر المقابل وانزل بالسلم المؤدي للرصيف المعاكس (كل هذا قبل ماكينات الخروج).
+                <strong style={{ color: "var(--color-foreground)" }}>طريقة التبديل:</strong> اصعد بالسلم أو المصعد لصالة التوزيع العلوية، وسر للممر المقابل وانزل بالسلم المؤدي للرصيف المعاكس (كل هذا قبل ماكينات الخروج).
               </div>
             </div>
 
@@ -657,7 +657,7 @@ export default function MetroInterchangeGuide({
                   المحطات السطحية
                 </span>
               </div>
-              <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--text-primary)" }}>
+              <h4 style={{ margin: 0, fontSize: "0.95rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                 3. المحطات السطحية المكشوفة (الخط الأول)
               </h4>
               <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-muted)" }}>
@@ -673,7 +673,7 @@ export default function MetroInterchangeGuide({
                   lineHeight: 1.5,
                 }}
               >
-                <strong style={{ color: "var(--text-primary)" }}>طريقة التبديل:</strong> استخدم كوبري المشاة الداخلي العلوي أو النفق السفلي المشيد فوق/أسفل السكة للانتقال بين الرصيفين بأمان تام.
+                <strong style={{ color: "var(--color-foreground)" }}>طريقة التبديل:</strong> استخدم كوبري المشاة الداخلي العلوي أو النفق السفلي المشيد فوق/أسفل السكة للانتقال بين الرصيفين بأمان تام.
               </div>
             </div>
           </div>
@@ -695,7 +695,7 @@ export default function MetroInterchangeGuide({
           >
             <i className="fa-solid fa-user-shield" style={{ color: "var(--color-secondary, #3b82f6)", fontSize: "1.1rem" }}></i>
             <div>
-              <strong style={{ color: "var(--text-primary)" }}>ماذا لو دخلت صالة رصيف منفصل بالخطأ من الشارع؟</strong> في بعض المحطات السطحية النادرة ذات المداخل المنفصلة، لا تقطع تذكرة جديدة؛ توجه لناظر المحطة أو أفراد الأمن عند البوابة لتسهيل عبورك للرصيف المقابل.
+              <strong style={{ color: "var(--color-foreground)" }}>ماذا لو دخلت صالة رصيف منفصل بالخطأ من الشارع؟</strong> في بعض المحطات السطحية النادرة ذات المداخل المنفصلة، لا تقطع تذكرة جديدة؛ توجه لناظر المحطة أو أفراد الأمن عند البوابة لتسهيل عبورك للرصيف المقابل.
             </div>
           </div>
         </div>
@@ -721,7 +721,7 @@ export default function MetroInterchangeGuide({
             >
               <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#10b981" }}>
                 <i className="fa-solid fa-code-branch" style={{ fontSize: "1.1rem" }}></i>
-                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                   كيف تتعامل مع تفريعة الخط الثالث بعد الكيت كات؟
                 </h4>
               </div>
@@ -742,7 +742,7 @@ export default function MetroInterchangeGuide({
                   padding: "8px 10px",
                   borderRadius: "8px",
                   fontSize: "0.76rem",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 💡 <strong>الحل السريع:</strong> انظر للشاشة الإلكترونية على مقدمة القطار. إذا ركبت قطار فرع بالخطأ، انزل في محطة <strong>الكيت كات</strong> وانتظر القطار التالي للفرع الآخر.
@@ -763,7 +763,7 @@ export default function MetroInterchangeGuide({
             >
               <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#3b82f6" }}>
                 <i className="fa-solid fa-ticket" style={{ fontSize: "1.1rem" }}></i>
-                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                   تذكرة واحدة تشمل كافة التحويلات
                 </h4>
               </div>
@@ -776,7 +776,7 @@ export default function MetroInterchangeGuide({
                   padding: "8px 10px",
                   borderRadius: "8px",
                   fontSize: "0.76rem",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 ⏱️ صلاحية التذكرة تبدأ من لحظة المرور من بوابات الدخول وتكفي لإتمام رحلتك والتحويلات براحة تامة.
@@ -797,7 +797,7 @@ export default function MetroInterchangeGuide({
             >
               <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#ec4899" }}>
                 <i className="fa-solid fa-person-dress" style={{ fontSize: "1.1rem" }}></i>
-                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                   أماكن عربات السيدات على الأرصفة
                 </h4>
               </div>
@@ -814,7 +814,7 @@ export default function MetroInterchangeGuide({
                   padding: "8px 10px",
                   borderRadius: "8px",
                   fontSize: "0.76rem",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 📍 تجدين لافتات وعلامات أرضية وردية واضحة في منتصف الرصيف تحدد موضع توقف أبواب عربات السيدات.
@@ -835,7 +835,7 @@ export default function MetroInterchangeGuide({
             >
               <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#f59e0b" }}>
                 <i className="fa-solid fa-signs-post" style={{ fontSize: "1.1rem" }}></i>
-                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: 0, fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                   دلالات الألوان الإرشادية في المحطات
                 </h4>
               </div>

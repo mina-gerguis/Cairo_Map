@@ -681,7 +681,7 @@ export default function AdminSubscriptionsPage() {
     return (
       <div className={styles.adminAccessDenied}>
         <i className="bx bx-lock-alt" style={{ fontSize: "4rem", color: "var(--accent-red)" }} />
-        <h2 style={{ marginTop: "16px", color: "var(--text-primary)" }}>عفواً، الدخول غير مصرح به</h2>
+        <h2 style={{ marginTop: "16px", color: "var(--color-foreground)" }}>عفواً، الدخول غير مصرح به</h2>
         <p style={{ color: "var(--text-secondary)" }}>هذه الصفحة مخصصة لمديري النظام فقط.</p>
         <button onClick={() => router.push("/")} className={styles.backBtn} style={{ marginTop: "16px" }}>
           العودة للرئيسية
@@ -1010,7 +1010,7 @@ export default function AdminSubscriptionsPage() {
                     </div>
 
                     <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "14px", marginTop: "14px" }}>
-                      <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.88rem", marginBottom: "10px" }}>
+                      <div style={{ fontWeight: "800", color: "var(--color-foreground)", fontSize: "0.88rem", marginBottom: "10px" }}>
                         المزايا والمواصفات:
                       </div>
                       {p.features && p.features.length > 0 ? (
@@ -1046,7 +1046,7 @@ export default function AdminSubscriptionsPage() {
       {/* ── TAB 3: Promotions & Offers Manager (العروض والخصومات) ── */}
       {activeTab === "promotions" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-          
+
           {/* SECTION A: Automatic Free Trial for New Signups */}
           <div className={styles.subPanelCard} style={{ position: "relative", overflow: "hidden" }}>
             <div
@@ -1296,7 +1296,7 @@ export default function AdminSubscriptionsPage() {
             ) : openOffers.length === 0 ? (
               <div className={styles.adsEmptyState} style={{ padding: "40px 20px" }}>
                 <i className="bx bx-lock-open" style={{ fontSize: "3rem", marginBottom: "10px", opacity: 0.4 }} />
-                <h4 style={{ margin: "0 0 6px", color: "var(--text-primary)" }}>لا توجد عروض فتح مؤقتة حالياً</h4>
+                <h4 style={{ margin: "0 0 6px", color: "var(--color-foreground)" }}>لا توجد عروض فتح مؤقتة حالياً</h4>
                 <p style={{ margin: 0, color: "var(--text-secondary)", fontSize: "0.88rem" }}>
                   يمكنك النقر على زر &quot;إضافة عرض فتح صفحة&quot; لإتاحة أي خدمة مجاناً لفترة محددة.
                 </p>
@@ -1322,7 +1322,7 @@ export default function AdminSubscriptionsPage() {
                       return (
                         <tr key={offer.id} className={styles.adminTr}>
                           <td className={styles.adminTd}>
-                            <div style={{ fontWeight: "700", color: "var(--text-primary)" }}>{offer.title}</div>
+                            <div style={{ fontWeight: "700", color: "var(--color-foreground)" }}>{offer.title}</div>
                             {offer.banner_message && (
                               <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginTop: "2px", maxWidth: "280px" }}>
                                 {offer.banner_message}
@@ -1698,7 +1698,7 @@ export default function AdminSubscriptionsPage() {
 
             <form onSubmit={handleSaveUserSubscription} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 
-              <div style={{ background: "var(--bg-glass-card)", padding: "12px 16px", borderRadius: "12px", fontSize: "0.85rem", border: "1px solid var(--border-glass)", color: "var(--text-primary)" }}>
+              <div style={{ background: "var(--bg-glass-card)", padding: "12px 16px", borderRadius: "12px", fontSize: "0.85rem", border: "1px solid var(--border-glass)", color: "var(--color-foreground)" }}>
                 <div>اسم المستخدم: <strong>@{selectedUser.username || "بدون_يوزر"}</strong></div>
                 <div>الهاتف: <strong>{selectedUser.phone || "غير متوفر"}</strong></div>
                 <div>البريد: <strong>{selectedUser.email || "غير متوفر"}</strong></div>

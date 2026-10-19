@@ -90,7 +90,7 @@ html.light {
 .lock-title-subscribe {
     font-size: 1.6rem;
     font-weight: 800;
-    color: var(--text-primary);
+    color: var(--color-foreground);
     margin-bottom: 14px;
 }
 
@@ -117,7 +117,7 @@ html.light {
 
 .lock-perks-title {
     font-weight: 800;
-    color: var(--text-primary);
+    color: var(--color-foreground);
     font-size: 0.9rem;
     margin-bottom: 10px;
     display: flex;
@@ -159,38 +159,34 @@ html.light {
 
 /* Ambient Radial Glow in the background */
 .ambient-glow {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 900px;
-  height: 400px;
-  background: radial-gradient(
-    ellipse 60% 50% at 50% 0%,
-    rgba(59, 130, 246, 0.2),
-    rgba(16, 185, 129, 0.06) 50%,
-    transparent 80%
-  );
-  pointer-events: none;
-  z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 900px;
+    height: 400px;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%,
+            rgba(59, 130, 246, 0.2),
+            rgba(16, 185, 129, 0.06) 50%,
+            transparent 80%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 html.light .ambient-glow {
-  background: radial-gradient(
-    ellipse 60% 50% at 50% 0%,
-    rgba(59, 130, 246, 0.1),
-    rgba(16, 185, 129, 0.03) 50%,
-    transparent 80%
-  );
+    background: radial-gradient(ellipse 60% 50% at 50% 0%,
+            rgba(59, 130, 246, 0.1),
+            rgba(16, 185, 129, 0.03) 50%,
+            transparent 80%);
 }
 
 .content-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 var(--pd-16);
-  position: relative;
-  z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--pd-16);
+    position: relative;
+    z-index: 1;
 }
 
 /* ============================================================

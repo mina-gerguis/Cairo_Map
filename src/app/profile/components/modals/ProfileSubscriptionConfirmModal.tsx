@@ -37,7 +37,7 @@ export const ProfileSubscriptionConfirmModal: React.FC<ProfileSubscriptionConfir
           width: "90%",
           padding: "28px 24px",
           borderRadius: "20px",
-          background: "var(--bgPrimary)",
+          background: "var(--color-bg)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
@@ -74,7 +74,7 @@ export const ProfileSubscriptionConfirmModal: React.FC<ProfileSubscriptionConfir
             margin: "0 0 12px",
             fontSize: "1.25rem",
             fontWeight: "700",
-            color: "var(--text-primary)",
+            color: "var(--color-foreground)",
             fontFamily: "var(--font-cairo)",
           }}
         >

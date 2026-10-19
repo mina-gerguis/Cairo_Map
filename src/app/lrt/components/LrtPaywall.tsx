@@ -14,14 +14,14 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
         style={{
           minHeight: "100vh",
           paddingBottom: "50px",
-          backgroundColor: "var(--bgPrimary)",
+          backgroundColor: "var(--color-bg)",
         }}
       >
         {/* Banner matching Metro Cover Style */}
         <div
           className="metro-animate-fade"
           style={{
-            backgroundColor: "var(--bgPrimary)",
+            backgroundColor: "var(--color-bg)",
             padding: "24px 20px 24px",
             textAlign: "center",
             position: "relative",
@@ -42,7 +42,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
                 borderRadius: "50%",
                 background: "var(--bg-glass)",
                 border: "1px solid var(--border-glass)",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 textDecoration: "none",
               }}
             >
@@ -58,7 +58,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
                 justifyContent: "center",
                 fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
                 fontWeight: "600",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 letterSpacing: "-0.5px",
               }}
             >
@@ -98,7 +98,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
           <div
             className="metro-animate-slide-up metro-delay-200"
             style={{
-              backgroundColor: "var(--bgPrimary)",
+              backgroundColor: "var(--color-bg)",
               border: "1px solid var(--border-glass)",
               borderRadius: "15px",
               padding: "35px 25px",
@@ -124,7 +124,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
               style={{
                 fontSize: "1.6rem",
                 fontWeight: "800",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 marginBottom: "14px",
               }}
             >
@@ -160,7 +160,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
               <div
                 style={{
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   fontSize: "0.92rem",
                   marginBottom: "10px",
                 }}

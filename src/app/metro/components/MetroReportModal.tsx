@@ -63,7 +63,7 @@ export default function MetroReportModal({
       <div
         ref={modalBoxRef}
         style={{
-          backgroundColor: "var(--bgPrimary)",
+          backgroundColor: "var(--color-bg)",
           borderRadius: "var(--radius-card)",
           border: "1px solid var(--border-glass)",
           width: "100%",
@@ -92,7 +92,7 @@ export default function MetroReportModal({
               margin: 0,
               fontSize: "1.05rem",
               fontWeight: "800",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               display: "flex",
               alignItems: "center",
               gap: "8px",
@@ -136,7 +136,7 @@ export default function MetroReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.15rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تم استلام بلاغك بنجاح!
@@ -191,7 +191,7 @@ export default function MetroReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.1rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تم الوصول للحد الأقصى من البلاغات المعلقة
@@ -238,7 +238,7 @@ export default function MetroReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.1rem",
                   fontWeight: "800",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                 }}
               >
                 تسجيل الدخول مطلوب
@@ -268,7 +268,7 @@ export default function MetroReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "8px",
                   }}
                 >
@@ -295,8 +295,8 @@ export default function MetroReportModal({
                       padding: "8px 4px",
                       borderRadius: "8px",
                       border: "none",
-                      background: targetScope === "general" ? "var(--text-primary)" : "transparent",
-                      color: targetScope === "general" ? "var(--bgMode)" : "var(--text-primary)",
+                      background: targetScope === "general" ? "var(--color-foreground)" : "transparent",
+                      color: targetScope === "general" ? "var(--bgMode)" : "var(--color-foreground)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
                       cursor: "pointer",
@@ -316,8 +316,8 @@ export default function MetroReportModal({
                       padding: "8px 4px",
                       borderRadius: "8px",
                       border: "none",
-                      background: targetScope === "station" ? "var(--text-primary)" : "transparent",
-                      color: targetScope === "station" ? "var(--bgMode)" : "var(--text-primary)",
+                      background: targetScope === "station" ? "var(--color-foreground)" : "transparent",
+                      color: targetScope === "station" ? "var(--bgMode)" : "var(--color-foreground)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
                       cursor: "pointer",
@@ -340,8 +340,8 @@ export default function MetroReportModal({
                         padding: "8px 4px",
                         borderRadius: "8px",
                         border: "none",
-                        background: targetScope === "route" ? "var(--text-primary)" : "transparent",
-                        color: targetScope === "route" ? "var(--bgMode)" : "var(--text-primary)",
+                        background: targetScope === "route" ? "var(--color-foreground)" : "transparent",
+                        color: targetScope === "route" ? "var(--bgMode)" : "var(--color-foreground)",
                         fontWeight: "700",
                         fontSize: "0.8rem",
                         cursor: "pointer",
@@ -364,7 +364,7 @@ export default function MetroReportModal({
                       alignItems: "center",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       marginBottom: "6px",
                     }}
                   >
@@ -396,9 +396,9 @@ export default function MetroReportModal({
                         padding: "10px 36px 10px 36px",
                         borderRadius: "10px",
                         background: "var(--bg-secondary)",
-                        color: "var(--text-primary)",
+                        color: "var(--color-foreground)",
                         border: selectedStation
-                          ? `1px solid var(--text-primary)`
+                          ? `1px solid var(--color-foreground)`
                           : "1px solid var(--border-glass)",
                         fontSize: "0.9rem",
                         direction: "rtl",
@@ -534,7 +534,7 @@ export default function MetroReportModal({
                                     fontWeight: isSelected ? "700" : "600",
                                     color: isSelected
                                       ? "var(--color-secondary)"
-                                      : "var(--text-primary)",
+                                      : "var(--color-foreground)",
                                   }}
                                 >
                                   {st.name}
@@ -574,7 +574,7 @@ export default function MetroReportModal({
                                   <span
                                     style={{
                                       fontSize: "0.78rem",
-                                      color: "var(--colorSuccess)",
+                                      color: "var(--color-success)",
                                       fontWeight: "700",
                                     }}
                                   >
@@ -600,7 +600,7 @@ export default function MetroReportModal({
                     background: "rgba(59, 130, 246, 0.06)",
                     border: "1px solid rgba(59, 130, 246, 0.2)",
                     fontSize: "0.84rem",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     lineHeight: "1.6",
                   }}
                 >
@@ -626,7 +626,7 @@ export default function MetroReportModal({
                     alignItems: "center",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -647,9 +647,9 @@ export default function MetroReportModal({
                         padding: "9px 12px",
                         borderRadius: "var(--radius-card)",
                         background: "var(--bg-secondary)",
-                        color: "var(--text-primary)",
+                        color: "var(--color-foreground)",
                         border: showProblemTypeDropdown
-                          ? `1px solid var(--text-primary)`
+                          ? `1px solid var(--color-foreground)`
                           : "1px solid var(--border-glass)",
                         display: "flex",
                         alignItems: "center",
@@ -666,7 +666,7 @@ export default function MetroReportModal({
                             style={{
                               fontSize: "0.86rem",
                               fontWeight: "700",
-                              color: "var(--text-primary)",
+                              color: "var(--color-foreground)",
                               whiteSpace: "nowrap",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
@@ -741,7 +741,7 @@ export default function MetroReportModal({
                             alignItems: "center",
                             justifyContent: "space-between",
                             gap: "10px",
-                            background: isSelected ? "var(--bgPrimary)" : "transparent",
+                            background: isSelected ? "var(--color-bg)" : "transparent",
                             border: isSelected
                               ? `1px solid var(--border-primary)`
                               : "1px solid transparent",
@@ -768,7 +768,7 @@ export default function MetroReportModal({
                                 style={{
                                   fontSize: "0.84rem",
                                   fontWeight: isSelected ? "800" : "600",
-                                  color: "var(--text-primary)",
+                                  color: "var(--color-foreground)",
                                 }}
                               >
                                 {opt.title}
@@ -792,7 +792,7 @@ export default function MetroReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -810,7 +810,7 @@ export default function MetroReportModal({
                     padding: "12px",
                     borderRadius: "10px",
                     background: "var(--bg-secondary)",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-body)",
                     fontSize: "0.9rem",
@@ -828,7 +828,7 @@ export default function MetroReportModal({
                     alignItems: "center",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     marginBottom: "6px",
                   }}
                 >
@@ -924,7 +924,7 @@ export default function MetroReportModal({
                         style={{
                           fontSize: "0.88rem",
                           fontWeight: "700",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           marginBottom: "3px",
                         }}
                       >
@@ -978,7 +978,7 @@ export default function MetroReportModal({
                         style={{
                           fontSize: "0.86rem",
                           fontWeight: "700",
-                          color: "var(--text-primary)",
+                          color: "var(--color-foreground)",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",

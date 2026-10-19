@@ -16,7 +16,7 @@ export default function PlaceTitleSection({
           fontFamily: "var(--font-cairo)",
           fontSize: "1.8rem",
           fontWeight: "800",
-          color: "var(--text-primary)",
+          color: "var(--color-foreground)",
           margin: "0 0 6px",
         }}
       >
@@ -63,7 +63,7 @@ export default function PlaceTitleSection({
         {currentDistance !== null && (
           <>
             <span>•</span>
-            <span style={{ color: "var(--colorSuccess)", fontWeight: "600" }}>
+            <span style={{ color: "var(--color-success)", fontWeight: "600" }}>
               تبعد{" "}
               {currentDistance < 1
                 ? `${Math.round(currentDistance * 1000)} متر`

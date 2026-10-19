@@ -81,17 +81,17 @@ export default function RouteNotFoundCard({
           >
             📭
           </div>
-          <h2 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--text-primary)", margin: "6px 0 0", fontFamily: "var(--font-sub)" }}>
+          <h2 style={{ fontSize: "1.2rem", fontWeight: "800", color: "var(--color-foreground)", margin: "6px 0 0", fontFamily: "var(--font-sub)" }}>
             لا يوجد مسار مباشر مسجل حالياً
           </h2>
           <p style={{ color: "var(--text-secondary)", fontSize: "0.88rem", maxWidth: "480px", margin: "0 auto", lineHeight: "1.6" }}>
-            عذراً، لم نقم بعد بإضافة المسار المباشر من <strong style={{ color: "var(--text-primary)" }}>{fromInput}</strong> إلى <strong style={{ color: "var(--text-primary)" }}>{toInput}</strong>.
+            عذراً، لم نقم بعد بإضافة المسار المباشر من <strong style={{ color: "var(--color-foreground)" }}>{fromInput}</strong> إلى <strong style={{ color: "var(--color-foreground)" }}>{toInput}</strong>.
           </p>
         </div>
 
         {/* Suggest Route Form */}
         <div style={{ borderTop: "1px solid var(--border-glass)", paddingTop: "18px", textAlign: "right", marginTop: "4px" }}>
-          <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "4px", fontFamily: "var(--font-sub)" }}>
+          <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "var(--color-foreground)", marginBottom: "4px", fontFamily: "var(--font-sub)" }}>
             هل تعرف كيف تذهب؟ ساعدنا في إضافته!
           </h3>
           <p style={{ fontSize: "0.82rem", color: "var(--text-secondary)", marginBottom: "12px" }}>

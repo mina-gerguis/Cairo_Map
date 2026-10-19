@@ -637,7 +637,7 @@ export function IncomingReportsCard({
           <div className={styles.structuredDetailsGrid}>
             <div className={styles.detailRow}>
               <span className={styles.detailLabel}>نوع المشكلة:</span>
-              <span style={{ color: "var(--text-primary)", fontWeight: 700 }}>
+              <span style={{ color: "var(--color-foreground)", fontWeight: 700 }}>
                 {getPlaceProblemLabel(item.problem_type || "", item.details)}
               </span>
             </div>
@@ -759,7 +759,7 @@ export function IncomingReportsCard({
             style={{
               margin: 0,
               fontSize: "0.88rem",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               lineHeight: "1.5",
               whiteSpace: "pre-line",
             }}
@@ -787,7 +787,7 @@ export function IncomingReportsCard({
                 gap: "10px",
               }}
             >
-              <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--text-primary)" }}>
+              <div style={{ fontSize: "0.84rem", fontWeight: "700", color: "var(--color-foreground)" }}>
                 إجراءات مكان « {item.place_name} »:
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
@@ -798,7 +798,7 @@ export function IncomingReportsCard({
                     style={{
                       background: "var(--bg-secondary)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       padding: "6px 12px",
                       borderRadius: "8px",
                       fontSize: "0.8rem",
@@ -954,7 +954,7 @@ export function IncomingReportsCard({
                   borderRadius: "10px",
                   background: "rgba(0, 0, 0, 0.15)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--text-primary)",
+                  color: "var(--color-foreground)",
                   fontSize: "0.86rem",
                   resize: "vertical",
                   outline: "none",

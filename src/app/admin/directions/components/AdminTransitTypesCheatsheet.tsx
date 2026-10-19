@@ -266,7 +266,7 @@ export function AdminTransitTypesCheatsheet({ isModal, onClose }: AdminTransitTy
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "2px", flex: 1, minWidth: 0 }}>
-                <span style={{ fontWeight: "800", fontSize: "0.92rem", color: "var(--text-primary)" }}>
+                <span style={{ fontWeight: "800", fontSize: "0.92rem", color: "var(--color-foreground)" }}>
                   {item.arabicName}
                 </span>
                 <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
@@ -339,7 +339,7 @@ export function AdminTransitTypesCheatsheet({ isModal, onClose }: AdminTransitTy
                       padding: "2px 6px",
                       borderRadius: "6px",
                       fontSize: "0.73rem",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                       cursor: "pointer",
                       display: "inline-flex",
                       alignItems: "center",
@@ -392,7 +392,7 @@ export function AdminTransitTypesCheatsheet({ isModal, onClose }: AdminTransitTy
           flexDirection: "column",
           gap: "18px",
           boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5)",
-          color: "var(--text-primary)",
+          color: "var(--color-foreground)",
           overflow: "hidden"
         }}
         onClick={(e) => e.stopPropagation()}

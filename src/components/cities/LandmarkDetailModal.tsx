@@ -295,20 +295,20 @@ export default function LandmarkDetailModal({
         }
 
         .landmark-modal-shell {
-          background-color: var(--bgPrimary);
-          color: var(--text-primary);
+          background-color: var(--color-bg);
+          color: var(--color-foreground);
           border: 1px solid var(--border-color);
         }
 
         .landmark-modal-topbar {
-          background: var(--bgPrimary);
+          background: var(--color-bg);
           border-bottom: 1px solid var(--border-color);
         }
 
         .landmark-modal-btn {
-          background: var(--bgPrimary);
+          background: var(--color-bg);
           border: 1px solid var(--border-color);
-          color: var(--text-primary);
+          color: var(--color-foreground);
         }
 
         .landmark-modal-card {
@@ -324,7 +324,7 @@ export default function LandmarkDetailModal({
         }
 
         .landmark-modal-text-primary {
-          color: var(--text-primary);
+          color: var(--color-foreground);
         }
 
         .landmark-modal-textSecondary {
@@ -435,7 +435,7 @@ export default function LandmarkDetailModal({
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: isFav ? "#ef4444" : "var(--text-primary)",
+                      color: isFav ? "#ef4444" : "var(--color-foreground)",
                       width: "40px",
                       height: "40px",
                       display: "flex",
@@ -532,7 +532,7 @@ export default function LandmarkDetailModal({
                     fontSize: "1.1rem",
                     fontWeight: "700",
                     marginBottom: "20px",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
@@ -595,7 +595,7 @@ export default function LandmarkDetailModal({
                 marginBottom: "24px",
               }}
             >
-              <h2 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "8px", color: "var(--text-primary)" }}>
+              <h2 style={{ fontSize: "1.1rem", fontWeight: "700", marginBottom: "8px", color: "var(--color-foreground)" }}>
                 وصف المكان
               </h2>
               <p className="landmark-modal-textSecondary sub-title" style={{ fontSize: "0.98rem", lineHeight: "1.8", margin: 0 }}>
@@ -617,7 +617,7 @@ export default function LandmarkDetailModal({
                     fontSize: "1.1rem",
                     fontWeight: "700",
                     marginBottom: "14px",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
@@ -703,7 +703,7 @@ export default function LandmarkDetailModal({
                             style={{
                               fontSize: "0.68rem",
                               fontWeight: "700",
-                              color: "var(--text-primary)",
+                              color: "var(--color-foreground)",
                               lineHeight: "1.3",
                             }}
                           >
@@ -752,7 +752,7 @@ export default function LandmarkDetailModal({
                     fontSize: "1.1rem",
                     fontWeight: "700",
                     marginBottom: "14px",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",

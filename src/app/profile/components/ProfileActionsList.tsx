@@ -562,8 +562,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                           <div className={styles.notifItemBody}>
                             <h5
                               className={`${styles.notifItemTitle} ${notif.is_read
-                                  ? styles.notifItemTitleRead
-                                  : styles.notifItemTitleUnread
+                                ? styles.notifItemTitleRead
+                                : styles.notifItemTitleUnread
                                 }`}
                             >
                               {notif.title}
@@ -800,7 +800,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                               }}
                             >
                               <strong
-                                style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}
+                                style={{ fontSize: "0.95rem", color: "var(--color-foreground)" }}
                               >
                                 {prop.name}
                               </strong>
@@ -909,7 +909,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                               }}
                             >
                               <strong
-                                style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}
+                                style={{ fontSize: "0.95rem", color: "var(--color-foreground)" }}
                               >
                                 {report.place_name}
                               </strong>
@@ -1018,7 +1018,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             <strong
                               style={{
                                 fontSize: "0.95rem",
-                                color: "var(--text-primary)",
+                                color: "var(--color-foreground)",
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "6px",

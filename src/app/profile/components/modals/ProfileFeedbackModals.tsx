@@ -338,7 +338,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
                     style={{
                       fontSize: "0.85rem",
                       fontWeight: "600",
-                      color: "var(--text-primary)",
+                      color: "var(--color-foreground)",
                     }}
                   >
                     اضغط لاختيار صورة، رفع ملف، أو التقاط صورة جديدة

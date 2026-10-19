@@ -60,7 +60,7 @@
 }
 
 .backLink:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.18);
   transform: translateX(-2px);
@@ -250,7 +250,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub, inherit);
   font-weight: 700;
   font-size: 0.92rem;
@@ -305,7 +305,7 @@
 .detailsTitle {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0;
   font-family: var(--font-sub, inherit);
   display: flex;
@@ -377,7 +377,7 @@
 .sectionHeaderTitle {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin: 0 0 12px 0;
   display: flex;
   align-items: center;
@@ -418,7 +418,7 @@
 .className {
   font-size: 0.88rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .classPrice {
@@ -586,7 +586,7 @@
 
 .bookingItemTitle {
   margin: 0 0 4px 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 700;
   font-size: 0.92rem;
   display: flex;
@@ -607,7 +607,7 @@
   gap: 6px;
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   text-decoration: none;
   padding: 7px 12px;
   border-radius: 10px;
@@ -669,7 +669,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub, inherit);
 }
 
@@ -699,7 +699,7 @@
 }
 
 .modalBox {
-  background-color: var(--bgPrimary, #121214);
+  background-color: var(--color-bg, #121214);
   border-radius: var(--radius-card, 16px);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   width: 100%;
@@ -736,7 +736,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -778,7 +778,7 @@
 }
 
 .scopeBtnActive {
-  background: var(--text-primary) !important;
+  background: var(--color-foreground) !important;
   color: var(--bgMode, #121214) !important;
 }
 
@@ -792,7 +792,7 @@
   display: block;
   font-size: 0.84rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   margin-bottom: 6px;
 }
 
@@ -806,7 +806,7 @@
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.09));
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.88rem;
   outline: none;
   transition: all 0.2s ease;
@@ -862,7 +862,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--bgPrimary, #18181b);
+  background: var(--color-bg, #18181b);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   border-radius: var(--radius-card, 12px);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
@@ -913,7 +913,7 @@
   transition: all 0.15s ease;
   text-align: right;
   font-family: var(--font-body, inherit);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 :global(html.light) .dropdownTrigger {
@@ -1045,6 +1045,11 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

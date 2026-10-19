@@ -42,7 +42,7 @@ export default function PlacesFilterBar({
             background: "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
             border: "1px solid var(--border-glass)",
             borderRadius: "10px",
-            color: "var(--text-primary)",
+            color: "var(--color-foreground)",
             padding: "6px 8px",
             fontSize: "0.8rem",
             cursor: "pointer",
@@ -54,7 +54,7 @@ export default function PlacesFilterBar({
             value="0"
             style={{
               background: "var(--bg-secondary, #fff)",
-              color: "var(--text-primary, #000)",
+              color: "var(--color-foreground, #000)",
             }}
           >
             الكل ⭐
@@ -63,7 +63,7 @@ export default function PlacesFilterBar({
             value="4"
             style={{
               background: "var(--bg-secondary, #fff)",
-              color: "var(--text-primary, #000)",
+              color: "var(--color-foreground, #000)",
             }}
           >
             4.0+ ⭐
@@ -72,7 +72,7 @@ export default function PlacesFilterBar({
             value="4.5"
             style={{
               background: "var(--bg-secondary, #fff)",
-              color: "var(--text-primary, #000)",
+              color: "var(--color-foreground, #000)",
             }}
           >
             4.5+ ⭐
@@ -89,7 +89,7 @@ export default function PlacesFilterBar({
             background: "var(--bg-glass-card, rgba(255, 255, 255, 0.05))",
             border: "1px solid var(--border-glass)",
             borderRadius: "10px",
-            color: "var(--text-primary)",
+            color: "var(--color-foreground)",
             padding: "6px 8px",
             fontSize: "0.8rem",
             cursor: "pointer",
@@ -101,7 +101,7 @@ export default function PlacesFilterBar({
             value=""
             style={{
               background: "var(--bg-secondary, #fff)",
-              color: "var(--text-primary, #000)",
+              color: "var(--color-foreground, #000)",
             }}
           >
             كل الأجواء ✨
@@ -110,7 +110,7 @@ export default function PlacesFilterBar({
             value="quiet_place"
             style={{
               background: "var(--bg-secondary, #fff)",
-              color: "var(--text-primary, #000)",
+              color: "var(--color-foreground, #000)",
             }}
           >
             🤫 أماكن هادئة
@@ -119,7 +119,7 @@ export default function PlacesFilterBar({
             value="kids_friendly"
             style={{
               background: "var(--bg-secondary, #fff)",
-              color: "var(--text-primary, #000)",
+              color: "var(--color-foreground, #000)",
             }}
           >
             🧸 مخصصة للأطفال
@@ -128,7 +128,7 @@ export default function PlacesFilterBar({
             value="family_friendly"
             style={{
               background: "var(--bg-secondary, #fff)",
-              color: "var(--text-primary, #000)",
+              color: "var(--color-foreground, #000)",
             }}
           >
             💑 عائلية وكابلز

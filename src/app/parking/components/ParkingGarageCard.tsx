@@ -28,9 +28,8 @@ export function ParkingGarageCard({
   return (
     <div
       onClick={onToggle}
-      className={`${styles.garageCard} ${
-        isExpanded ? styles.garageCardExpanded : ""
-      }`}
+      className={`${styles.garageCard} ${isExpanded ? styles.garageCardExpanded : ""
+        }`}
     >
       {/* Header Row */}
       <div className={styles.garageHeader}>
@@ -58,9 +57,8 @@ export function ParkingGarageCard({
             {parking.hourlyRate} ج.م / س
           </span>
           <i
-            className={`bx bx-chevron-${isExpanded ? "up" : "down"} ${
-              styles.chevronIcon
-            }`}
+            className={`bx bx-chevron-${isExpanded ? "up" : "down"} ${styles.chevronIcon
+              }`}
           />
         </div>
       </div>
@@ -100,7 +98,7 @@ export function ParkingGarageCard({
                 </span>
                 <span
                   style={{
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                     fontWeight: "600",
                   }}
                 >
@@ -130,7 +128,7 @@ export function ParkingGarageCard({
                   style={{
                     fontSize: "0.92rem",
                     fontWeight: "800",
-                    color: "var(--text-primary)",
+                    color: "var(--color-foreground)",
                   }}
                 >
                   {parking.capacity ? `${parking.capacity} سيارة` : "غير محدد"}

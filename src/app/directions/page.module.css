@@ -173,7 +173,7 @@
 .sliderTitle {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -282,7 +282,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-sub);
   font-weight: 700;
   font-size: 0.92rem;
@@ -332,7 +332,7 @@
 .searchTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -369,7 +369,7 @@
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 12px;
   padding: 0 44px 0 44px;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-body);
   font-size: 0.92rem;
   outline: none;
@@ -430,7 +430,7 @@
 
 .clearBtn:hover {
   background: rgba(255, 255, 255, 0.18);
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 :global(html.light) .clearBtn:hover {
@@ -454,7 +454,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -516,7 +516,7 @@
   padding: 10px 14px;
   border: none;
   background: transparent;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   text-align: right;
   font-size: 0.9rem;
   font-weight: 600;
@@ -566,7 +566,7 @@
 
 .chipTag:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
@@ -640,7 +640,7 @@
 }
 
 .routeTitle {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 800;
   font-size: 1.05rem;
   font-family: var(--font-sub);

@@ -22,7 +22,7 @@ export function RoadsPaywall({ user }: RoadsPaywallProps) {
           borderRadius: "24px",
           textAlign: "center",
           backdropFilter: "blur(16px)",
-          color: "var(--text-primary)",
+          color: "var(--color-foreground)",
         }}
       >
         <div

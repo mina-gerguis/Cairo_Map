@@ -45,29 +45,29 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
         !hasRemindersAccess
           ? !user
             ? {
-                label: "🔑 سجل دخولك أولاً",
-                onClick: () => {
-                  onClose();
-                  router.push("/login");
-                },
-                bgColor: "var(--accentBtn)",
-                textColor: "var(--bgPrimary)",
-              }
-            : {
-                label: "🚀 اشترك أو رقّي حسابك الآن",
-                onClick: () => {
-                  onClose();
-                  onOpenSubModal();
-                },
-                bgColor: "var(--accentBtn)",
-                textColor: "var(--bgPrimary)",
-              }
-          : {
-              label: "إغلاق",
-              onClick: onClose,
-              bgColor: "var(--btn-cancel)",
-              textColor: "var(--text-primary)",
+              label: "🔑 سجل دخولك أولاً",
+              onClick: () => {
+                onClose();
+                router.push("/login");
+              },
+              bgColor: "var(--accentBtn)",
+              textColor: "var(--color-bg)",
             }
+            : {
+              label: "🚀 اشترك أو رقّي حسابك الآن",
+              onClick: () => {
+                onClose();
+                onOpenSubModal();
+              },
+              bgColor: "var(--accentBtn)",
+              textColor: "var(--color-bg)",
+            }
+          : {
+            label: "إغلاق",
+            onClick: onClose,
+            bgColor: "var(--btn-cancel)",
+            textColor: "var(--color-foreground)",
+          }
       }
     >
       <div style={{ textAlign: "right" }}>
@@ -77,7 +77,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
               style={{
                 fontSize: "1.15rem",
                 fontWeight: "800",
-                color: "var(--text-primary)",
+                color: "var(--color-foreground)",
                 marginBottom: "10px",
                 fontFamily: "var(--font-cairo)",
               }}

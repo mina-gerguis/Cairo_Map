@@ -71,7 +71,7 @@ export default function MetroSubscriptionCalculator() {
 
   return (
     <div style={{
-      backgroundColor: "var(--bgPrimary)",
+      backgroundColor: "var(--color-bg)",
       border: "1px solid var(--border-glass)",
       borderRadius: "16px",
       padding: "20px",
@@ -86,7 +86,7 @@ export default function MetroSubscriptionCalculator() {
           <FaCalculator />
         </div>
         <div>
-          <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--text-primary)" }}>حاسبة توفير اشتراكات المترو</h3>
+          <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "var(--color-foreground)" }}>حاسبة توفير اشتراكات المترو</h3>
           <p style={{ margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)" }}>احسب مقدار التوفير المالي بين شراء التذاكر يومياً كاش أم عمل اشتراك مترو رسمي</p>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function MetroSubscriptionCalculator() {
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
               background: "var(--bg-secondary)",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               padding: "0 12px",
               fontSize: "0.88rem",
               fontWeight: "600"
@@ -131,7 +131,7 @@ export default function MetroSubscriptionCalculator() {
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
               background: "var(--bg-secondary)",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               padding: "0 12px",
               fontSize: "0.88rem",
               fontWeight: "600"
@@ -154,7 +154,7 @@ export default function MetroSubscriptionCalculator() {
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
               background: "var(--bg-secondary)",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               padding: "0 12px",
               fontSize: "0.88rem",
               fontWeight: "600"
@@ -179,7 +179,7 @@ export default function MetroSubscriptionCalculator() {
               borderRadius: "10px",
               border: "1px solid var(--border-glass)",
               background: "var(--bg-secondary)",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               padding: "0 12px",
               fontSize: "0.88rem",
               fontWeight: "600"
@@ -206,12 +206,12 @@ export default function MetroSubscriptionCalculator() {
         gap: "12px",
         alignItems: "center"
       }}>
-        <div style={{ textAlign: "center", padding: "10px", background: "var(--bgPrimary)", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+        <div style={{ textAlign: "center", padding: "10px", background: "var(--color-bg)", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
           <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontWeight: "600" }}>تكلفة التذاكر الكاش</div>
           <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "#ef4444", marginTop: "4px" }}>{cashTotalCost} ج.م</div>
         </div>
 
-        <div style={{ textAlign: "center", padding: "10px", background: "var(--bgPrimary)", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
+        <div style={{ textAlign: "center", padding: "10px", background: "var(--color-bg)", borderRadius: "12px", border: "1px solid var(--border-glass)" }}>
           <div style={{ fontSize: "0.78rem", color: "var(--text-secondary)", fontWeight: "600" }}>تكلفة الاشتراك المترو الرسمية</div>
           <div style={{ fontSize: "1.1rem", fontWeight: "800", color: "var(--color-secondary)", marginTop: "4px" }}>{subscriptionCost} ج.م</div>
         </div>
@@ -234,7 +234,7 @@ export default function MetroSubscriptionCalculator() {
 
       {/* 💳 Smart Cards & Subscription Hubs Guide Section */}
       <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px dashed var(--border-glass)" }}>
-        <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+        <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)", marginBottom: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
           💳 دليل الكارت الذكي (Smart Card) ومكاتب الاشتراكات
         </h4>
 
@@ -257,7 +257,7 @@ export default function MetroSubscriptionCalculator() {
 
         {/* Subscription Offices List */}
         <div style={{ background: "rgba(99, 102, 241, 0.06)", padding: "14px", borderRadius: "12px", border: "1px solid rgba(99, 102, 241, 0.2)" }}>
-          <h5 style={{ margin: "0 0 8px 0", color: "var(--text-primary)", fontSize: "0.88rem", fontWeight: "800" }}>
+          <h5 style={{ margin: "0 0 8px 0", color: "var(--color-foreground)", fontSize: "0.88rem", fontWeight: "800" }}>
             📍 أهم مكاتب عمل الاشتراكات ومواعيدها:
           </h5>
           <ul style={{ margin: 0, paddingRight: "18px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.6" }}>

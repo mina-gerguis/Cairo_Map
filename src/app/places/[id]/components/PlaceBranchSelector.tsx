@@ -43,7 +43,7 @@ export default function PlaceBranchSelector({
                 background: isSelected
                   ? "var(--color-secondary)"
                   : "rgba(120,120,120,0.1)",
-                color: isSelected ? "#fff" : "var(--text-primary)",
+                color: isSelected ? "#fff" : "var(--color-foreground)",
                 border: isSelected ? "none" : "1px solid var(--border-glass)",
                 borderRadius: "20px",
                 padding: "8px 16px",

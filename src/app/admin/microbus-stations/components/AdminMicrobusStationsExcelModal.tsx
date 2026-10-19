@@ -114,7 +114,7 @@ export function AdminMicrobusStationsExcelModal({
           flexDirection: "column",
           gap: "18px",
           boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5)",
-          color: "var(--text-primary)",
+          color: "var(--color-foreground)",
           overflow: "hidden"
         }}
         onClick={(e) => e.stopPropagation()}
@@ -177,9 +177,9 @@ export function AdminMicrobusStationsExcelModal({
               fontWeight: "700",
               cursor: "pointer",
               transition: "all 0.2s ease",
-              background: activeTab === "upload" ? "var(--text-primary)" : "transparent",
+              background: activeTab === "upload" ? "var(--color-foreground)" : "transparent",
               border: "none",
-              color: activeTab === "upload" ? "var(--bgMode, #000)" : "var(--text-primary)",
+              color: activeTab === "upload" ? "var(--bgMode, #000)" : "var(--color-foreground)",
               display: "flex",
               alignItems: "center",
               gap: "6px"
@@ -200,9 +200,9 @@ export function AdminMicrobusStationsExcelModal({
               fontWeight: "700",
               cursor: "pointer",
               transition: "all 0.2s ease",
-              background: activeTab === "cheatsheet" ? "var(--text-primary)" : "transparent",
+              background: activeTab === "cheatsheet" ? "var(--color-foreground)" : "transparent",
               border: "none",
-              color: activeTab === "cheatsheet" ? "var(--bgMode, #000)" : "var(--text-primary)",
+              color: activeTab === "cheatsheet" ? "var(--bgMode, #000)" : "var(--color-foreground)",
               display: "flex",
               alignItems: "center",
               gap: "6px"
@@ -423,7 +423,7 @@ export function AdminMicrobusStationsExcelModal({
                   <i className="bx bx-cloud-upload" />
                 </div>
 
-                <h4 style={{ margin: "0 0 6px", fontSize: "1.05rem", fontWeight: "800", color: "var(--text-primary)" }}>
+                <h4 style={{ margin: "0 0 6px", fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)" }}>
                   {file ? file.name : "انقر لاختيار ملف الإكسل أو اسحبه هنا"}
                 </h4>
                 <p style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-secondary)" }}>
@@ -515,7 +515,7 @@ export function AdminMicrobusStationsExcelModal({
                         cursor: "pointer",
                         fontSize: "0.85rem",
                         fontWeight: "700",
-                        color: "var(--text-primary)"
+                        color: "var(--color-foreground)"
                       }}
                     >
                       <input
@@ -554,7 +554,7 @@ export function AdminMicrobusStationsExcelModal({
                             <td className={adminStyles.adminTd} style={{ textAlign: "center", fontWeight: "bold" }}>
                               {idx + 1}
                             </td>
-                            <td className={adminStyles.adminTd} style={{ fontWeight: "700", color: "var(--text-primary)" }}>
+                            <td className={adminStyles.adminTd} style={{ fontWeight: "700", color: "var(--color-foreground)" }}>
                               {s.name}
                             </td>
                             <td className={adminStyles.adminTd}>
@@ -658,7 +658,7 @@ export function AdminMicrobusStationsExcelModal({
                     borderRadius: "8px",
                     padding: "8px 14px",
                     fontSize: "0.85rem",
-                    color: "var(--text-primary)"
+                    color: "var(--color-foreground)"
                   }}
                 >
                   <i className="bx bx-download" style={{ marginLeft: "4px" }} />

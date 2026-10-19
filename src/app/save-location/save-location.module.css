@@ -29,7 +29,7 @@
   font-size: 1.4rem;
   font-weight: 800;
   margin: 0 0 6px 0;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 .actionBannerText p {
@@ -104,7 +104,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   font-size: 0.95rem;
   outline: none;
   transition: border-color 0.2s ease;
@@ -140,7 +140,7 @@
 
 .tagBtn:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
 }
 
 .tagBtnActive {
@@ -195,7 +195,7 @@
   font-size: 1.15rem;
   font-weight: 700;
   margin: 0 0 6px 0;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   line-height: 1.4;
   word-break: break-word;
 }
@@ -251,7 +251,7 @@
 }
 
 .detailRow strong {
-  color: var(--text-primary, #cbd5e1);
+  color: var(--color-foreground, #cbd5e1);
   font-weight: 500;
 }
 
@@ -316,7 +316,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  color: var(--text-primary, #cbd5e1);
+  color: var(--color-foreground, #cbd5e1);
   padding: 9px;
   font-size: 0.82rem;
   cursor: pointer;
@@ -348,7 +348,7 @@
 .emptyTitle {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin: 0 0 8px 0;
 }
 
@@ -368,7 +368,7 @@
 .guideSectionTitle {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -404,7 +404,7 @@
 .guideCardTitle {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin: 0;
 }
 
@@ -444,7 +444,7 @@
 .lockTitle {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--text-primary, #ffffff);
+  color: var(--color-foreground, #ffffff);
   margin: 0 0 10px 0;
 }
 

@@ -44,7 +44,7 @@ export default function BrtSuccessModal({
           alignItems: "center"
         }}
       >
-        <h3 style={{ margin: "0 0 10px 0", fontSize: "1.25rem", fontWeight: "800", color: "var(--text-primary)", fontFamily: "var(--font-sub)" }}>
+        <h3 style={{ margin: "0 0 10px 0", fontSize: "1.25rem", fontWeight: "800", color: "var(--color-foreground)", fontFamily: "var(--font-sub)" }}>
           تم الإرسال بنجاح!
         </h3>
 

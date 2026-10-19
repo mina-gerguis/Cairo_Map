@@ -49,7 +49,7 @@ export default function RailwaysPaywall({
             />
           </div>
 
-          <h2 style={{ fontSize: "1.45rem", fontWeight: "800", color: "var(--text-primary)", marginBottom: "12px", fontFamily: "var(--font-sub)" }}>
+          <h2 style={{ fontSize: "1.45rem", fontWeight: "800", color: "var(--color-foreground)", marginBottom: "12px", fontFamily: "var(--font-sub)" }}>
             دليل سكك حديد مصر يتطلب اشتراكاً في الباقة الفضية
           </h2>
 
@@ -59,7 +59,7 @@ export default function RailwaysPaywall({
 
           {/* Perks list */}
           <div className={styles.perksBox}>
-            <div style={{ fontWeight: "800", color: "var(--text-primary)", fontSize: "0.88rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ fontWeight: "800", color: "var(--color-foreground)", fontSize: "0.88rem", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
               <i className="bx bxs-award" style={{ color: "#94a3b8" }} />
               <span>ما الذي يميز الباقة الفضية؟</span>
             </div>

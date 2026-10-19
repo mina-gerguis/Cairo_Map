@@ -118,7 +118,7 @@
   justify-content: space-between;
   padding: 6px 12px;
   border-radius: 0.9rem;
-  color: var(--text-primary) !important;
+  color: var(--color-foreground) !important;
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 600;
@@ -423,7 +423,7 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .tableSubtitle {
@@ -464,8 +464,8 @@
 }
 
 .adminTh {
-  background: var(--text-primary);
-  color: var(--bgPrimary);
+  background: var(--color-foreground);
+  color: var(--color-bg);
   padding: 16px 20px;
   font-weight: 800;
   font-size: 0.82rem;
@@ -2618,7 +2618,7 @@
   padding: 8px 14px;
   width: 260px;
   transition: all 0.25s ease;
-  color: var(--color-textSecondary);
+  color: var(--color-foregroundSecondary);
 }
 
 .globalSearchInputWrapper:focus-within {
@@ -2633,7 +2633,7 @@
   background: none;
   border: none;
   outline: none;
-  color: var(--color-text-primary);
+  color: var(--color-foreground-primary);
   font-size: 0.875rem;
   font-family: var(--font-heading);
   width: 100%;
@@ -2955,7 +2955,7 @@
   margin: 0 0 6px 0;
   font-size: 1.75rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-family: var(--font-heading);
 }
 
@@ -4867,7 +4867,7 @@
   font-size: 1.45rem;
   font-weight: 800;
   margin: 0;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .maintHeaderSubtitle {
@@ -4885,7 +4885,7 @@
 .maintStatValue {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 .maintFormLabel {
@@ -4893,7 +4893,7 @@
   margin-bottom: 8px;
   font-weight: 700;
   font-size: 0.88rem;
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 /* Preset Buttons */
@@ -4915,6 +4915,7 @@
   border: 1px solid rgba(99, 102, 241, 0.3);
   color: #a5b4fc;
 }
+
 .maintPresetUpgrade:hover {
   background: rgba(99, 102, 241, 0.25);
   color: #ffffff;
@@ -4925,6 +4926,7 @@
   border: 1px solid rgba(245, 158, 11, 0.3);
   color: #fbbf24;
 }
+
 .maintPresetDb:hover {
   background: rgba(245, 158, 11, 0.25);
   color: #ffffff;
@@ -4935,6 +4937,7 @@
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: #fca5a5;
 }
+
 .maintPresetEmergency:hover {
   background: rgba(239, 68, 68, 0.25);
   color: #ffffff;
@@ -4945,6 +4948,7 @@
   border-color: rgba(99, 102, 241, 0.25);
   color: #4338ca;
 }
+
 :global(.light) .maintPresetUpgrade:hover {
   background: rgba(99, 102, 241, 0.18);
   color: #312e81;
@@ -4955,6 +4959,7 @@
   border-color: rgba(245, 158, 11, 0.25);
   color: #b45309;
 }
+
 :global(.light) .maintPresetDb:hover {
   background: rgba(245, 158, 11, 0.18);
   color: #92400e;
@@ -4965,6 +4970,7 @@
   border-color: rgba(239, 68, 68, 0.25);
   color: #b91c1c;
 }
+
 :global(.light) .maintPresetEmergency:hover {
   background: rgba(239, 68, 68, 0.18);
   color: #991b1b;
@@ -4980,7 +4986,7 @@
   border-radius: 10px;
   background: var(--bg-muted);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-weight: 700;
   font-size: 0.88rem;
   cursor: pointer;
@@ -4990,7 +4996,7 @@
 
 .maintSecondaryBtn:hover {
   background: var(--hoverBtn);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-color: var(--border-glass-bright);
 }
 
@@ -5020,7 +5026,7 @@
 }
 
 .maintTabBtn:hover {
-  color: var(--text-primary);
+  color: var(--color-foreground);
   background: var(--hoverBtn);
 }
 
@@ -5091,7 +5097,7 @@
 /* List Item Inner Elements */
 .maintItemTitle {
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   font-size: 0.92rem;
 }
 
@@ -5132,7 +5138,7 @@
 }
 
 .maintItemMessageBox strong {
-  color: var(--text-primary);
+  color: var(--color-foreground);
 }
 
 :global(.light) .maintItemMessageBox strong {
@@ -5156,7 +5162,7 @@
 
 .maintIconBtn:hover {
   background: var(--hoverBtn);
-  color: var(--text-primary);
+  color: var(--color-foreground);
   border-color: var(--border-glass-bright);
 }
 
@@ -5259,7 +5265,7 @@
   cursor: pointer;
   font-size: 0.82rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-foreground);
   transition: all 0.15s ease;
   user-select: none;
 }
@@ -5285,4 +5291,3 @@
   border-color: #10b981 !important;
   color: #047857 !important;
 }
-

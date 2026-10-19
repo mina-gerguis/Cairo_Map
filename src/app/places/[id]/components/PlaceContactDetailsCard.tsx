@@ -17,7 +17,7 @@ export default function PlaceContactDetailsCard({
           fontSize: "1.1rem",
           fontWeight: "700",
           marginBottom: "12px",
-          color: "var(--text-primary)",
+          color: "var(--color-foreground)",
         }}
       >
         التفاصيل
@@ -139,7 +139,7 @@ export default function PlaceContactDetailsCard({
             style={{
               textAlign: "left",
               fontSize: "0.9rem",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               fontWeight: "600",
               maxWidth: "220px",
               display: "flex",

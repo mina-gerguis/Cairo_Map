@@ -13,7 +13,7 @@ export function AdminDirectionsEmptyState() {
       }}
     >
       <i className="bx bx-compass" style={{ fontSize: "2.5rem", color: "var(--text-muted)", marginBottom: "8px", display: "inline-block" }} />
-      <div style={{ fontWeight: "bold", fontSize: "1.05rem", color: "var(--text-primary)", marginBottom: "4px" }}>
+      <div style={{ fontWeight: "bold", fontSize: "1.05rem", color: "var(--color-foreground)", marginBottom: "4px" }}>
         لا توجد أي مسارات مواصلات مطابقة للتصفية الحالية
       </div>
       <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>

@@ -198,7 +198,7 @@ export function AdminBrtStationsExcelModal({
               style={{ display: "none" }}
             />
             <i className="bx bx-cloud-upload" style={{ fontSize: "3rem", color: "#6366f1", marginBottom: "10px" }} />
-            <div style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--text-primary, #fff)" }}>
+            <div style={{ fontSize: "1rem", fontWeight: "bold", color: "var(--color-foreground, #fff)" }}>
               اضغط هنا لاختيار ملف Excel أو CSV
             </div>
             <div style={{ fontSize: "0.82rem", color: "var(--text-muted, #94a3b8)", marginTop: "6px" }}>
@@ -298,7 +298,7 @@ export function AdminBrtStationsExcelModal({
                     onChange={(e) => setReplaceExisting(e.target.checked)}
                     style={{ width: "16px", height: "16px", accentColor: "var(--color-primary)" }}
                   />
-                  <span style={{ fontSize: "0.85rem", color: "var(--text-primary, #fff)" }}>
+                  <span style={{ fontSize: "0.85rem", color: "var(--color-foreground, #fff)" }}>
                     استبدال بيانات المحطات والمسارات المتطابقة بدلاً من دمجها
                   </span>
                 </label>

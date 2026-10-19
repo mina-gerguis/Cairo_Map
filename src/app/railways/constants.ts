@@ -213,7 +213,7 @@ export const BOOKING_METHODS: BookingMethod[] = [
         name: "App Store",
         url: "https://apps.apple.com/eg/app/سكك-حديد-مصر-التطبيق-الرسمى/id1486815902?l=ar",
         icon: "bx bxl-apple",
-        iconColor: "var(--text-primary)"
+        iconColor: "var(--color-foreground)"
       }
     ]
   }

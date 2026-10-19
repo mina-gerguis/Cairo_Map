@@ -48,7 +48,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
           label: "إغلاق",
           onClick: onClose,
           bgColor: "var(--btn-cancel)",
-          textColor: "var(--text-primary)",
+          textColor: "var(--color-foreground)",
         }}
       >
         <div style={{ textAlign: "right" }}>
@@ -71,19 +71,17 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
                   return (
                     <div
                       key={device.id}
-                      className={`${styles.deviceItem} ${
-                        isCurrent ? styles.currentDeviceItem : ""
-                      }`}
+                      className={`${styles.deviceItem} ${isCurrent ? styles.currentDeviceItem : ""
+                        }`}
                     >
                       <div className={styles.deviceItemLeft}>
                         <div className={styles.deviceIconBox}>
                           <i
-                            className={`bx ${
-                              device.device_name.includes("iOS") ||
+                            className={`bx ${device.device_name.includes("iOS") ||
                               device.device_name.includes("Android")
-                                ? "bx-mobile-alt"
-                                : "bx-laptop"
-                            } ${styles.deviceIcon}`}
+                              ? "bx-mobile-alt"
+                              : "bx-laptop"
+                              } ${styles.deviceIcon}`}
                           ></i>
                         </div>
                         <div className={styles.deviceInfoTexts}>

@@ -52,7 +52,7 @@ export function AdminMicrobusStationsToolbar({
               cursor: "pointer",
               fontSize: "0.88rem",
               fontWeight: "700",
-              color: "var(--text-primary)",
+              color: "var(--color-foreground)",
               userSelect: "none"
             }}
           >
