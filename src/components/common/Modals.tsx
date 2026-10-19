@@ -114,7 +114,7 @@ export default function CustomModal({
             </div>
           )}
 
-          <h2 style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--color-foreground)" }}>
+          <h2 className="font-sub" style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--color-foreground)" }}>
             {title}
           </h2>
 

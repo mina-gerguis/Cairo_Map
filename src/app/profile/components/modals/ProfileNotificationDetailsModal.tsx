@@ -29,90 +29,22 @@ export const ProfileNotificationDetailsModal: React.FC<ProfileNotificationDetail
             ? "#ff3b30"
             : "var(--color-foreground)"
       }
-      borderColor={
-        notification?.type === "warning"
-          ? "rgba(255, 149, 0, 0.3)"
-          : notification?.type === "error"
-            ? "rgba(255, 59, 48, 0.3)"
-            : "var(--modelCardBorder)"
-      }
-      iconNode={
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "50%",
-            background:
-              notification?.type === "warning"
-                ? "linear-gradient(135deg, rgba(255, 149, 0, 0.2) 0%, rgba(255, 149, 0, 0.05) 100%)"
-                : notification?.type === "error"
-                  ? "linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.05) 100%)"
-                  : notification?.type === "success"
-                    ? "linear-gradient(135deg, rgba(52, 199, 89, 0.2) 0%, rgba(52, 199, 89, 0.05) 100%)"
-                    : "linear-gradient(135deg, rgba(0, 111, 238, 0.2) 0%, rgba(0, 111, 238, 0.05) 100%)",
-            border:
-              notification?.type === "warning"
-                ? "2px solid rgba(255, 149, 0, 0.4)"
-                : notification?.type === "error"
-                  ? "2px solid rgba(255, 59, 48, 0.4)"
-                  : notification?.type === "success"
-                    ? "2px solid rgba(52, 199, 89, 0.4)"
-                    : "2px solid rgba(0, 111, 238, 0.4)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color:
-              notification?.type === "warning"
-                ? "#ff9500"
-                : notification?.type === "error"
-                  ? "#ff3b30"
-                  : notification?.type === "success"
-                    ? "#34c759"
-                    : "var(--color-primary)",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-          }}
-        >
-          <i
-            className={`bx ${notification?.type === "warning"
-              ? "bx-error"
-              : notification?.type === "error"
-                ? "bx-error-circle"
-                : notification?.type === "success"
-                  ? "bx-check-circle"
-                  : "bxs-bell-ring"
-              }`}
-            style={{ fontSize: "2.3rem" }}
-          />
-        </div>
-      }
       primaryButton={
         notification?.link
           ? {
-            label: "فتح الرابط",
+            label: "إغلاق",
             onClick: () => {
               const link = notification.link;
               onClose();
               router.push(link);
             },
             bgColor: "var(--mainBtn)",
-            icon: <i className="bx bx-link-external" style={{ fontSize: "1.2rem" }} />,
           }
           : {
             label: "إغلاق",
             onClick: onClose,
             bgColor: "var(--mainBtn)",
-            icon: <i className="bx bx-check" style={{ fontSize: "1.2rem" }} />,
           }
-      }
-      secondaryButton={
-        notification?.link
-          ? {
-            label: "إلغاء",
-            onClick: onClose,
-            bgColor: "var(--btn-cancel)",
-            icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }} />,
-          }
-          : undefined
       }
     >
       <div style={{ textAlign: "center", width: "100%" }}>

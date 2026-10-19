@@ -222,7 +222,7 @@ export const useProfileData = () => {
       setLoadingReminders(true);
       const { data: notes } = await supabase
         .from("place_notes")
-        .select("*, places(name)")
+        .select("*, places(name, category, sub_categories)")
         .eq("user_id", queryUserId)
         .order("updated_at", { ascending: false });
 
@@ -234,6 +234,10 @@ export const useProfileData = () => {
             note: n.note,
             updatedAt: n.updated_at,
             placeName: n.places?.name || "مكان غير معروف",
+            category: n.places?.category || "",
+            subCategories: Array.isArray(n.places?.sub_categories)
+              ? n.places.sub_categories
+              : [],
           }))
         );
       } else {

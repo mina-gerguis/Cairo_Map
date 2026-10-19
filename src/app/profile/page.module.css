@@ -561,7 +561,7 @@
   color: #fff;
   background: #ff3b30;
   padding: 2px 9px;
-  border-radius: 50px;
+  border-radius: var(--ra-full);
   font-weight: bold;
 }
 

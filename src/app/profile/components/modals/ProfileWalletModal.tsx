@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
@@ -81,6 +81,8 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
   loadingTransactions,
   pendingTransactionsCount,
 }) => {
+  const [copied, setCopied] = useState(false);
+
   if (!isOpen) return null;
 
   return (
@@ -98,7 +100,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
           boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
           border: "1px solid var(--border-glass)",
           animation: "slide-up 0.3s ease",
-          maxHeight: "90vh",
+          maxHeight: "80vh",
           overflowY: "auto",
           direction: "rtl",
           textAlign: "right",
@@ -117,7 +119,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
           {walletTab !== "main" ? (
             <button
               onClick={() => setWalletTab("main")}
-              className="btn-close"
+              className="btn-close border-none"
               style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
             >
               <ChevronRight size={18} />
@@ -546,43 +548,79 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               <h5 style={{ margin: "0 0 8px", color: "var(--color-secondary)", fontWeight: "bold" }}>
                 تعليمات التحويل:
               </h5>
+              {/* InstaPay instructions */}
               {depositMethod === "instapay" && (
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي: <br />
-                  العنوان: <strong style={{ color: "var(--color-foreground)" }}>cairomap@instapay</strong>
+                  العنوان: <strong style={{ color: "var(--color-foreground)" }}>mina0gerguis@instapay</strong>
                   <br />
                   الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina G***** A</strong>
                   <br />
                   الرابط السريع :{" "}
                   <a
-                    href="https://ipn.eg/S/cairomap/instapay/2FxCLI"
+                    href="https://ipn.eg/S/mina0gerguis/instapay/6inTOU"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <strong style={{ color: "var(--color-secondary)" }}>
-                      https://ipn.eg/S/cairomap/instapay/2FxCLI
+                      https://ipn.eg/S/mina0gerguis/instapay/6inTOU
                     </strong>
                   </a>
                 </p>
               )}
+              {/* Telda instructions */}
               {depositMethod === "telda" && (
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بالتحويل عبر تطبيق تيلدا إلى التاج (Tag) التالي:
                   <br />
-                  التاج: <strong style={{ color: "var(--color-foreground)" }}>@minagerguis</strong>
+                  التاج: <strong style={{ color: "var(--color-foreground)" }}>@minagerguis</strong>{" "}
+                  <button
+                    type="button"
+                    className={styles.copyButton}
+                    onClick={() => {
+                      navigator.clipboard.writeText("@minagerguis");
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    title="نسخ التاج"
+                  >
+                    <i
+                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${
+                        copied ? styles.copiedIcon : ""
+                      }`}
+                    />
+                  </button>
                   <br />
                   الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerguis</strong>
                 </p>
               )}
+              {/* Vodafone Cash instructions */}
               {depositMethod === "vodafone_cash" && (
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بتحويل رصيد كاش إلى رقم المحفظة التالي:
                   <br />
                   الرقم: <strong style={{ color: "var(--color-foreground)" }}>01020372317</strong>
+                  <button
+                    type="button"
+                    className={styles.copyButton}
+                    onClick={() => {
+                      navigator.clipboard.writeText("01020372317");
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    title="نسخ الرقم"
+                  >
+                    <i
+                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${
+                        copied ? styles.copiedIcon : ""
+                      }`}
+                    />
+                  </button>
                   <br />
-                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>مينا جرجس</strong>
+                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>
                 </p>
               )}
+              {/* Bank Transfer instructions */}
               {depositMethod === "bank_transfer" && (
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بالتحويل البنكي المباشر للحساب التالي:
@@ -593,8 +631,24 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   </strong>
                   <br />
                   رقم الحساب: <strong style={{ color: "var(--color-foreground)" }}>1020670700235</strong>
+                   <button
+                    type="button"
+                    className={styles.copyButton}
+                    onClick={() => {
+                      navigator.clipboard.writeText("1020670700235");
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    title="نسخ رقم الحساب"
+                  >
+                    <i
+                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${
+                        copied ? styles.copiedIcon : ""
+                      }`}
+                    />
+                  </button>
                   <br />
-                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>مينا جرجس</strong>
+                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>
                 </p>
               )}
             </div>

@@ -69,7 +69,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             marginBottom: "20px",
           }}
         >
-          <button onClick={onBack ?? onClose} className="btn-close">
+          <button onClick={onBack ?? onClose} className="btn-close border-none">
             <ChevronRight size={18} />
           </button>
           <h3
@@ -107,7 +107,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             }}
           >
             <Image
-              src="/images/profile/coin3dMapcairo.png"
+              src="/images/icons3d/coin3dMapCairo.webp"
               alt="عملة ماب القاهرة"
               draggable={false}
               width={100}
@@ -129,7 +129,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             style={{
               fontSize: "2.4rem",
               fontWeight: "700",
-              color: "#cc9303c4",
+              color: "var(--color-foreground)",
               margin: "4px 0",
               fontFamily: "var(--font-tenor-sans)",
             }}
@@ -141,7 +141,6 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
               fontSize: "0.85rem",
               color: "#10b981",
               fontWeight: "bold",
-              background: "rgba(16, 185, 129, 0.08)",
               padding: "2px 10px",
               borderRadius: "10px",
             }}
@@ -229,7 +228,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                 min="1000"
                 step="1"
                 className="input-fields"
-                placeholder="أدخل عدد النقاط (1000 كحد أدنى)"
+                placeholder="1000 نقطة للحد الادني"
                 value={convertPointsAmount}
                 onChange={(e) => setConvertPointsAmount(e.target.value)}
                 style={{
@@ -262,7 +261,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                 <div
                   style={{
                     fontSize: "0.85rem",
-                    color: "#10b981",
+                    color: "var(--color-primary)",
                     fontWeight: "bold",
                     textAlign: "center",
                     marginBottom: "14px",
@@ -281,15 +280,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                   fontWeight: "bold",
                   textAlign: "center",
                   marginBottom: "14px",
-                  background:
-                    convertStatus.type === "success"
-                      ? "rgba(16, 185, 129, 0.12)"
-                      : "rgba(239, 68, 68, 0.12)",
-                  color: convertStatus.type === "success" ? "#10b981" : "#f87171",
-                  border:
-                    convertStatus.type === "success"
-                      ? "1px solid rgba(16, 185, 129, 0.2)"
-                      : "1px solid rgba(239, 68, 68, 0.2)",
+                  color: convertStatus.type === "success" ? "var(--color-success)" : "var(--color-error)",
                 }}
               >
                 {convertStatus.text}

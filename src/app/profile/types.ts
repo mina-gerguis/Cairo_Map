@@ -180,4 +180,6 @@ export interface ReminderItem {
   note: string;
   updatedAt: string;
   placeName: string;
+  category?: string;
+  subCategories?: string[];
 }

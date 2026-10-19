@@ -552,13 +552,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                           className={`${styles.notifItem} ${notif.is_read ? styles.notifItemRead : styles.notifItemUnread
                             }`}
                         >
-                          <div className={styles.notifEmoji}>
-                            {notif.type === "success"
-                              ? "✅"
-                              : notif.type === "warning"
-                                ? "⚠️"
-                                : "🔔"}
-                          </div>
                           <div className={styles.notifItemBody}>
                             <h5
                               className={`${styles.notifItemTitle} ${notif.is_read

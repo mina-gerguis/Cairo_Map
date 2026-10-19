@@ -3,8 +3,10 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import CustomModal from "@/components/common/Modals";
+import { getMainCategoryImage } from "@/data/places";
 import { ReminderItem } from "../../types";
 import styles from "../../page.module.css";
+import { Trash } from "lucide-react";
 
 interface ProfileRemindersModalProps {
   isOpen: boolean;
@@ -36,7 +38,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
       title="تذكيراتي وملاحظاتي"
       message={
         hasRemindersAccess
-          ? `إجمالي الملاحظات والتذكيرات المضافة للأماكن: ${reminders.length}`
+          ? `لديك ${reminders.length} تذكير أو ملاحظة`
           : undefined
       }
       iconSrc={hasRemindersAccess ? "/images/icons3d/book.webp" : "/images/icons3d/padlock.webp"}
@@ -45,7 +47,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
         !hasRemindersAccess
           ? !user
             ? {
-              label: "🔑 سجل دخولك أولاً",
+              label: " سجل دخولك أولاً",
               onClick: () => {
                 onClose();
                 router.push("/login");
@@ -54,7 +56,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
               textColor: "var(--color-foreground)",
             }
             : {
-              label: "🚀 اشترك أو رقّي حسابك الآن",
+              label: " اشترك أو رقّي حسابك الآن",
               onClick: () => {
                 onClose();
                 onOpenSubModal();
@@ -120,11 +122,18 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
                     style={{ cursor: "pointer" }}
                   >
                     <div className={styles.deviceItemLeft}>
-                      <div
-                        className={styles.deviceIconBox}
-                        style={{ color: "#34c759", background: "rgba(52, 199, 89, 0.1)" }}
-                      >
-                        <i className={`bx bx-notepad ${styles.deviceIcon}`}></i>
+                      <div>
+                        <img
+                          src={getMainCategoryImage(rem.category || "", rem.subCategories || [])}
+                          alt={rem.placeName}
+                          loading="lazy"
+                          decoding="async"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            objectFit: "contain",
+                          }}
+                        />
                       </div>
                       <div className={styles.deviceInfoTexts}>
                         <div className={styles.deviceNameRow}>
@@ -142,7 +151,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
                         </p>
                         <div className={styles.deviceMetaRow}>
                           <span>
-                            📅{" "}
+                            <i className="bx bx-calendar" style={{ fontSize: "0.95rem" }}></i>{" "}
                             {new Date(rem.updatedAt).toLocaleDateString("ar-EG", {
                               month: "short",
                               day: "numeric",
@@ -159,7 +168,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
                       className={styles.deactivateDeviceBtn}
                       title="حذف الملاحظة"
                     >
-                      <i className="bx bx-trash"></i>
+                      <Trash size={18}/>
                     </button>
                   </div>
                 ))}

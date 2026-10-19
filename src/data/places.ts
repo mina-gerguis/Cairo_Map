@@ -26,7 +26,7 @@ export interface MainCategoryItem {
 
 export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
   // Food and Drinks
-  { 
+  {
     name: 'food_drinks',
     label: 'أكل ومشروبات',
     icon: 'bx-dish',
@@ -185,7 +185,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
       { name: 'exchange', label: 'صرافة', icon: 'bx bx-transfer' },
     ]
   },
-    // Religion
+  // Religion
   {
     name: 'religion',
     label: 'أماكن دينية',
@@ -198,7 +198,7 @@ export const CATEGORIES_STRUCTURE: MainCategoryItem[] = [
       { name: 'church', label: 'كنائس', icon: 'fa-solid fa-cross' },
     ]
   },
-    // Education
+  // Education
   {
     name: 'education',
     label: 'تعليم',
@@ -576,57 +576,57 @@ export const OLD_CATEGORY_TO_MAIN_MAP: Record<string, string> = {
 export function formatBoxIcon(iconStr: string): string {
   if (!iconStr) return "bx bx-tag";
   let trimmed = iconStr.trim().toLowerCase();
-  
+
   // Remove multiple spaces
   trimmed = trimmed.replace(/\s+/g, ' ');
 
   // Auto-heal corrupted Font Awesome icons saved as Boxicons (e.g. "bx bx-fa-...")
   if (
-    trimmed.startsWith("bx bx-fa-") || 
-    trimmed.startsWith("bx bx-fa ") || 
-    trimmed.startsWith("bx bx-fas ") || 
-    trimmed.startsWith("bx bx-far ") || 
+    trimmed.startsWith("bx bx-fa-") ||
+    trimmed.startsWith("bx bx-fa ") ||
+    trimmed.startsWith("bx bx-fas ") ||
+    trimmed.startsWith("bx bx-far ") ||
     trimmed.startsWith("bx bx-fab ")
   ) {
     trimmed = trimmed.substring(6);
   }
   if (
-    trimmed.startsWith("bx-fa-") || 
-    trimmed.startsWith("bx-fa ") || 
-    trimmed.startsWith("bx-fas ") || 
-    trimmed.startsWith("bx-far ") || 
+    trimmed.startsWith("bx-fa-") ||
+    trimmed.startsWith("bx-fa ") ||
+    trimmed.startsWith("bx-fas ") ||
+    trimmed.startsWith("bx-far ") ||
     trimmed.startsWith("bx-fab ")
   ) {
     trimmed = trimmed.substring(3);
   }
-  
+
   // If it's a Font Awesome icon (starts with fa-, fa, fas, far, fab)
   if (
-    trimmed.startsWith("fa-") || 
-    trimmed.startsWith("fa ") || 
-    trimmed.startsWith("fas ") || 
-    trimmed.startsWith("far ") || 
+    trimmed.startsWith("fa-") ||
+    trimmed.startsWith("fa ") ||
+    trimmed.startsWith("fas ") ||
+    trimmed.startsWith("far ") ||
     trimmed.startsWith("fab ")
   ) {
     return trimmed;
   }
-  
+
   // If it already has "bx bx-something", return it
   if (trimmed.startsWith("bx bx-")) {
     return trimmed;
   }
-  
+
   // If it's just "bx-something"
   if (trimmed.startsWith("bx-")) {
     return `bx ${trimmed}`;
   }
-  
+
   // If they wrote "bx something" without hyphen
   if (trimmed.startsWith("bx ")) {
     const iconName = trimmed.substring(3);
     return `bx bx-${iconName}`;
   }
-  
+
   // If they just wrote the name of the icon, e.g. "utensils"
   return `bx bx-${trimmed}`;
 }
