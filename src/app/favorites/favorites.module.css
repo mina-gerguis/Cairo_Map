@@ -36,18 +36,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   transition: background-color 0.2s ease;
 }
 
-.backBtn:hover {
-  background-color: var(--border-glass);
-}
-
 .backIcon {
-  font-size: 1.8rem;
   color: var(--color-foreground);
 }
 
@@ -292,6 +287,7 @@
 }
 
 .placeCard {
+  box-shadow: var(--shadow-card);
   position: relative;
   cursor: pointer;
   width: 100%;
@@ -299,13 +295,10 @@
   padding: 12px;
   gap: 12px;
   align-items: center;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.placeCard:hover {
-  transform: translateY(-2px);
-}
 
 .imageWrapper {
   width: 90px;
@@ -357,10 +350,8 @@
   font-size: 1.05rem;
   margin: 0 0 4px;
   color: var(--color-foreground);
+  font-family: var(--font-sub);
   font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .cardLocation {

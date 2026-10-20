@@ -1,6 +1,7 @@
 import React from "react";
 import { FavoritesHeaderProps } from "../types";
 import styles from "../favorites.module.css";
+import { ChevronRight } from "lucide-react";
 
 export default function FavoritesHeader({
   onBack,
@@ -16,7 +17,7 @@ export default function FavoritesHeader({
             className={styles.backBtn}
             aria-label="الرجوع"
           >
-            <i className={`bx bx-chevron-right ${styles.backIcon}`} />
+            <ChevronRight size={18} className={styles.backIcon} />
           </button>
           <h1 className={styles.headerTitle}>{title}</h1>
         </div>

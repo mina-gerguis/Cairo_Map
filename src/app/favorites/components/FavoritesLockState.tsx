@@ -31,6 +31,9 @@ export default function FavoritesLockState({ onLogin }: FavoritesLockStateProps)
               alt="قفل الأمان"
               loading="lazy"
               decoding="async"
+              style={{
+                height: "auto",
+              }}
             />
           </div>
           <h2 className={styles.lockTitle}>سجل الدخول أولاً</h2>

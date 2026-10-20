@@ -92,12 +92,12 @@
   --br-subscribe-button-base: #3b82f6;
   --bs-subscribe-button-base: 0 4px 15px rgba(59, 130, 246, 0.38);
 
-  --bg-subscribe-button-seliver: linear-gradient(135deg, rgba(26, 25, 25, 0.54) 0%, #818181 100%);
+  --bg-subscribe-button-seliver: linear-gradient(135deg, rgba(26, 25, 25, 0.54) 0%, #363636 100%);
   --br-subscribe-button-seliver: #727272;
   --bg-subscribe-button-silver: var(--bg-subscribe-button-seliver);
   --br-subscribe-button-silver: var(--br-subscribe-button-seliver);
 
-  --bg-subscribe-button-gold: linear-gradient(135deg, #ffdd00 0%, #d4b500 100%);
+  --bg-subscribe-button-gold: linear-gradient(135deg, #ceb200 0%, #ffe134 100%);
   --br-subscribe-button-gold: #ffdd00;
   --bs-subscribe-button-gold: 0 4px 15px rgba(255, 221, 0, 0.38);
 }

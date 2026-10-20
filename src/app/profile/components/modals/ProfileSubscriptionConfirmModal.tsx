@@ -36,7 +36,7 @@ export const ProfileSubscriptionConfirmModal: React.FC<ProfileSubscriptionConfir
           maxWidth: "420px",
           width: "90%",
           padding: "28px 24px",
-          borderRadius: "20px",
+          borderRadius: "var(--radius-card)",
           background: "var(--color-bg)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
@@ -50,46 +50,17 @@ export const ProfileSubscriptionConfirmModal: React.FC<ProfileSubscriptionConfir
           alignItems: "center",
         }}
       >
-        {/* Confirmation Icon */}
-        <div
-          style={{
-            fontSize: "3.2rem",
-            marginBottom: "16px",
-            color: "var(--accent-gold, #eab308)",
-            background: "rgba(234, 179, 8, 0.1)",
-            width: "80px",
-            height: "80px",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <i className="bx bx-help-circle"></i>
-        </div>
 
         {/* Title */}
         <h3
-          style={{
-            margin: "0 0 12px",
-            fontSize: "1.25rem",
-            fontWeight: "700",
-            color: "var(--color-foreground)",
-            fontFamily: "var(--font-cairo)",
-          }}
+          className="font-sub fs-xl fw-900 mb-2 "
         >
           تأكيد عملية الاشتراك
         </h3>
 
         {/* Message */}
         <p
-          style={{
-            fontSize: "0.92rem",
-            color: "var(--text-secondary)",
-            lineHeight: "1.6",
-            margin: "0 0 28px",
-            fontFamily: "var(--font-cairo)",
-          }}
+          className="text-muted leading-6 mb-7"
         >
           {confirmData.message}
         </p>
@@ -99,40 +70,14 @@ export const ProfileSubscriptionConfirmModal: React.FC<ProfileSubscriptionConfir
           <button
             type="button"
             onClick={() => onConfirm(confirmData.planId, confirmData.period)}
-            className="btn btn-primary"
-            style={{
-              flex: 1,
-              padding: "12px 16px",
-              borderRadius: "10px",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              justifyContent: "center",
-              background: "linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "var(--font-cairo)",
-            }}
+            className="btn btn-primary flex-1"
           >
-            تأكيد ومتابعة
+            تأكيد
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="btn"
-            style={{
-              flex: 1,
-              padding: "12px 16px",
-              borderRadius: "10px",
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-              justifyContent: "center",
-              background: "rgba(255, 255, 255, 0.05)",
-              color: "var(--text-secondary)",
-              border: "1px solid var(--border-glass)",
-              cursor: "pointer",
-              fontFamily: "var(--font-cairo)",
-            }}
+            className="btn btn-cancel flex-1"
           >
             إلغاء
           </button>

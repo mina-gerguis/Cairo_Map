@@ -188,6 +188,8 @@
   --fw-bold: var(--font-bold);
   --fw-extra-bold: var(--font-extrabold);
   --fw-black: var(--font-black);
+
+  --leading-6: 1.5rem;
 }
 
 /* ==========================================================================

@@ -46,7 +46,7 @@ export default function ProposePlaceAlerts({
               gap: "8px",
             }}
           >
-            ✏️ أنت الآن تقوم بتعديل:{" "}
+             أنت الآن تقوم بتعديل:{" "}
             <span style={{ color: "var(--color-foreground)" }}>{placeName || "المكان المقترح"}</span>
           </span>
           <button

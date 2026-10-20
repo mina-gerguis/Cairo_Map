@@ -158,33 +158,17 @@
 
 /* ==================== ALERT BANNERS ==================== */
 .alertBox {
-  border-radius: 20px;
   padding: 16px 20px;
-  margin-bottom: 24px;
   display: flex;
   gap: 14px;
   align-items: center;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .alertEdit {
-  background: rgba(108, 99, 255, 0.1);
-  border: 1px solid rgba(108, 99, 255, 0.28);
   justify-content: space-between;
   flex-wrap: wrap;
-}
-
-.alertWarning {
-  background: rgba(255, 149, 0, 0.1);
-  border: 1px solid rgba(255, 149, 0, 0.3);
-}
-
-.alertDanger {
-  background: rgba(255, 59, 48, 0.1);
-  border: 1px solid rgba(255, 59, 48, 0.3);
-  align-items: flex-start;
 }
 
 .cancelEditBtn {
@@ -192,7 +176,7 @@
   color: #ff3b30;
   border: 1px solid rgba(255, 59, 48, 0.28);
   padding: 6px 14px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
@@ -367,7 +351,6 @@
 
 .uploadFileBtn:hover {
   opacity: 0.92;
-  transform: translateY(-1px);
 }
 
 .uploadFileBtnDisabled {
@@ -567,7 +550,7 @@
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   color: var(--text-secondary);
   padding: 7px 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 0.85rem;
   cursor: pointer;
   display: flex;
@@ -600,20 +583,18 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
-  border-radius: var(--ra-16, 20px);
+  border-radius: var(--radius-card);
   padding: 20px;
   display: flex;
   gap: 16px;
   align-items: flex-start;
   flex-wrap: wrap;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
 }
 
 :global(html.light) .proposalCard {
   background: rgba(255, 255, 255, 0.85);
   border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .proposalCardEditing {
@@ -732,7 +713,7 @@
   color: var(--color-primary, #6c63ff);
   border: 1px solid rgba(108, 99, 255, 0.3);
   padding: 9px 18px;
-  border-radius: 14px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 0.88rem;
   display: inline-flex;

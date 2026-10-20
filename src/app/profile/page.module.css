@@ -1194,6 +1194,34 @@
   animation: fade-in 0.3s ease;
 }
 
+.glassPanel {
+  max-width: 960px;
+  width: 100%;
+  padding: 24px 28px;
+  background: var(--color-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-glass);
+  max-height: 90vh;
+  overflow-y: auto;
+  direction: rtl;
+  text-align: right;
+  border-radius: var(--radius-card);
+}
+
+@media (max-width: 640px) {
+  .modalBackdropSlow {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .glassPanel {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
 /* Delete Modal */
 .deleteModalDialog {
   max-width: 440px;
@@ -2327,6 +2355,7 @@
   color: var(--text-muted);
   transition: color 0.2s ease, transform 0.1s ease;
   border-radius: 4px;
+  padding: 0 4px;
 }
 
 .copyButton:hover {
@@ -2336,10 +2365,6 @@
 
 .copyButton:active {
   transform: scale(0.9);
-}
-
-.copyButton i {
-  font-size: 1.1rem;
 }
 
 .copiedIcon {

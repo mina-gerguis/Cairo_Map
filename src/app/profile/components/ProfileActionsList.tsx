@@ -678,10 +678,10 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                         border: "none",
                         background:
                           activeRequestsTab === "proposals"
-                            ? "var(--color-primary)"
+                            ? "var(--btn-primary)"
                             : "transparent",
                         color:
-                          activeRequestsTab === "proposals" ? "#fff" : "var(--text-secondary)",
+                          activeRequestsTab === "proposals" ? "var(--btn-primary-color)" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s",
                       }}
@@ -701,10 +701,10 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                         border: "none",
                         background:
                           activeRequestsTab === "reports"
-                            ? "var(--color-primary)"
+                            ? "var(--btn-primary)"
                             : "transparent",
                         color:
-                          activeRequestsTab === "reports" ? "#fff" : "var(--text-secondary)",
+                          activeRequestsTab === "reports" ? "var(--btn-primary-color)" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s",
                       }}
@@ -724,11 +724,11 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                         border: "none",
                         background:
                           activeRequestsTab === "app_feedback"
-                            ? "var(--color-primary)"
+                            ? "var(--btn-primary)"
                             : "transparent",
                         color:
                           activeRequestsTab === "app_feedback"
-                            ? "#fff"
+                            ? "var(--btn-primary-color)"
                             : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s",

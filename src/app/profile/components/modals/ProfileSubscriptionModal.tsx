@@ -3,6 +3,54 @@
 import React from "react";
 import { UserProfile, SubscriptionPlan, SubscriptionPeriod, ProfileAlertMessage } from "../../types";
 import styles from "../../page.module.css";
+import { ChevronRight, Check, X } from "lucide-react";
+
+/* ─── Feature Item with Check / Cross Icon ─── */
+const FeatureItem: React.FC<{
+  included: boolean;
+  text: string;
+  isSpecial?: boolean;
+}> = ({ included, text, isSpecial }) => (
+  <li
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      fontSize: "0.78rem",
+      lineHeight: "1.45",
+      color: included
+        ? isSpecial
+          ? "var(--color-foreground)"
+          : "var(--text-secondary)"
+        : "var(--text-muted)",
+      opacity: included ? 1 : 0.5,
+      textDecoration: included ? "none" : "line-through",
+      listStyle: "none",
+    }}
+  >
+    <span
+      style={{
+        flexShrink: 0,
+        width: "18px",
+        height: "18px",
+        borderRadius: "50%",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: included
+          ? "rgba(16, 185, 129, 0.15)"
+          : "rgba(239, 68, 68, 0.12)",
+      }}
+    >
+      {included ? (
+        <Check size={11} color="#10b981" strokeWidth={3} />
+      ) : (
+        <X size={10} color="#ef4444" strokeWidth={2.5} />
+      )}
+    </span>
+    <span style={{ fontWeight: isSpecial ? 700 : 400 }}>{text}</span>
+  </li>
+);
 
 interface ProfileSubscriptionModalProps {
   isOpen: boolean;
@@ -51,35 +99,25 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
   return (
     <div className={`modal-backdrop ${styles.modalBackdropSlow}`} onClick={onClose}>
       <div
-        className="glass-panel"
+        className={`glass-panel ${styles.glassPanel}`}
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: "960px",
-          width: "100%",
-          padding: "24px 28px",
-          borderRadius: "16px",
-          background: "var(--color-bg)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
-          border: "1px solid var(--border-glass)",
-          animation: "slide-up 0.3s ease",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          direction: "rtl",
-          textAlign: "right",
+         
         }}
       >
         {/* Modal Header */}
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "start",
             alignItems: "center",
+            gap: "10px",
             marginBottom: "20px",
-            fontFamily: "var(--font-heading)",
           }}
         >
+          <button onClick={onClose} className="btn-close border-none">
+            <ChevronRight size={18} />
+          </button>
           <h3
             className="sub-title"
             style={{
@@ -92,12 +130,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               gap: "8px",
             }}
           >
-            <i className="bx bxs-crown" style={{ color: "#fbbf24" }}></i>
             باقات ماب القاهرة
           </h3>
-          <button onClick={onClose} className="btn-close">
-            <i className="bx bx-x"></i>
-          </button>
         </div>
 
         {/* Current Tier Info & Wallet Info Summary */}
@@ -116,7 +150,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
           }}
         >
           <div>
-            <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>باقيتك الحالية:</div>
+            <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>الباقة الحالية:</div>
             <div
               style={{
                 fontSize: "1.1rem",
@@ -147,8 +181,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                   fontSize: "0.78rem",
                   color:
                     isExpired || profile?.subscription_status === "cancelled"
-                      ? "#ef4444"
-                      : "var(--accent-gold, #eab308)",
+                      ? "var(--color-error)"
+                      : "var(--color-primary)",
                   marginTop: "2px",
                 }}
               >
@@ -166,13 +200,13 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               </div>
             )}
           </div>
-          <div style={{ textAlign: "left" }}>
+          <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
-              رصيد محفظتك الحالي:
+              رصيد المحفظة:
             </div>
             <strong
               style={{
-                color: "#22c55e",
+                color: "var(--color-foreground)",
                 fontSize: "1.15rem",
                 marginTop: "2px",
                 display: "block",
@@ -190,16 +224,9 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               padding: "12px",
               borderRadius: "10px",
               marginBottom: "20px",
-              background:
-                subMessage.type === "success"
-                  ? "rgba(52, 199, 89, 0.15)"
-                  : "rgba(255, 59, 48, 0.15)",
-              color: subMessage.type === "success" ? "#34c759" : "#ff3b30",
+              color: subMessage.type === "success" ? "var(--color-success)" : "var(--color-error)",
               fontSize: "0.88rem",
-              border:
-                subMessage.type === "success"
-                  ? "1px solid rgba(52, 199, 89, 0.3)"
-                  : "1px solid rgba(255, 59, 48, 0.3)",
+              lineHeight: "1.5",
             }}
           >
             {subMessage.text}
@@ -231,10 +258,9 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                     ? "linear-gradient(135deg, #cac7ffff 0%, #84b3ffff 100%)"
                     : "none",
                 border: "none",
-                color: "var(--text-prmiry)",
+                color: subscriptionPeriod === "monthly" ? "#000" : "var(--text-secondary)",
                 fontWeight: "bold",
                 cursor: "pointer",
-                fontFamily: "var(--font-heading)",
                 transition: "all 0.2s",
               }}
             >
@@ -247,15 +273,14 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 setSubMessage(null);
               }}
               style={{
-                padding: "6px 24px",
+                padding: "10px 20px",
                 borderRadius: "20px",
                 background:
                   subscriptionPeriod === "yearly"
                     ? "linear-gradient(135deg, #cac7ffff 0%, #84b3ffff 100%)"
                     : "none",
                 border: "none",
-                color: "var(--text-prmiry)",
-                fontFamily: "var(--font-heading)",
+                color: subscriptionPeriod === "yearly" ? "#000" : "var(--text-secondary)",
                 fontWeight: "bold",
                 cursor: "pointer",
                 transition: "all 0.2s",
@@ -299,9 +324,9 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
               border:
                 effectiveTier === "free"
-                  ? "2px solid var(--border-glass)"
+                  ? "2px solid var(--color-primary)"
                   : "1px solid var(--border-glass)",
-              borderRadius: "16px",
+              borderRadius: "var(--radius-card)",
               padding: "24px",
               display: "flex",
               flexDirection: "column",
@@ -317,7 +342,6 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               <h4
                 className="sub-title"
                 style={{
-                  fontFamily: "var(--font-heading)",
                   fontSize: "1.2rem",
                   fontWeight: "bold",
                   color: "var(--color-foreground)",
@@ -334,7 +358,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                   marginBottom: "16px",
                 }}
               >
-                {getPlanPrice("free", null)} ج.م
+                مجاناً
               </div>
 
               <hr
@@ -347,29 +371,34 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
 
               <ul
                 style={{
-                  paddingRight: "16px",
+                  padding: 0,
                   margin: 0,
-                  fontSize: "0.82rem",
-                  color: "var(--text-secondary)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "8px",
-                  lineHeight: "1.5",
-                  listStyleType: "disc",
+                  gap: "7px",
+                  listStyle: "none",
                 }}
               >
-                {(findPlan("free").features || []).map((feature: string, idx: number) => (
-                  <li key={idx}>{feature}</li>
-                ))}
-                <li style={{ textDecoration: "line-through", opacity: 0.5 }}>
-                  خريطة المونوريل التفاعلية الكاملة
-                </li>
-                <li style={{ textDecoration: "line-through", opacity: 0.5 }}>
-                  إضافة تذكيرات وملاحظات للأماكن
-                </li>
-                <li style={{ textDecoration: "line-through", opacity: 0.5 }}>
-                  دليل &quot;ازاي اروح&quot; للمواصلات
-                </li>
+                {(findPlan("free").features || []).map((feature: string, idx: number) => {
+                  const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
+                  return (
+                    <FeatureItem
+                      key={idx}
+                      included={true}
+                      text={feature}
+                      isSpecial={hasEmoji}
+                    />
+                  );
+                })}
+                <FeatureItem included={false} text="خريطة المونوريل التفاعلية الكاملة" />
+                <FeatureItem included={false} text="محرك البحث &quot;ازاي اروح&quot; للمواصلات" />
+                <FeatureItem included={false} text="دليل سكك حديد مصر والقطارات" />
+                <FeatureItem included={false} text="دليل محطات وتعرفة القطار الكهربائي LRT" />
+                <FeatureItem included={false} text="دليل مواقف السيارات والباركينج الذكي" />
+                <FeatureItem included={false} text="إضافة تذكيرات وملاحظات شخصية للأماكن" />
+                <FeatureItem included={false} text="دليل المطارات والموانئ المصرية" />
+                <FeatureItem included={false} text="دليل مواقف وأتوبيسات وميكروباصات السفر" />
+                <FeatureItem included={false} text="مخطط الرحلات الذكي بالذكاء الاصطناعي" />
               </ul>
             </div>
 
@@ -377,17 +406,11 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               type="button"
               disabled={subscribing || effectiveTier === "free"}
               onClick={() => handleConfirmSubscribe("free", null)}
+              className="btn btn-primary border-none fs-sm fw-900"
               style={{
-                width: "100%",
-                padding: "var(--padding-btn)",
-                borderRadius: "var(--radiusBtn)",
-                background: effectiveTier === "free" ? "var(--btn-cancel)" : "rgba(255,255,255,0.1)",
-                color: effectiveTier === "free" ? "#64748b" : "#fff",
-                border: "none",
-                fontWeight: "bold",
-                marginTop: "24px",
-                cursor: effectiveTier === "free" ? "default" : "pointer",
-                fontSize: "0.88rem",
+                backgroundColor: effectiveTier === "free" ? "var(--btn-cancel)" : "var(--btn-primary)",
+                color: effectiveTier === "free" ? "var(--text-secondary)" : "var(--color-bg)",
+                cursor: effectiveTier === "free" ? "no-drop" : "pointer",
               }}
             >
               {effectiveTier === "free" ? "باقتك الحالية" : "الرجوع للمجانية"}
@@ -398,8 +421,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
           <div
             style={{
               background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
-              border: effectiveTier === "mishwar" ? "2px solid #10b981" : "1px solid var(--border-glass)",
-              borderRadius: "16px",
+              border: effectiveTier === "mishwar" ? "2px solid var(--color-primary)" : "1px solid var(--border-glass)",
+              borderRadius: "var(--radius-card)",
               padding: "24px",
               display: "flex",
               flexDirection: "column",
@@ -450,25 +473,25 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
 
               <ul
                 style={{
-                  paddingRight: "16px",
+                  padding: 0,
                   margin: 0,
-                  fontSize: "0.82rem",
-                  color: "var(--text-secondary)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "8px",
-                  lineHeight: "1.5",
-                  listStyleType: "disc",
+                  gap: "7px",
+                  listStyle: "none",
                 }}
               >
-                {(findPlan("mishwar").features || []).map((feature: string, idx: number) => (
-                  <li
-                    key={idx}
-                    style={idx === 0 ? { color: "var(--mainBtn)", fontWeight: "bold" } : undefined}
-                  >
-                    {feature}
-                  </li>
-                ))}
+                {(findPlan("mishwar").features || []).map((feature: string, idx: number) => {
+                  const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
+                  return (
+                    <FeatureItem
+                      key={idx}
+                      included={true}
+                      text={feature}
+                      isSpecial={idx === 0 || idx === 1 || hasEmoji}
+                    />
+                  );
+                })}
               </ul>
             </div>
 
@@ -476,17 +499,12 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               type="button"
               disabled={subscribing || effectiveTier === "mishwar"}
               onClick={() => handleConfirmSubscribe("mishwar", "daily")}
+              className="btn btn-primary border-none fs-sm fw-900"
               style={{
                 width: "100%",
-                padding: "var(--padding-btn)",
-                borderRadius: "var(--radiusBtn)",
                 background: effectiveTier === "mishwar" ? "var(--btn-cancel)" : "var(--mainBtn)",
                 color: effectiveTier === "mishwar" ? "#64748b" : "#fff",
-                border: "none",
-                fontWeight: "bold",
-                marginTop: "24px",
                 cursor: effectiveTier === "mishwar" ? "default" : "pointer",
-                fontSize: "0.88rem",
               }}
             >
               {subscribing && selectedPlanId === "mishwar"
@@ -501,8 +519,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
           <div
             style={{
               background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
-              border: effectiveTier === "silver" ? "2px solid #6366f1" : "1px solid var(--border-glass)",
-              borderRadius: "16px",
+              border: effectiveTier === "silver" ? "2px solid var(--color-primary)" : "1px solid var(--border-glass)",
+              borderRadius: "var(--radius-card)",
               padding: "24px",
               display: "flex",
               flexDirection: "column",
@@ -517,7 +535,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
             }}
           >
             <div>
-              <img src="/images/icons3d/CairoSailver.png" alt="" width="60px" />
+              <img src="/images/icons3d/CairoSilver.webp" alt="" width="60px" />
               <h4
                 className="sub-title"
                 style={{
@@ -553,41 +571,30 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
 
               <ul
                 style={{
-                  paddingRight: "16px",
+                  padding: 0,
                   margin: 0,
-                  fontSize: "0.78rem",
-                  color: "var(--text-secondary)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "6px",
-                  lineHeight: "1.4",
-                  listStyleType: "disc",
+                  gap: "7px",
+                  listStyle: "none",
                 }}
               >
                 {(findPlan("silver").features || []).map((feature: string, idx: number) => {
                   const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
                   return (
-                    <li
+                    <FeatureItem
                       key={idx}
-                      style={
-                        hasEmoji
-                          ? { color: "var(--color-foreground)", fontWeight: "bold" }
-                          : undefined
-                      }
-                    >
-                      {feature}
-                    </li>
+                      included={true}
+                      text={feature}
+                      isSpecial={hasEmoji}
+                    />
                   );
                 })}
-                <li style={{ textDecoration: "line-through", opacity: 0.5 }}>
-                  دليل المطارات والموانئ المصرية
-                </li>
-                <li style={{ textDecoration: "line-through", opacity: 0.5 }}>
-                  مواقف الأتوبيسات والميكروباصات
-                </li>
-                <li style={{ textDecoration: "line-through", opacity: 0.5 }}>
-                  مخطط الرحلات الذكي بالذكاء الاصطناعي
-                </li>
+                <FeatureItem included={false} text="دليل المطارات المصرية وصالات السفر" />
+                <FeatureItem included={false} text="دليل الموانئ البحرية التجارية والسياحية" />
+                <FeatureItem included={false} text="دليل مواقف وأتوبيسات السفر بين المحافظات" />
+                <FeatureItem included={false} text="دليل مواقف الميكروباص والسرفيس والتعرفة" />
+                <FeatureItem included={false} text="مخطط الرحلات الذكي بالذكاء الاصطناعي" />
               </ul>
             </div>
 
@@ -598,26 +605,20 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 (effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod)
               }
               onClick={() => handleConfirmSubscribe("silver", subscriptionPeriod)}
+              className="btn border-none fs-sm fw-900 mt-6"
               style={{
-                width: "100%",
-                padding: "var(--padding-btn)",
-                borderRadius: "var(--radiusBtn)",
                 background:
                   effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod
-                    ? "rgba(255,255,255,0.04)"
+                    ? "var(--btn-cancel)"
                     : "var(--bg-subscribe-button-seliver)",
                 color:
                   effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod
                     ? "#64748b"
-                    : "#000000ff",
-                border: "none",
-                fontWeight: "bold",
-                marginTop: "24px",
+                    : "#fff",
                 cursor:
                   effectiveTier === "silver" && profile?.subscription_period === subscriptionPeriod
                     ? "default"
                     : "pointer",
-                fontSize: "0.88rem",
               }}
             >
               {subscribing && selectedPlanId === "silver"
@@ -632,8 +633,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
           <div
             style={{
               background: "var(--bg-secondary, rgba(255, 255, 255, 0.02))",
-              border: effectiveTier === "gold" ? "2px solid #eab308" : "1px solid var(--border-glass)",
-              borderRadius: "16px",
+              border: effectiveTier === "gold" ? "2px solid var(--color-primary)" : "1px solid var(--border-glass)",
+              borderRadius: "var(--radius-card)",
               padding: "24px",
               display: "flex",
               flexDirection: "column",
@@ -701,30 +702,23 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
 
               <ul
                 style={{
-                  paddingRight: "16px",
+                  padding: 0,
                   margin: 0,
-                  fontSize: "0.78rem",
-                  color: "var(--text-secondary)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "6px",
-                  lineHeight: "1.4",
-                  listStyleType: "disc",
+                  gap: "7px",
+                  listStyle: "none",
                 }}
               >
                 {(findPlan("gold").features || []).map((feature: string, idx: number) => {
                   const hasEmoji = /[\uD800-\uDFFF\u2600-\u27BF]/.test(feature);
                   return (
-                    <li
+                    <FeatureItem
                       key={idx}
-                      style={
-                        hasEmoji
-                          ? { color: "var(--color-foreground)", fontWeight: "bold" }
-                          : undefined
-                      }
-                    >
-                      {feature}
-                    </li>
+                      included={true}
+                      text={feature}
+                      isSpecial={hasEmoji}
+                    />
                   );
                 })}
               </ul>
@@ -737,10 +731,9 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 (effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod)
               }
               onClick={() => handleConfirmSubscribe("gold", subscriptionPeriod)}
+              className="btn border-none fs-sm fw-900 mt-6"
               style={{
                 width: "100%",
-                padding: "var(--padding-btn)",
-                borderRadius: "var(--radiusBtn)",
                 background:
                   effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod
                     ? "var(--btn-cancel)"
@@ -749,14 +742,10 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                   effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod
                     ? "#64748b"
                     : "#000",
-                border: "none",
-                fontWeight: "bold",
-                marginTop: "24px",
                 cursor:
                   effectiveTier === "gold" && profile?.subscription_period === subscriptionPeriod
                     ? "default"
                     : "pointer",
-                fontSize: "0.88rem",
               }}
             >
               {subscribing && selectedPlanId === "gold"

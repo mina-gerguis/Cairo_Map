@@ -563,7 +563,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     rel="noopener noreferrer"
                   >
                     <strong style={{ color: "var(--color-secondary)" }}>
-                      https://ipn.eg/S/mina0gerguis/instapay/6inTOU
+                      https://ipn.eg/S/mina0gerguis
                     </strong>
                   </a>
                 </p>
@@ -573,7 +573,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بالتحويل عبر تطبيق تيلدا إلى التاج (Tag) التالي:
                   <br />
-                  التاج: <strong style={{ color: "var(--color-foreground)" }}>@minagerguis</strong>{" "}
+                   التاج: 
                   <button
                     type="button"
                     className={styles.copyButton}
@@ -584,11 +584,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     }}
                     title="نسخ التاج"
                   >
-                    <i
-                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${
-                        copied ? styles.copiedIcon : ""
-                      }`}
-                    />
+                    <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
+                      @minagerguis
+                    </strong>{" "}
                   </button>
                   <br />
                   الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerguis</strong>
@@ -599,7 +597,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بتحويل رصيد كاش إلى رقم المحفظة التالي:
                   <br />
-                  الرقم: <strong style={{ color: "var(--color-foreground)" }}>01020372317</strong>
+                  الرقم:
                   <button
                     type="button"
                     className={styles.copyButton}
@@ -610,11 +608,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     }}
                     title="نسخ الرقم"
                   >
-                    <i
-                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${
-                        copied ? styles.copiedIcon : ""
-                      }`}
-                    />
+                     <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>01020372317</strong>
                   </button>
                   <br />
                   الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>
@@ -630,7 +624,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     بنك قطر الوطني الأهلي (QNB)
                   </strong>
                   <br />
-                  رقم الحساب: <strong style={{ color: "var(--color-foreground)" }}>1020670700235</strong>
+                  رقم الحساب: 
                    <button
                     type="button"
                     className={styles.copyButton}
@@ -641,11 +635,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     }}
                     title="نسخ رقم الحساب"
                   >
-                    <i
-                      className={`bx ${copied ? "bx-check" : "bx-copy"} ${
-                        copied ? styles.copiedIcon : ""
-                      }`}
-                    />
+                    <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>1020670700235</strong>
                   </button>
                   <br />
                   الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>
