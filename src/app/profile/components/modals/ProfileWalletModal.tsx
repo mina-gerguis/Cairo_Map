@@ -184,7 +184,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 background: "var(--color-foreground)",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "12px",
-                padding: "14px 18px",
+                padding: "10px 18px",
                 cursor: onOpenPointsModal ? "pointer" : "default",
                 display: "flex",
                 alignItems: "center",
@@ -585,7 +585,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     title="نسخ التاج"
                   >
                     <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
-                      @minagerguis
+                     <span>{copied ? "تم النسخ" : "@minagerguis"}</span> 
                     </strong>{" "}
                   </button>
                   <br />
@@ -608,7 +608,8 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     }}
                     title="نسخ الرقم"
                   >
-                     <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>01020372317</strong>
+                     <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
+                      <span style={{ color: "var(--color-primary)" }}>{copied ? "تم النسخ" : "01020372317"}</span> </strong>
                   </button>
                   <br />
                   الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>
@@ -635,7 +636,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     }}
                     title="نسخ رقم الحساب"
                   >
-                    <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>1020670700235</strong>
+                    <strong style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
+                       <span style={{ color: "var(--color-primary)" }}>{copied ? "تم النسخ" : "1020670700235"}</span>
+                       </strong>
                   </button>
                   <br />
                   الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>

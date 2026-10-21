@@ -4,6 +4,7 @@ import React from "react";
 import CustomModal from "@/components/common/Modals";
 import { MfaFactorsState, MfaStep } from "../../types";
 import styles from "../../page.module.css";
+import { copyToClipboard } from "@/app/directory/utils";
 
 interface ProfileTwoFactorModalProps {
   isOpen: boolean;
@@ -73,7 +74,6 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
             : "إلغاء تفعيل المصادقة الثنائية"
       }
       titleColor={mfaStep === "unenroll_confirm" ? "#ff3b30" : "var(--color-foreground)"}
-      iconSrc="/images/icons3d/padlock.webp"
       borderColor={
         mfaStep === "unenroll_confirm" ? "rgba(255, 59, 48, 0.25)" : "var(--modelCardBorder)"
       }
@@ -82,20 +82,16 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
           ? {
             label: "إغلاق",
             onClick: onClose,
-            bgColor: "var(--btn-cancel)",
-            textColor: "var(--color-foreground)",
           }
           : mfaStep === "enroll"
             ? {
-              label: mfaLoading ? "جاري التفعيل..." : "تأكيد وتفعيل",
+              label: mfaLoading ? "جاري التفعيل..." : " تفعيل",
               onClick: handleVerifyTOTP,
-              bgColor: "var(--mainBtn)",
               disabled: mfaLoading || verificationCode.length !== 6,
             }
             : {
               label: mfaLoading ? "جاري الإلغاء..." : "تأكيد الإلغاء",
               onClick: handleUnenrollTOTP,
-              bgColor: "#ff3b30",
               disabled: mfaLoading || verificationCode.length !== 6 || !mfaPasswordConfirm,
             }
       }
@@ -104,7 +100,6 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
           ? {
             label: "رجوع",
             onClick: () => setMfaStep("selection"),
-            bgColor: "var(--btn-cancel)",
             disabled: mfaLoading,
           }
           : mfaStep === "unenroll_confirm"
@@ -159,7 +154,7 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
                     <i className={`bx bxl-whatsapp ${styles.securityIcon}`}></i>
                   </div>
                   <div className={styles.profileInfoText}>
-                    <h4 className={styles.mfaOptionTitle}>تطبيق واتساب</h4>
+                    <h4 className={styles.mfaOptionTitle}> واتساب</h4>
                   </div>
                 </div>
                 <span className={styles.mfaOptionBadgeSoon}>قريباً</span>
@@ -237,7 +232,11 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
             <p className={styles.mfaSecretText}>
               أو يمكنك إدخال الرمز السري يدوياً:
               <br />
-              <code className={styles.mfaSecretCode}>{mfaSecret}</code>
+              <button className="bg-transparent border-none" onClick={() => copyToClipboard(mfaSecret)}>
+                <code className={styles.mfaSecretCode}>{mfaSecret}</code>
+              </button>
+              <span style={{ color: "var(--text-muted)" }}>اضغط علي الرمز لنسخه</span>
+
             </p>
 
             <div className={styles.digitsRow}>

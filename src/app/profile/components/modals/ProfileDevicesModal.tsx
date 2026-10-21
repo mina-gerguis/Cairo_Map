@@ -4,6 +4,7 @@ import React from "react";
 import CustomModal from "@/components/common/Modals";
 import { UserDevice } from "../../types";
 import styles from "../../page.module.css";
+import { Calendar, LogOut, MapPinHouse, X } from "lucide-react";
 
 interface ProfileDevicesModalProps {
   isOpen: boolean;
@@ -43,12 +44,9 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
         onClose={onClose}
         title="الجلسات النشطة"
         message="الأجهزة المسجلة حالياً بحسابك. يمكنك تسجيل الخروج من أي جهاز عن بُعد."
-        iconSrc="/images/icons3d/phone.webp"
         primaryButton={{
           label: "إغلاق",
           onClick: onClose,
-          bgColor: "var(--btn-cancel)",
-          textColor: "var(--color-foreground)",
         }}
       >
         <div style={{ textAlign: "right" }}>
@@ -95,10 +93,11 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
                             )}
                           </div>
                           <div className={styles.deviceMetaRow}>
-                            <span>📍 {device.location || "موقع غير معروف"}</span>
+                            <MapPinHouse size={12}/>
+                            <span>{device.location || "موقع غير معروف"}</span>
                             <span className={styles.metaDivider}>•</span>
                             <span style={{ fontFamily: "var(--font-heading)" }}>
-                              📅{" "}
+                              <Calendar size={12} />{" "}
                               {new Date(device.logged_in_at).toLocaleDateString("ar-EG", {
                                 month: "short",
                                 day: "numeric",
@@ -127,7 +126,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
                           className={styles.deactivateDeviceBtn}
                           title="تسجيل الخروج وإنهاء الجلسة"
                         >
-                          <i className="bx bx-log-out"></i>
+                          <LogOut size={16}/>
                         </button>
                       )}
                     </div>
@@ -167,14 +166,12 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
               setDeviceToDeactivate(null);
             }
           },
-          bgColor: "var(--mainBtn)",
-          icon: <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i>,
+          icon: <LogOut size={16}/>,
         }}
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setDeviceToDeactivate(null),
-          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--btn-cancel)",
+          icon: <X size={16}/>,
         }}
       />
     </>

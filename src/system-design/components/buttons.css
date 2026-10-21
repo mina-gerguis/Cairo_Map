@@ -7,7 +7,7 @@
   --btn-border-color: rgba(255, 255, 255, 0.2);
   /* main btn background & text color */
   --btn-primary: #ffffff;
-  --btn-primary-color: #000000;
+  --btn-primary-text: #000000;
   /* second button */
   --btn-secondary: rgba(143, 143, 143, 0.06);
   --btn-secondary-color: #ffffff;
@@ -17,7 +17,7 @@ html.light {
   --btn-border-color: rgba(0, 0, 0, 0.2);
   /* main btn background & text color */
   --btn-primary: #000000;
-  --btn-primary-color: #ffffff;
+  --btn-primary-text: #ffffff;
   /* second button */
   --btn-secondary: rgba(143, 143, 143, 0.06);
   --btn-secondary-color: #000000;
@@ -83,7 +83,7 @@ html.light {
 .btn-primary {
   background: var(--btn-primary);
   border-color: var(--btn-border-color);
-  color: var(--btn-primary-color);
+  color: var(--btn-primary-text);
 }
 
 .btn-blue {

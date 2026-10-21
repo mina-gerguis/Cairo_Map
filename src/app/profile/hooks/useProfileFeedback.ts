@@ -229,10 +229,17 @@ export const useProfileFeedback = ({
         .eq("user_id", user.id);
 
       if (error) throw error;
-      alert("تم التراجع عن اقتراح المكان بنجاح.");
+      setMessage({
+        type: "success",
+        title: "تم الحذف بنجاح",
+        text: "تم حذف اقتراح المكان بنجاح.",
+      });
       fetchUserRequestsAndReports();
     } catch (err: any) {
-      alert("فشل التراجع عن الاقتراح: " + err.message);
+      setMessage({
+        type: "error",
+        text: "فشل حذف الاقتراح: " + (err.message || "حدث خطأ غير متوقع"),
+      });
     }
   };
 
@@ -246,10 +253,17 @@ export const useProfileFeedback = ({
         .eq("user_id", user.id);
 
       if (error) throw error;
-      alert("تم التراجع عن البلاغ بنجاح.");
+      setMessage({
+        type: "success",
+        title: "تم الحذف بنجاح",
+        text: "تم حذف البلاغ بنجاح.",
+      });
       fetchUserRequestsAndReports();
     } catch (err: any) {
-      alert("فشل التراجع عن البلاغ: " + err.message);
+      setMessage({
+        type: "error",
+        text: "فشل حذف البلاغ: " + (err.message || "حدث خطأ غير متوقع"),
+      });
     }
   };
 
@@ -402,7 +416,7 @@ export const useProfileFeedback = ({
         setFaqAnswer("");
       }
     } catch (err: any) {
-      alert("فشل إضافة السؤال الشائع: " + err.message);
+      setMessage({ type: "error", text: "فشل إضافة السؤال الشائع: " + err.message });
     } finally {
       setFaqLoading(false);
     }
@@ -415,15 +429,16 @@ export const useProfileFeedback = ({
       const { error } = await supabase.from("faqs").delete().eq("id", id);
       if (error) throw error;
       setFaqs(faqs.filter((f) => f.id !== id));
+      setMessage({ type: "success", text: "تم حذف السؤال بنجاح." });
     } catch (err: any) {
-      alert("فشل الحذف: " + err.message);
+      setMessage({ type: "error", text: "فشل الحذف: " + err.message });
     }
   };
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase) {
-      alert("تعذر الاتصال بقاعدة البيانات.");
+      setMessage({ type: "error", text: "تعذر الاتصال بقاعدة البيانات." });
       return;
     }
     setContactLoading(true);
@@ -443,6 +458,7 @@ export const useProfileFeedback = ({
       if (error) throw error;
 
       setContactSubmitted(true);
+      setMessage({ type: "success", text: "تم إرسال رسالتك بنجاح!" });
       setContactForm({
         firstName: "",
         lastName: "",
@@ -455,7 +471,7 @@ export const useProfileFeedback = ({
       });
     } catch (err: any) {
       console.error("Error submitting contact message:", err);
-      alert("فشل إرسال الرسالة: " + err.message);
+      setMessage({ type: "error", text: "فشل إرسال الرسالة: " + err.message });
     } finally {
       setContactLoading(false);
     }

@@ -151,6 +151,7 @@ export interface PasswordRules {
 export interface ProfileAlertMessage {
   type: "success" | "error";
   text: string;
+  title?: string;
 }
 
 export interface FavoritePlaceItem {

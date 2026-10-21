@@ -309,33 +309,15 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
 
               <div className={styles.formButtonsRow}>
                 <button
-                  className={`btn ${styles.flex1}`}
+                  className="btn btn-cancel font-cairo fw-600 w-1/2"
                   onClick={() => setEditMode(false)}
-                  style={{
-                    border: "1px solid var(--border-glass)",
-                    borderRadius: "var(--radiusBtnLg)",
-                    width: "50%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "var(--font-heading)",
-                    padding: "var(--padding-btn)",
-                  }}
                 >
                   إلغاء
                 </button>
                 <button
-                  className={`btn btn-primary ${styles.flex1}`}
+                  className="btn btn-primary font-cairo fw-600 w-1/2"
                   onClick={handleSaveProfile}
                   disabled={saving}
-                  style={{
-                    border: "1px solid var(--border-glass)",
-                    borderRadius: "var(--radiusBtnLg)",
-                    width: "50%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "var(--font-heading)",
-                    padding: "var(--padding-btn)",
-                  }}
                 >
                   {saving ? "جاري الحفظ..." : "حفظ التغييرات"}
                 </button>
@@ -371,18 +353,6 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 <span className={styles.infoLabel}>البريد الإلكتروني</span>
                 <div className={styles.usernameWrapper}>
                   <span className={styles.infoValue}>{profile?.email}</span>
-                  <button
-                    className={styles.copyButton}
-                    onClick={() => {
-                      if (profile?.email) {
-                        navigator.clipboard.writeText(profile.email);
-                        setCopied(true);
-                        setTimeout(() => setCopied(false), 2000);
-                      }
-                    }}
-                    title="نسخ البريد الإلكتروني"
-                  >
-                  </button>
                 </div>
               </div>
               {/* phone */}

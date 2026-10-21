@@ -144,10 +144,11 @@ export const useProfileSecurity = ({
           handleLogout();
         }
       } else {
-        alert("فشل تسجيل خروج الجهاز: " + error.message);
+        setMessage({ type: "error", text: "فشل تسجيل خروج الجهاز: " + error.message });
       }
     } catch (err: any) {
       console.error(err);
+      setMessage({ type: "error", text: "حدث خطأ غير متوقع أثناء تسجيل خروج الجهاز" });
     }
   };
 

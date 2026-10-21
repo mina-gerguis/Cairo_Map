@@ -17,7 +17,7 @@ import {
 } from "../types";
 import { getProblemLabelAr } from "../utils";
 import { CONTACT_SUBJECT_OPTIONS } from "../constants";
-import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash, BookmarkCheck, Shredder } from 'lucide-react';
+import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash, BookmarkCheck, Shredder, Send } from 'lucide-react';
 import styles from "../page.module.css";
 
 interface ProfileActionsListProps {
@@ -528,7 +528,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                           }}
                           className={`btn btn-danger ${styles.notifBtnDeleteAll}`}
                         >
-                         <Shredder size={20}/>
+                          <Shredder size={20} />
                         </button>
                       )}
                     </div>
@@ -681,7 +681,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             ? "var(--btn-primary)"
                             : "transparent",
                         color:
-                          activeRequestsTab === "proposals" ? "var(--btn-primary-color)" : "var(--text-secondary)",
+                          activeRequestsTab === "proposals" ? "var(--btn-primary-text)" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s",
                       }}
@@ -704,7 +704,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             ? "var(--btn-primary)"
                             : "transparent",
                         color:
-                          activeRequestsTab === "reports" ? "var(--btn-primary-color)" : "var(--text-secondary)",
+                          activeRequestsTab === "reports" ? "var(--btn-primary-text)" : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s",
                       }}
@@ -728,7 +728,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             : "transparent",
                         color:
                           activeRequestsTab === "app_feedback"
-                            ? "var(--btn-primary-color)"
+                            ? "var(--btn-primary-text)"
                             : "var(--text-secondary)",
                         cursor: "pointer",
                         transition: "all 0.2s",
@@ -1515,6 +1515,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                         disabled={contactLoading}
                         className={`btn btn-primary ${styles.contactSubmitBtn}`}
                       >
+                        <Send size={18}/>
                         {contactLoading ? "جاري الإرسال..." : "إرسال الرسالة"}
                       </button>
                     </form>

@@ -3,6 +3,7 @@
 import React from "react";
 import CustomModal from "@/components/common/Modals";
 import { AppFeedback } from "../../types";
+import { Send, X } from "lucide-react";
 
 interface ProfileFeedbackModalsProps {
   // Suggestion Modal
@@ -85,20 +86,19 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         isOpen={showSuggestionModal}
         onClose={() => setShowSuggestionModal(false)}
         title="تقديم اقتراح"
-        message="ساعدنا في تحسين الخدمة."
-        iconSrc="/images/icons3d/light.webp"
+        message="ساعدنا في تحسين الموقع لكي يمكنكم الاستفادة بشكل افضل من الموقع"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
-          label: suggestionLoading ? "جاري الإرسال..." : "إرسال",
+          label: suggestionLoading ? "يتم الإرسال..." : "إرسال",
           onClick: handleSendSuggestion,
-          bgColor: "var(--mainBtn)",
           disabled: suggestionLoading || !isSuggestionFormValid,
-          icon: <i className="bx bx-paper-plane" style={{ fontSize: "1.2rem" }}></i>,
+          icon: <Send size={18}/>
         }}
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setShowSuggestionModal(false),
           bgColor: "var(--btn-cancel)",
+          icon: <X size={18}/>
         }}
       >
         <div style={{ textAlign: "right" }}>
@@ -120,8 +120,8 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
               className="input-fields help-select"
               style={{ fontFamily: "var(--font-cairo)" }}
             >
-              <option value="اقتراح لتحسين الشكل">اقتراح لتحسين الشكل</option>
-              <option value="اقتراح إضافة ميزة جديدة">اقتراح إضافة ميزة جديدة</option>
+              <option value="اقتراح لتحسين الشكل">تحسين الشكل</option>
+              <option value="اقتراح إضافة ميزة جديدة">إضافة ميزة جديدة</option>
               <option value="اقتراح آخر">اقتراح آخر</option>
             </select>
           </div>
@@ -136,7 +136,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
                 fontWeight: "bold",
               }}
             >
-              رسالة الاقتراح
+               اشرح اقتراحك
             </label>
             <textarea
               className="input-fields"
@@ -170,14 +170,12 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         closeOnOverlayClick={!bugLoading && !bugUploading}
         title="الإبلاغ عن مشكلة"
         message="يرجى تزويدنا بتفاصيل المشكلة لحلها."
-        iconSrc="/images/icons3d/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
-          label: bugLoading ? "جاري الإرسال..." : "إرسال",
+          label: bugLoading ? "يتم الإرسال..." : "إرسال",
           onClick: handleSendBugReport,
-          bgColor: "var(--mainBtn)",
           disabled: bugLoading || bugUploading || !isBugFormValid,
-          icon: <i className="bx bx-paper-plane" style={{ fontSize: "1.2rem" }}></i>,
+          icon: <Send size={18}/>,
         }}
         secondaryButton={{
           label: "إلغاء",
@@ -190,7 +188,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
               setBugImageFile(null);
             }
           },
-          bgColor: "var(--btn-cancel)",
+          icon: <X size={18}/>,
           disabled: bugLoading || bugUploading,
         }}
       >
@@ -249,7 +247,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
             <label
               style={{
                 display: "block",
-                marginBottom: "6px",
+                marginBottom: "12px",
                 fontSize: "0.85rem",
                 color: "var(--text-secondary)",
                 fontWeight: "bold",
@@ -260,7 +258,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
             <div
               style={{
                 background: "rgba(255, 255, 255, 0.03)",
-                border: "1px dashed var(--border-glass)",
+                border: "2px dashed var(--border-primary)",
                 borderRadius: "14px",
                 padding: "16px",
                 textAlign: "center",
@@ -393,25 +391,10 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
       <CustomModal
         isOpen={proposalToRetract !== null}
         onClose={() => setProposalToRetract(null)}
-        title="تأكيد التراجع"
-        titleColor="#ff9500"
-        message="هل أنت متأكد من التراجع عن هذا الاقتراح؟"
-        iconNode={
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "50%",
-              backgroundColor: "rgba(255, 149, 0, 0.15)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#ff9500",
-            }}
-          >
-            <i className="bx bx-undo" style={{ fontSize: "2rem" }}></i>
-          </div>
-        }
+        title="تأكيد الحذف"
+        titleColor="var(--color-foreground)"
+        message="هل أنت متأكد من حذف هذا الاقتراح؟"
+        iconSrc="/images/icons3d/trash.webp"
         borderColor="rgba(255, 149, 0, 0.25)"
         primaryButton={{
           label: "تأكيد",
@@ -422,7 +405,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
               handleRetractProposal(pid);
             }
           },
-          bgColor: "#ff9500",
+          bgColor: "var(--btn-primary)",
           icon: <i className="bx bx-check" style={{ fontSize: "1.2rem" }}></i>,
         }}
         secondaryButton={{

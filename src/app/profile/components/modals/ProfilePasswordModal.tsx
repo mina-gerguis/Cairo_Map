@@ -40,18 +40,14 @@ export const ProfilePasswordModal: React.FC<ProfilePasswordModalProps> = ({
       onClose={onClose}
       title="تغيير كلمة المرور"
       message="الرجاء إدخال كلمة المرور الجديدة."
-      iconSrc="/images/icons3d/padlock.webp"
-      borderColor="var(--modelCardBorder)"
       primaryButton={{
         label: passwordLoading ? "جاري التغيير..." : "تأكيد",
         onClick: handleChangePassword,
-        bgColor: "var(--mainBtn)",
         disabled: passwordLoading || !isPasswordValid,
       }}
       secondaryButton={{
         label: "إلغاء",
         onClick: onClose,
-        bgColor: "var(--btn-cancel)",
       }}
     >
       <div style={{ textAlign: "right" }}>
@@ -96,7 +92,7 @@ export const ProfilePasswordModal: React.FC<ProfilePasswordModalProps> = ({
             { ok: pwdRules.lower, label: "حرف صغير (a-z)" },
             { ok: pwdRules.number, label: "رقم (0-9)" },
             { ok: pwdRules.special, label: "رمز خاص (@$!...)" },
-            { ok: pwdRules.match, label: "كلمتا المرور متطابقتان" },
+            { ok: pwdRules.match, label: "الكلمات متطابقة" },
           ].map(({ ok, label }) => (
             <div
               key={label}

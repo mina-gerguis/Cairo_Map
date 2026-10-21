@@ -12,19 +12,42 @@ interface ProfileAlertModalProps {
 export const ProfileAlertModal: React.FC<ProfileAlertModalProps> = ({ message, onClose }) => {
   if (!message) return null;
 
+  const isSuccess = message.type === "success";
+
   return (
-    <CustomModal
-      isOpen={message !== null}
-      onClose={onClose}
-      title={message.type === "error" ? "تنبيه" : "عملية ناجحة"}
-      titleColor={message.type === "error" ? "#ff3b30" : "var(--color-foreground)"}
-      message={message.text}
-      borderColor={message.type === "error" ? "rgba(255, 59, 48, 0.25)" : "var(--modelCardBorder)"}
-      primaryButton={{
-        label: "موافق",
-        onClick: onClose,
-        bgColor: message.type === "error" ? "#ff3b30" : "var(--mainBtn)",
-      }}
-    />
+    <>
+      <style>{`
+        @keyframes alertGlowPulse {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 ${isSuccess ? "rgba(16, 185, 129, 0.35)" : "rgba(239, 68, 68, 0.35)"};
+          }
+          50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px 4px ${isSuccess ? "rgba(16, 185, 129, 0.25)" : "rgba(239, 68, 68, 0.25)"};
+          }
+        }
+      `}</style>
+      <CustomModal
+        isOpen={message !== null}
+        onClose={onClose}
+        title={message.title || (isSuccess ? "تمت العملية بنجاح" : "تنبيه")}
+        titleColor={isSuccess ? "var(--color-foreground)" : "var(--color-error)"}
+        message={message.text}
+        borderColor="var(--border-glass)"
+        primaryButton={{
+          label: "أغلاق",
+          onClick: onClose,
+          bgColor: "var(--btn-primary)",
+          textColor: "var(--btn-primary-text)",
+          icon: (
+            <i
+              className={`bx ${isSuccess ? "bx-check" : "bx-x"}`}
+              style={{ fontSize: "1.2rem" }}
+            />
+          ),
+        }}
+      />
+    </>
   );
 };

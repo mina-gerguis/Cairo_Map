@@ -377,10 +377,10 @@
   padding: 10px 18px;
   border-radius: var(--radiusBtn, 12px);
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 6px;
-  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -389,6 +389,7 @@
 }
 
 .addUrlBtn:disabled {
+  justify-content: center;
   opacity: 0.5;
   cursor: not-allowed;
 }
