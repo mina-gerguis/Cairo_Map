@@ -235,7 +235,7 @@ export const ProfileTwoFactorModal: React.FC<ProfileTwoFactorModalProps> = ({
               <button className="bg-transparent border-none" onClick={() => copyToClipboard(mfaSecret)}>
                 <code className={styles.mfaSecretCode}>{mfaSecret}</code>
               </button>
-              <span style={{ color: "var(--text-muted)" }}>اضغط علي الرمز لنسخه</span>
+              <span style={{ color: "var(--text-muted)", display: "block" }}>اضغط علي الرمز لنسخه</span>
 
             </p>
 
