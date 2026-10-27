@@ -84,7 +84,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "أحفظ مكاني",
     subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
     href: "/save-location",
-    icon: "cairo.webp",
+    icon: "street.webp",
     badge: "ميزة جديدة",
     keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"],
   },

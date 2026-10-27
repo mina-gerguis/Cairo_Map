@@ -148,7 +148,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "أحفظ مكاني",
     subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
     href: "/save-location",
-    icon: "cairo.webp",
+    icon: "street.webp",
     badge: "ميزة جديدة 🎯",
     keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"]
   },
@@ -157,7 +157,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon: "metro.webp",
+    icon: "metro",
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },
@@ -166,7 +166,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطار المونوريل",
     subtitle: "محطات وأسعار تذاكر المونوريل",
     href: "/monorail",
-    icon: "Cairo_monorail_east.webp",
+    icon: "Cairo_monorail_east",
     badge: "قطار معلق",
     keywords: ["منورايل", "المنورايل", "قطار العاصمة", "العاصمة الادارية", "اكتوبر", "monorail"]
   },
@@ -175,7 +175,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "القطار الكهربائي الخفيف",
     subtitle: "محطات ومواعيد القطار الكهربائي",
     href: "/lrt",
-    icon: "Cairo_lrt.webp",
+    icon: "Cairo_lrt",
     badge: "القطار الكهربائي",
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"]
   },
@@ -184,7 +184,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الأتوبيس الترددي السريع (BRT)",
     subtitle: "محطات ومسار الأتوبيس على الطريق الدائري",
     href: "/brt",
-    icon: "brt.webp",
+    icon: "brt",
     badge: "أتوبيس ترددي",
     keywords: ["brt", "ترددي", "الترددي", "اتوبيس ترددي", "الأتوبيس الترددي", "الدائري", "الطريق الدائري", "حافلات سريعة"]
   },
@@ -193,7 +193,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطارات السكك الحديدية",
     subtitle: "قطارات القاهرة والصعيد",
     href: "/railways",
-    icon: "Cairo_train.webp",
+    icon: "Cairo_train",
     badge: "قطارات مصر",
     keywords: ["قطار", "قطارات", "سكك حديد", "سكك حديد مصر", "محطة رمسيس", "رمسيس", "قطار الصعيد", "قطار اسكندرية"]
   },
@@ -202,7 +202,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "دليل الهاتف والأكواد",
     subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "cairo.webp",
+    icon: "directory",
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
@@ -211,7 +211,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "ازاي اروح؟",
     subtitle: "دليل الوصول لأي مكان في مصر",
     href: "/directions",
-    icon: "arab_republic _of_egypt.webp",
+    icon: "arab_republic _of_egypt",
     badge: "اتجاهات ومسارات",
     keywords: ["ازاي اروح", "ازاي اوصل", "اروح ازاي", "مواصلات", "طريق", "مسار", "اتجاهات"]
   },
@@ -220,7 +220,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مخطط الرحلات الذكي",
     subtitle: "تخطيط يومك بالذكاء الاصطناعي",
     href: "/ai-planner",
-    icon: "ai.webp",
+    icon: "ai",
     badge: "ذكاء اصطناعي",
     keywords: ["خروجة", "تخطيط", "مخطط", "رحلات", "برنامج", "ذكاء", "ذكاء اصطناعي", "ai", "افكار خروج"]
   },
@@ -229,7 +229,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف الأتوبيسات",
     subtitle: "محطات الأتوبيسات بالقاهرة والجيزة",
     href: "/bus-stations",
-    icon: "bus.webp",
+    icon: "bus",
     badge: "مواقف أتوبيس",
     keywords: ["اتوبيس", "أتوبيس", "موقف اتوبيس", "نقل عام", "مواقف الأتوبيس"]
   },
@@ -238,7 +238,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف السرفيس",
     subtitle: "خطوط السرفيس بين المحافظات",
     href: "/microbus-stations",
-    icon: "microbus.webp",
+    icon: "microbus",
     badge: "مواقف ميكروباص",
     keywords: ["ميكروباص", "موقف ميكروباص", "سرفيس", "موقف سرفيس", "مواقف"]
   },
@@ -247,7 +247,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "المطارات المصرية",
     subtitle: "معلومات مطار القاهرة ",
     href: "/airports",
-    icon: "airport.webp",
+    icon: "airport",
     badge: "مطارات وموانئ",
     keywords: ["مطار", "مطارات", "مطار القاهرة", "سفنكس", "موانئ", "ميناء"]
   },
@@ -256,7 +256,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الموانئ المصرية",
     subtitle: "معلومات ميناء السخنة ",
     href: "/ports",
-    icon: "arab_republice.webp",
+    icon: "arab_republice",
     badge: "الموانئ",
     keywords: ["ميناء", "الميناء", "ميناء السخنة"]
   },
@@ -265,7 +265,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مدونة ومقالات خريطة القاهرة",
     subtitle: "أدلة الترانزيت، النصائح، والأماكن",
     href: "/blog",
-    icon: "cairo.webp",
+    icon: "cairo",
     badge: "مقالات وأدلة",
     keywords: ["مدونة", "مقالات", "مقال", "اخبار", "أخبار", "دليل", "blog", "نصائح", "مقاله"]
   }
@@ -1785,7 +1785,7 @@ export default function HomePage() {
                     overflow: "hidden"
                   }}>
                     <Image
-                      src={`/images/icons3d/${service.icon}.png`}
+                      src={`/images/icons2d/${service.icon}.webp`}
                       alt={service.title}
                       width={80}
                       height={80}
