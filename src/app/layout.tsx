@@ -175,7 +175,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body>
+      <body className="antialiased">
         <AuthProvider>
           <NotificationProvider>
             <ClientLayoutWrapper>

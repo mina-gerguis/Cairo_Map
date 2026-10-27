@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { CATEGORIES_STRUCTURE, formatBoxIcon } from "@/data/places";
 import { PlacesCategoryFilterProps } from "../types";
 import { CATEGORY_ICONS, CATEGORY_LABELS } from "../constants";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 export default function PlacesCategoryFilter({
   selectedCategory,
@@ -18,6 +19,32 @@ export default function PlacesCategoryFilter({
   locationLoading,
   onToggleProximity,
 }: PlacesCategoryFilterProps) {
+  const filterContainerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const el = filterContainerRef.current;
+      if (!el) return;
+      const pills = el.querySelectorAll(".category-pill");
+      if (pills.length > 0) {
+        gsap.fromTo(
+          pills,
+          { autoAlpha: 0, scale: 0.92, y: 8 },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.35,
+            stagger: 0.02,
+            ease: "power2.out",
+            clearProps: "transform,opacity,visibility",
+          }
+        );
+      }
+    },
+    { scope: filterContainerRef, dependencies: [selectedCategory, selectedSubCategory] }
+  );
+
   // العثور على أنواع الأماكن المتاحة لهذا التصنيف الفرعي
   const availableTypes = React.useMemo(() => {
     if (selectedCategory === "all" || !selectedSubCategory) return [];
@@ -36,7 +63,7 @@ export default function PlacesCategoryFilter({
   }, [places, selectedCategory, selectedSubCategory]);
 
   return (
-    <>
+    <div ref={filterContainerRef}>
       {/* ── Categories + Proximity Button ── */}
       <div
         style={{
@@ -265,6 +292,6 @@ export default function PlacesCategoryFilter({
             })}
           </div>
         )}
-    </>
+    </div>
   );
 }

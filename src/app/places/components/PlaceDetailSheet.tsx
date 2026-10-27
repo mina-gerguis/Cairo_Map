@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { BiSolidMapPin } from "react-icons/bi";
 import { TbMapShare } from "react-icons/tb";
@@ -17,6 +17,7 @@ import { PlaceDetailSheetProps } from "../types";
 import { CATEGORY_ICONS, CATEGORY_LABELS } from "../constants";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import ImageWithSkeleton from "./ImageWithSkeleton";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 export default function PlaceDetailSheet({
   selectedPlace,
@@ -51,12 +52,35 @@ export default function PlaceDetailSheet({
       ? displayBranch.media
       : selectedPlace.menuImages || [];
 
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (overlayRef.current && sheetRef.current) {
+        gsap.fromTo(
+          overlayRef.current,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.25, ease: "power2.out" }
+        );
+        gsap.fromTo(
+          sheetRef.current,
+          { yPercent: 100 },
+          { yPercent: 0, duration: 0.45, ease: "power3.out" }
+        );
+      }
+    },
+    { dependencies: [selectedPlace?.id] }
+  );
+
   return (
     <div
+      ref={overlayRef}
       className="ios-sheet-overlay"
       onClick={onClose}
     >
       <div
+        ref={sheetRef}
         className="ios-sheet"
         style={{
           maxWidth: "100%",

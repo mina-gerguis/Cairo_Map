@@ -29,7 +29,9 @@
   box-shadow: var(--cardGlassShadow);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  transition: var(--transition-spring);
+  transition-property: transform, box-shadow, background-color, border-color;
+  transition-duration: 250ms;
+  transition-timing-function: var(--ease-out);
 }
 
 .glass-card::before {
@@ -41,7 +43,7 @@
 }
 
 .glass-card:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 /* ==========================================================================

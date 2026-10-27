@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 export interface ModalButtonProps {
   label: string;
@@ -41,6 +42,27 @@ export default function CustomModal({
   children,
   closeOnOverlayClick = true,
 }: CustomModalProps) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const modalBoxRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (isOpen && overlayRef.current && modalBoxRef.current) {
+        gsap.fromTo(
+          overlayRef.current,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.25, ease: "power2.out" }
+        );
+        gsap.fromTo(
+          modalBoxRef.current,
+          { autoAlpha: 0, scale: 0.88, y: 18 },
+          { autoAlpha: 1, scale: 1, y: 0, duration: 0.35, ease: "back.out(1.4)" }
+        );
+      }
+    },
+    { dependencies: [isOpen] }
+  );
+
   if (!isOpen) return null;
 
   return (
@@ -57,6 +79,7 @@ export default function CustomModal({
       `}</style>
 
       <div
+        ref={overlayRef}
         role="dialog"
         aria-modal="true"
         data-modal-overlay="true"
@@ -77,6 +100,7 @@ export default function CustomModal({
         onClick={() => closeOnOverlayClick && onClose()}
       >
         <div
+          ref={modalBoxRef}
           style={{
             backgroundColor: "var(--color-bg)",
             color: "var(--color-foreground)",

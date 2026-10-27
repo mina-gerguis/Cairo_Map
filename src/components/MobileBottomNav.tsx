@@ -12,6 +12,7 @@ import { GoHome, GoHomeFill } from "react-icons/go";
 import { IoSearchOutline, IoSearch, IoSunnyOutline, IoMoonOutline, IoChevronBack } from "react-icons/io5";
 import { RiNewspaperLine, RiNewspaperFill } from "react-icons/ri";
 import { FaLightbulb, FaMapMarkerAlt } from "react-icons/fa";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 const BUBBLE_W = 60;
 const BUBBLE_W_DRAG = 76;
@@ -359,6 +360,38 @@ export default function MobileBottomNav() {
   const activeIndex = getActiveIndex();
   const displayActiveIndex = isDragging ? dragHoverIdx : activeIndex;
 
+  const searchOverlayRef = useRef<HTMLDivElement>(null);
+  const searchModalRef = useRef<HTMLDivElement>(null);
+  const navContainerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (navContainerRef.current) {
+      gsap.fromTo(
+        navContainerRef.current,
+        { autoAlpha: 0, y: 35 },
+        { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.15 }
+      );
+    }
+  }, []);
+
+  useGSAP(
+    () => {
+      if (isSearchOpen && searchModalRef.current && searchOverlayRef.current) {
+        gsap.fromTo(
+          searchOverlayRef.current,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.25, ease: "power2.out" }
+        );
+        gsap.fromTo(
+          searchModalRef.current,
+          { yPercent: 100 },
+          { yPercent: 0, duration: 0.38, ease: "power3.out" }
+        );
+      }
+    },
+    { dependencies: [isSearchOpen] }
+  );
+
   // ── Measure static bubble position ──────────────────────────────────────────
   useEffect(() => {
     const measure = () => {
@@ -604,7 +637,7 @@ export default function MobileBottomNav() {
 
   return (
     <>
-      <div className={`mobile-bottom-nav ${isShrunk && !isDragging ? "shrunk" : ""} ${isModalActive ? "hidden-by-modal" : ""}`}>
+      <div ref={navContainerRef} className={`mobile-bottom-nav ${isShrunk && !isDragging ? "shrunk" : ""} ${isModalActive ? "hidden-by-modal" : ""}`}>
         <div
           className="mobile-nav-pill"
           ref={pillRef}
@@ -692,8 +725,8 @@ export default function MobileBottomNav() {
 
       {/* Full-Screen Search Modal - Enhanced Universal Search matching Home Page */}
       {isSearchOpen && (
-        <div className="mobile-search-overlay">
-          <div className="mobile-search-modal">
+        <div ref={searchOverlayRef} className="mobile-search-overlay">
+          <div ref={searchModalRef} className="mobile-search-modal">
             <div className="mobile-search-handle" onClick={() => setIsSearchOpen(false)} />
             <div className="mobile-search-header">
               <form onSubmit={(e) => handleSearchSubmit(e, false)} style={{ flexGrow: 1, position: "relative" }}>

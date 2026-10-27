@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -48,6 +49,33 @@ export default function ClientLayoutWrapper({
   const [activeAlert, setActiveAlert] = useState<AlertItem | null>(null);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceItem[]>([]);
   const [maintenanceLoaded, setMaintenanceLoaded] = useState(false);
+  const mainContentRef = useRef<HTMLElement>(null);
+
+  // GSAP Route Change Transition & ScrollTrigger Refresh
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (mainContentRef.current) {
+      gsap.fromTo(
+        mainContentRef.current,
+        { autoAlpha: 0.82, y: 10 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.35,
+          ease: "power2.out",
+          clearProps: "transform,opacity,visibility",
+        }
+      );
+    }
+
+    // Refresh ScrollTriggers for newly mounted route
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   // Global Ctrl+M keyboard shortcut for toggling between light and dark modes
   useEffect(() => {
@@ -209,7 +237,7 @@ export default function ClientLayoutWrapper({
       )}
 
       {/* Page Content: If under maintenance and not admin, show Maintenance Screen */}
-      <main style={{ paddingTop: "72px" }}>
+      <main ref={mainContentRef} style={{ paddingTop: "72px" }}>
         {activeMaintenance && !isUserAdmin && !authLoading ? (
           <MaintenanceScreen
             maintenance={activeMaintenance}

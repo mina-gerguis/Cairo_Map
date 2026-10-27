@@ -1,20 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import styles from "./help.module.css";
+import { gsap, useGSAP } from "@/lib/gsap";
 import {
   FaQuestionCircle,
   FaSubway,
   FaMapMarkerAlt,
-  FaUserShield,
   FaRobot,
   FaChevronDown,
   FaChevronUp,
   FaSearch,
   FaEnvelope,
   FaPlusCircle,
-  FaExclamationTriangle,
 } from "react-icons/fa";
 
 interface HelpTopic {
@@ -74,6 +73,73 @@ export default function HelpCenterPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [openIdx, setOpenIdx] = useState<string | null>("h1");
 
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const searchBoxRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+  const faqSectionRef = useRef<HTMLElement>(null);
+  const contactBannerRef = useRef<HTMLElement>(null);
+
+  // Hero entrance animation
+  useGSAP(() => {
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    if (badgeRef.current) tl.from(badgeRef.current, { autoAlpha: 0, y: 15, duration: 0.45 });
+    if (titleRef.current) tl.from(titleRef.current, { autoAlpha: 0, y: 25, duration: 0.55 }, "-=0.25");
+    if (subtitleRef.current) tl.from(subtitleRef.current, { autoAlpha: 0, y: 20, duration: 0.45 }, "-=0.3");
+    if (searchBoxRef.current) tl.from(searchBoxRef.current, { autoAlpha: 0, y: 25, duration: 0.55 }, "-=0.25");
+
+    // Stagger categories cards
+    if (categoriesRef.current) {
+      const cards = categoriesRef.current.children;
+      gsap.from(cards, {
+        autoAlpha: 0,
+        y: 35,
+        stagger: 0.1,
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: categoriesRef.current,
+          start: "top 85%",
+          once: true,
+        },
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+
+    // FAQ section reveal
+    if (faqSectionRef.current) {
+      gsap.from(faqSectionRef.current, {
+        autoAlpha: 0,
+        y: 30,
+        duration: 0.65,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: faqSectionRef.current,
+          start: "top 85%",
+          once: true,
+        },
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+
+    // Contact banner reveal
+    if (contactBannerRef.current) {
+      gsap.from(contactBannerRef.current, {
+        autoAlpha: 0,
+        y: 40,
+        duration: 0.7,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: contactBannerRef.current,
+          start: "top 88%",
+          once: true,
+        },
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+  }, []);
+
   const toggleFAQ = (id: string) => {
     setOpenIdx(openIdx === id ? null : id);
   };
@@ -113,15 +179,15 @@ export default function HelpCenterPage() {
       />
       <div className={styles.container}>
         <section className={styles.heroSection}>
-          <div className={styles.heroBadge}>
+          <div ref={badgeRef} className={styles.heroBadge}>
             <FaQuestionCircle /> مركز الدعم والإرشادات
           </div>
-          <h1 className={styles.title}>كيف يمكننا مساعدتك اليوم؟</h1>
-          <p className={styles.subtitle}>
+          <h1 ref={titleRef} className={styles.title}>كيف يمكننا مساعدتك اليوم؟</h1>
+          <p ref={subtitleRef} className={styles.subtitle}>
             دليلك السريع للتعرف على كافة خصائص وميزات منصة ماب القاهرة، وحلول لأكثر الأسئلة الشائعة حول المواصلات والخدمات.
           </p>
 
-          <div className={styles.searchBox}>
+          <div ref={searchBoxRef} className={styles.searchBox}>
             <FaSearch className={styles.searchIcon} />
             <input
               type="text"
@@ -134,7 +200,7 @@ export default function HelpCenterPage() {
         </section>
 
         {/* Quick Categories */}
-        <div className={styles.categoriesGrid}>
+        <div ref={categoriesRef} className={styles.categoriesGrid}>
           <div
             className={styles.categoryCard}
             style={{ cursor: "pointer", borderColor: selectedCategory === "transit" ? "var(--color-primary)" : undefined }}
@@ -179,7 +245,7 @@ export default function HelpCenterPage() {
         </div>
 
         {/* FAQ Section */}
-        <section className={styles.faqSection}>
+        <section ref={faqSectionRef} className={styles.faqSection}>
           <h2 className={styles.faqSectionTitle}>
             {selectedCategory === "all" ? "جميع الأسئلة الشائعة والإرشادات" : "الأسئلة المتعلقة بالتصنيف المحدد"}
           </h2>
@@ -211,7 +277,7 @@ export default function HelpCenterPage() {
         </section>
 
         {/* Contact Banner */}
-        <section className={styles.contactBanner}>
+        <section ref={contactBannerRef} className={styles.contactBanner}>
           <h2 className={styles.contactBannerTitle}>لم تجد الإجابة التي تبحث عنها؟</h2>
           <p className={styles.contactBannerDesc}>
             فريق دعم ماب القاهرة متواجد دائماً لمساعدتك في أي استفسار أو مشكلة تواجهك أثناء استخدام الموقع.

@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 import CustomModal from "@/components/common/Modals";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 
 interface NavSubItem {
@@ -35,6 +36,44 @@ export default function Navbar() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  // GSAP Smooth Navigation Entrance
+  useGSAP(
+    () => {
+      if (navRef.current) {
+        gsap.fromTo(
+          navRef.current,
+          { y: -16, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.5, ease: "power2.out", clearProps: "transform,opacity,visibility" }
+        );
+      }
+    },
+    { scope: navRef }
+  );
+
+  // GSAP Mobile Drawer reveal
+  useGSAP(
+    () => {
+      if (menuOpen && mobileMenuRef.current) {
+        gsap.fromTo(
+          mobileMenuRef.current,
+          { autoAlpha: 0, y: -12 },
+          { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" }
+        );
+        const links = mobileMenuRef.current.querySelectorAll(".navbar-mobile-link");
+        if (links.length > 0) {
+          gsap.fromTo(
+            links,
+            { autoAlpha: 0, x: -10 },
+            { autoAlpha: 1, x: 0, duration: 0.25, stagger: 0.03, ease: "power2.out" }
+          );
+        }
+      }
+    },
+    { scope: navRef, dependencies: [menuOpen] }
+  );
 
   const isAuthPage =
     pathname === "/login" ||
@@ -134,7 +173,7 @@ export default function Navbar() {
 
   /* ── Navbar ── */
   return (
-    <nav className="navbar">
+    <nav ref={navRef} className="navbar">
       <div className="navbar-inner">
         {/* Logo */}
         <Link href="/" className="navbar-logo">
@@ -342,7 +381,7 @@ export default function Navbar() {
 
       {/* ── قائمة الجوال الهامبرغر (Mobile Navigation Drawer) ── */}
       {menuOpen && (
-        <div className="navbar-mobile-menu">
+        <div ref={mobileMenuRef} className="navbar-mobile-menu">
           {mainLinks.map((link, idx) => {
             if (link.isDropdown) {
               const isExpanded = expandedMobileDropdowns[idx] || false;

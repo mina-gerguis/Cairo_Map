@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Pagination } from "@/components/ui/Pagination";
 import { PaginatedSectionProps } from "../types";
 import PlaceCard from "./PlaceCard";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 export default function PaginatedSection({
   title,
@@ -19,10 +20,34 @@ export default function PaginatedSection({
 }: PaginatedSectionProps) {
   const [page, setPage] = useState(1);
   const totalPages = Math.ceil(places.length / itemsPerPage);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setPage(1);
   }, [places.length]);
+
+  useGSAP(
+    () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      const cards = el.querySelectorAll(".glass-card");
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.04,
+            ease: "power2.out",
+            clearProps: "transform,opacity,visibility",
+          }
+        );
+      }
+    },
+    { scope: sectionRef, dependencies: [page, places.length] }
+  );
 
   if (places.length === 0 && !emptyMessage) return null;
 
@@ -30,7 +55,7 @@ export default function PaginatedSection({
   const paginatedPlaces = places.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <section style={{ animation: "slide-in-section 0.5s ease both" }}>
+    <section ref={sectionRef} style={{ animation: "slide-in-section 0.5s ease both" }}>
       <div className="section-header">
         <h2 className="section-title">{title}</h2>
       </div>

@@ -1,27 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  FaMapMarkedAlt,
-  FaSubway,
-  FaTrain,
-  FaBus,
-  FaRobot,
-  FaCompass,
-  FaPhoneAlt,
-  FaBook,
-  FaInfoCircle,
-  FaEnvelope,
-  FaShieldAlt,
-  FaFileContract,
-  FaQuestionCircle,
-  FaPlusCircle,
-  FaPlaneDeparture,
-  FaAnchor,
-} from "react-icons/fa";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 const payicon = [
   { name: "vodafone cash", title: "فودافون كاش", icon: "/images/payment/vodafone.webp" },
@@ -36,13 +19,51 @@ const payicon = [
 
 export default function Footer() {
   const pathname = usePathname();
+  const footerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const el = footerRef.current;
+      if (!el) return;
+
+      const copyright = el.querySelector(".footer-copyright");
+      const badges = el.querySelectorAll(".payment-icon-item");
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: "top 95%",
+          once: true,
+        },
+        defaults: { ease: "power2.out" },
+      });
+
+      if (copyright) {
+        tl.fromTo(
+          copyright,
+          { autoAlpha: 0, y: 15 },
+          { autoAlpha: 1, y: 0, duration: 0.5 }
+        );
+      }
+
+      if (badges.length > 0) {
+        tl.fromTo(
+          badges,
+          { autoAlpha: 0, scale: 0.8 },
+          { autoAlpha: 1, scale: 1, duration: 0.35, stagger: 0.04 },
+          "-=0.3"
+        );
+      }
+    },
+    { scope: footerRef }
+  );
 
   if (pathname === "/profile" || pathname?.startsWith("/admin")) return null;
 
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="footer">
+    <footer ref={footerRef} className="footer">
       <div className="footer-container">
         {/* Bottom Bar */}
         <div className="footer-bottom">

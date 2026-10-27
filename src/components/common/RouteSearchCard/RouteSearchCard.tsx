@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import VoiceInputButton from "@/components/VoiceInputButton";
 import styles from "./RouteSearchCard.module.css";
 import { RouteSearchCardProps, SearchSuggestion } from "./types";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 function defaultNormalize(text: string): string {
   if (!text) return "";
@@ -132,6 +133,44 @@ export default function RouteSearchCard({
       ? isSearchDisabled
       : !fromInput.trim() || !toInput.trim() || isLoading;
 
+  const localRef = useRef<HTMLDivElement>(null);
+  const targetRef = searchPanelRef || localRef;
+  const swapIconRef = useRef<SVGSVGElement>(null);
+
+  useGSAP(
+    () => {
+      const el = targetRef.current;
+      if (!el) return;
+
+      gsap.fromTo(
+        el,
+        { autoAlpha: 0, y: 15 },
+        { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out", clearProps: "transform,opacity,visibility" }
+      );
+
+      const presets = el.querySelectorAll(`.${styles.presetBtn}`);
+      if (presets.length > 0) {
+        gsap.fromTo(
+          presets,
+          { autoAlpha: 0, scale: 0.9 },
+          { autoAlpha: 1, scale: 1, duration: 0.35, stagger: 0.03, ease: "power2.out", clearProps: "transform,opacity,visibility" }
+        );
+      }
+    },
+    { scope: targetRef }
+  );
+
+  const handleSwapClick = () => {
+    if (swapIconRef.current) {
+      gsap.to(swapIconRef.current, {
+        rotation: "+=180",
+        duration: 0.35,
+        ease: "back.out(1.5)",
+      });
+    }
+    onSwap?.();
+  };
+
   const handleSelectPreset = (dest: string) => {
     if (onSelectPreset) {
       onSelectPreset(dest);
@@ -147,7 +186,7 @@ export default function RouteSearchCard({
 
   return (
     <div
-      ref={searchPanelRef}
+      ref={targetRef}
       className={`${styles.card} ${className}`.trim()}
     >
       {/* Header */}
@@ -240,12 +279,13 @@ export default function RouteSearchCard({
           <div className={styles.swapBtnAnchor}>
             <button
               type="button"
-              onClick={onSwap}
+              onClick={handleSwapClick}
               title="تبديل نقطة الانطلاق والوصول"
               className={styles.swapBtn}
               aria-label="تبديل نقطة الانطلاق والوصول"
             >
               <svg
+                ref={swapIconRef}
                 className={styles.swapIconSvg}
                 viewBox="0 0 24 24"
                 fill="none"

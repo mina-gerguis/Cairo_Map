@@ -109,6 +109,9 @@ body {
   overflow-x: hidden;
   scroll-behavior: smooth;
   direction: rtl;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2219,7 +2222,18 @@ html.light .suggestion-icon {
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: var(--transition-fast);
+  transition-property: transform, background-color, border-color, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: var(--ease-out);
+}
+
+.home-category-card:hover {
+  background-color: var(--hoverBtn);
+  border-color: var(--border-glass-bright);
+}
+
+.home-category-card:active {
+  transform: scale(0.96);
 }
 
 @media (min-width: 640px) {
@@ -2232,7 +2246,7 @@ html.light .suggestion-icon {
 .home-category-card-icon {
   width: 38px;
   height: 38px;
-  border-radius: var(--ra-14);
+  border-radius: var(--ra-10);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2253,6 +2267,7 @@ html.light .suggestion-icon {
   font-weight: 700;
   color: var(--color-foreground);
   margin-bottom: 2px;
+  text-wrap: balance;
 }
 
 @media (min-width: 640px) {
@@ -2265,6 +2280,7 @@ html.light .suggestion-icon {
 .home-category-card-count {
   font-size: 0.75rem;
   color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (min-width: 640px) {

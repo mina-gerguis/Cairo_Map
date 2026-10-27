@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaArrowUp } from "react-icons/fa";
+import { gsap } from "@/lib/gsap";
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -19,7 +21,26 @@ export default function ScrollToTop() {
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
+  useEffect(() => {
+    if (isVisible && btnRef.current) {
+      gsap.fromTo(
+        btnRef.current,
+        { autoAlpha: 0, scale: 0.6, y: 15 },
+        { autoAlpha: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.7)" }
+      );
+    }
+  }, [isVisible]);
+
   const scrollToTop = () => {
+    if (btnRef.current) {
+      gsap.to(btnRef.current, {
+        scale: 0.85,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        ease: "power2.inOut",
+      });
+    }
     window.scrollTo({
       top: 0,
       behavior: "smooth"
@@ -30,6 +51,7 @@ export default function ScrollToTop() {
 
   return (
     <button
+      ref={btnRef}
       type="button"
       onClick={scrollToTop}
       title="العودة لأعلى الصفحة"
@@ -50,10 +72,10 @@ export default function ScrollToTop() {
         justifyContent: "center",
         fontSize: "1.1rem",
         cursor: "pointer",
-        transition: "all 0.3s ease"
+        transition: "transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)"
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "scale(1.1)";
+        e.currentTarget.style.transform = "scale(1.12)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "scale(1)";

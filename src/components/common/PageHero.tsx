@@ -1,7 +1,10 @@
-import React, { RefObject } from "react";
+"use client";
+
+import React, { RefObject, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./PageHero.module.css";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 export interface HeroStatItem {
   label: React.ReactNode;
@@ -47,6 +50,101 @@ export default function PageHero({
   children,
   className,
 }: PageHeroProps) {
+  const localRef = useRef<HTMLDivElement>(null);
+  const containerRef = headerRef || localRef;
+
+  // GSAP Choreographed Hero Entrance Animation
+  useGSAP(
+    () => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+      });
+
+      // Animate ambient glow if present
+      const glow = el.querySelector(`.${styles.ambientGlow}`);
+      if (glow) {
+        tl.fromTo(
+          glow,
+          { autoAlpha: 0, scale: 0.8 },
+          { autoAlpha: 1, scale: 1, duration: 0.8 },
+          0
+        );
+      }
+
+      // Back button
+      const backBtn = el.querySelector(`.${styles.backBtnCircle}`);
+      if (backBtn) {
+        tl.fromTo(
+          backBtn,
+          { autoAlpha: 0, x: 15 },
+          { autoAlpha: 1, x: 0, duration: 0.4 },
+          0.05
+        );
+      }
+
+      // Pill badge
+      const pill = el.querySelector(`.${styles.livePill}`);
+      if (pill) {
+        tl.fromTo(
+          pill,
+          { autoAlpha: 0, y: -12, scale: 0.95 },
+          { autoAlpha: 1, y: 0, scale: 1, duration: 0.45 },
+          0.08
+        );
+      }
+
+      // Hero Title and Icon
+      const heroTitle = el.querySelector(`.${styles.heroTitle}`);
+      if (heroTitle) {
+        tl.fromTo(
+          heroTitle,
+          { autoAlpha: 0, y: 18 },
+          { autoAlpha: 1, y: 0, duration: 0.55 },
+          0.12
+        );
+      }
+
+      // Hero Subtitle
+      const heroSub = el.querySelector(`.${styles.heroSubtitle}`);
+      if (heroSub) {
+        tl.fromTo(
+          heroSub,
+          { autoAlpha: 0, y: 14 },
+          { autoAlpha: 1, y: 0, duration: 0.5 },
+          0.2
+        );
+      }
+
+      // Stats row badges
+      const statBadges = el.querySelectorAll(
+        `.${styles.statBadge}, .${styles.tabBadge}`
+      );
+      if (statBadges.length > 0) {
+        tl.fromTo(
+          statBadges,
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.45 },
+          0.28
+        );
+      }
+
+      // Extra content / inputs
+      const extra = el.querySelector(`.${styles.extraContent}`);
+      if (extra) {
+        tl.fromTo(
+          extra,
+          { autoAlpha: 0, y: 16 },
+          { autoAlpha: 1, y: 0, duration: 0.5 },
+          0.32
+        );
+      }
+    },
+    { scope: containerRef }
+  );
+
   // Render icon helper
   const renderIcon = () => {
     if (!icon) return null;
@@ -96,7 +194,7 @@ export default function PageHero({
 
   return (
     <div
-      ref={headerRef}
+      ref={containerRef}
       className={`${styles.heroSection} ${className || ""}`.trim()}
     >
       {showAmbientGlow && <div className={styles.ambientGlow} />}

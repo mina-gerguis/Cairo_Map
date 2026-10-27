@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import AdBanner from "@/components/AdBanner";
 import { PlacesSearchResultsViewProps } from "../types";
 import { CATEGORY_LABELS } from "../constants";
 import PlaceCard from "./PlaceCard";
+import { gsap, useGSAP } from "@/lib/gsap";
 
 export default function PlacesSearchResultsView({
   filteredPlaces,
@@ -20,6 +21,24 @@ export default function PlacesSearchResultsView({
   toggleFavorite,
   favoriteIds,
 }: PlacesSearchResultsViewProps) {
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  // Stagger animate search result cards
+  useGSAP(() => {
+    if (gridRef.current && filteredPlaces.length > 0) {
+      const cards = gridRef.current.children;
+      gsap.from(cards, {
+        autoAlpha: 0,
+        y: 20,
+        scale: 0.98,
+        stagger: 0.04,
+        duration: 0.45,
+        ease: "power2.out",
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+  }, [filteredPlaces, searchQuery, selectedCategory, selectedSubCategory, selectedType]);
+
   return (
     <>
       <p
@@ -45,7 +64,7 @@ export default function PlacesSearchResultsView({
 
       {filteredPlaces.length > 0 ? (
         <>
-          <div className="grid-places">
+          <div ref={gridRef} className="grid-places">
             {filteredPlaces.map((place) => (
               <div
                 key={place.id}

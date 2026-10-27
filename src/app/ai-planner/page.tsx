@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import VoiceInputButton from "@/components/VoiceInputButton";
 import { isPageOpenByPromotion } from "@/lib/promotions";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
+import { gsap, useGSAP } from "@/lib/gsap";
 import "./planner.css";
 
 // ── TYPES & INTERFACES ──
@@ -162,6 +163,20 @@ const AI_TIME_SLOTS = [
 
 export default function PlannerPage() {
   const { user, profile, loading: authLoading, isPageOpen } = useAuth();
+  const headerRef = useRef<HTMLElement>(null);
+
+  // GSAP Entrance for Planner Header
+  useGSAP(() => {
+    if (headerRef.current) {
+      const title = headerRef.current.querySelector(".planner-title");
+      const subtitle = headerRef.current.querySelector(".planner-subtitle");
+      const badge = headerRef.current.querySelector(".planner-status-badge");
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      if (title) tl.from(title, { autoAlpha: 0, y: 25, duration: 0.6 });
+      if (subtitle) tl.from(subtitle, { autoAlpha: 0, y: 15, duration: 0.5 }, "-=0.35");
+      if (badge) tl.from(badge, { autoAlpha: 0, scale: 0.9, duration: 0.4 }, "-=0.3");
+    }
+  }, []);
 
   // ── DYNAMIC PLACES STATE FROM DATABASE ──
   const [allPlaces, setAllPlaces] = useState<Place[]>(initialPlaces);
@@ -1343,7 +1358,7 @@ export default function PlannerPage() {
       )}
 
       {/* HEADER SECTION */}
-      <header className="planner-header">
+      <header ref={headerRef} className="planner-header">
         <h1 className="planner-title">مخطط الرحلات الذكي</h1>
         <p className="planner-subtitle">
           حوّل بحثك إلى تجربة متكاملة. خطط ليوم خروج كامل بنفسك أو دع مساعدنا الذكي ينظم لك المسار الأمثل والأوقات والميزانية بلمسة واحدة.

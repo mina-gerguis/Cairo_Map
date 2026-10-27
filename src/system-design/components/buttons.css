@@ -44,12 +44,14 @@ html.light {
   user-select: none;
   -webkit-user-select: none;
   cursor: pointer;
-  transition: var(--transition-spring);
+  min-height: 40px;
+  transition-property: transform, opacity, background-color, border-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: var(--ease-out);
 }
 
 .btn:hover {
-  transform: scale(0.99);
-  opacity: 0.88;
+  opacity: 0.92;
   filter: brightness(1.05);
 }
 
@@ -60,7 +62,7 @@ html.light {
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .btn:focus-visible {

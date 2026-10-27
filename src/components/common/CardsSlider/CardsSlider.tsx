@@ -1,7 +1,10 @@
-import React from "react";
+"use client";
+
+import React, { useRef } from "react";
 import Link from "next/link";
 import styles from "./CardsSlider.module.css";
 import { CardsSliderProps, CardsSliderItem } from "./types";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 export default function CardsSlider({
   containerRef,
@@ -16,6 +19,32 @@ export default function CardsSlider({
   itemMinWidth = "min-w-44",
   itemMaxWidth = "max-w-56",
 }: CardsSliderProps) {
+  const localRef = useRef<HTMLElement>(null);
+  const targetRef = containerRef || localRef;
+
+  useGSAP(
+    () => {
+      const el = targetRef.current;
+      if (!el) return;
+      const cards = el.querySelectorAll(`.${styles.card}`);
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { autoAlpha: 0, x: 18 },
+          {
+            autoAlpha: 1,
+            x: 0,
+            duration: 0.45,
+            stagger: 0.04,
+            ease: "power2.out",
+            clearProps: "transform,opacity,visibility",
+          }
+        );
+      }
+    },
+    { scope: targetRef, dependencies: [items?.length] }
+  );
+
   if (!items || items.length === 0) {
     return emptyState ? <>{emptyState}</> : null;
   }
@@ -74,7 +103,7 @@ export default function CardsSlider({
 
   return (
     <section
-      ref={containerRef}
+      ref={targetRef}
       className={`${styles.sliderContainer} ${className}`.trim()}
       aria-label={typeof title === "string" ? title : undefined}
     >

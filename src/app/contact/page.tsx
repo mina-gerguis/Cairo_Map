@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./contact.module.css";
 import { supabase } from "@/lib/supabase";
 import { CONTACT_SUBJECT_OPTIONS } from "@/data/contactReasons";
+import { gsap, useGSAP } from "@/lib/gsap";
 import {
   FaEnvelope,
   FaMapMarkerAlt,
@@ -30,7 +31,77 @@ export default function ContactPage() {
   const [isSent, setIsSent] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const heroRef = useRef<HTMLElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const infoCardRef = useRef<HTMLDivElement>(null);
+  const formCardRef = useRef<HTMLDivElement>(null);
+  const successRef = useRef<HTMLDivElement>(null);
+
   const email = "cairo.maps@hotmail.com";
+
+  // GSAP Entrance Animations
+  useGSAP(() => {
+    // Hero Entrance Timeline
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    if (badgeRef.current) {
+      tl.from(badgeRef.current, { autoAlpha: 0, y: 20, duration: 0.5 });
+    }
+    if (titleRef.current) {
+      tl.from(titleRef.current, { autoAlpha: 0, y: 25, duration: 0.6 }, "-=0.3");
+    }
+    if (subtitleRef.current) {
+      tl.from(subtitleRef.current, { autoAlpha: 0, y: 20, duration: 0.5 }, "-=0.35");
+    }
+
+    // Info Card Slide & Reveal
+    if (infoCardRef.current) {
+      gsap.from(infoCardRef.current, {
+        autoAlpha: 0,
+        x: -35,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: infoCardRef.current,
+          start: "top 85%",
+          once: true,
+        },
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+
+    // Form Section Slide & Reveal
+    if (formCardRef.current) {
+      gsap.from(formCardRef.current, {
+        autoAlpha: 0,
+        x: 35,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: formCardRef.current,
+          start: "top 85%",
+          once: true,
+        },
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+  }, []);
+
+  // Animate Success Card when message is sent
+  useGSAP(() => {
+    if (isSent && successRef.current) {
+      gsap.from(successRef.current, {
+        autoAlpha: 0,
+        scale: 0.88,
+        y: 20,
+        duration: 0.6,
+        ease: "back.out(1.5)",
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+  }, [isSent]);
+
   // Auto-fill logged-in user profile details
   useEffect(() => {
     let isMounted = true;
@@ -161,19 +232,19 @@ export default function ContactPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className={styles.container}>
-        <section className={styles.heroSection}>
-          <div className={styles.heroBadge}>
+        <section ref={heroRef} className={styles.heroSection}>
+          <div ref={badgeRef} className={styles.heroBadge}>
             <FaHeadset /> فريق الدعم والتواصل
           </div>
-          <h1 className={styles.title}>اتصل بنا وشاركنا استفساراتك</h1>
-          <p className={styles.subtitle}>
+          <h1 ref={titleRef} className={styles.title}>اتصل بنا وشاركنا استفساراتك</h1>
+          <p ref={subtitleRef} className={styles.subtitle}>
             نحن هنا لمساعدتك والإجابة على أي أسئلة حول خطوط المواصلات، إضافة أماكن جديدة، أو الشراكات وتطوير المنصة.
           </p>
         </section>
 
         <div className={styles.grid}>
           {/* Info Card */}
-          <div className={styles.infoCard}>
+          <div ref={infoCardRef} className={styles.infoCard}>
             <h2 className={styles.infoTitle}>معلومات التواصل المباشر</h2>
 
             <div className={styles.contactItem}>
@@ -197,7 +268,6 @@ export default function ContactPage() {
                 <div className={styles.contactValue}>الشرقية - العاشر من رمضان</div>
               </div>
             </div>
-
 
             <div className={styles.socialBox}>
               <div className={styles.socialTitle}>تابعنا على منصات التواصل</div>
@@ -232,43 +302,23 @@ export default function ContactPage() {
                   </svg>
                 </a>
                 <a
-                  href="https://instagram.com/map_cairo"
+                  href="https://www.linkedin.com/in/mina-gerguis/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialBtn}
-                  title="Instagram"
+                  title="LinkedIn"
                 >
-                  <i className="bx bxl-instagram" style={{ fontSize: "1.25rem", color: "#e1306c" }}></i>
-                </a>
-                <a
-                  href="https://www.linkedin.com/company/repo-dex"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.socialBtn}
-                  title="RepoDex LinkedIn"
-                >
-                  <FaLinkedin style={{ color: "#0a66c2" }} />
+                  <FaLinkedin style={{ fontSize: "1.25rem", color: "#0a66c2" }} />
                 </a>
               </div>
             </div>
-
-            <div style={{ marginTop: "12px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.5",textAlign:"center" }}>
-              💡 إذا كنت تريد إضافة مكان جديد أو تعديل بيانات محل أو محطة، فتوجه لصفحة{" "}
-              <Link href="/propose-place" style={{ color: "var(--color-primary)", fontWeight: "bold" }}>
-                اقتراح مكان
-              </Link>.
-            </div>
           </div>
 
-          {/* Contact Form */}
-          <div className={styles.formCard}>
-            <h2 className={styles.formTitle}>أرسل رسالة مباشرة</h2>
-
+          {/* Form Section */}
+          <div ref={formCardRef} className={styles.formSection}>
             {isSent ? (
-              <div className={styles.successCard}>
-                <div className={styles.successIconBox}>
-                  <FaCheckCircle />
-                </div>
+              <div ref={successRef} className={styles.successBox}>
+                <FaCheckCircle className={styles.successIcon} />
                 <h3 className={styles.successTitle}>تم إرسال رسالتك بنجاح!</h3>
                 <p className={styles.successDescription}>
                   شكراً لتواصلك معنا. سيقوم فريق الدعم الفني بمراجعة رسالتك والرد عليك عبر بريدك الإلكتروني في أقرب وقت ممكن.

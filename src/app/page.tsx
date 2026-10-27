@@ -26,6 +26,7 @@ const TextLoop = dynamic(() => import("@/components/ui/TextLoop"), { ssr: false 
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
 import { FamousCity, INITIAL_FAMOUS_CITIES, getStoredCities, saveStoredCities } from "@/data/cities";
 import CityDetailModal from "@/components/cities/CityDetailModal";
+import { useGSAP, gsap, ScrollTrigger } from "@/lib/gsap";
 
 // ── 1. دالة توحيد وتنظيف النصوص العربية لبحث دقيق ──
 function normalizeArabic(text: string): string {
@@ -326,6 +327,158 @@ export default function HomePage() {
   const [isDraggingMicroTrack, setIsDraggingMicroTrack] = useState(false);
   const citiesScrollRef = useRef<HTMLDivElement>(null);
   const microTrackRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const citiesSectionRef = useRef<HTMLElement>(null);
+  const servicesSectionRef = useRef<HTMLElement>(null);
+  const categoriesSectionRef = useRef<HTMLElement>(null);
+  const blogsSectionRef = useRef<HTMLElement>(null);
+  const aiPlannerSectionRef = useRef<HTMLElement>(null);
+  const aiRobotRef = useRef<HTMLDivElement>(null);
+  const proposePlaceSectionRef = useRef<HTMLElement>(null);
+
+  // ── GSAP Orchestrated Animations across Home Page ──
+  useGSAP(() => {
+    // 1. Hero entrance sequence
+    if (heroSectionRef.current) {
+      const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      const badge = heroSectionRef.current.querySelector(".hero-badge-item");
+      const title = heroSectionRef.current.querySelector(".hero-title-item");
+      const subtitle = heroSectionRef.current.querySelector(".hero-subtitle-item");
+      const searchBox = searchContainerRef.current;
+      const tags = heroSectionRef.current.querySelectorAll(".hero-tag-item");
+      const weatherWidget = heroSectionRef.current.querySelector(".hero-weather-item");
+
+      if (badge) heroTl.fromTo(badge, { autoAlpha: 0, y: -15, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45 });
+      if (title) heroTl.fromTo(title, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 0.55 }, "-=0.25");
+      if (subtitle) heroTl.fromTo(subtitle, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5 }, "-=0.35");
+      if (searchBox) heroTl.fromTo(searchBox, { autoAlpha: 0, y: 20, scale: 0.98 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5 }, "-=0.3");
+      if (tags && tags.length > 0) {
+        heroTl.fromTo(tags, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, stagger: 0.04, duration: 0.4 }, "-=0.25");
+      }
+      if (weatherWidget) heroTl.fromTo(weatherWidget, { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 0.45 }, "-=0.2");
+    }
+
+    // 2. Famous Cities Section
+    if (citiesSectionRef.current) {
+      const cityCards = citiesSectionRef.current.querySelectorAll(".home-city-card");
+      if (cityCards.length > 0) {
+        ScrollTrigger.batch(cityCards, {
+          start: "top 90%",
+          once: true,
+          onEnter: (batch) => {
+            gsap.fromTo(
+              batch,
+              { autoAlpha: 0, y: 25, scale: 0.95 },
+              { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.07, ease: "power2.out", clearProps: "transform,opacity,visibility" }
+            );
+          },
+        });
+      }
+    }
+
+    // 3. Main Services Section
+    if (servicesSectionRef.current) {
+      const serviceCards = servicesSectionRef.current.querySelectorAll(".glass-card");
+      if (serviceCards.length > 0) {
+        ScrollTrigger.batch(serviceCards, {
+          start: "top 88%",
+          once: true,
+          onEnter: (batch) => {
+            gsap.fromTo(
+              batch,
+              { autoAlpha: 0, y: 30 },
+              { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.08, ease: "power2.out", clearProps: "transform,opacity,visibility" }
+            );
+          },
+        });
+      }
+    }
+
+    // 4. Categories Section
+    if (categoriesSectionRef.current) {
+      const catCards = categoriesSectionRef.current.querySelectorAll(".home-category-card");
+      if (catCards.length > 0) {
+        ScrollTrigger.batch(catCards, {
+          start: "top 88%",
+          once: true,
+          onEnter: (batch) => {
+            gsap.fromTo(
+              batch,
+              { autoAlpha: 0, scale: 0.9, y: 18 },
+              { autoAlpha: 1, scale: 1, y: 0, duration: 0.45, stagger: 0.035, ease: "back.out(1.2)", clearProps: "transform,opacity,visibility" }
+            );
+          },
+        });
+      }
+    }
+
+    // 5. Blog Section
+    if (blogsSectionRef.current) {
+      const blogCards = blogsSectionRef.current.querySelectorAll(".home-blog-card");
+      if (blogCards.length > 0) {
+        ScrollTrigger.batch(blogCards, {
+          start: "top 90%",
+          once: true,
+          onEnter: (batch) => {
+            gsap.fromTo(
+              batch,
+              { autoAlpha: 0, y: 20 },
+              { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power2.out", clearProps: "transform,opacity,visibility" }
+            );
+          },
+        });
+      }
+    }
+
+    // 6. AI Planner Banner
+    if (aiPlannerSectionRef.current) {
+      gsap.fromTo(
+        aiPlannerSectionRef.current,
+        { autoAlpha: 0, y: 30 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.65,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: aiPlannerSectionRef.current,
+            start: "top 88%",
+            once: true,
+          },
+        }
+      );
+
+      // Continuous subtle floating animation for AI robot
+      if (aiRobotRef.current) {
+        gsap.to(aiRobotRef.current, {
+          y: -8,
+          duration: 2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      }
+    }
+
+    // 7. Propose Place Section
+    if (proposePlaceSectionRef.current) {
+      gsap.fromTo(
+        proposePlaceSectionRef.current,
+        { autoAlpha: 0, y: 25 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: proposePlaceSectionRef.current,
+            start: "top 90%",
+            once: true,
+          },
+        }
+      );
+    }
+  }, []);
 
   // Mouse drag to scroll states for cities section
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -858,7 +1011,9 @@ export default function HomePage() {
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-foreground)", fontFamily: "var(--font-heading)" }}>
       {/* ── 1. HERO SECTION ── */}
-      <section style={{
+      <section
+        ref={heroSectionRef}
+        style={{
         position: "relative",
         padding: "60px 20px 80px 20px",
         paddingBottom: "20px",
@@ -867,7 +1022,9 @@ export default function HomePage() {
       }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           {/* Badge */}
-          <div style={{
+          <div
+            className="hero-badge-item"
+            style={{
             display: "inline-flex",
             alignItems: "center",
             gap: "8px",
@@ -886,19 +1043,22 @@ export default function HomePage() {
           </div>
 
           {/* Title */}
-          <h1 style={{
+          <h1
+            className="hero-title-item"
+            style={{
             fontSize: "clamp(2rem, 5vw, 3.5rem)",
             fontWeight: "700",
             lineHeight: "1.25",
             marginBottom: "20px",
             letterSpacing: "-0.5px",
+            textWrap: "balance",
           }}>
             استكشف مصر  وتنقّل بذكاء وسرعة ودقة متناهية
           </h1>
 
           {/* Subtitle */}
           <p
-            className="sub-title"
+            className="sub-title hero-subtitle-item"
             style={{
               fontSize: "clamp(1rem, 2vw, 1.25rem)",
               color: "var(--text-secondary)",
@@ -906,6 +1066,7 @@ export default function HomePage() {
               margin: "0 auto 36px auto",
               lineHeight: "1.7",
               fontWeight: "400",
+              textWrap: "pretty",
             }}>
             منصتك المتكاملة لاستكشاف أماكن المطاعم، الكافيهات، العيادات، شبكات المترو والمنورايل، خطوط المواصلات، ودليل الهواتف والأكواد المختصرة.
           </p>
@@ -955,20 +1116,23 @@ export default function HomePage() {
                     searchInputRef.current?.focus();
                     setIsDropdownOpen(true);
                   }}
+                  className="active:scale-[0.96] transition-transform"
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.07)",
                     border: "1px solid var(--border-glass)",
                     backdropFilter: "blur(8px)",
                     borderRadius: "var(--ra-14)",
-                    padding: "4px 8px",
+                    padding: "4px 10px",
                     display: "flex",
                     alignItems: "center",
+                    direction: "ltr",
                     gap: "5px",
                     cursor: "pointer",
-                    transition: "var(--transition-smooth)",
                     userSelect: "none",
                     outline: "none",
                     height: "36px",
+                    minWidth: "60px",
+                    justifyContent: "center",
                   }}
                 >
                   <kbd style={{
@@ -980,7 +1144,7 @@ export default function HomePage() {
                     alignItems: "center",
                     justifyContent: "center",
                     minWidth: "20px"
-                  }}>K</kbd>
+                  }}>{isMac ? "⌘" : "Ctrl"}</kbd>
                   <span style={{ color: "var(--text-muted)", fontSize: "0.75rem", fontWeight: "bold" }}>+</span>
                   <kbd style={{
                     fontFamily: "inherit",
@@ -991,7 +1155,7 @@ export default function HomePage() {
                     alignItems: "center",
                     justifyContent: "center",
                     minWidth: "20px"
-                  }}>{isMac ? "⌘" : "Ctrl"}</kbd>
+                  }}>K</kbd>
                 </button>
               </div>
             </form>
@@ -1037,18 +1201,19 @@ export default function HomePage() {
                         key={service.id}
                         href={service.href}
                         onClick={() => setIsDropdownOpen(false)}
+                        className="active:scale-[0.98]"
                         style={{
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
                           padding: "10px 14px",
-                          borderRadius: "var(--ra-18)",
+                          borderRadius: "12px",
                           backgroundColor: "var(--hoverBtn)",
                           border: "1px solid var(--border-glass)",
                           marginBottom: "6px",
                           textDecoration: "none",
                           color: "var(--color-foreground)",
-                          transition: "var(--transition-fast)"
+                          transition: "transform 0.15s ease, background-color 0.15s ease"
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -1106,18 +1271,19 @@ export default function HomePage() {
                         key={place.id}
                         href={`/places/${place.id}`}
                         onClick={() => setIsDropdownOpen(false)}
+                        className="active:scale-[0.98]"
                         style={{
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
                           padding: "10px 14px",
-                          borderRadius: "var(--ra-18)",
+                          borderRadius: "12px",
                           backgroundColor: "var(--hoverBtn)",
                           border: "1px solid var(--border-glass)",
                           marginBottom: "6px",
                           textDecoration: "none",
                           color: "var(--color-foreground)",
-                          transition: "var(--transition-fast)"
+                          transition: "transform 0.15s ease, background-color 0.15s ease"
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -1305,6 +1471,7 @@ export default function HomePage() {
             {quickSearchTags.map((tag, idx) => (
               <button
                 key={idx}
+                className="hero-tag-item active:scale-[0.96] transition-transform"
                 onClick={() => {
                   if (tag.route) {
                     router.push(tag.route);
@@ -1314,7 +1481,8 @@ export default function HomePage() {
                   display: "flex",
                   alignItems: "center",
                   gap: "6px",
-                  padding: "6px 14px",
+                  padding: "8px 16px",
+                  minHeight: "38px",
                   borderRadius: "var(--ra-full)",
                   backgroundColor: "var(--hoverBtn)",
                   border: "1px solid var(--border-glass)",
@@ -1322,7 +1490,7 @@ export default function HomePage() {
                   fontSize: "0.85rem",
                   fontFamily: "var(--font-body)",
                   cursor: "pointer",
-                  transition: "var(--transition-fast)"
+                  transition: "transform 0.15s ease, background-color 0.15s ease, color 0.15s ease"
                 }}
               >
                 <Image src={`/images/icons2d/${tag.icon}`} alt={tag.label} width={18} height={18} style={{ width: "18px", height: "18px", objectFit: "contain" }} />
@@ -1332,7 +1500,7 @@ export default function HomePage() {
           </div>
 
           {/* Cairo Weather & Comfort Tip Widget */}
-          <div style={{ maxWidth: "720px", margin: "0 auto 30px auto" }}>
+          <div className="hero-weather-item" style={{ maxWidth: "720px", margin: "0 auto 30px auto" }}>
             <WeatherComfortWidget />
           </div>
 
@@ -1344,13 +1512,13 @@ export default function HomePage() {
       </section>
 
       {/* ── 2. FAMOUS CITIES SECTION (المدن الشهيرة - سلايدر بنقط تنقل) ── */}
-      <section style={{ padding: "60px 20px 40px 20px", maxWidth: "1200px", margin: "0 auto" }}>
+      <section ref={citiesSectionRef} style={{ padding: "60px 20px 40px 20px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
 
-          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--color-foreground)" }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--color-foreground)", textWrap: "balance" }}>
             المدن الشهيرة
           </h2>
-          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1rem", maxWidth: "650px", margin: "0 auto", lineHeight: "1.6" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1rem", maxWidth: "650px", margin: "0 auto", lineHeight: "1.6", textWrap: "pretty" }}>
             اسحب أفقياً أو انقر على النقط بالأسفل لاستكشاف المدن ومعالمها السياحية القريبة.
           </p>
         </div>
@@ -1379,6 +1547,7 @@ export default function HomePage() {
           {famousCities.map((city) => (
             <div
               key={city.id}
+              className="home-city-card active:scale-[0.96] transition-transform"
               onClick={() => {
                 if (!dragMoved) {
                   setSelectedCityModal(city);
@@ -1391,7 +1560,8 @@ export default function HomePage() {
                 borderRadius: "16px",
                 overflow: "hidden",
                 cursor: "pointer",
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                boxShadow: "inset 0 0 0 1px rgba(255, 255, 255, 0.15), var(--shadow-card)",
+                transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 scrollSnapAlign: "start",
                 position: "relative",
                 userSelect: "none",
@@ -1436,6 +1606,7 @@ export default function HomePage() {
                     margin: 0,
                     textShadow: "0 4px 15px rgba(0, 0, 0, 0.9)",
                     letterSpacing: "-0.5px",
+                    textWrap: "balance",
                   }}
                 >
                   {city.name}
@@ -1451,7 +1622,7 @@ export default function HomePage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "16px",
+            gap: "12px",
             marginTop: "16px"
           }}>
             {/* Right/Prev Arrow (in RTL, Right arrow scrolls right) */}
@@ -1459,9 +1630,10 @@ export default function HomePage() {
               onClick={scrollPrev}
               type="button"
               disabled={!canScrollPrev}
+              className="active:scale-[0.96] transition-transform"
               style={{
-                width: "36px",
-                height: "36px",
+                width: "42px",
+                height: "42px",
                 borderRadius: "50%",
                 backgroundColor: "var(--bg-glass-card)",
                 border: "1px solid var(--border-glass-bright)",
@@ -1482,8 +1654,8 @@ export default function HomePage() {
               <FaChevronRight style={{ fontSize: "0.85rem" }} />
             </button>
 
-            {/* Dots */}
-            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            {/* Dots with accessible 40px hit area */}
+            <div style={{ display: "flex", gap: "2px", alignItems: "center" }}>
               {famousCities.map((_, idx) => {
                 const activeIndex = Math.min(
                   famousCities.length - 1,
@@ -1495,17 +1667,32 @@ export default function HomePage() {
                     onClick={() => scrollToCity(idx)}
                     type="button"
                     style={{
-                      width: idx === activeIndex ? "20px" : "8px",
-                      height: "8px",
-                      borderRadius: "999px",
-                      backgroundColor: idx === activeIndex ? "var(--color-primary)" : "var(--text-muted)",
+                      width: "36px",
+                      height: "36px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "transparent",
                       border: "none",
                       cursor: "pointer",
-                      transition: "all 0.3s ease",
-                      padding: 0
+                      padding: 0,
+                      outline: "none"
                     }}
                     aria-label={`الذهاب إلى المدينة ${idx + 1}`}
-                  />
+                  >
+                    <span
+                      style={{
+                        width: idx === activeIndex ? "22px" : "8px",
+                        height: "8px",
+                        borderRadius: "999px",
+                        backgroundColor: idx === activeIndex ? "var(--color-primary)" : "var(--text-muted)",
+                        transitionProperty: "width, background-color",
+                        transitionDuration: "250ms",
+                        transitionTimingFunction: "ease",
+                        display: "block"
+                      }}
+                    />
+                  </button>
                 );
               })}
             </div>
@@ -1515,8 +1702,9 @@ export default function HomePage() {
               onClick={scrollNext}
               type="button"
               disabled={!canScrollNext}
+              className="active:scale-[0.96] transition-transform"
               style={{
-                width: "36px",
+                width: "42px",
                 height: "36px",
                 borderRadius: "50%",
                 backgroundColor: "var(--bg-glass-card)",
@@ -1543,6 +1731,7 @@ export default function HomePage() {
 
       {/* ── 3. MAIN SERVICES GRID ── */}
       <section
+        ref={servicesSectionRef}
         style={{
           padding: "10px 20px 70px 20px",
           maxWidth: "1200px",
@@ -1553,10 +1742,10 @@ export default function HomePage() {
             textAlign: "center",
             marginBottom: "48px"
           }}>
-          <h2 style={{ fontSize: "2rem", fontWeight: "500", marginBottom: "12px" }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: "500", marginBottom: "12px", textWrap: "balance" }}>
             جميع خدمات ماب القاهرة بين يديك
           </h2>
-          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto", textWrap: "pretty" }}>
             اختر الخدمة التي تحتاجها للوصول السريع إلى أدق التفاصيل والمؤشرات الحية.
           </p>
         </div>
@@ -1570,7 +1759,7 @@ export default function HomePage() {
             <Link
               key={service.id}
               href={service.link}
-              className="glass-card"
+              className="glass-card active:scale-[0.96] transition-transform"
               style={{
                 textDecoration: "none",
                 display: "flex",
@@ -1589,25 +1778,26 @@ export default function HomePage() {
                   <div style={{
                     width: "54px",
                     height: "54px",
-                    borderRadius: "var(--ra-18)",
+                    borderRadius: "var(--ra-14)",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
+                    overflow: "hidden"
                   }}>
                     <Image
                       src={`/images/icons3d/${service.icon}.png`}
                       alt={service.title}
                       width={80}
                       height={80}
-                      style={{ width: "80px", height: "auto" }}
+                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
                     />
                   </div>
                 </div>
 
-                <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--color-foreground)", marginBottom: "10px" }}>
+                <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--color-foreground)", marginBottom: "10px", textWrap: "balance" }}>
                   {service.title}
                 </h2>
-                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "24px" }}>
+                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "24px", textWrap: "pretty" }}>
                   {service.desc}
                 </p>
               </div>
@@ -1629,7 +1819,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 4. BROWSE BY CATEGORY PREVIEW ── */}
-      <section style={{
+      <section ref={categoriesSectionRef} style={{
         padding: "60px 20px",
         paddingTop: "20px",
         backgroundColor: "var(--bg-secondary)",
@@ -1639,10 +1829,10 @@ export default function HomePage() {
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "36px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontSize: "1.8rem", fontWeight: "500", marginBottom: "8px", textAlign: "center" }}>
+              <h2 style={{ fontSize: "1.8rem", fontWeight: "500", marginBottom: "8px", textAlign: "center", textWrap: "balance" }}>
                 تصفّح حسب الفئة في دليل الأماكن و المرافق
               </h2>
-              <p className="sub-title" style={{ fontSize: "0.95rem", color: "var(--text-secondary)", textAlign: "center" }}>
+              <p className="sub-title" style={{ fontSize: "0.95rem", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" }}>
                 اختر الفئة للاطلاع على كافة الفروع، المواعيد، وتقييمات الزوار
               </p>
             </div>
@@ -1666,7 +1856,7 @@ export default function HomePage() {
                   <h5 className="home-category-card-title">
                     {cat.label}
                   </h5>
-                  <span style={{ fontFamily: "var(--font-sub)" }} className="home-category-card-count">
+                  <span style={{ fontFamily: "var(--font-sub)", fontVariantNumeric: "tabular-nums" }} className="home-category-card-count tabular-nums">
                     {categoryCounts[cat.name] || 0} مكان
                   </span>
                 </div>
@@ -1677,7 +1867,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 5. BLOG & ARTICLES PREVIEW SECTION ── */}
-      <section style={{ padding: "60px 20px", paddingTop: "0", maxWidth: "1100px", margin: "0 auto" }}>
+      <section ref={blogsSectionRef} style={{ padding: "60px 20px", paddingTop: "0", maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{
           borderRadius: "20px",
           padding: "36px 28px",
@@ -1686,22 +1876,23 @@ export default function HomePage() {
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--color-foreground)", textAlign: "center" }}>
+              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--color-foreground)", textAlign: "center", textWrap: "balance" }}>
                 مدونة ومقالات خريطة القاهرة
               </h2>
-              <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0 }}>
+              <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0, textWrap: "pretty" }}>
                 استكشف نصائح الترانزيت، خطوط السفر اليومية، وأفضل أماكن الخروج المحدثة.
               </p>
             </div>
 
             <Link
               href="/blog"
-              className="btn-primary "
+              className="btn-primary active:scale-[0.96] transition-transform"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
                 padding: "10px 22px",
+                minHeight: "42px",
                 borderRadius: "var(--ra-18)",
                 backgroundColor: "var(--color-secondary)",
                 color: "#ffffffff",
@@ -1709,7 +1900,7 @@ export default function HomePage() {
                 fontSize: "0.9rem",
                 fontFamily: "var(--font-body)",
                 textDecoration: "none",
-                transition: "opacity 0.2s ease",
+                transition: "opacity 0.2s ease, transform 0.15s ease",
               }}
             >
               <span style={{ fontFamily: "var(--font-display)" }}>تصفح جميع المقالات والمدونة</span>
@@ -1728,6 +1919,7 @@ export default function HomePage() {
               <Link
                 key={post.id}
                 href={`/blog/${encodeURIComponent(post.slug || post.id)}`}
+                className="home-blog-card active:scale-[0.96] transition-transform"
                 style={{
                   textDecoration: "none",
                   backgroundColor: "var(--color-bg)",
@@ -1737,7 +1929,7 @@ export default function HomePage() {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
-                  transition: "transform 0.2s ease, border-color 0.2s ease",
+                  transition: "transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease",
                   boxShadow: "var(--cardGlassShadow)"
                 }}
               >
@@ -1745,11 +1937,11 @@ export default function HomePage() {
                   <span style={{ fontSize: "0.78rem", color: "var(--color-secondary)", fontWeight: "700", display: "block", marginBottom: "6px", fontFamily: "var(--font-body)" }}>
                     {post.category || "مقالات خريطة القاهرة"}
                   </span>
-                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--color-foreground)", margin: "0 0 8px 0", lineHeight: "1.45" }}>
+                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--color-foreground)", margin: "0 0 8px 0", lineHeight: "1.45", textWrap: "balance" }}>
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p style={{ fontSize: "0.83rem", color: "var(--text-secondary)", margin: "0 0 8px 0", lineHeight: "1.5", opacity: 0.9, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    <p style={{ fontSize: "0.83rem", color: "var(--text-secondary)", margin: "0 0 8px 0", lineHeight: "1.5", opacity: 0.9, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textWrap: "pretty" }}>
                       {post.excerpt}
                     </p>
                   )}
@@ -1765,7 +1957,7 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. AI PLANNER BANNER ── */}
-      <section style={{ maxWidth: "100%", margin: "0 auto", backgroundColor: "var(--bg-secondary)", borderBottom: "1px solid var(--border-glass)", }}>
+      <section ref={aiPlannerSectionRef} style={{ maxWidth: "100%", margin: "0 auto", backgroundColor: "var(--bg-secondary)", borderBottom: "1px solid var(--border-glass)", }}>
         <div style={{
           borderTop: "1px solid var(--border-glass)",
           padding: "48px 2px",
@@ -1773,7 +1965,9 @@ export default function HomePage() {
           position: "relative",
           overflow: "hidden"
         }}>
-          <div style={{
+          <div
+            ref={aiRobotRef}
+            style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -1782,22 +1976,23 @@ export default function HomePage() {
             <Image src="/images/icons3d/robot.webp" alt="الذكاء الاصطناعي لماب القاهرة" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
-          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-foreground)" }}>
+          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-foreground)", textWrap: "balance" }}>
             محتار تخرج فين النهاردة؟ اترك التخطيط للذكاء الاصطناعي!
           </h2>
-          <p className="sub-title" style={{ fontSize: "1rem", color: "var(--text-secondary)", margin: "0 8px 28px 8px", lineHeight: "1.7", textAlign: "center" }}>
+          <p className="sub-title" style={{ fontSize: "1rem", color: "var(--text-secondary)", margin: "0 8px 28px 8px", lineHeight: "1.7", textAlign: "center", textWrap: "pretty" }}>
             حدد ميزانيتك، عدد الأفراد، والمنطقة المفضلة، وسيقوم المساعد الذكي بتنسيق برنامج يومك بالكامل مع أماكن الأكل والكافيهات والمواصلات المناسبة.
           </p>
 
           <Link
             href="/ai-planner"
-            className="btn btn-primary"
+            className="btn btn-primary active:scale-[0.96] transition-transform"
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: "10px",
               fontWeight: "700",
               fontSize: "1rem",
+              minHeight: "44px",
               textDecoration: "none",
             }}
           >
@@ -1808,28 +2003,29 @@ export default function HomePage() {
       </section>
 
       {/* ── 6. PROPOSE PLACE CTA ── */}
-      <section style={{
+      <section ref={proposePlaceSectionRef} style={{
         padding: "60px 20px",
         backgroundColor: "var(--color-bg)",
         borderTop: "1px solid var(--border-glass)",
         textAlign: "center"
       }}>
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-          <h2 style={{ fontSize: "1.6rem", fontWeight: "800", marginBottom: "12px" }}>
+          <h2 style={{ fontSize: "1.6rem", fontWeight: "800", marginBottom: "12px", textWrap: "balance" }}>
             هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد؟
           </h2>
-          <p className="sub-title" style={{ color: "var(--text-secondary)", marginBottom: "24px" }}>
+          <p className="sub-title" style={{ color: "var(--text-secondary)", marginBottom: "24px", textWrap: "pretty" }}>
             ساهم معنا في تحديث دليل ماب القاهرة وأضف محلّك أو مكانك المفضّل مجاناً ليصل إلى آلاف الزوار.
           </p>
           <Link
             href="/propose-place"
-            className="btn btn-outline"
+            className="btn btn-outline active:scale-[0.96] transition-transform"
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: "10px",
               fontWeight: "700",
               fontSize: "0.95rem",
+              minHeight: "44px",
               textDecoration: "none"
             }}
           >

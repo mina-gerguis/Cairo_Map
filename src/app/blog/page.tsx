@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import BlogLoader from "@/components/blog/BlogLoader";
 import BlogHeaderBanner from "@/components/blog/BlogHeaderBanner";
 import BlogSearchBar from "@/components/blog/BlogSearchBar";
@@ -8,6 +8,7 @@ import FeaturedBlogCard from "@/components/blog/FeaturedBlogCard";
 import BlogCard from "@/components/blog/BlogCard";
 import BlogEmptyState from "@/components/blog/BlogEmptyState";
 import { useBlogArticles } from "@/components/blog/useBlogArticles";
+import { gsap, useGSAP } from "@/lib/gsap";
 import styles from "./blog.module.css";
 
 export default function BlogPublicPage() {
@@ -24,9 +25,48 @@ export default function BlogPublicPage() {
     isSavedCategory,
   } = useBlogArticles();
 
+  const mainRef = useRef<HTMLElement>(null);
+  const featuredRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
   const handleClearSearch = useCallback(() => {
     setSearchQuery("");
   }, [setSearchQuery]);
+
+  // Animate featured card on mount/change
+  useGSAP(() => {
+    if (featuredRef.current && featuredPost) {
+      gsap.from(featuredRef.current, {
+        autoAlpha: 0,
+        y: 25,
+        duration: 0.6,
+        ease: "power2.out",
+        clearProps: "transform,opacity,visibility",
+      });
+    }
+  }, [featuredPost]);
+
+  // Stagger animate blog cards whenever the list changes
+  useGSAP(() => {
+    if (gridRef.current) {
+      const cards = gridRef.current.querySelectorAll(".blog-card-item");
+      if (cards.length > 0) {
+        gsap.from(cards, {
+          autoAlpha: 0,
+          y: 35,
+          stagger: 0.08,
+          duration: 0.55,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: gridRef.current,
+            start: "top 85%",
+            once: true,
+          },
+          clearProps: "transform,opacity,visibility",
+        });
+      }
+    }
+  }, [filteredBlogs]);
 
   if (loading) {
     return (
@@ -55,7 +95,7 @@ export default function BlogPublicPage() {
       />
 
       {/* Main Content Area */}
-      <main className={styles.mainContainer}>
+      <main ref={mainRef} className={styles.mainContainer}>
         {/* Search Bar */}
         <BlogSearchBar
           searchQuery={searchQuery}
@@ -64,7 +104,11 @@ export default function BlogPublicPage() {
         />
 
         {/* Featured Post (Visible on 'All' category without search) */}
-        {featuredPost && <FeaturedBlogCard post={featuredPost} />}
+        {featuredPost && (
+          <div ref={featuredRef}>
+            <FeaturedBlogCard post={featuredPost} />
+          </div>
+        )}
 
         {/* Articles List Section */}
         <section
@@ -94,9 +138,11 @@ export default function BlogPublicPage() {
           ) : isListEmpty ? (
             <BlogEmptyState isSavedCategory={isSavedCategory} />
           ) : (
-            <div className={styles.blogsGrid}>
+            <div ref={gridRef} className={styles.blogsGrid}>
               {filteredBlogs.map((post) => (
-                <BlogCard key={post.id} post={post} />
+                <div key={post.id} className="blog-card-item">
+                  <BlogCard post={post} />
+                </div>
               ))}
             </div>
           )}

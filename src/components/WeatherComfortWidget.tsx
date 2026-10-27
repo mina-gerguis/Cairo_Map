@@ -336,7 +336,7 @@ export default function WeatherComfortWidget() {
         style={{
           background: "var(--bg-glass)",
           border: "1px solid var(--border-glass)",
-          borderRadius: "var(--ra-4)",
+          borderRadius: "16px",
           padding: "12px 16px",
           marginBottom: "20px",
           display: "flex",
@@ -397,11 +397,11 @@ export default function WeatherComfortWidget() {
                       : weather.icon === "cold" || weather.icon === "cool"
                         ? "rgba(0, 188, 221, 1)"
                         : "#f50b0bff",
-                }}>{weather.text} </span>: <strong>{weather.temp}° م</strong>
+                }}>{weather.text} </span>: <strong style={{ fontVariantNumeric: "tabular-nums" }} className="tabular-nums">{weather.temp}° م</strong>
               </span>
 
             </div>
-            <p style={{ margin: "3px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.4" }}>
+            <p style={{ margin: "3px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)", lineHeight: "1.4", textWrap: "pretty" }}>
               {weather.tip}
             </p>
           </div>
@@ -412,11 +412,13 @@ export default function WeatherComfortWidget() {
             onClick={requestUserLocation}
             disabled={locating}
             title="تحديث درجة الحرارة بناءً على موقعك الحالي"
+            className="active:scale-[0.96] transition-transform"
             style={{
               background: "rgba(255, 255, 255, 0.08)",
               border: "none",
               color: "var(--color-foreground)",
-              padding: "12px",
+              padding: "10px 14px",
+              minHeight: "40px",
               borderRadius: "8px",
               fontSize: "0.8rem",
               fontWeight: "600",
@@ -424,7 +426,7 @@ export default function WeatherComfortWidget() {
               display: "flex",
               alignItems: "center",
               gap: "6px",
-              transition: "all 0.2s ease",
+              transition: "transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease",
               fontFamily: "inherit",
             }}
           >

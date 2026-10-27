@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { PlacesHeroProps } from "../types";
 import PlacesSearchSuggestions from "./PlacesSearchSuggestions";
+import { useGSAP, gsap } from "@/lib/gsap";
 
 export default function PlacesHero({
   placesCount,
@@ -21,6 +22,72 @@ export default function PlacesHero({
   onToggleProximity,
   onExploreClick,
 }: PlacesHeroProps) {
+  const heroContainerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const el = heroContainerRef.current;
+      if (!el) return;
+
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      const badge = el.querySelector(".hero-badge");
+      const title = el.querySelector(".hero-title");
+      const subtitle = el.querySelector(".hero-subtitle");
+      const searchBox = el.querySelector(".hero-search-wrapper");
+      const actions = el.querySelector(".hero-actions");
+      const stats = el.querySelectorAll(".hero-stat");
+
+      if (badge) tl.fromTo(badge, { autoAlpha: 0, y: -14, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45 });
+      if (title) tl.fromTo(title, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 0.55 }, "-=0.25");
+      if (subtitle) tl.fromTo(subtitle, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5 }, "-=0.35");
+      if (searchBox) tl.fromTo(searchBox, { autoAlpha: 0, y: 18, scale: 0.98 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5 }, "-=0.3");
+      if (actions) tl.fromTo(actions, { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 0.45 }, "-=0.25");
+      if (stats.length > 0) {
+        tl.fromTo(stats, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.4 }, "-=0.2");
+      }
+
+      // Floating ambient 3D cards
+      const card1 = el.querySelector(".hero-3d-card-1");
+      const card2 = el.querySelector(".hero-3d-card-2");
+      const card3 = el.querySelector(".hero-3d-card-3");
+
+      if (card1) {
+        gsap.to(card1, {
+          y: -12,
+          rotation: 1.5,
+          duration: 2.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      }
+      if (card2) {
+        gsap.to(card2, {
+          y: 10,
+          rotation: -2,
+          duration: 3.4,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: 0.4,
+        });
+      }
+      if (card3) {
+        gsap.to(card3, {
+          y: -8,
+          rotation: 1,
+          duration: 3.1,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: 0.8,
+        });
+      }
+    },
+    { scope: heroContainerRef }
+  );
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -46,7 +113,7 @@ export default function PlacesHero({
   };
 
   return (
-    <section className="hero-places">
+    <section ref={heroContainerRef} className="hero-places">
       <div className="hero-bg" />
       <div className="hero-orb hero-orb-1" />
       <div className="hero-orb hero-orb-2" />
