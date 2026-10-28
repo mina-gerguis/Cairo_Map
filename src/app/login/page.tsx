@@ -24,8 +24,8 @@ export default function LoginPage() {
         {/* Brand Header & Titles */}
         <LoginHeader />
 
-        {/* Error Notification Banner */}
-        {form.error && (
+        {/* Error Notification Banner (Only for credentials step; MFA shows errors directly under OTP inputs) */}
+        {form.error && form.loginStep === "credentials" && (
           <div className={styles.errorAlert} role="alert">
             <AlertCircle size={18} className={styles.errorIcon} />
             <div>
@@ -64,6 +64,7 @@ export default function LoginPage() {
             codeDigits={form.codeDigits}
             inputRefs={form.inputRefs}
             loading={form.loading}
+            error={form.error}
             onDigitChange={form.handleDigitChange}
             onKeyDown={form.handleKeyDown}
             onPaste={form.handlePaste}

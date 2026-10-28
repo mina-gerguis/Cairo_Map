@@ -708,6 +708,7 @@
   gap: 0.5rem;
   direction: ltr;
   margin: 1rem 0 1.25rem;
+  transition: transform 0.2s ease;
 }
 
 .mfaDigitInput {
@@ -721,7 +722,7 @@
   background-color: transparent;
   color: #09090b;
   outline: none;
-  transition: all 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
 }
 
 :global(html.dark) .mfaDigitInput {
@@ -738,6 +739,96 @@
 :global(html.dark) .mfaDigitInput:focus {
   border-color: #ffffff;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
+/* Error state for digit inputs: red border & glow */
+.mfaDigitInputError {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.04) !important;
+  color: #dc2626 !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25) !important;
+}
+
+:global(html.dark) .mfaDigitInputError {
+  border-color: #f87171 !important;
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  color: #fca5a5 !important;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.3) !important;
+}
+
+.mfaDigitInputError:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+}
+
+:global(html.dark) .mfaDigitInputError:focus {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.3) !important;
+}
+
+/* Shake / Vibration Animation for wrong code */
+.shake {
+  animation: mfaShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes mfaShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(-9px);
+  }
+  30% {
+    transform: translateX(8px);
+  }
+  45% {
+    transform: translateX(-6px);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  90% {
+    transform: translateX(1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    animation: none;
+  }
+}
+
+/* Error message placed directly below the MFA digit inputs */
+.mfaErrorMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #ef4444;
+  margin-top: -0.25rem;
+  margin-bottom: 1.25rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  text-align: center;
+  animation: fadeIn 0.2s ease-out;
+  line-height: 1.4;
+}
+
+:global(html.dark) .mfaErrorMessage {
+  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.mfaErrorIcon {
+  flex-shrink: 0;
 }
 
 .mfaActions {

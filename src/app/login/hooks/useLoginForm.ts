@@ -103,6 +103,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
   // Handle individual digit input in MFA
   const handleDigitChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
+    if (error) setError("");
     const newDigits = [...codeDigits];
     newDigits[index] = value.slice(-1);
     setCodeDigits(newDigits);
@@ -114,6 +115,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
 
   // Handle backspace navigation in MFA
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (error) setError("");
     if (e.key === "Backspace" && !codeDigits[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -122,6 +124,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
   // Handle paste in MFA inputs
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
+    if (error) setError("");
     const pastedData = e.clipboardData.getData("text/plain").replace(/\D/g, "").slice(0, 6);
     if (pastedData) {
       const newDigits = [...codeDigits];

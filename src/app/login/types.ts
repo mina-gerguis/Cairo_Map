@@ -46,6 +46,7 @@ export interface MfaVerificationFormProps {
   codeDigits: string[];
   inputRefs: React.MutableRefObject<(HTMLInputElement | null)[]>;
   loading: boolean;
+  error?: string;
   onDigitChange: (index: number, value: string) => void;
   onKeyDown: (index: number, e: React.KeyboardEvent<HTMLInputElement>) => void;
   onPaste: (e: React.ClipboardEvent) => void;
