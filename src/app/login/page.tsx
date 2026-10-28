@@ -45,6 +45,8 @@ export default function LoginPage() {
             focusedField={form.focusedField}
             setFocusedField={form.setFocusedField}
             loading={form.loading}
+            googleLoading={form.googleLoading}
+            onGoogleLogin={form.handleGoogleLogin}
             onSubmit={form.handleLogin}
           />
         ) : (

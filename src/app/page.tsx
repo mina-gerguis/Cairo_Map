@@ -4,13 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ASSETS } from "@/constants/assets";
 import {
   FaSearch,
   FaMapMarkerAlt,
-  FaPhoneAlt,
-  FaSubway,
-  FaRobot,
-  FaCompass,
   FaPlusCircle,
   FaArrowLeft,
   FaLightbulb,
@@ -142,13 +139,23 @@ interface SiteServiceItem {
   keywords: string[];
 }
 
+// ── دالة التحقق من صحة مسارات الصور لمنع أخطاء Invalid URL ──
+function getValidImageSrc(icon?: string): string {
+  if (!icon) return "/images/icons2d/cairo.webp";
+  if (icon.startsWith("/") || icon.startsWith("http://") || icon.startsWith("https://")) {
+    return icon;
+  }
+  const filename = icon.includes(".") ? icon : `${icon}.webp`;
+  return `/images/icons2d/${filename}`;
+}
+
 const SITE_SERVICES: SiteServiceItem[] = [
   {
     id: "save-location",
     label: "أحفظ مكاني",
     subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
     href: "/save-location",
-    icon: "street.webp",
+    icon: "/images/icons3d/street.webp",
     badge: "ميزة جديدة 🎯",
     keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"]
   },
@@ -157,7 +164,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon: "metro",
+    icon: "/images/icons2d/metro.webp",
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },
@@ -166,7 +173,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطار المونوريل",
     subtitle: "محطات وأسعار تذاكر المونوريل",
     href: "/monorail",
-    icon: "Cairo_monorail_east",
+    icon: "/images/icons2d/Cairo_monorail_east.webp",
     badge: "قطار معلق",
     keywords: ["منورايل", "المنورايل", "قطار العاصمة", "العاصمة الادارية", "اكتوبر", "monorail"]
   },
@@ -175,7 +182,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "القطار الكهربائي الخفيف",
     subtitle: "محطات ومواعيد القطار الكهربائي",
     href: "/lrt",
-    icon: "Cairo_lrt",
+    icon: "/images/icons2d/Cairo_lrt.webp",
     badge: "القطار الكهربائي",
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"]
   },
@@ -184,7 +191,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الأتوبيس الترددي السريع (BRT)",
     subtitle: "محطات ومسار الأتوبيس على الطريق الدائري",
     href: "/brt",
-    icon: "brt",
+    icon: "/images/icons2d/brt.webp",
     badge: "أتوبيس ترددي",
     keywords: ["brt", "ترددي", "الترددي", "اتوبيس ترددي", "الأتوبيس الترددي", "الدائري", "الطريق الدائري", "حافلات سريعة"]
   },
@@ -193,7 +200,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطارات السكك الحديدية",
     subtitle: "قطارات القاهرة والصعيد",
     href: "/railways",
-    icon: "Cairo_train",
+    icon: "/images/icons2d/Cairo_train.webp",
     badge: "قطارات مصر",
     keywords: ["قطار", "قطارات", "سكك حديد", "سكك حديد مصر", "محطة رمسيس", "رمسيس", "قطار الصعيد", "قطار اسكندرية"]
   },
@@ -202,7 +209,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "دليل الهاتف والأكواد",
     subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "directory",
+    icon: "/images/icons2d/cairo.webp",
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
@@ -211,7 +218,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "ازاي اروح؟",
     subtitle: "دليل الوصول لأي مكان في مصر",
     href: "/directions",
-    icon: "arab_republic _of_egypt",
+    icon: "/images/icons2d/arab_republic _of_egypt.webp",
     badge: "اتجاهات ومسارات",
     keywords: ["ازاي اروح", "ازاي اوصل", "اروح ازاي", "مواصلات", "طريق", "مسار", "اتجاهات"]
   },
@@ -220,7 +227,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مخطط الرحلات الذكي",
     subtitle: "تخطيط يومك بالذكاء الاصطناعي",
     href: "/ai-planner",
-    icon: "ai",
+    icon: "/images/icons2d/ai.webp",
     badge: "ذكاء اصطناعي",
     keywords: ["خروجة", "تخطيط", "مخطط", "رحلات", "برنامج", "ذكاء", "ذكاء اصطناعي", "ai", "افكار خروج"]
   },
@@ -229,7 +236,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف الأتوبيسات",
     subtitle: "محطات الأتوبيسات بالقاهرة والجيزة",
     href: "/bus-stations",
-    icon: "bus",
+    icon: "/images/icons2d/bus.webp",
     badge: "مواقف أتوبيس",
     keywords: ["اتوبيس", "أتوبيس", "موقف اتوبيس", "نقل عام", "مواقف الأتوبيس"]
   },
@@ -238,7 +245,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف السرفيس",
     subtitle: "خطوط السرفيس بين المحافظات",
     href: "/microbus-stations",
-    icon: "microbus",
+    icon: "/images/icons2d/microbus.webp",
     badge: "مواقف ميكروباص",
     keywords: ["ميكروباص", "موقف ميكروباص", "سرفيس", "موقف سرفيس", "مواقف"]
   },
@@ -247,7 +254,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "المطارات المصرية",
     subtitle: "معلومات مطار القاهرة ",
     href: "/airports",
-    icon: "airport",
+    icon: "/images/icons2d/airport.webp",
     badge: "مطارات وموانئ",
     keywords: ["مطار", "مطارات", "مطار القاهرة", "سفنكس", "موانئ", "ميناء"]
   },
@@ -256,7 +263,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الموانئ المصرية",
     subtitle: "معلومات ميناء السخنة ",
     href: "/ports",
-    icon: "arab_republice",
+    icon: "/images/icons2d/arab_republice.webp",
     badge: "الموانئ",
     keywords: ["ميناء", "الميناء", "ميناء السخنة"]
   },
@@ -265,7 +272,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مدونة ومقالات خريطة القاهرة",
     subtitle: "أدلة الترانزيت، النصائح، والأماكن",
     href: "/blog",
-    icon: "cairo",
+    icon: "/images/icons2d/cairo.webp",
     badge: "مقالات وأدلة",
     keywords: ["مدونة", "مقالات", "مقال", "اخبار", "أخبار", "دليل", "blog", "نصائح", "مقاله"]
   }
@@ -348,14 +355,14 @@ export default function HomePage() {
       const tags = heroSectionRef.current.querySelectorAll(".hero-tag-item");
       const weatherWidget = heroSectionRef.current.querySelector(".hero-weather-item");
 
-      if (badge) heroTl.fromTo(badge, { autoAlpha: 0, y: -15, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45 });
-      if (title) heroTl.fromTo(title, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 0.55 }, "-=0.25");
-      if (subtitle) heroTl.fromTo(subtitle, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5 }, "-=0.35");
-      if (searchBox) heroTl.fromTo(searchBox, { autoAlpha: 0, y: 20, scale: 0.98 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5 }, "-=0.3");
+      if (badge) heroTl.fromTo(badge, { autoAlpha: 0, y: -15, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, clearProps: "transform" });
+      if (title) heroTl.fromTo(title, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 0.55, clearProps: "transform" }, "-=0.25");
+      if (subtitle) heroTl.fromTo(subtitle, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, clearProps: "transform" }, "-=0.35");
+      if (searchBox) heroTl.fromTo(searchBox, { autoAlpha: 0, y: 20, scale: 0.98 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, clearProps: "transform" }, "-=0.3");
       if (tags && tags.length > 0) {
-        heroTl.fromTo(tags, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, stagger: 0.04, duration: 0.4 }, "-=0.25");
+        heroTl.fromTo(tags, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, stagger: 0.04, duration: 0.4, clearProps: "transform" }, "-=0.25");
       }
-      if (weatherWidget) heroTl.fromTo(weatherWidget, { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 0.45 }, "-=0.2");
+      if (weatherWidget) heroTl.fromTo(weatherWidget, { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 0.45, clearProps: "transform" }, "-=0.2");
     }
 
     // 2. Famous Cities Section
@@ -944,63 +951,63 @@ export default function HomePage() {
       id: "save-location",
       title: "أحفظ مكاني (GPS دقيق)",
       desc: "احفظ مكان تواجدك أو ركنة سيارتك بدقة 100% بالميلي مع تسجيل الوقت والتاريخ ورابط مباشر لخرائط Google Maps.",
-      icon: "street",
+      icon: ASSETS.services.saveLocation,
       link: "/save-location",
     },
     {
       id: "places",
       title: "دليل الأماكن",
       desc: "استكشف المطاعم، الكافيهات، الأطباء، والمحلات في القاهرة والجيزة مع مواعيد العمل الرسمية، الفروع، وأرقام الهواتف.",
-      icon: "restaurant",
+      icon: ASSETS.services.places,
       link: "/places",
     },
     {
       id: "blog",
       title: "مدونة ومقالات خريطة القاهرة",
       desc: "أحدث النصائح، خطوط السفر، وأدلة التنقل الذكي وأماكن الخروج في القاهرة والجيزة المحدثة باستمرار.",
-      icon: "book",
+      icon: ASSETS.services.blog,
       link: "/blog",
     },
     {
       id: "ai-planner",
       title: "مخطط الرحلات الذكي (AI)",
       desc: "صمّم خطة خروجة أو يوم كامل بالذكاء الاصطناعي بناءً على ميزانيتك، اهتماماتك الشخصية، والمنطقة التي تفضلها.",
-      icon: "robot",
+      icon: ASSETS.services.places,
       link: "/ai-planner",
     },
     {
       id: "directory",
       title: "دليل الهواتف والأكواد",
       desc: "دليل شامل لأرقام الطوارئ، الهيئات الخدمية، وأكواد باقات وفليكسات شبكات المحمول (فودافون، أورنج، اتصالات، وي).",
-      icon: "phone",
+      icon: ASSETS.services.saveLocation,
       link: "/directory",
     },
     {
       id: "transit",
       title: "شبكات مترو القاهرة الكبري",
       desc: "خرائط تفاعلية لخطوط مترو الأنفاق الخط الأول و الثاني و الثالث.",
-      icon: "metro",
+      icon: ASSETS.transit.metro,
       link: "/metro",
     },
     {
       id: "directions",
       title: "دليل ازاي اروح والمواقف",
       desc: "اعثر على طريقة الوصول لأي مكان في مصر بسهولة مع مواقف الأتوبيس، الميكروباص، المطارات، والموانئ.",
-      icon: "egypt",
+      icon: ASSETS.services.cairo,
       link: "/directions",
     },
     {
       id: "microbus-stations",
       title: "مواقف الميكروباص",
       desc: "دليل مواقف الميكروباص في القاهرة الكبري و الجيزة  وجميع المحافظات المصرية",
-      icon: "microbus",
+      icon: ASSETS.transit.microbus,
       link: "/microbus-stations",
     },
     {
       id: "propose",
       title: "إضافة واقتراح مكان جديد",
       desc: "هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد على دليل ماب القاهرة؟ أضفه مجاناً ليصل لملايين الزوار.",
-      icon: "store",
+      icon: ASSETS.services.saveLocation,
       link: "/propose-place",
     },
   ];
@@ -1075,7 +1082,8 @@ export default function HomePage() {
           <div ref={searchContainerRef} style={{
             maxWidth: "720px",
             margin: "0 auto 28px auto",
-            position: "relative"
+            position: "relative",
+            zIndex: isDropdownOpen && searchQuery.trim().length > 0 ? 50 : 2
           }}>
             <form onSubmit={(e) => handleSearchSubmit(e, false)}>
               <div style={{
@@ -1218,7 +1226,7 @@ export default function HomePage() {
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           <Image
-                            src={`/images/icons2d/${service.icon}`}
+                            src={getValidImageSrc(service.icon)}
                             alt={service.label}
                             width={30}
                             height={30}
@@ -1466,7 +1474,9 @@ export default function HomePage() {
             justifyContent: "center",
             gap: "10px",
             maxWidth: "800px",
-            margin: "0 auto 40px auto"
+            margin: "0 auto 40px auto",
+            position: "relative",
+            zIndex: 1
           }}>
             {quickSearchTags.map((tag, idx) => (
               <button
@@ -1493,7 +1503,7 @@ export default function HomePage() {
                   transition: "transform 0.15s ease, background-color 0.15s ease, color 0.15s ease"
                 }}
               >
-                <Image src={`/images/icons2d/${tag.icon}`} alt={tag.label} width={18} height={18} style={{ width: "18px", height: "18px", objectFit: "contain" }} />
+                <Image src={getValidImageSrc(tag.icon)} alt={tag.label} width={18} height={18} style={{ width: "18px", height: "18px", objectFit: "contain" }} />
                 <span>{tag.label}</span>
               </button>
             ))}
@@ -1785,7 +1795,7 @@ export default function HomePage() {
                     overflow: "hidden"
                   }}>
                     <Image
-                      src={`/images/icons2d/${service.icon}.webp`}
+                      src={getValidImageSrc(service.icon)}
                       alt={service.title}
                       width={80}
                       height={80}

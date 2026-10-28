@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import MobileBottomNav from "@/components/MobileBottomNav";
+import MobileBottomNav from "@/components/Navbar/MobileBottomNav";
 import { supabase } from "@/lib/supabase";
 import SiteAlertModal from "@/components/SiteAlertModal";
 import ScrollToTop from "@/components/ScrollToTop";

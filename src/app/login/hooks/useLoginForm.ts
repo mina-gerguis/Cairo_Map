@@ -22,6 +22,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
   // Status & Feedback state
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState<boolean>(false);
 
   // MFA state
   const [loginStep, setLoginStep] = useState<LoginStep>("credentials");
@@ -41,11 +42,25 @@ export const useLoginForm = (): UseLoginFormReturn => {
     }
   }, [user, mfaPending, router]);
 
-  // 2. Check if redirected due to account suspension notice
+  // 2. Check if redirected due to account suspension notice or OAuth errors
   useEffect(() => {
     if (isSuspendedNoticePresent()) {
       setError(LOGIN_MESSAGES.ACCOUNT_SUSPENDED);
       clearSuspensionNotice();
+    } else if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlError = params.get("error");
+      if (urlError) {
+        if (urlError === "oauth_failed") {
+          setError("فشل تسجيل الدخول باستخدام Google، يرجى المحاولة مرة أخرى.");
+        } else {
+          try {
+            setError(decodeURIComponent(urlError));
+          } catch {
+            setError(urlError);
+          }
+        }
+      }
     }
   }, []);
 
@@ -215,6 +230,39 @@ export const useLoginForm = (): UseLoginFormReturn => {
     router.push("/");
   };
 
+  // Google OAuth Login
+  const handleGoogleLogin = async () => {
+    if (!supabase) {
+      setError(LOGIN_MESSAGES.DB_NOT_CONFIGURED);
+      return;
+    }
+
+    try {
+      setGoogleLoading(true);
+      setError("");
+
+      const redirectTo = `${window.location.origin}/auth/callback`;
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (oauthError) {
+        setError(oauthError.message || LOGIN_MESSAGES.GOOGLE_LOGIN_ERROR);
+        setGoogleLoading(false);
+      }
+    } catch (err: any) {
+      setError(err?.message || LOGIN_MESSAGES.GOOGLE_LOGIN_ERROR);
+      setGoogleLoading(false);
+    }
+  };
+
   // MFA Code Verification Submission
   const handleVerifyMfa = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -284,6 +332,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
     focusedField,
     setFocusedField,
     loading,
+    googleLoading,
     error,
     setError,
     mfaCode,
@@ -293,6 +342,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
     handleKeyDown,
     handlePaste,
     handleLogin,
+    handleGoogleLogin,
     handleVerifyMfa,
     handleCancelMfa,
   };

@@ -472,6 +472,27 @@ export default function Navbar() {
               تسجيل الدخول
             </Link>
           )}
+          <button
+            onClick={() => { toggleTheme(); }}
+            className="navbar-mobile-link"
+            style={{
+              width: "100%",
+              background: "none",
+              border: "none",
+              textAlign: "right",
+              display: "flex",
+              alignItems: "center",
+              cursor: "pointer",
+              fontFamily: "var(--font-heading)",
+              color: "var(--color-foreground)",
+              marginTop: "6px",
+              paddingTop: "12px",
+              borderTop: "1px solid var(--border-glass)"
+            }}
+          >
+            <i className={theme === "dark" ? "bx bx-sun" : "bx bx-moon"} style={{ fontSize: "1.2rem", marginLeft: "8px" }} />
+            <span>{theme === "dark" ? "الوضع النهاري" : "الوضع الليلي"}</span>
+          </button>
         </div>
       )}
 

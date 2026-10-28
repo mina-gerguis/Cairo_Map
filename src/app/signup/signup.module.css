@@ -905,6 +905,36 @@
   transform: translateY(-1px);
 }
 
+.actionBtnGoogle {
+  width: 100%;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1f2937;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  font-family: var(--font-heading);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.actionBtnGoogle:hover:not(:disabled) {
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+}
+
+.actionBtnGoogle:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .actionBtnOutline {
   width: 100%;
   padding: 12px;

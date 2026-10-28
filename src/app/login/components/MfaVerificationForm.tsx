@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { MfaVerificationFormProps } from "../types";
 import { LOGIN_TEXTS } from "../constants";
 import styles from "../login.module.css";
@@ -19,14 +20,15 @@ export const MfaVerificationForm: React.FC<MfaVerificationFormProps> = ({
       {/* MFA Header with 3D Padlock */}
       <div className={styles.mfaHeader}>
         <div className={styles.mfaIconWrapper}>
-          <img
-            src="/images/icons3d/padlock.webp"
+          <Image
+            src="/images/other_icon/padlock.webp"
             alt="MFA Security"
-            className={styles.mfaIcon}
+            width={60}
+            height={80}
           />
         </div>
-        <h2 className={styles.mfaTitle}>{LOGIN_TEXTS.MFA_TITLE}</h2>
-        <p className={styles.mfaSubtitle}>{LOGIN_TEXTS.MFA_SUBTITLE}</p>
+        <h2 className="font-sub fw-bold fs-2 text-black">{LOGIN_TEXTS.MFA_TITLE}</h2>
+        <p className="mt-2 fs-1 text-secondary">{LOGIN_TEXTS.MFA_SUBTITLE}</p>
       </div>
 
       {/* 6-Digit OTP Code Inputs */}
@@ -55,7 +57,7 @@ export const MfaVerificationForm: React.FC<MfaVerificationFormProps> = ({
       <button
         type="submit"
         disabled={loading || mfaCode.length !== 6}
-        className={styles.mfaSubmitBtn}
+        className= "btn btn-primary bg-black text-white"
       >
         {loading ? (
           <>
@@ -74,7 +76,7 @@ export const MfaVerificationForm: React.FC<MfaVerificationFormProps> = ({
       <button
         type="button"
         onClick={onCancel}
-        className={styles.mfaCancelBtn}
+        className="btn btn-cancel text-black"
       >
         <i className="bx bx-arrow-back" style={{ fontSize: "1.1rem" }} />
         <span>{LOGIN_TEXTS.MFA_CANCEL}</span>

@@ -9,14 +9,14 @@ import { initialPlaces, CATEGORIES_STRUCTURE, Place, normalizePlaceCategory } fr
 
 import { MdOutlineClose } from "react-icons/md";
 import { GoHome, GoHomeFill } from "react-icons/go";
-import { IoSearchOutline, IoSearch, IoSunnyOutline, IoMoonOutline, IoChevronBack } from "react-icons/io5";
-import { RiNewspaperLine, RiNewspaperFill } from "react-icons/ri";
+import { IoSearchOutline, IoSearch, IoChevronBack, IoMapOutline, IoMap } from "react-icons/io5";
+import { IconRadar, IconRadarFilled } from '@tabler/icons-react';
 import { FaLightbulb, FaMapMarkerAlt } from "react-icons/fa";
 import { useGSAP, gsap } from "@/lib/gsap";
 
 const BUBBLE_W = 60;
 const BUBBLE_W_DRAG = 76;
-const NAV_ROUTES = ["/", "/blog", null, null, "/profile"] as const;
+const NAV_ROUTES = ["/", "/directions", null, "/map", "/profile"] as const;
 
 // ── Arabic Normalization & Cleaning Helpers ──
 function normalizeArabic(text: string): string {
@@ -213,7 +213,6 @@ export default function MobileBottomNav() {
   const { user, profile } = useAuth();
   const { unreadCount } = useNotifications();
 
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isShrunk, setIsShrunk] = useState(false);
@@ -232,28 +231,6 @@ export default function MobileBottomNav() {
 
   // Check modal active state
   const [isModalActive, setIsModalActive] = useState(false);
-
-  // Theme Sync
-  useEffect(() => {
-    const saved = localStorage.getItem("dftry_theme") as "dark" | "light" | null;
-    const initial = saved ?? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-    setTheme(initial);
-    document.documentElement.classList.toggle("light", initial === "light");
-
-    const handleGlobalThemeChange = (e: any) => {
-      setTheme(e.detail);
-    };
-    window.addEventListener("themechange", handleGlobalThemeChange);
-    return () => window.removeEventListener("themechange", handleGlobalThemeChange);
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    localStorage.setItem("dftry_theme", next);
-    document.documentElement.classList.toggle("light", next === "light");
-    window.dispatchEvent(new CustomEvent("themechange", { detail: next }));
-  };
 
   // Fetch places from Supabase if available
   useEffect(() => {
@@ -345,14 +322,16 @@ export default function MobileBottomNav() {
   const isActive = (path: string) =>
     path === "/" ? pathname === "/" : pathname === path || pathname?.startsWith(path + "/");
 
-  const isHomeActive = isActive("/");
-  const isBlogActive = isActive("/blog");
+  const isHomeActive = pathname === "/";
+  const isDirectionsActive = isActive("/directions");
+  const isMapActive = isActive("/map") || isActive("/places");
   const isProfileActive = isActive("/profile");
 
   const getActiveIndex = () => {
     if (isSearchOpen) return 2;
     if (isHomeActive) return 0;
-    if (isBlogActive) return 1;
+    if (isDirectionsActive) return 1;
+    if (isMapActive) return 3;
     if (isProfileActive) return 4;
     return -1;
   };
@@ -482,8 +461,6 @@ export default function MobileBottomNav() {
 
     if (finalIdx === 2) {
       setIsSearchOpen(true);
-    } else if (finalIdx === 3) {
-      toggleTheme();
     } else {
       const route = NAV_ROUTES[finalIdx];
       if (route && route !== pathname) router.push(route);
@@ -656,20 +633,30 @@ export default function MobileBottomNav() {
           )}
 
           {/* 1. الصفحة الرئيسية */}
-          <Link href="/" className={`mobile-nav-item ${displayActiveIndex === 0 ? "active" : ""}`}
-            ref={(el) => { itemRefs.current[0] = el; }}>
+          <Link
+            href="/"
+            className={`mobile-nav-item ${displayActiveIndex === 0 ? "active" : ""}`}
+            ref={(el) => { itemRefs.current[0] = el; }}
+            title="الرئيسية"
+            aria-label="الرئيسية"
+          >
             <div className="mobile-nav-item-wrapper">
               {displayActiveIndex === 0 ? <GoHomeFill size={26} /> : <GoHome size={26} />}
             </div>
           </Link>
 
-          {/* 2. المدونة */}
-          <Link href="/blog" className={`mobile-nav-item ${displayActiveIndex === 1 ? "active" : ""}`}
-            ref={(el) => { itemRefs.current[1] = el; }}>
+          {/* 2. إزاي أروح */}
+          <Link
+            href="/directions"
+            className={`mobile-nav-item ${displayActiveIndex === 1 ? "active" : ""}`}
+            ref={(el) => { itemRefs.current[1] = el; }}
+            title="إزاي أروح"
+            aria-label="إزاي أروح"
+          >
             <div className="mobile-nav-item-wrapper">
-              {displayActiveIndex === 1 ? <RiNewspaperFill size={24} /> : <RiNewspaperLine size={24} />}
+              {displayActiveIndex === 1 ? <IconRadarFilled size={25} /> : <IconRadar size={25} />}
             </div>
-          </Link>
+          </Link> 
 
           {/* 3. مربع البحث */}
           <button
@@ -677,36 +664,48 @@ export default function MobileBottomNav() {
             onClick={() => { if (!isDragActive.current) setIsSearchOpen(true); }}
             style={{ background: "none", border: "none", padding: 0, outline: "none", cursor: "pointer" }}
             ref={(el) => { itemRefs.current[2] = el; }}
+            title="البحث"
+            aria-label="البحث"
           >
             <div className="mobile-nav-item-wrapper">
               {displayActiveIndex === 2 ? <IoSearch size={25} /> : <IoSearchOutline size={25} />}
             </div>
           </button>
 
-          {/* 4. تبديل الوضع الفاتح والداكن */}
-          <button
+          {/* 4. الخريطة التفاعلية */}
+          <Link
+            href="/map"
             className={`mobile-nav-item ${displayActiveIndex === 3 ? "active" : ""}`}
-            onClick={() => { if (!isDragActive.current) toggleTheme(); }}
-            style={{ background: "none", border: "none", padding: 0, outline: "none", cursor: "pointer" }}
             ref={(el) => { itemRefs.current[3] = el; }}
-            title={theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}
+            title="الخريطة"
+            aria-label="الخريطة"
           >
             <div className="mobile-nav-item-wrapper">
-              {theme === "dark" ? <IoSunnyOutline size={25} /> : <IoMoonOutline size={25} />}
+              {displayActiveIndex === 3 ? <IoMap size={24} /> : <IoMapOutline size={24} />}
             </div>
-          </button>
+          </Link>
 
           {/* 5. البروفايل */}
-          <Link href="/profile" className={`mobile-nav-item ${displayActiveIndex === 4 ? "active" : ""}`}
-            ref={(el) => { itemRefs.current[4] = el; }}>
+          <Link
+            href="/profile"
+            className={`mobile-nav-item ${displayActiveIndex === 4 ? "active" : ""}`}
+            ref={(el) => { itemRefs.current[4] = el; }}
+            title="حسابي"
+            aria-label="حسابي"
+          >
             <div className="mobile-nav-item-wrapper" style={{ position: "relative" }}>
               {user && (profile?.avatar_url || user.user_metadata?.avatar_url) ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={profile?.avatar_url || user.user_metadata.avatar_url} alt="Profile"
+                <img
+                  src={profile?.avatar_url || user.user_metadata.avatar_url}
+                  alt="Profile"
                   loading="lazy"
                   decoding="async"
                   style={{
-                    width: "25px", height: "25px", borderRadius: "50%", objectFit: "cover",
+                    width: "25px",
+                    height: "25px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
                     border: displayActiveIndex === 4 ? "2px solid var(--color-foreground)" : "1px solid transparent",
                     transition: "border-color 0.2s",
                   }}

@@ -100,7 +100,10 @@ export const metadata: Metadata = {
     images: ["/apple-touch-icon.png"],
   },
   verification: {
-    google: "9R9Wjnu7iPmzSLWqsZyBs24_mmcGTRfprEE7hzxvNDk",
+    google: [
+      "O4owUyEu2tJrSQR9yugKCqaWFU-4vJbrJRSu9iGYPco",
+      "9R9Wjnu7iPmzSLWqsZyBs24_mmcGTRfprEE7hzxvNDk",
+    ],
   },
 };
 
@@ -145,6 +148,10 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className={almarai.variable}>
       <head>
         {/* Google Search Console Verification */}
+        <meta
+          name="google-site-verification"
+          content="O4owUyEu2tJrSQR9yugKCqaWFU-4vJbrJRSu9iGYPco"
+        />
         <meta
           name="google-site-verification"
           content="9R9Wjnu7iPmzSLWqsZyBs24_mmcGTRfprEE7hzxvNDk"

@@ -159,10 +159,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if ((!data.gender || data.gender === "") && meta.gender) updates.gender = meta.gender;
           if ((!data.governorate || data.governorate === "") && meta.governorate) updates.governorate = meta.governorate;
           if ((!data.city || data.city === "") && meta.city) updates.city = meta.city;
-          if ((!data.avatar_url || data.avatar_url === "") && meta.avatar_url) updates.avatar_url = meta.avatar_url;
+          if ((!data.avatar_url || data.avatar_url === "") && (meta.avatar_url || meta.picture)) updates.avatar_url = meta.avatar_url || meta.picture;
           if ((!data.dob || data.dob === "") && meta.dob) updates.dob = meta.dob;
-          if ((!data.full_name || data.full_name === "") && meta.full_name) updates.full_name = meta.full_name;
-          if ((!data.username || data.username === "") && meta.username) updates.username = meta.username;
+          if ((!data.full_name || data.full_name === "") && (meta.full_name || meta.name)) updates.full_name = meta.full_name || meta.name;
+          if ((!data.username || data.username === "") && (meta.username || meta.preferred_username)) updates.username = meta.username || meta.preferred_username;
         }
 
         if (Object.keys(updates).length > 0) {
@@ -171,6 +171,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .update(updates)
             .eq("id", userId);
           setProfile({ ...profileData, ...updates });
+        }
+      } else {
+        // Fallback: create default profile if not found (e.g. newly signed in OAuth user)
+        const activeUser = currentUser || user;
+        const meta = activeUser?.user_metadata || {};
+        const fullName = meta.full_name || meta.name || activeUser?.email?.split('@')[0] || "مستخدم جديد";
+        const avatarUrl = meta.avatar_url || meta.picture || "";
+        const email = activeUser?.email || "";
+        const generatedUsername = (
+          meta.user_name ||
+          meta.preferred_username ||
+          email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '')
+        ).slice(0, 20);
+
+        const newProfile = {
+          id: userId,
+          full_name: fullName,
+          username: generatedUsername || `user_${userId.slice(0, 8)}`,
+          email: email,
+          avatar_url: avatarUrl,
+          subscription_tier: "free",
+          email_verified: true,
+          updated_at: new Date().toISOString()
+        };
+
+        try {
+          const { data: inserted } = await supabase
+            .from("profiles")
+            .upsert(newProfile, { onConflict: "id" })
+            .select()
+            .maybeSingle();
+
+          setProfile(inserted || newProfile);
+        } catch {
+          setProfile(newProfile);
         }
       }
     } catch (e) {

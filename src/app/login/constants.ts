@@ -5,6 +5,7 @@ export const LOGIN_MESSAGES = {
   ACCOUNT_SUSPENDED: "الحساب تم إيقافه، برجاء التواصل مع الإدارة لفتح الحساب.",
   MFA_INVALID_CODE: "كود المصادقة غير صحيح.",
   MFA_SETUP_ERROR: "حدث خطأ أثناء إعداد المصادقة الثنائية.",
+  GOOGLE_LOGIN_ERROR: "حدث خطأ أثناء محاولة تسجيل الدخول بواسطة Google.",
 } as const;
 
 export const LOGIN_TEXTS = {
@@ -12,6 +13,9 @@ export const LOGIN_TEXTS = {
   SUBTITLE: "سجّل دخولك للوصول لأماكنك المفضلة وتجربة مخصصة",
   MFA_TITLE: "التحقق الثنائي",
   MFA_SUBTITLE: "يرجى إدخال الكود المكون من 6 أرقام من تطبيق المصادقة الخاص بك",
+  GOOGLE_BUTTON: "متابعة باستخدام Google",
+  GOOGLE_LOADING: "جاري التحويل إلى Google...",
+  OR_DIVIDER: "أو عبر البريد الإلكتروني",
   USERNAME_OR_EMAIL: "اسم المستخدم أو البريد الإلكتروني",
   PASSWORD: "كلمة المرور",
   FORGOT_PASSWORD: "هل نسيت كلمة السر؟",

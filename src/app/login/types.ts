@@ -31,6 +31,8 @@ export interface CredentialsFormProps {
   focusedField: FocusedField;
   setFocusedField: (field: FocusedField) => void;
   loading: boolean;
+  googleLoading: boolean;
+  onGoogleLogin: () => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -65,6 +67,7 @@ export interface UseLoginFormReturn {
   focusedField: FocusedField;
   setFocusedField: (field: FocusedField) => void;
   loading: boolean;
+  googleLoading: boolean;
   error: string;
   setError: (err: string) => void;
 
@@ -78,6 +81,7 @@ export interface UseLoginFormReturn {
 
   // Actions
   handleLogin: (e: React.FormEvent) => Promise<void>;
+  handleGoogleLogin: () => Promise<void>;
   handleVerifyMfa: (e: React.FormEvent) => Promise<void>;
   handleCancelMfa: () => Promise<void>;
 }
