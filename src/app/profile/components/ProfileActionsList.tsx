@@ -55,7 +55,9 @@ interface ProfileActionsListProps {
   onOpenPasswordModal: () => void;
   onOpen2FAModal: () => void;
   onOpenDevicesModal: () => void;
+  onOpenPasskeyModal?: () => void;
   passkeyLoading?: boolean;
+  hasPasskey?: boolean;
   onRegisterPasskey?: () => void;
   // Suggestions & Bugs
   onOpenSuggestionModal: () => void;
@@ -121,7 +123,9 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
   onOpenPasswordModal,
   onOpen2FAModal,
   onOpenDevicesModal,
+  onOpenPasskeyModal,
   passkeyLoading,
+  hasPasskey,
   onRegisterPasskey,
   onOpenSuggestionModal,
   onOpenBugReportModal,
@@ -1193,7 +1197,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                 </div>
                 <div>
                   <h3 className={styles.cardTitle}>
-                    المصادقة الثنائية ({activeCount} من 3)
+                    المصادقة الثنائية
                   </h3>
                 </div>
               </div>
@@ -1206,6 +1210,33 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
 
             <hr className={styles.dividerDashed} />
 
+            {(onOpenPasskeyModal || onRegisterPasskey) && (
+              <>
+                <hr className={styles.dividerDashed} />
+                <div
+                  className={styles.cardContainer}
+                  onClick={onOpenPasskeyModal || onRegisterPasskey}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardIcon}>
+                      <Fingerprint size={22} />
+                    </div>
+                    <div>
+                      <h3 className={styles.cardTitle}>مفتاح المرور <span className="font-sans">(Face ID / Passkey)</span></h3>
+                    </div>
+                  </div>
+                  {passkeyLoading ? (
+                    <span className={styles.actionSpinner} />
+                  ) : hasPasskey ? (
+                    <i className={`bx bxs-check-circle ${styles.mfaCheckIcon}`}></i>
+                  ) : (
+                    <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+                  )}
+                </div>
+              </>
+            )}
+            <hr className={styles.dividerDashed} />
             <div className={styles.cardContainer} onClick={onOpenDevicesModal}>
               <div className={styles.cardContent}>
                 <div className={styles.cardIcon}>
@@ -1217,36 +1248,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               </div>
               <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             </div>
-
-            {onRegisterPasskey && (
-              <>
-                <hr className={styles.dividerDashed} />
-                <div
-                  className={styles.cardContainer}
-                  onClick={onRegisterPasskey}
-                  style={{ cursor: passkeyLoading ? "wait" : "pointer" }}
-                >
-                  <div className={styles.cardContent}>
-                    <div className={styles.cardIcon}>
-                      <Fingerprint size={22} />
-                    </div>
-                    <div>
-                      <h3 className={styles.cardTitle}>مفتاح المرور (Face ID / Passkey)</h3>
-                      <p className="text-muted fs-xs m-0">
-                        {passkeyLoading
-                          ? "يرجى التحقق عبر بصمة الهاتف..."
-                          : "تفعيل الدخول السريع ببصمة الوجه أو الإصبع"}
-                      </p>
-                    </div>
-                  </div>
-                  {passkeyLoading ? (
-                    <span className={styles.actionSpinner} />
-                  ) : (
-                    <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
-                  )}
-                </div>
-              </>
-            )}
           </div>
         </>
       )}
@@ -1549,7 +1550,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                         disabled={contactLoading}
                         className={`btn btn-primary ${styles.contactSubmitBtn}`}
                       >
-                        <Send size={18}/>
+                        <Send size={18} />
                         {contactLoading ? "جاري الإرسال..." : "إرسال الرسالة"}
                       </button>
                     </form>

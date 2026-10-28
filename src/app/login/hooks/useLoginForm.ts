@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginStep, FocusedField, UseLoginFormReturn } from "../types";
 import { LOGIN_MESSAGES } from "../constants";
 import { isEmailAddress, cleanUsername, isSuspendedNoticePresent, clearSuspensionNotice } from "../utils";
-import { isPasskeySupported, loginWithPasskey } from "@/lib/passkey";
+import { isPasskeySupported, loginWithPasskey, isSessionPasskeyAuthenticated, setPasskeyAuthenticated, clearPasskeyAuthentication } from "@/lib/passkey";
 
 export const useLoginForm = (): UseLoginFormReturn => {
   const router = useRouter();
@@ -80,7 +80,20 @@ export const useLoginForm = (): UseLoginFormReturn => {
     const initMfaStep = async () => {
       if (!supabase) return;
       try {
+        const { data: { session } } = await supabase.auth.getSession();
         const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+        const hasWebAuthn = aalData?.currentAuthenticationMethods?.some((m: any) => {
+          const methodStr = typeof m === "string" ? m : m?.method;
+          return typeof methodStr === "string" && (methodStr.includes("webauthn") || methodStr.includes("passkey"));
+        });
+
+        if (isSessionPasskeyAuthenticated(session?.user?.id) || hasWebAuthn) {
+          // User authenticated via Passkey - skip MFA step and redirect to home
+          router.push("/");
+          return;
+        }
+
         if (aalData && aalData.currentLevel === "aal1" && aalData.nextLevel === "aal2") {
           const { data: factors } = await supabase.auth.mfa.listFactors();
           const totpFactor = factors?.totp?.[0];
@@ -98,7 +111,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
       }
     };
     initMfaStep();
-  }, []);
+  }, [router]);
 
   // Handle individual digit input in MFA
   const handleDigitChange = (index: number, value: string) => {
@@ -141,6 +154,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
   // Primary Login Submission
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearPasskeyAuthentication();
     if (!supabase) {
       setError(LOGIN_MESSAGES.DB_NOT_CONFIGURED);
       return;
@@ -330,6 +344,8 @@ export const useLoginForm = (): UseLoginFormReturn => {
         return;
       }
 
+      setPasskeyAuthenticated(res.data.user.id);
+
       // Check account suspension
       const { data: profCheck } = await supabase
         .from("profiles")
@@ -398,6 +414,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
 
   // Cancel MFA & reset back to credentials step
   const handleCancelMfa = async () => {
+    clearPasskeyAuthentication();
     if (supabase) {
       await supabase.auth.signOut();
     }

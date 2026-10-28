@@ -184,3 +184,11 @@ export interface ReminderItem {
   category?: string;
   subCategories?: string[];
 }
+
+export interface PasskeyInfo {
+  id: string;
+  name: string;
+  createdAt: string;
+  lastUsedAt?: string;
+  isCurrent?: boolean;
+}

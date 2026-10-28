@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { isSessionPasskeyAuthenticated, clearPasskeyAuthentication } from "@/lib/passkey";
 import { OpenPageAccessOffer, getOpenPageAccessOffers, isPageOpenByPromotion } from "@/lib/promotions";
 
 interface AuthContextProps {
@@ -342,7 +343,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-      if (aalData && aalData.currentLevel === "aal1" && aalData.nextLevel === "aal2") {
+      const hasWebAuthn = aalData?.currentAuthenticationMethods?.some((m: any) => {
+        const methodStr = typeof m === "string" ? m : m?.method;
+        return typeof methodStr === "string" && (methodStr.includes("webauthn") || methodStr.includes("passkey"));
+      });
+      const isPasskey = isSessionPasskeyAuthenticated(currentSession.user.id) || !!hasWebAuthn;
+
+      if (aalData && aalData.currentLevel === "aal1" && aalData.nextLevel === "aal2" && !isPasskey) {
         // Password verified, BUT MFA (2FA) is required and NOT YET verified!
         // DO NOT set user as authenticated until 2FA code is verified!
         setSession(currentSession);
@@ -351,7 +358,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setMfaPending(true);
         setIsSessionRegistered(false);
       } else {
-        // MFA not required OR MFA already verified (aal2)
+        // MFA not required OR MFA already verified (aal2) OR authenticated via Passkey
         setSession(currentSession);
         setUser((prev) => {
           if (prev && currentSession.user && prev.id === currentSession.user.id && prev.updated_at === currentSession.user.updated_at) {
@@ -430,6 +437,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT") {
+        clearPasskeyAuthentication();
+      }
       if (event === "TOKEN_REFRESHED") {
         if (session) {
           setSession(session);
@@ -452,6 +462,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = useCallback(async () => {
     if (supabase) {
+      clearPasskeyAuthentication();
       try {
         const session_id = typeof window !== "undefined" ? localStorage.getItem("dftry_device_session_id") : null;
         if (session_id) {

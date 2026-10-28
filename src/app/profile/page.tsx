@@ -23,6 +23,7 @@ import {
   ProfilePasswordModal,
   ProfileTwoFactorModal,
   ProfileDevicesModal,
+  ProfilePasskeyModal,
   ProfileFeedbackModals,
   ProfileRemindersModal,
   ProfileNotificationDetailsModal,
@@ -201,7 +202,9 @@ export default function ProfilePage() {
           security.fetchDevices();
           security.setShowDevicesModal(true);
         }}
+        onOpenPasskeyModal={security.handleOpenPasskeyModal}
         passkeyLoading={security.passkeyLoading}
+        hasPasskey={security.hasPasskey}
         onRegisterPasskey={security.handleRegisterPasskey}
         onOpenSuggestionModal={() => feedback.setShowSuggestionModal(true)}
         onOpenBugReportModal={() => feedback.setShowBugReportModal(true)}
@@ -386,6 +389,19 @@ export default function ProfilePage() {
         setDeviceToDeactivate={security.setDeviceToDeactivate}
         handleDeactivateDevice={security.handleDeactivateDevice}
         executeDeactivateDevice={security.executeDeactivateDevice}
+      />
+
+      {/* 7b. Passkeys Management Modal */}
+      <ProfilePasskeyModal
+        isOpen={security.showPasskeyModal}
+        onClose={() => security.setShowPasskeyModal(false)}
+        passkeyList={security.passkeyList}
+        loadingPasskeys={security.loadingPasskeys}
+        passkeyLoading={security.passkeyLoading}
+        passkeyToDelete={security.passkeyToDelete}
+        setPasskeyToDelete={security.setPasskeyToDelete}
+        onAddPasskey={security.handleRegisterPasskey}
+        executeDeletePasskey={security.executeDeletePasskey}
       />
 
       {/* 8. Feedback Modals (Suggestions, Bug Reports, Deletions, Retractions) */}

@@ -12,6 +12,7 @@ export { ProfileSubscriptionConfirmModal } from "./modals/ProfileSubscriptionCon
 export { ProfilePasswordModal } from "./modals/ProfilePasswordModal";
 export { ProfileTwoFactorModal } from "./modals/ProfileTwoFactorModal";
 export { ProfileDevicesModal } from "./modals/ProfileDevicesModal";
+export { ProfilePasskeyModal } from "./modals/ProfilePasskeyModal";
 export { ProfileFeedbackModals } from "./modals/ProfileFeedbackModals";
 export { ProfileRemindersModal } from "./modals/ProfileRemindersModal";
 export { ProfileNotificationDetailsModal } from "./modals/ProfileNotificationDetailsModal";

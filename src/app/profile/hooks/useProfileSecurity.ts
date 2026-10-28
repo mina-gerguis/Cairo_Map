@@ -4,10 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
-import { UserProfile, UserDevice, MfaFactorsState, MfaStep, PasswordForm, ProfileAlertMessage } from "../types";
+import { UserProfile, UserDevice, MfaFactorsState, MfaStep, PasswordForm, ProfileAlertMessage, PasskeyInfo } from "../types";
 import { INITIAL_PASSWORD_FORM } from "../constants";
 import { checkPasswordRules } from "../utils";
-import { createPasskey } from "@/lib/passkey";
+import { createPasskey, checkHasPasskey, listPasskeys, deletePasskey } from "@/lib/passkey";
 
 interface UseProfileSecurityProps {
   user: any;
@@ -69,11 +69,37 @@ export const useProfileSecurity = ({
 
   // Passkey State
   const [passkeyLoading, setPasskeyLoading] = useState(false);
+  const [hasPasskey, setHasPasskey] = useState(false);
+  const [showPasskeyModal, setShowPasskeyModal] = useState(false);
+  const [passkeyList, setPasskeyList] = useState<PasskeyInfo[]>([]);
+  const [loadingPasskeys, setLoadingPasskeys] = useState(false);
+  const [passkeyToDelete, setPasskeyToDelete] = useState<PasskeyInfo | null>(null);
+
+  const userId = user?.id;
+
+  const fetchPasskeys = async () => {
+    if (!userId) return;
+    setLoadingPasskeys(true);
+    try {
+      const list = await listPasskeys(userId);
+      setPasskeyList(list);
+      setHasPasskey(list.length > 0);
+    } catch (err) {
+      console.warn("Error fetching passkeys:", err);
+    } finally {
+      setLoadingPasskeys(false);
+    }
+  };
+
+  const handleOpenPasskeyModal = () => {
+    fetchPasskeys();
+    setShowPasskeyModal(true);
+  };
 
   const handleRegisterPasskey = async () => {
     try {
       setPasskeyLoading(true);
-      const res = await createPasskey();
+      const res = await createPasskey(userId);
       setPasskeyLoading(false);
 
       if (res.cancelled) {
@@ -81,6 +107,7 @@ export const useProfileSecurity = ({
       }
 
       if (res.success) {
+        await fetchPasskeys();
         setMessage({
           type: "success",
           title: "تم تفعيل مفتاح المرور",
@@ -103,6 +130,24 @@ export const useProfileSecurity = ({
     }
   };
 
+  const executeDeletePasskey = async (passkeyId: string) => {
+    try {
+      await deletePasskey(passkeyId, userId);
+      await fetchPasskeys();
+      setMessage({
+        type: "success",
+        title: "تم الحذف",
+        text: "تم حذف مفتاح المرور بنجاح.",
+      });
+    } catch (err: any) {
+      setMessage({
+        type: "error",
+        title: "خطأ في الحذف",
+        text: err?.message || "تعذر حذف مفتاح المرور.",
+      });
+    }
+  };
+
   const pwdRules = checkPasswordRules(passwordForm.new, passwordForm.confirm);
   const isPasswordValid = Object.values(pwdRules).every(Boolean);
 
@@ -121,10 +166,10 @@ export const useProfileSecurity = ({
     }
   };
 
-  const userId = user?.id;
   useEffect(() => {
     if (userId) {
       fetchMfaStatus();
+      fetchPasskeys();
     }
   }, [userId]);
 
@@ -446,6 +491,15 @@ export const useProfileSecurity = ({
     handleUnenrollClick,
     handleUnenrollTOTP,
     passkeyLoading,
+    hasPasskey,
+    showPasskeyModal,
+    setShowPasskeyModal,
+    passkeyList,
+    loadingPasskeys,
+    passkeyToDelete,
+    setPasskeyToDelete,
+    handleOpenPasskeyModal,
     handleRegisterPasskey,
+    executeDeletePasskey,
   };
 };
