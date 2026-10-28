@@ -4,6 +4,7 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { isSessionPasskeyAuthenticated, clearPasskeyAuthentication } from "@/lib/passkey";
 import { OpenPageAccessOffer, getOpenPageAccessOffers, isPageOpenByPromotion } from "@/lib/promotions";
+import { isProfileIncomplete as checkIsProfileIncomplete } from "@/lib/profileValidation";
 
 interface AuthContextProps {
   user: User | null;
@@ -16,6 +17,7 @@ interface AuthContextProps {
   openOffers: OpenPageAccessOffer[];
   isPageOpen: (pathname: string) => { isOpen: boolean; offer: OpenPageAccessOffer | null; remainingDays: number | null };
   refreshPromotions: () => Promise<void>;
+  isProfileIncomplete: boolean;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -29,6 +31,7 @@ const AuthContext = createContext<AuthContextProps>({
   openOffers: [],
   isPageOpen: () => ({ isOpen: false, offer: null, remainingDays: null }),
   refreshPromotions: async () => {},
+  isProfileIncomplete: false,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -666,9 +669,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [user, logout]);
 
+  const isProfileIncomplete = Boolean(user && profile && checkIsProfileIncomplete(profile));
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, mfaPending, logout, profile, refreshProfile, openOffers, isPageOpen, refreshPromotions }}>
+    <AuthContext.Provider value={{ user, session, loading, mfaPending, logout, profile, refreshProfile, openOffers, isPageOpen, refreshPromotions, isProfileIncomplete }}>
       {children}
     </AuthContext.Provider>
   );

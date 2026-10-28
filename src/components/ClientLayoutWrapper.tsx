@@ -17,6 +17,8 @@ import {
 } from "@/lib/maintenance";
 import MaintenanceScreen from "@/components/MaintenanceScreen";
 import MaintenanceAdminBanner from "@/components/MaintenanceAdminBanner";
+import CompleteProfileModal from "@/components/auth/CompleteProfileModal";
+import { isProfileIncomplete } from "@/lib/profileValidation";
 
 interface AlertItem {
   id: string;
@@ -43,8 +45,18 @@ export default function ClientLayoutWrapper({
     pathname === "/forgot-password" ||
     pathname === "/reset-password";
 
-  const { profile, loading: authLoading } = useAuth();
+  const { profile, loading: authLoading, user } = useAuth();
   const isUserAdmin = Boolean(profile?.is_admin);
+
+  const isCallback = pathname === "/auth/callback";
+  const isResetPwd = pathname === "/reset-password";
+  const needsProfileCompletion =
+    !authLoading &&
+    !isCallback &&
+    !isResetPwd &&
+    Boolean(user) &&
+    Boolean(profile) &&
+    isProfileIncomplete(profile);
 
   const [activeAlert, setActiveAlert] = useState<AlertItem | null>(null);
   const [maintenanceRecords, setMaintenanceRecords] = useState<MaintenanceItem[]>([]);
@@ -217,6 +229,7 @@ export default function ClientLayoutWrapper({
     return (
       <main style={{ minHeight: "100vh" }}>
         {children}
+        {needsProfileCompletion && <CompleteProfileModal isOpen={true} />}
       </main>
     );
   }
@@ -256,6 +269,9 @@ export default function ClientLayoutWrapper({
       {activeAlert && (
         <SiteAlertModal alert={activeAlert} onClose={handleAlertClose} />
       )}
+
+      {/* Mandatory Profile Completion Modal for incomplete profiles (e.g. OAuth Facebook/Google) */}
+      <CompleteProfileModal isOpen={needsProfileCompletion} />
     </>
   );
 }

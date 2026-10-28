@@ -334,7 +334,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
   return (
     <>
       {/* ─── Theme, Favorites, Notifications, Add Places ─── */}
-      <h1 className="text-secondary fw-600 fs-xl pb-1">الأنشطة</h1>
       <div className={styles.sectionCard}>
         {/* Subscription Upgrade Card */}
         {user && (
@@ -1174,7 +1173,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
       {/* ─── Security & 2FA ─── */}
       {user && isOwnProfile && (
         <>
-          <h1 className="text-secondary fw-600 fs-xl pb-1">الأمان</h1>
           <div className={styles.sectionCard}>
             <div className={styles.cardContainer} onClick={onOpenPasswordModal}>
               <div className={styles.cardContent}>
@@ -1207,8 +1205,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                 <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
               )}
             </div>
-
-            <hr className={styles.dividerDashed} />
 
             {(onOpenPasskeyModal || onRegisterPasskey) && (
               <>
@@ -1255,7 +1251,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
       {/* ─── Suggestions & Bug Reports ─── */}
       {user && isOwnProfile && (
         <>
-          <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">الاقتراحات والبلاغات</h1>
           <div className={styles.sectionCard}>
             <div
               className={styles.cardContainer}
@@ -1305,7 +1300,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
       )}
 
       {/* ─── Help & Support ─── */}
-      <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">التواصل والمساعدة</h1>
       <div id="help-section" className={styles.sectionCard}>
         <div
           className={`${styles.cardContainer} ${isHelpExpanded ? styles.helpCardExpanded : ""}`}
@@ -1595,7 +1589,6 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
       {/* ─── Advanced Settings: Logout & Delete Account ─── */}
       {user && isOwnProfile && (
         <>
-          <h1 className="text-secondary fw-600 fs-xl pb-1 pt-2">الإعدادات المتقدمة</h1>
           <div className={styles.sectionCard}>
             <div className={styles.cardContainer} onClick={onOpenLogoutModal}>
               <div className={styles.cardContent}>

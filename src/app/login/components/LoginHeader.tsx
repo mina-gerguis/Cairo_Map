@@ -13,7 +13,7 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({
       <div className={styles.brandBadge}>
         <div className={styles.brandIconWrapper}>
           <img
-            src="/images/logo/lightMode_logo.webp"
+            src="/icons/qareeb.webp"
             alt="Cairo Map"
             className={styles.brandLogo}
           />
