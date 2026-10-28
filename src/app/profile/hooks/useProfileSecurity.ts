@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { UserProfile, UserDevice, MfaFactorsState, MfaStep, PasswordForm, ProfileAlertMessage } from "../types";
 import { INITIAL_PASSWORD_FORM } from "../constants";
 import { checkPasswordRules } from "../utils";
+import { createPasskey } from "@/lib/passkey";
 
 interface UseProfileSecurityProps {
   user: any;
@@ -65,6 +66,42 @@ export const useProfileSecurity = ({
     sessionId: string;
     isCurrentDevice: boolean;
   } | null>(null);
+
+  // Passkey State
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
+
+  const handleRegisterPasskey = async () => {
+    try {
+      setPasskeyLoading(true);
+      const res = await createPasskey();
+      setPasskeyLoading(false);
+
+      if (res.cancelled) {
+        return;
+      }
+
+      if (res.success) {
+        setMessage({
+          type: "success",
+          title: "تم تفعيل مفتاح المرور",
+          text: "تم حفظ بصمة الوجه / مفتاح المرور (Passkey) بنجاح على هذا الجهاز! يمكنك استخدامه لتسجيل الدخول السريع لاحقاً.",
+        });
+      } else {
+        setMessage({
+          type: "error",
+          title: "تعذر تفعيل مفتاح المرور",
+          text: res.error || "تأكد من أن جهازك يدعم Face ID أو بصمة الإصبع.",
+        });
+      }
+    } catch (err: any) {
+      setPasskeyLoading(false);
+      setMessage({
+        type: "error",
+        title: "خطأ غير متوقع",
+        text: err?.message || "حدث خطأ أثناء الاتصال بمفتاح المرور.",
+      });
+    }
+  };
 
   const pwdRules = checkPasswordRules(passwordForm.new, passwordForm.confirm);
   const isPasswordValid = Object.values(pwdRules).every(Boolean);
@@ -408,5 +445,7 @@ export const useProfileSecurity = ({
     handleVerifyTOTP,
     handleUnenrollClick,
     handleUnenrollTOTP,
+    passkeyLoading,
+    handleRegisterPasskey,
   };
 };

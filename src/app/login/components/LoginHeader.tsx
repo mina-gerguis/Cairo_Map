@@ -8,19 +8,22 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({
   subtitle = LOGIN_TEXTS.SUBTITLE,
 }) => {
   return (
-    <div className={styles.header}>
-      {/* Platform Logo */}
-      <div className={styles.logoWrapper}>
-        <img
-          src="/images/logo/lightMode_logo.webp"
-          alt="ماب القاهرة"
-          className="w-32"
-        />
+    <div className={styles.cardHeader}>
+      {/* Brand Identity Badge */}
+      <div className={styles.brandBadge}>
+        <div className={styles.brandIconWrapper}>
+          <img
+            src="/images/logo/lightMode_logo.webp"
+            alt="Cairo Map"
+            className={styles.brandLogo}
+          />
+        </div>
+        <span className={styles.brandTitle}>ماب القاهرة</span>
       </div>
 
       {/* Main Title & Subtitle */}
-      <h1 className="font-display text-4xl font-black mb-2 text-black">{title}</h1>
-      <p className="text-muted text-md font-sub">{subtitle}</p>
+      <h1 className={styles.cardTitle}>{title}</h1>
+      <p className={styles.cardDescription}>{subtitle}</p>
     </div>
   );
 };

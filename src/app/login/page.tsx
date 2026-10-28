@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { AlertCircle } from "lucide-react";
 import { useLoginForm } from "./hooks";
 import {
   LoginLayout,
@@ -18,16 +19,18 @@ export default function LoginPage() {
 
   return (
     <LoginLayout>
-      {/* Brand Header & Titles */}
-      <LoginHeader />
-
-      {/* Glassmorphic Form Card */}
+      {/* Shadcn Studio Card Container */}
       <LoginGlassCard>
+        {/* Brand Header & Titles */}
+        <LoginHeader />
+
         {/* Error Notification Banner */}
         {form.error && (
-          <div className="error" role="alert">
-            <i className="bx bx-error-circle"></i>
-            <span>{form.error}</span>
+          <div className={styles.errorAlert} role="alert">
+            <AlertCircle size={18} className={styles.errorIcon} />
+            <div>
+              <span>{form.error}</span>
+            </div>
           </div>
         )}
 
@@ -49,6 +52,9 @@ export default function LoginPage() {
             onGoogleLogin={form.handleGoogleLogin}
             facebookLoading={form.facebookLoading}
             onFacebookLogin={form.handleFacebookLogin}
+            passkeyLoading={form.passkeyLoading}
+            hasPasskeySupport={form.hasPasskeySupport}
+            onPasskeyLogin={form.handlePasskeyLogin}
             onSubmit={form.handleLogin}
           />
         ) : (

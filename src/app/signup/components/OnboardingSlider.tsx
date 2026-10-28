@@ -69,7 +69,6 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
         provider: "facebook",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          scopes: "email,public_profile",
         },
       });
     } catch (e) {

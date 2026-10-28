@@ -1,5 +1,5 @@
 import React from "react";
-import Image from "next/image";
+import { ShieldCheck } from "lucide-react";
 import { MfaVerificationFormProps } from "../types";
 import { LOGIN_TEXTS } from "../constants";
 import styles from "../login.module.css";
@@ -17,18 +17,13 @@ export const MfaVerificationForm: React.FC<MfaVerificationFormProps> = ({
 }) => {
   return (
     <form onSubmit={onSubmit} className={styles.form}>
-      {/* MFA Header with 3D Padlock */}
+      {/* MFA Header with Clean Icon Badge */}
       <div className={styles.mfaHeader}>
         <div className={styles.mfaIconWrapper}>
-          <Image
-            src="/images/other_icon/padlock.webp"
-            alt="MFA Security"
-            width={60}
-            height={80}
-          />
+          <ShieldCheck size={28} />
         </div>
-        <h2 className="font-sub fw-bold fs-2 text-black">{LOGIN_TEXTS.MFA_TITLE}</h2>
-        <p className="mt-2 fs-1 text-secondary">{LOGIN_TEXTS.MFA_SUBTITLE}</p>
+        <h2 className={styles.mfaTitle}>{LOGIN_TEXTS.MFA_TITLE}</h2>
+        <p className={styles.mfaSubtitle}>{LOGIN_TEXTS.MFA_SUBTITLE}</p>
       </div>
 
       {/* 6-Digit OTP Code Inputs */}
@@ -53,34 +48,32 @@ export const MfaVerificationForm: React.FC<MfaVerificationFormProps> = ({
         ))}
       </div>
 
-      {/* Verification Submit Button */}
-      <button
-        type="submit"
-        disabled={loading || mfaCode.length !== 6}
-        className= "btn btn-primary bg-black text-white"
-      >
-        {loading ? (
-          <>
-            <div className={styles.spinner} />
-            <span>{LOGIN_TEXTS.MFA_VERIFYING}</span>
-          </>
-        ) : (
-          <>
-            <i className="bx bx-check-circle" style={{ fontSize: "1.2rem" }} />
+      {/* Action Buttons */}
+      <div className={styles.mfaActions}>
+        <button
+          type="submit"
+          disabled={loading || mfaCode.length !== 6}
+          className={styles.submitBtn}
+        >
+          {loading ? (
+            <>
+              <span className={styles.spinner} />
+              <span>{LOGIN_TEXTS.MFA_VERIFYING}</span>
+            </>
+          ) : (
             <span>{LOGIN_TEXTS.MFA_CONFIRM}</span>
-          </>
-        )}
-      </button>
+          )}
+        </button>
 
-      {/* Cancel and Back to Credentials Button */}
-      <button
-        type="button"
-        onClick={onCancel}
-        className="btn btn-cancel text-black"
-      >
-        <i className="bx bx-arrow-back" style={{ fontSize: "1.1rem" }} />
-        <span>{LOGIN_TEXTS.MFA_CANCEL}</span>
-      </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={loading}
+          className={styles.cancelBtn}
+        >
+          {LOGIN_TEXTS.MFA_CANCEL}
+        </button>
+      </div>
     </form>
   );
 };

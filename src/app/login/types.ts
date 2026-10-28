@@ -35,6 +35,9 @@ export interface CredentialsFormProps {
   onGoogleLogin: () => void;
   facebookLoading: boolean;
   onFacebookLogin: () => void;
+  passkeyLoading: boolean;
+  hasPasskeySupport: boolean;
+  onPasskeyLogin: () => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -71,6 +74,8 @@ export interface UseLoginFormReturn {
   loading: boolean;
   googleLoading: boolean;
   facebookLoading: boolean;
+  passkeyLoading: boolean;
+  hasPasskeySupport: boolean;
   error: string;
   setError: (err: string) => void;
 
@@ -86,6 +91,7 @@ export interface UseLoginFormReturn {
   handleLogin: (e: React.FormEvent) => Promise<void>;
   handleGoogleLogin: () => Promise<void>;
   handleFacebookLogin: () => Promise<void>;
+  handlePasskeyLogin: () => Promise<void>;
   handleVerifyMfa: (e: React.FormEvent) => Promise<void>;
   handleCancelMfa: () => Promise<void>;
 }

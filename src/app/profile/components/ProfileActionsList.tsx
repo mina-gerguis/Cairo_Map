@@ -17,7 +17,7 @@ import {
 } from "../types";
 import { getProblemLabelAr } from "../utils";
 import { CONTACT_SUBJECT_OPTIONS } from "../constants";
-import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash, BookmarkCheck, Shredder, Send } from 'lucide-react';
+import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash, BookmarkCheck, Shredder, Send, Fingerprint } from 'lucide-react';
 import styles from "../page.module.css";
 
 interface ProfileActionsListProps {
@@ -55,6 +55,8 @@ interface ProfileActionsListProps {
   onOpenPasswordModal: () => void;
   onOpen2FAModal: () => void;
   onOpenDevicesModal: () => void;
+  passkeyLoading?: boolean;
+  onRegisterPasskey?: () => void;
   // Suggestions & Bugs
   onOpenSuggestionModal: () => void;
   onOpenBugReportModal: () => void;
@@ -119,6 +121,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
   onOpenPasswordModal,
   onOpen2FAModal,
   onOpenDevicesModal,
+  passkeyLoading,
+  onRegisterPasskey,
   onOpenSuggestionModal,
   onOpenBugReportModal,
   isHelpExpanded,
@@ -1213,6 +1217,36 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               </div>
               <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
             </div>
+
+            {onRegisterPasskey && (
+              <>
+                <hr className={styles.dividerDashed} />
+                <div
+                  className={styles.cardContainer}
+                  onClick={onRegisterPasskey}
+                  style={{ cursor: passkeyLoading ? "wait" : "pointer" }}
+                >
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardIcon}>
+                      <Fingerprint size={22} />
+                    </div>
+                    <div>
+                      <h3 className={styles.cardTitle}>مفتاح المرور (Face ID / Passkey)</h3>
+                      <p className="text-muted fs-xs m-0">
+                        {passkeyLoading
+                          ? "يرجى التحقق عبر بصمة الهاتف..."
+                          : "تفعيل الدخول السريع ببصمة الوجه أو الإصبع"}
+                      </p>
+                    </div>
+                  </div>
+                  {passkeyLoading ? (
+                    <span className={styles.actionSpinner} />
+                  ) : (
+                    <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </>
       )}

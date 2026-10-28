@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginStep, FocusedField, UseLoginFormReturn } from "../types";
 import { LOGIN_MESSAGES } from "../constants";
 import { isEmailAddress, cleanUsername, isSuspendedNoticePresent, clearSuspensionNotice } from "../utils";
+import { isPasskeySupported, loginWithPasskey } from "@/lib/passkey";
 
 export const useLoginForm = (): UseLoginFormReturn => {
   const router = useRouter();
@@ -24,6 +25,15 @@ export const useLoginForm = (): UseLoginFormReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [googleLoading, setGoogleLoading] = useState<boolean>(false);
   const [facebookLoading, setFacebookLoading] = useState<boolean>(false);
+  const [passkeyLoading, setPasskeyLoading] = useState<boolean>(false);
+  const [hasPasskeySupport, setHasPasskeySupport] = useState<boolean>(false);
+
+  // Check Passkey/WebAuthn availability on mount
+  useEffect(() => {
+    isPasskeySupported().then((supported) => {
+      setHasPasskeySupport(supported);
+    });
+  }, []);
 
   // MFA state
   const [loginStep, setLoginStep] = useState<LoginStep>("credentials");
@@ -280,7 +290,6 @@ export const useLoginForm = (): UseLoginFormReturn => {
         provider: "facebook",
         options: {
           redirectTo,
-          scopes: "email,public_profile",
         },
       });
 
@@ -291,6 +300,52 @@ export const useLoginForm = (): UseLoginFormReturn => {
     } catch (err: any) {
       setError(err?.message || LOGIN_MESSAGES.FACEBOOK_LOGIN_ERROR);
       setFacebookLoading(false);
+    }
+  };
+
+  // Passkey (Face ID / Touch ID) Login
+  const handlePasskeyLogin = async () => {
+    if (!supabase) {
+      setError(LOGIN_MESSAGES.DB_NOT_CONFIGURED);
+      return;
+    }
+
+    try {
+      setPasskeyLoading(true);
+      setError("");
+
+      const res = await loginWithPasskey();
+
+      if (res.cancelled) {
+        setPasskeyLoading(false);
+        return;
+      }
+
+      if (!res.success || !res.data?.user) {
+        setError(res.error || LOGIN_MESSAGES.PASSKEY_LOGIN_ERROR);
+        setPasskeyLoading(false);
+        return;
+      }
+
+      // Check account suspension
+      const { data: profCheck } = await supabase
+        .from("profiles")
+        .select("is_suspended")
+        .eq("id", res.data.user.id)
+        .maybeSingle();
+
+      if (profCheck?.is_suspended) {
+        await supabase.auth.signOut();
+        setError(LOGIN_MESSAGES.ACCOUNT_SUSPENDED);
+        setPasskeyLoading(false);
+        return;
+      }
+
+      // Successfully authenticated with Passkey!
+      router.push("/");
+    } catch (err: any) {
+      setError(err?.message || LOGIN_MESSAGES.PASSKEY_LOGIN_ERROR);
+      setPasskeyLoading(false);
     }
   };
 
@@ -365,6 +420,8 @@ export const useLoginForm = (): UseLoginFormReturn => {
     loading,
     googleLoading,
     facebookLoading,
+    passkeyLoading,
+    hasPasskeySupport,
     error,
     setError,
     mfaCode,
@@ -376,6 +433,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
     handleLogin,
     handleGoogleLogin,
     handleFacebookLogin,
+    handlePasskeyLogin,
     handleVerifyMfa,
     handleCancelMfa,
   };

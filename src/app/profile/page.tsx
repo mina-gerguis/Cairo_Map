@@ -201,6 +201,8 @@ export default function ProfilePage() {
           security.fetchDevices();
           security.setShowDevicesModal(true);
         }}
+        passkeyLoading={security.passkeyLoading}
+        onRegisterPasskey={security.handleRegisterPasskey}
         onOpenSuggestionModal={() => feedback.setShowSuggestionModal(true)}
         onOpenBugReportModal={() => feedback.setShowBugReportModal(true)}
         isHelpExpanded={feedback.isHelpExpanded}

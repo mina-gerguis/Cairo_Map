@@ -1,11 +1,12 @@
 import React from "react";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import { CredentialsFormProps } from "../types";
 import { LOGIN_TEXTS } from "../constants";
 import styles from "../login.module.css";
 
 const GoogleIcon: React.FC = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
       fill="#4285F4"
@@ -26,11 +27,24 @@ const GoogleIcon: React.FC = () => (
 );
 
 const FacebookIcon: React.FC = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
       fill="#1877F2"
     />
+  </svg>
+);
+
+const FaceIdIcon: React.FC = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M7 3H5a2 2 0 0 0-2 2v2" />
+    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+    <path d="M3 17v2a2 2 0 0 0 2 2h2" />
+    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+    <path d="M9 10h.01" />
+    <path d="M15 10h.01" />
+    <path d="M12 11v3" />
+    <path d="M9 16a3 3 0 0 0 6 0" />
   </svg>
 );
 
@@ -50,23 +64,20 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
   onGoogleLogin,
   facebookLoading,
   onFacebookLogin,
+  passkeyLoading,
+  hasPasskeySupport,
+  onPasskeyLogin,
   onSubmit,
 }) => {
   return (
     <form onSubmit={onSubmit} className={styles.form}>
-     
-
-      {/* Divider */}
-      <div className={styles.divider} style={{ marginBottom: 0 }}>
-        <div className={styles.dividerLine} />
-        <span className={styles.dividerText}>{LOGIN_TEXTS.OR_DIVIDER}</span>
-        <div className={styles.dividerLine} />
-      </div>
       {/* Email / Username Field */}
       <div className={styles.fieldGroup}>
         <label htmlFor="email" className={styles.label}>
-          <i className="bx bx-user" style={{ fontSize: "1rem" }} />
-          {LOGIN_TEXTS.USERNAME_OR_EMAIL}
+          <div className={styles.labelLeft}>
+            <span>{LOGIN_TEXTS.USERNAME_OR_EMAIL}</span>
+            <span className={styles.requiredAsterisk}>*</span>
+          </div>
         </label>
         <div className={styles.inputWrapper}>
           <input
@@ -77,19 +88,21 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
             onChange={(e) => setEmail(e.target.value)}
             onFocus={() => setFocusedField("email")}
             onBlur={() => setFocusedField(null)}
-            className={`${styles.input} ${focusedField === "email" ? styles.inputFocused : ""} `}
+            placeholder="name@example.com"
+            className={`${styles.input} ${focusedField === "email" ? styles.inputFocused : ""}`}
             autoComplete="username"
+            autoFocus
           />
         </div>
       </div>
 
       {/* Password Field */}
       <div className={styles.fieldGroup}>
-        <div className={styles.passwordLabelRow}>
-          <label htmlFor="password" className={styles.label}>
-            <i className="bx bx-lock-alt" style={{ fontSize: "1rem" }} />
-            {LOGIN_TEXTS.PASSWORD}
-          </label>
+        <div className={styles.label}>
+          <div className={styles.labelLeft}>
+            <span>{LOGIN_TEXTS.PASSWORD}</span>
+            <span className={styles.requiredAsterisk}>*</span>
+          </div>
           <Link href="/forgot-password" className={styles.forgotPasswordLink}>
             {LOGIN_TEXTS.FORGOT_PASSWORD}
           </Link>
@@ -103,6 +116,7 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
             onChange={(e) => setPassword(e.target.value)}
             onFocus={() => setFocusedField("password")}
             onBlur={() => setFocusedField(null)}
+            placeholder="••••••••••••"
             className={`${styles.input} ${styles.passwordInput} ${focusedField === "password" ? styles.inputFocused : ""}`}
             autoComplete="current-password"
           />
@@ -112,7 +126,7 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
             className={styles.togglePasswordBtn}
             aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
           >
-            <i className={showPassword ? "bx bx-hide" : "bx bx-show"} />
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
       </div>
@@ -135,49 +149,61 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
       <button
         type="submit"
         disabled={loading}
-        className="btn btn-primary bg-black text-white"
+        className={styles.submitBtn}
       >
         {loading ? (
           <>
-            <div className={styles.spinner} />
+            <span className={styles.spinner} />
             <span>{LOGIN_TEXTS.SUBMIT_LOADING}</span>
           </>
         ) : (
           <span>{LOGIN_TEXTS.SUBMIT_BUTTON}</span>
         )}
       </button>
-       {/* Social Sign In Group */}
+
+      {/* Divider */}
+      <div className={styles.divider}>
+        <div className={styles.dividerLine} />
+        <span className={styles.dividerText}>{LOGIN_TEXTS.OR_DIVIDER}</span>
+        <div className={styles.dividerLine} />
+      </div>
+
+      {/* Social Sign In Group */}
       <div className={styles.socialButtonsGroup}>
-        {/* Google Sign In */}
         <button
           type="button"
           onClick={onGoogleLogin}
           disabled={loading || googleLoading || facebookLoading}
-          className={`${styles.googleBtn} btn`}
+          className={styles.socialBtn}
         >
-          {googleLoading ? (
-            <div className={styles.googleSpinner} />
-          ) : (
-            <GoogleIcon />
-          )}
-          <span>{googleLoading ? LOGIN_TEXTS.GOOGLE_LOADING : LOGIN_TEXTS.GOOGLE_BUTTON}</span>
+          {googleLoading ? <span className={styles.spinner} /> : <GoogleIcon />}
+          <span>Google</span>
         </button>
 
-        {/* Facebook Sign In */}
         <button
           type="button"
           onClick={onFacebookLogin}
-          disabled={loading || googleLoading || facebookLoading}
-          className={`${styles.facebookBtn} btn`}
+          disabled={loading || googleLoading || facebookLoading || passkeyLoading}
+          className={styles.socialBtn}
         >
-          {facebookLoading ? (
-            <div className={styles.facebookSpinner} />
-          ) : (
-            <FacebookIcon />
-          )}
-          <span>{facebookLoading ? LOGIN_TEXTS.FACEBOOK_LOADING : LOGIN_TEXTS.FACEBOOK_BUTTON}</span>
+          {facebookLoading ? <span className={styles.spinner} /> : <FacebookIcon />}
+          <span>Facebook</span>
         </button>
       </div>
+
+      {/* Passkey / Face ID Button (iPhone / Biometrics) */}
+      {hasPasskeySupport && (
+        <button
+          type="button"
+          onClick={onPasskeyLogin}
+          disabled={loading || googleLoading || facebookLoading || passkeyLoading}
+          className={styles.passkeyBtn}
+          style={{ marginTop: "0.75rem" }}
+        >
+          {passkeyLoading ? <span className={styles.spinner} /> : <FaceIdIcon />}
+          <span>{passkeyLoading ? LOGIN_TEXTS.PASSKEY_LOADING : LOGIN_TEXTS.PASSKEY_BUTTON}</span>
+        </button>
+      )}
     </form>
   );
 };

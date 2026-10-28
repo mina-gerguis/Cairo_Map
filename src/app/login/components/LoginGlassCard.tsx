@@ -9,7 +9,7 @@ export const LoginGlassCard: React.FC<LoginGlassCardProps> = ({
 }) => {
   return (
     <div
-      className={`${styles.glassCard} ${className || ""}`}
+      className={`${styles.card} ${className || ""}`}
       style={style}
     >
       {children}
