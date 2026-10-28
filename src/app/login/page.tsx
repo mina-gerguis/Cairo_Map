@@ -47,6 +47,8 @@ export default function LoginPage() {
             loading={form.loading}
             googleLoading={form.googleLoading}
             onGoogleLogin={form.handleGoogleLogin}
+            facebookLoading={form.facebookLoading}
+            onFacebookLogin={form.handleFacebookLogin}
             onSubmit={form.handleLogin}
           />
         ) : (

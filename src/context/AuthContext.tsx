@@ -159,7 +159,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if ((!data.gender || data.gender === "") && meta.gender) updates.gender = meta.gender;
           if ((!data.governorate || data.governorate === "") && meta.governorate) updates.governorate = meta.governorate;
           if ((!data.city || data.city === "") && meta.city) updates.city = meta.city;
-          if ((!data.avatar_url || data.avatar_url === "") && (meta.avatar_url || meta.picture)) updates.avatar_url = meta.avatar_url || meta.picture;
+          const fbOrGoogleAvatar = meta.avatar_url || meta.picture?.data?.url || (typeof meta.picture === "string" ? meta.picture : "");
+          if ((!data.avatar_url || data.avatar_url === "") && fbOrGoogleAvatar) updates.avatar_url = fbOrGoogleAvatar;
           if ((!data.dob || data.dob === "") && meta.dob) updates.dob = meta.dob;
           if ((!data.full_name || data.full_name === "") && (meta.full_name || meta.name)) updates.full_name = meta.full_name || meta.name;
           if ((!data.username || data.username === "") && (meta.username || meta.preferred_username)) updates.username = meta.username || meta.preferred_username;
@@ -177,7 +178,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const activeUser = currentUser || user;
         const meta = activeUser?.user_metadata || {};
         const fullName = meta.full_name || meta.name || activeUser?.email?.split('@')[0] || "مستخدم جديد";
-        const avatarUrl = meta.avatar_url || meta.picture || "";
+        const avatarUrl = meta.avatar_url || meta.picture?.data?.url || (typeof meta.picture === "string" ? meta.picture : "") || "";
         const email = activeUser?.email || "";
         const generatedUsername = (
           meta.user_name ||

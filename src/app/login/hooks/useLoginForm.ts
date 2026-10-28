@@ -23,6 +23,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [googleLoading, setGoogleLoading] = useState<boolean>(false);
+  const [facebookLoading, setFacebookLoading] = useState<boolean>(false);
 
   // MFA state
   const [loginStep, setLoginStep] = useState<LoginStep>("credentials");
@@ -263,6 +264,36 @@ export const useLoginForm = (): UseLoginFormReturn => {
     }
   };
 
+  // Facebook OAuth Login
+  const handleFacebookLogin = async () => {
+    if (!supabase) {
+      setError(LOGIN_MESSAGES.DB_NOT_CONFIGURED);
+      return;
+    }
+
+    try {
+      setFacebookLoading(true);
+      setError("");
+
+      const redirectTo = `${window.location.origin}/auth/callback`;
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "facebook",
+        options: {
+          redirectTo,
+          scopes: "email,public_profile",
+        },
+      });
+
+      if (oauthError) {
+        setError(oauthError.message || LOGIN_MESSAGES.FACEBOOK_LOGIN_ERROR);
+        setFacebookLoading(false);
+      }
+    } catch (err: any) {
+      setError(err?.message || LOGIN_MESSAGES.FACEBOOK_LOGIN_ERROR);
+      setFacebookLoading(false);
+    }
+  };
+
   // MFA Code Verification Submission
   const handleVerifyMfa = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -333,6 +364,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
     setFocusedField,
     loading,
     googleLoading,
+    facebookLoading,
     error,
     setError,
     mfaCode,
@@ -343,6 +375,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
     handlePaste,
     handleLogin,
     handleGoogleLogin,
+    handleFacebookLogin,
     handleVerifyMfa,
     handleCancelMfa,
   };

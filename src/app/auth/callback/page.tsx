@@ -82,7 +82,11 @@ function AuthCallbackContent() {
           setStatusMessage("جاري تهيئة ملفك الشخصي...");
           const meta = user.user_metadata || {};
           const fullName = meta.full_name || meta.name || user.email?.split("@")[0] || "مستخدم جديد";
-          const avatarUrl = meta.avatar_url || meta.picture || "";
+          const avatarUrl =
+            meta.avatar_url ||
+            meta.picture?.data?.url ||
+            (typeof meta.picture === "string" ? meta.picture : "") ||
+            "";
           const email = user.email || "";
           const generatedUsername = (
             meta.user_name ||

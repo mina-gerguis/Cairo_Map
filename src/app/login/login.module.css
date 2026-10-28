@@ -129,15 +129,20 @@
   gap: 20px;
 }
 
-/* ── Google Sign In Button ── */
-.googleBtn {
+/* ── Social Sign In Buttons ── */
+.socialButtonsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.googleBtn,
+.facebookBtn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 11px 16px;
-  border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: #ffffff;
   color: #1f2937;
@@ -150,33 +155,28 @@
   user-select: none;
 }
 
-:global(html.dark) .googleBtn {
-  background: #18181b;
-  border-color: rgba(255, 255, 255, 0.15);
-  color: #f3f4f6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.googleBtn:hover:not(:disabled) {
+.googleBtn:hover:not(:disabled),
+.facebookBtn:hover:not(:disabled) {
   background: #f9fafb;
   border-color: rgba(0, 0, 0, 0.22);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-:global(html.dark) .googleBtn:hover:not(:disabled) {
+:global(html.dark) .googleBtn:hover:not(:disabled),
+:global(html.dark) .facebookBtn:hover:not(:disabled) {
   background: #27272a;
   border-color: rgba(255, 255, 255, 0.25);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.googleBtn:disabled {
+.googleBtn:disabled,
+.facebookBtn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
   transform: none;
 }
 
-.googleSpinner {
+.googleSpinner,
+.facebookSpinner {
   width: 18px;
   height: 18px;
   border: 2px solid rgba(0, 0, 0, 0.15);
@@ -185,9 +185,18 @@
   animation: spin 0.8s linear infinite;
 }
 
+.facebookSpinner {
+  border-top-color: #1877F2;
+}
+
 :global(html.dark) .googleSpinner {
   border-color: rgba(255, 255, 255, 0.2);
   border-top-color: #4285F4;
+}
+
+:global(html.dark) .facebookSpinner {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-top-color: #1877F2;
 }
 
 .fieldGroup {

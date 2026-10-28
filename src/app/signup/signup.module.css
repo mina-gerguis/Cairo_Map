@@ -905,7 +905,8 @@
   transform: translateY(-1px);
 }
 
-.actionBtnGoogle {
+.actionBtnGoogle,
+.actionBtnFacebook {
   width: 100%;
   padding: 12px;
   font-size: 0.95rem;
@@ -924,13 +925,15 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.actionBtnGoogle:hover:not(:disabled) {
+.actionBtnGoogle:hover:not(:disabled),
+.actionBtnFacebook:hover:not(:disabled) {
   background: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
 }
 
-.actionBtnGoogle:disabled {
+.actionBtnGoogle:disabled,
+.actionBtnFacebook:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
