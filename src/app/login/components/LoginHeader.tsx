@@ -18,7 +18,7 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({
             className={styles.brandLogo}
           />
         </div>
-        <span className={styles.brandTitle}>ماب القاهرة</span>
+        <span className={styles.brandTitle}>قريب ماب</span>
       </div>
 
       {/* Main Title & Subtitle */}

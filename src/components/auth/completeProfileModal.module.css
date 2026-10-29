@@ -27,6 +27,7 @@
   width: 100%;
   max-width: 580px;
   max-height: 85vh;
+  max-height: 85dvh;
   display: flex;
   flex-direction: column;
   background: #18181b;
@@ -153,9 +154,12 @@
 .modalBody {
   padding: 20px 28px;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .formGrid {
@@ -164,10 +168,18 @@
   gap: 16px;
 }
 
+.twoCols {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
 @media (min-width: 520px) {
   .twoCols {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 14px;
   }
 }
@@ -176,12 +188,18 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .label {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
   font-size: 0.88rem;
   font-weight: 700;
   color: #e4e4e7;
@@ -226,7 +244,10 @@
 
 .input {
   width: 100%;
-  padding: 11px 14px;
+  max-width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 14px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: #27272a;
@@ -236,6 +257,55 @@
   outline: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
+}
+
+/* Date Input - Robust cross-browser & iOS Safari normalization */
+.dateInput {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 44px;
+  min-height: 44px;
+  line-height: 42px;
+  padding: 0 14px;
+  box-sizing: border-box;
+  direction: ltr;
+  text-align: left;
+}
+
+/* iOS Safari WebKit internal date text container */
+.dateInput::-webkit-date-and-time-value {
+  margin: 0;
+  padding: 0;
+  min-height: 1.2em;
+  height: 100%;
+  line-height: 42px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+/* Neutralize the global calendar-picker-indicator absolute positioning that breaks iOS */
+.dateInput::-webkit-calendar-picker-indicator {
+  position: static !important;
+  display: inline-block !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+  cursor: pointer;
+  opacity: 0.7;
+  filter: invert(0.85);
+  background: transparent;
+}
+
+:global(html.light) .dateInput::-webkit-calendar-picker-indicator {
+  filter: none;
+  opacity: 0.6;
 }
 
 .input:focus {
@@ -282,6 +352,8 @@
 .select {
   appearance: auto;
   cursor: pointer;
+  height: 44px;
+  padding: 0 14px;
 }
 
 /* Gender Toggle Buttons */
@@ -296,7 +368,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 11px 16px;
+  height: 44px;
+  padding: 0 16px;
+  box-sizing: border-box;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: #27272a;
@@ -556,6 +630,34 @@
   }
   90% {
     transform: translateX(1px);
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    padding: 10px;
+  }
+
+  .modalCard {
+    max-height: 90dvh;
+    border-radius: 20px;
+  }
+
+  .modalHeader {
+    padding: 20px 16px 14px;
+  }
+
+  .modalBody {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .modalFooter {
+    padding: 14px 16px 18px;
+  }
+
+  .input {
+    font-size: 16px; /* Prevents iOS Safari from auto-zooming on focus */
   }
 }
 

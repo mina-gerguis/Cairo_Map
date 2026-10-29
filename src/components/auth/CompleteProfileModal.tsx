@@ -442,12 +442,20 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 type="date"
                 required
                 max={maxDobDateStr}
+                lang="en-US"
                 value={dob}
                 onChange={(e) => {
                   setDob(e.target.value);
                   clearError();
                 }}
-                className={`${styles.input} ${errorField === "dob" ? styles.inputError : ""}`}
+                onClick={(e) => {
+                  try {
+                    e.currentTarget.showPicker?.();
+                  } catch {
+                    // ignore
+                  }
+                }}
+                className={`${styles.input} ${styles.dateInput} ${errorField === "dob" ? styles.inputError : ""}`}
                 style={{ direction: "ltr" }}
                 aria-invalid={errorField === "dob"}
               />
