@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { calculateAge, getMaxDobDateString } from "@/app/signup/utils";
 import styles from "./completeProfileModal.module.css";
+import { AlertCircle } from "lucide-react";
 
 interface CompleteProfileModalProps {
   isOpen: boolean;
@@ -559,9 +560,9 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
 
           {/* Error Banner directly under fields, above the footer */}
           {error && (
-            <div className={styles.errorBanner} role="alert">
-              <i className="bx bx-error-circle" style={{ fontSize: "1.25rem", flexShrink: 0 }}></i>
-              <span>{error}</span>
+            <div className="error-alert" role="alert">
+              <AlertCircle size={16} className="error-alert-icon" />
+              <span className="error-alert-message">{error}</span>
             </div>
           )}
 
