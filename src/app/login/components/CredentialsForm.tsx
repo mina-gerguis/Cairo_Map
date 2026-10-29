@@ -197,8 +197,8 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
           disabled={loading || googleLoading || facebookLoading}
           className={styles.socialBtn}
         >
-          {googleLoading ? <span className={styles.spinner} /> : <GoogleIcon />}
           <span className="font-sans">Google</span>
+          {googleLoading ? <span className={styles.spinner} /> : <GoogleIcon />}
         </button>
 
         <button
@@ -207,8 +207,8 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
           disabled={loading || googleLoading || facebookLoading || passkeyLoading}
           className={styles.socialBtn}
         >
-          {facebookLoading ? <span className={styles.spinner} /> : <FacebookIcon />}
           <span className="font-sans">Facebook</span>
+          {facebookLoading ? <span className={styles.spinner} /> : <FacebookIcon />}
         </button>
       </div>
 
