@@ -600,7 +600,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               ) : (
                 <>
                   <i className="bx bx-log-out" style={{ fontSize: "1.1rem" }}></i>
-                  <span>الإكمال لاحقاً (تسجيل الخروج والمتابعة كضيف)</span>
+                  <span>الإكمال لاحقاً</span>
                 </>
               )}
             </button>
