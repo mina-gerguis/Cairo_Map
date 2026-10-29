@@ -346,8 +346,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             استكمال بيانات الحساب
           </h2>
           <p className={styles.description}>
-            <strong className={styles.subtitle}> مرحباً بك {fullName ? `يا ${fullName}` : ""}</strong>
-            لتفعيل حسابك بالكامل والاستفادة من جميع مميزات قريب ماب ، يرجى استكمال البيانات الإلزامية التالية:
+            <strong className={styles.subtitle}> مرحباً بك </strong> 
+            لتفعيل حسابك بالكامل والاستفادة من جميع المميزات يرجى استكمال البيانات التالية:
           </p>
         </div>
 
