@@ -578,7 +578,7 @@
   gap: 12px;
   margin-top: 12px;
   padding-top: 16px;
-  border-top: 1px solid var(--border-glass);
+  background-color: transparent;
 }
 
 /* ── Empty State (Matching metro empty box) ── */

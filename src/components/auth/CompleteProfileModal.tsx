@@ -473,8 +473,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 <Image
                   src="/images/profile/flag-egypt.webp"
                   alt="Egypt"
-                  width={30}
-                  height={20}
+                  width={20}
+                  height={10}
                   style={{ borderRadius: "2px", height: "auto" }}
                 />
                 <span>+20</span>
@@ -492,8 +492,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               />
             </div>
             <span className={styles.fieldNote}>
-              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678 أو 01012345678).
-            </span>
+              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678
+              </span>
           </div>
 
           {/* Governorate & City in 2 cols */}
