@@ -369,7 +369,7 @@
   justify-content: center;
   gap: 8px;
   height: 44px;
-  padding: 0 16px;
+  padding: var(--padding-btn);
   box-sizing: border-box;
   border-radius: var(--radiusBtn);
   border: 1px solid rgba(255, 255, 255, 0.12);

@@ -423,7 +423,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <div className={styles.fieldGroup}>
               <label htmlFor="comp-dob" className={styles.label}>
                 <span className={styles.labelLeft}>
-                  <i className={`bx bx-calendar ${styles.labelIcon}`}></i>
                   تاريخ الميلاد
                   <span className={styles.requiredAsterisk}>*</span>
                 </span>
@@ -465,7 +464,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <div className={styles.fieldGroup}>
             <label htmlFor="comp-phone" className={styles.label}>
               <span className={styles.labelLeft}>
-                <i className={`bx bx-phone ${styles.labelIcon}`}></i>
                 رقم الهاتف المحمول
                 <span className={styles.requiredAsterisk}>*</span>
               </span>
@@ -476,7 +474,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                   src="/images/profile/flag-egypt.webp"
                   alt="Egypt"
                   width={20}
-                  height={15}
+                  height={25}
                   style={{ borderRadius: "2px" }}
                 />
                 <span>+20</span>
@@ -504,7 +502,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <div className={styles.fieldGroup}>
               <label htmlFor="comp-gov" className={styles.label}>
                 <span className={styles.labelLeft}>
-                  <i className={`bx bx-map-pin ${styles.labelIcon}`}></i>
                   المحافظة
                   <span className={styles.requiredAsterisk}>*</span>
                 </span>
@@ -532,7 +529,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <div className={styles.fieldGroup}>
               <label htmlFor="comp-city" className={styles.label}>
                 <span className={styles.labelLeft}>
-                  <i className={`bx bx-buildings ${styles.labelIcon}`}></i>
                   المدينة / الحي
                   <span className={styles.requiredAsterisk}>*</span>
                 </span>
