@@ -366,7 +366,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <div className={styles.fieldGroup}>
             <label htmlFor="comp-fullname" className={styles.label}>
               <span className={styles.labelLeft}>
-                <i className={`bx bx-user ${styles.labelIcon}`}></i>
                 الاسم بالكامل
                 <span className={styles.requiredAsterisk}>*</span>
               </span>
@@ -392,7 +391,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <div className={styles.fieldGroup}>
               <label className={styles.label}>
                 <span className={styles.labelLeft}>
-                  <i className={`bx bx-male-female ${styles.labelIcon}`}></i>
                   النوع
                   <span className={styles.requiredAsterisk}>*</span>
                 </span>
@@ -406,7 +404,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                   }}
                   className={`${styles.genderButton} ${gender === "ذكر" ? styles.genderButtonActive : ""} ${errorField === "gender" ? styles.genderButtonError : ""}`}
                 >
-                  <i className="bx bx-male" style={{ fontSize: "1.2rem" }}></i>
                   <span>ذكر</span>
                 </button>
                 <button
@@ -417,7 +414,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                   }}
                   className={`${styles.genderButton} ${gender === "أنثى" ? styles.genderButtonActive : ""} ${errorField === "gender" ? styles.genderButtonError : ""}`}
                 >
-                  <i className="bx bx-female" style={{ fontSize: "1.2rem" }}></i>
                   <span>أنثى</span>
                 </button>
               </div>

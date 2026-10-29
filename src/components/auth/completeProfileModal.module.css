@@ -371,7 +371,7 @@
   height: 44px;
   padding: 0 16px;
   box-sizing: border-box;
-  border-radius: 12px;
+  border-radius: var(--radiusBtn);
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: #27272a;
   color: #a1a1aa;
@@ -640,7 +640,6 @@
 
   .modalCard {
     max-height: 90dvh;
-    border-radius: 20px;
   }
 
   .modalHeader {
