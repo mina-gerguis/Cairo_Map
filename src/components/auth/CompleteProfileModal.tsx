@@ -571,7 +571,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <button
               type="submit"
               disabled={saving || loggingOut || success}
-              className={styles.submitBtn}
+              className="btn btn-primary"
             >
               {saving ? (
                 <>
@@ -590,7 +590,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               type="button"
               disabled={saving || loggingOut}
               onClick={handleCompleteLater}
-              className={styles.completeLaterBtn}
+              className="btn btn-cancel"
             >
               {loggingOut ? (
                 <>
