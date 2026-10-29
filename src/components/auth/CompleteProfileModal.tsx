@@ -27,7 +27,46 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
   const [saving, setSaving] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [error, setError] = useState<string>("");
+  const [errorField, setErrorField] = useState<
+    "fullName" | "gender" | "dob" | "phone" | "governorate" | "city" | null
+  >(null);
+  const [isShaking, setIsShaking] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const clearError = () => {
+    if (error || errorField) {
+      setError("");
+      setErrorField(null);
+    }
+  };
+
+  const triggerError = (
+    msg: string,
+    field: "fullName" | "gender" | "dob" | "phone" | "governorate" | "city" | null,
+    focusId?: string
+  ) => {
+    setError(msg);
+    setErrorField(field);
+    setIsShaking(true);
+
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate([80, 40, 80]);
+      } catch {
+        // ignore
+      }
+    }
+
+    if (focusId) {
+      setTimeout(() => {
+        document.getElementById(focusId)?.focus();
+      }, 50);
+    }
+
+    setTimeout(() => {
+      setIsShaking(false);
+    }, 600);
+  };
 
   // Initialize form fields when profile or user changes
   useEffect(() => {
@@ -102,7 +141,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
     // Limit to 10 digits
     if (val.length <= 10) {
       setPhone(val);
-      if (error) setError("");
+      clearError();
     }
   };
 
@@ -110,59 +149,59 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
   const handleGovChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setGovernorate(e.target.value);
     setCity("");
-    if (error) setError("");
+    clearError();
   };
 
   // Submit profile completion
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase || !user) {
-      setError("تعذر الاتصال بقاعدة البيانات. يرجى إعادة المحاولة.");
+      triggerError("تعذر الاتصال بقاعدة البيانات. يرجى إعادة المحاولة.", null);
       return;
     }
 
-    setError("");
+    clearError();
 
     // Validations
     const trimmedName = fullName.trim();
     if (trimmedName.length < 3) {
-      setError("يرجى إدخال اسم ثلاثي أو من 3 أحرف على الأقل.");
+      triggerError("يرجى إدخال اسم ثلاثي أو من 3 أحرف على الأقل.", "fullName", "comp-fullname");
       return;
     }
 
     if (!gender) {
-      setError("يرجى تحديد النوع (ذكر أو أنثى).");
+      triggerError("يرجى تحديد النوع (ذكر أو أنثى).", "gender");
       return;
     }
 
     if (!dob) {
-      setError("يرجى إدخال تاريخ الميلاد.");
+      triggerError("يرجى إدخال تاريخ الميلاد.", "dob", "comp-dob");
       return;
     }
 
     const age = calculateAge(dob);
     if (age < 6 || age > 110) {
-      setError("يرجى إدخال تاريخ ميلاد صحيح.");
+      triggerError("يرجى إدخال تاريخ ميلاد صحيح.", "dob", "comp-dob");
       return;
     }
 
     if (!phone) {
-      setError("يرجى إدخال رقم الهاتف.");
+      triggerError("يرجى إدخال رقم الهاتف.", "phone", "comp-phone");
       return;
     }
 
     if (!phone.startsWith("1") || phone.length !== 10) {
-      setError("رقم الهاتف يجب أن يتكون من 10 أرقام ويبدأ بـ 1 (مثال: 1012345678).");
+      triggerError("رقم الهاتف يجب أن يتكون من 10 أرقام ويبدأ بـ 1 (مثال: 1012345678).", "phone", "comp-phone");
       return;
     }
 
     if (!governorate) {
-      setError("يرجى اختيار المحافظة.");
+      triggerError("يرجى اختيار المحافظة.", "governorate", "comp-gov");
       return;
     }
 
     if (!city) {
-      setError("يرجى اختيار المدينة / المنطقة.");
+      triggerError("يرجى اختيار المدينة / المنطقة.", "city", "comp-city");
       return;
     }
 
@@ -184,7 +223,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
       }
 
       if (existingPhone) {
-        setError("رقم الهاتف هذا مسجل لحساب آخر بالفعل. يرجى إدخال رقم هاتف آخر.");
+        triggerError("رقم الهاتف هذا مسجل لحساب آخر بالفعل. يرجى إدخال رقم هاتف آخر.", "phone", "comp-phone");
         setSaving(false);
         return;
       }
@@ -228,7 +267,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
       setSuccess(true);
     } catch (err: any) {
       console.error("Error saving complete profile:", err);
-      setError(err?.message || "حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.");
+      triggerError(err?.message || "حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى.", null);
       setSaving(false);
     }
   };
@@ -314,14 +353,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className={styles.modalBody}>
-          {error && (
-            <div className="error-alert" role="alert">
-              <i className="bx bx-error-circle error-alert-icon"></i>
-              <span className="error-alert-message">{error}</span>
-            </div>
-          )}
-
+        <form onSubmit={handleSubmit} className={`${styles.modalBody} ${isShaking ? styles.shake : ""}`}>
           {success && (
             <div className={styles.successBanner} role="status">
               <i className="bx bx-check-circle" style={{ fontSize: "1.3rem" }}></i>
@@ -343,9 +375,13 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               type="text"
               required
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                clearError();
+              }}
               placeholder="مثال: أحمد محمد علي"
-              className={styles.input}
+              className={`${styles.input} ${errorField === "fullName" ? styles.inputError : ""}`}
+              aria-invalid={errorField === "fullName"}
             />
           </div>
 
@@ -363,16 +399,22 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               <div className={styles.genderGrid}>
                 <button
                   type="button"
-                  onClick={() => setGender("ذكر")}
-                  className={`${styles.genderButton} ${gender === "ذكر" ? styles.genderButtonActive : ""}`}
+                  onClick={() => {
+                    setGender("ذكر");
+                    clearError();
+                  }}
+                  className={`${styles.genderButton} ${gender === "ذكر" ? styles.genderButtonActive : ""} ${errorField === "gender" ? styles.genderButtonError : ""}`}
                 >
                   <i className="bx bx-male" style={{ fontSize: "1.2rem" }}></i>
                   <span>ذكر</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setGender("أنثى")}
-                  className={`${styles.genderButton} ${gender === "أنثى" ? styles.genderButtonActive : ""}`}
+                  onClick={() => {
+                    setGender("أنثى");
+                    clearError();
+                  }}
+                  className={`${styles.genderButton} ${gender === "أنثى" ? styles.genderButtonActive : ""} ${errorField === "gender" ? styles.genderButtonError : ""}`}
                 >
                   <i className="bx bx-female" style={{ fontSize: "1.2rem" }}></i>
                   <span>أنثى</span>
@@ -400,9 +442,13 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 required
                 max={maxDobDateStr}
                 value={dob}
-                onChange={(e) => setDob(e.target.value)}
-                className={styles.input}
+                onChange={(e) => {
+                  setDob(e.target.value);
+                  clearError();
+                }}
+                className={`${styles.input} ${errorField === "dob" ? styles.inputError : ""}`}
                 style={{ direction: "ltr" }}
+                aria-invalid={errorField === "dob"}
               />
               <span className={styles.fieldNote}>
                 تأكد من صحة تاريخ الميلاد (لا يمكن تعديله لاحقاً).
@@ -438,7 +484,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 placeholder="1xxxxxxxxx"
                 value={phone}
                 onChange={handlePhoneChange}
-                className={`${styles.input} ${styles.phoneInput}`}
+                className={`${styles.input} ${styles.phoneInput} ${errorField === "phone" ? styles.inputError : ""}`}
+                aria-invalid={errorField === "phone"}
               />
             </div>
             <span className={styles.fieldNote}>
@@ -462,7 +509,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 required
                 value={governorate}
                 onChange={handleGovChange}
-                className={`${styles.input} ${styles.select}`}
+                className={`${styles.input} ${styles.select} ${errorField === "governorate" ? styles.inputError : ""}`}
+                aria-invalid={errorField === "governorate"}
               >
                 <option value="" disabled>
                   اختر المحافظة...
@@ -489,8 +537,12 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 required
                 disabled={!governorate}
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className={`${styles.input} ${styles.select}`}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  clearError();
+                }}
+                className={`${styles.input} ${styles.select} ${errorField === "city" ? styles.inputError : ""}`}
+                aria-invalid={errorField === "city"}
               >
                 <option value="" disabled>
                   {governorate ? "اختر المدينة / الحي..." : "اختر المحافظة أولاً"}
@@ -504,6 +556,14 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               </select>
             </div>
           </div>
+
+          {/* Error Banner directly under fields, above the footer */}
+          {error && (
+            <div className={styles.errorBanner} role="alert">
+              <i className="bx bx-error-circle" style={{ fontSize: "1.25rem", flexShrink: 0 }}></i>
+              <span>{error}</span>
+            </div>
+          )}
 
           {/* Actions */}
           <div className={styles.modalFooter}>

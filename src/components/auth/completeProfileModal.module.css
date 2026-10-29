@@ -255,6 +255,29 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
+/* Input Error State */
+.inputError {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3) !important;
+}
+
+:global(html.light) .inputError {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25) !important;
+}
+
+.inputError:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+}
+
+:global(html.light) .inputError:focus {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
 .select {
   appearance: auto;
   cursor: pointer;
@@ -282,6 +305,16 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
+}
+
+.genderButtonError {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.06) !important;
+}
+
+:global(html.light) .genderButtonError {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
 }
 
 .genderButton:hover {
@@ -493,5 +526,40 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Shake / Vibration Animation on error */
+.shake {
+  animation: modalShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes modalShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(-9px);
+  }
+  30% {
+    transform: translateX(8px);
+  }
+  45% {
+    transform: translateX(-6px);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  90% {
+    transform: translateX(1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    animation: none;
   }
 }
