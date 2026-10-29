@@ -824,53 +824,140 @@
   color: #fda4af;
 }
 
-/* ── Onboarding Fullscreen Slider ── */
+/* ── Onboarding Centered Layout (Like Login Form) ── */
+.onboardingContainer {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+  overflow: hidden;
+  direction: rtl;
+  background-color: #fafafa;
+  transition: background-color 0.2s ease;
+}
+
+:global(html.dark) .onboardingContainer {
+  background-color: #09090b;
+}
+
+/* Subtle tech dot grid matching login page */
+.onboardingContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+:global(html.dark) .onboardingContainer::before {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+}
+
 .onboardingWrapper {
   width: 100%;
-  max-width: 100%;
-  height: 100vh;
-  max-height: 100vh;
+  max-width: 440px;
+  height: 720px;
+  max-height: calc(100vh - 36px);
   position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background-color: #09090b;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12), 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  animation: slideInSection 0.6s ease 0.1s both;
+}
+
+:global(html.dark) .onboardingWrapper {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 520px) {
+  .onboardingContainer {
+    padding: 0;
+    min-height: 100dvh;
+    height: 100dvh;
+  }
+  .onboardingWrapper {
+    max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+/* ── Upper Stage for Visual Effects (Dedicated space, never collides) ── */
+.sliderGraphicStage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 290px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
-.slideOverlay {
+.slideGraphicItem {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.1) 35%, rgba(0, 0, 0, 0.75) 70%, rgba(0, 0, 0, 0.92) 100%);
-  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.slideContent {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 24px 24px 28px;
-  z-index: 2;
+/* ── Lower Stage for Texts & Buttons ── */
+.slideBottomContent {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  padding: 16px 24px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   box-sizing: border-box;
+  background: linear-gradient(to top, #09090b 80%, rgba(9, 9, 11, 0.6) 92%, transparent 100%);
+  flex-shrink: 0;
 }
 
 .slideTitle {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #ffffff;
-  margin-bottom: 8px;
-  line-height: 1.4;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  margin-bottom: 6px;
+  line-height: 1.35;
   font-family: var(--font-heading);
 }
 
 .slideDesc {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.88);
-  line-height: 1.6;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.55;
   margin: 0;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.oauthRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
 }
 
 .sliderDotBtn {

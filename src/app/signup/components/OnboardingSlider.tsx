@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { ONBOARDING_SLIDES } from "../constants";
+import { AppleHelloEnglishEffect } from "@/components/ui/apple-hello-effect";
+import { PlacesRadarEffect } from "@/components/ui/places-radar-effect";
+import { SmartNotesEffect } from "@/components/ui/smart-notes-effect";
 import styles from "../signup.module.css";
 
 const GoogleIcon: React.FC = () => (
@@ -90,112 +93,152 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
   }, [currentSlide]);
 
   return (
-    <div className={styles.onboardingWrapper}>
-      {/* Background Images Crossfade */}
-      {ONBOARDING_SLIDES.map((slide, idx) => (
-        <img
-          key={idx}
-          src={`/${slide.imageUrl}`}
-          alt={slide.title}
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: currentSlide === idx ? 1 : 0,
-            transform: currentSlide === idx ? "scale(1)" : "scale(1.05)",
-            transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out",
-            zIndex: 0,
-          }}
-        />
-      ))}
+    <div className={styles.onboardingContainer}>
+      {/* Background Ambient Glow Accents */}
+      <div className={styles.ambientOrb1} />
+      <div className={styles.ambientOrb2} />
+      <div className={styles.ambientOrb3} />
 
-      {/* Gradient Overlay */}
-      <div className={styles.slideOverlay} />
+      <div className={styles.onboardingWrapper}>
+        {/* Upper Graphic Stage (Dedicated area, zero collision) */}
+        <div className={styles.sliderGraphicStage}>
+          {/* Slide 0: Apple Hello Effect */}
+          <div
+            className={styles.slideGraphicItem}
+            style={{
+              background: "radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0c0a1f 50%, #09090b 95%)",
+              opacity: currentSlide === 0 ? 1 : 0,
+              transform: currentSlide === 0 ? "scale(1)" : "scale(1.04)",
+              transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out",
+              zIndex: currentSlide === 0 ? 1 : 0,
+              pointerEvents: currentSlide === 0 ? "auto" : "none",
+            }}
+          >
+            {currentSlide === 0 && (
+              <AppleHelloEnglishEffect
+                speed={1.1}
+                className="w-full max-w-[280px] h-auto text-white filter drop-shadow-[0_0_24px_rgba(255,255,255,0.45)]"
+              />
+            )}
+          </div>
 
-      {/* Content Overlaid on Bottom Half */}
-      <div className={styles.slideContent}>
-        {/* Title & Description */}
-        <div style={{ minHeight: "5px", display: "flex", flexDirection: "column", justifyContent: "center", marginBottom: "16px", width: "100%" }}>
-          <h2 className={styles.slideTitle}>
-            {ONBOARDING_SLIDES[currentSlide].title}
-          </h2>
-          <p className={styles.slideDesc}>
-            {ONBOARDING_SLIDES[currentSlide].desc}
-          </p>
+          {/* Slide 1: Places Radar Effect */}
+          <div
+            className={styles.slideGraphicItem}
+            style={{
+              background: "radial-gradient(circle at 50% 50%, #0f172a 0%, #070d18 55%, #09090b 95%)",
+              opacity: currentSlide === 1 ? 1 : 0,
+              transform: currentSlide === 1 ? "scale(1)" : "scale(1.04)",
+              transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out",
+              zIndex: currentSlide === 1 ? 1 : 0,
+              pointerEvents: currentSlide === 1 ? "auto" : "none",
+            }}
+          >
+            {currentSlide === 1 && <PlacesRadarEffect />}
+          </div>
+
+          {/* Slide 2: Smart Notes Effect */}
+          <div
+            className={styles.slideGraphicItem}
+            style={{
+              background: "radial-gradient(circle at 50% 50%, #131b26 0%, #0a1118 55%, #09090b 95%)",
+              opacity: currentSlide === 2 ? 1 : 0,
+              transform: currentSlide === 2 ? "scale(1)" : "scale(1.04)",
+              transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out",
+              zIndex: currentSlide === 2 ? 1 : 0,
+              pointerEvents: currentSlide === 2 ? "auto" : "none",
+            }}
+          >
+            {currentSlide === 2 && <SmartNotesEffect />}
+          </div>
         </div>
 
-        {/* Dots Indicators */}
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
-          {ONBOARDING_SLIDES.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setCurrentSlide(i)}
-              aria-label={`الشريحة ${i + 1}`}
-              className={styles.sliderDotBtn}
-              style={{
-                width: currentSlide === i ? "24px" : "8px",
-                background: currentSlide === i ? "#ffffff" : "rgba(255, 255, 255, 0.35)",
-              }}
-            />
-          ))}
-        </div>
+        {/* Lower Content Stage */}
+        <div className={styles.slideBottomContent}>
+          {/* Title & Description */}
+          <div style={{ marginBottom: "14px", width: "100%" }}>
+            <h2 className={styles.slideTitle}>
+              {ONBOARDING_SLIDES[currentSlide].title}
+            </h2>
+            <p className={styles.slideDesc}>
+              {ONBOARDING_SLIDES[currentSlide].desc}
+            </p>
+          </div>
 
-        {/* Action Buttons */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
-          {currentSlide < ONBOARDING_SLIDES.length - 1 ? (
-            <button
-              type="button"
-              onClick={() => setCurrentSlide((prev) => prev + 1)}
-              className={styles.actionBtnWhite}
-            >
-              التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i>
-            </button>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+          {/* Dots Indicators */}
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
+            {ONBOARDING_SLIDES.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setCurrentSlide(i)}
+                aria-label={`الشريحة ${i + 1}`}
+                className={styles.sliderDotBtn}
+                style={{
+                  width: currentSlide === i ? "24px" : "8px",
+                  background: currentSlide === i ? "#ffffff" : "rgba(255, 255, 255, 0.35)",
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+            {currentSlide < ONBOARDING_SLIDES.length - 1 ? (
               <button
                 type="button"
-                onClick={onStartSignup}
+                onClick={() => setCurrentSlide((prev) => prev + 1)}
                 className={styles.actionBtnWhite}
               >
-                <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }}></i> إنشاء حساب جديد
+                التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i>
               </button>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+                <button
+                  type="button"
+                  onClick={onStartSignup}
+                  className={styles.actionBtnWhite}
+                >
+                  <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }}></i> إنشاء حساب جديد
+                </button>
 
-              <button
-                type="button"
-                onClick={handleGoogleAuth}
-                disabled={googleLoading || facebookLoading}
-                className={styles.actionBtnGoogle}
-              >
-                <GoogleIcon /> {googleLoading ? "جاري التحويل إلى Google..." : "متابعة باستخدام Google"}
-              </button>
+                {/* OAuth Side-by-Side Row for compact clean layout */}
+                <div className={styles.oauthRow}>
+                  <button
+                    type="button"
+                    onClick={handleGoogleAuth}
+                    disabled={googleLoading || facebookLoading}
+                    className={styles.actionBtnGoogle}
+                  >
+                    <GoogleIcon /> {googleLoading ? "..." : "Google"}
+                  </button>
 
-              <button
-                type="button"
-                onClick={handleFacebookAuth}
-                disabled={googleLoading || facebookLoading}
-                className={styles.actionBtnFacebook}
-              >
-                <FacebookIcon /> {facebookLoading ? "جاري التحويل إلى Facebook..." : "متابعة باستخدام Facebook"}
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleFacebookAuth}
+                    disabled={googleLoading || facebookLoading}
+                    className={styles.actionBtnFacebook}
+                  >
+                    <FacebookIcon /> {facebookLoading ? "..." : "Facebook"}
+                  </button>
+                </div>
 
-              <Link
-                href="/login"
-                className={styles.actionBtnOutline}
-              >
-                <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> لدي حساب بالفعل
-              </Link>
-            </div>
-          )}
+                <Link
+                  href="/login"
+                  className={styles.actionBtnOutline}
+                >
+                  <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> لدي حساب بالفعل
+                </Link>
+              </div>
+            )}
 
-          <Link href="/" className={styles.guestLink}>
-            <i className="bx bx-walk" style={{ fontSize: "1.1rem" }}></i>{" "}
-            <span style={{ textDecoration: "underline" }}>دخول كزائر</span>
-          </Link>
+            <Link href="/" className={styles.guestLink}>
+              <i className="bx bx-walk" style={{ fontSize: "1.1rem" }}></i>{" "}
+              <span style={{ textDecoration: "underline" }}>دخول كزائر</span>
+            </Link>
+          </div>
         </div>
-      </div>
     </div>
-  );
+  </div>
+);
 };

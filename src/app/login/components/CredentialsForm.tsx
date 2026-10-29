@@ -219,7 +219,6 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
           onClick={onPasskeyLogin}
           disabled={loading || googleLoading || facebookLoading || passkeyLoading}
           className={styles.passkeyBtn}
-          style={{ marginTop: "0.75rem" }}
         >
           {passkeyLoading ? <span className={styles.spinner} /> : <ScanFace />} 
           <span className="font-sans">{passkeyLoading ? LOGIN_TEXTS.PASSKEY_LOADING : LOGIN_TEXTS.PASSKEY_BUTTON}</span>
