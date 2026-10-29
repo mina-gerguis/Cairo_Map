@@ -379,7 +379,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: inherit;
+  font-family: var(--font-sub);
 }
 
 .genderButtonError {

@@ -464,7 +464,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <div className={styles.fieldGroup}>
             <label htmlFor="comp-phone" className={styles.label}>
               <span className={styles.labelLeft}>
-                رقم الهاتف المحمول
+                رقم الهاتف
                 <span className={styles.requiredAsterisk}>*</span>
               </span>
             </label>
@@ -473,9 +473,9 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 <Image
                   src="/images/profile/flag-egypt.webp"
                   alt="Egypt"
-                  width={20}
-                  height={25}
-                  style={{ borderRadius: "2px" }}
+                  width={30}
+                  height={20}
+                  style={{ borderRadius: "2px", height: "auto" }}
                 />
                 <span>+20</span>
                 <span className={styles.phoneDivider}></span>
