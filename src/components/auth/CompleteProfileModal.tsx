@@ -452,7 +452,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 تأكد من صحة تاريخ الميلاد (لا يمكن تعديله لاحقاً).
                  {calculatedAge !== null && calculatedAge > 0 && (
                   <span >
-                   هو العمر: {calculatedAge} سنة
+                   العمر هو: {calculatedAge} سنة
                   </span>
                 )}
               </span>
