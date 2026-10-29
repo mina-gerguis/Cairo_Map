@@ -11,6 +11,9 @@
    ========================================================================== */
 .input-fields {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 10px 20px;
   border: 1px solid var(--border-glass);
   border-radius: var(--inputRadius);
@@ -21,6 +24,12 @@
   font-size: 1rem;
   line-height: 1.5;
   transition: var(--transition-smooth);
+}
+
+input[type="date"].input-fields {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .input-fields::placeholder {

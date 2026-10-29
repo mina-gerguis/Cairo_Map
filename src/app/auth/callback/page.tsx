@@ -4,6 +4,7 @@ import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { applyNewUserTrialIfActive } from "@/lib/promotions";
+import { extractUserEmail, generateSmartUsername } from "@/lib/profileValidation";
 
 function AuthCallbackContent() {
   const router = useRouter();
@@ -61,10 +62,10 @@ function AuthCallbackContent() {
 
         const user = session.user;
 
-        // Check if user account is suspended
+        // Check if user account is suspended and load existing fields
         const { data: profCheck } = await supabase
           .from("profiles")
-          .select("id, is_suspended")
+          .select("id, is_suspended, email, username, full_name, avatar_url")
           .eq("id", user.id)
           .maybeSingle();
 
@@ -77,31 +78,35 @@ function AuthCallbackContent() {
           return;
         }
 
-        // Ensure user profile exists
+        const meta = user.user_metadata || {};
+        const email = extractUserEmail(user);
+        const fullName =
+          meta.full_name ||
+          meta.name ||
+          `${meta.first_name || ""} ${meta.last_name || ""}`.trim() ||
+          (email ? email.split("@")[0] : "") ||
+          "مستخدم جديد";
+
+        const avatarUrl =
+          meta.avatar_url ||
+          meta.picture?.data?.url ||
+          (typeof meta.picture === "string" ? meta.picture : "") ||
+          "";
+
+        const generatedUsername = generateSmartUsername(fullName, email, meta, user.id);
+
+        // Ensure user profile exists or update missing fields for existing users
         if (!profCheck) {
           setStatusMessage("جاري تهيئة ملفك الشخصي...");
-          const meta = user.user_metadata || {};
-          const fullName = meta.full_name || meta.name || user.email?.split("@")[0] || "مستخدم جديد";
-          const avatarUrl =
-            meta.avatar_url ||
-            meta.picture?.data?.url ||
-            (typeof meta.picture === "string" ? meta.picture : "") ||
-            "";
-          const email = user.email || "";
-          const generatedUsername = (
-            meta.user_name ||
-            meta.preferred_username ||
-            email.split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g, "")
-          ).slice(0, 20);
 
           await supabase.from("profiles").upsert(
             {
               id: user.id,
               full_name: fullName,
-              username: generatedUsername || `user_${user.id.slice(0, 8)}`,
+              username: generatedUsername,
               email: email,
               avatar_url: avatarUrl,
-              email_verified: true,
+              email_verified: Boolean(email),
               subscription_tier: "free",
               updated_at: new Date().toISOString(),
             },
@@ -112,6 +117,26 @@ function AuthCallbackContent() {
             await applyNewUserTrialIfActive(user.id, fullName);
           } catch (trialErr) {
             console.warn("Trial application notice in OAuth callback:", trialErr);
+          }
+        } else {
+          // Profile exists: update email and username if they were missing or default user_
+          const updates: Record<string, any> = {};
+          if ((!profCheck.email || profCheck.email.trim() === "") && email) {
+            updates.email = email;
+          }
+          if ((!profCheck.username || profCheck.username.trim() === "" || profCheck.username.startsWith("user_")) && generatedUsername) {
+            updates.username = generatedUsername;
+          }
+          if ((!profCheck.full_name || profCheck.full_name.trim() === "" || profCheck.full_name === "مستخدم جديد") && fullName) {
+            updates.full_name = fullName;
+          }
+          if ((!profCheck.avatar_url || profCheck.avatar_url.trim() === "") && avatarUrl) {
+            updates.avatar_url = avatarUrl;
+          }
+
+          if (Object.keys(updates).length > 0) {
+            updates.updated_at = new Date().toISOString();
+            await supabase.from("profiles").update(updates).eq("id", user.id);
           }
         }
 

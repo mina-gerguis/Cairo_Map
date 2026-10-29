@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { egyptLocations, governoratesList } from "@/data/egypt_locations";
 import { calculateAge, getMaxDobDateString } from "@/app/signup/utils";
+import { extractUserEmail, generateSmartUsername } from "@/lib/profileValidation";
 import styles from "./completeProfileModal.module.css";
 import { AlertCircle } from "lucide-react";
 
@@ -19,6 +20,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
   const { user, profile, logout, refreshProfile } = useAuth();
 
   const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [gender, setGender] = useState<string>("ذكر");
   const [dob, setDob] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
@@ -29,7 +32,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
   const [loggingOut, setLoggingOut] = useState(false);
   const [error, setError] = useState<string>("");
   const [errorField, setErrorField] = useState<
-    "fullName" | "gender" | "dob" | "phone" | "governorate" | "city" | null
+    "fullName" | "username" | "email" | "gender" | "dob" | "phone" | "governorate" | "city" | null
   >(null);
   const [isShaking, setIsShaking] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -43,7 +46,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
 
   const triggerError = (
     msg: string,
-    field: "fullName" | "gender" | "dob" | "phone" | "governorate" | "city" | null,
+    field: "fullName" | "username" | "email" | "gender" | "dob" | "phone" | "governorate" | "city" | null,
     focusId?: string
   ) => {
     setError(msg);
@@ -73,13 +76,22 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
   useEffect(() => {
     if (profile || user) {
       const meta = user?.user_metadata || {};
+      const extractedEmail = profile?.email || extractUserEmail(user) || "";
       const initialName =
         profile?.full_name ||
         meta.full_name ||
         meta.name ||
-        user?.email?.split("@")[0] ||
+        `${meta.first_name || ""} ${meta.last_name || ""}`.trim() ||
+        (extractedEmail ? extractedEmail.split("@")[0] : "") ||
         "";
       setFullName(initialName);
+      setEmail(extractedEmail);
+
+      const initialUsername =
+        profile?.username && !profile.username.startsWith("user_")
+          ? profile.username
+          : generateSmartUsername(initialName, extractedEmail, meta, user?.id);
+      setUsername(initialUsername);
 
       if (profile?.gender) {
         setGender(profile.gender);
@@ -146,6 +158,15 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
     }
   };
 
+  // Username input handler: only english letters, numbers, underscore
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+    if (val.length <= 25) {
+      setUsername(val);
+      clearError();
+    }
+  };
+
   // Governorate change handler
   const handleGovChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setGovernorate(e.target.value);
@@ -167,6 +188,18 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
     const trimmedName = fullName.trim();
     if (trimmedName.length < 3) {
       triggerError("يرجى إدخال اسم ثلاثي أو من 3 أحرف على الأقل.", "fullName", "comp-fullname");
+      return;
+    }
+
+    const cleanUser = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
+    if (cleanUser.length < 3) {
+      triggerError("اسم المستخدم يجب أن يكون 3 أحرف إنجليزية على الأقل.", "username", "comp-username");
+      return;
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      triggerError("يرجى إدخال بريد إلكتروني صحيح.", "email", "comp-email");
       return;
     }
 
@@ -211,6 +244,44 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
     try {
       const formattedPhone = `+20${phone}`;
 
+      // Check username uniqueness
+      const { data: existingUser, error: userCheckErr } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", cleanUser)
+        .neq("id", user.id)
+        .maybeSingle();
+
+      if (userCheckErr) {
+        console.warn("Username check warning:", userCheckErr);
+      }
+
+      if (existingUser) {
+        triggerError("اسم المستخدم هذا مأخوذ مسبقاً، يرجى اختيار اسم آخر.", "username", "comp-username");
+        setSaving(false);
+        return;
+      }
+
+      // Check email uniqueness if email is different from existing user
+      if (trimmedEmail !== profile?.email) {
+        const { data: existingEmail, error: emailCheckErr } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", trimmedEmail)
+          .neq("id", user.id)
+          .maybeSingle();
+
+        if (emailCheckErr) {
+          console.warn("Email check warning:", emailCheckErr);
+        }
+
+        if (existingEmail) {
+          triggerError("البريد الإلكتروني هذا مسجل لحساب آخر بالفعل.", "email", "comp-email");
+          setSaving(false);
+          return;
+        }
+      }
+
       // Check phone uniqueness
       const { data: existingPhone, error: phoneCheckErr } = await supabase
         .from("profiles")
@@ -234,6 +305,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
         .from("profiles")
         .update({
           full_name: trimmedName,
+          username: cleanUser,
+          email: trimmedEmail,
           gender: gender,
           governorate: governorate,
           city: city,
@@ -249,15 +322,23 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
 
       // Sync metadata in Supabase Auth
       try {
+        const metaUpdates: any = {
+          full_name: trimmedName,
+          username: cleanUser,
+          gender: gender,
+          governorate: governorate,
+          city: city,
+          dob: dob,
+          phone: formattedPhone,
+        };
+
+        if (trimmedEmail && trimmedEmail !== user.email) {
+          metaUpdates.email = trimmedEmail;
+        }
+
         await supabase.auth.updateUser({
-          data: {
-            full_name: trimmedName,
-            gender: gender,
-            governorate: governorate,
-            city: city,
-            dob: dob,
-            phone: formattedPhone,
-          },
+          data: metaUpdates,
+          ...(!user.email && trimmedEmail ? { email: trimmedEmail } : {}),
         });
       } catch (authMetaErr) {
         console.warn("Auth updateUser metadata warning:", authMetaErr);
@@ -300,7 +381,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div className={styles.modalCard}>
+      <div className={`${styles.modalCard} ${isShaking ? styles.shakeAnimation : ""}`}>
         {/* Header */}
         <div className={styles.modalHeader}>
           <div className={styles.avatarWrapper}>
@@ -345,14 +426,23 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <h2 id="modal-title" className={styles.title}>
             استكمال بيانات الحساب
           </h2>
+          <div className={styles.subtitle}>
+            مرحباً بك {fullName ? `يا ${fullName}` : ""} 🎉
+          </div>
           <p className={styles.description}>
-            <strong className={styles.subtitle}> مرحباً بك </strong> 
-            لتفعيل حسابك بالكامل والاستفادة من جميع المميزات يرجى استكمال البيانات التالية:
+            لتفعيل حسابك بالكامل والاستفادة من جميع مميزات ماب القاهرة، يرجى استكمال البيانات الإلزامية التالية:
           </p>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className={`${styles.modalBody} ${isShaking ? styles.shake : ""}`}>
+        <form onSubmit={handleSubmit} className={styles.modalBody}>
+          {error && (
+            <div className={styles.errorBanner} role="alert">
+              <AlertCircle size={20} className={styles.errorBannerIcon} />
+              <span>{error}</span>
+            </div>
+          )}
+
           {success && (
             <div className={styles.successBanner} role="status">
               <i className="bx bx-check-circle" style={{ fontSize: "1.3rem" }}></i>
@@ -360,26 +450,75 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             </div>
           )}
 
-          {/* Full Name */}
+          {/* Full Name & Username in 2 cols */}
+          <div className={styles.twoCols}>
+            {/* Full Name */}
+            <div className={styles.fieldGroup}>
+              <label htmlFor="comp-fullname" className={styles.label}>
+                <span className={styles.labelLeft}>
+                  الاسم بالكامل
+                  <span className={styles.requiredAsterisk}>*</span>
+                </span>
+              </label>
+              <input
+                id="comp-fullname"
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  clearError();
+                }}
+                placeholder="مثال: أحمد محمد علي"
+                className={`${styles.input} ${errorField === "fullName" ? styles.inputError : ""}`}
+                aria-invalid={errorField === "fullName"}
+              />
+            </div>
+
+            {/* Username */}
+            <div className={styles.fieldGroup}>
+              <label htmlFor="comp-username" className={styles.label}>
+                <span className={styles.labelLeft}>
+                  اسم المستخدم (Username)
+                  <span className={styles.requiredAsterisk}>*</span>
+                </span>
+              </label>
+              <input
+                id="comp-username"
+                type="text"
+                required
+                value={username}
+                onChange={handleUsernameChange}
+                placeholder="ahmed_ali"
+                className={`${styles.input} ${errorField === "username" ? styles.inputError : ""}`}
+                style={{ direction: "ltr", textAlign: "left" }}
+                aria-invalid={errorField === "username"}
+              />
+              <span className={styles.fieldNote}>حروف وأرقام إنجليزية بدون مسافات.</span>
+            </div>
+          </div>
+
+          {/* Email Field */}
           <div className={styles.fieldGroup}>
-            <label htmlFor="comp-fullname" className={styles.label}>
+            <label htmlFor="comp-email" className={styles.label}>
               <span className={styles.labelLeft}>
-                الاسم بالكامل
+                البريد الإلكتروني
                 <span className={styles.requiredAsterisk}>*</span>
               </span>
             </label>
             <input
-              id="comp-fullname"
-              type="text"
+              id="comp-email"
+              type="email"
               required
-              value={fullName}
+              value={email}
               onChange={(e) => {
-                setFullName(e.target.value);
+                setEmail(e.target.value);
                 clearError();
               }}
-              placeholder="مثال: أحمد محمد علي"
-              className={`${styles.input} ${errorField === "fullName" ? styles.inputError : ""}`}
-              aria-invalid={errorField === "fullName"}
+              placeholder="name@example.com"
+              className={`${styles.input} ${errorField === "email" ? styles.inputError : ""}`}
+              style={{ direction: "ltr", textAlign: "left" }}
+              aria-invalid={errorField === "email"}
             />
           </div>
 
@@ -424,7 +563,6 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                   تاريخ الميلاد
                   <span className={styles.requiredAsterisk}>*</span>
                 </span>
-               
               </label>
               <input
                 id="comp-dob"
@@ -450,10 +588,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               />
               <span className={styles.fieldNote}>
                 تأكد من صحة تاريخ الميلاد (لا يمكن تعديله لاحقاً).
-                 {calculatedAge !== null && calculatedAge > 0 && (
-                  <span >
-                   العمر هو: {calculatedAge} سنة
-                  </span>
+                {calculatedAge !== null && calculatedAge > 0 && (
+                  <strong> العمر هو: {calculatedAge} سنة</strong>
                 )}
               </span>
             </div>
@@ -463,7 +599,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <div className={styles.fieldGroup}>
             <label htmlFor="comp-phone" className={styles.label}>
               <span className={styles.labelLeft}>
-                رقم الهاتف
+                رقم الهاتف المحمول
                 <span className={styles.requiredAsterisk}>*</span>
               </span>
             </label>
@@ -473,8 +609,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                   src="/images/profile/flag-egypt.webp"
                   alt="Egypt"
                   width={20}
-                  height={10}
-                  style={{ borderRadius: "2px", height: "auto" }}
+                  height={15}
+                  style={{ borderRadius: "2px" }}
                 />
                 <span>+20</span>
                 <span className={styles.phoneDivider}></span>
@@ -491,7 +627,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               />
             </div>
             <span className={styles.fieldNote}>
-              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678)
+              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678 أو 01012345678).
             </span>
           </div>
 
@@ -557,20 +693,12 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             </div>
           </div>
 
-          {/* Error Banner directly under fields, above the footer */}
-          {error && (
-            <div className="error-alert" role="alert">
-              <AlertCircle size={16} className="error-alert-icon" />
-              <span className="error-alert-message">{error}</span>
-            </div>
-          )}
-
           {/* Actions */}
           <div className={styles.modalFooter}>
             <button
               type="submit"
               disabled={saving || loggingOut || success}
-              className="btn btn-primary"
+              className={styles.submitBtn}
             >
               {saving ? (
                 <>
@@ -589,7 +717,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               type="button"
               disabled={saving || loggingOut}
               onClick={handleCompleteLater}
-              className="btn btn-cancel"
+              className={styles.completeLaterBtn}
             >
               {loggingOut ? (
                 <>
@@ -599,7 +727,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               ) : (
                 <>
                   <i className="bx bx-log-out" style={{ fontSize: "1.1rem" }}></i>
-                  <span>الإكمال لاحقاً</span>
+                  <span>الإكمال لاحقاً (تسجيل الخروج والمتابعة كضيف)</span>
                 </>
               )}
             </button>

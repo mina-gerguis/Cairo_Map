@@ -167,7 +167,9 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                   type="date"
                   disabled
                   readOnly
+                  lang="en-US"
                   className={`input-fields ${styles.inputDobDisabled}`}
+                  style={{ direction: "ltr" }}
                   value={formData.dob}
                 />
                 <p className={styles.dobWarningText}>

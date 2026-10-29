@@ -317,6 +317,10 @@ export const useLoginForm = (): UseLoginFormReturn => {
         provider: "facebook",
         options: {
           redirectTo,
+          scopes: "email,public_profile",
+          queryParams: {
+            auth_type: "rerequest",
+          },
         },
       });
 

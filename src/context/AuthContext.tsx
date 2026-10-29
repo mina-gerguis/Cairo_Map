@@ -4,7 +4,7 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { isSessionPasskeyAuthenticated, clearPasskeyAuthentication } from "@/lib/passkey";
 import { OpenPageAccessOffer, getOpenPageAccessOffers, isPageOpenByPromotion } from "@/lib/promotions";
-import { isProfileIncomplete as checkIsProfileIncomplete } from "@/lib/profileValidation";
+import { isProfileIncomplete as checkIsProfileIncomplete, extractUserEmail, generateSmartUsername } from "@/lib/profileValidation";
 
 interface AuthContextProps {
   user: User | null;
@@ -150,14 +150,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } : data;
 
         setProfile(profileData);
-        // Sync email and any missing profile fields from user_metadata
+        // Sync email and any missing profile fields from user_metadata and identities
         const activeUser = currentUser || user;
-        const meta = activeUser?.user_metadata;
+        const meta = activeUser?.user_metadata || {};
+        const extractedEmail = extractUserEmail(activeUser);
         const updates: Record<string, any> = {};
 
-        if (activeUser?.email && data.email !== activeUser.email) {
+        if (extractedEmail && (!data.email || data.email === "")) {
+          updates.email = extractedEmail;
+        } else if (activeUser?.email && data.email !== activeUser.email) {
           updates.email = activeUser.email;
         }
+
         if (meta) {
           if ((!data.phone || data.phone === "") && meta.phone) updates.phone = meta.phone;
           if ((!data.gender || data.gender === "") && meta.gender) updates.gender = meta.gender;
@@ -166,8 +170,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const fbOrGoogleAvatar = meta.avatar_url || meta.picture?.data?.url || (typeof meta.picture === "string" ? meta.picture : "");
           if ((!data.avatar_url || data.avatar_url === "") && fbOrGoogleAvatar) updates.avatar_url = fbOrGoogleAvatar;
           if ((!data.dob || data.dob === "") && meta.dob) updates.dob = meta.dob;
-          if ((!data.full_name || data.full_name === "") && (meta.full_name || meta.name)) updates.full_name = meta.full_name || meta.name;
-          if ((!data.username || data.username === "") && (meta.username || meta.preferred_username)) updates.username = meta.username || meta.preferred_username;
+          if ((!data.full_name || data.full_name === "" || data.full_name === "مستخدم جديد") && (meta.full_name || meta.name)) updates.full_name = meta.full_name || meta.name;
+          
+          if (!data.username || data.username === "" || data.username.startsWith("user_")) {
+            const smartUser = generateSmartUsername(
+              updates.full_name || data.full_name,
+              updates.email || data.email || extractedEmail,
+              meta,
+              userId
+            );
+            if (smartUser) updates.username = smartUser;
+          }
         }
 
         if (Object.keys(updates).length > 0) {
@@ -181,23 +194,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Fallback: create default profile if not found (e.g. newly signed in OAuth user)
         const activeUser = currentUser || user;
         const meta = activeUser?.user_metadata || {};
-        const fullName = meta.full_name || meta.name || activeUser?.email?.split('@')[0] || "مستخدم جديد";
+        const email = extractUserEmail(activeUser);
+        const fullName =
+          meta.full_name ||
+          meta.name ||
+          `${meta.first_name || ""} ${meta.last_name || ""}`.trim() ||
+          (email ? email.split("@")[0] : "") ||
+          "مستخدم جديد";
         const avatarUrl = meta.avatar_url || meta.picture?.data?.url || (typeof meta.picture === "string" ? meta.picture : "") || "";
-        const email = activeUser?.email || "";
-        const generatedUsername = (
-          meta.user_name ||
-          meta.preferred_username ||
-          email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '')
-        ).slice(0, 20);
+        const generatedUsername = generateSmartUsername(fullName, email, meta, userId);
 
         const newProfile = {
           id: userId,
           full_name: fullName,
-          username: generatedUsername || `user_${userId.slice(0, 8)}`,
+          username: generatedUsername,
           email: email,
           avatar_url: avatarUrl,
           subscription_tier: "free",
-          email_verified: true,
+          email_verified: Boolean(email),
           updated_at: new Date().toISOString()
         };
 

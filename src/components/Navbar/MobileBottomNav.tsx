@@ -9,8 +9,8 @@ import { initialPlaces, CATEGORIES_STRUCTURE, Place, normalizePlaceCategory } fr
 
 import { MdOutlineClose } from "react-icons/md";
 import { GoHome, GoHomeFill } from "react-icons/go";
-import { IoSearchOutline, IoSearch, IoChevronBack, IoMapOutline, IoMap } from "react-icons/io5";
-import { IconRadar, IconRadarFilled } from '@tabler/icons-react';
+import { IoSearchOutline, IoSearch, IoChevronBack, IoMapOutline, IoMap, IoPerson, IoPersonOutline } from "react-icons/io5";
+import { IconRadar, IconRadarFilled, IconSearchFilled } from '@tabler/icons-react';
 import { FaLightbulb, FaMapMarkerAlt } from "react-icons/fa";
 import { useGSAP, gsap } from "@/lib/gsap";
 
@@ -668,7 +668,7 @@ export default function MobileBottomNav() {
             aria-label="البحث"
           >
             <div className="mobile-nav-item-wrapper">
-              {displayActiveIndex === 2 ? <IoSearch size={25} /> : <IoSearchOutline size={25} />}
+              {displayActiveIndex === 2 ? <IconSearchFilled size={25} /> : <IoSearchOutline size={25} />}
             </div>
           </button>
 
@@ -711,10 +711,9 @@ export default function MobileBottomNav() {
                   }}
                 />
               ) : (
-                <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="8" r="5" />
-                  <path d="M20 21a8 8 0 0 0-16 0" />
-                </svg>
+                <>
+                {displayActiveIndex === 4 ? <IoPerson size={24} /> : <IoPersonOutline size={24} />}
+                </>
               )}
               {unreadCount > 0 && <span className="mobile-nav-badge" />}
             </div>

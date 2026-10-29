@@ -1182,6 +1182,7 @@ html.light .footer {
 /* Improve Date Picker */
 input[type="date"] {
   position: relative;
+  box-sizing: border-box;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -1194,6 +1195,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: transparent;
   cursor: pointer;
   opacity: 0;
+}
+
+input[type="date"]:disabled::-webkit-calendar-picker-indicator,
+input[type="date"][readonly]::-webkit-calendar-picker-indicator {
+  position: static !important;
+  display: none !important;
+  pointer-events: none !important;
 }
 
 .help-select {

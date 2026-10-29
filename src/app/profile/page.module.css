@@ -318,11 +318,50 @@
 }
 
 .inputDobDisabled {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 46px;
+  line-height: 24px;
+  padding: 10px 20px;
+  box-sizing: border-box;
   text-align: left;
   direction: ltr;
   opacity: 0.65;
   cursor: not-allowed;
   background: rgba(255, 255, 255, 0.03);
+}
+
+.inputDobDisabled::-webkit-date-and-time-value {
+  margin: 0;
+  padding: 0;
+  min-height: 1.2em;
+  height: 100%;
+  line-height: inherit;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.inputDobDisabled::-webkit-calendar-picker-indicator {
+  position: static !important;
+  display: inline-block !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+  cursor: not-allowed;
+  opacity: 0.45;
+  filter: invert(0.8);
+}
+
+:global(html.light) .inputDobDisabled::-webkit-calendar-picker-indicator {
+  filter: none;
+  opacity: 0.45;
 }
 
 .dobWarningText {
