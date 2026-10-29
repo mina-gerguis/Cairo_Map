@@ -14,14 +14,24 @@ export const useLoginForm = (): UseLoginFormReturn => {
   const { user, mfaPending } = useAuth();
 
   // Form input state
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmailState] = useState<string>("");
+  const [password, setPasswordState] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [keepSignedIn, setKeepSignedIn] = useState<boolean>(true);
   const [focusedField, setFocusedField] = useState<FocusedField>(null);
 
   // Status & Feedback state
   const [error, setError] = useState<string>("");
+
+  const setEmail = (val: string) => {
+    if (error) setError("");
+    setEmailState(val);
+  };
+
+  const setPassword = (val: string) => {
+    if (error) setError("");
+    setPasswordState(val);
+  };
   const [loading, setLoading] = useState<boolean>(false);
   const [googleLoading, setGoogleLoading] = useState<boolean>(false);
   const [facebookLoading, setFacebookLoading] = useState<boolean>(false);

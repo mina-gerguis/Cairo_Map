@@ -31,6 +31,7 @@ export interface CredentialsFormProps {
   focusedField: FocusedField;
   setFocusedField: (field: FocusedField) => void;
   loading: boolean;
+  error?: string;
   googleLoading: boolean;
   onGoogleLogin: () => void;
   facebookLoading: boolean;

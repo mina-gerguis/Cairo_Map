@@ -32,7 +32,7 @@
   background: #18181b;
   color: #f4f4f5;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
+  border-radius: var(--radius-card);
   box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
   overflow: hidden;
   direction: rtl;
@@ -121,6 +121,7 @@
 }
 
 .title {
+  font-family: var(--font-sub);
   margin: 0 0 6px;
   font-size: 1.35rem;
   font-weight: 800;
@@ -135,7 +136,7 @@
   margin: 0 0 8px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #3b82f6;
+  color: var(--color-foreground);
 }
 
 .description {

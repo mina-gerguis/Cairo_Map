@@ -8,6 +8,7 @@ export const LOGIN_MESSAGES = {
   GOOGLE_LOGIN_ERROR: "حدث خطأ أثناء محاولة تسجيل الدخول بواسطة Google.",
   FACEBOOK_LOGIN_ERROR: "حدث خطأ أثناء محاولة تسجيل الدخول بواسطة Facebook.",
   PASSKEY_LOGIN_ERROR: "فشل التحقق عبر بصمة الوجه / مفتاح المرور (Passkey).",
+  PASSKEY_DOMAIN_ERROR: "تعذر الدخول بمفتاح المرور من هذا النطاق، يرجى المحاولة لاحقاً أو الدخول بكلمة المرور.",
 } as const;
 
 export const LOGIN_TEXTS = {

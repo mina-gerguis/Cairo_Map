@@ -309,16 +309,16 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             مرحباً بك {fullName ? `يا ${fullName}` : ""} 🎉
           </div>
           <p className={styles.description}>
-            لتفعيل حسابك بالكامل والاستفادة من جميع مميزات ماب القاهرة، يرجى استكمال البيانات الإلزامية التالية:
+            لتفعيل حسابك بالكامل والاستفادة من جميع مميزات قريب ماب ، يرجى استكمال البيانات الإلزامية التالية:
           </p>
         </div>
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className={styles.modalBody}>
           {error && (
-            <div className={styles.errorBanner} role="alert">
-              <i className="bx bx-error-circle" style={{ fontSize: "1.3rem" }}></i>
-              <span>{error}</span>
+            <div className="error-alert" role="alert">
+              <i className="bx bx-error-circle error-alert-icon"></i>
+              <span className="error-alert-message">{error}</span>
             </div>
           )}
 

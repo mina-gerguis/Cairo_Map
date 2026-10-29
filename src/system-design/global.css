@@ -209,3 +209,31 @@ html.light .ambient-glow {
     border-radius: var(--ra-8);
     font-size: var(--fs-xs);
 }
+
+/* ============================================================
+   alert error
+   ============================================================ */
+.error-alert {
+    display: flex;
+    align-items: flex-start;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-light);
+    font-family: var(--font-sub);
+    text-align: center;
+    color: var(--color-error);
+    margin-top: 10px;
+    animation: fadeIn 0.2s ease-out;
+    line-height: 1.45;
+    gap: 0.5rem;
+}
+
+.error-alert-icon {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.error-alert-message {
+    font-weight: bolder;
+    flex: 1;
+    text-align: right;
+}

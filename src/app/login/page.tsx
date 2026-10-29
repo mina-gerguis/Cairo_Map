@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { AlertCircle } from "lucide-react";
 import { useLoginForm } from "./hooks";
 import {
   LoginLayout,
@@ -12,7 +11,6 @@ import {
   LoginFooterLinks,
   LoginLegalNote,
 } from "./components";
-import styles from "./login.module.css";
 
 export default function LoginPage() {
   const form = useLoginForm();
@@ -23,16 +21,6 @@ export default function LoginPage() {
       <LoginGlassCard>
         {/* Brand Header & Titles */}
         <LoginHeader />
-
-        {/* Error Notification Banner (Only for credentials step; MFA shows errors directly under OTP inputs) */}
-        {form.error && form.loginStep === "credentials" && (
-          <div className={styles.errorAlert} role="alert">
-            <AlertCircle size={18} className={styles.errorIcon} />
-            <div>
-              <span>{form.error}</span>
-            </div>
-          </div>
-        )}
 
         {/* Step 1: Credentials (Username/Email & Password) */}
         {form.loginStep === "credentials" ? (
@@ -48,6 +36,7 @@ export default function LoginPage() {
             focusedField={form.focusedField}
             setFocusedField={form.setFocusedField}
             loading={form.loading}
+            error={form.error}
             googleLoading={form.googleLoading}
             onGoogleLogin={form.handleGoogleLogin}
             facebookLoading={form.facebookLoading}

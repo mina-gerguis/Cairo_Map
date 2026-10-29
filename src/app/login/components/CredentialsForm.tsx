@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, ScanFace } from "lucide-react";
 import { CredentialsFormProps } from "../types";
 import { LOGIN_TEXTS } from "../constants";
 import styles from "../login.module.css";
@@ -35,18 +35,6 @@ const FacebookIcon: React.FC = () => (
   </svg>
 );
 
-const FaceIdIcon: React.FC = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M7 3H5a2 2 0 0 0-2 2v2" />
-    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-    <path d="M3 17v2a2 2 0 0 0 2 2h2" />
-    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-    <path d="M9 10h.01" />
-    <path d="M15 10h.01" />
-    <path d="M12 11v3" />
-    <path d="M9 16a3 3 0 0 0 6 0" />
-  </svg>
-);
 
 export const CredentialsForm: React.FC<CredentialsFormProps> = ({
   email,
@@ -60,6 +48,7 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
   focusedField,
   setFocusedField,
   loading,
+  error,
   googleLoading,
   onGoogleLogin,
   facebookLoading,
@@ -69,67 +58,99 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
   onPasskeyLogin,
   onSubmit,
 }) => {
+  const [isShaking, setIsShaking] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setIsShaking(true);
+      if (typeof window !== "undefined" && "vibrate" in navigator) {
+        try {
+          navigator.vibrate([80, 40, 80]);
+        } catch {
+          // Ignore if vibration is restricted
+        }
+      }
+      const timer = setTimeout(() => {
+        setIsShaking(false);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   return (
     <form onSubmit={onSubmit} className={styles.form}>
-      {/* Email / Username Field */}
-      <div className={styles.fieldGroup}>
-        <label htmlFor="email" className={styles.label}>
-          <div className={styles.labelLeft}>
-            <span>{LOGIN_TEXTS.USERNAME_OR_EMAIL}</span>
-            <span className={styles.requiredAsterisk}>*</span>
+      {/* Inputs container with shake animation on error */}
+      <div className={`${styles.fieldsShakeContainer} ${isShaking ? styles.shake : ""}`}>
+        {/* Email / Username Field */}
+        <div className={styles.fieldGroup}>
+          <label htmlFor="email" className={styles.label}>
+            <div className={styles.labelLeft}>
+              <span>{LOGIN_TEXTS.USERNAME_OR_EMAIL}</span>
+              <span className={styles.requiredAsterisk}>*</span>
+            </div>
+          </label>
+          <div className={styles.inputWrapper}>
+            <input
+              id="email"
+              type="text"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setFocusedField("email")}
+              onBlur={() => setFocusedField(null)}
+              placeholder="name@example.com"
+              className={`${styles.input} ${error ? styles.inputError : ""} ${focusedField === "email" ? styles.inputFocused : ""}`}
+              autoComplete="username"
+              aria-invalid={Boolean(error)}
+              autoFocus
+            />
           </div>
-        </label>
-        <div className={styles.inputWrapper}>
-          <input
-            id="email"
-            type="text"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onFocus={() => setFocusedField("email")}
-            onBlur={() => setFocusedField(null)}
-            placeholder="name@example.com"
-            className={`${styles.input} ${focusedField === "email" ? styles.inputFocused : ""}`}
-            autoComplete="username"
-            autoFocus
-          />
+        </div>
+
+        {/* Password Field */}
+        <div className={styles.fieldGroup}>
+          <div className={styles.label}>
+            <div className={styles.labelLeft}>
+              <span>{LOGIN_TEXTS.PASSWORD}</span>
+              <span className={styles.requiredAsterisk}>*</span>
+            </div>
+            <Link href="/forgot-password" className={styles.forgotPasswordLink}>
+              {LOGIN_TEXTS.FORGOT_PASSWORD}
+            </Link>
+          </div>
+          <div className={styles.inputWrapper}>
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setFocusedField("password")}
+              onBlur={() => setFocusedField(null)}
+              placeholder="••••••••••••"
+              className={`${styles.input} ${styles.passwordInput} ${error ? styles.inputError : ""} ${focusedField === "password" ? styles.inputFocused : ""}`}
+              autoComplete="current-password"
+              aria-invalid={Boolean(error)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className={styles.togglePasswordBtn}
+              aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Password Field */}
-      <div className={styles.fieldGroup}>
-        <div className={styles.label}>
-          <div className={styles.labelLeft}>
-            <span>{LOGIN_TEXTS.PASSWORD}</span>
-            <span className={styles.requiredAsterisk}>*</span>
-          </div>
-          <Link href="/forgot-password" className={styles.forgotPasswordLink}>
-            {LOGIN_TEXTS.FORGOT_PASSWORD}
-          </Link>
+      {/* Error message directly below the input fields */}
+      {error && (
+        <div className={styles.credentialsErrorMessage} role="alert">
+          <AlertCircle size={16} className={styles.mfaErrorIcon} />
+          <span>{error}</span>
         </div>
-        <div className={styles.inputWrapper}>
-          <input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onFocus={() => setFocusedField("password")}
-            onBlur={() => setFocusedField(null)}
-            placeholder="••••••••••••"
-            className={`${styles.input} ${styles.passwordInput} ${focusedField === "password" ? styles.inputFocused : ""}`}
-            autoComplete="current-password"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className={styles.togglePasswordBtn}
-            aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
-          >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Keep Signed In Checkbox */}
       <div className={styles.checkboxWrapper}>
@@ -177,7 +198,7 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
           className={styles.socialBtn}
         >
           {googleLoading ? <span className={styles.spinner} /> : <GoogleIcon />}
-          <span>Google</span>
+          <span className="font-sans">Google</span>
         </button>
 
         <button
@@ -187,7 +208,7 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
           className={styles.socialBtn}
         >
           {facebookLoading ? <span className={styles.spinner} /> : <FacebookIcon />}
-          <span>Facebook</span>
+          <span className="font-sans">Facebook</span>
         </button>
       </div>
 
@@ -200,8 +221,8 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
           className={styles.passkeyBtn}
           style={{ marginTop: "0.75rem" }}
         >
-          {passkeyLoading ? <span className={styles.spinner} /> : <FaceIdIcon />}
-          <span>{passkeyLoading ? LOGIN_TEXTS.PASSKEY_LOADING : LOGIN_TEXTS.PASSKEY_BUTTON}</span>
+          {passkeyLoading ? <span className={styles.spinner} /> : <ScanFace />} 
+          <span className="font-sans">{passkeyLoading ? LOGIN_TEXTS.PASSKEY_LOADING : LOGIN_TEXTS.PASSKEY_BUTTON}</span>
         </button>
       )}
     </form>

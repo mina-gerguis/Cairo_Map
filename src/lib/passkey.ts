@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { LOGIN_MESSAGES } from "@/app/login/constants";
 
 /**
  * Checks whether the current browser/device supports WebAuthn / Passkeys (Face ID, Touch ID, Windows Hello, etc.).
@@ -84,10 +85,15 @@ export async function loginWithPasskey() {
         errMsg.includes("not allowed") ||
         errMsg.includes("operation was aborted");
 
+      let errorDisplay = res.error.message || "فشل التحقق من مفتاح المرور.";
+      if (errMsg.includes("rp id") || errMsg.includes("invalid for this domain")) {
+        errorDisplay = LOGIN_MESSAGES.PASSKEY_DOMAIN_ERROR;
+      }
+
       return {
         success: false,
         cancelled: isCancelled,
-        error: isCancelled ? null : (res.error.message || "فشل التحقق من مفتاح المرور."),
+        error: isCancelled ? null : errorDisplay,
       };
     }
 
@@ -110,10 +116,15 @@ export async function loginWithPasskey() {
       err?.name === "NotAllowedError" ||
       err?.name === "AbortError";
 
+    let errorDisplay = err?.message || "تعذر إتمام الدخول عبر مفتاح المرور.";
+    if (msg.includes("rp id") || msg.includes("invalid for this domain")) {
+      errorDisplay = LOGIN_MESSAGES.PASSKEY_DOMAIN_ERROR;
+    }
+
     return {
       success: false,
       cancelled: isCancelled,
-      error: isCancelled ? null : (err?.message || "تعذر إتمام الدخول عبر مفتاح المرور."),
+      error: isCancelled ? null : errorDisplay,
     };
   }
 }
@@ -168,10 +179,15 @@ export async function createPasskey(userId?: string) {
         errMsg.includes("cancel") ||
         errMsg.includes("not allowed");
 
+      let errorDisplay = res.error.message || "فشل تسجيل مفتاح المرور.";
+      if (errMsg.includes("rp id") || errMsg.includes("invalid for this domain")) {
+        errorDisplay = LOGIN_MESSAGES.PASSKEY_DOMAIN_ERROR;
+      }
+
       return {
         success: false,
         cancelled: isCancelled,
-        error: isCancelled ? null : (res.error.message || "فشل تسجيل مفتاح المرور."),
+        error: isCancelled ? null : errorDisplay,
       };
     }
 
@@ -225,10 +241,15 @@ export async function createPasskey(userId?: string) {
       err?.name === "NotAllowedError" ||
       err?.name === "AbortError";
 
+    let errorDisplay = err?.message || "تعذر تسجيل مفتاح المرور الجديد.";
+    if (msg.includes("rp id") || msg.includes("invalid for this domain")) {
+      errorDisplay = LOGIN_MESSAGES.PASSKEY_DOMAIN_ERROR;
+    }
+
     return {
       success: false,
       cancelled: isCancelled,
-      error: isCancelled ? null : (err?.message || "تعذر تسجيل مفتاح المرور الجديد."),
+      error: isCancelled ? null : errorDisplay,
     };
   }
 }
