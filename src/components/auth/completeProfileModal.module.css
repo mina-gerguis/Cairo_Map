@@ -469,24 +469,6 @@
   color: #64748b;
 }
 
-.errorBanner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-:global(html.light) .errorBanner {
-  background: #fef2f2;
-  border-color: #fecaca;
-  color: #dc2626;
-}
 
 .successBanner {
   display: flex;
@@ -512,72 +494,6 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.submitBtn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 13px 20px;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.submitBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
-  transform: translateY(-1px);
-}
-
-.submitBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.completeLaterBtn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: transparent;
-  color: #a1a1aa;
-  font-size: 0.88rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.completeLaterBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.3);
-}
-
-:global(html.light) .completeLaterBtn {
-  border-color: #cbd5e1;
-  color: #64748b;
-}
-
-:global(html.light) .completeLaterBtn:hover:not(:disabled) {
-  background: #fef2f2;
-  color: #dc2626;
-  border-color: #fecaca;
 }
 
 .spinner {

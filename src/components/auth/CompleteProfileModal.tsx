@@ -430,16 +430,17 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             مرحباً بك {fullName ? `يا ${fullName}` : ""} 🎉
           </div>
           <p className={styles.description}>
-            لتفعيل حسابك بالكامل والاستفادة من جميع مميزات ماب القاهرة، يرجى استكمال البيانات الإلزامية التالية:
+            <strong className="text-primary" > مرحباً بك</strong> 
+            لتفعيل حسابك بالكامل والاستفادة من جميع المميزات، يرجى استكمال البيانات الإلزامية التالية:
           </p>
         </div>
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className={styles.modalBody}>
           {error && (
-            <div className={styles.errorBanner} role="alert">
-              <AlertCircle size={20} className={styles.errorBannerIcon} />
-              <span>{error}</span>
+            <div className="error-alert" role="alert">
+              <AlertCircle size={20} className="error-alert-icon" />
+              <span className="error-alert-message">{error}</span>
             </div>
           )}
 
@@ -479,7 +480,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <div className={styles.fieldGroup}>
               <label htmlFor="comp-username" className={styles.label}>
                 <span className={styles.labelLeft}>
-                  اسم المستخدم (Username)
+                  اسم المستخدم
                   <span className={styles.requiredAsterisk}>*</span>
                 </span>
               </label>
@@ -599,7 +600,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <div className={styles.fieldGroup}>
             <label htmlFor="comp-phone" className={styles.label}>
               <span className={styles.labelLeft}>
-                رقم الهاتف المحمول
+                رقم الهاتف
                 <span className={styles.requiredAsterisk}>*</span>
               </span>
             </label>
@@ -608,8 +609,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                 <Image
                   src="/images/profile/flag-egypt.webp"
                   alt="Egypt"
-                  width={20}
-                  height={15}
+                  width={30}
+                  height={25}
                   style={{ borderRadius: "2px" }}
                 />
                 <span>+20</span>
@@ -627,7 +628,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               />
             </div>
             <span className={styles.fieldNote}>
-              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678 أو 01012345678).
+              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678).
             </span>
           </div>
 
@@ -698,7 +699,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <button
               type="submit"
               disabled={saving || loggingOut || success}
-              className={styles.submitBtn}
+              className="btn btn-primary"
             >
               {saving ? (
                 <>
@@ -717,7 +718,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               type="button"
               disabled={saving || loggingOut}
               onClick={handleCompleteLater}
-              className={styles.completeLaterBtn}
+              className="btn btn-cancel"
             >
               {loggingOut ? (
                 <>
@@ -727,7 +728,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               ) : (
                 <>
                   <i className="bx bx-log-out" style={{ fontSize: "1.1rem" }}></i>
-                  <span>الإكمال لاحقاً (تسجيل الخروج والمتابعة كضيف)</span>
+                  <span>الإكمال لاحقاً</span>
                 </>
               )}
             </button>
