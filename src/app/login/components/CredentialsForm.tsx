@@ -146,9 +146,9 @@ export const CredentialsForm: React.FC<CredentialsFormProps> = ({
 
       {/* Error message directly below the input fields */}
       {error && (
-        <div className={styles.credentialsErrorMessage} role="alert">
-          <AlertCircle size={16} className={styles.mfaErrorIcon} />
-          <span>{error}</span>
+        <div className="error-alert" role="alert">
+          <AlertCircle size={16} className="error-alert-icon" />
+          <span className="error-alert-message">{error}</span>
         </div>
       )}
 

@@ -221,7 +221,6 @@ html.light .ambient-glow {
     font-family: var(--font-sub);
     text-align: center;
     color: var(--color-error);
-    margin-top: 10px;
     animation: fadeIn 0.2s ease-out;
     line-height: 1.45;
     gap: 0.5rem;

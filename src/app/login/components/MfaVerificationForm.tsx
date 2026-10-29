@@ -71,9 +71,9 @@ export const MfaVerificationForm: React.FC<MfaVerificationFormProps> = ({
 
       {/* Error message directly below the digit inputs */}
       {error && (
-        <div className={styles.mfaErrorMessage} role="alert">
-          <AlertCircle size={16} className={styles.mfaErrorIcon} />
-          <span>{error}</span>
+        <div className="error-alert" role="alert">
+          <AlertCircle size={16} className="error-alert-icon" />
+          <span className="error-alert-message">{error}</span>
         </div>
       )}
 

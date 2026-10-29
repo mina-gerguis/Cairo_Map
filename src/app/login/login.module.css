@@ -706,7 +706,7 @@
   justify-content: center;
   gap: 0.5rem;
   direction: ltr;
-  margin: 1rem 0 1.25rem;
+  margin: 1rem 0 0rem;
   transition: transform 0.2s ease;
 }
 
