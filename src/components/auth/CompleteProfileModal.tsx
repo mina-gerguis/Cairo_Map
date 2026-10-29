@@ -345,10 +345,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <h2 id="modal-title" className={styles.title}>
             استكمال بيانات الحساب
           </h2>
-          <div className={styles.subtitle}>
-            مرحباً بك {fullName ? `يا ${fullName}` : ""} 🎉
-          </div>
           <p className={styles.description}>
+            <strong className={styles.subtitle}> مرحباً بك {fullName ? `يا ${fullName}` : ""}</strong>
             لتفعيل حسابك بالكامل والاستفادة من جميع مميزات قريب ماب ، يرجى استكمال البيانات الإلزامية التالية:
           </p>
         </div>
@@ -492,8 +490,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               />
             </div>
             <span className={styles.fieldNote}>
-              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678
-              </span>
+              أدخل 10 أرقام تبدأ بـ 1 (مثال: 1012345678)
+            </span>
           </div>
 
           {/* Governorate & City in 2 cols */}
@@ -567,7 +565,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           )}
 
           {/* Actions */}
-          <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+          <div className={styles.modalFooter}>
             <button
               type="submit"
               disabled={saving || loggingOut || success}
