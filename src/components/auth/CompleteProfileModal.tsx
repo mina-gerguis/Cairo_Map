@@ -426,11 +426,8 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           <h2 id="modal-title" className={styles.title}>
             استكمال بيانات الحساب
           </h2>
-          <div className={styles.subtitle}>
-            مرحباً بك {fullName ? `يا ${fullName}` : ""} 🎉
-          </div>
           <p className={styles.description}>
-            <strong className="text-primary" > مرحباً بك</strong> 
+            <strong className="text-primary" > مرحباً بك </strong> 
             لتفعيل حسابك بالكامل والاستفادة من جميع المميزات، يرجى استكمال البيانات الإلزامية التالية:
           </p>
         </div>
@@ -699,7 +696,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <button
               type="submit"
               disabled={saving || loggingOut || success}
-              className="btn btn-primary"
+              className="btn btn-primary w-100"
             >
               {saving ? (
                 <>

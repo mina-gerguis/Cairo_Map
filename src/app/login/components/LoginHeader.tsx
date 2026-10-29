@@ -18,12 +18,12 @@ export const LoginHeader: React.FC<LoginHeaderProps> = ({
             className={styles.brandLogo}
           />
         </div>
-        <span className={styles.brandTitle}>قريب ماب</span>
+        <span className="fs-md fw-bold">قريب ماب</span>
       </div>
 
       {/* Main Title & Subtitle */}
-      <h1 className={styles.cardTitle}>{title}</h1>
-      <p className={styles.cardDescription}>{subtitle}</p>
+      <h1 className="fs-3xl fw-bold font-display">{title}</h1>
+      <p className="fs-sm fw-medium font-sub text-muted">{subtitle}</p>
     </div>
   );
 };

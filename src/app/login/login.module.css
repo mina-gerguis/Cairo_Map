@@ -188,41 +188,6 @@
   object-fit: contain;
 }
 
-.brandTitle {
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #09090b;
-}
-
-:global(html.dark) .brandTitle {
-  color: #f4f4f5;
-}
-
-.cardTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  color: #09090b;
-  margin: 0;
-  line-height: 1.25;
-}
-
-:global(html.dark) .cardTitle {
-  color: #fafafa;
-}
-
-.cardDescription {
-  font-size: 0.875rem;
-  color: #71717a;
-  margin: 0;
-  line-height: 1.5;
-}
-
-:global(html.dark) .cardDescription {
-  color: #a1a1aa;
-}
-
 /* ── Form & Inputs ── */
 .form {
   display: flex;

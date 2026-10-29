@@ -49,7 +49,7 @@
 .w-2\/5, .w-2_5   { width: 40%; }
 .w-3\/5, .w-3_5   { width: 60%; }
 .w-4\/5, .w-4_5   { width: 80%; }
-.w-full    { width: 100%; }
+.w-full, .w-100   { width: 100%; }
 .w-screen  { width: 100vw; }
 .w-min     { width: min-content; }
 .w-max     { width: max-content; }
