@@ -567,7 +567,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
           )}
 
           {/* Actions */}
-          <div className={styles.modalFooter}>
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
             <button
               type="submit"
               disabled={saving || loggingOut || success}
