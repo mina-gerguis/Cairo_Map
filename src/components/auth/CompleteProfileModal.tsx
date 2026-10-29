@@ -424,11 +424,7 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
                   تاريخ الميلاد
                   <span className={styles.requiredAsterisk}>*</span>
                 </span>
-                {calculatedAge !== null && calculatedAge > 0 && (
-                  <span className={styles.badgeAge}>
-                    العمر: {calculatedAge} سنة
-                  </span>
-                )}
+               
               </label>
               <input
                 id="comp-dob"
@@ -454,6 +450,11 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
               />
               <span className={styles.fieldNote}>
                 تأكد من صحة تاريخ الميلاد (لا يمكن تعديله لاحقاً).
+                 {calculatedAge !== null && calculatedAge > 0 && (
+                  <span >
+                   هو العمر: {calculatedAge} سنة
+                  </span>
+                )}
               </span>
             </div>
           </div>

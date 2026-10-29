@@ -410,14 +410,14 @@
 .genderButtonActive {
   background: rgb(255, 255, 255) !important;
   color: #000000 !important;
-  border-color: var(--border-primary) !important;
+  border-color: var(--border-glass) !important;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 :global(html.light) .genderButtonActive {
   background: #000000 !important;
   color: #ffffff !important;
-  border-color: var(--border-primary) !important;
+  border-color: var(--border-glass) !important;
 }
 
 /* Phone input container */
