@@ -184,3 +184,42 @@ html.light .bg-subtle {
    gap: 8px;
    animation: slideIn 0.3s ease;
 }
+
+/* ==========================================================================
+   shadcn compatibility utilities
+   ========================================================================== */
+.bg-background {
+   background-color: var(--background, var(--color-bg, #000000));
+}
+
+.text-foreground {
+   color: var(--foreground, var(--color-foreground, #f4f4f5));
+}
+
+.text-muted-foreground {
+   color: var(--muted-foreground, var(--text-muted, #71717a));
+}
+
+.hover\:text-foreground:hover {
+   color: var(--foreground, var(--color-foreground, #ffffff));
+}
+
+.border-border {
+   border-color: var(--border, var(--border-glass, rgba(255, 255, 255, 0.1)));
+}
+
+.bg-accent {
+   background-color: var(--accent, rgba(255, 255, 255, 0.08));
+}
+
+.group:hover .group-hover\:bg-accent {
+   background-color: var(--accent, rgba(255, 255, 255, 0.08));
+}
+
+.group:hover .group-hover\:text-accent-foreground {
+   color: var(--accent-foreground, #ffffff);
+}
+
+.bg-primary\/10 {
+   background-color: rgba(39, 39, 255, 0.1);
+}

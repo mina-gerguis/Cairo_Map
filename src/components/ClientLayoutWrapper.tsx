@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import MobileBottomNav from "@/components/Navbar/MobileBottomNav";
 import { supabase } from "@/lib/supabase";
@@ -115,6 +115,38 @@ export default function ClientLayoutWrapper({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Prevent right-click and dragging on images across the site
+  useEffect(() => {
+    const isImageElement = (target: EventTarget | null): boolean => {
+      if (!target || !(target instanceof HTMLElement || target instanceof SVGElement)) return false;
+      return (
+        target.tagName === "IMG" ||
+        target.tagName === "image" ||
+        Boolean(target.closest("picture"))
+      );
+    };
+
+    const handleContextMenu = (e: MouseEvent) => {
+      if (isImageElement(e.target)) {
+        e.preventDefault();
+      }
+    };
+
+    const handleDragStart = (e: DragEvent) => {
+      if (isImageElement(e.target)) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("dragstart", handleDragStart);
+
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("dragstart", handleDragStart);
+    };
   }, []);
 
   // Fetch & Subscribe to Maintenance Rules

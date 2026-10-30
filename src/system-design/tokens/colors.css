@@ -52,6 +52,17 @@
   --border-glass-bright: rgba(255, 255, 255, 0.15);
   --border-break: rgba(39, 39, 39, 0.66);
 
+  /* --- shadcn UI Tokens --- */
+  --background: #000000;
+  --foreground: #f4f4f5;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --border: rgba(255, 255, 255, 0.12);
+  --accent: rgba(255, 255, 255, 0.08);
+  --accent-foreground: #ffffff;
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
+
   /* --- Button Component Tokens --- */
   --mainBtn: var(--color-primary);
   --mainBtnBorder: #2563eb;
@@ -133,6 +144,17 @@ html.light {
   --borderDashed: rgba(0, 0, 0, 0.31);
   --border-glass-bright: rgba(0, 0, 0, 0.15);
   --border-break: rgba(114, 114, 114, 0.14);
+
+  /* --- shadcn UI Tokens --- */
+  --background: #ffffff;
+  --foreground: #09090b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: rgba(0, 0, 0, 0.1);
+  --accent: rgba(0, 0, 0, 0.05);
+  --accent-foreground: #09090b;
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
 
   /* --- Button Component Tokens --- */
   --secondBtn: rgb(224, 224, 224);

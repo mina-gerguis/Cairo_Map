@@ -8,7 +8,10 @@ import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 import CustomModal from "@/components/common/Modals";
 import { useGSAP, gsap } from "@/lib/gsap";
-
+import { ASSETS } from "@/constants/assets";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import "./Navbar.css";
 
 interface NavSubItem {
   href: string;
@@ -36,6 +39,8 @@ export default function Navbar() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -126,24 +131,24 @@ export default function Navbar() {
       isDropdown: true,
       icon: "fa-solid fa-star-of-life",
       subItems: [
-        { href: "/save-location", label: "أحفظ مكاني", subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل", imgLogo: "cairo.webp" },
-        { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: "cairo.webp" },
-        { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: "shop.webp" },
-        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: "cairo.webp" },
-        { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: "parking.webp" },
-        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: "metro.webp" },
-        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: "Cairo_monorail_east.webp" },
-        { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: "Cairo_lrt.webp" },
-        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: "brt.webp" },
-        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: "Cairo_train.webp" },
-        { href: "/airports", label: "المطارات", subtitle: "معلومات مطار القاهرة والرحلات", imgLogo: "airport.webp" },
-        { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: "arab_republice.webp" },
-        { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: "bus.webp" },
-        { href: "/microbus-stations", label: "مواقف الميكروباص", subtitle: "خطوط السرفيس بين المحافظات", imgLogo: "microbus.webp" },
-        { href: "/roads-info", label: "معلومات الطرق والسرعات", subtitle: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: "car.webp" },
-        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: "arab_republic _of_egypt.webp" },
-        { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: "ai.webp" },
-        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: "Cairo_logo.webp" },
+        { href: "/save-location", label: "أحفظ مكاني", subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل", imgLogo: ASSETS.icons2d.cairo },
+        { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.icons2d.cairo },
+        { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: ASSETS.icons2d.shop },
+        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: ASSETS.icons2d.cairo },
+        { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: ASSETS.icons2d.parking },
+        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: ASSETS.icons2d.metro },
+        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: ASSETS.icons2d.monorailEast },
+        { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: ASSETS.icons2d.lrt },
+        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.icons2d.brt },
+        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.icons2d.train },
+        { href: "/airports", label: "المطارات", subtitle: "معلومات مطار القاهرة والرحلات", imgLogo: ASSETS.icons2d.airport },
+        { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: ASSETS.icons2d.ports },
+        { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: ASSETS.icons2d.bus },
+        { href: "/microbus-stations", label: "مواقف الميكروباص", subtitle: "خطوط السرفيس بين المحافظات", imgLogo: ASSETS.icons2d.microbus },
+        { href: "/roads-info", label: "معلومات الطرق والسرعات", subtitle: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: ASSETS.icons2d.car },
+        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: ASSETS.icons2d.egypt },
+        { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.icons2d.ai },
+        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.icons2d.cairoLogo },
       ]
     },
     { href: "/blog", label: "المدونة والمقالات", icon: "bx bx-news" },
@@ -169,6 +174,43 @@ export default function Navbar() {
     setExpandedMobileDropdowns(initialExpanded);
   }, [pathname]);
 
+  const servicesColumns = [
+    {
+      title: "شبكة النقل والقطارات",
+      items: [
+        { href: "/metro", label: "مترو الأنفاق", description: "محطات وأسعار تذاكر المترو", imgLogo: ASSETS.icons2d.metro },
+        { href: "/monorail", label: "خريطة المونوريل", description: "محطات وأسعار تذاكر المونوريل", imgLogo: ASSETS.icons2d.monorailEast },
+        { href: "/lrt", label: "القطار الكهربائي LRT", description: "محطات ومواعيد قطار العاصمة", imgLogo: ASSETS.icons2d.lrt },
+        { href: "/brt", label: "الأتوبيس الترددي BRT", description: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.icons2d.brt },
+        { href: "/railways", label: "سكك حديد مصر", description: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.icons2d.train },
+        { href: "/airports", label: "المطارات والموانئ", description: "مطار القاهرة والموانئ المصرية", imgLogo: ASSETS.icons2d.airport },
+      ],
+    },
+    {
+      title: "المواقف والطرق",
+      items: [
+        { href: "/bus-stations", label: "مواقف الأتوبيسات", description: "محطات النقل العام بالقاهرة والجيزة", imgLogo: ASSETS.icons2d.bus },
+        { href: "/microbus-stations", label: "مواقف الميكروباص", description: "خطوط السرفيس بين المحافظات", imgLogo: ASSETS.icons2d.microbus },
+        { href: "/parking", label: "دليل الجراجات", description: "أقرب جراج وركنة بجوار المترو", imgLogo: ASSETS.icons2d.parking },
+        { href: "/roads-info", label: "معلومات الطرق والسرعات", description: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: ASSETS.icons2d.car },
+        { href: "/directory", label: "دليل الهاتف", description: "أرقام الخدمات وأكواد الشبكات", imgLogo: ASSETS.icons2d.cairo },
+      ],
+    },
+    {
+      title: "استكشاف وأدوات ذكية",
+      items: [
+        { href: "/save-location", label: "أحفظ مكاني", description: "حفظ موقعك الحالي بدقة 100%", imgLogo: ASSETS.icons2d.cairo },
+        { href: "/directions", label: "أزاي أروح ؟", description: "تخطيط رحلتك واختيار المسار الأسرع", imgLogo: ASSETS.icons2d.egypt },
+        { href: "/ai-planner", label: "مخطط الرحلات الذكي", description: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.icons2d.ai },
+        { href: "/places", label: "دليل الأماكن", description: "المتاجر والمحلات والأماكن الحيوية", imgLogo: ASSETS.icons2d.shop },
+        { href: "/map", label: "الخريطة التفاعلية", description: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.icons2d.cairo },
+        { href: "/help", label: "المساعدة والدعم", description: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.icons2d.cairoLogo },
+      ],
+    },
+  ];
+
+  const isServicesActive = servicesColumns.some(col => col.items.some(item => pathname === item.href));
+
   if (pathname?.startsWith("/admin")) return null;
 
   /* ── Navbar ── */
@@ -178,8 +220,8 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="navbar-logo">
           <Image
-            src="/images/logo/darkMode_logo.webp"
-            alt="قريب - الوضع الليلي"
+            src={ASSETS.branding.qareebNoBGLight}
+            alt="قريب"
             width={160}
             height={48}
             priority
@@ -187,8 +229,8 @@ export default function Navbar() {
             style={{ height: "48px", width: "auto", objectFit: "contain" }}
           />
           <Image
-            src="/images/logo/lightMode_logo.webp"
-            alt="قريب - الوضع النهاري"
+            src={ASSETS.branding.qareebNoBGDark}
+            alt="قريب "
             width={160}
             height={48}
             priority
@@ -197,54 +239,162 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop Links */}
-        <div className="navbar-links">
-          {mainLinks.map((link, idx) => {
-            if (link.isDropdown) {
-              const active = isLinkActive(link);
-              return (
-                <div key={idx} className="navbar-item-dropdown">
-                  <button className={`navbar-link navbar-dropdown-toggle ${active ? "active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "4px", fontFamily: "var(--font-body)" }}>
-                    {link.label}
-                    <i className="bx bx-chevron-down" style={{ fontSize: "0.95rem" }} />
-                  </button>
-                  <div className="navbar-dropdown-menu">
-                    {link.subItems?.map((sub, sIdx) => (
-                      <Link
-                        key={sIdx}
-                        href={sub.href}
-                        className={`heroui-dropdown-item ${pathname === sub.href ? "active" : ""}`}
-                        style={{ display: "flex", alignItems: "center", gap: "12px", padding: "8px 12px", borderRadius: "10px", fontFamily: "var(--font-body)" }}
-                      >
-                        {sub.imgLogo ? (
-                          <Image
-                            src={`/images/icons2d/${sub.imgLogo}`}
-                            alt={sub.label}
-                            width={24}
-                            height={24}
-                            style={{ width: "24px", height: "24px", objectFit: "contain", flexShrink: 0 }}
-                          />
-                        ) : (
-                          <i className={sub.icon} style={{ fontSize: "1.1rem" }} />
-                        )}
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <span className="sub-title" style={{ fontWeight: "700", fontSize: "0.88rem", color: "var(--color-foreground)" }}>{sub.label}</span>
-                          {sub.subtitle && (
-                            <span style={{ fontSize: "0.65rem", color: "var(--text-secondary)", marginTop: "1px" }}>{sub.subtitle}</span>
-                          )}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
+        {/* Desktop Links (Modern Animated Dropdown Navigation) */}
+        <div
+          className="navbar-links"
+          onMouseLeave={() => {
+            setOpenDropdown(null);
+            setHoveredLink(null);
+          }}
+        >
+          {/* Main Link: Home */}
+          <Link
+            href="/"
+            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${
+              pathname === "/" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+            }`}
+            onMouseEnter={() => {
+              setHoveredLink("/");
+              setOpenDropdown(null);
+            }}
+          >
+            <span className="relative z-10">الصفحة الرئيسية</span>
+            {(hoveredLink === "/" || (pathname === "/" && !hoveredLink)) && (
+              <motion.div
+                layoutId="navbar-hover-capsule"
+                className="absolute inset-0 size-full bg-primary/10 rounded-full"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.3 }}
+              />
+            )}
+          </Link>
+
+          {/* Main Link: Map */}
+          <Link
+            href="/map"
+            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${
+              pathname === "/map" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+            }`}
+            onMouseEnter={() => {
+              setHoveredLink("/map");
+              setOpenDropdown(null);
+            }}
+          >
+            <span className="relative z-10">الخريطة</span>
+            {(hoveredLink === "/map" || (pathname === "/map" && !hoveredLink)) && (
+              <motion.div
+                layoutId="navbar-hover-capsule"
+                className="absolute inset-0 size-full bg-primary/10 rounded-full"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.3 }}
+              />
+            )}
+          </Link>
+
+          {/* Dropdown: Services Mega Menu */}
+          <div
+            className="relative"
+            onMouseEnter={() => {
+              setOpenDropdown("services");
+              setHoveredLink("services");
+            }}
+          >
+            <button
+              type="button"
+              className={`relative px-4 py-1.5 text-sm font-medium bg-transparent duration-300 rounded-full flex items-center gap-1 cursor-pointer group border-none ${
+                openDropdown === "services" || isServicesActive
+                  ? "text-primary font-bold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span className="relative z-10">الخدمات</span>
+              <ChevronDown
+                className={`h-4 w-4 relative z-10 transition-transform duration-300 ${
+                  openDropdown === "services" ? "rotate-180" : "group-hover:rotate-180"
+                }`}
+              />
+              {(hoveredLink === "services" || openDropdown === "services" || (isServicesActive && !hoveredLink)) && (
+                <motion.div
+                  layoutId="navbar-hover-capsule"
+                  className="absolute inset-0 size-full bg-primary/10 rounded-full"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.3 }}
+                />
+              )}
+            </button>
+
+            <AnimatePresence>
+              {openDropdown === "services" && (
+                <div className="bg-secondary absolute right-0 top-full mt-3 z-50 rounded-2xl">
+                  <motion.div
+                    className="bg-background/95 backdrop-blur-xl border border-border p-5 rounded-2xl shadow-2xl w-max"
+                    layoutId="menu"
+                    initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                    transition={{ duration: 0.18 }}
+                  >
+                    <div className="flex gap-7 overflow-hidden text-right">
+                      {servicesColumns.map((col) => (
+                        <motion.div layout className="w-60" key={col.title}>
+                          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-border/50 pb-2">
+                            {col.title}
+                          </h3>
+                          <ul className="space-y-2.5">
+                            {col.items.map((item) => (
+                              <li key={item.href}>
+                                <Link
+                                  href={item.href}
+                                  onClick={() => setOpenDropdown(null)}
+                                  className="flex items-start gap-3 p-1.5 rounded-xl group transition-colors duration-200 hover:bg-accent"
+                                >
+                                  <div className="border border-border text-foreground rounded-lg flex items-center justify-center size-9 shrink-0 group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300">
+                                    <Image
+                                      src={item.imgLogo ? (item.imgLogo.startsWith("/") ? item.imgLogo : `/images/icons2d/${item.imgLogo}`) : ""}
+                                      alt={item.label}
+                                      width={20}
+                                      height={20}
+                                      className="object-contain"
+                                    />
+                                  </div>
+                                  <div className="leading-5 w-max">
+                                    <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors shrink-0">
+                                      {item.label}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground group-hover:text-foreground transition-colors shrink-0 line-clamp-1 max-w-[170px]">
+                                      {item.description}
+                                    </p>
+                                  </div>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
                 </div>
-              );
-            }
-            return (
-              <Link key={link.href || idx} href={link.href || ""} className={`navbar-link ${pathname === link.href ? "active" : ""}`} style={{ fontFamily: "var(--font-body)", display: "flex", alignItems: "center", gap: "0px" }}>
-                {link.label}
-              </Link>
-            );
-          })}
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Main Link: Blog */}
+          <Link
+            href="/blog"
+            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${
+              pathname === "/blog" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+            }`}
+            onMouseEnter={() => {
+              setHoveredLink("/blog");
+              setOpenDropdown(null);
+            }}
+          >
+            <span className="relative z-10">المدونة والمقالات</span>
+            {(hoveredLink === "/blog" || (pathname === "/blog" && !hoveredLink)) && (
+              <motion.div
+                layoutId="navbar-hover-capsule"
+                className="absolute inset-0 size-full bg-primary/10 rounded-full"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.3 }}
+              />
+            )}
+          </Link>
         </div>
 
         {/* Right Actions */}
@@ -425,7 +575,7 @@ export default function Navbar() {
                         >
                           {sub.imgLogo ? (
                             <Image
-                              src={`/images/icons2d/${sub.imgLogo}`}
+                              src={sub.imgLogo.startsWith("/") ? sub.imgLogo : `/images/icons2d/${sub.imgLogo}`}
                               alt={sub.label}
                               width={22}
                               height={22}
@@ -502,7 +652,7 @@ export default function Navbar() {
         onClose={() => setShowLogoutModal(false)}
         title="تسجيل الخروج"
         message="هل أنت متأكد من تسجيل الخروج؟"
-        iconSrc="/images/icons3d/alert.webp"
+        iconSrc={ASSETS.icons3d.alert}
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: "تأكيد",
