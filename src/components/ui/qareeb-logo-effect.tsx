@@ -130,23 +130,6 @@ export const QareebLogoEffect: React.FC<QareebLogoEffectProps> = ({
           />
         </motion.svg>
       </div>
-
-      {/* Brand Typography & Tagline */}
-      <motion.div
-        className="mt-4 flex flex-col items-center text-center"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: calc(2.6),
-          duration: calc(0.7),
-          ease: "easeOut",
-        }}
-      >
-        <p className="text-[12px] text-zinc-300 font-medium mt-1.5 flex items-center gap-1.5 text-white">
-          <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-          <span>دليلك الذكي للتنقل والأماكن في مصر</span>
-        </p>
-      </motion.div>
     </div>
   );
 };

@@ -19,20 +19,19 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+
+
 /* ── Background Subtle Tech Dot Grid ── */
 .loginLayout::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+  background-color: #fafafa;
   background-size: 24px 24px;
   pointer-events: none;
   z-index: 0;
 }
 
-:global(html.dark) .loginLayout::before {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-}
 
 /* ── Shadcn Studio Architectural Dashed Guide Lines ── */
 /* Center Frame Container with top and bottom infinite dashed bands */

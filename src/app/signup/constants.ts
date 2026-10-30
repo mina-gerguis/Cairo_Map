@@ -8,7 +8,7 @@ export const ONBOARDING_SLIDES: OnboardingSlide[] = [
   },
   {
     imageUrl: "",
-    title: "كل مو1صلات مصر والاماكن هنا",
+    title: "كل موصلات مصر والاماكن هنا",
     desc: "هنا هتلاقي كل حاجة تخص التنقل في مصر سواء مواصلات عامة او اماكن خاصة.",
   },
   {
