@@ -21,6 +21,28 @@ import dynamic from "next/dynamic";
 import AdSlider from "@/components/AdSlider";
 const TextLoop = dynamic(() => import("@/components/ui/TextLoop"), { ssr: false });
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
+const WarpText = dynamic(() => import("@/components/ui/WarpText"), {
+  ssr: false,
+  loading: () => (
+    <div
+      style={{
+        minHeight: "140px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "clamp(2rem, 5vw, 3.5rem)",
+        fontWeight: "800",
+        lineHeight: "1.25",
+        fontFamily: "var(--font-heading)",
+        color: "var(--color-foreground)",
+        textAlign: "center",
+        whiteSpace: "pre-line",
+      }}
+    >
+      {"استكشف مصر\nوتنقّل بذكاء وسرعة ودقة متناهية"}
+    </div>
+  ),
+});
 import { FamousCity, INITIAL_FAMOUS_CITIES, getStoredCities, saveStoredCities } from "@/data/cities";
 import CityDetailModal from "@/components/cities/CityDetailModal";
 import { useGSAP, gsap, ScrollTrigger } from "@/lib/gsap";
@@ -1049,18 +1071,55 @@ export default function HomePage() {
             <span>دليلك الذكي الشامل لشوارع وأماكن القاهرة</span>
           </div>
 
-          {/* Title */}
+          {/* Title with WarpText effect */}
           <h1
             className="hero-title-item"
             style={{
-              fontSize: "clamp(2rem, 5vw, 3.5rem)",
-              fontWeight: "700",
-              lineHeight: "1.25",
-              marginBottom: "20px",
-              letterSpacing: "-0.5px",
-              textWrap: "balance",
+              position: "relative",
+              marginBottom: "16px",
             }}>
-            استكشف مصر  وتنقّل بذكاء وسرعة ودقة متناهية
+            <span
+              style={{
+                position: "absolute",
+                width: "1px",
+                height: "1px",
+                padding: "0",
+                margin: "-1px",
+                overflow: "hidden",
+                clip: "rect(0, 0, 0, 0)",
+                whiteSpace: "nowrap",
+                border: "0",
+              }}
+            >
+              استكشف مصر وتنقّل بذكاء وسرعة ودقة متناهية
+            </span>
+            <WarpText
+              text={"استكشف مصر\nوتنقّل بذكاء وسرعة ودقة متناهية"}
+              fontSize="clamp(2.1rem, 5.2vw, 3.5rem)"
+              fontWeight={800}
+              fontFamily="var(--font-heading)"
+              color="var(--color-foreground)"
+              lineHeight={1.25}
+              letterSpacing={0}
+              warpStrength={0.07}
+              warpScale={1.6}
+              speed={0.55}
+              lens="bulge"
+              pointerInfluence={0.42}
+              pointerStrength={0.38}
+              refraction={0.016}
+              chromatic={0.25}
+              idleDrift={0.2}
+              ripple
+              clickRipple
+              intro
+              style={{
+                height: "clamp(130px, 18vw, 190px)",
+                width: "100%",
+                maxWidth: "960px",
+                margin: "0 auto",
+              }}
+            />
           </h1>
 
           {/* Subtitle */}
