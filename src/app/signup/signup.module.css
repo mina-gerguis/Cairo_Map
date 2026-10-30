@@ -798,23 +798,6 @@
   animation: slideInSection 0.6s ease 0.1s both;
 }
 
-
-@media (max-width: 520px) {
-  .onboardingContainer {
-    padding: 0;
-    min-height: 100dvh;
-    height: 100dvh;
-  }
-  .onboardingWrapper {
-    max-width: 100%;
-    height: 100dvh;
-    max-height: 100dvh;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-  }
-}
-
 /* ── Upper Stage for Visual Effects (Dedicated space, never collides) ── */
 .sliderGraphicStage {
   position: relative;
