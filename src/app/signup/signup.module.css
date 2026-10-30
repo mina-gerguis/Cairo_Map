@@ -784,7 +784,7 @@
 .onboardingWrapper {
   width: 100%;
   max-width: 100%;
-  height: fit-content;
+  height: 100vh;
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-card);

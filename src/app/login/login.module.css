@@ -19,11 +19,6 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-:global(html.dark) .loginLayout {
-  background-color: #09090b;
-  color: #f4f4f5;
-}
-
 /* ── Background Subtle Tech Dot Grid ── */
 .loginLayout::before {
   content: "";
