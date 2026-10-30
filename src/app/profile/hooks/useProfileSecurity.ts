@@ -329,7 +329,7 @@ export const useProfileSecurity = ({
 
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: "totp",
-        issuer: "ماب القاهرة",
+        issuer: "قريب",
         friendlyName: "Cairo Map",
       });
       if (error) throw error;

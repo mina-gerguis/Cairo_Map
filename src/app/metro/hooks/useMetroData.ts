@@ -66,7 +66,7 @@ export function useMetroData() {
 
   // Load stations & prices dynamically
   useEffect(() => {
-    document.title = "ماب القاهرة - مترو الأنفاق";
+    document.title = "قريب - مترو الأنفاق";
     const loadData = async () => {
       let loadedStations: MetroStation[] = [];
       if (supabase) {

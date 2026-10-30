@@ -14,6 +14,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 /* ==========================================================================
    2. Local Font Declarations
@@ -127,6 +128,9 @@
   --font-heading: "Cairo", var(--font-sans);
   --font-body: "IBM Plex Sans Arabic", var(--font-sans);
   --font-sub: "thmanyah text", var(--font-sans);
+
+  /* English Fonts */
+  --font-inter: "Inter", var(--font-sans);
 
   /* --- Tailwind Font Size Scale --- */
   --text-xs: 0.75rem;          /* 12px */

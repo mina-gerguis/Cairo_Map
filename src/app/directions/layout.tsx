@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     canonical: "https://cairomap.vercel.app/directions",
   },
   openGraph: {
-    title: "إزاي أروح؟ - دليل المواصلات الذكي | ماب القاهرة",
+    title: "إزاي أروح؟ - دليل المواصلات الذكي | قريب",
     description: "ابحث عن خطوط السير والمواصلات المباشرة بين أي منطقتين في القاهرة والجيزة.",
     url: "https://cairomap.vercel.app/directions",
   },

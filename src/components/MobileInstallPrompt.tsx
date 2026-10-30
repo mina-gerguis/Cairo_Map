@@ -285,7 +285,7 @@ export default function MobileInstallPrompt() {
             >
               <img
                 src="/apple-touch-icon.png"
-                alt="ماب القاهرة"
+                alt="قريب"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </div>

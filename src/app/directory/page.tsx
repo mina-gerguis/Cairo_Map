@@ -49,7 +49,7 @@ export default function PhoneDirectoryPage() {
 
   // Set Page Title
   useEffect(() => {
-    document.title = "ماب القاهرة - دليل الهاتف والخدمات";
+    document.title = "قريب - دليل الهاتف والخدمات";
   }, []);
 
   // GSAP Entrance Animations

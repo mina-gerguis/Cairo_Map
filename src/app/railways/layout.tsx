@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     canonical: "https://cairomap.vercel.app/railways",
   },
   openGraph: {
-    title: "سكك حديد مصر - مواعيد وأسعار القطارات | ماب القاهرة",
+    title: "سكك حديد مصر - مواعيد وأسعار القطارات | قريب",
     description: "استعلم عن مواعيد قطارات مصر وأسعار التذاكر ومحطات التوقف.",
     url: "https://cairomap.vercel.app/railways",
   },

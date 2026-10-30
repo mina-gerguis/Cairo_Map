@@ -68,7 +68,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="footer-bottom">
           <div className="footer-copyright">
-            <span>© {currentYear} جميع الحقوق محفوظة لمنصة <strong>ماب القاهرة</strong> — تطوير <a href="https://www.linkedin.com/company/repo-dex" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)", fontWeight: "bold" }}>RepoDex</a>.</span>
+            <span>© {currentYear} جميع الحقوق محفوظة لمنصة <strong>قريب</strong> — تطوير <a href="https://www.linkedin.com/company/repo-dex" target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)", fontWeight: "bold" }}>RepoDex</a>.</span>
           </div>
 
           {/* Payment Badges */}

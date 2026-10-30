@@ -90,8 +90,87 @@
 .border-double { border-style: double; }
 .border-none   { border-style: none; }
 
+
 /* ==========================================================================
-   4. Divide Utilities (.divide-x, .divide-y)
+   4. Border Color Utilities (.border-*)
+   ========================================================================== */
+.border-transparent {
+   border-color: transparent;
+}
+
+.border-current {
+   border-color: currentColor;
+}
+
+.border-black {
+   border-color: #000000;
+}
+
+.border-white {
+   border-color: #ffffff;
+}
+
+/* Theme Semantic Border Colors */
+.border-border {
+   border-color: var(--border-primary);
+}
+
+.border-subtle {
+   border-color: rgba(255, 255, 255, 0.07);
+}
+
+.border-secondary {
+   border-color: var(--border-secondary);
+}
+
+.border-glass {
+   border-color: var(--border-glass);
+}
+
+.border-glass-bright {
+   border-color: var(--border-glass-bright);
+}
+
+.border-brand {
+   border-color: var(--color-primary);
+}
+
+.border-brand-subtle {
+   border-color: rgba(59, 130, 246, 0.25);
+}
+
+.border-danger {
+   border-color: var(--colorDanger);
+}
+
+.border-danger-subtle {
+   border-color: rgba(239, 68, 68, 0.30);
+}
+
+.border-success {
+   border-color: var(--color-success);
+}
+
+.border-warning {
+   border-color: var(--colorWarning);
+}
+
+/* Directional Border Colors (.border-t-*) */
+.border-t-transparent {
+   border-top-color: transparent;
+}
+
+.border-t-brand,
+.border-t-primary {
+   border-top-color: var(--color-primary);
+}
+
+.border-t-secondary {
+   border-top-color: var(--color-secondary, #3b82f6);
+}
+
+/* ==========================================================================
+   5. Divide Utilities (.divide-x, .divide-y)
    ========================================================================== */
 .divide-x > :not([hidden]) ~ :not([hidden])   { border-inline-start-width: 1px; border-inline-start-style: solid; }
 .divide-x-0 > :not([hidden]) ~ :not([hidden]) { border-inline-start-width: 0px; }
@@ -102,7 +181,7 @@
 .divide-y-2 > :not([hidden]) ~ :not([hidden]) { border-top-width: 2px; border-top-style: solid; }
 
 /* ==========================================================================
-   5. Outline Utilities
+   6. Outline Utilities
    ========================================================================== */
 .outline-none { outline: 2px solid transparent; outline-offset: 2px; }
 .outline      { outline-style: solid; }

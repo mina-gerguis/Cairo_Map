@@ -17,18 +17,18 @@ import {
 } from "react-icons/fa";
 
 export const metadata: Metadata = {
-  title: "من نحن | ماب القاهرة - دليل الأماكن والمواصلات والخدمات",
+  title: "من نحن | قريب - دليل الأماكن والمواصلات والخدمات",
   description:
-    "تعرف على منصة ماب القاهرة (Cairo Map)، رسالتنا، فريق العمل، منهجيتنا في جمع وتدقيق بيانات شبكات المواصلات والأماكن والخدمات في القاهرة الكبرى ومصر.",
+    "تعرف على منصة قريب (Cairo Map)، رسالتنا، فريق العمل، منهجيتنا في جمع وتدقيق بيانات شبكات المواصلات والأماكن والخدمات في القاهرة الكبرى ومصر.",
   alternates: {
     canonical: "https://cairomap.vercel.app/about",
   },
   openGraph: {
-    title: "من نحن | ماب القاهرة - دليلك الذكي للمواصلات والخدمات",
+    title: "من نحن | قريب - دليلك الذكي للمواصلات والخدمات",
     description:
       "منصة مصرية متكاملة تقدم حلولاً ذكية لحركة التنقل والمواصلات واستكشاف الأماكن والخدمات في القاهرة الكبرى.",
     url: "https://cairomap.vercel.app/about",
-    siteName: "ماب القاهرة",
+    siteName: "قريب",
     locale: "ar_EG",
     type: "website",
   },
@@ -40,13 +40,13 @@ export default function AboutPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    name: "من نحن - ماب القاهرة",
+    name: "من نحن - قريب",
     url: `${siteUrl}/about`,
     description:
-      "معلومات شاملة عن منصة ماب القاهرة وفريق العمل والمنهجية المتبعة في التحقق من بيانات المواصلات والأماكن في مصر.",
+      "معلومات شاملة عن منصة قريب وفريق العمل والمنهجية المتبعة في التحقق من بيانات المواصلات والأماكن في مصر.",
     mainEntity: {
       "@type": "Organization",
-      name: "ماب القاهرة - Cairo Map",
+      name: "قريب - Cairo Map",
       alternateName: "RepoDex",
       url: siteUrl,
       logo: `${siteUrl}/apple-touch-icon.png`,
@@ -70,7 +70,7 @@ export default function AboutPage() {
         <GSAPReveal direction="up" duration={0.65}>
           <section className={styles.heroSection}>
             <div className={styles.heroBadge}>
-              <FaBullseye /> عن منصة ماب القاهرة
+              <FaBullseye /> عن منصة قريب
             </div>
             <h1 className={styles.title}>
               دليلك الذكي الأول للمواصلات والأماكن في <span className={styles.titleHighlight}>مصر والقاهرة الكبرى</span>
@@ -116,7 +116,7 @@ export default function AboutPage() {
               <h2 className={styles.sectionTitle}>رؤيتنا ورسالتنا</h2>
             </div>
             <p className={styles.paragraph}>
-              تأسست منصة <strong>ماب القاهرة (Cairo Map)</strong> تحت مظلة فريق <strong>RepoDex</strong> كاستجابة للتطور الهائل في البنية التحتية للنقل الذكي والمدن الجديدة في جمهورية مصر العربية. مع افتتاح خطوط المترو الجديدة، والقطار الكهربائي الخفيف (LRT)، ومشروع المونوريل والأتوبيس الترددي السريع (BRT)، أصبح المواطن والزائر بحاجة إلى مرجع رقمي موحد وسريع يجيب بدقة على سؤال: <em>«ازاي اروح بأسهل وأوفر وأسرع طريق؟»</em>.
+              تأسست منصة <strong>قريب (Cairo Map)</strong> تحت مظلة فريق <strong>RepoDex</strong> كاستجابة للتطور الهائل في البنية التحتية للنقل الذكي والمدن الجديدة في جمهورية مصر العربية. مع افتتاح خطوط المترو الجديدة، والقطار الكهربائي الخفيف (LRT)، ومشروع المونوريل والأتوبيس الترددي السريع (BRT)، أصبح المواطن والزائر بحاجة إلى مرجع رقمي موحد وسريع يجيب بدقة على سؤال: <em>«ازاي اروح بأسهل وأوفر وأسرع طريق؟»</em>.
             </p>
             <p className={styles.paragraph}>
               <strong>رسالتنا:</strong> تقديم واجهة تفاعلية خفيفة ومجانية تجمع بين خرائط النقل التفاعلية، حساب أسعار التذاكر والاشتراكات، وأدلة الأماكن والخدمات، ومساعد ذكاء اصطناعي لتخطيط الرحلات اليومية دون تعقيد.
@@ -168,7 +168,7 @@ export default function AboutPage() {
           <section className={styles.contentBlock}>
             <div className={styles.sectionHeader}>
               <div className={styles.sectionIcon}><FaMapMarkedAlt /></div>
-              <h2 className={styles.sectionTitle}>ماذا تقدم منصة ماب القاهرة؟</h2>
+              <h2 className={styles.sectionTitle}>ماذا تقدم منصة قريب؟</h2>
             </div>
             <div className={styles.featuresGrid}>
               <div className={styles.featureCard}>

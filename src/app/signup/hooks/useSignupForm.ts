@@ -42,6 +42,7 @@ export const useSignupForm = () => {
   const [emailOtpTimer, setEmailOtpTimer] = useState<number>(0);
   const [emailOtpLoading, setEmailOtpLoading] = useState<boolean>(false);
   const [emailOtpError, setEmailOtpError] = useState<string>("");
+  const [emailOtpDevNotice, setEmailOtpDevNotice] = useState<string>("");
   const [emailVerificationToken, setEmailVerificationToken] = useState<string>("");
   const [emailCodeDigits, setEmailCodeDigits] = useState<string[]>(Array(6).fill(""));
   const emailInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -96,6 +97,7 @@ export const useSignupForm = () => {
       setEmailOtp("");
       setEmailCodeDigits(Array(6).fill(""));
       setEmailOtpError("");
+      setEmailOtpDevNotice("");
     } else if (field === "username") {
       const cleanUsername = value.toLowerCase().replace(/[^a-z0-9_]/g, "");
       setFormData((prev) => ({ ...prev, username: cleanUsername }));
@@ -111,6 +113,7 @@ export const useSignupForm = () => {
   // OTP 6-Digit input handlers
   const handleEmailDigitChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
+    if (emailOtpError) setEmailOtpError("");
     const newDigits = [...emailCodeDigits];
     newDigits[index] = value.slice(-1);
     setEmailCodeDigits(newDigits);
@@ -121,6 +124,7 @@ export const useSignupForm = () => {
   };
 
   const handleEmailKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (emailOtpError) setEmailOtpError("");
     if (e.key === "Backspace" && !emailCodeDigits[index] && index > 0) {
       emailInputRefs.current[index - 1]?.focus();
     }
@@ -128,6 +132,7 @@ export const useSignupForm = () => {
 
   const handleEmailPaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
+    if (emailOtpError) setEmailOtpError("");
     const pastedData = e.clipboardData.getData("text/plain").replace(/\D/g, "").slice(0, 6);
     if (pastedData) {
       const newDigits = [...emailCodeDigits];
@@ -149,6 +154,7 @@ export const useSignupForm = () => {
 
     setEmailOtpLoading(true);
     setEmailOtpError("");
+    setEmailOtpDevNotice("");
 
     if (supabase) {
       try {
@@ -183,11 +189,26 @@ export const useSignupForm = () => {
       setEmailOtpTimer(60);
       setEmailCodeDigits(Array(6).fill(""));
       setEmailOtp("");
+      if (data.devCode) {
+        setEmailOtpDevNotice(data.devCode);
+        if (data.devWarning) {
+          setEmailOtpError(data.devWarning);
+        }
+      }
     } catch (err: any) {
       setEmailOtpError(err.message || "حدث خطأ أثناء إرسال الكود");
     } finally {
       setEmailOtpLoading(false);
     }
+  };
+
+  const fillDevOtpCode = (code: string) => {
+    if (emailOtpError) setEmailOtpError("");
+    const digits = code.slice(0, 6).split("");
+    while (digits.length < 6) digits.push("");
+    setEmailCodeDigits(digits);
+    setEmailOtp(code.slice(0, 6));
+    emailInputRefs.current[5]?.focus();
   };
 
   const handleVerifyEmailOtp = async () => {
@@ -446,6 +467,8 @@ export const useSignupForm = () => {
     emailOtpTimer,
     emailOtpLoading,
     emailOtpError,
+    emailOtpDevNotice,
+    fillDevOtpCode,
     emailCodeDigits,
     emailInputRefs,
     handleEmailDigitChange,

@@ -1,6 +1,7 @@
 import React from "react";
 import { calculateAge } from "../utils";
 import styles from "../signup.module.css";
+import { MdError } from "react-icons/md";
 
 interface DobConfirmModalProps {
   dob: string;
@@ -18,24 +19,22 @@ export const DobConfirmModal: React.FC<DobConfirmModalProps> = ({
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalCard}>
-        <div style={{ width: "56px", height: "56px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.8rem", margin: "0 auto 16px" }}>
-          ⚠️
-        </div>
-
-        <h3 style={{ fontSize: "1.2rem", fontWeight: "800", color: "#0f172a", marginBottom: "12px", fontFamily: "var(--font-heading)" }}>
+        <h3 className="text-black font-sub mb-2">
           تأكيد تاريخ الميلاد
         </h3>
 
         <p style={{ fontSize: "0.92rem", color: "#334155", lineHeight: 1.6, marginBottom: "16px", fontFamily: "var(--font-heading)" }}>
           تاريخ الميلاد المدخل هو: <strong style={{ color: "#0f172a", direction: "ltr", display: "inline-block" }}>{dob}</strong>
           <br />
-          <span style={{ fontSize: "0.85rem", color: "#6c63ff", fontWeight: "700", marginTop: "4px", display: "block" }}>
+          <span className="text-info fw-bold">
             (العمر: {age} سنة)
           </span>
         </p>
 
-        <div className={styles.modalWarningAlert}>
-          🛑 <strong>تنبيه هام:</strong> لن تتمكن من تغيير تاريخ الميلاد لاحقاً بعد إتمام التسجيل.
+        <div className="error-alert mb-2">
+          <MdError size={16} className="error-alert-icon" />
+          <span className="error-alert-message"> <strong>تنبيه هام:</strong> لن تتمكن من تغيير تاريخ الميلاد لاحقاً بعد إتمام التسجيل.</span>
+         
         </div>
 
         <div style={{ display: "flex", gap: "12px" }}>

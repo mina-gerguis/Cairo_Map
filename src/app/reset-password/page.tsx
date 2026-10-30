@@ -60,12 +60,12 @@ export default function ResetPasswordPage() {
           <div className={styles.logoWrapper}>
             <img
               src="/images/logo/darkMode_logo.webp"
-              alt="ماب القاهرة"
+              alt="قريب"
               className={styles.logoImgDark}
             />
             <img
               src="/images/logo/lightMode_logo.webp"
-              alt="ماب القاهرة"
+              alt="قريب"
               className={styles.logoImgLight}
             />
           </div>
@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
               </div>
               <h2 className={styles.statusTitle}>{RESET_PASSWORD_TEXTS.SUCCESS_TITLE}</h2>
               <p className={styles.statusDesc}>{RESET_PASSWORD_TEXTS.SUCCESS_DESC}</p>
-              
+
               <div className={styles.redirectBadge}>
                 <i className="bx bx-time" />
                 <span>

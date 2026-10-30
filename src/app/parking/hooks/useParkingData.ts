@@ -22,11 +22,11 @@ export function useParkingData() {
 
   const hasAccess = Boolean(
     profile?.is_admin ||
-      promoStatus.isOpen ||
-      ((profile?.subscription_tier === "silver" ||
-        profile?.subscription_tier === "gold" ||
-        profile?.subscription_tier === "mishwar") &&
-        !isExpired)
+    promoStatus.isOpen ||
+    ((profile?.subscription_tier === "silver" ||
+      profile?.subscription_tier === "gold" ||
+      profile?.subscription_tier === "mishwar") &&
+      !isExpired)
   );
 
   const getLocalParking = useCallback((): ParkingSpot[] => {
@@ -45,7 +45,7 @@ export function useParkingData() {
   }, []);
 
   useEffect(() => {
-    document.title = "ماب القاهرة - دليل الجراجات";
+    document.title = "قريب - دليل الجراجات";
 
     const fetchParking = async () => {
       setLoading(true);
@@ -77,8 +77,8 @@ export function useParkingData() {
             features: Array.isArray(item.features)
               ? item.features
               : typeof item.features === "string"
-              ? JSON.parse(item.features)
-              : [],
+                ? JSON.parse(item.features)
+                : [],
             mapLocationLink: item.map_location_link || item.mapLocationLink || "",
           }));
           setParkingData(mapped);

@@ -24,8 +24,8 @@ export async function POST(request: Request) {
     const smtpPass = process.env.SMTP_PASS;
 
     if (!smtpUser || !smtpPass) {
-      return NextResponse.json({ 
-        error: 'لم يتم إعداد بيانات SMTP في ملف البيئة (SMTP_USER & SMTP_PASS)' 
+      return NextResponse.json({
+        error: 'لم يتم إعداد بيانات SMTP في ملف البيئة (SMTP_USER & SMTP_PASS)'
       }, { status: 500 });
     }
 
@@ -52,11 +52,11 @@ export async function POST(request: Request) {
 
     // Email content in Arabic
     const mailOptions = {
-      from: `"ماب القاهرة - الدعم الفني" <${senderEmail}>`,
+      from: `"قريب - الدعم الفني" <${senderEmail}>`,
       to: toEmail,
       replyTo: process.env.SMTP_REPLY_TO || senderEmail,
-      subject: "الرد على استفسارك - ماب القاهرة",
-      text: `مرحباً ${toName}،\n\nقام فريق الدعم الفني بمراجعة رسالتك وإرسال الرد التالي:\n\nرسالتك الأصلية:\n${originalMessage || ''}\n\nرد الدعم الفني:\n${replyText}\n\n---\nماب القاهرة - الدعم الفني`,
+      subject: "الرد على استفسارك - قريب",
+      text: `مرحباً ${toName}،\n\nقام فريق الدعم الفني بمراجعة رسالتك وإرسال الرد التالي:\n\nرسالتك الأصلية:\n${originalMessage || ''}\n\nرد الدعم الفني:\n${replyText}\n\n---\nقريب - الدعم الفني`,
       html: `
         <!DOCTYPE html>
         <html lang="ar" dir="rtl">
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
                   
                   <!-- أيقونة المودل ثلاثية الأبعاد (نفس أيقونة مودل الخروج والتنبيهات) -->
                   <div style="width: 72px; height: 72px; margin: 0 auto 18px auto; text-align: center;">
-                    <img src="${siteUrl}/images/icons3d/alert.webp" alt="ماب القاهرة" width="72" height="72" style="width: 72px; height: 72px; display: inline-block; object-fit: contain; border: 0;" />
+                    <img src="${siteUrl}/images/icons3d/alert.webp" alt="قريب" width="72" height="72" style="width: 72px; height: 72px; display: inline-block; object-fit: contain; border: 0;" />
                   </div>
 
                   <!-- عنوان المودل -->
@@ -109,13 +109,13 @@ export async function POST(request: Request) {
                   <!-- زر المودل الرئيسي (نفس زر تأكيد المودل) -->
                   <div style="margin: 28px 0 20px 0;">
                     <a href="${siteUrl}" target="_blank" style="display: inline-block; background-color: rgb(39, 39, 255); color: #ffffff; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 14px rgba(39, 39, 255, 0.35);">
-                      الانتقال إلى ماب القاهرة
+                      الانتقال إلى قريب
                     </a>
                   </div>
 
                   <!-- تذييل سفلي بسيط مدمج -->
                   <p style="font-size: 11px; color: #52525b; margin-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 16px; line-height: 1.6;">
-                    هذا البريد مرسل تلقائياً من خريطة ماب القاهرة • لا يتطلب الرد المباشر
+                    هذا البريد مرسل تلقائياً من خريطة قريب • لا يتطلب الرد المباشر
                   </p>
 
                 </div>

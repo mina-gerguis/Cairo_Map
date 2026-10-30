@@ -17,7 +17,7 @@
   --colorMuted: #a1a1aa;
 
   /* --- Status & Feedback Palettes --- */
-  --color-success: #10b981;
+  --color-success: #008a50;
   --colorWarning: #ffa500;
   --colorDanger: #ff0000;
   --color-error: #ff0000;
@@ -45,8 +45,7 @@
   --text-muted: #71717a;
 
   /* --- Border Tokens --- */
-  --border-glassBtn: rgba(255, 255, 255, 0.10);
-  --border-glass: var(--border-glassBtn);
+  --border-glass: rgba(255, 255, 255, 0.1);
   --border-primary: rgba(124, 124, 124, 0.21);
   --border-secondary: rgb(32, 32, 32);
   --borderDashed: rgba(255, 255, 255, 0.44);
@@ -128,8 +127,7 @@ html.light {
   --text-muted: #7a7771;
 
   /* --- Border Tokens --- */
-  --border-glassBtn: rgba(0, 0, 0, 0.08);
-  --border-glass: var(--border-glassBtn);
+  --border-glass: rgba(0, 0, 0, 0.08);
   --border-primary: rgba(151, 151, 151, 0.38);
   --border-secondary: rgba(228, 228, 228, 0.86);
   --borderDashed: rgba(0, 0, 0, 0.31);

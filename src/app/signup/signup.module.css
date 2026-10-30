@@ -16,10 +16,6 @@
   direction: rtl;
 }
 
-:global(html.dark) .authLayout {
-  background: #09090b;
-}
-
 /* ── Ambient Background Glow Accents ── */
 .ambientOrb1 {
   position: fixed;
@@ -89,12 +85,6 @@
   animation: slideInSection 0.6s ease 0.1s both;
 }
 
-:global(html.dark) .glassCard {
-  background: rgba(18, 18, 23, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-}
-
 /* ── Step Navigation Bar ── */
 .navBar {
   display: flex;
@@ -104,7 +94,7 @@
 }
 
 .backButton {
-  padding: 6px 14px;
+  padding: 6px 0px;
   border: none;
   color: #334155;
   background-color: transparent;
@@ -119,18 +109,9 @@
   border-radius: 8px;
 }
 
-:global(html.dark) .backButton {
-  color: #94a3b8;
-}
-
 .backButton:hover {
   color: #0f172a;
   background: rgba(0, 0, 0, 0.04);
-}
-
-:global(html.dark) .backButton:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .stepBadge {
@@ -142,12 +123,6 @@
   border-radius: 20px;
   border: 1px solid #e2e8f0;
   font-family: var(--font-sub);
-}
-
-:global(html.dark) .stepBadge {
-  color: #94a3b8;
-  background: #1e1e24;
-  border-color: #2e2e38;
 }
 
 /* ── Step Title Header ── */
@@ -197,36 +172,22 @@
   transition: all 0.5s ease;
 }
 
-:global(html.dark) .progressBar {
-  background: #2e2e38;
-}
-
 .progressBarActive {
   box-shadow: 0 0 8px rgba(108, 99, 255, 0.25);
 }
 
 /* ── Global Alert Banners ── */
 .errorBanner {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 12px;
-  padding: 10px 14px;
-  color: #dc2626;
+  color: var(--color-error);
   margin-bottom: 18px;
   font-size: 0.85rem;
-  text-align: center;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: 8px;
   justify-content: center;
   animation: slideInSection 0.3s ease;
   font-family: var(--font-sub);
-}
-
-:global(html.dark) .errorBanner {
-  background: rgba(220, 38, 38, 0.15);
-  border-color: rgba(220, 38, 38, 0.3);
-  color: #fca5a5;
 }
 
 .successBanner {
@@ -322,8 +283,8 @@
 }
 
 .inputField:focus {
-  border-color: #6c63ff;
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(146, 146, 146, 0.15);
 }
 
 .inputFieldError {
@@ -353,15 +314,16 @@
   font-size: 0.75rem;
   color: #64748b;
   align-self: center;
+  font-family: var(--font-sub);
 }
 
 .suggestionPill {
   font-size: 0.75rem;
   background: rgba(108, 99, 255, 0.08);
-  border: 1px solid rgba(108, 99, 255, 0.25);
+  border: 1px solid rgba(187, 183, 247, 0.25);
   border-radius: 20px;
   padding: 3px 10px;
-  color: #6c63ff;
+  color: #0f0f0f;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: monospace;
@@ -379,22 +341,8 @@
   gap: 8px;
 }
 
-.sendOtpBtn {
-  white-space: nowrap;
-  padding: 0 16px;
-  border-radius: var(--radiusBtn, 8px);
-  border: none;
-  font-weight: 700;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-  font-family: var(--font-heading);
-}
-
 .sendOtpBtnActive {
-  background: var(--color-primary, #006fee);
+  background-color: #000;
   color: #ffffff;
   cursor: pointer;
 }
@@ -416,20 +364,11 @@
 
 /* ── 2FA OTP Code Verification Box ── */
 .otpBox {
-  margin-top: 10px;
-  padding: 18px 16px;
-  border-radius: 14px;
-  background: rgba(108, 99, 255, 0.03);
-  border: 1.5px solid rgba(108, 99, 255, 0.2);
+  margin: 10px;
   display: flex;
   flex-direction: column;
   gap: 14px;
   animation: slideInSection 0.35s ease;
-}
-
-:global(html.dark) .otpBox {
-  background: rgba(108, 99, 255, 0.06);
-  border-color: rgba(108, 99, 255, 0.3);
 }
 
 .otpHeader {
@@ -455,10 +394,6 @@
   color: #0f172a;
 }
 
-:global(html.dark) .otpTitle {
-  color: #f4f4f5;
-}
-
 .otpDesc {
   margin: 4px 0 0;
   color: #64748b;
@@ -480,71 +415,68 @@
   direction: ltr;
 }
 
-.otpDigitInput {
-  width: 42px;
-  height: 48px;
-  text-align: center;
-  font-size: 1.35rem;
-  font-weight: 700;
-  padding: 0;
-  border-radius: 10px;
-  border: 2px solid rgba(108, 99, 255, 0.25);
-  background: #ffffff;
-  color: #0f172a;
-  outline: none;
-  transition: all 0.2s ease;
+/* Shake / Vibration Animation for wrong code */
+.shake {
+  animation: signupOtpShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-:global(html.dark) .otpDigitInput {
-  background: #18181b;
-  border-color: rgba(108, 99, 255, 0.35);
-  color: #f4f4f5;
+@keyframes signupOtpShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(-9px);
+  }
+  30% {
+    transform: translateX(8px);
+  }
+  45% {
+    transform: translateX(-6px);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  90% {
+    transform: translateX(1px);
+  }
 }
 
-.otpDigitInputFilled {
-  border-color: var(--color-primary, #006fee);
-  background: rgba(108, 99, 255, 0.08);
-  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.15);
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    animation: none;
+  }
 }
 
 .otpErrorMsg {
-  color: #dc2626;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-align: center;
-  background: #fef2f2;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid #fecaca;
-}
-
-:global(html.dark) .otpErrorMsg {
-  background: rgba(220, 38, 38, 0.15);
-  border-color: rgba(220, 38, 38, 0.3);
-  color: #fca5a5;
-}
-
-.verifyOtpBtn {
-  width: 100%;
-  padding: 10px 16px;
-  font-size: 0.92rem;
-  font-weight: 700;
-  border-radius: 8px;
-  border: none;
-  background: var(--color-primary, #006fee);
-  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: all 0.25s ease;
-  font-family: var(--font-heading);
-  cursor: pointer;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #ef4444;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  text-align: center;
+  animation: fadeIn 0.2s ease-out;
+  line-height: 1.4;
 }
 
-.verifyOtpBtn:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+:global(html.dark) .otpErrorMsg {
+  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.otpErrorIcon {
+  flex-shrink: 0;
 }
 
 .verifiedNoticeBox {
@@ -832,15 +764,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1.25rem;
   overflow: hidden;
   direction: rtl;
-  background-color: #fafafa;
-  transition: background-color 0.2s ease;
-}
-
-:global(html.dark) .onboardingContainer {
   background-color: #09090b;
+  transition: background-color 0.2s ease;
 }
 
 /* Subtle tech dot grid matching login page */
@@ -854,18 +781,13 @@
   z-index: 0;
 }
 
-:global(html.dark) .onboardingContainer::before {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-}
-
 .onboardingWrapper {
   width: 100%;
-  max-width: 440px;
-  height: 720px;
-  max-height: calc(100vh - 36px);
+  max-width: 100%;
+  height: 100vh;
   position: relative;
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: var(--radius-card);
   background-color: #09090b;
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12), 0 20px 40px -15px rgba(0, 0, 0, 0.15);
@@ -876,10 +798,6 @@
   animation: slideInSection 0.6s ease 0.1s both;
 }
 
-:global(html.dark) .onboardingWrapper {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-}
 
 @media (max-width: 520px) {
   .onboardingContainer {
@@ -943,7 +861,7 @@
   color: #ffffff;
   margin-bottom: 6px;
   line-height: 1.35;
-  font-family: var(--font-heading);
+  font-family: var(--font-display);
 }
 
 .slideDesc {

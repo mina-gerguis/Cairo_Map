@@ -81,7 +81,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
               fontFamily: "var(--font-cairo)",
             }}
           >
-            عملة ماب القاهرة
+            عملة قريب
           </h3>
           <div style={{ width: "38px" }}></div>
         </div>
@@ -108,7 +108,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
           >
             <Image
               src="/images/icons3d/coin3dMapCairo.webp"
-              alt="عملة ماب القاهرة"
+              alt="عملة قريب"
               draggable={false}
               width={100}
               height={100}
@@ -325,7 +325,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
               }}
             >
               <i className="bx bx-info-circle" style={{ fontSize: "1.1rem" }}></i>
-              ما هي عملة ماب القاهرة؟
+              ما هي عملة قريب؟
             </h4>
             <p
               style={{
@@ -335,7 +335,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                 lineHeight: "1.6",
               }}
             >
-              هي عملة رقمية تكافئية خاصة بمجتمع ماب القاهرة، صُممت لتشجيع المستخدمين على إثراء محتوى
+              هي عملة رقمية تكافئية خاصة بمجتمع قريب، صُممت لتشجيع المستخدمين على إثراء محتوى
               الدليل وتحسين جودة البيانات ومساعدة الآخرين، ويمكن الاستفادة منها عبر تحويلها مباشرة إلى
               كاش أو استخدامها في خدمات الموقع المختلفة.
             </p>
@@ -417,7 +417,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                   >
                     تحسين وتدقيق البيانات:
                   </Link>{" "}
-                  المساعدة في جعل ماب القاهرة أكثر دقة وتحديثاً.
+                  المساعدة في جعل قريب أكثر دقة وتحديثاً.
                 </div>
               </li>
               <li style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>

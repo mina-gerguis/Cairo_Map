@@ -22,13 +22,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app"),
   title: {
-    default: "ماب القاهرة - دليل الأماكن، المواصلات والخدمات الذكي",
-    template: "%s | ماب القاهرة",
+    default: "قريب - دليل الأماكن، المواصلات والخدمات الذكي",
+    template: "%s | قريب",
   },
   description: "دليلك الشامل لخطوط المترو، السكة الحديد، المنوريل، الأتوبيس الترددي، وأرقام وعناوين ومواقع المطاعم والكافيهات والصيدليات والمستشفيات والحدائق في القاهرة والجيزة.",
   keywords: [
     // ── Egypt & General Terms (عربي وإنجليزي) ──
-    "مصر", "دليل مصر", "سياحة مصر", "خريطة مصر", "خريطة القاهرة", "ماب القاهرة", "معالم مصر", "معالم القاهرة", "أماكن سياحية في مصر", "ازاي اروح", "دليل مواصلات مصر", "مترو القاهرة", "قطارات مصر", "مونوريل القاهرة", "القطار الكهربائي الخفيف", "الأتوبيس الترددي", "دليل الأماكن والخدمات", "مطاعم مصر", "كافيهات القاهرة",
+    "مصر", "دليل مصر", "سياحة مصر", "خريطة مصر", "خريطة القاهرة", "قريب", "معالم مصر", "معالم القاهرة", "أماكن سياحية في مصر", "ازاي اروح", "دليل مواصلات مصر", "مترو القاهرة", "قطارات مصر", "مونوريل القاهرة", "القطار الكهربائي الخفيف", "الأتوبيس الترددي", "دليل الأماكن والخدمات", "مطاعم مصر", "كافيهات القاهرة",
     "Egypt", "Cairo", "Cairo Map", "Egypt Map", "Visit Egypt", "Egypt Tourism", "Egypt Travel Guide", "Cairo Travel Guide", "Egypt Landmarks", "Cairo Landmarks", "Egypt Attractions", "Things to do in Cairo", "Cairo Metro", "Egypt Railways", "Cairo Public Transport", "Cairo Restaurants", "Cairo Cafes", "Egypt Places Directory",
 
     // ── Cairo & Giza Landmarks (معالم القاهرة والجيزة) ──
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "ماب القاهرة",
+    title: "قريب",
   },
   icons: {
     icon: "/favicon.ico",
@@ -78,10 +78,10 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "ماب القاهرة - دليل الأماكن والمواصلات الذكي",
+    title: "قريب - دليل الأماكن والمواصلات الذكي",
     description: "دليلك الشامل لخطوط المترو، السكة الحديد، المنوريل، وأرقام وعناوين الأماكن والخدمات في القاهرة الكبرى.",
     url: "https://cairomap.vercel.app",
-    siteName: "ماب القاهرة",
+    siteName: "قريب",
     locale: "ar_EG",
     type: "website",
     images: [
@@ -89,13 +89,13 @@ export const metadata: Metadata = {
         url: "/apple-touch-icon.png",
         width: 180,
         height: 180,
-        alt: "ماب القاهرة",
+        alt: "قريب",
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "ماب القاهرة - دليل الأماكن والمواصلات الذكي",
+    title: "قريب - دليل الأماكن والمواصلات الذكي",
     description: "دليلك الشامل للمواصلات والأماكن في القاهرة الكبرى.",
     images: ["/apple-touch-icon.png"],
   },
@@ -116,7 +116,7 @@ const globalJsonLd = {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
       url: siteUrl,
-      name: "ماب القاهرة",
+      name: "قريب",
       description: "دليل المواصلات والأماكن والخدمات الذكي في القاهرة الكبرى",
       inLanguage: "ar-EG",
       potentialAction: {
@@ -131,7 +131,7 @@ const globalJsonLd = {
     {
       "@type": "Organization",
       "@id": `${siteUrl}/#organization`,
-      name: "ماب القاهرة - Cairo Map",
+      name: "قريب - Cairo Map",
       url: siteUrl,
       logo: `${siteUrl}/apple-touch-icon.png`,
       sameAs: [],

@@ -5,8 +5,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { ONBOARDING_SLIDES } from "../constants";
 import { AppleHelloEnglishEffect } from "@/components/ui/apple-hello-effect";
-import { PlacesRadarEffect } from "@/components/ui/places-radar-effect";
-import { SmartNotesEffect } from "@/components/ui/smart-notes-effect";
+import { AnimatedBeamDemo } from "@/components/ui/animated-beam-integration";
+import { QareebLogoEffect } from "@/components/ui/qareeb-logo-effect";
 import styles from "../signup.module.css";
 
 const GoogleIcon: React.FC = () => (
@@ -122,7 +122,7 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
             )}
           </div>
 
-          {/* Slide 1: Places Radar Effect */}
+          {/* Slide 1: Animated Beam Integration Effect */}
           <div
             className={styles.slideGraphicItem}
             style={{
@@ -134,14 +134,14 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
               pointerEvents: currentSlide === 1 ? "auto" : "none",
             }}
           >
-            {currentSlide === 1 && <PlacesRadarEffect />}
+            {currentSlide === 1 && <AnimatedBeamDemo compact key={currentSlide} />}
           </div>
 
-          {/* Slide 2: Smart Notes Effect */}
+          {/* Slide 2: Qareeb Animated Brand Logo Effect */}
           <div
             className={styles.slideGraphicItem}
             style={{
-              background: "radial-gradient(circle at 50% 50%, #131b26 0%, #0a1118 55%, #09090b 95%)",
+              background: "radial-gradient(circle at 50% 45%, #0f1d38 0%, #070d18 55%, #09090b 95%)",
               opacity: currentSlide === 2 ? 1 : 0,
               transform: currentSlide === 2 ? "scale(1)" : "scale(1.04)",
               transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out",
@@ -149,7 +149,7 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
               pointerEvents: currentSlide === 2 ? "auto" : "none",
             }}
           >
-            {currentSlide === 2 && <SmartNotesEffect />}
+            {currentSlide === 2 && <QareebLogoEffect key={currentSlide} />}
           </div>
         </div>
 
@@ -197,7 +197,7 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
                 <button
                   type="button"
                   onClick={onStartSignup}
-                  className={styles.actionBtnWhite}
+                  className="btn btn-light"
                 >
                   <i className="bx bx-user-plus" style={{ fontSize: "1.2rem" }}></i> إنشاء حساب جديد
                 </button>
@@ -208,7 +208,7 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
                     type="button"
                     onClick={handleGoogleAuth}
                     disabled={googleLoading || facebookLoading}
-                    className={styles.actionBtnGoogle}
+                    className="btn btn-social"
                   >
                     <GoogleIcon /> {googleLoading ? "..." : "Google"}
                   </button>
@@ -217,7 +217,7 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
                     type="button"
                     onClick={handleFacebookAuth}
                     disabled={googleLoading || facebookLoading}
-                    className={styles.actionBtnFacebook}
+                    className="btn btn-social"
                   >
                     <FacebookIcon /> {facebookLoading ? "..." : "Facebook"}
                   </button>
@@ -225,14 +225,14 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
 
                 <Link
                   href="/login"
-                  className={styles.actionBtnOutline}
+                  className="btn btn-secondary text-white border-subtle"
                 >
                   <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> لدي حساب بالفعل
                 </Link>
               </div>
             )}
 
-            <Link href="/" className={styles.guestLink}>
+            <Link href="/" className="btn btn-guest text-white">
               <i className="bx bx-walk" style={{ fontSize: "1.1rem" }}></i>{" "}
               <span style={{ textDecoration: "underline" }}>دخول كزائر</span>
             </Link>

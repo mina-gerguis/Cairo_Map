@@ -58,8 +58,8 @@ export default function SignupPage() {
 
         {/* Global Success Banner */}
         {form.success && (
-          <div className={styles.successBanner}>
-            🎉 تم إنشاء حسابك بنجاح! جاري التحويل...
+          <div className="success-alert">
+             تم إنشاء حسابك بنجاح! جاري التحويل...
           </div>
         )}
 
@@ -88,6 +88,8 @@ export default function SignupPage() {
                 isStep1Valid={form.isStep1Valid}
                 focusedField={form.focusedField}
                 setFocusedField={form.setFocusedField}
+                emailOtpDevNotice={form.emailOtpDevNotice}
+                fillDevOtpCode={form.fillDevOtpCode}
               />
             )}
 

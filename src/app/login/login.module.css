@@ -555,10 +555,6 @@
   opacity: 0.8;
 }
 
-:global(html.dark) .signupLink {
-  color: #ffffff;
-}
-
 .guestLinkWrapper {
   margin-top: 0.25rem;
 }
@@ -678,20 +674,9 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
 }
 
-:global(html.dark) .mfaDigitInput {
-  border-color: rgba(255, 255, 255, 0.14);
-  background-color: rgba(24, 24, 27, 0.35);
-  color: #ffffff;
-}
-
 .mfaDigitInput:focus {
   border-color: #09090b;
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
-}
-
-:global(html.dark) .mfaDigitInput:focus {
-  border-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
 }
 
 /* Error state for digit inputs: red border & glow */

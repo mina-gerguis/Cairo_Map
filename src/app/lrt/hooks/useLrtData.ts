@@ -30,11 +30,11 @@ export function useLrtData() {
       (profile?.subscription_tier === "silver" ||
         profile?.subscription_tier === "gold" ||
         profile?.subscription_tier === "mishwar") &&
-        !isExpired
+      !isExpired
     );
 
   useEffect(() => {
-    document.title = "ماب القاهرة - القطار الكهربي LRT";
+    document.title = "قريب - القطار الكهربي LRT";
     function handleClickOutside(event: MouseEvent) {
       if (
         searchContainerRef.current &&

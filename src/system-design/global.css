@@ -236,3 +236,30 @@ html.light .ambient-glow {
     flex: 1;
     text-align: right;
 }
+
+/* ============================================================
+   alert success
+   ============================================================ */
+.success-alert{
+    display: flex;
+    align-items: flex-start;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-light);
+    font-family: var(--font-sub);
+    text-align: center;
+    color: var(--color-success);
+    animation: fadeIn 0.2s ease-out;
+    line-height: 1.45;
+    gap: 0.5rem;
+}
+
+.success-alert-icon {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.success-alert-message {
+    font-weight: bolder;
+    flex: 1;
+    text-align: right;
+}

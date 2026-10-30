@@ -600,7 +600,7 @@ export default function MaintenanceScreen({ maintenance, pathname = "" }: Mainte
                 fontWeight: 600,
               }}
             >
-              يمكنك متابعة تصفح باقي خدمات ماب القاهرة:
+              يمكنك متابعة تصفح باقي خدمات قريب:
             </div>
             <div
               style={{
@@ -652,7 +652,7 @@ export default function MaintenanceScreen({ maintenance, pathname = "" }: Mainte
         >
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <i className="bx bx-shield-quarter" style={{ color: "#f59e0b" }} />
-            <span>ماب القاهرة — نسعى دائماً لتقديم أفضل الخدمات بدقة وسرعة</span>
+            <span>قريب — نسعى دائماً لتقديم أفضل الخدمات بدقة وسرعة</span>
           </div>
 
           <Link

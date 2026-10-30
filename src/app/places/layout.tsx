@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     canonical: "https://cairomap.vercel.app/places",
   },
   openGraph: {
-    title: "دليل الأماكن والخدمات والمعالم السياحية | ماب القاهرة",
+    title: "دليل الأماكن والخدمات والمعالم السياحية | قريب",
     description: "ابحث في آلاف الأماكن والخدمات والمعالم السياحية الموثقة مع أرقام الهواتف واللوكيشن ومواعيد العمل.",
     url: "https://cairomap.vercel.app/places",
   },

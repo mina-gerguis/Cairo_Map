@@ -168,7 +168,7 @@
   --radiusBtn: var(--radius-lg);
   --radiusBtnLg: var(--radius-xl);
   --radiusBtnTabs: var(--radius-full);
-  --inputRadius: var(--radius-lg);
+  --input-radius: 10px;
   --cardGlassRadius: var(--radius-xl);
   --modelCardRadius: var(--radius-lg);
   --containerRadius: var(--radius-lg);

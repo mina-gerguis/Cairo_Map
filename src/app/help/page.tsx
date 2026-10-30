@@ -45,7 +45,7 @@ const HELP_TOPICS: HelpTopic[] = [
   {
     id: "h4",
     category: "places",
-    question: "كيف يمكنني إضافة مكاني أو نشاطي التجاري إلى دليل ماب القاهرة؟",
+    question: "كيف يمكنني إضافة مكاني أو نشاطي التجاري إلى دليل قريب؟",
     answer: "نرحب بإضافة الأنشطة التجارية والخدمية مجاناً! توجه إلى صفحة (اقتراح مكان /propose-place)، واملأ بيانات المكان (الاسم، الفئة، العنوان، الهاتف، مواعيد العمل، ورابط خرائط جوجل). يقوم فريق المراجعة بتدقيق البيانات ونشرها خلال 24 - 48 ساعة.",
   },
   {
@@ -63,7 +63,7 @@ const HELP_TOPICS: HelpTopic[] = [
   {
     id: "h7",
     category: "general",
-    question: "هل استخدام تطبيق ومنصة ماب القاهرة مجاني بالكامل؟",
+    question: "هل استخدام تطبيق ومنصة قريب مجاني بالكامل؟",
     answer: "نعم، كافة خدمات البحث في الخرائط، الاستعلام عن مواعيد وخطوط المواصلات، دليل الأماكن ومخطط الرحلات الذكي متاحة مجاناً لجميع المستخدمين.",
   },
 ];
@@ -158,9 +158,9 @@ export default function HelpCenterPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    name: "مركز المساعدة والدعم - ماب القاهرة",
+    name: "مركز المساعدة والدعم - قريب",
     url: `${siteUrl}/help`,
-    description: "إجابات وإرشادات شاملة حول استخدام خدمات ومواصلات وأماكن منصة ماب القاهرة.",
+    description: "إجابات وإرشادات شاملة حول استخدام خدمات ومواصلات وأماكن منصة قريب.",
     mainEntity: HELP_TOPICS.map((item) => ({
       "@type": "Question",
       name: item.question,
@@ -184,7 +184,7 @@ export default function HelpCenterPage() {
           </div>
           <h1 ref={titleRef} className={styles.title}>كيف يمكننا مساعدتك اليوم؟</h1>
           <p ref={subtitleRef} className={styles.subtitle}>
-            دليلك السريع للتعرف على كافة خصائص وميزات منصة ماب القاهرة، وحلول لأكثر الأسئلة الشائعة حول المواصلات والخدمات.
+            دليلك السريع للتعرف على كافة خصائص وميزات منصة قريب، وحلول لأكثر الأسئلة الشائعة حول المواصلات والخدمات.
           </p>
 
           <div ref={searchBoxRef} className={styles.searchBox}>
@@ -280,7 +280,7 @@ export default function HelpCenterPage() {
         <section ref={contactBannerRef} className={styles.contactBanner}>
           <h2 className={styles.contactBannerTitle}>لم تجد الإجابة التي تبحث عنها؟</h2>
           <p className={styles.contactBannerDesc}>
-            فريق دعم ماب القاهرة متواجد دائماً لمساعدتك في أي استفسار أو مشكلة تواجهك أثناء استخدام الموقع.
+            فريق دعم قريب متواجد دائماً لمساعدتك في أي استفسار أو مشكلة تواجهك أثناء استخدام الموقع.
           </p>
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/contact" className={styles.contactBtn}>

@@ -179,7 +179,7 @@ export default function Navbar() {
         <Link href="/" className="navbar-logo">
           <Image
             src="/images/logo/darkMode_logo.webp"
-            alt="ماب القاهرة - الوضع الليلي"
+            alt="قريب - الوضع الليلي"
             width={160}
             height={48}
             priority
@@ -188,7 +188,7 @@ export default function Navbar() {
           />
           <Image
             src="/images/logo/lightMode_logo.webp"
-            alt="ماب القاهرة - الوضع النهاري"
+            alt="قريب - الوضع النهاري"
             width={160}
             height={48}
             priority

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SignupFormData, SignupFieldErrors } from "../types";
 import styles from "../signup.module.css";
+import { IconExclamationCircle, IconShieldCheckFilled } from "@tabler/icons-react";
+import { AlertCircle } from "lucide-react";
 
 interface Step1PersonalInfoProps {
   formData: SignupFormData;
@@ -23,6 +25,8 @@ interface Step1PersonalInfoProps {
   isStep1Valid: boolean;
   focusedField: string | null;
   setFocusedField: (field: string | null) => void;
+  emailOtpDevNotice?: string;
+  fillDevOtpCode?: (code: string) => void;
 }
 
 export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
@@ -36,6 +40,8 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
   emailOtpTimer,
   emailOtpLoading,
   emailOtpError,
+  emailOtpDevNotice,
+  fillDevOtpCode,
   emailCodeDigits,
   emailInputRefs,
   handleEmailDigitChange,
@@ -47,6 +53,25 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
   focusedField,
   setFocusedField,
 }) => {
+  const [isShaking, setIsShaking] = useState(false);
+
+  useEffect(() => {
+    if (emailOtpError && emailOtpSent) {
+      setIsShaking(true);
+      if (typeof window !== "undefined" && "vibrate" in navigator) {
+        try {
+          navigator.vibrate([80, 40, 80]);
+        } catch {
+          // Ignore if vibration is restricted by browser policy
+        }
+      }
+      const timer = setTimeout(() => {
+        setIsShaking(false);
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [emailOtpError, emailOtpSent]);
+
   return (
     <div className={styles.stepForm}>
       {/* First Name & Last Name */}
@@ -69,7 +94,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
             className={`${styles.inputField} ${fieldErrors.firstName ? styles.inputFieldError : ""}`}
           />
           {fieldErrors.firstName && (
-            <div className={styles.fieldErrorText}>⚠ {fieldErrors.firstName}</div>
+            <div className={styles.fieldErrorText}>{fieldErrors.firstName}</div>
           )}
         </div>
 
@@ -91,7 +116,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
             className={`${styles.inputField} ${fieldErrors.lastName ? styles.inputFieldError : ""}`}
           />
           {fieldErrors.lastName && (
-            <div className={styles.fieldErrorText}>⚠ {fieldErrors.lastName}</div>
+            <div className={styles.fieldErrorText}>{fieldErrors.lastName}</div>
           )}
         </div>
       </div>
@@ -116,7 +141,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
           style={{ textAlign: "left", direction: "ltr" }}
         />
         {fieldErrors.username && (
-          <div className={styles.fieldErrorText}>⚠ {fieldErrors.username}</div>
+          <div className={styles.fieldErrorText}> {fieldErrors.username}</div>
         )}
         {suggestions.length > 0 && !fieldErrors.username && (
           <div className={styles.suggestionsRow}>
@@ -152,7 +177,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
             onFocus={() => setFocusedField("email")}
             onBlur={() => setFocusedField(null)}
             placeholder="example@email.com"
-            className={`${styles.inputField} ${fieldErrors.email ? styles.inputFieldError : ""}`}
+            className={`${styles.inputField} ${fieldErrors.email || (!emailOtpSent && emailOtpError) ? styles.inputFieldError : ""}`}
             style={{
               textAlign: "left",
               direction: "ltr",
@@ -165,11 +190,10 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
               type="button"
               onClick={handleSendEmailOtp}
               disabled={!formData.email || !!fieldErrors.email || emailOtpLoading || emailOtpTimer > 0}
-              className={`${styles.sendOtpBtn} ${
-                !formData.email || !!fieldErrors.email || emailOtpTimer > 0
-                  ? styles.sendOtpBtnDisabled
-                  : styles.sendOtpBtnActive
-              }`}
+              className={`btn btn-primary pt-1 pb-1 fs-xxs font-sub rounded-xl ${!formData.email || !!fieldErrors.email || emailOtpTimer > 0
+                ? styles.sendOtpBtnDisabled
+                : styles.sendOtpBtnActive
+                }`}
             >
               {emailOtpLoading ? (
                 <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "1.1rem" }}></i>
@@ -178,13 +202,22 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
               ) : emailOtpSent ? (
                 "إعادة الإرسال"
               ) : (
-                "إرسال كود التأكيد"
+                "تأكيد"
               )}
             </button>
           )}
         </div>
         {fieldErrors.email && (
-          <div className={styles.fieldErrorText}>⚠ {fieldErrors.email}</div>
+          <div className="error-alert">
+            <AlertCircle size={16} className="error-alert-icon" />
+            <span className="error-alert-message"> {fieldErrors.email}</span>
+          </div>
+        )}
+        {!emailOtpSent && emailOtpError && (
+          <div className="error-alert">
+            <AlertCircle size={16} className="error-alert-icon" />
+            <span className="error-alert-message">{emailOtpError}</span>
+          </div>
         )}
 
         {/* Email OTP Verification Box (2FA Style) */}
@@ -194,15 +227,60 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
               <div className={styles.otpIconBadge}>
                 <i className="bx bx-envelope"></i>
               </div>
-              <div className={styles.otpTitle}>كود التحقق من البريد</div>
+              <div className="text-black font-sub">كود التحقق من البريد</div>
               <p className={styles.otpDesc}>
                 أدخل الـ 6 أرقام المرسلة إلى{" "}
                 <span className={styles.otpEmailHighlight}>{formData.email}</span>
               </p>
             </div>
 
+            {/* Dev Mode Notification if active
+            {emailOtpDevNotice && (
+              <div
+                style={{
+                  background: "rgba(234, 179, 8, 0.12)",
+                  border: "1px solid rgba(234, 179, 8, 0.3)",
+                  borderRadius: "8px",
+                  padding: "10px 14px",
+                  fontSize: "0.82rem",
+                  color: "#eab308",
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                  alignItems: "center",
+                  margin: "8px 0",
+                }}
+              >
+                <div>
+                  🛠️ <strong>وضع التطوير:</strong> كود التحقق هو{" "}
+                  <span style={{ fontFamily: "monospace", fontSize: "1.1rem", fontWeight: "bold", color: "#facc15", letterSpacing: "2px" }}>
+                    {emailOtpDevNotice}
+                  </span>
+                </div>
+                {fillDevOtpCode && (
+                  <button
+                    type="button"
+                    onClick={() => fillDevOtpCode(emailOtpDevNotice)}
+                    style={{
+                      background: "rgba(234, 179, 8, 0.2)",
+                      border: "1px solid #eab308",
+                      color: "#fef08a",
+                      borderRadius: "6px",
+                      padding: "4px 12px",
+                      fontSize: "0.78rem",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                    }}
+                  >
+                    إدخال الكود تلقائياً
+                  </button>
+                )}
+              </div>
+            )} */}
+
             {/* 6 Digits Inputs */}
-            <div className={styles.otpDigitsRow}>
+            <div className={`${styles.otpDigitsRow} ${isShaking ? styles.shake : ""}`}>
               {emailCodeDigits.map((digit, idx) => (
                 <input
                   key={idx}
@@ -216,13 +294,17 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
                   onKeyDown={(e) => handleEmailKeyDown(idx, e)}
                   onPaste={handleEmailPaste}
                   maxLength={2}
-                  className={`${styles.otpDigitInput} ${digit ? styles.otpDigitInputFilled : ""}`}
+                  className={`otp-input ${digit ? 'otp-input-filled' : ""} ${emailOtpError ? 'otp-input-error' : ""}`}
+                  aria-invalid={Boolean(emailOtpError)}
                 />
               ))}
             </div>
 
             {emailOtpError && (
-              <div className={styles.otpErrorMsg}>⚠ {emailOtpError}</div>
+              <div className="error-alert" role="alert">
+                <AlertCircle size={16} className="error-alert-icon" />
+                <span className="error-alert-message">{emailOtpError}</span>
+              </div>
             )}
 
             {/* Verify Button */}
@@ -230,7 +312,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
               type="button"
               onClick={handleVerifyEmailOtp}
               disabled={emailOtp.length !== 6 || emailOtpLoading}
-              className={styles.verifyOtpBtn}
+              className="btn btn-black w-full"
             >
               {emailOtpLoading ? (
                 <>
@@ -249,9 +331,9 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
 
         {/* Email Verified Badge */}
         {isEmailVerified && (
-          <div className={styles.verifiedNoticeBox}>
-            <i className="bx bxs-check-shield" style={{ fontSize: "1.25rem", color: "#16a34a" }}></i>
-            تم التحقق من ملكية البريد الإلكتروني بنجاح
+          <div className="success-alert">
+            <IconShieldCheckFilled size={16} className="success-alert-icon" />
+            <span className="success-alert-message">تم التحقق من ملكية البريد الإلكتروني بنجاح</span>
           </div>
         )}
       </div>

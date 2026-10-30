@@ -148,7 +148,7 @@ export default function AdBanner({ type = "auto", slotId, placement = "places_to
       return {
         id: "shawarma-sponsor",
         title: "شاورما وصاج الشام 🌯",
-        description: "خصم خاص 15% لجميع مستخدمي تطبيق 'ماب القاهرة' بمناسبة الافتتاح! اضغط لمعرفة موقع الفرع القريب منك.",
+        description: "خصم خاص 15% لجميع مستخدمي تطبيق 'قريب' بمناسبة الافتتاح! اضغط لمعرفة موقع الفرع القريب منك.",
         ctaText: "اطلب الآن 🚀",
         ctaLink: "/places",
         tag: "إعلان مميز ✨",

@@ -2,16 +2,26 @@ export const ASSETS = {
   branding: {
     logoDark: "/images/logo/darkMode_logo.webp",
     logoLight: "/images/logo/lightMode_logo.webp",
+    qareebNoBGLight: "/images/brand/qareeb_nobg_light.webp",
+  },
+
+  locations: {
+    governorates: {
+      egypt: "/images/locations/governorates/egypt.webp",
+    },
+    cities: {
+      cairo: "/images/locations/cities/cairo.webp",
+    }
   },
 
   transit: {
     metro: "/images/transit/metro.webp",
-    monorail: "/images/transit/Cairo_monorail_east.webp",
-    monorailEast: "/images/transit/Cairo_monorail_east.webp",
-    monorailWest: "/images/transit/Cairo_monorail_west.webp",
-    lrt: "/images/transit/Cairo_lrt.webp",
+    monorail: "/images/transit/monorail_east.webp",
+    monorailEast: "/images/transit/monorail_east.webp",
+    monorailWest: "/images/transit/monorail_west.webp",
+    lrt: "/images/transit/lrt.webp",
     brt: "/images/transit/brt.webp",
-    train: "/images/transit/Cairo_train.webp",
+    train: "/images/transit/train.webp",
     bus: "/images/transit/bus.webp",
     microbus: "/images/transit/microbus.webp",
     airport: "/images/transit/airport.webp",

@@ -41,9 +41,9 @@ export function getDistanceInKm(
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+    Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -370,11 +370,11 @@ export function generateShareText(
 ): string {
   const transfersText = result.needsTransfer
     ? result.transfers
-        .map((t) => `\n- تحويل في محطة [${t.station}] إلى [${LINE_NAMES[t.toLine] || t.toLine}]`)
-        .join("")
+      .map((t) => `\n- تحويل في محطة [${t.station}] إلى [${LINE_NAMES[t.toLine] || t.toLine}]`)
+      .join("")
     : "\n- رحلة مباشرة بدون تبديل";
 
-  return `🚇 مسار رحلة المترو عبر تطبيق ماب القاهرة:
+  return `🚇 مسار رحلة المترو عبر تطبيق قريب:
 من: ${selectedFrom}
 إلى: ${selectedTo}
 • عدد المحطات: ${result.stationCount} محطة

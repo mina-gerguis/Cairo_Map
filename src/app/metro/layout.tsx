@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     canonical: "https://cairomap.vercel.app/metro",
   },
   openGraph: {
-    title: "مترو القاهرة - خريطة الخطوط وأسعار التذاكر | ماب القاهرة",
+    title: "مترو القاهرة - خريطة الخطوط وأسعار التذاكر | قريب",
     description: "احسب محطات رحلتك وسعر التذكرة وأقرب مسار بالمترو في القاهرة والجيزة.",
     url: "https://cairomap.vercel.app/metro",
   },

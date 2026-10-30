@@ -29,7 +29,7 @@ export default function RouteOptionCard({
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const shareUrl = `${origin}/directions?from=${encodeURIComponent(resolvedFrom)}&to=${encodeURIComponent(resolvedTo)}`;
-  const shareText = `🚗 خط السير عبر ماب القاهرة (Cairo Map) 🗺️\n📍 من: ${resolvedFrom}\n🎯 إلى: ${resolvedTo}\n🚌 نوع الوسيلة: ${option.typeName}\n💵 الإجمالي: ${summary.totalCost} ج.م\n⏱️ المدة المتوقعة: ${summary.totalDuration}`;
+  const shareText = `🚗 خط السير عبر قريب (Cairo Map) 🗺️\n📍 من: ${resolvedFrom}\n🎯 إلى: ${resolvedTo}\n🚌 نوع الوسيلة: ${option.typeName}\n💵 الإجمالي: ${summary.totalCost} ج.م\n⏱️ المدة المتوقعة: ${summary.totalDuration}`;
 
   return (
     <div className={styles.routeCard}>

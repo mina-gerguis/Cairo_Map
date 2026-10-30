@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'ماب القاهرة - دليل الأماكن والخدمات',
-    short_name: 'ماب القاهرة',
+    name: 'قريب - دليل الأماكن والخدمات',
+    short_name: 'قريب',
     description: 'دليلك الشامل للأماكن والخدمات في مصر',
     start_url: '/',
     display: 'standalone',

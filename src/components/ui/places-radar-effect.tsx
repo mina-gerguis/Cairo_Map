@@ -2,72 +2,22 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { Navigation, Landmark, Coffee, Sparkles, Star } from "lucide-react";
+import { Navigation, Landmark, Coffee, Sparkles } from "lucide-react";
 
 export const PlacesRadarEffect: React.FC = () => {
   return (
-    <div className="relative w-full max-w-[340px] h-[260px] flex items-center justify-center select-none overflow-visible">
-      {/* Background Radar Rings */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {/* Outer dashed ring */}
-        <div className="w-[220px] h-[220px] rounded-full border border-dashed border-white/10" />
+    <div className="relative w-full max-w-[340px] flex flex-col items-center justify-center select-none">
+      {/* Background ambient color aura */}
+      <div className="absolute w-[260px] h-[180px] bg-gradient-to-tr from-blue-500/10 via-cyan-500/15 to-indigo-500/10 blur-3xl pointer-events-none rounded-full" />
 
-        {/* Middle ring */}
-        <div className="absolute w-[150px] h-[150px] rounded-full border border-white/10" />
-
-        {/* Inner ring */}
-        <div className="absolute w-[80px] h-[80px] rounded-full border border-blue-500/20 bg-blue-500/[0.03]" />
-
-        {/* Animated Expanding Pulse Wave */}
-        <motion.div
-          className="absolute w-[80px] h-[80px] rounded-full border border-blue-400/40"
-          animate={{
-            scale: [1, 2.7],
-            opacity: [0.6, 0],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeOut",
-          }}
-        />
-
-        {/* Sweeping Radar Scanner Line */}
-        <motion.div
-          className="absolute w-[220px] h-[220px] rounded-full"
-          style={{
-            background:
-              "conic-gradient(from 0deg at 50% 50%, rgba(59, 130, 246, 0.25) 0deg, rgba(59, 130, 246, 0.05) 45deg, transparent 90deg, transparent 360deg)",
-          }}
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-
-        {/* Crosshair guidelines */}
-        <div className="absolute w-[220px] h-[1px] bg-white/[0.06]" />
-        <div className="absolute h-[220px] w-[1px] bg-white/[0.06]" />
-      </div>
-
-      {/* Center User Location Beacon */}
-      <div className="relative z-10 flex items-center justify-center">
-        <div className="absolute w-10 h-10 rounded-full bg-blue-500/20 blur-md animate-pulse" />
-        <div className="w-8 h-8 rounded-full bg-blue-600 border-2 border-white shadow-[0_0_15px_rgba(59,130,246,0.8)] flex items-center justify-center text-white">
-          <Navigation className="w-4 h-4 fill-white -rotate-45" />
-        </div>
-      </div>
-
-      {/* Floating Place Badge 1: Cairo Tower (Top Right) */}
+      {/* Main Places Radar Card */}
       <motion.div
-        className="absolute top-2 right-1 z-20"
-        initial={{ opacity: 0, scale: 0.8 }}
+        className="relative z-10 w-full rounded-2xl bg-[#12131a] border border-white/10 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.85)] p-4 flex flex-col gap-3"
+        initial={{ opacity: 0, y: 15, scale: 0.95 }}
         animate={{
           opacity: 1,
-          scale: 1,
           y: [0, -5, 0],
+          scale: 1,
         }}
         transition={{
           opacity: { duration: 0.5 },
@@ -75,68 +25,107 @@ export const PlacesRadarEffect: React.FC = () => {
           y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
         }}
       >
-        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[#14151f] border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.6)]">
-          <div className="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            <Landmark className="w-3.5 h-3.5" />
+        {/* Top Header: Location Title & Radar Pill */}
+        <div className="flex items-center justify-between gap-2 text-right">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
+              <Navigation className="w-4 h-4 -rotate-45" />
+            </div>
+            <div>
+              <h4 className="text-[13px] font-extrabold text-white leading-tight">رادار الأماكن القريبة</h4>
+              <span className="text-[10px] text-zinc-400 font-medium">بحث مباشر في نطاق 2 كم</span>
+            </div>
           </div>
-          <div className="flex flex-col text-right">
-            <span className="text-[11px] font-bold text-white leading-tight">برج القاهرة</span>
-            <span className="text-[9px] text-zinc-400 flex items-center gap-1 font-medium">
-              1.2 كم • <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400 inline" /> 4.8
+
+
+        </div>
+
+        {/* Center Radar Scanner Viewport */}
+        <div className="relative w-full h-[84px] rounded-xl bg-black/50 border border-white/[0.06] overflow-hidden flex items-center justify-center">
+          {/* Radar Concentric Rings */}
+          <div className="absolute w-[60px] h-[60px] rounded-full border border-blue-500/20" />
+          <div className="absolute w-[120px] h-[120px] rounded-full border border-white/[0.06]" />
+          <div className="absolute w-full h-[1px] bg-white/[0.04]" />
+          <div className="absolute h-full w-[1px] bg-white/[0.04]" />
+
+          {/* Sweeping Radar Scanner Line */}
+          <motion.div
+            className="absolute w-[130px] h-[130px] rounded-full pointer-events-none"
+            style={{
+              background:
+                "conic-gradient(from 0deg at 50% 50%, rgba(59, 130, 246, 0.35) 0deg, rgba(59, 130, 246, 0.05) 45deg, transparent 90deg, transparent 360deg)",
+            }}
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+
+          {/* Center User Location Pin */}
+          <div className="relative z-10 w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-white shadow-[0_0_8px_#3b82f6]" />
+
+          {/* Radar Blip 1: Cairo Tower (Top Right) */}
+          <div className="absolute top-2.5 right-6 flex items-center gap-1">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+            </span>
+            <span className="text-[9px] font-bold text-amber-300 bg-black/75 px-1.5 py-0.5 rounded border border-amber-500/25">
+              برج القاهرة
+            </span>
+          </div>
+
+          {/* Radar Blip 2: Groppi / Cafe (Bottom Left) */}
+          <div className="absolute bottom-2.5 left-5 flex items-center gap-1">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
+            </span>
+            <span className="text-[9px] font-bold text-rose-300 bg-black/75 px-1.5 py-0.5 rounded border border-rose-500/25">
+              كافيه وسط البلد
             </span>
           </div>
         </div>
-      </motion.div>
 
-      {/* Floating Place Badge 2: Khan el-Khalili (Middle Left) */}
-      <motion.div
-        className="absolute top-12 left-1 z-20"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: [0, -4, 0],
-        }}
-        transition={{
-          opacity: { duration: 0.5, delay: 0.2 },
-          scale: { duration: 0.5, delay: 0.2 },
-          y: { duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 },
-        }}
-      >
-        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[#14151f] border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.6)]">
-          <div className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <Sparkles className="w-3.5 h-3.5" />
+        {/* Two Discovered Places Bento Grid */}
+        <div className="grid grid-cols-2 gap-2 text-right">
+          {/* Place 1: Landmark */}
+          <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2 flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-amber-500/15 text-amber-400 flex items-center justify-center shrink-0">
+              <Landmark className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-bold text-white truncate">برج القاهرة</span>
+              <span className="text-[9px] text-zinc-400 font-medium">1.2 كم • ⭐ 4.8</span>
+            </div>
           </div>
-          <div className="flex flex-col text-right">
-            <span className="text-[11px] font-bold text-white leading-tight">خان الخليلي</span>
-            <span className="text-[9px] text-zinc-400 font-medium">وجهة تاريخية • 800 م</span>
+
+          {/* Place 2: Cafe */}
+          <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2 flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-rose-500/15 text-rose-400 flex items-center justify-center shrink-0">
+              <Coffee className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-bold text-white truncate">كافيه وسط البلد</span>
+              <span className="text-[9px] text-emerald-400 font-medium">450 م • مفتوح</span>
+            </div>
           </div>
         </div>
-      </motion.div>
 
-      {/* Floating Place Badge 3: Groppi / Cafe (Bottom Right) */}
-      <motion.div
-        className="absolute bottom-2 right-2 z-20"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: [0, 5, 0],
-        }}
-        transition={{
-          opacity: { duration: 0.5, delay: 0.3 },
-          scale: { duration: 0.5, delay: 0.3 },
-          y: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 },
-        }}
-      >
-        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[#14151f] border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.6)]">
-          <div className="w-6 h-6 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
-            <Coffee className="w-3.5 h-3.5" />
+        {/* Bottom Bar: Historical Highlight */}
+        <div className="flex items-center justify-between pt-1 border-t border-white/[0.07] text-right">
+          <div className="flex items-center gap-1.5 text-zinc-300 min-w-0">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="text-[10px] text-zinc-300 font-medium truncate">
+              خان الخليلي: وجهة تاريخية مميزة على بُعد 800 م
+            </span>
           </div>
-          <div className="flex flex-col text-right">
-            <span className="text-[11px] font-bold text-white leading-tight">كافيه وسط البلد</span>
-            <span className="text-[9px] text-emerald-400 font-medium">مفتوح الآن • 450 م</span>
-          </div>
+
+          <span className="text-[9px] text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded-md shrink-0">
+            تحديث حي
+          </span>
         </div>
       </motion.div>
     </div>

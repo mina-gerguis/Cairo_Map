@@ -67,7 +67,7 @@ export const ProfileFooter: React.FC = () => {
 
       <div className={styles.versionText}>v1.0.0 (260915)</div>
 
-      <div className={styles.copyrightText}>© 2026 ماب القاهرة. جميع الحقوق محفوظة</div>
+      <div className={styles.copyrightText}>© 2026 قريب. جميع الحقوق محفوظة</div>
     </div>
   );
 };

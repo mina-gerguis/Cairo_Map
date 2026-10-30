@@ -16,7 +16,7 @@ export function useMonorailData() {
 
   // Load stations from Supabase or LocalStorage fallback
   useEffect(() => {
-    document.title = "ماب القاهرة - مونوريل العاصمة وأكتوبر";
+    document.title = "قريب - مونوريل العاصمة وأكتوبر";
     loadStations();
   }, []);
 

@@ -84,8 +84,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!place) {
     return {
-      title: "المكان غير موجود | ماب القاهرة",
-      description: "عذراً، لم يتم العثور على المكان المطلوب في دليل ماب القاهرة.",
+      title: "المكان غير موجود | قريب",
+      description: "عذراً، لم يتم العثور على المكان المطلوب في دليل قريب.",
     };
   }
 
@@ -95,7 +95,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description =
     place.shortDescription ||
     place.description ||
-    `تعرف على تفاصيل ${place.name} في ${locationText || "القاهرة"}. الأرقام، العناوين، مواعيد العمل، التقييمات، وطريقة الوصول عبر دليل ماب القاهرة.`;
+    `تعرف على تفاصيل ${place.name} في ${locationText || "القاهرة"}. الأرقام، العناوين، مواعيد العمل، التقييمات، وطريقة الوصول عبر دليل قريب.`;
 
   const coverImage =
     place.images && place.images.length > 0
@@ -109,10 +109,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       canonical: `${siteUrl}/places/${id}`,
     },
     openGraph: {
-      title: `${place.name} | ماب القاهرة`,
+      title: `${place.name} | قريب`,
       description,
       url: `${siteUrl}/places/${id}`,
-      siteName: "ماب القاهرة - Cairo Map",
+      siteName: "قريب - Cairo Map",
       images: [
         {
           url: coverImage,
@@ -126,7 +126,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${place.name} | ماب القاهرة`,
+      title: `${place.name} | قريب`,
       description,
       images: [coverImage],
     },
@@ -141,69 +141,69 @@ export default async function PlacePage({ params }: PageProps) {
   // JSON-LD Schema
   const jsonLd = place
     ? {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Place",
-            "@id": `${siteUrl}/places/${place.id}#place`,
-            name: place.name,
-            alternateName: place.name_en || undefined,
-            description: place.shortDescription || place.description || undefined,
-            image: place.images && place.images.length > 0 ? place.images : undefined,
-            telephone: place.phones && place.phones.length > 0 ? place.phones[0] : undefined,
-            address: {
-              "@type": "PostalAddress",
-              streetAddress: place.fullAddress || place.briefLocation || undefined,
-              addressLocality: place.city || "القاهرة",
-              addressRegion: place.governorate || "القاهرة",
-              addressCountry: "EG",
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Place",
+          "@id": `${siteUrl}/places/${place.id}#place`,
+          name: place.name,
+          alternateName: place.name_en || undefined,
+          description: place.shortDescription || place.description || undefined,
+          image: place.images && place.images.length > 0 ? place.images : undefined,
+          telephone: place.phones && place.phones.length > 0 ? place.phones[0] : undefined,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: place.fullAddress || place.briefLocation || undefined,
+            addressLocality: place.city || "القاهرة",
+            addressRegion: place.governorate || "القاهرة",
+            addressCountry: "EG",
+          },
+          ...(place.latitude && place.longitude
+            ? {
+              geo: {
+                "@type": "GeoCoordinates",
+                latitude: place.latitude,
+                longitude: place.longitude,
+              },
+            }
+            : {}),
+          ...(place.rating && place.reviewsCount
+            ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: place.rating,
+                reviewCount: place.reviewsCount,
+                bestRating: 5,
+                worstRating: 1,
+              },
+            }
+            : {}),
+        },
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "الرئيسية",
+              item: siteUrl,
             },
-            ...(place.latitude && place.longitude
-              ? {
-                  geo: {
-                    "@type": "GeoCoordinates",
-                    latitude: place.latitude,
-                    longitude: place.longitude,
-                  },
-                }
-              : {}),
-            ...(place.rating && place.reviewsCount
-              ? {
-                  aggregateRating: {
-                    "@type": "AggregateRating",
-                    ratingValue: place.rating,
-                    reviewCount: place.reviewsCount,
-                    bestRating: 5,
-                    worstRating: 1,
-                  },
-                }
-              : {}),
-          },
-          {
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              {
-                "@type": "ListItem",
-                position: 1,
-                name: "الرئيسية",
-                item: siteUrl,
-              },
-              {
-                "@type": "ListItem",
-                position: 2,
-                name: "دليل الأماكن",
-                item: `${siteUrl}/places`,
-              },
-              {
-                "@type": "ListItem",
-                position: 3,
-                name: place.name,
-                item: `${siteUrl}/places/${place.id}`,
-              },
-            ],
-          },
-        ],
-      }
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "دليل الأماكن",
+              item: `${siteUrl}/places`,
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: place.name,
+              item: `${siteUrl}/places/${place.id}`,
+            },
+          ],
+        },
+      ],
+    }
     : null;
 
   return (

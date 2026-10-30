@@ -14,16 +14,17 @@
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  padding: 10px 20px;
-  border: 1px solid var(--border-glass);
-  border-radius: var(--inputRadius);
+  border-radius: var(--input-radius);
   outline: none;
   background: var(--inputBg);
   color: var(--color-foreground);
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   transition: var(--transition-smooth);
+  height: 44px;
+  border: 1px solid #cbd5e1;
+  padding: 0 14px;
+  font-family: var(--font-heading);
 }
 
 input[type="date"].input-fields {
@@ -61,4 +62,43 @@ input[type="date"].input-fields {
 .input-fields[aria-invalid="true"]:focus,
 .input-fields.has-error:focus {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.20) !important;
+}
+
+/* 3. MFA Digit Inputs */
+.otp-input {
+  width: 2.75rem;
+  height: 3rem;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background-color: transparent;
+  color: #09090b;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+
+.otp-input:focus {
+  border-color: #09090b;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.otp-input-filled {
+  border-color: #000000;
+  background: rgba(108, 99, 255, 0.08);
+}
+
+.otp-input-error {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.04) !important;
+  color: #dc2626 !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25) !important;
+}
+
+.otp-input-error:focus {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.04) !important;
+  color: #dc2626 !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25) !important;
 }

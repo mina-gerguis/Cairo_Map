@@ -102,7 +102,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
         className={`glass-panel ${styles.glassPanel}`}
         onClick={(e) => e.stopPropagation()}
         style={{
-         
+
         }}
       >
         {/* Modal Header */}
@@ -130,7 +130,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               gap: "8px",
             }}
           >
-            باقات ماب القاهرة
+            باقات قريب
           </h3>
         </div>
 

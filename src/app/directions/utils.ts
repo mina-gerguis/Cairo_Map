@@ -372,7 +372,7 @@ export async function shareRoute(params: {
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const shareUrl = `${origin}/directions?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
-  const shareText = `🚗 *خط السير عبر ماب القاهرة (Cairo Map)* 🗺️\n\n📍 *من:* ${from}\n🎯 *إلى:* ${to}\n🚌 *نوع الوسيلة:* ${option.typeName}\n💵 *الإجمالي:* ${summary.totalCost} ج.م\n⏱️ *المدة المتوقعة:* ${summary.totalDuration}\n\n📋 *الخطوات التفصيلية:*\n${stepsList}\n\n🔗 *رابط المسار المباشر:*\n${shareUrl}`;
+  const shareText = `🚗 *خط السير عبر قريب (Cairo Map)* 🗺️\n\n📍 *من:* ${from}\n🎯 *إلى:* ${to}\n🚌 *نوع الوسيلة:* ${option.typeName}\n💵 *الإجمالي:* ${summary.totalCost} ج.م\n⏱️ *المدة المتوقعة:* ${summary.totalDuration}\n\n📋 *الخطوات التفصيلية:*\n${stepsList}\n\n🔗 *رابط المسار المباشر:*\n${shareUrl}`;
 
   // 1. Native Web Share API (opens system share dialog on Mobile & modern browsers with all installed apps)
   if (typeof navigator !== "undefined" && typeof navigator.share === "function") {

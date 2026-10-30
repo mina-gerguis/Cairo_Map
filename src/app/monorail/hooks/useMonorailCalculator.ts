@@ -69,17 +69,17 @@ export function useMonorailCalculator(
     if (!routeResult.sameLine && routeResult.leg1 && routeResult.leg3) {
       const leg1Items = routeResult.leg1.stations
         ? routeResult.leg1.stations.map((name) => ({
-            name,
-            lineColor: routeResult.leg1?.lineColor,
-            isTransfer: name === routeResult.leg1?.to,
-          }))
+          name,
+          lineColor: routeResult.leg1?.lineColor,
+          isTransfer: name === routeResult.leg1?.to,
+        }))
         : [];
       const leg3Items = routeResult.leg3.stations
         ? routeResult.leg3.stations.slice(1).map((name) => ({
-            name,
-            lineColor: routeResult.leg3?.lineColor,
-            isTransfer: false,
-          }))
+          name,
+          lineColor: routeResult.leg3?.lineColor,
+          isTransfer: false,
+        }))
         : [];
       return [...leg1Items, ...leg3Items];
     }
@@ -145,7 +145,7 @@ export function useMonorailCalculator(
   const handleShareRoute = async () => {
     if (!routeResult || !selectedFrom || !selectedTo) return;
 
-    const shareText = `🚝 مسار رحلة المونوريل عبر تطبيق ماب القاهرة:
+    const shareText = `🚝 مسار رحلة المونوريل عبر تطبيق قريب:
 من: ${selectedFrom}
 إلى: ${selectedTo}
 ⏱️ زمن الرحلة التقريبي: ${routeResult.time} دقيقة
@@ -170,7 +170,7 @@ ${typeof window !== "undefined" ? window.location.href : "https://cairomap.verce
   // WhatsApp Share URL
   const whatsappShareUrl = useMemo(() => {
     if (!routeResult || !selectedFrom || !selectedTo) return "";
-    const text = encodeURIComponent(`🚝 مسار رحلة المونوريل عبر ماب القاهرة:
+    const text = encodeURIComponent(`🚝 مسار رحلة المونوريل عبر قريب:
 من: ${selectedFrom}
 إلى: ${selectedTo}
 ⏱️ الزمن: ${routeResult.time} دقيقة

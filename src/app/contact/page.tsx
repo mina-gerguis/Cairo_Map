@@ -209,12 +209,12 @@ export default function ContactPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
-    name: "اتصل بنا - ماب القاهرة",
+    name: "اتصل بنا - قريب",
     url: `${siteUrl}/contact`,
-    description: "تواصل مع فريق عمل وإدارة ماب القاهرة للاستفسارات والاقتراحات والشراكات الإعلانية.",
+    description: "تواصل مع فريق عمل وإدارة قريب للاستفسارات والاقتراحات والشراكات الإعلانية.",
     mainEntity: {
       "@type": "Organization",
-      name: "ماب القاهرة",
+      name: "قريب",
       url: siteUrl,
       contactPoint: {
         "@type": "ContactPoint",

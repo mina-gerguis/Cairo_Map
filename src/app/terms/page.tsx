@@ -9,7 +9,7 @@ export default function TermsPage() {
     {
       icon: "bx bx-file-blank",
       title: "ميثاق الشفافية",
-      desc: "توضح هذه الشروط حقوقك ومسؤولياتك بوضوح أثناء تصفح واستخدام دليل ماب القاهرة.",
+      desc: "توضح هذه الشروط حقوقك ومسؤولياتك بوضوح أثناء تصفح واستخدام دليل قريب.",
       color: "#006FEE",
     },
     {
@@ -34,7 +34,7 @@ export default function TermsPage() {
       content: (
         <>
           <p>
-            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--color-primary)" }}>ماب القاهرة (Cairo Map)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
+            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--color-primary)" }}>قريب (Cairo Map)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
           </p>
           <p style={{ marginTop: "8px" }}>
             إذا كنت لا توافق على أي بند من هذه الشروط، يرجى التوقف الفوري عن استخدام التطبيق وكافة خدمات الدليل المرتبطة به.
@@ -132,7 +132,7 @@ export default function TermsPage() {
       title: "4. حقوق الملكية الفكرية والعلامة التجارية",
       content: (
         <p>
-          كافة عناصر التصميم، الشفرات البرمجية، الأيقونات ثلاثية الأبعاد، الشعارات، والنصوص المنشورة في تطبيق <strong style={{ color: "var(--color-foreground)" }}>ماب القاهرة</strong> هي ملكية حصرية لشركة <strong>RepoDex</strong> (إحدى شركات جورجيوس القابضة) ومحمية بموجب قوانين حقوق الملكية الفكرية. لا يجوز نسخ أو إعادة إنتاج أو تفكيك أي جزء من المنصة دون إذن خطي مسبق.
+          كافة عناصر التصميم، الشفرات البرمجية، الأيقونات ثلاثية الأبعاد، الشعارات، والنصوص المنشورة في تطبيق <strong style={{ color: "var(--color-foreground)" }}>قريب</strong> هي ملكية حصرية لشركة <strong>RepoDex</strong> (إحدى شركات جورجيوس القابضة) ومحمية بموجب قوانين حقوق الملكية الفكرية. لا يجوز نسخ أو إعادة إنتاج أو تفكيك أي جزء من المنصة دون إذن خطي مسبق.
         </p>
       ),
     },
@@ -143,7 +143,7 @@ export default function TermsPage() {
       content: (
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           <p>
-            تطبيق ماب القاهرة هو دليل استرشادي ذكي لتسهيل الوصول للأرقام ومواقع الأماكن ومحطات النقل وفروع الخدمات:
+            تطبيق قريب هو دليل استرشادي ذكي لتسهيل الوصول للأرقام ومواقع الأماكن ومحطات النقل وفروع الخدمات:
           </p>
           <div style={{
             background: "rgba(245, 158, 11, 0.08)",
@@ -308,7 +308,7 @@ export default function TermsPage() {
             lineHeight: "1.7",
           }}
         >
-          القواعد والإرشادات المنظمة لضمان بيئة موثوقة وعادلة لجميع مستخدمي تطبيق <strong style={{ color: "var(--color-foreground)" }}>ماب القاهرة</strong>.
+          القواعد والإرشادات المنظمة لضمان بيئة موثوقة وعادلة لجميع مستخدمي تطبيق <strong style={{ color: "var(--color-foreground)" }}>قريب</strong>.
         </p>
       </div>
 

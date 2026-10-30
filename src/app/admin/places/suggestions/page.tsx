@@ -543,7 +543,7 @@ export default function PlacesSuggestionsPage() {
                         />
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <span style={{ fontSize: "0.78rem", fontWeight: "700", color: "var(--color-foreground)" }}>
-                            {prop.user_profile?.full_name || prop.user_profile?.username || "مستخدم ماب القاهرة"}
+                            {prop.user_profile?.full_name || prop.user_profile?.username || "مستخدم قريب"}
                           </span>
                         </div>
                       </div>
@@ -859,7 +859,7 @@ export default function PlacesSuggestionsPage() {
                           />
                           <div>
                             <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)" }}>
-                              {selectedProposalDetails.user_profile?.full_name || selectedProposalDetails.user_profile?.username || "مستخدم ماب القاهرة"}
+                              {selectedProposalDetails.user_profile?.full_name || selectedProposalDetails.user_profile?.username || "مستخدم قريب"}
                             </div>
                             <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
                               تاريخ تقديم الاقتراح: {selectedProposalDetails.created_at ? new Date(selectedProposalDetails.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : ""}

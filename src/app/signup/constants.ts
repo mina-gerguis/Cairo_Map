@@ -2,19 +2,19 @@ import { OnboardingSlide, StepInfo, SignupFormData, SignupFieldErrors } from "./
 
 export const ONBOARDING_SLIDES: OnboardingSlide[] = [
   {
-    imageUrl: "images/signUp/welcome1.webp",
-    title: "أنشئ حسابك الآن مجاناً",
-    desc: "استمتع بتجربة فريدة ومخصصة لحفظ أماكنك المفضلة وملاحظاتك الشخصية.",
+    imageUrl: "",
+    title: "يلا نعمل حساب جديد",
+    desc: "أنشئ حسابك الآن مجاناً واستمتع بتجربة فريدة ومخصصة لحفظ أماكنك المفضلة وملاحظاتك الشخصية.",
   },
   {
-    imageUrl: "images/signUp/welcome2.webp",
-    title: "اكتشف أفضل الأماكن حولك",
-    desc: "ابحث عن المطاعم، الكافيهات، والوجهات التاريخية القريبة منك بكل سهولة.",
+    imageUrl: "",
+    title: "كل موصلات مصر والاماكن هنا",
+    desc: "هنا هتلاقي كل حاجة تخص التنقل في مصر سواء مواصلات عامة او اماكن خاصة.",
   },
   {
-    imageUrl: "images/signUp/welcome3.webp",
-    title: "تذكيرات وملاحظات ذكية للأماكن",
-    desc: "أضف ملاحظات وتذكيرات هامة لأي مكان لتعود إليها في أي وقت.",
+    imageUrl: "",
+    title: "متستناش تتوه، اسأل قريب",
+    desc: "  هتعرف الطرق والمواصلات وأي معلومة بتحتاجها بسهولة.",
   },
 ];
 

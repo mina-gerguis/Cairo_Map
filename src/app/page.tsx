@@ -1006,7 +1006,7 @@ export default function HomePage() {
     {
       id: "propose",
       title: "إضافة واقتراح مكان جديد",
-      desc: "هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد على دليل ماب القاهرة؟ أضفه مجاناً ليصل لملايين الزوار.",
+      desc: "هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد على دليل قريب؟ أضفه مجاناً ليصل لملايين الزوار.",
       icon: ASSETS.services.saveLocation,
       link: "/propose-place",
     },
@@ -1021,30 +1021,30 @@ export default function HomePage() {
       <section
         ref={heroSectionRef}
         style={{
-        position: "relative",
-        padding: "60px 20px 80px 20px",
-        paddingBottom: "20px",
-        overflow: "visible",
-        background: "radial-gradient(circle at 50% 0%, rgba(0, 111, 238, 0.15) 0%, rgba(0,0,0,0) 70%)",
-      }}>
+          position: "relative",
+          padding: "60px 20px 80px 20px",
+          paddingBottom: "20px",
+          overflow: "visible",
+          background: "radial-gradient(circle at 50% 0%, rgba(0, 111, 238, 0.15) 0%, rgba(0,0,0,0) 70%)",
+        }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           {/* Badge */}
           <div
             className="hero-badge-item"
             style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "8px 18px",
-            borderRadius: "999px",
-            backgroundColor: "var(--bg-glass-card)",
-            border: "1px solid var(--border-glass-bright)",
-            fontSize: "0.9rem",
-            color: "var(--color-primary)",
-            marginBottom: "24px",
-            fontFamily: "var(--font-display)",
-            fontWeight: "500"
-          }}>
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 18px",
+              borderRadius: "999px",
+              backgroundColor: "var(--bg-glass-card)",
+              border: "1px solid var(--border-glass-bright)",
+              fontSize: "0.9rem",
+              color: "var(--color-primary)",
+              marginBottom: "24px",
+              fontFamily: "var(--font-display)",
+              fontWeight: "500"
+            }}>
             <span>✨</span>
             <span>دليلك الذكي الشامل لشوارع وأماكن القاهرة</span>
           </div>
@@ -1053,13 +1053,13 @@ export default function HomePage() {
           <h1
             className="hero-title-item"
             style={{
-            fontSize: "clamp(2rem, 5vw, 3.5rem)",
-            fontWeight: "700",
-            lineHeight: "1.25",
-            marginBottom: "20px",
-            letterSpacing: "-0.5px",
-            textWrap: "balance",
-          }}>
+              fontSize: "clamp(2rem, 5vw, 3.5rem)",
+              fontWeight: "700",
+              lineHeight: "1.25",
+              marginBottom: "20px",
+              letterSpacing: "-0.5px",
+              textWrap: "balance",
+            }}>
             استكشف مصر  وتنقّل بذكاء وسرعة ودقة متناهية
           </h1>
 
@@ -1753,7 +1753,7 @@ export default function HomePage() {
             marginBottom: "48px"
           }}>
           <h2 style={{ fontSize: "2rem", fontWeight: "500", marginBottom: "12px", textWrap: "balance" }}>
-            جميع خدمات ماب القاهرة بين يديك
+            جميع خدمات قريب بين يديك
           </h2>
           <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto", textWrap: "pretty" }}>
             اختر الخدمة التي تحتاجها للوصول السريع إلى أدق التفاصيل والمؤشرات الحية.
@@ -1978,12 +1978,12 @@ export default function HomePage() {
           <div
             ref={aiRobotRef}
             style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: "20px"
-          }}>
-            <Image src="/images/icons3d/robot.webp" alt="الذكاء الاصطناعي لماب القاهرة" width={80} height={80} style={{ width: "80px", height: "auto" }} />
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "20px"
+            }}>
+            <Image src="/images/icons3d/robot.webp" alt="الذكاء الاصطناعي لقريب" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
           <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-foreground)", textWrap: "balance" }}>
@@ -2024,7 +2024,7 @@ export default function HomePage() {
             هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد؟
           </h2>
           <p className="sub-title" style={{ color: "var(--text-secondary)", marginBottom: "24px", textWrap: "pretty" }}>
-            ساهم معنا في تحديث دليل ماب القاهرة وأضف محلّك أو مكانك المفضّل مجاناً ليصل إلى آلاف الزوار.
+            ساهم معنا في تحديث دليل قريب وأضف محلّك أو مكانك المفضّل مجاناً ليصل إلى آلاف الزوار.
           </p>
           <Link
             href="/propose-place"

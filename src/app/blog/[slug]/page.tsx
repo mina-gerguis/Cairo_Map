@@ -48,12 +48,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!blog) {
     return {
-      title: "المقال غير موجود | ماب القاهرة",
-      description: "عذراً، لم يتم العثور على المقال المطلوب في مدونة ماب القاهرة.",
+      title: "المقال غير موجود | قريب",
+      description: "عذراً، لم يتم العثور على المقال المطلوب في مدونة قريب.",
     };
   }
 
-  const title = `${blog.title} | مدونة ماب القاهرة`;
+  const title = `${blog.title} | مدونة قريب`;
   const description =
     blog.excerpt ||
     "اقرأ أحدث المقالات والإرشادات حول المواصلات وأماكن الخروج والخدمات في القاهرة الكبرى.";
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title,
     description,
     keywords: blog.tags || ["مواصلات", "القاهرة", "مترو", "دليل"],
-    authors: [{ name: blog.author_name || "فريق ماب القاهرة" }],
+    authors: [{ name: blog.author_name || "فريق قريب" }],
     alternates: {
       canonical: `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}`,
     },
@@ -71,10 +71,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       url: `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}`,
-      siteName: "ماب القاهرة - Cairo Map",
+      siteName: "قريب - Cairo Map",
       type: "article",
       publishedTime: blog.created_at,
-      authors: [blog.author_name || "فريق ماب القاهرة"],
+      authors: [blog.author_name || "فريق قريب"],
       tags: blog.tags,
       images: [
         {
@@ -103,59 +103,59 @@ export default async function SingleBlogPage({ params }: PageProps) {
   // JSON-LD Schema
   const jsonLd = blog
     ? {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BlogPosting",
-            "@id": `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}#article`,
-            headline: blog.title,
-            description: blog.excerpt,
-            image: blog.cover_image || `${siteUrl}/images/cairo-map-og.png`,
-            datePublished: blog.created_at,
-            dateModified: blog.created_at,
-            author: {
-              "@type": "Person",
-              name: blog.author_name || "فريق ماب القاهرة",
-            },
-            publisher: {
-              "@type": "Organization",
-              name: "ماب القاهرة",
-              url: siteUrl,
-              logo: {
-                "@type": "ImageObject",
-                url: `${siteUrl}/apple-touch-icon.png`,
-              },
-            },
-            mainEntityOfPage: {
-              "@type": "WebPage",
-              "@id": `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}`,
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BlogPosting",
+          "@id": `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}#article`,
+          headline: blog.title,
+          description: blog.excerpt,
+          image: blog.cover_image || `${siteUrl}/images/cairo-map-og.png`,
+          datePublished: blog.created_at,
+          dateModified: blog.created_at,
+          author: {
+            "@type": "Person",
+            name: blog.author_name || "فريق قريب",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "قريب",
+            url: siteUrl,
+            logo: {
+              "@type": "ImageObject",
+              url: `${siteUrl}/apple-touch-icon.png`,
             },
           },
-          {
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              {
-                "@type": "ListItem",
-                position: 1,
-                name: "الرئيسية",
-                item: siteUrl,
-              },
-              {
-                "@type": "ListItem",
-                position: 2,
-                name: "المدونة",
-                item: `${siteUrl}/blog`,
-              },
-              {
-                "@type": "ListItem",
-                position: 3,
-                name: blog.title,
-                item: `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}`,
-              },
-            ],
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}`,
           },
-        ],
-      }
+        },
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "الرئيسية",
+              item: siteUrl,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "المدونة",
+              item: `${siteUrl}/blog`,
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: blog.title,
+              item: `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}`,
+            },
+          ],
+        },
+      ],
+    }
     : null;
 
   return (
