@@ -11,28 +11,47 @@ const COMBINED_PATH = `${OUTER_PATH} ${INNER_PATH}`;
 interface QareebLogoEffectProps {
   className?: string;
   speed?: number;
+  size?: number;
+  theme?: "dark" | "light";
   onAnimationComplete?: () => void;
 }
 
 export const QareebLogoEffect: React.FC<QareebLogoEffectProps> = ({
   className = "",
   speed = 1,
+  size = 180,
+  theme = "dark",
   onAnimationComplete,
 }) => {
   const [animationPhase, setAnimationPhase] = useState<"drawing" | "filled">("drawing");
   const calc = (x: number) => x * speed;
 
+  const isLight = theme === "light";
+  const strokeGradId = isLight ? "qareebStrokeGradLight" : "qareebStrokeGradDark";
+  const fillGradId = isLight ? "qareebFillGradLight" : "qareebFillGradDark";
+  const glowFilterId = isLight ? "qareebGlowLight" : "qareebGlowDark";
+
+  const height = Math.round(size * (190 / 180));
+  const auraSize = Math.round(size * 1.35);
+
   return (
-    <div className={`relative w-full max-w-[340px] flex flex-col items-center justify-center select-none ${className}`}>
+    <div
+      className={`relative w-full flex flex-col items-center justify-center select-none ${className}`}
+      style={{ maxWidth: `${size + 80}px` }}
+    >
       {/* Background ambient neon aura */}
       <motion.div
-        className="absolute w-[240px] h-[240px] rounded-full pointer-events-none"
+        className="absolute rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.22) 0%, rgba(37, 99, 235, 0.1) 45%, transparent 75%)",
+          width: `${auraSize}px`,
+          height: `${auraSize}px`,
+          background: isLight
+            ? "radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.12) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 75%)"
+            : "radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.22) 0%, rgba(37, 99, 235, 0.1) 45%, transparent 75%)",
         }}
         animate={{
           scale: animationPhase === "filled" ? [1, 1.15, 1] : 1,
-          opacity: animationPhase === "filled" ? [0.6, 0.9, 0.7] : 0.4,
+          opacity: animationPhase === "filled" ? (isLight ? [0.5, 0.8, 0.6] : [0.6, 0.9, 0.7]) : (isLight ? 0.3 : 0.4),
         }}
         transition={{
           duration: 3,
@@ -42,32 +61,60 @@ export const QareebLogoEffect: React.FC<QareebLogoEffectProps> = ({
       />
 
       {/* SVG Canvas for Drawing the Logo */}
-      <div className="relative w-[180px] h-[190px] flex items-center justify-center">
+      <div
+        className="relative flex items-center justify-center"
+        style={{ width: `${size}px`, height: `${height}px` }}
+      >
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="280 200 1440 1840"
-          className="w-full h-full overflow-visible drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]"
+          className={`w-full h-full overflow-visible ${
+            isLight
+              ? "drop-shadow-[0_8px_25px_rgba(37,99,235,0.22)]"
+              : "drop-shadow-[0_0_25px_rgba(59,130,246,0.5)]"
+          }`}
           initial={{ opacity: 1 }}
         >
           <defs>
             {/* Linear gradient for stroke drawing */}
-            <linearGradient id="qareebStrokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="35%" stopColor="#93c5fd" />
-              <stop offset="70%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#60a5fa" />
+            <linearGradient id={strokeGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+              {isLight ? (
+                <>
+                  <stop offset="0%" stopColor="#1d4ed8" />
+                  <stop offset="35%" stopColor="#2563eb" />
+                  <stop offset="70%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#60a5fa" />
+                </>
+              ) : (
+                <>
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="35%" stopColor="#93c5fd" />
+                  <stop offset="70%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#60a5fa" />
+                </>
+              )}
             </linearGradient>
 
             {/* Linear gradient for inner fill */}
-            <linearGradient id="qareebFillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="60%" stopColor="#f0f6ff" />
-              <stop offset="100%" stopColor="#dbeafe" />
+            <linearGradient id={fillGradId} x1="0%" y1="0%" x2="0%" y2="100%">
+              {isLight ? (
+                <>
+                  <stop offset="0%" stopColor="#2563eb" />
+                  <stop offset="60%" stopColor="#1d4ed8" />
+                  <stop offset="100%" stopColor="#1e40af" />
+                </>
+              ) : (
+                <>
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="60%" stopColor="#f0f6ff" />
+                  <stop offset="100%" stopColor="#dbeafe" />
+                </>
+              )}
             </linearGradient>
 
             {/* Neon Glow Filter */}
-            <filter id="qareebGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="14" result="blur" />
+            <filter id={glowFilterId} x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation={isLight ? "8" : "14"} result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
@@ -79,11 +126,11 @@ export const QareebLogoEffect: React.FC<QareebLogoEffectProps> = ({
           <motion.path
             d={OUTER_PATH}
             fill="none"
-            stroke="url(#qareebStrokeGrad)"
+            stroke={`url(#${strokeGradId})`}
             strokeWidth={32}
             strokeLinecap="round"
             strokeLinejoin="round"
-            filter="url(#qareebGlow)"
+            filter={`url(#${glowFilterId})`}
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 1 }}
             transition={{
@@ -97,7 +144,7 @@ export const QareebLogoEffect: React.FC<QareebLogoEffectProps> = ({
           <motion.path
             d={INNER_PATH}
             fill="none"
-            stroke="url(#qareebStrokeGrad)"
+            stroke={`url(#${strokeGradId})`}
             strokeWidth={28}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -114,7 +161,7 @@ export const QareebLogoEffect: React.FC<QareebLogoEffectProps> = ({
           {/* 3. Smooth Fill Reveal (Fades in once strokes are fully drawn) */}
           <motion.path
             d={COMBINED_PATH}
-            fill="url(#qareebFillGrad)"
+            fill={`url(#${fillGradId})`}
             fillRule="evenodd"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

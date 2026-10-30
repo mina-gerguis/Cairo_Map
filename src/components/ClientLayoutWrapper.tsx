@@ -19,6 +19,7 @@ import MaintenanceScreen from "@/components/MaintenanceScreen";
 import MaintenanceAdminBanner from "@/components/MaintenanceAdminBanner";
 import CompleteProfileModal from "@/components/auth/CompleteProfileModal";
 import { isProfileIncomplete } from "@/lib/profileValidation";
+import { SitePreloader } from "@/components/SitePreloader";
 
 interface AlertItem {
   id: string;
@@ -271,6 +272,7 @@ export default function ClientLayoutWrapper({
 
   return (
     <>
+      <SitePreloader />
       <Navbar />
 
       {/* Admin Floating Banner when visiting locked page */}

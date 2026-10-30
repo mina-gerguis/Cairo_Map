@@ -43,6 +43,30 @@ export default function Navbar() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const servicesDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on screen resize to mobile or click outside
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setOpenDropdown(null);
+        setHoveredLink(null);
+      }
+    };
+    const handleClickOutside = (e: MouseEvent) => {
+      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // GSAP Smooth Navigation Entrance
   useGSAP(
@@ -148,6 +172,7 @@ export default function Navbar() {
         { href: "/roads-info", label: "معلومات الطرق والسرعات", subtitle: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: ASSETS.icons2d.car },
         { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: ASSETS.icons2d.egypt },
         { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.icons2d.ai },
+        { href: "/had-yaaraf", label: "حد يعرف ؟", subtitle: "اسأل مجتمع قريب وجاوب وتفاعل مع الناس", imgLogo: ASSETS.icons2d.cairoLogo },
         { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.icons2d.cairoLogo },
       ]
     },
@@ -204,6 +229,7 @@ export default function Navbar() {
         { href: "/ai-planner", label: "مخطط الرحلات الذكي", description: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.icons2d.ai },
         { href: "/places", label: "دليل الأماكن", description: "المتاجر والمحلات والأماكن الحيوية", imgLogo: ASSETS.icons2d.shop },
         { href: "/map", label: "الخريطة التفاعلية", description: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.icons2d.cairo },
+        { href: "/had-yaaraf", label: "حد يعرف ؟", description: "اسأل مجتمع قريب وجاوب وتفاعل", imgLogo: ASSETS.icons2d.cairoLogo },
         { href: "/help", label: "المساعدة والدعم", description: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.icons2d.cairoLogo },
       ],
     },
@@ -291,19 +317,28 @@ export default function Navbar() {
 
           {/* Dropdown: Services Mega Menu */}
           <div
-            className="relative"
+            ref={servicesDropdownRef}
+            className="navbar-item-dropdown relative"
             onMouseEnter={() => {
-              setOpenDropdown("services");
-              setHoveredLink("services");
+              if (typeof window !== "undefined" && window.innerWidth > 768) {
+                setOpenDropdown("services");
+                setHoveredLink("services");
+              }
             }}
           >
             <button
               type="button"
-              className={`relative px-4 py-1.5 text-sm font-medium bg-transparent duration-300 rounded-full flex items-center gap-1 cursor-pointer group border-none ${
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDropdown((prev) => (prev === "services" ? null : "services"));
+              }}
+              className={`relative px-4 py-1.5 text-sm font-medium bg-transparent duration-300 rounded-full flex items-center gap-1 cursor-pointer group border-none outline-none ${
                 openDropdown === "services" || isServicesActive
                   ? "text-primary font-bold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
+              aria-expanded={openDropdown === "services"}
+              aria-haspopup="true"
             >
               <span className="relative z-10">الخدمات</span>
               <ChevronDown
@@ -322,30 +357,30 @@ export default function Navbar() {
 
             <AnimatePresence>
               {openDropdown === "services" && (
-                <div className="bg-secondary absolute right-0 top-full mt-3 z-50 rounded-2xl">
+                <div className="services-dropdown-wrapper">
                   <motion.div
-                    className="bg-background/95 backdrop-blur-xl border border-border p-5 rounded-2xl shadow-2xl w-max"
+                    className="services-megamenu-panel shadow-2xl"
                     layoutId="menu"
                     initial={{ opacity: 0, y: -8, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.98 }}
                     transition={{ duration: 0.18 }}
                   >
-                    <div className="flex gap-7 overflow-hidden text-right">
+                    <div className="services-megamenu-grid">
                       {servicesColumns.map((col) => (
-                        <motion.div layout className="w-60" key={col.title}>
-                          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground border-b border-border/50 pb-2">
+                        <div className="services-megamenu-col" key={col.title}>
+                          <h3 className="services-megamenu-col-title">
                             {col.title}
                           </h3>
-                          <ul className="space-y-2.5">
+                          <ul className="services-megamenu-items">
                             {col.items.map((item) => (
                               <li key={item.href}>
                                 <Link
                                   href={item.href}
                                   onClick={() => setOpenDropdown(null)}
-                                  className="flex items-start gap-3 p-1.5 rounded-xl group transition-colors duration-200 hover:bg-accent"
+                                  className="services-megamenu-item-link group"
                                 >
-                                  <div className="border border-border text-foreground rounded-lg flex items-center justify-center size-9 shrink-0 group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300">
+                                  <div className="services-megamenu-icon-box">
                                     <Image
                                       src={item.imgLogo ? (item.imgLogo.startsWith("/") ? item.imgLogo : `/images/icons2d/${item.imgLogo}`) : ""}
                                       alt={item.label}
@@ -354,11 +389,11 @@ export default function Navbar() {
                                       className="object-contain"
                                     />
                                   </div>
-                                  <div className="leading-5 w-max">
-                                    <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors shrink-0">
+                                  <div className="services-megamenu-info">
+                                    <p className="services-megamenu-item-title">
                                       {item.label}
                                     </p>
-                                    <p className="text-xs text-muted-foreground group-hover:text-foreground transition-colors shrink-0 line-clamp-1 max-w-[170px]">
+                                    <p className="services-megamenu-item-desc">
                                       {item.description}
                                     </p>
                                   </div>
@@ -366,7 +401,7 @@ export default function Navbar() {
                               </li>
                             ))}
                           </ul>
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
                   </motion.div>

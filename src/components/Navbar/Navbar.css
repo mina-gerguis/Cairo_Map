@@ -156,46 +156,201 @@ html.light .navbar-auth-menu {
   background: var(--bg-glass);
 }
 
-/* Services Dropdown Styles */
+/* ============================================================
+   RESPONSIVE SERVICES MEGA MENU
+   ============================================================ */
+
 .navbar-item-dropdown {
   position: relative;
 }
 
-.navbar-item-dropdown:hover .navbar-dropdown-menu,
-.navbar-item-dropdown:focus-within .navbar-dropdown-menu {
-  display: block;
-}
-
-.navbar-dropdown-menu {
-  display: none;
+.services-dropdown-wrapper {
   position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 300px;
-  max-height: 82vh;
+  top: 100%;
+  margin-top: 12px;
+  z-index: 950;
+  right: 50%;
+  transform: translateX(50%);
+  pointer-events: auto;
+}
+
+.services-megamenu-panel {
+  background: var(--bg-glass, rgba(14, 14, 16, 0.95));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  width: max-content;
+  max-width: min(840px, calc(100vw - 32px));
+  max-height: calc(100vh - 90px);
   overflow-y: auto;
-  background: var(--color-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-glass);
-  border-radius: 16px;
-  box-shadow: var(--shadow-lg);
-  padding: 8px;
-  animation: pop-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 100;
+  overscroll-behavior: contain;
 }
 
-html.light .navbar-dropdown-menu {
-  background: var(--bg-glass);
+html.light .services-megamenu-panel {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
-.navbar-dropdown-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
+.services-megamenu-panel::-webkit-scrollbar {
+  width: 5px;
+}
+.services-megamenu-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.services-megamenu-panel::-webkit-scrollbar-thumb {
+  background: var(--border-glass, rgba(255, 255, 255, 0.2));
+  border-radius: 10px;
+}
+
+.services-megamenu-grid {
+  display: flex;
+  gap: 24px;
+  text-align: right;
+  direction: rtl;
+}
+
+.services-megamenu-col {
+  width: 235px;
+  display: flex;
+  flex-direction: column;
+}
+
+.services-megamenu-col-title {
+  margin-bottom: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted, #a1a1aa);
+  border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  padding-bottom: 8px;
+}
+
+.services-megamenu-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.services-megamenu-item-link {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.services-megamenu-item-link:hover {
+  background: var(--hoverBtn, rgba(255, 255, 255, 0.07));
+  transform: translateX(-2px);
+}
+
+.services-megamenu-icon-box {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  transition: all 0.2s ease;
+}
+
+.services-megamenu-item-link:hover .services-megamenu-icon-box {
+  background: rgba(39, 39, 255, 0.15);
+  border-color: rgba(39, 39, 255, 0.4);
+}
+
+.services-megamenu-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.services-megamenu-item-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-foreground, #f4f4f5);
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.services-megamenu-item-link:hover .services-megamenu-item-title {
+  color: var(--color-primary, #2727ff);
+}
+
+.services-megamenu-item-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted, #a1a1aa);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+/* Medium Laptops & Tablets (1024px - 1100px) */
+@media (max-width: 1100px) {
+  .services-dropdown-wrapper {
+    right: 50%;
+    transform: translateX(50%);
+  }
+  .services-megamenu-panel {
+    padding: 16px;
+    max-width: calc(100vw - 28px);
+  }
+  .services-megamenu-grid {
+    gap: 16px;
+  }
+  .services-megamenu-col {
+    width: 210px;
+  }
+  .services-megamenu-item-desc {
+    max-width: 145px;
+  }
+}
+
+/* Tablets (769px - 950px) */
+@media (max-width: 950px) {
+  .services-megamenu-panel {
+    padding: 14px;
+    max-width: calc(100vw - 24px);
+  }
+  .services-megamenu-grid {
+    gap: 12px;
+  }
+  .services-megamenu-col {
+    width: 185px;
+  }
+  .services-megamenu-item-desc {
+    max-width: 125px;
+  }
+  .services-megamenu-item-link {
+    padding: 6px 8px;
+    gap: 8px;
+  }
+  .services-megamenu-icon-box {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+  .services-megamenu-item-title {
+    font-size: 0.82rem;
+  }
 }
 
 /* Mobile dropdown styles */
@@ -328,7 +483,11 @@ html.light .navbar-dropdown-menu {
 
 @media (max-width: 768px) {
   .navbar-links {
-    display: none;
+    display: none !important;
+  }
+
+  .services-dropdown-wrapper {
+    display: none !important;
   }
 
   .navbar-hamburger {

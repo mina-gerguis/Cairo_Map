@@ -76,9 +76,9 @@ export function DropdownNavigation({ navItems, className, embedded }: Props) {
 
             <AnimatePresence>
               {openMenu === navItem.label && navItem.subMenus && (
-                <div className="w-auto absolute left-0 top-full pt-2 z-50">
+                <div className="w-auto absolute left-1/2 -translate-x-1/2 top-full pt-2 z-50 pointer-events-auto">
                   <motion.div
-                    className="bg-background border border-border p-4 w-max shadow-xl"
+                    className="bg-background border border-border p-4 shadow-xl max-w-[calc(100vw-32px)] max-h-[80vh] overflow-y-auto"
                     style={{ borderRadius: 16 }}
                     layoutId="menu"
                     initial={{ opacity: 0, y: -8 }}
@@ -86,7 +86,7 @@ export function DropdownNavigation({ navItems, className, embedded }: Props) {
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.18 }}
                   >
-                    <div className="w-fit shrink-0 flex space-x-9 overflow-hidden">
+                    <div className="w-fit shrink-0 flex flex-wrap md:flex-nowrap gap-6 md:gap-9">
                       {navItem.subMenus.map((sub) => (
                         <motion.div layout className="w-full" key={sub.title}>
                           <h3 className="mb-4 text-sm font-medium capitalize text-muted-foreground">

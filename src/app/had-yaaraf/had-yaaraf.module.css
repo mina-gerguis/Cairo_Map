@@ -1,0 +1,1246 @@
+/* ==========================================================================
+   حد يعرف؟ - Community Q&A Design System (Impeccable & Anti-Slop Style)
+   ========================================================================== */
+
+.pageShell {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-foreground);
+  direction: rtl;
+  padding: calc(var(--navbar-height, 64px) + 20px) 16px 80px;
+  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ==========================================================================
+   1. HERO STATS BANNER
+   ========================================================================== */
+.heroBanner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
+  background: radial-gradient(ellipse 90% 70% at 85% 20%, rgba(37, 99, 235, 0.35) 0%, rgba(30, 27, 75, 0.6) 45%, rgba(10, 10, 15, 0.95) 100%),
+              linear-gradient(180deg, var(--bg-secondary, #0a0a0c) 0%, var(--color-bg, #000) 100%);
+  padding: 44px 24px 36px;
+  margin-bottom: 32px;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+html.light .heroBanner {
+  background: radial-gradient(ellipse 90% 70% at 85% 20%, rgba(59, 130, 246, 0.18) 0%, rgba(238, 242, 255, 0.8) 50%, #ffffff 100%);
+  border-color: rgba(37, 99, 235, 0.18);
+  box-shadow: 0 16px 36px -8px rgba(37, 99, 235, 0.12);
+}
+
+.heroGlowCircle {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.heroGlowBlue {
+  top: -100px;
+  left: -80px;
+  background: #2563eb;
+}
+
+.heroGlowAmber {
+  bottom: -100px;
+  right: -80px;
+  background: #f59e0b;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: rgba(37, 99, 235, 0.18);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  margin-bottom: 16px;
+  backdrop-filter: blur(12px);
+}
+
+html.light .heroBadge {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.25;
+  color: var(--color-foreground);
+  margin: 0 0 12px 0;
+  font-family: var(--font-display, inherit);
+  letter-spacing: -0.5px;
+}
+
+.heroTitleHighlight {
+  background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #facc15 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSubtitle {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: var(--text-secondary);
+  max-width: 680px;
+  margin: 0 auto 28px;
+  line-height: 1.65;
+}
+
+/* Hero Controls */
+.heroControls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .heroControls {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.searchBox {
+  position: relative;
+  flex: 1;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 14px 44px 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
+  background: var(--inputBg, rgba(24, 24, 27, 0.85));
+  color: var(--color-foreground);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(16px);
+}
+
+html.light .searchInput {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #0f172a;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.searchIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.askBtnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.45);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.askBtnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.6);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.askBtnPrimary:active {
+  transform: scale(0.98);
+}
+
+/* Hero Stats Bar */
+.heroStats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px 32px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.statItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statItem strong {
+  color: var(--color-foreground);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+/* ==========================================================================
+   2. CATEGORIES FILTER CAROUSEL
+   ========================================================================== */
+.categoryBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.categoryBar::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  background: var(--cardGlassBg, rgba(24, 24, 27, 0.6));
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+}
+
+html.light .categoryPill {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #475569;
+}
+
+.categoryPill:hover {
+  background: var(--hoverBtn, rgba(39, 39, 42, 0.8));
+  color: var(--color-foreground);
+  border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
+  transform: translateY(-1px);
+}
+
+.categoryPillActive {
+  background: var(--color-primary, #2563eb) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   3. SORT & FILTER BAR
+   ========================================================================== */
+.sortBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+}
+
+.sortTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-secondary, rgba(24, 24, 27, 0.7));
+  padding: 4px;
+  border-radius: 14px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+}
+
+html.light .sortTabs {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.sortTabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.sortTabBtnActive {
+  background: var(--color-foreground, #ffffff);
+  color: var(--color-bg, #000000);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+html.light .sortTabBtnActive {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.quickAskBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--color-primary, #3b82f6);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quickAskBtn:hover {
+  background: rgba(37, 99, 235, 0.22);
+}
+
+/* ==========================================================================
+   4. QUESTION CARD
+   ========================================================================== */
+.questionCard {
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid var(--cardGlassBorder, rgba(255, 255, 255, 0.1));
+  background: var(--cardGlassBg, rgba(20, 20, 24, 0.75));
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.light .questionCard {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.06);
+}
+
+.questionCard:hover {
+  border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 14px 32px -6px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+html.light .questionCard:hover {
+  border-color: rgba(37, 99, 235, 0.3);
+  box-shadow: 0 14px 32px -6px rgba(37, 99, 235, 0.1);
+}
+
+/* Question Header */
+.cardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.userInfoRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.userAvatarWrapper {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid rgba(37, 99, 235, 0.3);
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.userMetaCol {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.userName {
+  font-weight: 800;
+  font-size: 0.98rem;
+  color: var(--color-foreground);
+  line-height: 1.3;
+}
+
+.userUsername {
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--color-secondary, #3b82f6);
+  direction: ltr;
+  text-align: right;
+  letter-spacing: -0.2px;
+}
+
+.badgesRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.categoryTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 10px;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.06));
+  color: var(--text-secondary);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.solvedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.timestamp {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Question Body */
+.questionTitleLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.questionTitle {
+  font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.5;
+  color: var(--color-foreground);
+  margin: 0 0 10px 0;
+  font-family: var(--font-display, inherit);
+  transition: color 0.15s ease;
+}
+
+.questionTitleLink:hover .questionTitle {
+  color: var(--color-primary, #3b82f6);
+}
+
+.questionContent {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0 0 14px 0;
+  white-space: pre-line;
+}
+
+.tagsAndLocation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+
+.locationTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.hashtag {
+  font-size: 0.8rem;
+  color: var(--color-secondary, #3b82f6);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hashtag:hover {
+  text-decoration: underline;
+}
+
+/* Actions Footer */
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+}
+
+.actionsGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.answersToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.06));
+  color: var(--color-foreground);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+html.light .answersToggleBtn {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1e293b;
+}
+
+.answersToggleBtn:hover {
+  background: var(--hoverBtn, rgba(255, 255, 255, 0.12));
+  border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
+}
+
+.shareBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.shareBtn:hover {
+  color: var(--color-foreground);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   5. FLOATING REACTION PICKER (6 EMOJIS)
+   ========================================================================== */
+.reactionPickerContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.floatingEmojisBar {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 10px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  background: rgba(15, 15, 20, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+html.light .floatingEmojisBar {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.15);
+}
+
+.emojiBtn {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.emojiBtn:hover {
+  transform: scale(1.45) translateY(-4px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.emojiTooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.emojiBtn:hover .emojiTooltip {
+  opacity: 1;
+}
+
+.mainReactionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.06));
+  color: var(--color-foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+html.light .mainReactionBtn {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1e293b;
+}
+
+.mainReactionBtnActive {
+  background: rgba(37, 99, 235, 0.15) !important;
+  color: var(--color-primary, #3b82f6) !important;
+  border-color: rgba(37, 99, 235, 0.4) !important;
+}
+
+.reactionsCountSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.reactionsCountSummary:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ==========================================================================
+   6. REPLIES / ANSWERS SECTION
+   ========================================================================== */
+.answersSection {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+}
+
+.answersHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.answersTitle {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-foreground);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.answersCountBadge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.answerCard {
+  border-radius: 16px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  background: var(--bg-secondary, rgba(24, 24, 28, 0.6));
+  padding: 18px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+html.light .answerCard {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.answerCardBest {
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  background: rgba(16, 185, 129, 0.06) !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
+}
+
+.bestAnswerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+}
+
+.answerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.answerContent {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--color-foreground);
+  margin-bottom: 14px;
+  white-space: pre-line;
+}
+
+.answerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+}
+
+.markBestBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.markBestBtn:hover {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+/* Reply Input Form */
+.replyForm {
+  margin-top: 16px;
+}
+
+.replyInputWrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
+  background: var(--inputBg, rgba(24, 24, 28, 0.8));
+  transition: border-color 0.2s ease;
+}
+
+html.light .replyInputWrapper {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.replyInputWrapper:focus-within {
+  border-color: var(--color-primary, #2563eb);
+}
+
+.replyTextarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-foreground);
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: none;
+  line-height: 1.5;
+}
+
+.replySendBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 12px;
+  background: var(--color-primary, #2563eb);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.replySendBtn:hover {
+  background: #1d4ed8;
+}
+
+.replySendBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   7. ASK QUESTION MODAL
+   ========================================================================== */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modalBox {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 24px;
+  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.2));
+  background: var(--cardGlassBg, #101014);
+  padding: 32px 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  color: var(--color-foreground);
+  text-align: right;
+}
+
+html.light .modalBox {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+.modalCloseBtn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modalCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-foreground);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.modalIconCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(37, 99, 235, 0.15);
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  font-family: var(--font-display, inherit);
+}
+
+.modalDesc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.formGroup {
+  margin-bottom: 18px;
+}
+
+.formLabel {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  margin-bottom: 8px;
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
+  background: var(--inputBg, rgba(24, 24, 28, 0.7));
+  color: var(--color-foreground);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+html.light .formInput,
+html.light .formSelect,
+html.light .formTextarea {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #0f172a;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  border-color: var(--color-primary, #2563eb);
+}
+
+.tagsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.tagChip {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tagChipSelected {
+  background: var(--color-primary, #2563eb) !important;
+  color: #ffffff !important;
+  border-color: var(--color-primary, #2563eb) !important;
+}
+
+.authorIdentityCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  margin-bottom: 20px;
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+}
+
+.cancelBtn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitBtn:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ==========================================================================
+   AVATAR IMAGE & PRIMARY VIEW TABS ("الكل", "أسئلتي", "أجوبتي")
+   ========================================================================== */
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.mainViewTabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: var(--bg-secondary, rgba(20, 20, 24, 0.6));
+  padding: 6px;
+  border-radius: 18px;
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  backdrop-filter: blur(12px);
+}
+
+html.light .mainViewTabs {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.mainViewTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 13px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mainViewTab:hover {
+  color: var(--color-foreground);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mainViewTabActive {
+  background: var(--color-primary, #2563eb) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.2);
+  color: inherit;
+}
+
+/* ==========================================================================
+   USER ANSWER ITEM ("أجوبتي")
+   ========================================================================== */
+.userAnswerCard {
+  border-radius: 20px;
+  border: 1px solid var(--cardGlassBorder, rgba(255, 255, 255, 0.1));
+  background: var(--cardGlassBg, rgba(20, 20, 24, 0.75));
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  transition: all 0.2s ease;
+}
+
+html.light .userAnswerCard {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.05);
+}
+
+.userAnswerCard:hover {
+  border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
+  transform: translateY(-2px);
+}
+
+.parentQuestionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+}
+
+.parentQuestionTitle {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-foreground);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s ease;
+}
+
+.parentQuestionTitle:hover {
+  color: var(--color-primary, #3b82f6);
+}
+
+.myAnswerContentBox {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.06));
+  padding: 16px 20px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-foreground);
+  margin-bottom: 14px;
+  white-space: pre-line;
+}
+
+html.light .myAnswerContentBox {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.05);
+}
+

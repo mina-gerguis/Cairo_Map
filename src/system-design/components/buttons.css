@@ -185,6 +185,7 @@ html.light {
 .btn-cancel {
   background: var(--btn-cancel);
   color: var(--color-foreground);
+  border-color: var(--border-glass);
 }
 
 .btn-cancel:hover {
