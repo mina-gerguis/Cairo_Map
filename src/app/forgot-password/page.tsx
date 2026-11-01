@@ -170,7 +170,7 @@ export default function ForgotPasswordPage() {
           {/* Bottom Login Link */}
           {!form.success && !form.isBlocked && (
             <div className={styles.footerLinkWrapper}>
-              <span>{FORGOT_PASSWORD_TEXTS.REMEMBER_PASSWORD}</span>{" "}
+              <span className="text-gray">{FORGOT_PASSWORD_TEXTS.REMEMBER_PASSWORD}</span>{" "}
               <Link href="/login" className={styles.loginLink}>
                 {FORGOT_PASSWORD_TEXTS.LOGIN_LINK}
               </Link>

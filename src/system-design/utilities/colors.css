@@ -129,6 +129,10 @@ html.light .bg-subtle {
    color: #ffffff;
 }
 
+.text-gray {
+   color: #e4e4e7;
+}
+
 /* Theme Semantic Text Colors */
 .text-primary {
    color: var(--color-foreground);

@@ -19,8 +19,6 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-
-
 /* ── Background Subtle Tech Dot Grid ── */
 .loginLayout::before {
   content: "";
@@ -31,7 +29,6 @@
   pointer-events: none;
   z-index: 0;
 }
-
 
 /* ── Shadcn Studio Architectural Dashed Guide Lines ── */
 /* Center Frame Container with top and bottom infinite dashed bands */

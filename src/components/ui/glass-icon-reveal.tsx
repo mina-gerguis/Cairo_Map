@@ -384,7 +384,9 @@ uniform float uSweep;      // where that band is, plate sizes along its diagonal
 uniform float uLightAng;   // how far the rim light has turned, radians
 
 uniform vec3 uBg;
+uniform float uBgAlpha;
 uniform vec3 uPlateCol;
+uniform float uPlateAlphaCol;
 uniform vec3 uLogoCol;
 
 float px; // one device pixel in plate units
@@ -458,7 +460,7 @@ void main() {
   vec2 p = (gl_FragCoord.xy - uCenter) * px;
 
   vec4 lg = logoAt(p, uBlur, px);
-  vec3 plain = mix(uBg, lg.rgb, lg.a * uBare);
+  vec4 plain = vec4(mix(uBg, lg.rgb, lg.a * uBare), max(uBgAlpha, lg.a * uBare));
 
   vec2 nOut, dg; float g;
   float sd = shape(p, uPlateScale, uShapeN, nOut, g, dg);
@@ -503,7 +505,7 @@ void main() {
   vec3 haloCol = mix(vec3(0.62, 0.69, 0.80), vec3(1.0), uLightScene);
   bg = mix(bg, haloCol, clamp(uHalo * (0.30 * exp(-outside / (0.025 * uPlateScale)) + 0.07 * exp(-outside / (0.12 * uPlateScale))), 0.0, 1.0) * step(0.0, sd));
 
-  vec3 col = bg;
+  vec4 col = vec4(bg, uBgAlpha);
   float soft = px + uBlur * 0.8 + 0.06 * uDissolve * (1.0 - uKeep) * uPlateScale;
   if (sd < soft) {
     float y1 = 1.0 - x;
@@ -585,12 +587,14 @@ void main() {
     glass = mix(glass, vec3(1.0), sheen * mix(0.22, 0.42, uLightGlass));
 
     float cov = clamp(0.5 - sd / soft, 0.0, 1.0);
-    col = mix(bg, glass, cov);
+    float glassLum = max(max(glass.r, glass.g), glass.b);
+    float plateA = mix(uBgAlpha, clamp(uPlateAlphaCol + glassLum * 0.35, 0.0, 1.0), cov);
+    col = vec4(mix(bg, glass, cov), plateA);
   }
 
-  vec3 outc = mix(plain, col, uPlateAlpha);
-  outc += (hash(gl_FragCoord.xy) - 0.5) / 255.0;
-  outColor = vec4(outc, 1.0);
+  vec4 outc = mix(plain, col, uPlateAlpha);
+  outc.rgb += ((hash(gl_FragCoord.xy) - 0.5) / 255.0) * outc.a;
+  outColor = vec4(outc.rgb * outc.a, outc.a);
 }`
 
 /* ------------------------------------------------------------------ *
@@ -599,7 +603,7 @@ void main() {
 type Frame = ReturnType<typeof frameAt>
 
 function createRenderer(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl2", { antialias: false, premultipliedAlpha: false })
+  const gl = canvas.getContext("webgl2", { antialias: false, premultipliedAlpha: true })
   if (!gl) return null
   const compile = (type: number, src: string) => {
     const sh = gl.createShader(type)!
@@ -701,11 +705,24 @@ const smoother = (a: number, b: number, x: number) => {
   return t * t * t * (t * (t * 6 - 15) + 10)
 }
 
+function hexToRgba(hex: string): [number, number, number, number] {
+  if (!hex || hex === "transparent" || hex === "none") {
+    return [0, 0, 0, 0]
+  }
+  let h = hex.replace("#", "").trim()
+  if (h.length === 3 || h.length === 4) {
+    h = h.split("").map((c) => c + c).join("")
+  }
+  const r = (parseInt(h.slice(0, 2), 16) || 0) / 255
+  const g = (parseInt(h.slice(2, 4), 16) || 0) / 255
+  const b = (parseInt(h.slice(4, 6), 16) || 0) / 255
+  const a = h.length >= 8 ? (parseInt(h.slice(6, 8), 16) || 0) / 255 : 1
+  return [r, g, b, a]
+}
+
 function hexToRgb(hex: string): [number, number, number] {
-  let h = hex.replace("#", "")
-  if (h.length === 3) h = h.replace(/./g, "$&$&")
-  const v = parseInt(h.slice(0, 6), 16) || 0
-  return [((v >> 16) & 255) / 255, ((v >> 8) & 255) / 255, (v & 255) / 255]
+  const [r, g, b] = hexToRgba(hex)
+  return [r, g, b]
 }
 const luminance = ([r, g, b]: number[]) => 0.2126 * r + 0.7152 * g + 0.0722 * b
 
@@ -753,7 +770,13 @@ function frameAt(T: number, P: Settings, outro = 0) {
   const view = (1 + (P.startZoom - 1) * (1 - zoomIn)) * (1 - 0.045 * settle) * mix(1, P.finalScale, exit) * (1 - 0.06 * outro)
   const bandW = mix(P.bevelWidth, Math.max(P.bevelWidth, 0.4), drop)
   const plateScale = mix(P.startSize, 1, grow) * (1 + drift) * (1 + 0.14 * release * (1 - keep)) * (1 - keep * (0.03 * release + 0.06 * outro))
-  const bg = hexToRgb(P.background)
+  const isTransparent = P.background === "transparent" || P.background === "none" || !P.background
+  const bgRgba = isTransparent ? [0, 0, 0, 0] : hexToRgba(P.background)
+  const plateRgba = hexToRgba(P.plateColor)
+  const isLightLook = luminance(hexToRgb(P.plateColor)) > 0.5
+  const bg: [number, number, number] = isTransparent
+    ? (isLightLook ? [1, 1, 1] : [0.01, 0.03, 0.07])
+    : [bgRgba[0], bgRgba[1], bgRgba[2]]
   return {
     uPlateScale: plateScale,
     uShapeN: mix(2, P.corner, morph),
@@ -804,7 +827,9 @@ function frameAt(T: number, P: Settings, outro = 0) {
     uLightScene: luminance(bg) > 0.5 ? 1 : 0,
     uLightGlass: luminance(P.iconPlate ? hexToRgb(P.plateColor) : bg) > 0.5 ? 1 : 0,
     uBg: bg,
-    uPlateCol: hexToRgb(P.plateColor),
+    uBgAlpha: isTransparent ? 0 : bgRgba[3],
+    uPlateCol: [plateRgba[0], plateRgba[1], plateRgba[2]] as [number, number, number],
+    uPlateAlphaCol: plateRgba[3],
     uLogoCol: hexToRgb(P.logoColor),
   }
 }
@@ -931,7 +956,13 @@ export function GlassIconReveal({
       role="img"
       aria-label={label}
       className={cn("relative isolate cursor-pointer overflow-hidden select-none", className)}
-      style={{ backgroundColor: settings.background, ...style }}
+      style={{
+        backgroundColor:
+          settings.background === "transparent" || settings.background === "none"
+            ? "transparent"
+            : settings.background,
+        ...style,
+      }}
       onClick={(e) => {
         engineRef.current?.replay()
         onClick?.(e)
@@ -1180,7 +1211,7 @@ export function GlassRevealQareeb({
       label="قريب"
       look={look}
       logoColor={logoColor ?? (isDark ? "#38bdf8" : "#2563eb")}
-      background={background ?? (isDark ? "#030712" : "#ffffff")}
+      background={background ?? "transparent"}
       plateColor={plateColor ?? (isDark ? "#0b1329" : "#f1f5f9")}
       iconPlate={iconPlate ?? true}
       logoScale={0.64}

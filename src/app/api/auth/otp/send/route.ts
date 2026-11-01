@@ -17,12 +17,6 @@ export async function POST(request: Request) {
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
 
-    if (!smtpUser || !smtpPass) {
-      return NextResponse.json({
-        error: 'لم يتم العثور على إعدادات البريد SMTP في الخادم'
-      }, { status: 500 });
-    }
-
     // Generate 6-digit random code
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     // Expiry: 10 minutes from now
@@ -31,6 +25,25 @@ export async function POST(request: Request) {
     // Create HMAC hash of (email + otp + expiresAt)
     const hashData = `${email.toLowerCase().trim()}:${otp}:${expiresAt}`;
     const hash = crypto.createHmac('sha256', OTP_SECRET).update(hashData).digest('hex');
+
+    if (!smtpUser || !smtpPass) {
+      // In development mode, log the OTP to console and allow testing without blockage
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`\n=======================================================\n[DEV MODE] SMTP not configured in environment variables.\n🔑 Generated OTP for ${email}: ${otp}\n=======================================================\n`);
+        return NextResponse.json({
+          success: true,
+          hash,
+          expiresAt,
+          devCode: otp,
+          devWarning: 'لم يتم العثور على إعدادات البريد SMTP في ملف البيئة. تم توفير كود التحقق تلقائياً في وضع التطوير.',
+          message: 'تم توليد رمز التحقق (وضع التطوير)'
+        });
+      }
+
+      return NextResponse.json({
+        error: 'لم يتم العثور على إعدادات البريد SMTP في الخادم. يرجى إضافة متغيرات SMTP (SMTP_USER و SMTP_PASS) في لوحة تحكم الاستضافة (Vercel).'
+      }, { status: 500 });
+    }
 
     // Configure transporter
     const transporter = nodemailer.createTransport({
