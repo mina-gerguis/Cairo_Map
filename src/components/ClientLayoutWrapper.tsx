@@ -68,26 +68,33 @@ export default function ClientLayoutWrapper({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    if (mainContentRef.current) {
-      gsap.fromTo(
-        mainContentRef.current,
-        { autoAlpha: 0.82, y: 10 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.35,
-          ease: "power2.out",
-          clearProps: "transform,opacity,visibility",
-        }
-      );
+    const runRouteTransition = () => {
+      if (mainContentRef.current) {
+        gsap.fromTo(
+          mainContentRef.current,
+          { autoAlpha: 0.82, y: 10 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.35,
+            ease: "power2.out",
+            clearProps: "transform,opacity,visibility",
+          }
+        );
+      }
+
+      // Refresh ScrollTriggers for newly mounted route
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 150);
+    };
+
+    if (document.documentElement.classList.contains("is-preloading")) {
+      window.addEventListener("siteready", runRouteTransition, { once: true });
+      return () => window.removeEventListener("siteready", runRouteTransition);
+    } else {
+      runRouteTransition();
     }
-
-    // Refresh ScrollTriggers for newly mounted route
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 150);
-
-    return () => clearTimeout(timer);
   }, [pathname]);
 
   // Global Ctrl+M keyboard shortcut for toggling between light and dark modes

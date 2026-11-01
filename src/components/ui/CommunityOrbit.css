@@ -1,0 +1,520 @@
+/* ==========================================================================
+   CommunityOrbit – Modern Anti-Gravity Orbit Hero
+   Clean, refined styling matching reference design with full dark-mode support
+   ========================================================================== */
+
+/* ── 1. Section Root ── */
+.orbit-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #ffffff;
+  padding: 1.5rem 1rem 3.5rem;
+  color: #1f1f1f;
+  box-sizing: border-box;
+}
+
+html:not(.light) .orbit-section,
+.dark .orbit-section {
+  background-color: #09090b;
+  color: #f4f4f5;
+}
+
+/* ── 2. Responsive Frame & Stage ── */
+.orbit-frame {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+.orbit-stage {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1200px;
+  height: 490px;
+  transform-origin: top center;
+}
+
+/* ── 3. SVG Arc Paths ── */
+.orbit-svg {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  width: 1200px;
+  height: 490px;
+  mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+}
+
+.orbit-arc-outer {
+  stroke: #e2e8f0;
+  fill: none;
+  stroke-width: 1.75px;
+}
+
+html:not(.light) .orbit-arc-outer,
+.dark .orbit-arc-outer {
+  stroke: rgba(255, 255, 255, 0.12);
+}
+
+.orbit-arc-inner {
+  stroke: #cbd5e1;
+  fill: none;
+  stroke-width: 2.25px;
+}
+
+html:not(.light) .orbit-arc-inner,
+.dark .orbit-arc-inner {
+  stroke: rgba(255, 255, 255, 0.16);
+}
+
+/* ── 4. Item Anchor: NEVER TOUCHED BY GSAP TRANSFORMS ── */
+.orbit-item-anchor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.orbit-item-reveal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.orbit-item-float {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.orbit-item-float:hover {
+  transform: scale(1.08) !important;
+}
+
+/* ── 5. Avatar Component ── */
+.orbit-avatar-wrapper {
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  padding: 3px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: box-shadow 0.25s ease;
+}
+
+html:not(.light) .orbit-avatar-wrapper,
+.dark .orbit-avatar-wrapper {
+  border-color: rgba(255, 255, 255, 0.12);
+  background-color: #18181b;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.orbit-avatar-inner {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orbit-avatar-img {
+  height: 80%;
+  width: 80%;
+  transform: translateY(2%) scale(1.12);
+  user-select: none;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
+
+/* ── 6. Pill Component ── */
+.orbit-pill {
+  display: inline-flex;
+  min-height: 29px;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  padding: 5px 13px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+}
+
+html:not(.light) .orbit-pill,
+.dark .orbit-pill {
+  border-color: rgba(255, 255, 255, 0.12);
+  background-color: #18181b;
+  color: #e4e4e7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.orbit-pill-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  font-size: 13.5px;
+  line-height: 1;
+}
+
+.orbit-pill-label {
+  line-height: 1;
+  font-family: inherit;
+}
+
+/* ── 7. Card Component (Rocket / Star / Box) ── */
+.orbit-card {
+  position: relative;
+  display: flex;
+  height: 52px;
+  width: 52px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: #f9fafb;
+  font-size: 23px;
+  line-height: 1;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+html:not(.light) .orbit-card,
+.dark .orbit-card {
+  border-color: rgba(255, 255, 255, 0.12);
+  background-color: #18181b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.orbit-card-emoji {
+  user-select: none;
+  line-height: 1;
+}
+
+.orbit-card-badge {
+  position: absolute;
+  bottom: -6px;
+  right: -8px;
+  display: inline-flex;
+  height: 19px;
+  align-items: center;
+  gap: 2px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  padding: 0 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  color: #4b5563;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+}
+
+html:not(.light) .orbit-card-badge,
+.dark .orbit-card-badge {
+  border-color: rgba(255, 255, 255, 0.14);
+  background-color: #27272a;
+  color: #e4e4e7;
+}
+
+/* ── 8. Status Component (Green pill) ── */
+.orbit-status {
+  display: inline-flex;
+  height: 31px;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  border-radius: 9999px;
+  border: 1px solid #a7f3d0;
+  background-color: #d1fae5;
+  padding: 0 13px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #065f46;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+}
+
+html:not(.light) .orbit-status,
+.dark .orbit-status {
+  border-color: #065f46;
+  background-color: #064e3b;
+  color: #a7f3d0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.orbit-status-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orbit-status-icon {
+  fill: #059669;
+  color: #d1fae5;
+}
+
+html:not(.light) .orbit-status-icon,
+.dark .orbit-status-icon {
+  fill: #34d399;
+  color: #064e3b;
+}
+
+.orbit-status-label {
+  line-height: 1;
+}
+
+/* ── 9. Check Component (Green circle) ── */
+.orbit-check {
+  display: flex;
+  height: 48px;
+  width: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid #a7f3d0;
+  background-color: #d1fae5;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.18);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+html:not(.light) .orbit-check,
+.dark .orbit-check {
+  border-color: #065f46;
+  background-color: #064e3b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.orbit-check-icon {
+  fill: #059669;
+  color: #d1fae5;
+}
+
+html:not(.light) .orbit-check-icon,
+.dark .orbit-check-icon {
+  fill: #34d399;
+  color: #064e3b;
+}
+
+/* ── 10. Center Stats (Semicircle interior) ── */
+.orbit-stats-grid {
+  position: absolute;
+  left: 50%;
+  top: 360px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.orbit-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.orbit-stat-value {
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: #062e25;
+  font-variant-numeric: tabular-nums;
+  font-family: inherit;
+}
+
+html:not(.light) .orbit-stat-value,
+.dark .orbit-stat-value {
+  color: #ffffff;
+}
+
+.orbit-stat-label {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  color: #64748b;
+  font-family: inherit;
+}
+
+html:not(.light) .orbit-stat-label,
+.dark .orbit-stat-label {
+  color: #a1a1aa;
+}
+
+/* ── 11. Headline & Subheadline ── */
+.orbit-headline {
+  margin: 20px auto 0;
+  max-width: 820px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: #0f172a;
+}
+
+@media (min-width: 640px) {
+  .orbit-headline {
+    font-size: 36px;
+  }
+}
+
+html:not(.light) .orbit-headline,
+.dark .orbit-headline {
+  color: #ffffff;
+}
+
+.orbit-subheadline {
+  text-align: center;
+  font-size: 1.05rem;
+  color: #64748b;
+  max-width: 720px;
+  margin: 14px auto 0;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+html:not(.light) .orbit-subheadline,
+.dark .orbit-subheadline {
+  color: #a1a1aa;
+}
+
+/* ── 12. Children Slot (Search box) ── */
+.orbit-children-slot {
+  position: relative;
+  z-index: 20;
+  margin: 26px auto 0;
+  max-width: 760px;
+  padding: 0 16px;
+}
+
+/* ── 13. Tags Container & Pills ── */
+.orbit-tags-container {
+  margin: 32px auto 0;
+  display: flex;
+  max-width: 840px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.orbit-tag-pill {
+  position: relative;
+  display: inline-flex;
+  height: 42px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  padding-left: 18px;
+  padding-right: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+/* RTL adjustment: In Arabic, padding is inverted */
+[dir="rtl"] .orbit-tag-pill,
+body[dir="rtl"] .orbit-tag-pill {
+  padding-left: 18px;
+  padding-right: 8px;
+}
+
+.orbit-tag-pill:hover {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1.5px);
+}
+
+.orbit-tag-pill:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
+}
+
+html:not(.light) .orbit-tag-pill,
+.dark .orbit-tag-pill {
+  border-color: rgba(255, 255, 255, 0.12);
+  background-color: #18181b;
+  color: #f4f4f5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+html:not(.light) .orbit-tag-pill:hover,
+.dark .orbit-tag-pill:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background-color: #27272a;
+}
+
+.orbit-tag-icon-bubble {
+  display: flex;
+  height: 28px;
+  width: 28px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #ecfdf5;
+  color: #059669;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.orbit-tag-pill:hover .orbit-tag-icon-bubble {
+  background-color: #059669;
+  color: #ffffff;
+}
+
+html:not(.light) .orbit-tag-icon-bubble,
+.dark .orbit-tag-icon-bubble {
+  background-color: #064e3b;
+  color: #6ee7b7;
+}
+
+html:not(.light) .orbit-tag-pill:hover .orbit-tag-icon-bubble,
+.dark .orbit-tag-pill:hover .orbit-tag-icon-bubble {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.orbit-tag-icon-bubble svg,
+.orbit-tag-icon-bubble img {
+  height: 15px;
+  width: 15px;
+}

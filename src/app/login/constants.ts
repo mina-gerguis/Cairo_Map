@@ -13,7 +13,7 @@ export const LOGIN_MESSAGES = {
 
 export const LOGIN_TEXTS = {
   TITLE: "أهلاً بك مجدداً",
-  SUBTITLE: "سجّل دخولك للوصول لأماكنك المفضلة وتجربة مخصصة",
+  SUBTITLE: "سجّل دخولك للوصول لأماكنك المفضلة وتجربة فريدة",
   MFA_TITLE: "التحقق الثنائي",
   MFA_SUBTITLE: "يرجى إدخال الكود المكون من 6 أرقام من تطبيق المصادقة الخاص بك",
   PASSKEY_BUTTON: "متابعة عبر Face ID / بصمة المرور",

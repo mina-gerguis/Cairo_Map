@@ -1,35 +1,74 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { GlassRevealQareeb } from "@/components/ui/glass-icon-reveal";
 import { QareebLogoEffect } from "@/components/ui/qareeb-logo-effect";
+import { usePreloader } from "@/context/PreloaderContext";
 import styles from "./SitePreloader.module.css";
 
-interface SitePreloaderProps {
+export interface SitePreloaderProps {
   /**
-   * Animation speed multiplier for the logo stroke drawing (0.8 = ~2.4s total animation)
+   * Animation speed multiplier (1 = ~3s reveal, 1.2 = ~2.5s)
    */
   speed?: number;
   /**
-   * Logo size in pixels (default 130 for a sleek compact appearance)
+   * Logo tile size in pixels (default 240 for sleek glass presence)
    */
   size?: number;
+  /**
+   * Style of reveal:
+   * "glass" -> WebGL2 chromatic dispersion liquid glass reveal
+   * "draw"  -> SVG stroke calligraphy drawing effect
+   */
+  variant?: "glass" | "draw";
+  /**
+   * Color scheme: "auto" (detects current site theme), "dark", or "light"
+   */
+  theme?: "auto" | "dark" | "light";
+  /**
+   * Whether to loop the animation continuously until page load finishes
+   */
+  loop?: boolean;
 }
 
 export const SitePreloader: React.FC<SitePreloaderProps> = ({
-  speed = 0.8,
-  size = 130,
+  speed = 1.05,
+  size = 240,
+  variant = "glass",
+  theme = "auto",
+  loop = false,
 }) => {
   const [isMounted, setIsMounted] = useState<boolean>(true);
   const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
+  const [currentTheme, setCurrentTheme] = useState<"dark" | "light">("dark");
+
   const animationFinishedRef = useRef<boolean>(false);
   const pageLoadedRef = useRef<boolean>(false);
 
+  // 1. Theme resolution
   useEffect(() => {
-    // 1. Lock document scrolling while preloader is active
+    if (theme !== "auto") {
+      setCurrentTheme(theme);
+      return;
+    }
+
+    const resolveTheme = () => {
+      const isLight =
+        document.documentElement.classList.contains("light") ||
+        localStorage.getItem("dftry_theme") === "light";
+      setCurrentTheme(isLight ? "light" : "dark");
+    };
+
+    resolveTheme();
+    window.addEventListener("themechange", resolveTheme);
+    return () => window.removeEventListener("themechange", resolveTheme);
+  }, [theme]);
+
+  // 2. Page readiness & scroll locking
+  useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // 2. Check document readiness
     const onPageReady = () => {
       pageLoadedRef.current = true;
       checkAndDismiss();
@@ -41,12 +80,12 @@ export const SitePreloader: React.FC<SitePreloaderProps> = ({
       window.addEventListener("load", onPageReady);
     }
 
-    // 3. Fallback safety timer: dismiss at most after 3.8s even on slow networks
+    // Safety fallback timer: dismiss at most after 4s on slow networks
     const fallbackTimer = setTimeout(() => {
       pageLoadedRef.current = true;
       animationFinishedRef.current = true;
       triggerDismiss();
-    }, 3800);
+    }, 4000);
 
     return () => {
       document.body.style.overflow = originalOverflow;
@@ -61,9 +100,14 @@ export const SitePreloader: React.FC<SitePreloaderProps> = ({
     }
   };
 
+  const { markSiteReady } = usePreloader();
+
   const triggerDismiss = () => {
     setIsFadingOut(true);
     document.body.style.overflow = "";
+
+    // 1. Unfreeze page animations and trigger global site ready event
+    markSiteReady();
 
     // Allow CSS transition (650ms) to finish before unmounting from DOM
     setTimeout(() => {
@@ -73,38 +117,61 @@ export const SitePreloader: React.FC<SitePreloaderProps> = ({
 
   const handleAnimationComplete = () => {
     animationFinishedRef.current = true;
-    // Add small pause (200ms) to let the illuminated filled logo be admired
+    // Brief pause to admire the unveiled clear mark
     setTimeout(() => {
       checkAndDismiss();
-    }, 200);
+    }, 180);
   };
 
   if (!isMounted) return null;
 
+  const isLight = currentTheme === "light";
+
   return (
     <div
       className={`${styles.preloaderOverlay} ${
-        isFadingOut ? styles.preloaderOverlayFading : ""
-      }`}
+        isLight ? styles.preloaderLight : styles.preloaderDark
+      } ${isFadingOut ? styles.preloaderOverlayFading : ""}`}
       aria-hidden={isFadingOut}
       role="progressbar"
       aria-label="جاري تحميل الموقع"
     >
-      {/* Background Ambient Glow Accents (Matching Slide 3) */}
+      {/* Background Ambient Glow Accents */}
       <div className={styles.ambientOrb1} />
       <div className={styles.ambientOrb2} />
       <div className={styles.ambientOrb3} />
 
       {/* Center Stage */}
       <div className={styles.contentStage}>
-        {/* Animated Brand Logo Motion Graphic */}
-        <div className={styles.logoWrapper}>
-          <QareebLogoEffect
-            speed={speed}
-            size={size}
-            theme="light"
-            onAnimationComplete={handleAnimationComplete}
-          />
+        {/* Animated Brand Logo Stage */}
+        <div className={styles.glassStageWrapper}>
+          {variant === "glass" ? (
+            <div
+              className={styles.glassCanvasWrapper}
+              style={{ width: size, height: size }}
+            >
+              <GlassRevealQareeb
+                look={isLight ? "light" : "dark"}
+                tileSize={size}
+                speed={speed}
+                loop={loop}
+                background={isLight ? "#ffffff" : "#030712"}
+                plateColor={isLight ? "#f1f5f9" : "#080e1e"}
+                logoColor={isLight ? "#1d4ed8" : "#38bdf8"}
+                onComplete={handleAnimationComplete}
+                className="w-full h-full"
+              />
+            </div>
+          ) : (
+            <div style={{ width: size, height: size }}>
+              <QareebLogoEffect
+                speed={speed}
+                size={Math.round(size * 0.75)}
+                theme={isLight ? "light" : "dark"}
+                onAnimationComplete={handleAnimationComplete}
+              />
+            </div>
+          )}
         </div>
 
         {/* Brand Name & Slogan */}

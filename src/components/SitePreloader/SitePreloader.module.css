@@ -1,6 +1,6 @@
 /* ============================================================================
    SITE PRELOADER MODULE CSS
-   Clean, Bright White Aesthetic with Brand Royal Blue Accent
+   Supports Light & Dark Aesthetics with Glass Refraction Stage
    ============================================================================ */
 
 .preloaderOverlay {
@@ -14,7 +14,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
   overflow: hidden;
   user-select: none;
   touch-action: none;
@@ -22,61 +21,92 @@
   opacity: 1;
   transform: scale(1);
   filter: blur(0px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform, filter;
   direction: rtl;
 }
 
+.preloaderLight {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.preloaderDark {
+  background: #030712;
+  color: #f8fafc;
+}
+
 .preloaderOverlayFading {
   opacity: 0 !important;
-  transform: scale(1.04) !important;
-  filter: blur(8px) !important;
+  transform: scale(1.05) !important;
+  filter: blur(10px) !important;
   pointer-events: none !important;
 }
 
-/* ── Soft Ambient Glow Accents on Pure White ── */
+/* ── Soft Ambient Glow Accents ── */
 .ambientOrb1 {
   position: absolute;
   top: -12%;
   right: -8%;
-  width: 550px;
-  height: 550px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 65%);
+  width: 580px;
+  height: 580px;
   border-radius: 50%;
-  filter: blur(65px);
+  filter: blur(70px);
   pointer-events: none;
   z-index: 0;
   animation: orbPulse 6s ease-in-out infinite alternate;
+}
+
+.preloaderLight .ambientOrb1 {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.09) 0%, transparent 65%);
+}
+
+.preloaderDark .ambientOrb1 {
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 65%);
 }
 
 .ambientOrb2 {
   position: absolute;
   bottom: -15%;
   left: -8%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.07) 0%, transparent 65%);
+  width: 520px;
+  height: 520px;
   border-radius: 50%;
-  filter: blur(65px);
+  filter: blur(70px);
   pointer-events: none;
   z-index: 0;
   animation: orbPulse 7s ease-in-out infinite alternate-reverse;
+}
+
+.preloaderLight .ambientOrb2 {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, transparent 65%);
+}
+
+.preloaderDark .ambientOrb2 {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.18) 0%, transparent 65%);
 }
 
 .ambientOrb3 {
   position: absolute;
   top: 48%;
   left: 28%;
-  width: 320px;
-  height: 320px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 65%);
+  width: 360px;
+  height: 360px;
   border-radius: 50%;
-  filter: blur(55px);
+  filter: blur(60px);
   pointer-events: none;
   z-index: 0;
   animation: orbPulse 5s ease-in-out infinite alternate;
+}
+
+.preloaderLight .ambientOrb3 {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.07) 0%, transparent 65%);
+}
+
+.preloaderDark .ambientOrb3 {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.16) 0%, transparent 65%);
 }
 
 @keyframes orbPulse {
@@ -102,62 +132,108 @@
   padding: 20px;
 }
 
-/* ── Logo Effect Wrapper ── */
-.logoWrapper {
+/* ── Glass Stage Wrapper ── */
+.glassStageWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 6px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.glassCanvasWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s ease;
 }
 
 /* ── Brand Typography ── */
 .brandTitle {
-  font-size: 1.85rem;
+  font-size: 1.95rem;
   font-weight: 800;
-  margin: 10px 0 4px 0;
+  margin: 12px 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.preloaderLight .brandTitle {
   background: linear-gradient(180deg, #0f172a 20%, #1d4ed8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  letter-spacing: -0.01em;
-  filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.15));
+  filter: drop-shadow(0 2px 10px rgba(37, 99, 235, 0.15));
+}
+
+.preloaderDark .brandTitle {
+  background: linear-gradient(180deg, #ffffff 25%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(59, 130, 246, 0.45));
 }
 
 .brandDesc {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  color: #64748b;
-  margin: 0 0 20px 0;
-  max-width: 300px;
+  margin: 0 0 22px 0;
+  max-width: 320px;
   line-height: 1.5;
   letter-spacing: 0.01em;
 }
 
-/* ── Sleek Progress Bar on White Background ── */
+.preloaderLight .brandDesc {
+  color: #64748b;
+}
+
+.preloaderDark .brandDesc {
+  color: #94a3b8;
+}
+
+/* ── Sleek Glowing Progress Bar ── */
 .progressTrack {
-  width: 125px;
-  height: 3px;
-  background: #f1f5f9;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  width: 140px;
+  height: 3.5px;
   border-radius: 999px;
   overflow: hidden;
   position: relative;
+}
+
+.preloaderLight .progressTrack {
+  background: #e2e8f0;
+  border: 1px solid rgba(0, 0, 0, 0.04);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.preloaderDark .progressTrack {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .progressBar {
   position: absolute;
   top: 0;
   left: 0;
-  width: 45%;
+  width: 50%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, #2563eb, #3b82f6, #60a5fa, transparent);
   border-radius: 999px;
   animation: preloaderTrackAnim 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+.preloaderLight .progressBar {
+  background: linear-gradient(90deg, transparent, #2563eb, #3b82f6, #60a5fa, transparent);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+}
+
+.preloaderDark .progressBar {
+  background: linear-gradient(90deg, transparent, #38bdf8, #60a5fa, #93c5fd, transparent);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.65);
+}
+
 @keyframes preloaderTrackAnim {
   0% {
-    left: -50%;
+    left: -55%;
   }
   100% {
     left: 110%;

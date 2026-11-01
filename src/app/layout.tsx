@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
+import { PreloaderProvider } from "@/context/PreloaderContext";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 
 const almarai = Almarai({
@@ -145,8 +146,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={almarai.variable}>
+    <html lang="ar" dir="rtl" className={`is-preloading ${almarai.variable}`}>
       <head>
+        {/* Instant preloading flag & theme initialization to eliminate layout/animation shifts */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('dftry_theme');
+                if (theme === 'light') document.documentElement.classList.add('light');
+                document.documentElement.classList.add('is-preloading');
+                window.__SITE_READY__ = false;
+              } catch(e) {}
+            `,
+          }}
+        />
         {/* Google Search Console Verification */}
         <meta
           name="google-site-verification"
@@ -185,9 +199,11 @@ export default function RootLayout({
       <body className="antialiased">
         <AuthProvider>
           <NotificationProvider>
-            <ClientLayoutWrapper>
-              {children}
-            </ClientLayoutWrapper>
+            <PreloaderProvider>
+              <ClientLayoutWrapper>
+                {children}
+              </ClientLayoutWrapper>
+            </PreloaderProvider>
           </NotificationProvider>
         </AuthProvider>
       </body>

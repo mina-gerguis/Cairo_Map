@@ -21,31 +21,10 @@ import dynamic from "next/dynamic";
 import AdSlider from "@/components/AdSlider";
 const TextLoop = dynamic(() => import("@/components/ui/TextLoop"), { ssr: false });
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
-const WarpText = dynamic(() => import("@/components/ui/WarpText"), {
-  ssr: false,
-  loading: () => (
-    <div
-      style={{
-        minHeight: "140px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "clamp(2rem, 5vw, 3.5rem)",
-        fontWeight: "800",
-        lineHeight: "1.25",
-        fontFamily: "var(--font-heading)",
-        color: "var(--color-foreground)",
-        textAlign: "center",
-        whiteSpace: "pre-line",
-      }}
-    >
-      {"استكشف مصر\nوتنقّل بذكاء وسرعة ودقة متناهية"}
-    </div>
-  ),
-});
 import { FamousCity, INITIAL_FAMOUS_CITIES, getStoredCities, saveStoredCities } from "@/data/cities";
 import CityDetailModal from "@/components/cities/CityDetailModal";
 import { useGSAP, gsap, ScrollTrigger } from "@/lib/gsap";
+import CommunityOrbit, { OrbitItem, OrbitStat, OrbitTag } from "@/components/ui/CommunityOrbit";
 
 // ── 1. دالة توحيد وتنظيف النصوص العربية لبحث دقيق ──
 function normalizeArabic(text: string): string {
@@ -368,23 +347,49 @@ export default function HomePage() {
   // ── GSAP Orchestrated Animations across Home Page ──
   useGSAP(() => {
     // 1. Hero entrance sequence
-    if (heroSectionRef.current) {
-      const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      const badge = heroSectionRef.current.querySelector(".hero-badge-item");
-      const title = heroSectionRef.current.querySelector(".hero-title-item");
-      const subtitle = heroSectionRef.current.querySelector(".hero-subtitle-item");
-      const searchBox = searchContainerRef.current;
-      const tags = heroSectionRef.current.querySelectorAll(".hero-tag-item");
-      const weatherWidget = heroSectionRef.current.querySelector(".hero-weather-item");
+    const runHeroEntrance = () => {
+      if (heroSectionRef.current) {
+        const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        const badge = heroSectionRef.current.querySelector(".hero-badge-item");
+        const title = heroSectionRef.current.querySelector(".hero-title-item");
+        const subtitle = heroSectionRef.current.querySelector(".hero-subtitle-item");
+        const searchBox = searchContainerRef.current;
+        const tags = heroSectionRef.current.querySelectorAll(".hero-tag-item");
+        const weatherWidget = heroSectionRef.current.querySelector(".hero-weather-item");
 
-      if (badge) heroTl.fromTo(badge, { autoAlpha: 0, y: -15, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, clearProps: "transform" });
-      if (title) heroTl.fromTo(title, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 0.55, clearProps: "transform" }, "-=0.25");
-      if (subtitle) heroTl.fromTo(subtitle, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, clearProps: "transform" }, "-=0.35");
-      if (searchBox) heroTl.fromTo(searchBox, { autoAlpha: 0, y: 20, scale: 0.98 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, clearProps: "transform" }, "-=0.3");
-      if (tags && tags.length > 0) {
-        heroTl.fromTo(tags, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, stagger: 0.04, duration: 0.4, clearProps: "transform" }, "-=0.25");
+        if (badge) heroTl.fromTo(badge, { autoAlpha: 0, y: -15, scale: 0.95 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.45, clearProps: "transform" });
+        if (title) heroTl.fromTo(title, { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 0.55, clearProps: "transform" }, "-=0.25");
+        if (subtitle) heroTl.fromTo(subtitle, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, clearProps: "transform" }, "-=0.35");
+        if (searchBox) heroTl.fromTo(searchBox, { autoAlpha: 0, y: 20, scale: 0.98 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.5, clearProps: "transform" }, "-=0.3");
+        if (tags && tags.length > 0) {
+          heroTl.fromTo(tags, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, stagger: 0.04, duration: 0.4, clearProps: "transform" }, "-=0.25");
+        }
+        if (weatherWidget) heroTl.fromTo(weatherWidget, { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 0.45, clearProps: "transform" }, "-=0.2");
       }
-      if (weatherWidget) heroTl.fromTo(weatherWidget, { autoAlpha: 0, y: 15 }, { autoAlpha: 1, y: 0, duration: 0.45, clearProps: "transform" }, "-=0.2");
+      ScrollTrigger.refresh();
+    };
+
+    const isPreloading =
+      typeof window !== "undefined" &&
+      (document.documentElement.classList.contains("is-preloading") ||
+        (window as any).__SITE_READY__ === false);
+
+    if (isPreloading) {
+      // Hold hero elements in hidden state until preloader completes and dissolves
+      if (heroSectionRef.current) {
+        const badge = heroSectionRef.current.querySelector(".hero-badge-item");
+        const title = heroSectionRef.current.querySelector(".hero-title-item");
+        const subtitle = heroSectionRef.current.querySelector(".hero-subtitle-item");
+        const searchBox = searchContainerRef.current;
+        const tags = heroSectionRef.current.querySelectorAll(".hero-tag-item");
+        const weatherWidget = heroSectionRef.current.querySelector(".hero-weather-item");
+        const heroElements = [badge, title, subtitle, searchBox, ...(tags ? Array.from(tags) : []), weatherWidget].filter(Boolean);
+        gsap.set(heroElements, { autoAlpha: 0 });
+      }
+
+      window.addEventListener("siteready", runHeroEntrance, { once: true });
+    } else {
+      runHeroEntrance();
     }
 
     // 2. Famous Cities Section
@@ -968,6 +973,120 @@ export default function HomePage() {
     { label: "ازاي اروح؟", route: "/directions", icon: "arab_republic _of_egypt.webp" },
   ];
 
+  const orbitItems: OrbitItem[] = [
+    // ── Outer Ring (Radius: 492) ──
+    {
+      kind: "card",
+      ring: "outer",
+      angle: 158,
+      emoji: "🚀",
+      badge: "12",
+    },
+    {
+      kind: "avatar",
+      ring: "outer",
+      angle: 135,
+      src: "/images/metro/Cairo_metro.webp",
+      alt: "مترو القاهرة",
+      color: "#ffffff",
+      size: 66,
+    },
+    {
+      kind: "pill",
+      ring: "outer",
+      angle: 112,
+      icon: "🐻",
+      label: "8 مسارات جديدة",
+    },
+    {
+      kind: "avatar",
+      ring: "outer",
+      angle: 90,
+      src: "/images/locations/governorates/egypt.webp",
+      alt: "شعار جمهورية مصر العربية",
+      color: "#ffffff",
+      size: 72,
+    },
+    {
+      kind: "card",
+      ring: "outer",
+      angle: 68,
+      emoji: "⭐",
+      badge: "240",
+    },
+    {
+      kind: "avatar",
+      ring: "outer",
+      angle: 42,
+      src: "/images/memoji/memo_1.webp",
+      alt: "مسافرة قريبة",
+      color: "#ede9fe",
+      size: 74,
+      hasHalo: true,
+      haloColor: "rgba(214, 205, 252, 0.7)",
+    },
+    {
+      kind: "avatar",
+      ring: "outer",
+      angle: 20,
+      src: "/images/transit/monorail_west.webp",
+      alt: "مونوريل غرب النيل",
+      color: "#ffffff",
+      size: 66,
+    },
+
+    // ── Inner Ring (Radius: 404) ──
+    {
+      kind: "status",
+      ring: "inner",
+      angle: 155,
+      label: "دليلك الشامل جاهز",
+    },
+    {
+      kind: "avatar",
+      ring: "inner",
+      angle: 130,
+      src: "/images/memoji/memo_3.webp",
+      alt: "مستكشفة القاهرة",
+      color: "#fef3c7",
+      size: 70,
+    },
+    {
+      kind: "pill",
+      ring: "inner",
+      angle: 110,
+      icon: "🔥",
+      label: "18 خدمة",
+    },
+    {
+      kind: "avatar",
+      ring: "inner",
+      angle: 90,
+      src: "/images/memoji/memo_2.webp",
+      alt: "مستخدم جديد",
+      color: "#dbeafe",
+      size: 58,
+    },
+    {
+      kind: "card",
+      ring: "inner",
+      angle: 70,
+      emoji: "📦",
+    },
+    {
+      kind: "check",
+      ring: "inner",
+      angle: 45,
+    },
+    {
+      kind: "pill",
+      ring: "inner",
+      angle: 22,
+      icon: "💬",
+      label: "36 تحديث",
+    },
+  ];
+
   const mainServices = [
     {
       id: "save-location",
@@ -1034,133 +1153,85 @@ export default function HomePage() {
     },
   ];
 
+  const orbitStats: OrbitStat[] = [
+    {
+      value: placesCount > 0 ? `${placesCount.toLocaleString("en-US")}+` : "2,500+",
+      label: "مكان مسجل ومُوثّق",
+    },
+    {
+      value: phonesCount > 0 ? `${phonesCount.toLocaleString("en-US")}+` : "1,200+",
+      label: "رقم هاتف وكود سريع",
+    },
+    {
+      value: `${mainServices.length}+`,
+      label: "عدد خدمات الموقع",
+    },
+  ];
+
+  const orbitTags: OrbitTag[] = quickSearchTags.map((tag) => ({
+    label: tag.label,
+    icon: (
+      <Image
+        src={getValidImageSrc(tag.icon)}
+        alt={tag.label}
+        width={16}
+        height={16}
+        style={{ width: "16px", height: "16px", objectFit: "contain" }}
+      />
+    ),
+    onClick: () => {
+      if (tag.route) {
+        router.push(tag.route);
+      }
+    },
+  }));
+
 
   const categoryCards = CATEGORIES_STRUCTURE;
 
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-foreground)", fontFamily: "var(--font-heading)" }}>
-      {/* ── 1. HERO SECTION ── */}
-      <section
-        ref={heroSectionRef}
-        style={{
-          position: "relative",
-          padding: "60px 20px 80px 20px",
-          paddingBottom: "20px",
-          overflow: "visible",
-          background: "radial-gradient(circle at 50% 0%, rgba(0, 111, 238, 0.15) 0%, rgba(0,0,0,0) 70%)",
-        }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
-          {/* Badge */}
-          <div
-            className="hero-badge-item"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "8px 18px",
-              borderRadius: "999px",
-              backgroundColor: "var(--bg-glass-card)",
-              border: "1px solid var(--border-glass-bright)",
-              fontSize: "0.9rem",
-              color: "var(--color-primary)",
-              marginBottom: "24px",
-              fontFamily: "var(--font-display)",
-              fontWeight: "500"
-            }}>
-            <span>✨</span>
-            <span>دليلك الذكي الشامل لشوارع وأماكن القاهرة</span>
-          </div>
-
-          {/* Title with WarpText effect */}
-          <h1
-            className="hero-title-item"
-            style={{
-              position: "relative",
-              marginBottom: "16px",
-            }}>
-            <span
-              style={{
-                position: "absolute",
-                width: "1px",
-                height: "1px",
-                padding: "0",
-                margin: "-1px",
-                overflow: "hidden",
-                clip: "rect(0, 0, 0, 0)",
-                whiteSpace: "nowrap",
-                border: "0",
-              }}
-            >
-              استكشف مصر وتنقّل بذكاء وسرعة ودقة متناهية
-            </span>
-            <WarpText
-              text={"استكشف مصر\nوتنقّل بذكاء وسرعة ودقة متناهية"}
-              fontSize="clamp(2.1rem, 5.2vw, 3.5rem)"
-              fontWeight={800}
-              fontFamily="var(--font-heading)"
-              color="var(--color-foreground)"
-              lineHeight={1.25}
-              letterSpacing={0}
-              warpStrength={0.07}
-              warpScale={1.6}
-              speed={0.55}
-              lens="bulge"
-              pointerInfluence={0.42}
-              pointerStrength={0.38}
-              refraction={0.016}
-              chromatic={0.25}
-              idleDrift={0.2}
-              ripple
-              clickRipple
-              intro
-              style={{
-                height: "clamp(130px, 18vw, 190px)",
-                width: "100%",
-                maxWidth: "960px",
-                margin: "0 auto",
-              }}
-            />
-          </h1>
-
-          {/* Subtitle */}
-          <p
-            className="sub-title hero-subtitle-item"
-            style={{
-              fontSize: "clamp(1rem, 2vw, 1.25rem)",
-              color: "var(--text-secondary)",
-              maxWidth: "780px",
-              margin: "0 auto 36px auto",
-              lineHeight: "1.7",
-              fontWeight: "400",
-              textWrap: "pretty",
-            }}>
-            منصتك المتكاملة لاستكشاف أماكن المطاعم، الكافيهات، العيادات، شبكات المترو والمنورايل، خطوط المواصلات، ودليل الهواتف والأكواد المختصرة.
-          </p>
-
+      {/* ── 1. HERO SECTION (COMMUNITY ORBIT) ── */}
+      <section ref={heroSectionRef} style={{ position: "relative", overflow: "visible" }}>
+        <CommunityOrbit
+          items={orbitItems}
+          stats={orbitStats}
+          headline="استكشف المدينة وتنقل بسرعة وسهولة تامة"
+          subheadline="منصتك المتكاملة لاستكشاف أماكن المطاعم، الكافيهات، العيادات، شبكات المترو والمنورايل، خطوط المواصلات، ودليل الهواتف والأكواد المختصرة."
+          tags={orbitTags}
+        >
           {/* Hero Universal Live Search Box Container */}
-          <div ref={searchContainerRef} style={{
-            maxWidth: "720px",
-            margin: "0 auto 28px auto",
-            position: "relative",
-            zIndex: isDropdownOpen && searchQuery.trim().length > 0 ? 50 : 2
-          }}>
+          <div
+            ref={searchContainerRef}
+            style={{
+              maxWidth: "720px",
+              margin: "0 auto",
+              position: "relative",
+              zIndex: isDropdownOpen && searchQuery.trim().length > 0 ? 50 : 2,
+            }}
+          >
             <form onSubmit={(e) => handleSearchSubmit(e, false)}>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                backgroundColor: "var(--bg-glass)",
-                border: isDropdownOpen && searchQuery.trim() ? "1.5px solid var(--color-primary)" : "1.5px solid var(--border-primary)",
-                borderRadius: "var(--ra-32)",
-                padding: "8px 15px 8px 15px",
-                boxShadow: "0 10px 30px var(--shadow-card)",
-                backdropFilter: "blur(12px)",
-                transition: "border-color 0.2s ease"
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  backgroundColor: "var(--bg-glass)",
+                  border:
+                    isDropdownOpen && searchQuery.trim()
+                      ? "1.5px solid var(--color-primary)"
+                      : "1.5px solid var(--border-primary)",
+                  borderRadius: "var(--ra-32)",
+                  padding: "8px 15px 8px 15px",
+                  boxShadow: "0 10px 30px var(--shadow-card)",
+                  backdropFilter: "blur(12px)",
+                  transition: "border-color 0.2s ease",
+                }}
+              >
                 <FaSearch style={{ fontSize: "1.2rem", color: "var(--text-muted)", marginLeft: "12px" }} />
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="ابحث عن الخدمة المطلوبة "
+                  placeholder="ابحث عن الخدمة أو المكان المطلوب..."
                   value={searchQuery}
                   onFocus={() => setIsDropdownOpen(true)}
                   onChange={(e) => {
@@ -1174,7 +1245,7 @@ export default function HomePage() {
                     outline: "none",
                     color: "var(--color-foreground)",
                     fontSize: "1rem",
-                    fontFamily: "var(--font-heading)"
+                    fontFamily: "var(--font-heading)",
                   }}
                 />
                 <button
@@ -1202,63 +1273,74 @@ export default function HomePage() {
                     justifyContent: "center",
                   }}
                 >
-                  <kbd style={{
-                    fontFamily: "inherit",
-                    fontSize: "0.75rem",
-                    fontWeight: "bold",
-                    color: "var(--color-foreground)",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "20px"
-                  }}>{isMac ? "⌘" : "Ctrl"}</kbd>
+                  <kbd
+                    style={{
+                      fontFamily: "inherit",
+                      fontSize: "0.75rem",
+                      fontWeight: "bold",
+                      color: "var(--color-foreground)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: "20px",
+                    }}
+                  >
+                    {isMac ? "⌘" : "Ctrl"}
+                  </kbd>
                   <span style={{ color: "var(--text-muted)", fontSize: "0.75rem", fontWeight: "bold" }}>+</span>
-                  <kbd style={{
-                    fontFamily: "inherit",
-                    fontSize: "0.75rem",
-                    fontWeight: "bold",
-                    color: "var(--color-foreground)",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minWidth: "20px"
-                  }}>K</kbd>
+                  <kbd
+                    style={{
+                      fontFamily: "inherit",
+                      fontSize: "0.75rem",
+                      fontWeight: "bold",
+                      color: "var(--color-foreground)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minWidth: "20px",
+                    }}
+                  >
+                    K
+                  </kbd>
                 </button>
               </div>
             </form>
 
             {/* ── UNIVERSAL LIVE SEARCH DROPDOWN ── */}
             {isDropdownOpen && searchQuery.trim().length > 0 && (
-              <div style={{
-                position: "absolute",
-                top: "calc(100% + 8px)",
-                left: 0,
-                right: 0,
-                backgroundColor: "var(--cardGlassBg)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid var(--border-glass-bright)",
-                borderRadius: "var(--ra-24)",
-                boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                zIndex: 100,
-                maxHeight: "450px",
-                overflowY: "auto",
-                textAlign: "right",
-                padding: "12px"
-              }}>
-
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 8px)",
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "var(--cardGlassBg)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid var(--border-glass-bright)",
+                  borderRadius: "var(--ra-24)",
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+                  zIndex: 100,
+                  maxHeight: "450px",
+                  overflowY: "auto",
+                  textAlign: "right",
+                  padding: "12px",
+                }}
+              >
                 {/* 1. MATCHED SITE SERVICES (هل تقصد؟) */}
                 {matchedServices.length > 0 && (
                   <div style={{ marginBottom: "16px" }}>
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      fontSize: "0.85rem",
-                      fontWeight: "700",
-                      color: "var(--color-primary)",
-                      padding: "6px 12px",
-                      marginBottom: "6px"
-                    }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontSize: "0.85rem",
+                        fontWeight: "700",
+                        color: "var(--color-primary)",
+                        padding: "6px 12px",
+                        marginBottom: "6px",
+                      }}
+                    >
                       <FaLightbulb />
                       <span>هل تقصد صفحة أو خدمة بالموقع؟</span>
                     </div>
@@ -1280,7 +1362,7 @@ export default function HomePage() {
                           marginBottom: "6px",
                           textDecoration: "none",
                           color: "var(--color-foreground)",
-                          transition: "transform 0.15s ease, background-color 0.15s ease"
+                          transition: "transform 0.15s ease, background-color 0.15s ease",
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -1297,17 +1379,19 @@ export default function HomePage() {
                           </div>
                         </div>
 
-                        <span style={{
-                          fontSize: "0.75rem",
-                          fontWeight: "700",
-                          padding: "3px 10px",
-                          borderRadius: "999px",
-                          backgroundColor: "rgba(0, 111, 238, 0.15)",
-                          color: "var(--color-primary)",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "4px"
-                        }}>
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            fontWeight: "700",
+                            padding: "3px 10px",
+                            borderRadius: "999px",
+                            backgroundColor: "rgba(0, 111, 238, 0.15)",
+                            color: "var(--color-primary)",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
                           <span>انتقال</span>
                           <FaChevronLeft style={{ fontSize: "0.65rem" }} />
                         </span>
@@ -1319,16 +1403,18 @@ export default function HomePage() {
                 {/* 2. MATCHED PLACES */}
                 {matchedPlaces.length > 0 && (
                   <div style={{ marginBottom: "16px" }}>
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      fontSize: "0.85rem",
-                      fontWeight: "700",
-                      color: "var(--accent-secondary)",
-                      padding: "6px 12px",
-                      marginBottom: "6px"
-                    }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontSize: "0.85rem",
+                        fontWeight: "700",
+                        color: "var(--accent-secondary)",
+                        padding: "6px 12px",
+                        marginBottom: "6px",
+                      }}
+                    >
                       <FaMapMarkerAlt />
                       <span>الأماكن ذات الصلة ({matchedPlaces.length})</span>
                     </div>
@@ -1350,7 +1436,7 @@ export default function HomePage() {
                           marginBottom: "6px",
                           textDecoration: "none",
                           color: "var(--color-foreground)",
-                          transition: "transform 0.15s ease, background-color 0.15s ease"
+                          transition: "transform 0.15s ease, background-color 0.15s ease",
                         }}
                       >
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -1384,16 +1470,18 @@ export default function HomePage() {
                 {/* 3. MATCHED CATEGORIES */}
                 {matchedCategories.length > 0 && (
                   <div style={{ marginBottom: "12px" }}>
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      fontSize: "0.85rem",
-                      fontWeight: "700",
-                      color: "#eab308",
-                      padding: "6px 12px",
-                      marginBottom: "6px"
-                    }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontSize: "0.85rem",
+                        fontWeight: "700",
+                        color: "#eab308",
+                        padding: "6px 12px",
+                        marginBottom: "6px",
+                      }}
+                    >
                       <span>🗂️</span>
                       <span>الفئات والأنشطة</span>
                     </div>
@@ -1414,7 +1502,7 @@ export default function HomePage() {
                             border: "1px solid var(--border-glass)",
                             textDecoration: "none",
                             color: "var(--color-foreground)",
-                            fontSize: "0.85rem"
+                            fontSize: "0.85rem",
                           }}
                         >
                           <Image src={`/images/icons3d/${cat.image}`} alt={cat.label || cat.name} width={20} height={20} style={{ width: "20px", height: "auto" }} />
@@ -1427,12 +1515,14 @@ export default function HomePage() {
 
                 {/* NO RESULTS FALLBACK */}
                 {!hasResults && (
-                  <div style={{
-                    padding: "20px 16px",
-                    textAlign: "center",
-                    color: "var(--text-secondary)",
-                    fontFamily: "var(--font-body)"
-                  }}>
+                  <div
+                    style={{
+                      padding: "20px 16px",
+                      textAlign: "center",
+                      color: "var(--text-secondary)",
+                      fontFamily: "var(--font-body)",
+                    }}
+                  >
                     <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
                       <FaInbox style={{ fontSize: "2rem", marginBottom: "6px" }} />
                     </div>
@@ -1454,7 +1544,7 @@ export default function HomePage() {
                           color: "var(--color-foreground)",
                           fontSize: "0.82rem",
                           cursor: "pointer",
-                          fontFamily: "var(--font-sub)"
+                          fontFamily: "var(--font-sub)",
                         }}
                       >
                         🔄 مسح البحث
@@ -1470,7 +1560,7 @@ export default function HomePage() {
                           fontSize: "0.82rem",
                           textDecoration: "none",
                           fontWeight: "700",
-                          fontFamily: "var(--font-sub)"
+                          fontFamily: "var(--font-sub)",
                         }}
                       >
                         مخطط الرحلات الذكي
@@ -1487,7 +1577,7 @@ export default function HomePage() {
                           fontSize: "0.82rem",
                           textDecoration: "none",
                           fontWeight: "700",
-                          fontFamily: "var(--font-sub)"
+                          fontFamily: "var(--font-sub)",
                         }}
                       >
                         ➕ اقتراح مكان
@@ -1515,68 +1605,25 @@ export default function HomePage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "8px"
+                    gap: "8px",
                   }}
                 >
                   <FaSearch style={{ fontSize: "0.85rem" }} />
                   <span>عرض كافة النتائج لـ &quot;{searchQuery}&quot;</span>
                 </button>
-
               </div>
             )}
           </div>
+        </CommunityOrbit>
 
-          {/* Quick tags */}
-          <div style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: "10px",
-            maxWidth: "800px",
-            margin: "0 auto 40px auto",
-            position: "relative",
-            zIndex: 1
-          }}>
-            {quickSearchTags.map((tag, idx) => (
-              <button
-                key={idx}
-                className="hero-tag-item active:scale-[0.96] transition-transform"
-                onClick={() => {
-                  if (tag.route) {
-                    router.push(tag.route);
-                  }
-                }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: "8px 16px",
-                  minHeight: "38px",
-                  borderRadius: "var(--ra-full)",
-                  backgroundColor: "var(--hoverBtn)",
-                  border: "1px solid var(--border-glass)",
-                  color: "var(--text-secondary)",
-                  fontSize: "0.85rem",
-                  fontFamily: "var(--font-body)",
-                  cursor: "pointer",
-                  transition: "transform 0.15s ease, background-color 0.15s ease, color 0.15s ease"
-                }}
-              >
-                <Image src={getValidImageSrc(tag.icon)} alt={tag.label} width={18} height={18} style={{ width: "18px", height: "18px", objectFit: "contain" }} />
-                <span>{tag.label}</span>
-              </button>
-            ))}
-          </div>
+        {/* Cairo Weather & Comfort Tip Widget */}
+        <div className="hero-weather-item" style={{ maxWidth: "720px", margin: "20px auto 30px auto", padding: "0 20px" }}>
+          <WeatherComfortWidget />
+        </div>
 
-          {/* Cairo Weather & Comfort Tip Widget */}
-          <div className="hero-weather-item" style={{ maxWidth: "720px", margin: "0 auto 30px auto" }}>
-            <WeatherComfortWidget />
-          </div>
-
-          {/* ── SPONSORED AD SLIDER BANNER ── */}
-          <div style={{ marginTop: "50px" }}>
-            <AdSlider />
-          </div>
+        {/* ── SPONSORED AD SLIDER BANNER ── */}
+        <div style={{ marginTop: "30px", padding: "0 20px" }}>
+          <AdSlider />
         </div>
       </section>
 
