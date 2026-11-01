@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "حد يعرف؟ | اسأل مجتمع قريب وجاوب وتفاعل",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "حد يعرف؟ | مجتمع قريب للاستفسارات والمواصلات",
     description:
       "اسأل مجتمع قريب عن أي مكان أو طريق أو مواصلة وتفاعل مع الإجابات مع إظهار اسمك وصورتك والـ username.",
-    url: "https://cairomap.vercel.app/had-yaaraf",
+    url: "https://qareebmap.vercel.app/had-yaaraf",
     siteName: "قريب - Cairo Map",
     type: "website",
   },

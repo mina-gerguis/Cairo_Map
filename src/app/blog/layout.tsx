@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "مدونة قريب - مقالات وأدلة المواصلات، السياحة ومعالم مصر",
@@ -8,12 +8,12 @@ export const metadata: Metadata = {
     "Egypt Travel Blog", "Cairo Guide Blog", "Egypt Landmarks Guide", "Visit Egypt Articles", "Things to do in Cairo Blog"
   ],
   alternates: {
-    canonical: "https://cairomap.vercel.app/blog",
+    canonical: "https://qareebmap.vercel.app/blog",
   },
   openGraph: {
     title: "مدونة قريب - دليلك الذكي للتنقل والسياحة",
     description: "اكتشف أحدث المقالات والأدلة الإرشادية حول المواصلات وأفضل الأماكن والمعالم السياحية في مصر.",
-    url: "https://cairomap.vercel.app/blog",
+    url: "https://qareebmap.vercel.app/blog",
   },
 };
 

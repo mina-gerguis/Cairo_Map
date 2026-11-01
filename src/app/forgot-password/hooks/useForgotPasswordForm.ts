@@ -56,6 +56,7 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
         } else {
           // If server reports not blocked (24 hours passed or user logged in), clear local lock
           setIsBlocked(false);
+          setError((prev) => (prev === FORGOT_PASSWORD_MESSAGES.RATE_LIMIT_BLOCKED ? "" : prev));
           if (typeof window !== "undefined") {
             localStorage.removeItem("cairomap_forgot_pwd_blocked");
             localStorage.removeItem("cairomap_forgot_pwd_blocked_at");
@@ -106,8 +107,8 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
 
       const data = await res.json().catch(() => ({}));
 
-      // Check if IP is blocked after 3 attempts or 429
-      if (data?.blocked || res.status === 429) {
+      // Check if IP is permanently blocked after 3 attempts
+      if (data?.blocked) {
         setIsBlocked(true);
         setAttemptsRemaining(0);
         setError(data?.error || FORGOT_PASSWORD_MESSAGES.RATE_LIMIT_BLOCKED);
@@ -115,6 +116,16 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturn => {
           localStorage.setItem("cairomap_forgot_pwd_blocked", "true");
           localStorage.setItem("cairomap_forgot_pwd_blocked_at", String(Date.now()));
         }
+        return;
+      }
+
+      // Check if user hit temporary 60-second cooldown
+      if (data?.cooldown || res.status === 429) {
+        setError(data?.error || FORGOT_PASSWORD_MESSAGES.RATE_LIMIT);
+        if (typeof data?.attemptsRemaining === "number") {
+          setAttemptsRemaining(data.attemptsRemaining);
+        }
+        setCountdown(60);
         return;
       }
 

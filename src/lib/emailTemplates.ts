@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Cairo Map (Qareeb) - Transactional Email Templates
  * Built following React Email and Bulletproof Email standards.
  * Fully compatible with Gmail, Outlook (Desktop & Web), Apple Mail, and mobile clients.
@@ -11,7 +11,7 @@ interface OtpEmailOptions {
 }
 
 export function generateOtpEmailHtml({ otp, email, siteUrl }: OtpEmailOptions): string {
-  const baseUrl = (siteUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://cairomap.vercel.app').replace(/\/+$/, '');
+  const baseUrl = (siteUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://qareebmap.vercel.app').replace(/\/+$/, '');
   const logoUrl = `${baseUrl}/icons/qareeb.png`;
   const termsUrl = `${baseUrl}/terms`;
   const privacyUrl = `${baseUrl}/privacy`;

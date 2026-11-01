@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import { MonorailStation, TrackerStationItem } from "../types";
 import { MONORAIL_STATION_COORDINATES, MONORAIL_STATION_DETAILS } from "../constants";
 import { normalizeArabic, getDistanceInKm, calculateMonorailRoute } from "../utils";
@@ -154,7 +154,7 @@ export function useMonorailCalculator(
 ${routeResult.description}
 
 تصفح المزيد واحسب رحلتك عبر:
-${typeof window !== "undefined" ? window.location.href : "https://cairomap.vercel.app/monorail"}`;
+${typeof window !== "undefined" ? window.location.href : "https://qareebmap.vercel.app/monorail"}`;
 
     if (navigator.clipboard) {
       try {

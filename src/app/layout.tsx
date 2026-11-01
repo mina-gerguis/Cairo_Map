@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { Almarai } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://qareebmap.vercel.app"),
   title: {
     default: "قريب - دليل الأماكن، المواصلات والخدمات الذكي",
     template: "%s | قريب",
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "قريب - دليل الأماكن والمواصلات الذكي",
     description: "دليلك الشامل لخطوط المترو، السكة الحديد، المنوريل، وأرقام وعناوين الأماكن والخدمات في القاهرة الكبرى.",
-    url: "https://cairomap.vercel.app",
+    url: "https://qareebmap.vercel.app",
     siteName: "قريب",
     locale: "ar_EG",
     type: "website",
@@ -108,7 +108,7 @@ export const metadata: Metadata = {
   },
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qareebmap.vercel.app";
 
 const globalJsonLd = {
   "@context": "https://schema.org",

@@ -1,9 +1,9 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 import { initialPlaces } from "@/data/places";
 import { supabase } from "@/lib/supabase";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qareebmap.vercel.app";
   const currentDate = new Date();
 
   // Primary static routes

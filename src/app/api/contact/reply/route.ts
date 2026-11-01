@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
 const escapeHtml = (str: string = "") =>
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     const safeToName = escapeHtml(toName);
     const safeOriginalMessage = formatParagraphs(originalMessage);
     const safeReplyText = formatParagraphs(replyText);
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qareebmap.vercel.app";
 
     // Email content in Arabic
     const mailOptions = {

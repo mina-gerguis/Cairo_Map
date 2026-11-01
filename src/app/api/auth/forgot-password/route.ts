@@ -74,29 +74,53 @@ export async function POST(request: Request) {
       const { data: profileData } = await supabase
         .from("profiles")
         .select("email, is_suspended")
-        .eq("username", cleanUsername)
+        .ilike("username", cleanUsername)
         .maybeSingle();
 
-      if (profileData?.email && !profileData.is_suspended) {
-        targetEmail = profileData.email;
+      if (profileData?.email) {
+        if (profileData.is_suspended) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: FORGOT_PASSWORD_MESSAGES.ACCOUNT_SUSPENDED,
+            },
+            { status: 403 }
+          );
+        }
+        targetEmail = profileData.email.toLowerCase().trim();
       }
     } else {
+      const cleanEmail = trimmed.toLowerCase();
       const { data: profileData } = await supabase
         .from("profiles")
         .select("is_suspended")
-        .eq("email", trimmed)
+        .ilike("email", cleanEmail)
         .maybeSingle();
 
-      if (!profileData?.is_suspended) {
-        targetEmail = trimmed;
+      if (profileData?.is_suspended) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: FORGOT_PASSWORD_MESSAGES.ACCOUNT_SUSPENDED,
+          },
+          { status: 403 }
+        );
       }
+
+      targetEmail = cleanEmail;
     }
 
     if (targetEmail) {
+      const origin = request.headers.get("origin");
+      const host = request.headers.get("x-forwarded-host") || request.headers.get("host");
+      const proto = request.headers.get("x-forwarded-proto") || "https";
+
       let baseUrl =
+        origin ||
+        (host ? `${proto}://${host}` : null) ||
         process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-        request.headers.get("origin") ||
-        "https://cairomap.vercel.app";
+        "https://qareebmap.vercel.app";
+
       baseUrl = baseUrl.replace(/\/+$/, "");
       const redirectTo = `${baseUrl}/reset-password`;
 
@@ -105,15 +129,21 @@ export async function POST(request: Request) {
       });
 
       if (resetError) {
-        if (
-          resetError.message.toLowerCase().includes("rate limit") ||
-          resetError.message.toLowerCase().includes("security purposes") ||
-          resetError.status === 429
-        ) {
+        console.error("Supabase resetPasswordForEmail error:", resetError);
+
+        const lowerMsg = resetError.message?.toLowerCase() || "";
+        const isCooldown =
+          lowerMsg.includes("rate limit") ||
+          lowerMsg.includes("security purposes") ||
+          (resetError as any).status === 429 ||
+          (resetError as any).code === "over_email_send_rate_limit";
+
+        if (isCooldown) {
           return NextResponse.json(
             {
               success: false,
-              blocked: attemptResult.blocked,
+              cooldown: true,
+              blocked: false,
               attemptsRemaining: attemptResult.remaining,
               resetInMs: attemptResult.resetInMs,
               error: FORGOT_PASSWORD_MESSAGES.RATE_LIMIT,
@@ -122,24 +152,20 @@ export async function POST(request: Request) {
           );
         }
 
-        const lowerMsg = resetError.message?.toLowerCase() || "";
         const isUserNotFound =
-          lowerMsg.includes("not found") ||
-          lowerMsg.includes("user") ||
-          lowerMsg.includes("email") ||
+          lowerMsg.includes("user not found") ||
           (resetError as any).code === "user_not_found";
 
         if (!isUserNotFound) {
-          console.error("Forgot password reset error:", resetError);
           return NextResponse.json(
             {
               success: false,
               blocked: attemptResult.blocked,
               attemptsRemaining: attemptResult.remaining,
               resetInMs: attemptResult.resetInMs,
-              error: FORGOT_PASSWORD_MESSAGES.SEND_ERROR,
+              error: resetError.message || FORGOT_PASSWORD_MESSAGES.SEND_ERROR,
             },
-            { status: 500 }
+            { status: 400 }
           );
         }
       }

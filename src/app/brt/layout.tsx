@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "الأتوبيس الترددي السريع BRT - محطات الطريق الدائري ومواعيد الخدمة 2026",
   description: "دليل الأتوبيس الترددي السريع BRT على الطريق الدائري حول القاهرة الكبرى، قائمة المحطات، نقاط الربط بالمترو ومواقف الأقاليم وتفاصيل الخدمة.",
   keywords: ["الاتوبيس الترددي", "BRT الطريق الدائري", "محطات الاتوبيس الترددي", "مواصلات الدائري", "قريب"],
   alternates: {
-    canonical: "https://cairomap.vercel.app/brt",
+    canonical: "https://qareebmap.vercel.app/brt",
   },
 };
 

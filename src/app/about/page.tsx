@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import styles from "./about.module.css";
@@ -21,13 +21,13 @@ export const metadata: Metadata = {
   description:
     "تعرف على منصة قريب (Cairo Map)، رسالتنا، فريق العمل، منهجيتنا في جمع وتدقيق بيانات شبكات المواصلات والأماكن والخدمات في القاهرة الكبرى ومصر.",
   alternates: {
-    canonical: "https://cairomap.vercel.app/about",
+    canonical: "https://qareebmap.vercel.app/about",
   },
   openGraph: {
     title: "من نحن | قريب - دليلك الذكي للمواصلات والخدمات",
     description:
       "منصة مصرية متكاملة تقدم حلولاً ذكية لحركة التنقل والمواصلات واستكشاف الأماكن والخدمات في القاهرة الكبرى.",
-    url: "https://cairomap.vercel.app/about",
+    url: "https://qareebmap.vercel.app/about",
     siteName: "قريب",
     locale: "ar_EG",
     type: "website",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cairomap.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://qareebmap.vercel.app";
 
   const jsonLd = {
     "@context": "https://schema.org",

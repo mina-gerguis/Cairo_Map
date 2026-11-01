@@ -1,4 +1,4 @@
-import {
+﻿import {
   Edge,
   DijkstraState,
   LineId,
@@ -382,7 +382,7 @@ export function generateShareText(
 • الوقت المقدر: ${result.estimatedTime} دقيقة${transfersText}
 • الخطوات: ${result.description}
 
-رابط الرحلة: https://cairomap.vercel.app/metro`;
+رابط الرحلة: https://qareebmap.vercel.app/metro`;
 }
 
 /**
@@ -394,6 +394,6 @@ export function generateWhatsappUrl(
   selectedTo: string | null
 ): string {
   if (!result || !selectedFrom || !selectedTo) return "#";
-  const message = `🚇 رحلة مترو من ${selectedFrom} إلى ${selectedTo} (${result.stationCount} محطة - ${result.price} ج.م - ${result.estimatedTime} دقيقة)\nتفاصيل: https://cairomap.vercel.app/metro`;
+  const message = `🚇 رحلة مترو من ${selectedFrom} إلى ${selectedTo} (${result.stationCount} محطة - ${result.price} ج.م - ${result.estimatedTime} دقيقة)\nتفاصيل: https://qareebmap.vercel.app/metro`;
   return `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 }

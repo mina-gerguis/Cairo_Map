@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+﻿import { useState, useEffect, useMemo, useCallback } from "react";
 import { Edge, LineId, RouteResult, StationInfo } from "../types";
 import { ACTIVE_METRO_TRIP_KEY, METRO_STATION_COORDINATES } from "../constants";
 import {
@@ -216,7 +216,7 @@ export function useMetroCalculator(
         await navigator.share({
           title: `رحلة مترو من ${selectedFrom} إلى ${selectedTo}`,
           text: shareText,
-          url: "https://cairomap.vercel.app/metro",
+          url: "https://qareebmap.vercel.app/metro",
         });
         return;
       } catch {

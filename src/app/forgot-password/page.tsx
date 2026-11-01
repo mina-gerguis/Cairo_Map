@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { AlertCircle } from "lucide-react";
 import DriftWall from "@/components/ui/ElasticMesh";
 import { DRIFT_WALL_ITEMS } from "@/app/login/constants";
 import { FORGOT_PASSWORD_TEXTS, FORGOT_PASSWORD_MESSAGES } from "./constants";
@@ -56,8 +57,9 @@ export default function ForgotPasswordPage() {
         <div className={styles.glassCard}>
           {/* Error Banner (shown for non-blocked regular errors) */}
           {form.error && !form.isBlocked && (
-            <div className="error" role="alert">
-              <span>{form.error}</span>
+            <div className="error-alert" role="alert" style={{ marginBottom: "16px" }}>
+              <AlertCircle size={16} className="error-alert-icon" />
+              <span className="error-alert-message">{form.error}</span>
             </div>
           )}
 

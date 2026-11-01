@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "دليل الأماكن والخدمات والمعالم السياحية في مصر 2026",
@@ -8,12 +8,12 @@ export const metadata: Metadata = {
     "Egypt Landmarks", "Cairo Places", "Tourist Attractions in Egypt", "Giza Pyramids", "Grand Egyptian Museum", "Cairo Tower", "Cairo Citadel", "Khan el-Khalili", "Al-Muizz Street", "Egypt Places Directory"
   ],
   alternates: {
-    canonical: "https://cairomap.vercel.app/places",
+    canonical: "https://qareebmap.vercel.app/places",
   },
   openGraph: {
     title: "دليل الأماكن والخدمات والمعالم السياحية | قريب",
     description: "ابحث في آلاف الأماكن والخدمات والمعالم السياحية الموثقة مع أرقام الهواتف واللوكيشن ومواعيد العمل.",
-    url: "https://cairomap.vercel.app/places",
+    url: "https://qareebmap.vercel.app/places",
   },
 };
 
