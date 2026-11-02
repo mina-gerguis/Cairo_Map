@@ -9,6 +9,7 @@ export const ASSETS = {
   locations: {
     governorates: {
       egypt: "/images/locations/governorates/egypt.webp",
+      flagEgypt: "/images/locations/governorates/flag-egypt.webp",
     },
     cities: {
       cairo: "/images/locations/cities/cairo.webp",

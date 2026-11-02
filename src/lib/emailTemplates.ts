@@ -51,10 +51,7 @@ export function generateOtpEmailHtml({ otp, email, siteUrl }: OtpEmailOptions): 
       .email-bg {
         background-color: #0b0f19 !important;
       }
-      .card-bg {
-        background-color: #111827 !important;
-        border-color: #1f2937 !important;
-      }
+
       .heading-text {
         color: #f8fafc !important;
       }
@@ -88,7 +85,7 @@ export function generateOtpEmailHtml({ otp, email, siteUrl }: OtpEmailOptions): 
     <tr>
       <td align="center">
         <!-- Main Card Container (Max-Width 520px) -->
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 520px; width: 100%; border-radius: 20px; background-color: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); overflow: hidden;" class="card-bg">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 520px; width: 100%; background-color: #ffffff; overflow: hidden;" class="card-bg">
           
           <!-- Card Body -->
           <tr>
@@ -109,7 +106,7 @@ export function generateOtpEmailHtml({ otp, email, siteUrl }: OtpEmailOptions): 
                 <tr>
                   <td align="center">
                     <div class="otp-box" style="background-color: #f8fafc; padding: 6px 2px; display: inline-block; min-width: 240px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);">
-                      <div class="otp-number" style="font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Courier New', monospace; font-size: 38px; font-weight: 800; letter-spacing: 12px; color: #1e40af; text-align: center; direction: ltr; margin-left: 12px;">
+                      <div class="otp-number" style="font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Courier New', monospace; font-size: 28px; font-weight: 800; letter-spacing: 12px; color: #1e40af; text-align: center; direction: ltr; margin-left: 12px;">
                         ${otp}
                       </div>
                     </div>
