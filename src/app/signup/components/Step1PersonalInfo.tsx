@@ -234,7 +234,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
               </p>
             </div>
 
-            {/* Dev Mode Notification if active
+            {/* Dev Mode Notification if active */}
             {emailOtpDevNotice && (
               <div
                 style={{
@@ -243,7 +243,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
                   borderRadius: "8px",
                   padding: "10px 14px",
                   fontSize: "0.82rem",
-                  color: "#eab308",
+                  color: "#ca8a04",
                   textAlign: "center",
                   display: "flex",
                   flexDirection: "column",
@@ -254,7 +254,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
               >
                 <div>
                   🛠️ <strong>وضع التطوير:</strong> كود التحقق هو{" "}
-                  <span style={{ fontFamily: "monospace", fontSize: "1.1rem", fontWeight: "bold", color: "#facc15", letterSpacing: "2px" }}>
+                  <span style={{ fontFamily: "monospace", fontSize: "1.1rem", fontWeight: "bold", color: "#ca8a04", letterSpacing: "2px" }}>
                     {emailOtpDevNotice}
                   </span>
                 </div>
@@ -264,8 +264,8 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
                     onClick={() => fillDevOtpCode(emailOtpDevNotice)}
                     style={{
                       background: "rgba(234, 179, 8, 0.2)",
-                      border: "1px solid #eab308",
-                      color: "#fef08a",
+                      border: "1px solid #ca8a04",
+                      color: "#854d0e",
                       borderRadius: "6px",
                       padding: "4px 12px",
                       fontSize: "0.78rem",
@@ -277,7 +277,7 @@ export const Step1PersonalInfo: React.FC<Step1PersonalInfoProps> = ({
                   </button>
                 )}
               </div>
-            )} */}
+            )}
 
             {/* 6 Digits Inputs */}
             <div className={`${styles.otpDigitsRow} ${isShaking ? styles.shake : ""}`}>

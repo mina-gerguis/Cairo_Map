@@ -253,7 +253,7 @@ export const DEFAULT_ORBIT_ITEMS: OrbitItem[] = [
     kind: "avatar",
     ring: "outer",
     angle: 135,
-    src: "/images/metro/Cairo_metro.webp",
+    src: "/images/transit/metro.webp",
     alt: "مترو القاهرة",
     color: "#ffffff",
     size: 66,

@@ -1,12 +1,13 @@
 @import url("../system-design/index.css");
 @import url("../system-design/global.css");
 @import url("../components/ui/CommunityOrbit.css");
+@import url("../components/ui/MetroMapGallery.css");
 
 /* ============================================================================
    Preloader Animation Freeze
    Freezes all CSS animations on the page while the preloader is actively loading
    ============================================================================ */
-html.is-preloading *:not([class*="preloader"]):not([class*="SitePreloader"]):not([class*="glass"]):not([class*="ambientOrb"]):not([class*="progressBar"]):not([class*="GlassIconReveal"]):not([class*="glassStage"]):not([class*="glassCanvas"]) {
+html.is-preloading *:not([class*="preloader"]):not([class*="SitePreloader"]):not([class*="glass"]):not([class*="ambientOrb"]):not([class*="progressBar"]):not([class*="GlassIconReveal"]):not([class*="glassStage"]):not([class*="glassCanvas"]):not([class*="stepForm"]):not([class*="onboardingWrapper"]):not([class*="authLayout"]) {
   animation-play-state: paused !important;
 }
 

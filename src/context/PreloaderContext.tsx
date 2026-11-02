@@ -34,7 +34,7 @@ export const PreloaderProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      if ((window as any).__SITE_READY__) {
+      if ((window as any).__SITE_READY__ || document.documentElement.classList.contains("site-ready")) {
         setIsPreloading(false);
         setIsSiteReady(true);
       } else {
@@ -43,10 +43,21 @@ export const PreloaderProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           setIsSiteReady(true);
         };
         window.addEventListener("siteready", onReady, { once: true });
-        return () => window.removeEventListener("siteready", onReady);
+
+        // Safety fallback: ensure animations never stay frozen indefinitely
+        const fallbackTimer = setTimeout(() => {
+          if (document.documentElement.classList.contains("is-preloading")) {
+            markSiteReady();
+          }
+        }, 3500);
+
+        return () => {
+          window.removeEventListener("siteready", onReady);
+          clearTimeout(fallbackTimer);
+        };
       }
     }
-  }, []);
+  }, [markSiteReady]);
 
   return (
     <PreloaderContext.Provider value={{ isPreloading, isSiteReady, markSiteReady }}>

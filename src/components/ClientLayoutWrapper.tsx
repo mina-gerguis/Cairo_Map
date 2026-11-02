@@ -20,6 +20,7 @@ import MaintenanceAdminBanner from "@/components/MaintenanceAdminBanner";
 import CompleteProfileModal from "@/components/auth/CompleteProfileModal";
 import { isProfileIncomplete } from "@/lib/profileValidation";
 import { SitePreloader } from "@/components/SitePreloader";
+import { usePreloader } from "@/context/PreloaderContext";
 
 interface AlertItem {
   id: string;
@@ -64,9 +65,23 @@ export default function ClientLayoutWrapper({
   const [maintenanceLoaded, setMaintenanceLoaded] = useState(false);
   const mainContentRef = useRef<HTMLElement>(null);
 
+  const { markSiteReady } = usePreloader();
+
+  // If entering auth or admin routes, dismiss preloading immediately
+  useEffect(() => {
+    if (isAdmin || isAuth) {
+      markSiteReady();
+    }
+  }, [isAdmin, isAuth, markSiteReady]);
+
   // GSAP Route Change Transition & ScrollTrigger Refresh
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    if (isAdmin || isAuth) {
+      markSiteReady();
+      return;
+    }
 
     const runRouteTransition = () => {
       if (mainContentRef.current) {
@@ -95,7 +110,7 @@ export default function ClientLayoutWrapper({
     } else {
       runRouteTransition();
     }
-  }, [pathname]);
+  }, [pathname, isAdmin, isAuth, markSiteReady]);
 
   // Global Ctrl+M keyboard shortcut for toggling between light and dark modes
   useEffect(() => {
@@ -117,6 +132,7 @@ export default function ClientLayoutWrapper({
 
         localStorage.setItem("dftry_theme", next);
         document.documentElement.classList.toggle("light", next === "light");
+        document.documentElement.classList.toggle("dark", next === "dark");
         window.dispatchEvent(new CustomEvent("themechange", { detail: next }));
       }
     };

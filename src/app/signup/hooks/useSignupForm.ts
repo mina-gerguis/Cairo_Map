@@ -14,6 +14,7 @@ import {
   validatePhone,
   validateEmail,
   checkPasswordRules,
+  compressImageFile,
 } from "../utils";
 
 export const useSignupForm = () => {
@@ -191,9 +192,7 @@ export const useSignupForm = () => {
       setEmailOtp("");
       if (data.devCode) {
         setEmailOtpDevNotice(data.devCode);
-        if (data.devWarning) {
-          setEmailOtpError(data.devWarning);
-        }
+        setEmailOtpError("");
       }
     } catch (err: any) {
       setEmailOtpError(err.message || "حدث خطأ أثناء إرسال الكود");
@@ -244,22 +243,76 @@ export const useSignupForm = () => {
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !supabase) return;
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setError("يرجى اختيار ملف صورة صالح (JPG, PNG, WebP).");
+      return;
+    }
+
+    // Validate size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("حجم الصورة كبير جداً، الحد الأقصى 5 ميجابايت.");
+      return;
+    }
+
     setLoading(true);
+    setError("");
+
     try {
-      const fileExt = file.name.split(".").pop();
-      const filePath = `${Math.random()}.${fileExt}`;
-      const { error: uploadError, data } = await supabase.storage.from("avatars").upload(filePath, file);
-      if (uploadError) {
-        setError("فشل رفع الصورة: " + uploadError.message);
-      } else if (data) {
-        const { data: pub } = supabase.storage.from("avatars").getPublicUrl(filePath);
-        updateField("avatarUrl", pub.publicUrl);
+      const fileExt = file.name.split(".").pop() || "jpg";
+      const cleanExt = fileExt.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const fileName = `avatar_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${cleanExt}`;
+
+      let uploadedSuccessfully = false;
+
+      if (supabase) {
+        const { error: uploadError, data } = await supabase.storage
+          .from("avatars")
+          .upload(fileName, file, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+
+        if (!uploadError && data) {
+          const { data: pub } = supabase.storage.from("avatars").getPublicUrl(fileName);
+          if (pub?.publicUrl) {
+            updateField("avatarUrl", pub.publicUrl);
+            uploadedSuccessfully = true;
+          }
+        } else if (uploadError) {
+          console.warn(
+            "Supabase Storage RLS/Upload warning, falling back to local compressed image preview:",
+            uploadError.message
+          );
+        }
+      }
+
+      // If Supabase Storage upload failed (e.g. storage bucket RLS not yet configured),
+      // fallback to high-quality compressed local preview so the user is NEVER blocked from completing registration!
+      if (!uploadedSuccessfully) {
+        const compressedBase64 = await compressImageFile(file);
+        updateField("avatarUrl", compressedBase64);
       }
     } catch (err: any) {
-      setError("فشل رفع الصورة: " + (err.message || ""));
+      console.error("Error processing avatar image:", err);
+      try {
+        const fallbackReader = new FileReader();
+        fallbackReader.onload = (ev) => {
+          if (ev.target?.result) {
+            updateField("avatarUrl", ev.target.result as string);
+          }
+        };
+        fallbackReader.readAsDataURL(file);
+      } catch {
+        setError("فشل تجهيز الصورة: " + (err.message || ""));
+      }
     } finally {
       setLoading(false);
+      if (e.target) {
+        e.target.value = "";
+      }
     }
   };
 

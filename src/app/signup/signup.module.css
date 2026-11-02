@@ -12,8 +12,16 @@
   padding: 40px 20px;
   position: relative;
   overflow: hidden;
-  background: #ffffff;
+  background: #fafafa;
+  color: #09090b;
   direction: rtl;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:global(html.dark) .authLayout,
+:global(html:not(.light)) .authLayout {
+  background: #09090b;
+  color: #fafafa;
 }
 
 /* ── Ambient Background Glow Accents ── */
@@ -56,15 +64,18 @@
   z-index: 0;
 }
 
-:global(html.dark) .ambientOrb1 {
+:global(html.dark) .ambientOrb1,
+:global(html:not(.light)) .ambientOrb1 {
   background: radial-gradient(circle, rgba(108, 99, 255, 0.18) 0%, transparent 65%);
 }
 
-:global(html.dark) .ambientOrb2 {
+:global(html.dark) .ambientOrb2,
+:global(html:not(.light)) .ambientOrb2 {
   background: radial-gradient(circle, rgba(0, 212, 170, 0.15) 0%, transparent 65%);
 }
 
-:global(html.dark) .ambientOrb3 {
+:global(html.dark) .ambientOrb3,
+:global(html:not(.light)) .ambientOrb3 {
   background: radial-gradient(circle, rgba(255, 63, 142, 0.12) 0%, transparent 65%);
 }
 
@@ -82,7 +93,15 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
   padding: 32px 28px;
-  animation: slideInSection 0.6s ease 0.1s both;
+  animation: slideInSection 0.5s ease-out;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+:global(html.dark) .glassCard,
+:global(html:not(.light)) .glassCard {
+  background: #121214;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 /* ── Step Navigation Bar ── */
@@ -94,7 +113,7 @@
 }
 
 .backButton {
-  padding: 6px 0px;
+  padding: 6px 10px;
   border: none;
   color: #334155;
   background-color: transparent;
@@ -114,6 +133,17 @@
   background: rgba(0, 0, 0, 0.04);
 }
 
+:global(html.dark) .backButton,
+:global(html:not(.light)) .backButton {
+  color: #94a3b8;
+}
+
+:global(html.dark) .backButton:hover,
+:global(html:not(.light)) .backButton:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .stepBadge {
   font-size: 0.82rem;
   font-weight: 700;
@@ -123,6 +153,13 @@
   border-radius: 20px;
   border: 1px solid #e2e8f0;
   font-family: var(--font-sub);
+}
+
+:global(html.dark) .stepBadge,
+:global(html:not(.light)) .stepBadge {
+  background: #18181b;
+  color: #94a3b8;
+  border-color: #27272a;
 }
 
 /* ── Step Title Header ── */
@@ -141,7 +178,8 @@
   font-family: var(--font-heading);
 }
 
-:global(html.dark) .headerTitle {
+:global(html.dark) .headerTitle,
+:global(html:not(.light)) .headerTitle {
   color: #f8fafc;
 }
 
@@ -152,7 +190,8 @@
   font-family: var(--font-sub);
 }
 
-:global(html.dark) .subTitle {
+:global(html.dark) .subTitle,
+:global(html:not(.light)) .subTitle {
   color: #94a3b8;
 }
 
@@ -170,6 +209,11 @@
   border-radius: 3px;
   background: #e2e8f0;
   transition: all 0.5s ease;
+}
+
+:global(html.dark) .progressBar,
+:global(html:not(.light)) .progressBar {
+  background: #27272a;
 }
 
 .progressBarActive {
@@ -204,7 +248,8 @@
   font-family: var(--font-heading);
 }
 
-:global(html.dark) .successBanner {
+:global(html.dark) .successBanner,
+:global(html:not(.light)) .successBanner {
   background: rgba(5, 150, 105, 0.15);
   border-color: rgba(5, 150, 105, 0.3);
   color: #6ee7b7;
@@ -247,7 +292,8 @@
   font-family: var(--font-heading);
 }
 
-:global(html.dark) .fieldLabel {
+:global(html.dark) .fieldLabel,
+:global(html:not(.light)) .fieldLabel {
   color: #e2e8f0;
 }
 
@@ -257,7 +303,8 @@
   opacity: 0.9;
 }
 
-:global(html.dark) .fieldLabelIcon {
+:global(html.dark) .fieldLabelIcon,
+:global(html:not(.light)) .fieldLabelIcon {
   color: #ffffff;
 }
 
@@ -276,7 +323,8 @@
   transition: all 0.2s ease;
 }
 
-:global(html.dark) .inputField {
+:global(html.dark) .inputField,
+:global(html:not(.light)) .inputField {
   background: #18181b;
   border-color: #27272a;
   color: #f4f4f5;
@@ -297,7 +345,8 @@
   font-family: var(--font-sub);
 }
 
-:global(html.dark) .fieldErrorText {
+:global(html.dark) .fieldErrorText,
+:global(html:not(.light)) .fieldErrorText {
   color: #f87171;
 }
 
@@ -357,7 +406,8 @@
   cursor: not-allowed;
 }
 
-:global(html.dark) .sendOtpBtnDisabled {
+:global(html.dark) .sendOtpBtnDisabled,
+:global(html:not(.light)) .sendOtpBtnDisabled {
   background: #27272a;
   color: #71717a;
 }
@@ -469,7 +519,8 @@
   line-height: 1.4;
 }
 
-:global(html.dark) .otpErrorMsg {
+:global(html.dark) .otpErrorMsg,
+:global(html:not(.light)) .otpErrorMsg {
   color: #f87171;
   background-color: rgba(239, 68, 68, 0.12);
   border-color: rgba(239, 68, 68, 0.25);
@@ -493,7 +544,8 @@
   border: 1px solid #bbf7d0;
 }
 
-:global(html.dark) .verifiedNoticeBox {
+:global(html.dark) .verifiedNoticeBox,
+:global(html:not(.light)) .verifiedNoticeBox {
   background: rgba(22, 163, 74, 0.15);
   border-color: rgba(22, 163, 74, 0.3);
   color: #86efac;
@@ -535,7 +587,8 @@
   opacity: 0.65;
 }
 
-:global(html.dark) .submitBtnDisabled {
+:global(html.dark) .submitBtnDisabled,
+:global(html:not(.light)) .submitBtnDisabled {
   background: #27272a;
   color: #71717a;
 }
@@ -553,7 +606,8 @@
   gap: 6px;
 }
 
-:global(html.dark) .phonePrefix {
+:global(html.dark) .phonePrefix,
+:global(html:not(.light)) .phonePrefix {
   color: #cbd5e1;
 }
 
@@ -564,7 +618,8 @@
   display: inline-block;
 }
 
-:global(html.dark) .phoneDivider {
+:global(html.dark) .phoneDivider,
+:global(html:not(.light)) .phoneDivider {
   background: #475569;
 }
 
@@ -653,7 +708,8 @@
   font-family: var(--font-sub);
 }
 
-:global(html.dark) .passwordRulesBox {
+:global(html.dark) .passwordRulesBox,
+:global(html:not(.light)) .passwordRulesBox {
   background: #18181b;
   border-color: #27272a;
 }
@@ -669,7 +725,8 @@
   color: #059669;
 }
 
-:global(html.dark) .ruleValid {
+:global(html.dark) .ruleValid,
+:global(html:not(.light)) .ruleValid {
   color: #34d399;
 }
 
@@ -677,7 +734,8 @@
   color: #64748b;
 }
 
-:global(html.dark) .ruleInvalid {
+:global(html.dark) .ruleInvalid,
+:global(html:not(.light)) .ruleInvalid {
   color: #71717a;
 }
 
@@ -690,7 +748,8 @@
   animation: fadeIn 0.8s ease 0.5s both;
 }
 
-:global(html.dark) .footerTerms {
+:global(html.dark) .footerTerms,
+:global(html:not(.light)) .footerTerms {
   color: #94a3b8;
 }
 
@@ -732,7 +791,8 @@
   animation: slideUp 0.3s ease;
 }
 
-:global(html.dark) .modalCard {
+:global(html.dark) .modalCard,
+:global(html:not(.light)) .modalCard {
   background: #18181b;
   border-color: rgba(254, 215, 170, 0.2);
 }
@@ -750,7 +810,8 @@
   font-family: var(--font-heading);
 }
 
-:global(html.dark) .modalWarningAlert {
+:global(html.dark) .modalWarningAlert,
+:global(html:not(.light)) .modalWarningAlert {
   background: rgba(225, 29, 72, 0.15);
   border-color: rgba(225, 29, 72, 0.3);
   color: #fda4af;
@@ -795,7 +856,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  animation: slideInSection 0.6s ease 0.1s both;
+  animation: slideInSection 0.5s ease-out;
 }
 
 /* ── Upper Stage for Visual Effects (Dedicated space, never collides) ── */
@@ -1011,5 +1072,18 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glassCard,
+  .onboardingWrapper,
+  .stepForm,
+  .errorBanner,
+  .successBanner,
+  .otpBox {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

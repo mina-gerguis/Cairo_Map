@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { Almarai } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -146,7 +146,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={`is-preloading ${almarai.variable}`}>
+    <html lang="ar" dir="rtl" className={almarai.variable}>
       <head>
         {/* Instant preloading flag & theme initialization to eliminate layout/animation shifts */}
         <script
@@ -154,9 +154,23 @@ export default function RootLayout({
             __html: `
               try {
                 var theme = localStorage.getItem('dftry_theme');
-                if (theme === 'light') document.documentElement.classList.add('light');
-                document.documentElement.classList.add('is-preloading');
-                window.__SITE_READY__ = false;
+                if (theme === 'light') {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
+                } else {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                }
+                var p = window.location.pathname || '';
+                var isNoPreload = p.startsWith('/admin') || p === '/login' || p === '/signup' || p === '/forgot-password' || p === '/reset-password';
+                if (!isNoPreload) {
+                  document.documentElement.classList.add('is-preloading');
+                  window.__SITE_READY__ = false;
+                } else {
+                  document.documentElement.classList.remove('is-preloading');
+                  document.documentElement.classList.add('site-ready');
+                  window.__SITE_READY__ = true;
+                }
               } catch(e) {}
             `,
           }}

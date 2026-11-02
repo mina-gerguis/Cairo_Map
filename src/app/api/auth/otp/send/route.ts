@@ -77,6 +77,22 @@ export async function POST(request: Request) {
     } catch (mailError: any) {
       const errMsg = mailError?.message || '';
       const isBrevoNotActivated = errMsg.includes('502') || errMsg.toLowerCase().includes('not yet activated');
+      const isBrevoUnauthorizedIp = errMsg.includes('525') || errMsg.toLowerCase().includes('unauthorized ip');
+      const isBrevoAuthFailed = errMsg.includes('535') || errMsg.toLowerCase().includes('authentication failed');
+
+      let devWarningMsg = 'تعذر إرسال البريد عبر SMTP. تم توفير كود التحقق في وضع التطوير.';
+      let prodErrorMsg = errMsg || 'فشل في إرسال البريد الإلكتروني. يرجى المحاولة لاحقاً.';
+
+      if (isBrevoUnauthorizedIp) {
+        devWarningMsg = 'تم رفض الاتصال من Brevo بسبب حظر الـ IP (525 Unauthorized IP address). يرجى إزالة قيود الـ IP من إعدادات Brevo. تم توفير الكود للتجربة.';
+        prodErrorMsg = 'تم رفض الاتصال من Brevo بسبب تقييد عنوان الـ IP (525 Unauthorized IP). يرجى إزالة قيود الـ IP من حساب Brevo.';
+      } else if (isBrevoAuthFailed) {
+        devWarningMsg = 'فشل تسجيل الدخول في Brevo SMTP (535 Authentication failed). يرجى التأكد من اسم المستخدم ومفتاح SMTP. تم توفير الكود للتجربة.';
+        prodErrorMsg = 'فشل تسجيل الدخول في خادم البريد Brevo SMTP (535 Authentication failed). تأكد من صحة المفتاح والمستخدم.';
+      } else if (isBrevoNotActivated) {
+        devWarningMsg = 'حساب Brevo SMTP غير مفعّل بعد في لوحة التحكم. تم توفير كود التحقق تلقائياً في وضع التطوير.';
+        prodErrorMsg = 'حساب إرسال البريد (Brevo SMTP) غير مفعّل بعد. يرجى تفعيله من لوحة تحكم Brevo أو مراسلة الدعم لتفعيله.';
+      }
 
       console.error('Error sending OTP email via SMTP:', mailError);
 
@@ -88,21 +104,13 @@ export async function POST(request: Request) {
           hash,
           expiresAt,
           devCode: otp,
-          devWarning: isBrevoNotActivated
-            ? 'حساب Brevo SMTP غير مفعّل بعد في لوحة التحكم. تم توفير كود التحقق تلقائياً في وضع التطوير.'
-            : 'تعذر إرسال البريد عبر SMTP. تم توفير كود التحقق في وضع التطوير.',
+          devWarning: devWarningMsg,
           message: 'تم توليد رمز التحقق (وضع التطوير)'
         });
       }
 
-      if (isBrevoNotActivated) {
-        return NextResponse.json({
-          error: 'حساب إرسال البريد (Brevo SMTP) غير مفعّل بعد. يرجى تفعيله من لوحة تحكم Brevo أو مراسلة الدعم لتفعيله.'
-        }, { status: 500 });
-      }
-
       return NextResponse.json({
-        error: errMsg || 'فشل في إرسال البريد الإلكتروني. يرجى المحاولة لاحقاً.'
+        error: prodErrorMsg
       }, { status: 500 });
     }
 

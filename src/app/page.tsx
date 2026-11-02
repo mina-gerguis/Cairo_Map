@@ -21,6 +21,8 @@ import dynamic from "next/dynamic";
 import AdSlider from "@/components/AdSlider";
 const TextLoop = dynamic(() => import("@/components/ui/TextLoop"), { ssr: false });
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
+const MetroMapGallery = dynamic(() => import("@/components/ui/MetroMapGallery"), { ssr: false });
+import { CAIRO_METRO_LINES, CAIRO_METRO_STATIONS, CAIRO_METRO_LABELS } from "@/data/cairoMetroGalleryData";
 import { FamousCity, INITIAL_FAMOUS_CITIES, getStoredCities, saveStoredCities } from "@/data/cities";
 import CityDetailModal from "@/components/cities/CityDetailModal";
 import { useGSAP, gsap, ScrollTrigger } from "@/lib/gsap";
@@ -337,6 +339,7 @@ export default function HomePage() {
   const microTrackRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
   const citiesSectionRef = useRef<HTMLElement>(null);
+  const metroSectionRef = useRef<HTMLElement>(null);
   const servicesSectionRef = useRef<HTMLElement>(null);
   const categoriesSectionRef = useRef<HTMLElement>(null);
   const blogsSectionRef = useRef<HTMLElement>(null);
@@ -986,7 +989,7 @@ export default function HomePage() {
       kind: "avatar",
       ring: "outer",
       angle: 135,
-      src: "/images/metro/Cairo_metro.webp",
+      src: "/images/transit/metro.webp",
       alt: "مترو القاهرة",
       color: "#ffffff",
       size: 66,
@@ -1843,6 +1846,27 @@ export default function HomePage() {
             </button>
           </div>
         )}
+      </section>
+
+      {/* ── CAIRO METRO INTERACTIVE GALLERY (شبكة مترو أنفاق القاهرة الكبرى) ── */}
+      <section
+        ref={metroSectionRef}
+        style={{
+          padding: "10px 20px 40px 20px",
+          maxWidth: "1280px",
+          margin: "0 auto",
+          position: "relative",
+        }}
+      >
+        <MetroMapGallery
+          items={CAIRO_METRO_STATIONS}
+          lines={CAIRO_METRO_LINES}
+          labels={CAIRO_METRO_LABELS}
+          trainSpeed={65}
+          dwell={1200}
+          autoplay={true}
+          interval={3000}
+        />
       </section>
 
       {/* ── 3. MAIN SERVICES GRID ── */}

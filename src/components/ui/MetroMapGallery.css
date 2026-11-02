@@ -1,0 +1,124 @@
+/* ============================================================================
+   MetroMapGallery — Cairo Metro Network Gallery Styling (Monochrome Black Tracks)
+   ============================================================================ */
+
+/* ── All Railway Tracks are BLACK (#000000) ── */
+[data-slot="metro-map-gallery"] .stroke-track-black {
+  stroke: #000000 !important;
+}
+
+/* Track casing: in dark mode a clean luminous casing ensures the black track stands out; in light mode subtle casing */
+[data-slot="metro-map-gallery"] .stroke-track-casing {
+  stroke: rgba(255, 255, 255, 0.5) !important;
+}
+html.light [data-slot="metro-map-gallery"] .stroke-track-casing {
+  stroke: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Station dots and roundels */
+[data-slot="metro-map-gallery"] .stroke-station-dot {
+  stroke: #000000 !important;
+}
+html.light [data-slot="metro-map-gallery"] .stroke-station-dot {
+  stroke: #000000 !important;
+}
+
+/* SVG Canvas & Token Adaptations */
+[data-slot="metro-map-gallery"] .fill-background {
+  fill: var(--color-bg, #09090b);
+}
+[data-slot="metro-map-gallery"] .stroke-background {
+  stroke: var(--color-bg, #09090b);
+}
+[data-slot="metro-map-gallery"] .fill-foreground {
+  fill: var(--color-foreground, #f4f4f5);
+}
+
+html.light [data-slot="metro-map-gallery"] .fill-background {
+  fill: #ffffff;
+}
+html.light [data-slot="metro-map-gallery"] .stroke-background {
+  stroke: #ffffff;
+}
+html.light [data-slot="metro-map-gallery"] .fill-foreground {
+  fill: #09090b;
+}
+
+/* ── Train Car Styling (عكس لون السكة: أبيض في الفاتح، أسود في الداكن) ── */
+[data-slot="metro-map-gallery"] .metro-train-body {
+  fill: #000000 !important;
+  stroke: #ffffff !important;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.8));
+}
+
+html.light [data-slot="metro-map-gallery"] .metro-train-body {
+  fill: #ffffff !important;
+  stroke: #000000 !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
+[data-slot="metro-map-gallery"] .metro-train-window {
+  fill: #ffffff !important;
+  opacity: 0.95;
+}
+
+html.light [data-slot="metro-map-gallery"] .metro-train-window {
+  fill: #000000 !important;
+  opacity: 0.95;
+}
+
+/* Card & Surface Tokens */
+[data-slot="metro-map-gallery"] .bg-card,
+[data-metro-dialog] .bg-card {
+  background-color: var(--cardGlassBg, #18181b);
+}
+html.light [data-slot="metro-map-gallery"] .bg-card,
+html.light [data-metro-dialog] .bg-card {
+  background-color: #ffffff;
+}
+
+[data-slot="metro-map-gallery"] .text-card-foreground,
+[data-metro-dialog] .text-card-foreground {
+  color: var(--color-foreground, #f4f4f5);
+}
+html.light [data-slot="metro-map-gallery"] .text-card-foreground,
+html.light [data-metro-dialog] .text-card-foreground {
+  color: #09090b;
+}
+
+[data-slot="metro-map-gallery"] .border-border,
+[data-metro-dialog] .border-border {
+  border-color: var(--border-glass, rgba(255, 255, 255, 0.12));
+}
+html.light [data-slot="metro-map-gallery"] .border-border,
+html.light [data-metro-dialog] .border-border {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-slot="metro-map-gallery"] .bg-muted,
+[data-metro-dialog] .bg-muted {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+html.light [data-slot="metro-map-gallery"] .bg-muted,
+html.light [data-metro-dialog] .bg-muted {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-slot="metro-map-gallery"] .text-muted-foreground,
+[data-metro-dialog] .text-muted-foreground {
+  color: var(--text-muted, #a1a1aa);
+}
+html.light [data-slot="metro-map-gallery"] .text-muted-foreground,
+html.light [data-metro-dialog] .text-muted-foreground {
+  color: #71717a;
+}
+
+/* Pulse Animation on Metro Train Arrivals */
+@keyframes cairoMetroPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+[data-slot="metro-map-gallery"] [data-pulse] {
+  transform-origin: center;
+}

@@ -125,9 +125,12 @@ export default function Navbar() {
     const initial = saved ?? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
     setTheme(initial);
     document.documentElement.classList.toggle("light", initial === "light");
+    document.documentElement.classList.toggle("dark", initial !== "light");
 
     const handleGlobalThemeChange = (e: any) => {
       setTheme(e.detail);
+      document.documentElement.classList.toggle("light", e.detail === "light");
+      document.documentElement.classList.toggle("dark", e.detail !== "light");
     };
     window.addEventListener("themechange", handleGlobalThemeChange);
     return () => window.removeEventListener("themechange", handleGlobalThemeChange);
@@ -143,6 +146,7 @@ export default function Navbar() {
     setTheme(next);
     localStorage.setItem("dftry_theme", next);
     document.documentElement.classList.toggle("light", next === "light");
+    document.documentElement.classList.toggle("dark", next !== "light");
     window.dispatchEvent(new CustomEvent("themechange", { detail: next }));
   };
 

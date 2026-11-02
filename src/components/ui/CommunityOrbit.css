@@ -491,27 +491,8 @@ html:not(.light) .orbit-tag-pill:hover,
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  background-color: #ecfdf5;
-  color: #059669;
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.orbit-tag-pill:hover .orbit-tag-icon-bubble {
-  background-color: #059669;
-  color: #ffffff;
-}
-
-html:not(.light) .orbit-tag-icon-bubble,
-.dark .orbit-tag-icon-bubble {
-  background-color: #064e3b;
-  color: #6ee7b7;
-}
-
-html:not(.light) .orbit-tag-pill:hover .orbit-tag-icon-bubble,
-.dark .orbit-tag-pill:hover .orbit-tag-icon-bubble {
-  background-color: #10b981;
-  color: #ffffff;
-}
 
 .orbit-tag-icon-bubble svg,
 .orbit-tag-icon-bubble img {
