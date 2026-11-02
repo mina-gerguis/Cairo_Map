@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import AdBanner from "@/components/AdBanner";
+import VideoAdBanner from "@/components/VideoAdBanner";
 import { PlacesSectionsViewProps } from "../types";
 import PaginatedSection from "./PaginatedSection";
 
@@ -71,8 +71,8 @@ export default function PlacesSectionsView({
         itemsPerPage={3}
       />
 
-      {/* Ad Space Banner (Middle) */}
-      <AdBanner placement="places_middle" />
+      {/* ── PLACES AD BANNER 3: MIDDLE (SLOT 6) ── */}
+      <VideoAdBanner slotId="[ placesMiddle#6 ]" />
 
       {/* Section 4: Family */}
       <PaginatedSection
@@ -93,9 +93,6 @@ export default function PlacesSectionsView({
         toggleFavorite={toggleFavorite}
         favoriteIds={favoriteIds}
       />
-
-      {/* Ad Space Banner (Bottom) */}
-      <AdBanner placement="places_bottom" />
     </>
   );
 }

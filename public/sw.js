@@ -8,7 +8,7 @@ const STATIC_ASSETS = [
   "/intercity-buses",
   "/parking",
   "/favicon.ico",
-  "/apple-touch-icon.png",
+  "/images/brand/qareeb_touch.webp",
   "/images/logo/darkMode_logo.png",
   "/images/logo/lightMode_logo.png"
 ];

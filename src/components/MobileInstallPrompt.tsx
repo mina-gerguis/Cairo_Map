@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
+import { ASSETS } from "@/constants/assets";
 type Platform = "ios" | "android" | null;
 
 export default function MobileInstallPrompt() {
@@ -284,7 +284,7 @@ export default function MobileInstallPrompt() {
               }}
             >
               <img
-                src="/apple-touch-icon.png"
+                src={`${ASSETS.branding.qareebTouch}`}
                 alt="قريب"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />

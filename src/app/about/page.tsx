@@ -49,7 +49,7 @@ export default function AboutPage() {
       name: "قريب - Cairo Map",
       alternateName: "RepoDex",
       url: siteUrl,
-      logo: `${siteUrl}/apple-touch-icon.png`,
+      logo: `${siteUrl}/images/brand/qareeb_touch.webp`,
       foundingDate: "2024",
       description:
         "دليل رقمي ذكي لخطوط المترو، المونوريل، القطار الكهربائي LRT، الأتوبيس الترددي BRT، ومحطات القطارات والخدمات في مصر.",

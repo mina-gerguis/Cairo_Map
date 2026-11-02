@@ -1219,7 +1219,7 @@ export function MetroMapGallery({
         </div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-3 px-6 pb-7 pt-5 text-center">
+      <div className="media-max-sm relative z-10 flex flex-col items-center gap-3 px-6 pb-7 pt-5 text-center">
         <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2" aria-label={`خطوط المترو`}>
           {geometry.lines.map((line) => (
             <li key={line.index} className={cx("flex items-center gap-2 text-xs", !reduced && "transition-opacity duration-200", activeGeo && activeGeo.line !== line.index && "opacity-40")}>

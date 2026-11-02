@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; 
 import { ASSETS } from "@/constants/assets";
 import {
-  FaSearch,
-  FaMapMarkerAlt,
   FaPlusCircle,
   FaArrowLeft,
-  FaLightbulb,
   FaChevronLeft,
   FaChevronRight,
   FaInbox
@@ -18,8 +15,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { initialPlaces, CATEGORIES_STRUCTURE, Place, normalizePlaceCategory, getMainCategoryImage } from "@/data/places";
 import dynamic from "next/dynamic";
-import AdSlider from "@/components/AdSlider";
-const TextLoop = dynamic(() => import("@/components/ui/TextLoop"), { ssr: false });
+import VideoAdBanner from "@/components/VideoAdBanner";
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
 const MetroMapGallery = dynamic(() => import("@/components/ui/MetroMapGallery"), { ssr: false });
 import { CAIRO_METRO_LINES, CAIRO_METRO_STATIONS, CAIRO_METRO_LABELS } from "@/data/cairoMetroGalleryData";
@@ -27,6 +23,9 @@ import { FamousCity, INITIAL_FAMOUS_CITIES, getStoredCities, saveStoredCities } 
 import CityDetailModal from "@/components/cities/CityDetailModal";
 import { useGSAP, gsap, ScrollTrigger } from "@/lib/gsap";
 import CommunityOrbit, { OrbitItem, OrbitStat, OrbitTag } from "@/components/ui/CommunityOrbit";
+import { AppleSpotlight, SearchResult, SpotlightPlaceholder } from "@/components/ui/AppleSpotlight";
+import { IconBookmarkPlus, IconMoodSadDizzy, IconRefresh } from "@tabler/icons-react";
+import Footer from "@/components/Footer";
 
 // ── 1. دالة توحيد وتنظيف النصوص العربية لبحث دقيق ──
 function normalizeArabic(text: string): string {
@@ -144,7 +143,7 @@ interface SiteServiceItem {
 
 // ── دالة التحقق من صحة مسارات الصور لمنع أخطاء Invalid URL ──
 function getValidImageSrc(icon?: string): string {
-  if (!icon) return "/images/icons2d/cairo.webp";
+  if (!icon) return "/images/brand/qareeb_touch.webp";
   if (icon.startsWith("/") || icon.startsWith("http://") || icon.startsWith("https://")) {
     return icon;
   }
@@ -158,7 +157,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "أحفظ مكاني",
     subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
     href: "/save-location",
-    icon: "/images/icons3d/street.webp",
+    icon: ASSETS.icons3d.street,
     badge: "ميزة جديدة 🎯",
     keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"]
   },
@@ -212,7 +211,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "دليل الهاتف والأكواد",
     subtitle: "أرقام الخدمات، وأكواد الشبكات",
     href: "/directory",
-    icon: "/images/icons2d/cairo.webp",
+    icon: ASSETS.company.vodafone,
     badge: "دليل الهواتف",
     keywords: ["تليفون", "تليفونات", "هاتف", "اكواد", "أكواد", "طوارئ", "فودافون", "اورنج", "اتصالات", "وي", "ارقام", "خدمة العملاء"]
   },
@@ -221,7 +220,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "ازاي اروح؟",
     subtitle: "دليل الوصول لأي مكان في مصر",
     href: "/directions",
-    icon: "/images/icons2d/arab_republic _of_egypt.webp",
+    icon: ASSETS.locations.governorates.flagEgypt,
     badge: "اتجاهات ومسارات",
     keywords: ["ازاي اروح", "ازاي اوصل", "اروح ازاي", "مواصلات", "طريق", "مسار", "اتجاهات"]
   },
@@ -230,7 +229,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مخطط الرحلات الذكي",
     subtitle: "تخطيط يومك بالذكاء الاصطناعي",
     href: "/ai-planner",
-    icon: "/images/icons2d/ai.webp",
+    icon: ASSETS.icons3d.robot,
     badge: "ذكاء اصطناعي",
     keywords: ["خروجة", "تخطيط", "مخطط", "رحلات", "برنامج", "ذكاء", "ذكاء اصطناعي", "ai", "افكار خروج"]
   },
@@ -239,7 +238,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف الأتوبيسات",
     subtitle: "محطات الأتوبيسات بالقاهرة والجيزة",
     href: "/bus-stations",
-    icon: "/images/icons2d/bus.webp",
+    icon: ASSETS.transit.bus,
     badge: "مواقف أتوبيس",
     keywords: ["اتوبيس", "أتوبيس", "موقف اتوبيس", "نقل عام", "مواقف الأتوبيس"]
   },
@@ -248,7 +247,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مواقف السرفيس",
     subtitle: "خطوط السرفيس بين المحافظات",
     href: "/microbus-stations",
-    icon: "/images/icons2d/microbus.webp",
+    icon: ASSETS.transit.microbus,
     badge: "مواقف ميكروباص",
     keywords: ["ميكروباص", "موقف ميكروباص", "سرفيس", "موقف سرفيس", "مواقف"]
   },
@@ -257,7 +256,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "المطارات المصرية",
     subtitle: "معلومات مطار القاهرة ",
     href: "/airports",
-    icon: "/images/icons2d/airport.webp",
+    icon: ASSETS.transit.airport,
     badge: "مطارات وموانئ",
     keywords: ["مطار", "مطارات", "مطار القاهرة", "سفنكس", "موانئ", "ميناء"]
   },
@@ -266,16 +265,16 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الموانئ المصرية",
     subtitle: "معلومات ميناء السخنة ",
     href: "/ports",
-    icon: "/images/icons2d/arab_republice.webp",
+    icon: ASSETS.transit.ports,
     badge: "الموانئ",
     keywords: ["ميناء", "الميناء", "ميناء السخنة"]
   },
   {
     id: "blog",
-    label: "مدونة ومقالات خريطة القاهرة",
+    label: "مدونة ومقالات قريب",
     subtitle: "أدلة الترانزيت، النصائح، والأماكن",
     href: "/blog",
-    icon: "/images/icons2d/cairo.webp",
+    icon: ASSETS.branding.qareebNoBgBlue,
     badge: "مقالات وأدلة",
     keywords: ["مدونة", "مقالات", "مقال", "اخبار", "أخبار", "دليل", "blog", "نصائح", "مقاله"]
   }
@@ -314,13 +313,30 @@ const DEFAULT_HOME_BLOGS: HomeBlogItem[] = [
   },
 ];
 
+const HERO_PLACEHOLDERS = [
+  "ابحث عن الخدمة، المكان، أو المحطة المطلوبة...",
+  "خطوط ومحطات مترو القاهرة الكبرى ومواعيدها...",
+  "قطار المونوريل والقطار الكهربائي الخفيف LRT...",
+  "ازاي اروح أي مكان في مصر بأسرع وسيلة مواصلات...",
+  "أحفظ مكانك الحالي بدقة أو مكان ركنة سيارتك...",
+  "مخطط الرحلات والخروجات بالذكاء الاصطناعي..."
+];
+
 export default function HomePage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [heroPlaceholderIndex, setHeroPlaceholderIndex] = useState(0);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroPlaceholderIndex((prev) => (prev + 1) % HERO_PLACEHOLDERS.length);
+    }, 3200);
+    return () => clearInterval(timer);
+  }, []);
 
   // ── حساب الإحصائيات الحقيقية والديناميكية للموقع ──
   const [activePlaces, setActivePlaces] = useState<Place[]>(initialPlaces);
@@ -846,7 +862,7 @@ export default function HomePage() {
     }
   }, []);
 
-  // Global Ctrl+K / Cmd+K listener to focus the homepage search input
+  // Global Ctrl+K / Cmd+K listener to focus the homepage search input in place
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
@@ -864,7 +880,7 @@ export default function HomePage() {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         searchInputRef.current?.focus();
-        setIsDropdownOpen(true);
+        searchContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     };
 
@@ -938,42 +954,94 @@ export default function HomePage() {
 
   const hasResults = matchedServices.length > 0 || matchedPlaces.length > 0 || matchedCategories.length > 0;
 
-  const handleSearchSubmit = (e: React.FormEvent, forceFullSearch: boolean = false) => {
+  // ── 8. نتائج بحث Apple Spotlight المنسقة ──
+  const spotlightResults = useMemo<SearchResult[] | undefined>(() => {
+    if (!searchQuery.trim() || queryWords.length === 0) return undefined;
+
+    const list: SearchResult[] = [];
+
+    // 1. خدمات وصفحات الموقع
+    matchedServices.forEach((service) => {
+      list.push({
+        label: service.label,
+        description: service.subtitle,
+        link: service.href,
+        image: getValidImageSrc(service.icon),
+        badge: service.badge || "خدمة بالموقع",
+      });
+    });
+
+    // 2. الأماكن المسجلة
+    matchedPlaces.forEach((place) => {
+      list.push({
+        label: place.name + (place.name_en ? ` (${place.name_en})` : ""),
+        description: `${place.categoryLabel || ""} ${place.briefLocation ? `• ${place.briefLocation}` : ""}`.trim(),
+        link: `/places/${place.id}`,
+        image: getMainCategoryImage(place.category, place.subCategories),
+        badge: place.categoryLabel || "مكان مسجل",
+      });
+    });
+
+    // 3. الفئات والأنشطة
+    matchedCategories.forEach((cat) => {
+      list.push({
+        label: cat.label,
+        description: `تصفح كل أماكن ومحلات ${cat.label}`,
+        link: `/places?category=${encodeURIComponent(cat.name)}`,
+        image: `/images/icons3d/${cat.image}`,
+        badge: "تصنيف",
+      });
+    });
+
+    return list;
+  }, [searchQuery, queryWords, matchedServices, matchedPlaces, matchedCategories]);
+
+  const handleOpenMapSearch = (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (!searchQuery.trim()) return;
+    setIsDropdownOpen(false);
+    router.push(`/map?search=${encodeURIComponent(searchQuery.trim())}`);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent, forceMapSearch: boolean = false) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
 
-    if (!forceFullSearch) {
-      if (matchedServices && matchedServices.length > 0) {
-        setIsDropdownOpen(false);
-        router.push(matchedServices[0].href);
-        return;
-      }
-      if (matchedPlaces && matchedPlaces.length === 1) {
-        setIsDropdownOpen(false);
-        router.push(`/places/${matchedPlaces[0].id}`);
-        return;
-      }
-      if (matchedCategories && matchedCategories.length > 0) {
-        setIsDropdownOpen(false);
-        router.push(`/places?category=${encodeURIComponent(matchedCategories[0].name)}`);
-        return;
-      }
+    if (forceMapSearch) {
+      handleOpenMapSearch(e);
+      return;
     }
 
-    // Keep dropdown open instead of redirecting to /places
-    setIsDropdownOpen(true);
+    if (matchedServices && matchedServices.length > 0) {
+      setIsDropdownOpen(false);
+      router.push(matchedServices[0].href);
+      return;
+    }
+    if (matchedPlaces && matchedPlaces.length === 1) {
+      setIsDropdownOpen(false);
+      router.push(`/places/${matchedPlaces[0].id}`);
+      return;
+    }
+    if (matchedCategories && matchedCategories.length > 0) {
+      setIsDropdownOpen(false);
+      router.push(`/places?category=${encodeURIComponent(matchedCategories[0].name)}`);
+      return;
+    }
+
+    setIsDropdownOpen(false);
+    router.push(`/places?search=${encodeURIComponent(searchQuery.trim())}`);
   };
 
   const quickSearchTags = [
-    { label: "موناريل", route: "/monorail", icon: "Cairo_monorail_east.webp" },
+    { label: "موناريل", route: "/monorail", icon: ASSETS.transit.monorail },
     { label: "الأتوبيس الترددي", route: "/brt", icon: ASSETS.transit.brt },
     { label: "القطار الكهربي", route: "/lrt", icon: ASSETS.transit.lrt },
     { label: "موقف الميكروباصات", route: "/microbus-stations", icon: ASSETS.transit.microbus },
     { label: "موقف الأتوبيسات", route: "/bus-stations", icon: ASSETS.transit.bus },
-    { label: "مدونة المقالات", route: "/blog", icon: "Cairo_logo.webp" },
+    { label: "مدونة المقالات", route: "/blog", icon: ASSETS.branding.qareebNoBgBlue },
     { label: "خريطة المترو", route: "/metro", icon: ASSETS.transit.metro },
-    { label: "دليل الهواتف", route: "/directory", icon: "cairo.webp" },
-    { label: "ازاي اروح؟", route: "/directions", icon: "arab_republic _of_egypt.webp" },
+    { label: "دليل الهواتف", route: "/directory", icon: ASSETS.company.vodafone },
+    { label: "ازاي اروح؟", route: "/directions", icon: ASSETS.locations.governorates.flagEgypt },
   ];
 
   const orbitItems: OrbitItem[] = [
@@ -1093,66 +1161,66 @@ export default function HomePage() {
   const mainServices = [
     {
       id: "save-location",
-      title: "أحفظ مكاني (GPS دقيق)",
-      desc: "احفظ مكان تواجدك أو ركنة سيارتك بدقة 100% بالميلي مع تسجيل الوقت والتاريخ ورابط مباشر لخرائط Google Maps.",
-      icon: ASSETS.services.saveLocation,
+      title: "أحفظ مكاني",
+      desc: "عديت كام مره علي مكان وعجبك ومش عايز تنساه؟ احفظه دلوقتي عشان ترجعله بسهوله ومتنساش زي كل مرة.",
+      icon: ASSETS.icons3d.street,
       link: "/save-location",
     },
     {
       id: "places",
       title: "دليل الأماكن",
-      desc: "استكشف المطاعم، الكافيهات، الأطباء، والمحلات في القاهرة والجيزة مع مواعيد العمل الرسمية، الفروع، وأرقام الهواتف.",
-      icon: ASSETS.services.places,
+      desc: "خد عنك فيه جوه مطاعم كافيهات محلات مولات حدائق فنادق ومش كدا وبس صيدليات مستشفيات أحلم واتمني بس .",
+      icon: ASSETS.icons3d.places,
       link: "/places",
     },
     {
       id: "blog",
-      title: "مدونة ومقالات خريطة القاهرة",
-      desc: "أحدث النصائح، خطوط السفر، وأدلة التنقل الذكي وأماكن الخروج في القاهرة والجيزة المحدثة باستمرار.",
-      icon: ASSETS.services.blog,
+      title: "مدونة ومقالات قريب",
+      desc: "بنعرفك أي اللي حصل بره وأنت علي سريرك ماسك الموبايل بتقلب قبل ما تتحرك وتغرق في الزحمة",
+      icon: ASSETS.icons3d.book,
       link: "/blog",
     },
     {
       id: "ai-planner",
-      title: "مخطط الرحلات الذكي (AI)",
-      desc: "صمّم خطة خروجة أو يوم كامل بالذكاء الاصطناعي بناءً على ميزانيتك، اهتماماتك الشخصية، والمنطقة التي تفضلها.",
-      icon: ASSETS.services.places,
+      title: "بطل تفكير وخطط لخروجتك يا كبير",
+      desc: "مش عارف تخرج فين ؟, زهقت من كتر التفكير ... أدخل قولنا ميزنيتك ومكانك وسيب الترتيب علينا وقوم ألبس يلا علشان متتأخرش",
+      icon: ASSETS.icons3d.robot,
       link: "/ai-planner",
     },
     {
       id: "directory",
-      title: "دليل الهواتف والأكواد",
+      title: "دفتر أرقام وأكواد معاك",
       desc: "دليل شامل لأرقام الطوارئ، الهيئات الخدمية، وأكواد باقات وفليكسات شبكات المحمول (فودافون، أورنج، اتصالات، وي).",
-      icon: ASSETS.services.saveLocation,
+      icon: ASSETS.icons3d.vodafone,
       link: "/directory",
     },
     {
-      id: "transit",
+      id: "metro",
       title: "شبكات مترو القاهرة الكبري",
-      desc: "خرائط تفاعلية لخطوط مترو الأنفاق الخط الأول و الثاني و الثالث.",
-      icon: ASSETS.transit.metro,
+      desc: "عارفك أنت هتقولي أيوة صح أنت مولود في المترو ومن المؤاسسين بس نراهن لسه برده بتوه وحدك جوه مش صح ... علشان كدا خد خريطة المترو وأسعار التذاكر ومتكسفناش.",
+      icon: ASSETS.icons3d.metro,
       link: "/metro",
     },
     {
       id: "directions",
-      title: "دليل ازاي اروح والمواقف",
-      desc: "اعثر على طريقة الوصول لأي مكان في مصر بسهولة مع مواقف الأتوبيس، الميكروباص، المطارات، والموانئ.",
-      icon: ASSETS.services.cairo,
+      title: "قبل ما تركب أسال",
+      desc: "عايز تروح فين وهو قالك فين مش كفاية الدوخة دي وقوله معرفش أو افتح قريب وأعرف المكان وقوله وأكسب فيه ثواب.",
+      icon: ASSETS.icons3d.egypt,
       link: "/directions",
     },
     {
       id: "microbus-stations",
       title: "مواقف الميكروباص",
       desc: "دليل مواقف الميكروباص في القاهرة الكبري و الجيزة  وجميع المحافظات المصرية",
-      icon: ASSETS.transit.microbus,
+      icon: ASSETS.icons3d.microbus,
       link: "/microbus-stations",
     },
     {
-      id: "propose",
-      title: "إضافة واقتراح مكان جديد",
-      desc: "هل تملك نشاطاً تجارياً أو تريد إضافة مكان جديد على دليل قريب؟ أضفه مجاناً ليصل لملايين الزوار.",
-      icon: ASSETS.services.saveLocation,
-      link: "/propose-place",
+      id: "map",
+      title: "خريطة خريطة مافيش كلام",
+      desc: "اكتشف خرائط تفاعلية للطرق الرئيسية والمناطق الحيوية في القاهرة الكبرى، بما في ذلك شبكات المترو والمونوريل والمرافق الهامة.",
+      icon: ASSETS.icons3d.maps,
+      link: "/map",
     },
   ];
 
@@ -1195,7 +1263,7 @@ export default function HomePage() {
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-foreground)", fontFamily: "var(--font-heading)" }}>
       {/* ── 1. HERO SECTION (COMMUNITY ORBIT) ── */}
-      <section ref={heroSectionRef} style={{ position: "relative", overflow: "visible", zIndex: isDropdownOpen ? 100 : 1 }}>
+      <section ref={heroSectionRef} style={{ position: "relative", overflow: "visible", zIndex: 10 }}>
         <CommunityOrbit
           items={orbitItems}
           stats={orbitStats}
@@ -1203,432 +1271,96 @@ export default function HomePage() {
           subheadline="منصتك المتكاملة لاستكشاف أماكن المطاعم، الكافيهات، العيادات، شبكات المترو والمنورايل، خطوط المواصلات، ودليل الهواتف والأكواد المختصرة."
           tags={orbitTags}
         >
-          {/* Hero Universal Live Search Box Container */}
-          <div
-            ref={searchContainerRef}
-            style={{
-              maxWidth: "720px",
-              margin: "0 auto",
-              position: "relative",
-              zIndex: isDropdownOpen ? 1000 : 2,
-            }}
-          >
-            <form onSubmit={(e) => handleSearchSubmit(e, false)}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  backgroundColor: "var(--bg-glass)",
-                  border:
-                    isDropdownOpen && searchQuery.trim()
-                      ? "1.5px solid var(--color-primary)"
-                      : "1.5px solid var(--border-primary)",
-                  borderRadius: "var(--ra-32)",
-                  padding: "8px 15px 8px 15px",
-                  boxShadow: "0 10px 30px var(--shadow-card)",
-                  backdropFilter: "blur(12px)",
-                  transition: "border-color 0.2s ease",
-                }}
-              >
-                <FaSearch style={{ fontSize: "1.2rem", color: "var(--text-muted)", marginLeft: "12px" }} />
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  placeholder="ابحث عن الخدمة أو المكان المطلوب..."
-                  value={searchQuery}
-                  onFocus={() => setIsDropdownOpen(true)}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setIsDropdownOpen(true);
-                  }}
+          {/* Hero Universal Live Search Box Container — Inline Apple Spotlight */}
+          <div ref={searchContainerRef} className="w-full">
+            <AppleSpotlight
+              inputRef={searchInputRef}
+              searchValue={searchQuery}
+              onSearchChange={(val) => setSearchQuery(val)}
+              onSubmit={(e) => handleSearchSubmit(e, false)}
+              searchResults={spotlightResults}
+              isMac={isMac}
+              placeholder={HERO_PLACEHOLDERS[heroPlaceholderIndex]}
+              emptyState={
+                <div style={{ padding: "24px 16px", textAlign: "center", color: "var(--text-secondary)" }}>
+                  <div style={{ fontSize: "1.8rem", marginBottom: "6px" }}>
+                    <FaInbox style={{ fontSize: "1.8rem", margin: "0 auto 6px auto", opacity: 0.5 }} />
+                  </div>
+                  <div style={{ fontWeight: "600", fontSize: "1rem", color: "var(--color-foreground)", marginBottom: "4px" }} className="font-sub">
+                    أنت بتبحث عن&nbsp;<strong>&quot;{searchQuery}&quot;</strong>
+                  </div>
+                  <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }} className=" flex items-center justify-center font-sub">
+                    <p>دورنا كتير بس للاسف ملقناش اللي أنت بدور عليه،
+                  لكن جرب تبحث من تاني أو أضف المكان بنفسك </p><IconMoodSadDizzy stroke={2} /> 
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="btn btn-primary fs-sm py-0"
+                    >
+                      جرب أبحث من جديد <IconRefresh stroke={2} />
+                    </button>
+                    <Link
+                      href="/propose-place"
+                     className="btn btn-blue fs-sm py-0"
+                    >
+                    ده مكان ؟ تعاله نضيفة
+                    <IconBookmarkPlus stroke={2} /> 
+                    </Link>
+                  </div>
+                </div>
+              }
+              footer={
+                <div
                   style={{
-                    flex: 1,
-                    background: "transparent",
-                    border: "none",
-                    outline: "none",
-                    color: "var(--color-foreground)",
-                    fontSize: "1rem",
-                    fontFamily: "var(--font-heading)",
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    searchInputRef.current?.focus();
-                    setIsDropdownOpen(true);
-                  }}
-                  className="active:scale-[0.96] transition-transform"
-                  style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.07)",
-                    border: "1px solid var(--border-glass)",
-                    backdropFilter: "blur(8px)",
-                    borderRadius: "var(--ra-14)",
-                    padding: "4px 10px",
+                    padding: "16px 18px",
+                    borderTop: "1px solid rgba(120, 120, 128, 0.15)",
                     display: "flex",
+                    justifyContent: "space-between",
                     alignItems: "center",
-                    direction: "ltr",
-                    gap: "5px",
-                    cursor: "pointer",
-                    userSelect: "none",
-                    outline: "none",
-                    height: "36px",
-                    minWidth: "60px",
-                    justifyContent: "center",
+                    fontSize: "0.78rem",
+                    color: "var(--text-muted)",
                   }}
                 >
-                  <kbd
-                    style={{
-                      fontFamily: "inherit",
-                      fontSize: "0.75rem",
-                      fontWeight: "bold",
-                      color: "var(--color-foreground)",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "20px",
-                    }}
-                  >
-                    {isMac ? "⌘" : "Ctrl"}
-                  </kbd>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.75rem", fontWeight: "bold" }}>+</span>
-                  <kbd
-                    style={{
-                      fontFamily: "inherit",
-                      fontSize: "0.75rem",
-                      fontWeight: "bold",
-                      color: "var(--color-foreground)",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: "20px",
-                    }}
-                  >
-                    K
-                  </kbd>
-                </button>
-              </div>
-            </form>
-
-            {/* ── UNIVERSAL LIVE SEARCH DROPDOWN ── */}
-            {isDropdownOpen && searchQuery.trim().length > 0 && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "calc(100% + 8px)",
-                  left: 0,
-                  right: 0,
-                  backgroundColor: "var(--card-glass, rgba(20, 20, 24, 0.98))",
-                  backdropFilter: "blur(20px)",
-                  WebkitBackdropFilter: "blur(20px)",
-                  border: "1px solid var(--border-glass-bright)",
-                  borderRadius: "var(--ra-24)",
-                  boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
-                  zIndex: 99999,
-                  maxHeight: "450px",
-                  overflowY: "auto",
-                  textAlign: "right",
-                  padding: "12px",
-                }}
-              >
-                {/* 1. MATCHED SITE SERVICES (هل تقصد؟) */}
-                {matchedServices.length > 0 && (
-                  <div style={{ marginBottom: "16px" }}>
-                    <div
+                  <div style={{ gap: "12px", alignItems: "center" }} className="flex media-max-sm">
+                    <span><kbd className="apple-spotlight-kbd">↵</kbd> للانتقال</span>
+                    <span><kbd className="apple-spotlight-kbd">↑↓</kbd> للتنقل</span>
+                    <span><kbd className="apple-spotlight-kbd">ESC</kbd> للمسح</span>
+                  </div>
+                  {searchQuery.trim() && (
+                    <button
+                      type="button"
+                      onClick={handleOpenMapSearch}
                       style={{
+                        background: "none",
+                        border: "none",
+                        color: "var(--color-primary, #006fee)",
+                        fontWeight: "700",
+                        fontSize: "0.9rem",
+                        cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
-                        gap: "8px",
-                        fontSize: "0.85rem",
-                        fontWeight: "700",
-                        color: "var(--color-primary)",
-                        padding: "6px 12px",
-                        marginBottom: "6px",
+                        gap: "4px",
                       }}
                     >
-                      <FaLightbulb />
-                      <span>هل تقصد صفحة أو خدمة بالموقع؟</span>
-                    </div>
-
-                    {matchedServices.map((service) => (
-                      <Link
-                        key={service.id}
-                        href={service.href}
-                        onClick={() => setIsDropdownOpen(false)}
-                        className="active:scale-[0.98]"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "10px 14px",
-                          borderRadius: "12px",
-                          backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--border-glass)",
-                          marginBottom: "6px",
-                          textDecoration: "none",
-                          color: "var(--color-foreground)",
-                          transition: "transform 0.15s ease, background-color 0.15s ease",
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <Image
-                            src={getValidImageSrc(service.icon)}
-                            alt={service.label}
-                            width={30}
-                            height={30}
-                            style={{ width: "30px", height: "30px", objectFit: "contain" }}
-                          />
-                          <div>
-                            <div style={{ fontWeight: "700", fontSize: "0.95rem" }}>{service.label}</div>
-                            <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{service.subtitle}</div>
-                          </div>
-                        </div>
-
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            fontWeight: "700",
-                            padding: "3px 10px",
-                            borderRadius: "999px",
-                            backgroundColor: "rgba(0, 111, 238, 0.15)",
-                            color: "var(--color-primary)",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          <span>انتقال</span>
-                          <FaChevronLeft style={{ fontSize: "0.65rem" }} />
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                {/* 2. MATCHED PLACES */}
-                {matchedPlaces.length > 0 && (
-                  <div style={{ marginBottom: "16px" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        fontSize: "0.85rem",
-                        fontWeight: "700",
-                        color: "var(--accent-secondary)",
-                        padding: "6px 12px",
-                        marginBottom: "6px",
-                      }}
-                    >
-                      <FaMapMarkerAlt />
-                      <span>الأماكن ذات الصلة ({matchedPlaces.length})</span>
-                    </div>
-
-                    {matchedPlaces.map((place) => (
-                      <Link
-                        key={place.id}
-                        href={`/places/${place.id}`}
-                        onClick={() => setIsDropdownOpen(false)}
-                        className="active:scale-[0.98]"
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "10px 14px",
-                          borderRadius: "12px",
-                          backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--border-glass)",
-                          marginBottom: "6px",
-                          textDecoration: "none",
-                          color: "var(--color-foreground)",
-                          transition: "transform 0.15s ease, background-color 0.15s ease",
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <Image
-                            src={getMainCategoryImage(place.category, place.subCategories)}
-                            alt={place.name}
-                            width={30}
-                            height={30}
-                            style={{ width: "30px", height: "30px", objectFit: "contain" }}
-                          />
-                          <div>
-                            <div style={{ fontWeight: "700", fontSize: "0.95rem" }}>
-                              {place.name}
-                              {place.name_en && (
-                                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginRight: "6px", fontWeight: "normal" }}>
-                                  ({place.name_en})
-                                </span>
-                              )}
-                            </div>
-                            <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                              {place.categoryLabel} {place.briefLocation ? `• ${place.briefLocation}` : ""}
-                            </div>
-                          </div>
-                        </div>
-                        <FaChevronLeft style={{ fontSize: "0.75rem", color: "var(--text-muted)" }} />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                {/* 3. MATCHED CATEGORIES */}
-                {matchedCategories.length > 0 && (
-                  <div style={{ marginBottom: "12px" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        fontSize: "0.85rem",
-                        fontWeight: "700",
-                        color: "#eab308",
-                        padding: "6px 12px",
-                        marginBottom: "6px",
-                      }}
-                    >
-                      <span>🗂️</span>
-                      <span>الفئات والأنشطة</span>
-                    </div>
-
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", padding: "0 6px" }}>
-                      {matchedCategories.map((cat) => (
-                        <Link
-                          key={cat.name}
-                          href={`/places?category=${cat.name}`}
-                          onClick={() => setIsDropdownOpen(false)}
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            padding: "6px 12px",
-                            borderRadius: "var(--ra-full)",
-                            backgroundColor: "var(--hoverBtn)",
-                            border: "1px solid var(--border-glass)",
-                            textDecoration: "none",
-                            color: "var(--color-foreground)",
-                            fontSize: "0.85rem",
-                          }}
-                        >
-                          <Image src={`/images/icons3d/${cat.image}`} alt={cat.label || cat.name} width={20} height={20} style={{ width: "20px", height: "auto" }} />
-                          <span>{cat.label}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* NO RESULTS FALLBACK */}
-                {!hasResults && (
-                  <div
-                    style={{
-                      padding: "20px 16px",
-                      textAlign: "center",
-                      color: "var(--text-secondary)",
-                      fontFamily: "var(--font-body)",
-                    }}
-                  >
-                    <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
-                      <FaInbox style={{ fontSize: "2rem", marginBottom: "6px" }} />
-                    </div>
-                    <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--color-foreground)", marginBottom: "4px" }}>
-                      عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
-                    </div>
-                    <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }}>
-                      لم نجد نتائج مطابقة مباشرة في الدليل. يمكنك تجربة التالي:
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
-                      <button
-                        type="button"
-                        onClick={() => setSearchQuery("")}
-                        style={{
-                          padding: "6px 14px",
-                          borderRadius: "8px",
-                          backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--border-glass)",
-                          color: "var(--color-foreground)",
-                          fontSize: "0.82rem",
-                          cursor: "pointer",
-                          fontFamily: "var(--font-sub)",
-                        }}
-                      >
-                        🔄 مسح البحث
-                      </button>
-                      <Link
-                        href="/ai-planner"
-                        onClick={() => setIsDropdownOpen(false)}
-                        style={{
-                          padding: "10px 14px",
-                          borderRadius: "8px",
-                          backgroundColor: "#8b5cf6",
-                          color: "#ffffff",
-                          fontSize: "0.82rem",
-                          textDecoration: "none",
-                          fontWeight: "700",
-                          fontFamily: "var(--font-sub)",
-                        }}
-                      >
-                        مخطط الرحلات الذكي
-                      </Link>
-                      <Link
-                        href="/propose-place"
-                        onClick={() => setIsDropdownOpen(false)}
-                        style={{
-                          padding: "6px 14px",
-                          borderRadius: "8px",
-                          backgroundColor: "var(--hoverBtn)",
-                          border: "1px solid var(--color-primary)",
-                          color: "var(--color-primary)",
-                          fontSize: "0.82rem",
-                          textDecoration: "none",
-                          fontWeight: "700",
-                          fontFamily: "var(--font-sub)",
-                        }}
-                      >
-                        ➕ اقتراح مكان
-                      </Link>
-                    </div>
-                  </div>
-                )}
-
-                {/* 4. FULL SEARCH BUTTON AT BOTTOM */}
-                <button
-                  type="button"
-                  onClick={(e) => handleSearchSubmit(e, true)}
-                  style={{
-                    width: "100%",
-                    marginTop: "8px",
-                    padding: "var(--padding-btn)",
-                    borderRadius: "var(--ra-full)",
-                    backgroundColor: "var(--color-primary)",
-                    color: "#ffffff",
-                    border: "none",
-                    fontWeight: "700",
-                    fontSize: "0.9rem",
-                    fontFamily: "var(--font-sub)",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <FaSearch style={{ fontSize: "0.85rem" }} />
-                  <span>عرض كافة النتائج لـ &quot;{searchQuery}&quot;</span>
-                </button>
-              </div>
-            )}
+                      <span>عرض كل النتائج في الخريطة</span>
+                      <span>←</span>
+                    </button>
+                  )}
+                </div>
+              }
+            />
           </div>
         </CommunityOrbit>
 
         {/* Cairo Weather & Comfort Tip Widget */}
-        <div className="hero-weather-item" style={{ maxWidth: "720px", margin: "20px auto 30px auto", padding: "0 20px" }}>
+        <div style={{ maxWidth: "900px", margin: "0px auto 30px auto", padding: "0 20px" }}>
           <WeatherComfortWidget />
         </div>
 
-        {/* ── SPONSORED AD SLIDER BANNER ── */}
-        <div style={{ marginTop: "30px", padding: "0 20px" }}>
-          <AdSlider />
-        </div>
+        {/* ── HOME VIDEO AD BANNER: SLOT 1 (TOP / HERO) ── */}
+        <VideoAdBanner slotId="[ heroTop#1 ]" />
       </section>
 
       {/* ── 2. FAMOUS CITIES SECTION (المدن الشهيرة - سلايدر بنقط تنقل) ── */}
@@ -1825,7 +1557,7 @@ export default function HomePage() {
               className="active:scale-[0.96] transition-transform"
               style={{
                 width: "42px",
-                height: "36px",
+                height: "42px",
                 borderRadius: "50%",
                 backgroundColor: "var(--bg-glass-card)",
                 border: "1px solid var(--border-glass-bright)",
@@ -1883,8 +1615,8 @@ export default function HomePage() {
             textAlign: "center",
             marginBottom: "48px"
           }}>
-          <h2 style={{ fontSize: "2rem", fontWeight: "500", marginBottom: "12px", textWrap: "balance" }}>
-            جميع خدمات قريب بين يديك
+          <h2 style={{ fontSize: "2rem", fontWeight: "900", marginBottom: "12px", textWrap: "balance" }}>
+أي كل دي خدمات 
           </h2>
           <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto", textWrap: "pretty" }}>
             اختر الخدمة التي تحتاجها للوصول السريع إلى أدق التفاصيل والمؤشرات الحية.
@@ -1907,7 +1639,7 @@ export default function HomePage() {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 padding: "28px",
-                backgroundColor: "var(--bg-glass-card)",
+                backgroundColor: "var(--bg-secondary)",
                 transition: "transform 0.25s ease, box-shadow 0.25s ease",
                 position: "relative",
                 overflow: "hidden"
@@ -1917,9 +1649,8 @@ export default function HomePage() {
                 {/* Header icon & badge */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
                   <div style={{
-                    width: "54px",
-                    height: "54px",
-                    borderRadius: "var(--ra-14)",
+                    width: "64px",
+                    height: "64px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -1942,18 +1673,6 @@ export default function HomePage() {
                   {service.desc}
                 </p>
               </div>
-
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "0.95rem",
-                fontWeight: "700",
-                color: "var(--color-primary)",
-              }}>
-                <span style={{ fontFamily: "var(--font-display)" }}>الانتقال للخدمة</span>
-                <FaArrowLeft style={{ fontSize: "0.8rem" }} />
-              </div>
             </Link>
           ))}
         </div>
@@ -1970,8 +1689,8 @@ export default function HomePage() {
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "36px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontSize: "1.8rem", fontWeight: "500", marginBottom: "8px", textAlign: "center", textWrap: "balance" }}>
-                تصفّح حسب الفئة في دليل الأماكن و المرافق
+              <h2 style={{ fontSize: "1.8rem", marginBottom: "10px", textAlign: "center", textWrap: "balance" }} className="mt-2 fw-700">
+               دور علي حسب التصنيف
               </h2>
               <p className="sub-title" style={{ fontSize: "0.95rem", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" }}>
                 اختر الفئة للاطلاع على كافة الفروع، المواعيد، وتقييمات الزوار
@@ -2007,6 +1726,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── HOME VIDEO AD BANNER: SLOT 2 (MIDDLE) ── */}
+      <VideoAdBanner slotId="[ homeMid#2 ]" />
+
       {/* ── 5. BLOG & ARTICLES PREVIEW SECTION ── */}
       <section ref={blogsSectionRef} style={{ padding: "60px 20px", paddingTop: "0", maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{
@@ -2015,38 +1737,24 @@ export default function HomePage() {
           position: "relative",
           overflow: "hidden"
         }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
             <div>
               <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--color-foreground)", textAlign: "center", textWrap: "balance" }}>
-                مدونة ومقالات خريطة القاهرة
+                مدونة ومقالات قريب
               </h2>
-              <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0, textWrap: "pretty" }}>
+              <p className="text-center" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0, textWrap: "pretty" }}>
                 استكشف نصائح الترانزيت، خطوط السفر اليومية، وأفضل أماكن الخروج المحدثة.
               </p>
             </div>
 
-            <Link
-              href="/blog"
-              className="btn-primary active:scale-[0.96] transition-transform"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "10px 22px",
-                minHeight: "42px",
-                borderRadius: "var(--ra-18)",
-                backgroundColor: "var(--color-secondary)",
-                color: "#ffffffff",
-                fontWeight: "700",
-                fontSize: "0.9rem",
-                fontFamily: "var(--font-body)",
-                textDecoration: "none",
-                transition: "opacity 0.2s ease, transform 0.15s ease",
-              }}
+            <button 
+              onClick={() => router.push("/blog")}
+              className="btn btn-primary active:scale-[0.96] transition-transform"
+
             >
               <span style={{ fontFamily: "var(--font-display)" }}>تصفح جميع المقالات والمدونة</span>
               <FaArrowLeft style={{ fontSize: "0.8rem" }} />
-            </Link>
+            </button>
           </div>
 
           {/* Quick featured article cards */}
@@ -2143,6 +1851,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── HOME VIDEO AD BANNER: SLOT 3 (BOTTOM) ── */}
+      <VideoAdBanner slotId="[ homeBottom#3 ]" />
+
       {/* ── 6. PROPOSE PLACE CTA ── */}
       <section ref={proposePlaceSectionRef} style={{
         padding: "60px 20px",
@@ -2175,6 +1886,8 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      <Footer />
 
       {/* Render City Detail Modal when a city card is clicked */}
       {selectedCityModal && (

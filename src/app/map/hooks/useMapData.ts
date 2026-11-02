@@ -8,7 +8,12 @@ import { haversineDistance, getSearchWords, cleanArabicWord } from "@/app/places
 import { isCurrentlyOpen } from "@/lib/workingHours";
 import { MapPlacePoint, UserLocation } from "../types";
 
-export function useMapData(user: any, onRequireAuth?: (msg?: string) => void) {
+export function useMapData(
+  user: any,
+  onRequireAuth?: (msg?: string) => void,
+  initialSearchQuery: string = "",
+  initialCategory: string = "all"
+) {
   const [places, setPlaces] = useState<Place[]>([]);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -19,8 +24,8 @@ export function useMapData(user: any, onRequireAuth?: (msg?: string) => void) {
   const [locationError, setLocationError] = useState<string | null>(null);
 
   // Filters State
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || "all");
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>("all");
   const [onlyOpenNow, setOnlyOpenNow] = useState(false);
   const [onlyFavorites, setOnlyFavorites] = useState(false);

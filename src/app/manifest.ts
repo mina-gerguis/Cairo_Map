@@ -23,7 +23,7 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'maskable',
       },
       {
-        src: '/apple-touch-icon.png',
+        src: '/images/brand/qareeb_touch.webp',
         sizes: '180x180',
         type: 'image/png',
       },

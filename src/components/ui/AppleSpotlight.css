@@ -1,0 +1,361 @@
+/* ==========================================================================
+   AppleSpotlight — macOS Spotlight Search with Liquid Blob Spring Animation
+   Adapted for Cairo Map (قريب) Design System — Inline & Fully Transparent
+   ========================================================================== */
+
+/* ── 1. Inline Search Container in Hero ── */
+.apple-spotlight-inline-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 45rem; /* 720px */
+  margin: 0 auto;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+/* ── 2. Liquid Blob Container ── */
+.apple-spotlight-blob-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  box-sizing: border-box;
+  gap: 0.75rem;
+}
+
+/* Apply SVG filter on desktop where supported for the gooey blob effect */
+@media (min-width: 640px) {
+  .apple-spotlight-blob-container {
+    filter: url(#apple-spotlight-blob);
+  }
+}
+
+/* ── 3. Main Search Card (Glassmorphic & Transparent — No Screen Blackout) ── */
+.apple-spotlight-card {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #18181b;
+  border-radius: 9999px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+  box-sizing: border-box;
+}
+
+html:not(.light) .apple-spotlight-card,
+.dark .apple-spotlight-card {
+  background-color: rgba(20, 20, 25, 0.82);
+  color: #f4f4f5;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.apple-spotlight-card:focus-within {
+  border-color: var(--color-primary, #006fee);
+  box-shadow: 0 20px 45px -5px rgba(0, 111, 238, 0.18), 0 0 0 2px rgba(0, 111, 238, 0.25);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+html:not(.light) .apple-spotlight-card:focus-within,
+.dark .apple-spotlight-card:focus-within {
+  background-color: rgba(22, 22, 28, 0.94);
+}
+
+/* ── 4. Input Row ── */
+.apple-spotlight-input-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 0 1.25rem;
+  height: 3.75rem; /* 60px */
+  box-sizing: border-box;
+  position: relative;
+}
+
+.apple-spotlight-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary, #006fee);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.apple-spotlight-card:focus-within .apple-spotlight-icon-wrap {
+  transform: scale(1.08);
+}
+
+.apple-spotlight-field-wrap {
+  flex: 1;
+  position: relative;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+}
+
+@media (min-width: 640px) {
+  .apple-spotlight-field-wrap {
+    font-size: 1.15rem;
+  }
+}
+
+.apple-spotlight-input {
+  width: 100%;
+  background: transparent;
+  outline: none;
+  border: none;
+  color: inherit;
+  font-family: var(--font-sub);
+  font-size: inherit;
+  font-weight: 900;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+}
+
+.apple-spotlight-input::placeholder {
+  color: transparent; /* Controlled by animated SpotlightPlaceholder */
+}
+
+@media screen and (max-width: 640px) {
+  .apple-spotlight-input {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+/* ── 5. Shortcut Bubbles (Gooey Fluid Side Tray) ── */
+.apple-spotlight-shortcuts-tray {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+  height: 3.75rem;
+}
+
+.apple-spotlight-shortcut-bubble {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  opacity: 0.9;
+  outline: none;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.apple-spotlight-shortcut-bubble:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.25);
+  background-color: #ffffff;
+}
+
+html:not(.light) .apple-spotlight-shortcut-bubble,
+.dark .apple-spotlight-shortcut-bubble {
+  background-color: rgba(28, 28, 34, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #f4f4f5;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+}
+
+html:not(.light) .apple-spotlight-shortcut-bubble:hover,
+.dark .apple-spotlight-shortcut-bubble:hover {
+  background-color: rgba(39, 39, 44, 0.95);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.apple-spotlight-shortcut-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* ── 6. Floating Glassmorphic Dropdown in Place ── */
+.apple-spotlight-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid var(--border-glass);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+/* ── 7. Search Results Container ── */
+.apple-spotlight-results {
+  display: flex;
+  flex-direction: column;
+  max-height: 22rem; /* 352px */
+  overflow-y: auto;
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+/* Custom Scrollbar for Results */
+.apple-spotlight-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.apple-spotlight-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.apple-spotlight-results::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 128, 0.3);
+  border-radius: 9999px;
+}
+
+.apple-spotlight-results::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 128, 0.5);
+}
+
+/* ── 8. Result Item Card ── */
+.apple-spotlight-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.85rem;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.12s ease;
+  user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.apple-spotlight-item:hover,
+.apple-spotlight-item.is-selected {
+  background-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateX(-2px);
+}
+
+html:not(.light) .apple-spotlight-item:hover,
+html:not(.light) .apple-spotlight-item.is-selected,
+.dark .apple-spotlight-item:hover,
+.dark .apple-spotlight-item.is-selected {
+  background-color: rgba(39, 39, 44, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.apple-spotlight-item-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.apple-spotlight-item-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+}
+
+.apple-spotlight-item-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+}
+
+.apple-spotlight-item-desc {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.apple-spotlight-item-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background-color: rgba(0, 111, 238, 0.12);
+  color: var(--color-primary, #006fee);
+  flex-shrink: 0;
+}
+
+@media screen and (max-width: 640px) {
+  .apple-spotlight-item-badge {
+    display: none;
+  }
+}
+
+.apple-spotlight-item-chevron {
+  opacity: 0.35;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.apple-spotlight-item:hover .apple-spotlight-item-chevron,
+.apple-spotlight-item.is-selected .apple-spotlight-item-chevron {
+  opacity: 1;
+  transform: translateX(-3px);
+  color: var(--color-primary, #006fee);
+}
+
+/* ── 9. Kbd Badges ── */
+.apple-spotlight-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: inherit;
+  border-radius: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: inherit;
+  opacity: 0.85;
+}
+
+html:not(.light) .apple-spotlight-kbd,
+.dark .apple-spotlight-kbd {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}

@@ -13,7 +13,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import LocationHelperModal from "./LocationHelperModal";
-
+import { ASSETS } from "@/constants/assets";
 interface WeatherData {
   temp: number;
   text: string;
@@ -190,7 +190,7 @@ export default function WeatherComfortWidget() {
     return (
       <div
         style={{
-          background: "var(--bgAlert)",
+          background: "var(--bg-glass)",
           border: "1px solid var(--border-glass)",
           borderRadius: "var(--ra-8)",
           padding: "14px 18px",
@@ -244,35 +244,28 @@ export default function WeatherComfortWidget() {
                 marginTop: "2px",
               }}
             >
-              <img src="images/icons3d/alert.webp" alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={ ASSETS.icons3d.alert } alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
 
             <div style={{ flex: 1, minWidth: "240px" }}>
               <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-sub)" }}>
-                <span>درجة الحرارة غير متاحة (الموقع غير مفعل)</span>
+                <span>شغل الموقع علشان تشوف الطقس</span>
               </div>
               <p style={{ margin: "4px 0 10px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
-                لعرض درجة الحرارة وحالة الطقس الخاصة بموقعك الحالي، يرجى تفعيل السماح بالوصول للموقع الجغرافي (GPS) في متصفحك.
+                لعرض درجة الحرارة وحالة الطقس الخاصة بموقعك الحالي، يرجى تفعيل الوصول للموقع الجغرافي (GPS) في متصفحك.
               </p>
 
               <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                 <button
                   onClick={requestUserLocation}
                   disabled={locating}
-                  className="btn btn-primary"
+                  className="btn btn-primary w-full fs-sm pt-1 pb-1"
                   style={{
                     cursor: locating ? "not-allowed" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                    fontSize: "0.8rem",
-                    fontFamily: "var(--font-sub)",
-                    width: "100%",
                   }}
                 >
                   {locating ? (
-                    <FaSpinner className="weather-spin" style={{ fontSize: "0.85rem" }} />
+                    <FaSpinner className="weather-spin" style={{ fontSize: "0.75rem" }} />
                   ) : (
                     <FaLocationArrow style={{ fontSize: "0.75rem" }} />
                   )}
@@ -281,12 +274,8 @@ export default function WeatherComfortWidget() {
 
                 <button
                   onClick={() => setShowHelperModal(true)}
+                  className="btn btn-secondary w-full fs-sm pt-1 pb-1"
                   style={{
-                    background: "var(--btn-secondary)",
-                    border: "1px solid var(--border-glass)",
-                    color: "var(--color-foreground)",
-                    padding: "var(--padding-btn)",
-                    borderRadius: "var(--radiusBtn)",
                     fontSize: "0.8rem",
                     fontWeight: "600",
                     cursor: "pointer",
@@ -299,7 +288,7 @@ export default function WeatherComfortWidget() {
                     width: "100%",
                   }}
                 >
-                  <FaInfoCircle style={{ color: "#6c63ff", fontSize: "0.85rem" }} />
+                  <FaInfoCircle style={{ color: "var(--color-foreground)", fontSize: "0.85rem" }} />
                   <span>طريقة تفعيل الموقع (تعليمات)</span>
                 </button>
               </div>
@@ -386,10 +375,10 @@ export default function WeatherComfortWidget() {
                 display: "flex",
                 alignItems: "center",
                 flexWrap: "wrap",
-                gap: "6px",
+                gap: "6px", 
               }}
             >
-              <span style={{ display: "inline-block", alignItems: "center", gap: "4px" }}>
+              <span className="font-sub" style={{ display: "inline-block", alignItems: "center", gap: "4px" }}>
                 الطقس في مدينة {weather.locationName} <span style={{
                   color:
                     weather.icon === "rain"

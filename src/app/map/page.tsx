@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import L from "leaflet";
 import { useAuth } from "@/context/AuthContext";
 import { MapPlacePoint, MapLayerType } from "./types";
@@ -44,6 +45,9 @@ const CairoMap = dynamic(() => import("./components/CairoMap"), {
 
 function MapPageContent() {
   const { user, profile, isPageOpen } = useAuth();
+  const searchParams = useSearchParams();
+  const searchParam = searchParams.get("search") || searchParams.get("q") || "";
+  const categoryParam = searchParams.get("category") || searchParams.get("cat") || "";
   const mapInstanceRef = useRef<L.Map | null>(null);
 
   // Check Subscription & Permissions
@@ -95,10 +99,26 @@ function MapPageContent() {
     setOnlyFavorites,
     sortByNearby,
     setSortByNearby,
-  } = useMapData(user, handleRequireAuth);
+  } = useMapData(user, handleRequireAuth, searchParam, categoryParam || "all");
+
+  // Sync Search & Category from URL query params
+  useEffect(() => {
+    if (searchParam) {
+      setSearchQuery(searchParam);
+      if (typeof window !== "undefined" && window.innerWidth > 768) {
+        setIsSidebarOpen(true);
+      }
+    }
+  }, [searchParam, setSearchQuery]);
+
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    }
+  }, [categoryParam, setSelectedCategory]);
 
   // UI States
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(Boolean(searchParam));
   const [mapLayer, setMapLayer] = useState<MapLayerType>("dark");
   const [isLight, setIsLight] = useState(false);
 

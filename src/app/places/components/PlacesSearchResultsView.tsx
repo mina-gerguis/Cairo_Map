@@ -81,10 +81,6 @@ export default function PlacesSearchResultsView({
               </div>
             ))}
           </div>
-
-          <div style={{ marginTop: "24px" }}>
-            <AdBanner placement="places_bottom" />
-          </div>
         </>
       ) : (
         <div

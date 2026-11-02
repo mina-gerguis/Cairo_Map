@@ -6,7 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { PreloaderProvider } from "@/context/PreloaderContext";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
-
+import { ASSETS } from "@/constants/assets";
 const almarai = Almarai({
   subsets: ["arabic"],
   weight: ["300", "400", "700", "800"],
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: [
       {
-        url: "/apple-touch-icon.png",
+        url: `${ASSETS.branding.qareebTouch}`,
         sizes: "180x180",
         type: "image/png",
       },
@@ -87,8 +87,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/apple-touch-icon.png",
-        width: 180,
+        url: `${ASSETS.branding.qareebTouch}`,
         height: 180,
         alt: "قريب",
       },
@@ -98,7 +97,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "قريب - دليل الأماكن والمواصلات الذكي",
     description: "دليلك الشامل للمواصلات والأماكن في القاهرة الكبرى.",
-    images: ["/apple-touch-icon.png"],
+    images: [`${ASSETS.branding.qareebTouch}`],
   },
   verification: {
     google: [
@@ -134,7 +133,7 @@ const globalJsonLd = {
       "@id": `${siteUrl}/#organization`,
       name: "قريب - Cairo Map",
       url: siteUrl,
-      logo: `${siteUrl}/apple-touch-icon.png`,
+      logo: `${ASSETS.branding.qareebTouch}`,
       sameAs: [],
     },
   ],

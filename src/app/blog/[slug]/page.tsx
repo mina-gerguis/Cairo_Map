@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import BlogSlugClient, { BlogArticle, SAMPLE_POST } from "./BlogSlugClient";
-
+import { ASSETS } from "@/constants/assets";
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -123,7 +123,7 @@ export default async function SingleBlogPage({ params }: PageProps) {
             url: siteUrl,
             logo: {
               "@type": "ImageObject",
-              url: `${siteUrl}/apple-touch-icon.png`,
+              url: `${ASSETS.branding.qareebTouch}`,
             },
           },
           mainEntityOfPage: {

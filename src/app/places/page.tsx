@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Place } from "@/data/places";
 import AdBanner from "@/components/AdBanner";
+import VideoAdBanner from "@/components/VideoAdBanner";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
 import LocationHelperModal from "@/components/LocationHelperModal";
@@ -184,8 +185,9 @@ function PlacesContent() {
 
       {/* ══════════════ MAIN CONTENT ══════════════ */}
       <div className="app-container" id="places-section">
-        {/* Ad Space Banner (Top) */}
-        <AdBanner placement="places_top" />
+        {/* ── PLACES AD BANNER 1: TOP (SLOT 4) ── */}
+        <VideoAdBanner slotId="[ placesTop#4 ]" />
+
         {/* Categories, Subcategories & Place Types */}
         <PlacesCategoryFilter
           selectedCategory={selectedCategory}
@@ -207,6 +209,9 @@ function PlacesContent() {
           activeFeature={activeFeatures[0] || ""}
           setActiveFeature={(val) => setActiveFeatures(val ? [val] : [])}
         />
+
+        {/* ── PLACES AD BANNER 2: AFTER FILTERS (SLOT 5) ── */}
+        <VideoAdBanner slotId="[ placesFilter#5 ]" />
 
         {/* Sections Mode vs Search Results Mode */}
         {showSections ? (
@@ -237,6 +242,9 @@ function PlacesContent() {
             favoriteIds={favoriteIds}
           />
         )}
+
+        {/* ── PLACES AD BANNER 4: BOTTOM (SLOT 7) ── */}
+        <VideoAdBanner slotId="[ placesBottom#7 ]" />
       </div>
 
       {/* ══════════════ DETAIL SHEET (MODAL) ══════════════ */}

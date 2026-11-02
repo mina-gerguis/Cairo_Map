@@ -1,0 +1,6 @@
+/*  */
+@media (max-width: 640px) {
+    .media-max-sm {
+        display: none;
+    }
+}
