@@ -167,7 +167,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon: "/images/icons2d/metro.webp",
+    icon:  ASSETS.transit.metro,
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },

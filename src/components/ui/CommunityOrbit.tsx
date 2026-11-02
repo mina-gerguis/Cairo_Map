@@ -429,6 +429,7 @@ export default function CommunityOrbit({
             duration: 0.55,
             stagger: 0.05,
             ease: "back.out(1.5)",
+            clearProps: "transform,opacity,visibility",
           },
           0.45
         );
@@ -459,6 +460,7 @@ export default function CommunityOrbit({
             duration: 0.6,
             stagger: 0.1,
             ease: "power3.out",
+            clearProps: "transform,opacity,visibility",
           },
           0.85
         );
@@ -468,14 +470,32 @@ export default function CommunityOrbit({
       const headEl = section.querySelector(".orbit-headline");
       if (headEl) {
         gsap.set(headEl, { autoAlpha: 0, y: 22 });
-        tl.to(headEl, { autoAlpha: 1, y: 0, duration: 0.7 }, 1.2);
+        tl.to(
+          headEl,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            clearProps: "transform,opacity,visibility",
+          },
+          1.2
+        );
       }
 
       /* Subheadline Reveal */
       const subEl = section.querySelector(".orbit-subheadline");
       if (subEl) {
         gsap.set(subEl, { autoAlpha: 0, y: 16 });
-        tl.to(subEl, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.35);
+        tl.to(
+          subEl,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.6,
+            clearProps: "transform,opacity,visibility",
+          },
+          1.35
+        );
       }
 
       /* Children Slot (Search box) */
@@ -489,6 +509,7 @@ export default function CommunityOrbit({
             y: 0,
             scale: 1,
             duration: 0.55,
+            clearProps: "transform,opacity,visibility",
           },
           1.45
         );
@@ -505,12 +526,13 @@ export default function CommunityOrbit({
             y: 0,
             duration: 0.45,
             stagger: 0.05,
+            clearProps: "transform,opacity,visibility",
           },
           1.55
         );
       }
     },
-    { scope: sectionRef, dependencies: [items, stats] }
+    { scope: sectionRef }
   );
 
   return (
