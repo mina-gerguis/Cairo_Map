@@ -7,7 +7,8 @@
 .orbit-section {
   position: relative;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 50;
   background-color: #ffffff;
   padding: 1.5rem 1rem 3.5rem;
   color: #1f1f1f;
@@ -414,7 +415,7 @@ html:not(.light) .orbit-subheadline,
 /* ── 12. Children Slot (Search box) ── */
 .orbit-children-slot {
   position: relative;
-  z-index: 20;
+  z-index: 100;
   margin: 26px auto 0;
   max-width: 760px;
   padding: 0 16px;
@@ -422,6 +423,8 @@ html:not(.light) .orbit-subheadline,
 
 /* ── 13. Tags Container & Pills ── */
 .orbit-tags-container {
+  position: relative;
+  z-index: 10;
   margin: 32px auto 0;
   display: flex;
   max-width: 840px;

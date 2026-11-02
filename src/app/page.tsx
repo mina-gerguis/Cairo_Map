@@ -176,7 +176,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطار المونوريل",
     subtitle: "محطات وأسعار تذاكر المونوريل",
     href: "/monorail",
-    icon: "/images/icons2d/Cairo_monorail_east.webp",
+    icon: ASSETS.transit.monorail,
     badge: "قطار معلق",
     keywords: ["منورايل", "المنورايل", "قطار العاصمة", "العاصمة الادارية", "اكتوبر", "monorail"]
   },
@@ -185,7 +185,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "القطار الكهربائي الخفيف",
     subtitle: "محطات ومواعيد القطار الكهربائي",
     href: "/lrt",
-    icon: "/images/icons2d/Cairo_lrt.webp",
+    icon: ASSETS.transit.lrt,
     badge: "القطار الكهربائي",
     keywords: ["lrt", "القطار الكهربائي", "كهربائي", "القطار الخفيف", "قطار العاشر"]
   },
@@ -194,7 +194,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "الأتوبيس الترددي السريع (BRT)",
     subtitle: "محطات ومسار الأتوبيس على الطريق الدائري",
     href: "/brt",
-    icon: "/images/icons2d/brt.webp",
+    icon: ASSETS.transit.brt,
     badge: "أتوبيس ترددي",
     keywords: ["brt", "ترددي", "الترددي", "اتوبيس ترددي", "الأتوبيس الترددي", "الدائري", "الطريق الدائري", "حافلات سريعة"]
   },
@@ -203,7 +203,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "قطارات السكك الحديدية",
     subtitle: "قطارات القاهرة والصعيد",
     href: "/railways",
-    icon: "/images/icons2d/Cairo_train.webp",
+    icon: ASSETS.transit.train,
     badge: "قطارات مصر",
     keywords: ["قطار", "قطارات", "سكك حديد", "سكك حديد مصر", "محطة رمسيس", "رمسيس", "قطار الصعيد", "قطار اسكندرية"]
   },
@@ -966,12 +966,12 @@ export default function HomePage() {
 
   const quickSearchTags = [
     { label: "موناريل", route: "/monorail", icon: "Cairo_monorail_east.webp" },
-    { label: "الأتوبيس الترددي", route: "/brt", icon: "brt.webp" },
-    { label: "القطار الكهربي", route: "/lrt", icon: "Cairo_lrt.webp" },
-    { label: "موقف الميكروباصات", route: "/microbus-stations", icon: "microbus.webp" },
-    { label: "موقف الأتوبيسات", route: "/bus-stations", icon: "bus.webp" },
+    { label: "الأتوبيس الترددي", route: "/brt", icon: ASSETS.transit.brt },
+    { label: "القطار الكهربي", route: "/lrt", icon: ASSETS.transit.lrt },
+    { label: "موقف الميكروباصات", route: "/microbus-stations", icon: ASSETS.transit.microbus },
+    { label: "موقف الأتوبيسات", route: "/bus-stations", icon: ASSETS.transit.bus },
     { label: "مدونة المقالات", route: "/blog", icon: "Cairo_logo.webp" },
-    { label: "خريطة المترو", route: "/metro", icon: "metro.webp" },
+    { label: "خريطة المترو", route: "/metro", icon: ASSETS.transit.metro },
     { label: "دليل الهواتف", route: "/directory", icon: "cairo.webp" },
     { label: "ازاي اروح؟", route: "/directions", icon: "arab_republic _of_egypt.webp" },
   ];
@@ -1195,7 +1195,7 @@ export default function HomePage() {
   return (
     <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-foreground)", fontFamily: "var(--font-heading)" }}>
       {/* ── 1. HERO SECTION (COMMUNITY ORBIT) ── */}
-      <section ref={heroSectionRef} style={{ position: "relative", overflow: "visible" }}>
+      <section ref={heroSectionRef} style={{ position: "relative", overflow: "visible", zIndex: isDropdownOpen ? 100 : 1 }}>
         <CommunityOrbit
           items={orbitItems}
           stats={orbitStats}
@@ -1210,7 +1210,7 @@ export default function HomePage() {
               maxWidth: "720px",
               margin: "0 auto",
               position: "relative",
-              zIndex: isDropdownOpen && searchQuery.trim().length > 0 ? 50 : 2,
+              zIndex: isDropdownOpen ? 1000 : 2,
             }}
           >
             <form onSubmit={(e) => handleSearchSubmit(e, false)}>
@@ -1317,12 +1317,13 @@ export default function HomePage() {
                   top: "calc(100% + 8px)",
                   left: 0,
                   right: 0,
-                  backgroundColor: "var(--cardGlassBg)",
+                  backgroundColor: "var(--card-glass, rgba(20, 20, 24, 0.98))",
                   backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
                   border: "1px solid var(--border-glass-bright)",
                   borderRadius: "var(--ra-24)",
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                  zIndex: 100,
+                  boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
+                  zIndex: 99999,
                   maxHeight: "450px",
                   overflowY: "auto",
                   textAlign: "right",
