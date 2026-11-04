@@ -310,7 +310,6 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     flexDirection: "column",
                     gap: "10px",
                     maxHeight: "360px",
-                    overflowY: "auto",
                     paddingLeft: "4px",
                   }}
                 >
@@ -318,7 +317,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     <div
                       key={tx.id}
                       style={{
-                        background: "rgba(255,255,255,0.02)",
+                        background: "rgba(255, 0, 0, 0.02)",
                         border: "1px solid var(--border-glass)",
                         borderRadius: "12px",
                         padding: "12px 14px",

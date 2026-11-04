@@ -1061,7 +1061,7 @@ export default function HomePage() {
   };
 
   const quickSearchTags = [
-    { label: "حد يعرف؟", route: "/had-yaaraf", icon: ASSETS.transit.metro },
+    { label: "حد يعرف؟", route: "/had-yaaraf", icon: ASSETS.threeD.lamp },
     { label: "دليل الجراجات", route: "/parking", icon: ASSETS.transit.parking },
     { label: "موناريل", route: "/monorail", icon: ASSETS.transit.monorail },
     { label: "الأتوبيس الترددي", route: "/brt", icon: ASSETS.transit.brt },

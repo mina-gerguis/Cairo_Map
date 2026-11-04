@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Edge, LineId, RouteResult, StationInfo } from "../types";
 import { ACTIVE_METRO_TRIP_KEY, METRO_STATION_COORDINATES } from "../constants";
 import {
@@ -141,14 +141,16 @@ export function useMetroCalculator(
   const swapStations = useCallback(() => {
     const tempF = selectedFrom;
     const tempT = selectedTo;
+    const tempFQ = fromQuery;
+    const tempTQ = toQuery;
     setSelectedFrom(tempT);
     setSelectedTo(tempF);
-    setFromQuery(tempT || "");
-    setToQuery(tempF || "");
+    setFromQuery(tempTQ);
+    setToQuery(tempFQ);
     setResult(null);
     setIsTripActive(false);
     setCurrentStepIndex(0);
-  }, [selectedFrom, selectedTo]);
+  }, [selectedFrom, selectedTo, fromQuery, toQuery]);
 
   const findNearestStation = useCallback(() => {
     if (typeof window === "undefined" || !navigator.geolocation) {

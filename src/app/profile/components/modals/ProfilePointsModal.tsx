@@ -9,6 +9,7 @@ import { UserProfile, ProfileAlertMessage } from "../../types";
 import { formatNumber } from "../../utils";
 import styles from "../../page.module.css";
 import { ChevronRight } from "lucide-react";
+import { ASSETS } from "@/constants/assets";
 
 interface ProfilePointsModalProps {
   isOpen: boolean;
@@ -107,7 +108,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             }}
           >
             <Image
-              src="/images/threeD/coin3dMapCairo.webp"
+              src={ ASSETS.threeD.coin }
               alt="عملة قريب"
               draggable={false}
               width={100}

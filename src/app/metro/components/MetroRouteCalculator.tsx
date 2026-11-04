@@ -1,9 +1,50 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import gsap from "gsap";
 import VoiceInputButton from "@/components/VoiceInputButton";
 import { MetroRouteCalculatorProps } from "../types";
 import { LINE_COLORS, LINE_NAMES } from "../constants";
 import { normalizeArabic } from "../utils";
 import styles from "../metro.module.css";
+import searchStyles from "@/components/common/RouteSearchCard/RouteSearchCard.module.css";
+
+const POPULAR_METRO_PRESETS = [
+  "الشهداء",
+  "السادات",
+  "العتبة",
+  "جامعة القاهرة",
+  "كلية البنات",
+  "حلوان",
+  "شبرا الخيمة",
+  "الأوبرا",
+];
+
+const DefaultOriginIcon = () => (
+  <svg
+    className={searchStyles.inputIconSvg}
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="3.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="7" />
+  </svg>
+);
+
+const DefaultDestIcon = () => (
+  <svg
+    className={searchStyles.inputIconSvg}
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" />
+  </svg>
+);
 
 export default function MetroRouteCalculator({
   panelRef,
@@ -40,11 +81,68 @@ export default function MetroRouteCalculator({
   onShareRoute,
   onOpenReportModal,
 }: MetroRouteCalculatorProps) {
+  const swapIconRef = useRef<SVGSVGElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const presetsRef = useRef<HTMLDivElement>(null);
+
+  // Entrance animation for preset chips
+  useEffect(() => {
+    if (presetsRef.current) {
+      const chips = presetsRef.current.querySelectorAll(`.${searchStyles.chipTag}`);
+      if (chips.length > 0) {
+        gsap.fromTo(
+          chips,
+          { autoAlpha: 0, scale: 0.9 },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.35,
+            stagger: 0.03,
+            ease: "power2.out",
+            clearProps: "transform,opacity,visibility",
+          }
+        );
+      }
+    }
+  }, []);
+
+  // Click outside to dismiss suggestions dropdowns
+  useEffect(() => {
+    const handleDocumentClick = (e: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target as Node)
+      ) {
+        onFromBlur();
+        onToBlur();
+      }
+    };
+    document.addEventListener("mousedown", handleDocumentClick);
+    return () => document.removeEventListener("mousedown", handleDocumentClick);
+  }, [onFromBlur, onToBlur]);
+
+  const handleSwapClick = () => {
+    if (swapIconRef.current) {
+      gsap.to(swapIconRef.current, {
+        rotation: "+=180",
+        duration: 0.35,
+        ease: "back.out(1.5)",
+      });
+    }
+    onSwapStations();
+  };
+
+  const isSearchDisabled = !selectedFrom || !selectedTo;
+
   return (
     <div ref={panelRef} className={styles.searchBentoCard}>
       {/* Title & Nearest Station GPS Button */}
-      <div className={styles.searchBentoHeader}>
-        <h2 className={styles.searchTitle}>
+      <div className={searchStyles.header}>
+        <h2 className={searchStyles.title}>
+          <i
+            className="fa-solid fa-train-subway"
+            style={{ color: "var(--color-secondary, #3b82f6)" }}
+          />
           <span>علي فين كدا .؟</span>
         </h2>
 
@@ -55,257 +153,429 @@ export default function MetroRouteCalculator({
           className={styles.gpsBtn}
           title="تحديد أقرب محطة مترو لموقعي الحالي عبر الـ GPS"
         >
-          <i className={locatingNearest ? "fa-solid fa-spinner fa-spin" : "fa-solid fa-location-crosshairs"}></i>
+          <i
+            className={
+              locatingNearest
+                ? "fa-solid fa-spinner fa-spin"
+                : "fa-solid fa-location-crosshairs"
+            }
+          />
           <span>{locatingNearest ? "جاري التحديد..." : "أقرب محطة مني"}</span>
         </button>
       </div>
 
-      {/* Search Inputs Container */}
-      <div className={styles.inputGroup}>
+      {/* Search Boxes Container (Styled just like 'إزاي أروح' page) */}
+      <div ref={searchContainerRef} className={searchStyles.searchBoxContainer}>
         {/* FROM STATION INPUT */}
-        <div className={styles.inputWrapper} style={{ zIndex: showFromList ? 30 : 2 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label className={styles.fieldLabel} style={{ margin: 0 }}>
-              <i className="fa-solid fa-circle-dot" style={{ color: "var(--color-success, #10b981)" }}></i>
-              <span>هركب من</span>
-              {nearestDistance && selectedFrom && (
-                <span
-                  style={{
-                    fontSize: "0.72rem",
-                    color: "var(--color-success, #10b981)",
-                    fontWeight: "700",
-                    marginRight: "6px",
-                    background: "rgba(16, 185, 129, 0.12)",
-                    padding: "2px 8px",
-                    borderRadius: "6px",
-                  }}
-                >
-                  أقرب محطة ({nearestDistance})
-                </span>
-              )}
-            </label>
-            <VoiceInputButton
-              onTranscript={(text) => {
-                onFromQueryChange(text);
-              }}
-            />
-          </div>
+        <div
+          className={searchStyles.fieldContainer}
+          style={{ zIndex: showFromList ? 100 : 2 }}
+        >
+          <div className={searchStyles.inputWrapper}>
+            {/* Left Origin Icon (Clickable to trigger GPS) */}
+            <div className={searchStyles.inputStartIcon}>
+              <button
+                type="button"
+                onClick={onFindNearest}
+                disabled={locatingNearest}
+                title="تحديد أقرب محطة بالـ GPS"
+                aria-label="تحديد أقرب محطة بالـ GPS"
+                className={searchStyles.inputStartBtn}
+              >
+                {locatingNearest ? (
+                  <i
+                    className="bx bx-loader-alt bx-spin"
+                    style={{
+                      fontSize: "1.25rem",
+                      color: "var(--color-secondary, #3b82f6)",
+                    }}
+                  />
+                ) : (
+                  <DefaultOriginIcon />
+                )}
+              </button>
+            </div>
 
-          <div style={{ position: "relative" }}>
+            {/* Input field */}
             <input
-              className="input-fields"
-              placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: التحرير، برج القاهرة، جامعة حلوان)"
+              className={`input-fields ${searchStyles.input}`}
+              placeholder="هركب من... (محطة الانطلاق أو أقرب معلم)"
               value={fromQuery}
               onChange={(e) => onFromQueryChange(e.target.value)}
               onFocus={onFromFocus}
               onBlur={() => setTimeout(onFromBlur, 250)}
+              style={{
+                paddingRight: "74px",
+                outline: "none",
+                border: "none",
+                boxShadow: "none",
+              }}
             />
-            {selectedFrom && (
-              <span
-                style={{
-                  position: "absolute",
-                  left: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  fontSize: "0.72rem",
-                  background: "rgba(59, 130, 246, 0.15)",
-                  color: "var(--color-secondary, #3b82f6)",
-                  padding: "3px 8px",
-                  borderRadius: "8px",
-                  fontWeight: "700",
-                }}
-              >
-                تم الاختيار ✔
-              </span>
-            )}
-          </div>
 
-          {showFromList && filteredFrom.length > 0 && (
-            <div className={styles.dropdownList}>
-              {filteredFrom.map((s) => {
-                const q = normalizeArabic(fromQuery.trim());
-                const matchedLandmark = q
-                  ? (s.landmarks || []).find((l) => normalizeArabic(l).includes(q))
-                  : null;
-                return (
-                  <div
-                    key={s.name}
-                    onMouseDown={() => onSelectFrom(s.name)}
-                    className={styles.dropdownItem}
-                  >
-                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--color-foreground)" }}>
-                        {s.name}
-                      </span>
-                      {matchedLandmark && (
-                        <span style={{ fontSize: "0.72rem", color: "var(--color-secondary, #3b82f6)", fontWeight: "bold" }}>
-                          📍 قريب من: {matchedLandmark}
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <div style={{ display: "flex", gap: "4px" }}>
-                        {s.lines.map((l) => (
-                          <span
-                            key={l}
-                            style={{
-                              width: "7px",
-                              height: "7px",
-                              borderRadius: "50%",
-                              background: LINE_COLORS[l],
-                              display: "inline-block",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      {s.isTransfer && (
+            {/* End actions: Clear button or Voice Input */}
+            <div className={searchStyles.inputEndActions}>
+              {fromQuery ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onFromQueryChange("");
+                    onSelectFrom("");
+                  }}
+                  title="مسح"
+                  aria-label="مسح المحطة"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "var(--text-muted, #71717a)",
+                    cursor: "pointer",
+                    padding: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  <i className="fa-solid fa-xmark" />
+                </button>
+              ) : (
+                <VoiceInputButton
+                  onTranscript={(text) => {
+                    onFromQueryChange(text);
+                  }}
+                />
+              )}
+            </div>
+
+            {/* From Suggestions Dropdown */}
+            {showFromList && filteredFrom.length > 0 && (
+              <div className={searchStyles.suggestionsDropdown}>
+                {filteredFrom.slice(0, 10).map((s) => {
+                  const q = normalizeArabic(fromQuery.trim());
+                  const matchedLandmark = q
+                    ? (s.landmarks || []).find((l) =>
+                        normalizeArabic(l).includes(q)
+                      )
+                    : null;
+                  return (
+                    <button
+                      key={s.name}
+                      type="button"
+                      onMouseDown={() => onSelectFrom(s.name)}
+                      className={searchStyles.suggestionItem}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "2px",
+                          textAlign: "right",
+                        }}
+                      >
                         <span
                           style={{
-                            fontSize: "0.7rem",
-                            background: "rgba(245, 158, 11, 0.15)",
-                            color: "var(--colorWarning, #f59e0b)",
-                            border: "1px solid rgba(245, 158, 11, 0.3)",
-                            padding: "2px 6px",
-                            borderRadius: "6px",
+                            fontSize: "0.92rem",
                             fontWeight: "700",
+                            color: "var(--color-foreground)",
                           }}
                         >
-                          تبادلية
+                          {s.name}
                         </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                        {matchedLandmark && (
+                          <span
+                            style={{
+                              fontSize: "0.72rem",
+                              color: "var(--color-secondary, #3b82f6)",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            📍 قريب من: {matchedLandmark}
+                          </span>
+                        )}
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <div style={{ display: "flex", gap: "4px" }}>
+                          {s.lines.map((l) => (
+                            <span
+                              key={l}
+                              title={`الخط ${l.replace("line", "")}`}
+                              style={{
+                                width: "8px",
+                                height: "8px",
+                                borderRadius: "50%",
+                                background: LINE_COLORS[l],
+                                display: "inline-block",
+                              }}
+                            />
+                          ))}
+                        </div>
+                        {s.isTransfer && (
+                          <span
+                            style={{
+                              fontSize: "0.7rem",
+                              background: "rgba(245, 158, 11, 0.15)",
+                              color: "var(--colorWarning, #f59e0b)",
+                              border: "1px solid rgba(245, 158, 11, 0.3)",
+                              padding: "2px 6px",
+                              borderRadius: "6px",
+                              fontWeight: "700",
+                            }}
+                          >
+                            تبادلية
+                          </span>
+                        )}
+                        <i
+                          className="bx bx-chevron-left"
+                          style={{
+                            color: "var(--text-muted, #71717a)",
+                            fontSize: "1.1rem",
+                          }}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* SWAP BUTTON */}
-        <div className={styles.swapBtnWrapper}>
+        {/* SWAP BUTTON - Right Junction centered between inputs */}
+        <div className={searchStyles.swapBtnAnchor} style={{ top: "54px" }}>
           <button
             type="button"
-            onClick={onSwapStations}
-            className={styles.swapBtn}
+            onClick={handleSwapClick}
             title="تبديل محطة القيام والوصول"
-            aria-label="تبديل المحطات"
+            className={searchStyles.swapBtn}
+            aria-label="تبديل محطة القيام والوصول"
           >
-            ⇅
+            <svg
+              ref={swapIconRef}
+              className={searchStyles.swapIconSvg}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 20V4M7 4L3 8M7 4L11 8M17 4V20M17 20L21 16M17 20L13 16" />
+            </svg>
           </button>
         </div>
 
         {/* TO STATION INPUT */}
-        <div className={styles.inputWrapper} style={{ zIndex: showToList ? 30 : 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <label className={styles.fieldLabel} style={{ margin: 0 }}>
-              <i className="fa-solid fa-circle-dot" style={{ color: "#ef4444" }}></i>
-              <span>هروح لـِ</span>
-            </label>
-            <VoiceInputButton
-              onTranscript={(text) => {
-                onToQueryChange(text);
-              }}
-            />
-          </div>
+        <div
+          className={searchStyles.fieldContainer}
+          style={{ zIndex: showToList ? 100 : 1 }}
+        >
+          <div className={searchStyles.inputWrapper}>
+            {/* Left Destination Icon */}
+            <span className={searchStyles.inputStartIcon}>
+              <DefaultDestIcon />
+            </span>
 
-          <div style={{ position: "relative" }}>
+            {/* Input field */}
             <input
-              className="input-fields"
-              placeholder="ابحث باسم المحطة أو المعلم القريب... (مثال: العباسية، الأوبرا، قصر عابدين)"
+              className={`input-fields ${searchStyles.input}`}
+              placeholder="هروح لـِ... (محطة الوصول أو أقرب معلم)"
               value={toQuery}
               onChange={(e) => onToQueryChange(e.target.value)}
               onFocus={onToFocus}
               onBlur={() => setTimeout(onToBlur, 250)}
+              style={{
+                paddingRight: "74px",
+                outline: "none",
+                border: "none",
+                boxShadow: "none",
+              }}
             />
-            {selectedTo && (
-              <span
-                style={{
-                  position: "absolute",
-                  left: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  fontSize: "0.72rem",
-                  background: "rgba(59, 130, 246, 0.15)",
-                  color: "var(--color-secondary, #3b82f6)",
-                  padding: "3px 8px",
-                  borderRadius: "8px",
-                  fontWeight: "700",
-                }}
-              >
-                تم الاختيار ✔
-              </span>
+
+            {/* End actions: Clear button or Voice Input */}
+            <div className={searchStyles.inputEndActions}>
+              {toQuery ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onToQueryChange("");
+                    onSelectTo("");
+                  }}
+                  title="مسح"
+                  aria-label="مسح المحطة"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "var(--text-muted, #71717a)",
+                    cursor: "pointer",
+                    padding: "4px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  <i className="fa-solid fa-xmark" />
+                </button>
+              ) : (
+                <VoiceInputButton
+                  onTranscript={(text) => {
+                    onToQueryChange(text);
+                  }}
+                />
+              )}
+            </div>
+
+            {/* To Suggestions Dropdown */}
+            {showToList && filteredTo.length > 0 && (
+              <div className={searchStyles.suggestionsDropdown}>
+                {filteredTo.slice(0, 10).map((s) => {
+                  const q = normalizeArabic(toQuery.trim());
+                  const matchedLandmark = q
+                    ? (s.landmarks || []).find((l) =>
+                        normalizeArabic(l).includes(q)
+                      )
+                    : null;
+                  return (
+                    <button
+                      key={s.name}
+                      type="button"
+                      onMouseDown={() => onSelectTo(s.name)}
+                      className={searchStyles.suggestionItem}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "2px",
+                          textAlign: "right",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "0.92rem",
+                            fontWeight: "700",
+                            color: "var(--color-foreground)",
+                          }}
+                        >
+                          {s.name}
+                        </span>
+                        {matchedLandmark && (
+                          <span
+                            style={{
+                              fontSize: "0.72rem",
+                              color: "var(--color-secondary, #3b82f6)",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            📍 قريب من: {matchedLandmark}
+                          </span>
+                        )}
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <div style={{ display: "flex", gap: "4px" }}>
+                          {s.lines.map((l) => (
+                            <span
+                              key={l}
+                              title={`الخط ${l.replace("line", "")}`}
+                              style={{
+                                width: "8px",
+                                height: "8px",
+                                borderRadius: "50%",
+                                background: LINE_COLORS[l],
+                                display: "inline-block",
+                              }}
+                            />
+                          ))}
+                        </div>
+                        {s.isTransfer && (
+                          <span
+                            style={{
+                              fontSize: "0.7rem",
+                              background: "rgba(245, 158, 11, 0.15)",
+                              color: "var(--colorWarning, #f59e0b)",
+                              border: "1px solid rgba(245, 158, 11, 0.3)",
+                              padding: "2px 6px",
+                              borderRadius: "6px",
+                              fontWeight: "700",
+                            }}
+                          >
+                            تبادلية
+                          </span>
+                        )}
+                        <i
+                          className="bx bx-chevron-left"
+                          style={{
+                            color: "var(--text-muted, #71717a)",
+                            fontSize: "1.1rem",
+                          }}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
 
-          {showToList && filteredTo.length > 0 && (
-            <div className={styles.dropdownList}>
-              {filteredTo.map((s) => {
-                const q = normalizeArabic(toQuery.trim());
-                const matchedLandmark = q
-                  ? (s.landmarks || []).find((l) => normalizeArabic(l).includes(q))
-                  : null;
-                return (
-                  <div
-                    key={s.name}
-                    onMouseDown={() => onSelectTo(s.name)}
-                    className={styles.dropdownItem}
-                  >
-                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <span style={{ fontSize: "0.92rem", fontWeight: "700", color: "var(--color-foreground)" }}>
-                        {s.name}
-                      </span>
-                      {matchedLandmark && (
-                        <span style={{ fontSize: "0.72rem", color: "var(--color-secondary, #3b82f6)", fontWeight: "bold" }}>
-                          📍 قريب من: {matchedLandmark}
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <div style={{ display: "flex", gap: "4px" }}>
-                        {s.lines.map((l) => (
-                          <span
-                            key={l}
-                            style={{
-                              width: "7px",
-                              height: "7px",
-                              borderRadius: "50%",
-                              background: LINE_COLORS[l],
-                              display: "inline-block",
-                            }}
-                          />
-                        ))}
-                      </div>
-                      {s.isTransfer && (
-                        <span
-                          style={{
-                            fontSize: "0.7rem",
-                            background: "rgba(245, 158, 11, 0.15)",
-                            color: "var(--colorWarning, #f59e0b)",
-                            border: "1px solid rgba(245, 158, 11, 0.3)",
-                            padding: "2px 6px",
-                            borderRadius: "6px",
-                            fontWeight: "700",
-                          }}
-                        >
-                          تبادلية
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          {/* Quick Preset Destination Chips */}
+          <div ref={presetsRef} className={searchStyles.presetChipsWrapper}>
+            <span className={searchStyles.presetLabel}>محطات شائعة:</span>
+            {POPULAR_METRO_PRESETS.map((dest) => (
+              <button
+                key={dest}
+                type="button"
+                onClick={() => onSelectTo(dest)}
+                className={`${searchStyles.chipTag} ${
+                  selectedTo === dest ? searchStyles.chipTagActive : ""
+                }`}
+              >
+                {dest}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Location Badge (GPS Nearest Station Result) */}
+      {nearestDistance && selectedFrom && (
+        <div
+          className={searchStyles.locationBadge}
+          style={{ marginTop: "12px" }}
+        >
+          <i
+            className="fa-solid fa-location-dot"
+            style={{ fontSize: "1rem", flexShrink: 0 }}
+          />
+          <span>
+            أقرب محطة مترو لموقعك: <strong>{selectedFrom}</strong> (
+            {nearestDistance})
+          </span>
+        </div>
+      )}
 
       {/* SEARCH ACTION BUTTON */}
       <button
         type="button"
         onClick={onFindRoute}
-        disabled={!selectedFrom || !selectedTo}
-        className="btn btn-primary w-full mt-3"
+        disabled={isSearchDisabled}
+        className={`btn btn-primary w-full ${searchStyles.submitBtn} ${
+          isSearchDisabled ? searchStyles.submitBtnDisabled : ""
+        }`}
       >
+        <i className="bx bx-search-alt" style={{ fontSize: "1.25rem" }} />
         <span>اعرض مسار وتفاصيل الرحلة</span>
       </button>
 

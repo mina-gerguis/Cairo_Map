@@ -69,7 +69,9 @@ export const ASSETS = {
     egypt: "/images/threeD/egypt.webp",
     microbus: "/images/threeD/microbus.webp",
     maps: "/images/threeD/map.webp",
-    padlock: "/images/threeD/padlock.webp"
+    lamp: "/images/threeD/light.webp",
+    padlock: "/images/threeD/padlock.webp",
+    coin: "/images/threeD/coin_qareeb.webp",
   },
 
   fallback: {

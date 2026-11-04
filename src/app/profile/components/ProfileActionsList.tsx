@@ -76,6 +76,7 @@ interface ProfileActionsListProps {
   setFaqAnswer: (a: string) => void;
   faqLoading: boolean;
   handleAddFAQ: (e: React.FormEvent) => Promise<void>;
+  handleOpenEditFAQ?: (faq: FaqItem) => void;
   handleDeleteFAQ: (id: string) => Promise<void>;
   contactForm: ContactFormData;
   setContactForm: React.Dispatch<React.SetStateAction<ContactFormData>>;
@@ -142,6 +143,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
   setFaqAnswer,
   faqLoading,
   handleAddFAQ,
+  handleOpenEditFAQ,
   handleDeleteFAQ,
   contactForm,
   setContactForm,
@@ -1361,15 +1363,34 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             <h4 className={styles.faqQuestionTitle}>{faq.question}</h4>
                             <div className={styles.faqActions}>
                               {profile?.is_admin && (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteFAQ(faq.id);
-                                  }}
-                                  className={styles.faqDeleteBtn}
-                                >
-                                  <i className={`bx bx-trash ${styles.faqDeleteIcon}`}></i>
-                                </button>
+                                <>
+                                  {handleOpenEditFAQ && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleOpenEditFAQ(faq);
+                                      }}
+                                      className={styles.faqEditBtn}
+                                      title="تعديل السؤال"
+                                      aria-label="تعديل السؤال"
+                                    >
+                                      <i className={`bx bx-edit-alt ${styles.faqEditIcon}`}></i>
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteFAQ(faq.id);
+                                    }}
+                                    className={styles.faqDeleteBtn}
+                                    title="حذف السؤال"
+                                    aria-label="حذف السؤال"
+                                  >
+                                    <i className={`bx bx-trash ${styles.faqDeleteIcon}`}></i>
+                                  </button>
+                                </>
                               )}
                               <span className={styles.faqToggleIcon}>
                                 {isFaqExpanded ? "−" : "+"}
@@ -1377,7 +1398,20 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             </div>
                           </div>
                           {isFaqExpanded && (
-                            <p className={styles.faqAnswerText}>{faq.answer}</p>
+                            <div className={styles.faqAnswerContainer}>
+                              <p className={styles.faqAnswerText}>{faq.answer}</p>
+                              {profile?.is_admin && handleOpenEditFAQ && (
+                                <div className={styles.faqExpandedActions}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenEditFAQ(faq)}
+                                    className={styles.faqInlineEditBtn}
+                                  >
+                                    <i className="bx bx-edit-alt"></i> تعديل هذا السؤال
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           )}
                         </div>
                       );

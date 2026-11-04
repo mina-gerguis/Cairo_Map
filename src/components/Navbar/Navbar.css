@@ -251,25 +251,13 @@ html.light .services-megamenu-panel {
 
 .services-megamenu-item-link:hover {
   background: var(--hoverBtn, rgba(255, 255, 255, 0.07));
-  transform: translateX(-2px);
 }
 
 .services-megamenu-icon-box {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
   transition: all 0.2s ease;
-}
-
-.services-megamenu-item-link:hover .services-megamenu-icon-box {
-  background: rgba(39, 39, 255, 0.15);
-  border-color: rgba(39, 39, 255, 0.4);
 }
 
 .services-megamenu-info {
@@ -467,7 +455,6 @@ html.light .services-megamenu-panel {
 .navbar-mobile-link {
   padding: 12px 18px;
   border-radius: var(--ra-14);
-  color: var(--text-secondary);
   font-size: 1rem;
   font-weight: 500;
   text-decoration: none;
@@ -479,6 +466,10 @@ html.light .services-megamenu-panel {
 .navbar-mobile-link.active {
   color: var(--color-primary);
   background: var(--hoverBtn);
+}
+.navbar-mobile-link:hover,
+.navbar-mobile-link.icon {
+  color: #fff;
 }
 
 @media (max-width: 768px) {

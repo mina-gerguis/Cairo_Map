@@ -75,6 +75,10 @@ export const useProfileFeedback = ({
   const [faqQuestion, setFaqQuestion] = useState("");
   const [faqAnswer, setFaqAnswer] = useState("");
   const [faqLoading, setFaqLoading] = useState(false);
+  const [faqToEdit, setFaqToEdit] = useState<FaqItem | null>(null);
+  const [editFaqQuestion, setEditFaqQuestion] = useState("");
+  const [editFaqAnswer, setEditFaqAnswer] = useState("");
+  const [editFaqLoading, setEditFaqLoading] = useState(false);
 
   // Contact Form States
   const [contactForm, setContactForm] = useState<ContactFormData>(INITIAL_CONTACT_FORM);
@@ -429,9 +433,67 @@ export const useProfileFeedback = ({
       const { error } = await supabase.from("faqs").delete().eq("id", id);
       if (error) throw error;
       setFaqs(faqs.filter((f) => f.id !== id));
+      if (faqToEdit?.id === id) {
+        handleCloseEditFAQ();
+      }
       setMessage({ type: "success", text: "تم حذف السؤال بنجاح." });
     } catch (err: any) {
       setMessage({ type: "error", text: "فشل الحذف: " + err.message });
+    }
+  };
+
+  const handleOpenEditFAQ = (faq: FaqItem) => {
+    setFaqToEdit(faq);
+    setEditFaqQuestion(faq.question);
+    setEditFaqAnswer(faq.answer);
+  };
+
+  const handleCloseEditFAQ = () => {
+    if (!editFaqLoading) {
+      setFaqToEdit(null);
+      setEditFaqQuestion("");
+      setEditFaqAnswer("");
+    }
+  };
+
+  const handleUpdateFAQ = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!supabase || !faqToEdit || !editFaqQuestion.trim() || !editFaqAnswer.trim()) return;
+    setEditFaqLoading(true);
+    try {
+      const trimmedQ = editFaqQuestion.trim();
+      const trimmedA = editFaqAnswer.trim();
+      const { data, error } = await supabase
+        .from("faqs")
+        .update({
+          question: trimmedQ,
+          answer: trimmedA,
+        })
+        .eq("id", faqToEdit.id)
+        .select();
+
+      if (error) throw error;
+
+      const updatedItem =
+        data && data[0]
+          ? data[0]
+          : { ...faqToEdit, question: trimmedQ, answer: trimmedA };
+
+      setFaqs((prev) =>
+        prev.map((f) => (f.id === faqToEdit.id ? updatedItem : f))
+      );
+      setMessage({ type: "success", text: "تم تعديل السؤال الشائع بنجاح." });
+      setFaqToEdit(null);
+      setEditFaqQuestion("");
+      setEditFaqAnswer("");
+    } catch (err: any) {
+      console.error(err);
+      setMessage({
+        type: "error",
+        text: "فشل تعديل السؤال الشائع: " + (err.message || ""),
+      });
+    } finally {
+      setEditFaqLoading(false);
     }
   };
 
@@ -527,6 +589,16 @@ export const useProfileFeedback = ({
     faqAnswer,
     setFaqAnswer,
     faqLoading,
+    faqToEdit,
+    setFaqToEdit,
+    editFaqQuestion,
+    setEditFaqQuestion,
+    editFaqAnswer,
+    setEditFaqAnswer,
+    editFaqLoading,
+    handleOpenEditFAQ,
+    handleCloseEditFAQ,
+    handleUpdateFAQ,
     contactForm,
     setContactForm,
     contactSubmitted,

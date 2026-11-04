@@ -221,6 +221,7 @@ export default function ProfilePage() {
         setFaqAnswer={feedback.setFaqAnswer}
         faqLoading={feedback.faqLoading}
         handleAddFAQ={feedback.handleAddFAQ}
+        handleOpenEditFAQ={feedback.handleOpenEditFAQ}
         handleDeleteFAQ={feedback.handleDeleteFAQ}
         contactForm={feedback.contactForm}
         setContactForm={feedback.setContactForm}
@@ -438,6 +439,15 @@ export default function ProfilePage() {
         reportToRetract={feedback.reportToRetract}
         setReportToRetract={feedback.setReportToRetract}
         handleRetractReport={feedback.handleRetractReport}
+        faqToEdit={feedback.faqToEdit}
+        setFaqToEdit={feedback.setFaqToEdit}
+        editFaqQuestion={feedback.editFaqQuestion}
+        setEditFaqQuestion={feedback.setEditFaqQuestion}
+        editFaqAnswer={feedback.editFaqAnswer}
+        setEditFaqAnswer={feedback.setEditFaqAnswer}
+        editFaqLoading={feedback.editFaqLoading}
+        handleCloseEditFAQ={feedback.handleCloseEditFAQ}
+        handleUpdateFAQ={feedback.handleUpdateFAQ}
       />
 
       {/* 9. Reminders Modal */}

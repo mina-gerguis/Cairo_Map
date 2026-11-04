@@ -159,25 +159,25 @@ export default function Navbar() {
       isDropdown: true,
       icon: "fa-solid fa-star-of-life",
       subItems: [
-        { href: "/save-location", label: "أحفظ مكاني", subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل", imgLogo: ASSETS.transit.car },
-        { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.services.places },
+        { href: "/save-location", label: "أحفظ مكاني", subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل", imgLogo: ASSETS.threeD.street },
+        { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.threeD.maps },
         { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: ASSETS.services.places },
-        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: ASSETS.transit.metro },
-        { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: ASSETS.transit.car },
+        { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: ASSETS.company.vodafone },
+        { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: ASSETS.transit.parking },
         { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: ASSETS.transit.metro },
-        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: ASSETS.transit.metro },
-        { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: ASSETS.transit.metro },
-        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.transit.metro },
-        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.transit.metro },
+        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: ASSETS.transit.monorail },
+        { href: "/lrt", label: "القطار الكهربائي", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: ASSETS.transit.lrt },
+        { href: "/brt", label: "الأتوبيس الترددي", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.transit.brt },
+        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.transit.train },
         { href: "/airports", label: "المطارات", subtitle: "معلومات مطار القاهرة والرحلات", imgLogo: ASSETS.transit.airport },
         { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: ASSETS.transit.ports },
         { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: ASSETS.transit.bus },
         { href: "/microbus-stations", label: "مواقف الميكروباص", subtitle: "خطوط السرفيس بين المحافظات", imgLogo: ASSETS.transit.microbus },
         { href: "/roads-info", label: "معلومات الطرق والسرعات", subtitle: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: ASSETS.transit.car },
-        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: ASSETS.transit.metro },
-        { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.transit.ai },
-        { href: "/had-yaaraf", label: "حد يعرف ؟", subtitle: "اسأل مجتمع قريب وجاوب وتفاعل مع الناس", imgLogo: ASSETS.transit.metro },
-        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.transit.metro },
+        { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: ASSETS.locations.governorates.egypt },
+        { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.threeD.robot },
+        { href: "/had-yaaraf", label: "حد يعرف ؟", subtitle: "اسأل مجتمع قريب وجاوب وتفاعل مع الناس", imgLogo: ASSETS.threeD.lamp },
+        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.branding.qareebNoBgBlue },
       ]
     },
     { href: "/blog", label: "المدونة والمقالات", icon: "bx bx-news" },
@@ -208,11 +208,12 @@ export default function Navbar() {
       title: "شبكة النقل والقطارات",
       items: [
         { href: "/metro", label: "مترو الأنفاق", description: "محطات وأسعار تذاكر المترو", imgLogo: ASSETS.transit.metro },
-        { href: "/monorail", label: "خريطة المونوريل", description: "محطات وأسعار تذاكر المونوريل", imgLogo: ASSETS.transit.metro },
-        { href: "/lrt", label: "القطار الكهربائي LRT", description: "محطات ومواعيد قطار العاصمة", imgLogo: ASSETS.transit.metro },
-        { href: "/brt", label: "الأتوبيس الترددي BRT", description: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.transit.metro },
-        { href: "/railways", label: "سكك حديد مصر", description: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.transit.metro },
-        { href: "/airports", label: "المطارات والموانئ", description: "مطار القاهرة والموانئ المصرية", imgLogo: ASSETS.transit.metro },
+        { href: "/monorail", label: "خريطة المونوريل", description: "محطات وأسعار تذاكر المونوريل", imgLogo: ASSETS.transit.monorail },
+        { href: "/lrt", label: "القطار الكهربائي", description: "محطات ومواعيد قطار العاصمة", imgLogo: ASSETS.transit.lrt },
+        { href: "/brt", label: "الأتوبيس الترددي", description: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.transit.brt },
+        { href: "/railways", label: "سكك حديد مصر", description: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.transit.train },
+        { href: "/airports", label: "المطارات والموانئ", description: "مطار القاهرة والموانئ المصرية", imgLogo: ASSETS.transit.airport },
+         { href: "/ports", label: "الموانئ البحرية", description: "الموانئ البحرية المصرية", imgLogo: ASSETS.transit.ports },
       ],
     },
     {
@@ -222,19 +223,19 @@ export default function Navbar() {
         { href: "/microbus-stations", label: "مواقف الميكروباص", description: "خطوط السرفيس بين المحافظات", imgLogo: ASSETS.transit.microbus },
         { href: "/parking", label: "دليل الجراجات", description: "أقرب جراج وركنة بجوار المترو", imgLogo: ASSETS.transit.parking },
         { href: "/roads-info", label: "معلومات الطرق والسرعات", description: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: ASSETS.transit.car },
-        { href: "/directory", label: "دليل الهاتف", description: "أرقام الخدمات وأكواد الشبكات", imgLogo: ASSETS.transit.metro },
+        { href: "/directory", label: "دليل الهاتف", description: "أرقام الخدمات وأكواد الشبكات", imgLogo: ASSETS.company.vodafone },
       ],
     },
     {
       title: "استكشاف وأدوات ذكية",
       items: [
         { href: "/save-location", label: "أحفظ مكاني", description: "حفظ موقعك الحالي بدقة 100%", imgLogo: ASSETS.services.saveLocation },
-        { href: "/directions", label: "أزاي أروح ؟", description: "تخطيط رحلتك واختيار المسار الأسرع", imgLogo: ASSETS.transit.metro },
-        { href: "/ai-planner", label: "مخطط الرحلات الذكي", description: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.transit.ai },
+        { href: "/directions", label: "أزاي أروح ؟", description: "تخطيط رحلتك واختيار المسار الأسرع", imgLogo: ASSETS.locations.governorates.egypt },
+        { href: "/ai-planner", label: "مخطط الرحلات الذكي", description: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.threeD.robot },
         { href: "/places", label: "دليل الأماكن", description: "المتاجر والمحلات والأماكن الحيوية", imgLogo: ASSETS.services.places },
-        { href: "/map", label: "الخريطة التفاعلية", description: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.services.places },
-        { href: "/had-yaaraf", label: "حد يعرف ؟", description: "اسأل مجتمع قريب وجاوب وتفاعل", imgLogo: ASSETS.transit.metro },
-        { href: "/help", label: "المساعدة والدعم", description: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.transit.metro },
+        { href: "/map", label: "الخريطة التفاعلية", description: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.threeD.maps },
+        { href: "/had-yaaraf", label: "حد يعرف ؟", description: "اسأل مجتمع قريب وجاوب وتفاعل", imgLogo: ASSETS.threeD.lamp },
+        { href: "/help", label: "المساعدة والدعم", description: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.branding.qareebNoBgBlue },
       ],
     },
   ];
@@ -482,9 +483,9 @@ export default function Navbar() {
               {user ? (
                 <>
                   <div className="heroui-dropdown-header">
-                    <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>تم تسجيل الدخول كـ</p>
-                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {profile?.username || user.user_metadata?.username || "حسابي"}
+                    <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>أهلا يا</p>
+                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} className="font-inter">
+                      {profile?.name || user.user_metadata?.username || "حسابي"}
                     </p>
                   </div>
                   <div className="heroui-dropdown-divider"></div>
@@ -493,7 +494,7 @@ export default function Navbar() {
                 <>
                   <div className="heroui-dropdown-header" style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "center" }}>
                     <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-muted)" }}>سجل دخولك للوصول لجميع المزايا</p>
-                    <Link href="/login" className="btn btn-primary" style={{ width: "100%", padding: "8px", fontSize: "0.9rem", height: "auto" }}>
+                    <Link href="/login" className="btn btn-primary w-100 py-2 fs-sm min-h-min">
                       <i className="bx bx-log-in" style={{ fontSize: "1.1rem" }}></i> تسجيل الدخول
                     </Link>
                   </div>
@@ -586,7 +587,7 @@ export default function Navbar() {
                       fontFamily: "var(--font-heading)"
                     }}
                   >
-                    <span> <i className={link.icon} style={{ fontSize: "1.1rem" }}></i> {link.label}</span>
+                    <span className="text-primary"> <i className={link.icon} style={{ fontSize: "1.1rem" }}></i> {link.label}</span>
                     <i
                       className={`bx bx-chevron-down`}
                       style={{
@@ -603,13 +604,13 @@ export default function Navbar() {
                         <Link
                           key={sIdx}
                           href={sub.href}
-                          className={`navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
+                          className={`text-primary navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
                           onClick={() => setMenuOpen(false)}
                           style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 10px" }}
                         >
                           {sub.imgLogo ? (
                             <Image
-                              src={sub.imgLogo.startsWith("/") ? sub.imgLogo : `/images/icons2d/${sub.imgLogo}`}
+                              src={sub.imgLogo}
                               alt={sub.label}
                               width={22}
                               height={22}
@@ -619,7 +620,7 @@ export default function Navbar() {
                             <i className={sub.icon} style={{ fontSize: "1.1rem", marginLeft: "8px" }} />
                           )}
                           <div style={{ display: "flex", flexDirection: "column" }}>
-                            <span style={{ fontWeight: "700", fontSize: "0.86rem" }}>{sub.label}</span>
+                            <span className="text-primary" style={{ fontWeight: "700", fontSize: "0.86rem" }}>{sub.label}</span>
                             {sub.subtitle && (
                               <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "1px" }}>{sub.subtitle}</span>
                             )}

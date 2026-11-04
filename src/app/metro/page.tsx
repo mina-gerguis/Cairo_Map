@@ -20,6 +20,7 @@ import {
 } from "./components";
 import { LineId } from "./types";
 import { METRO_LINES_LIST } from "./constants";
+import { normalizeArabic } from "./utils";
 import styles from "./metro.module.css";
 import Footer from "@/components/Footer/Footer";
 
@@ -171,24 +172,36 @@ export default function MetroPage() {
           filteredTo={calculator.filteredTo}
           stations={data.stations}
           onSelectFrom={(name) => {
-            calculator.setSelectedFrom(name);
-            calculator.setFromQuery(name);
+            calculator.setSelectedFrom(name || null);
+            calculator.setFromQuery(name || "");
             calculator.setShowFromList(false);
           }}
           onSelectTo={(name) => {
-            calculator.setSelectedTo(name);
-            calculator.setToQuery(name);
+            calculator.setSelectedTo(name || null);
+            calculator.setToQuery(name || "");
             calculator.setShowToList(false);
           }}
           onFromQueryChange={(q) => {
             calculator.setFromQuery(q);
-            calculator.setSelectedFrom(null);
+            const trimmed = q.trim();
+            const matched = trimmed
+              ? data.allStations.find(
+                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+                )
+              : null;
+            calculator.setSelectedFrom(matched ? matched.name : null);
             calculator.setShowFromList(true);
             calculator.setResult(null);
           }}
           onToQueryChange={(q) => {
             calculator.setToQuery(q);
-            calculator.setSelectedTo(null);
+            const trimmed = q.trim();
+            const matched = trimmed
+              ? data.allStations.find(
+                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+                )
+              : null;
+            calculator.setSelectedTo(matched ? matched.name : null);
             calculator.setShowToList(true);
             calculator.setResult(null);
           }}
@@ -235,10 +248,12 @@ export default function MetroPage() {
         />
 
         {/* Metro Platform & Line Interchange / Transfer Guide Section */}
-        <MetroInterchangeGuide
-          guideRef={interchangeGuideRef}
-          onSelectLine={handleSelectLine}
-        />
+        {false && (
+          <MetroInterchangeGuide
+            guideRef={interchangeGuideRef}
+            onSelectLine={handleSelectLine}
+          />
+        )}
 
         {/* Official Cairo Metro Map Download Section */}
         <MetroMapSection mapPanelRef={mapPanelRef} />

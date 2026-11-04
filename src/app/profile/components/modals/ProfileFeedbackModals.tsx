@@ -2,7 +2,7 @@
 
 import React from "react";
 import CustomModal from "@/components/common/Modals";
-import { AppFeedback } from "../../types";
+import { AppFeedback, FaqItem } from "../../types";
 import { Send, X } from "lucide-react";
 
 interface ProfileFeedbackModalsProps {
@@ -43,6 +43,16 @@ interface ProfileFeedbackModalsProps {
   reportToRetract: string | null;
   setReportToRetract: (id: string | null) => void;
   handleRetractReport: (id: string) => Promise<void>;
+  // Edit FAQ Modal
+  faqToEdit?: FaqItem | null;
+  setFaqToEdit?: (faq: FaqItem | null) => void;
+  editFaqQuestion?: string;
+  setEditFaqQuestion?: (q: string) => void;
+  editFaqAnswer?: string;
+  setEditFaqAnswer?: (a: string) => void;
+  editFaqLoading?: boolean;
+  handleCloseEditFAQ?: () => void;
+  handleUpdateFAQ?: () => Promise<void>;
 }
 
 export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
@@ -78,6 +88,14 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
   reportToRetract,
   setReportToRetract,
   handleRetractReport,
+  faqToEdit = null,
+  editFaqQuestion = "",
+  setEditFaqQuestion,
+  editFaqAnswer = "",
+  setEditFaqAnswer,
+  editFaqLoading = false,
+  handleCloseEditFAQ,
+  handleUpdateFAQ,
 }) => {
   return (
     <>
@@ -482,6 +500,101 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         >
           سيتم إغلاق وسحب هذا البلاغ ولن تتخذه الإدارة بعين الاعتبار.
         </p>
+      </CustomModal>
+
+      {/* Edit FAQ Modal */}
+      <CustomModal
+        isOpen={Boolean(faqToEdit)}
+        onClose={handleCloseEditFAQ || (() => {})}
+        closeOnOverlayClick={!editFaqLoading}
+        title="تعديل السؤال الشائع"
+        message="يمكنك تعديل نص السؤال أو الإجابة وحفظ التعديلات مباشرة."
+        iconNode={
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: "50%",
+              backgroundColor: "rgba(59, 130, 246, 0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--color-primary, #3b82f6)",
+            }}
+          >
+            <i className="bx bx-edit" style={{ fontSize: "2rem" }}></i>
+          </div>
+        }
+        borderColor="var(--modelCardBorder, rgba(255, 255, 255, 0.15))"
+        primaryButton={{
+          label: editFaqLoading ? "جاري الحفظ..." : "حفظ التعديلات",
+          onClick: handleUpdateFAQ || (() => Promise.resolve()),
+          disabled:
+            editFaqLoading ||
+            !editFaqQuestion?.trim() ||
+            !editFaqAnswer?.trim(),
+          icon: <i className="bx bx-check" style={{ fontSize: "1.2rem" }}></i>,
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: handleCloseEditFAQ || (() => {}),
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
+          bgColor: "var(--btn-cancel)",
+          disabled: editFaqLoading,
+        }}
+      >
+        <div style={{ textAlign: "right" }}>
+          <div style={{ marginBottom: "14px" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "6px",
+                fontSize: "0.85rem",
+                color: "var(--text-secondary)",
+                fontWeight: "bold",
+              }}
+            >
+              السؤال
+            </label>
+            <input
+              type="text"
+              className="input-fields"
+              placeholder="اكتب نص السؤال..."
+              value={editFaqQuestion || ""}
+              onChange={(e) => setEditFaqQuestion?.(e.target.value)}
+              style={{ width: "100%", fontFamily: "var(--font-cairo)" }}
+              disabled={editFaqLoading}
+            />
+          </div>
+
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "6px",
+                fontSize: "0.85rem",
+                color: "var(--text-secondary)",
+                fontWeight: "bold",
+              }}
+            >
+              الإجابة
+            </label>
+            <textarea
+              className="input-fields"
+              style={{
+                width: "100%",
+                minHeight: "120px",
+                padding: "12px",
+                resize: "vertical",
+                fontFamily: "var(--font-cairo)",
+              }}
+              placeholder="اكتب تفاصيل الإجابة..."
+              value={editFaqAnswer || ""}
+              onChange={(e) => setEditFaqAnswer?.(e.target.value)}
+              disabled={editFaqLoading}
+            />
+          </div>
+        </div>
       </CustomModal>
     </>
   );
