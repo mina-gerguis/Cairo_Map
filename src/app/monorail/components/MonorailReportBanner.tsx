@@ -18,7 +18,7 @@ export default function MonorailReportBanner({
           }}
         >
           <img
-            src="/images/icons3d/alert.webp"
+            src="/images/3D/alert.webp"
             alt="Alert"
             style={{ width: "32px", height: "32px", objectFit: "contain" }}
           />

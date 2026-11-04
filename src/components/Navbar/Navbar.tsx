@@ -164,11 +164,11 @@ export default function Navbar() {
         { href: "/places", label: "دليل الأماكن", subtitle: "المتاجر والمحلات والأماكن", imgLogo: ASSETS.services.places },
         { href: "/directory", label: "دليل الهاتف", subtitle: "أرقام الخدمات وأكواد الشبكات", imgLogo: ASSETS.transit.metro },
         { href: "/parking", label: "دليل الجراجات", subtitle: "أقرب جراج وركنة بجوار المترو", imgLogo: ASSETS.transit.car },
-        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo:  ASSETS.transit.metro },
-        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo:  ASSETS.transit.metro },
-        { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo:  ASSETS.transit.metro },
-        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo:  ASSETS.transit.metro},
-        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo:  ASSETS.transit.metro },
+        { href: "/metro", label: "مترو الأنفاق", subtitle: "محطات وأسعار تذاكر المترو", imgLogo: ASSETS.transit.metro },
+        { href: "/monorail", label: "خريطة المنورايل", subtitle: "محطات وأسعار تذاكر المونوريل", imgLogo: ASSETS.transit.metro },
+        { href: "/lrt", label: "القطار الكهربائي LRT", subtitle: "محطات ومواعيد القطار الكهربائي", imgLogo: ASSETS.transit.metro },
+        { href: "/brt", label: "الأتوبيس الترددي BRT", subtitle: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.transit.metro },
+        { href: "/railways", label: "سكك حديد مصر", subtitle: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.transit.metro },
         { href: "/airports", label: "المطارات", subtitle: "معلومات مطار القاهرة والرحلات", imgLogo: ASSETS.transit.airport },
         { href: "/ports", label: "الموانئ", subtitle: "الموانئ المائية والملاحية المصرية", imgLogo: ASSETS.transit.ports },
         { href: "/bus-stations", label: "مواقف الأتوبيسات", subtitle: "محطات النقل العام بالقاهرة والجيزة", imgLogo: ASSETS.transit.bus },
@@ -176,8 +176,8 @@ export default function Navbar() {
         { href: "/roads-info", label: "معلومات الطرق والسرعات", subtitle: "الطقس، السرعات المقررة، وأخبار الطرق", imgLogo: ASSETS.transit.car },
         { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: ASSETS.transit.metro },
         { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.transit.ai },
-        { href: "/had-yaaraf", label: "حد يعرف ؟", subtitle: "اسأل مجتمع قريب وجاوب وتفاعل مع الناس", imgLogo: ASSETS.transit.metro},
-        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.transit.metro},
+        { href: "/had-yaaraf", label: "حد يعرف ؟", subtitle: "اسأل مجتمع قريب وجاوب وتفاعل مع الناس", imgLogo: ASSETS.transit.metro },
+        { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.transit.metro },
       ]
     },
     { href: "/blog", label: "المدونة والمقالات", icon: "bx bx-news" },
@@ -280,9 +280,8 @@ export default function Navbar() {
           {/* Main Link: Home */}
           <Link
             href="/"
-            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${
-              pathname === "/" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${pathname === "/" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+              }`}
             onMouseEnter={() => {
               setHoveredLink("/");
               setOpenDropdown(null);
@@ -301,9 +300,8 @@ export default function Navbar() {
           {/* Main Link: Map */}
           <Link
             href="/map"
-            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${
-              pathname === "/map" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${pathname === "/map" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+              }`}
             onMouseEnter={() => {
               setHoveredLink("/map");
               setOpenDropdown(null);
@@ -336,19 +334,17 @@ export default function Navbar() {
                 e.preventDefault();
                 setOpenDropdown((prev) => (prev === "services" ? null : "services"));
               }}
-              className={`relative px-4 py-1.5 text-sm font-medium bg-transparent duration-300 rounded-full flex items-center gap-1 cursor-pointer group border-none outline-none ${
-                openDropdown === "services" || isServicesActive
+              className={`relative px-4 py-1.5 text-sm font-medium bg-transparent duration-300 rounded-full flex items-center gap-1 cursor-pointer group border-none outline-none ${openDropdown === "services" || isServicesActive
                   ? "text-primary font-bold"
                   : "text-muted-foreground hover:text-foreground"
-              }`}
+                }`}
               aria-expanded={openDropdown === "services"}
               aria-haspopup="true"
             >
               <span className="relative z-10">الخدمات</span>
               <ChevronDown
-                className={`h-4 w-4 relative z-10 transition-transform duration-300 ${
-                  openDropdown === "services" ? "rotate-180" : "group-hover:rotate-180"
-                }`}
+                className={`h-4 w-4 relative z-10 transition-transform duration-300 ${openDropdown === "services" ? "rotate-180" : "group-hover:rotate-180"
+                  }`}
               />
               {(hoveredLink === "services" || openDropdown === "services" || (isServicesActive && !hoveredLink)) && (
                 <motion.div
@@ -417,9 +413,8 @@ export default function Navbar() {
           {/* Main Link: Blog */}
           <Link
             href="/blog"
-            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${
-              pathname === "/blog" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${pathname === "/blog" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+              }`}
             onMouseEnter={() => {
               setHoveredLink("/blog");
               setOpenDropdown(null);
@@ -691,23 +686,23 @@ export default function Navbar() {
         onClose={() => setShowLogoutModal(false)}
         title="تسجيل الخروج"
         message="هل أنت متأكد من تسجيل الخروج؟"
-        iconSrc={ASSETS.icons3d.alert}
-        borderColor="var(--modelCardBorder)"
-        primaryButton={{
-          label: "تأكيد",
-          onClick: () => {
-            logout();
-            setShowLogoutModal(false);
-          },
-          bgColor: "var(--mainBtn)",
-          icon: <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i>,
-        }}
-        secondaryButton={{
-          label: "إلغاء",
-          onClick: () => setShowLogoutModal(false),
-          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-          bgColor: "var(--btn-cancel)",
-        }}
+        iconSrc={ASSETS.3D.alert}
+      borderColor="var(--modelCardBorder)"
+      primaryButton={{
+        label: "تأكيد",
+        onClick: () => {
+          logout();
+          setShowLogoutModal(false);
+        },
+        bgColor: "var(--mainBtn)",
+        icon: <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i>,
+      }}
+      secondaryButton={{
+        label: "إلغاء",
+        onClick: () => setShowLogoutModal(false),
+        icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
+        bgColor: "var(--btn-cancel)",
+      }}
       />
     </nav>
   );

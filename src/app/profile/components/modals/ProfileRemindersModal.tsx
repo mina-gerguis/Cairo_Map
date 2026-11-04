@@ -41,7 +41,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
           ? `لديك ${reminders.length} تذكير أو ملاحظة`
           : undefined
       }
-      iconSrc={hasRemindersAccess ? "/images/icons3d/book.webp" : "/images/icons3d/padlock.webp"}
+      iconSrc={hasRemindersAccess ? "/images/3D/book.webp" : "/images/3D/padlock.webp"}
       borderColor="var(--modelCardBorder)"
       primaryButton={
         !hasRemindersAccess
@@ -168,7 +168,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
                       className={styles.deactivateDeviceBtn}
                       title="حذف الملاحظة"
                     >
-                      <Trash size={18}/>
+                      <Trash size={18} />
                     </button>
                   </div>
                 ))}

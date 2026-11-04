@@ -112,7 +112,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
             {/* Lock Icon */}
             <div style={{ marginBottom: "24px" }}>
               <img
-                src="/images/icons3d/lockPage.webp"
+                src="/images/3D/lockPage.webp"
                 alt="Lock"
                 loading="lazy"
                 decoding="async"

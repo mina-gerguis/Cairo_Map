@@ -49,7 +49,7 @@ export default function MicrobusPaywall({
         >
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/icons3d/CairoGold.webp"
+              src="/images/3D/CairoGold.webp"
               alt="Gold Access"
               loading="lazy"
               decoding="async"

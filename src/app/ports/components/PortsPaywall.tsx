@@ -50,7 +50,7 @@ export default function PortsPaywall({
 
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/icons3d/CairoGold.webp"
+              src="/images/3D/CairoGold.webp"
               alt="Gold Subscription"
               loading="lazy"
               decoding="async"

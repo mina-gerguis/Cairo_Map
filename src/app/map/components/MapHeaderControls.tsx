@@ -134,7 +134,7 @@ export default function MapHeaderControls({
                   const thumb =
                     point.images && point.images.length > 0
                       ? point.images[0]
-                      : "/images/icons3d/burger.webp";
+                      : "/images/3D/burger.webp";
 
                   return (
                     <button
@@ -153,7 +153,7 @@ export default function MapHeaderControls({
                         className={styles.suggestionThumb}
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src =
-                            "/images/icons3d/burger.webp";
+                            "/images/3D/burger.webp";
                         }}
                       />
                       <div className={styles.suggestionInfo}>
@@ -271,9 +271,8 @@ export default function MapHeaderControls({
           return (
             <button
               key={cat.name}
-              className={`${styles.categoryChip} ${
-                selectedCategory === cat.name ? styles.active : ""
-              }`}
+              className={`${styles.categoryChip} ${selectedCategory === cat.name ? styles.active : ""
+                }`}
               onClick={() => setSelectedCategory(cat.name)}
             >
               <span>{cat.emoji}</span>

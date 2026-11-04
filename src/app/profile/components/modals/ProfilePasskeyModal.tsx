@@ -168,7 +168,7 @@ export const ProfilePasskeyModal: React.FC<ProfilePasskeyModalProps> = ({
             ? `هل أنت متأكد من حذف مفتاح المرور الخاص بجهاز "${passkeyToDelete.name}"؟ لن تتمكن من استخدامه لتسجيل الدخول السريع بعد الآن.`
             : "هل أنت متأكد من حذف مفتاح المرور؟"
         }
-        iconSrc="/images/icons3d/alert.webp"
+        iconSrc="/images/3D/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: "تأكيد الحذف",

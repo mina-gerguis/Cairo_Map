@@ -92,13 +92,13 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
           label: suggestionLoading ? "يتم الإرسال..." : "إرسال",
           onClick: handleSendSuggestion,
           disabled: suggestionLoading || !isSuggestionFormValid,
-          icon: <Send size={18}/>
+          icon: <Send size={18} />
         }}
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setShowSuggestionModal(false),
           bgColor: "var(--btn-cancel)",
-          icon: <X size={18}/>
+          icon: <X size={18} />
         }}
       >
         <div style={{ textAlign: "right" }}>
@@ -136,7 +136,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
                 fontWeight: "bold",
               }}
             >
-               اشرح اقتراحك
+              اشرح اقتراحك
             </label>
             <textarea
               className="input-fields"
@@ -175,7 +175,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
           label: bugLoading ? "يتم الإرسال..." : "إرسال",
           onClick: handleSendBugReport,
           disabled: bugLoading || bugUploading || !isBugFormValid,
-          icon: <Send size={18}/>,
+          icon: <Send size={18} />,
         }}
         secondaryButton={{
           label: "إلغاء",
@@ -188,7 +188,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
               setBugImageFile(null);
             }
           },
-          icon: <X size={18}/>,
+          icon: <X size={18} />,
           disabled: bugLoading || bugUploading,
         }}
       >
@@ -355,7 +355,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         title="تأكيد الحذف"
         titleColor="#ff3b30"
         message="هل أنت متأكد من حذف هذا الطلب"
-        iconSrc="/images/icons3d/trash.webp"
+        iconSrc="/images/3D/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         primaryButton={{
           label: "تأكيد",
@@ -394,7 +394,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         title="تأكيد الحذف"
         titleColor="var(--color-foreground)"
         message="هل أنت متأكد من حذف هذا الاقتراح؟"
-        iconSrc="/images/icons3d/trash.webp"
+        iconSrc="/images/3D/trash.webp"
         borderColor="rgba(255, 149, 0, 0.25)"
         primaryButton={{
           label: "تأكيد",

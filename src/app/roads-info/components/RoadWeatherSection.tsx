@@ -41,15 +41,15 @@ export function RoadWeatherSection({
       <div className={styles.weatherLeftGroup}>
         <div className={styles.weatherIconLarge}>
           {weather.conditionIcon === "sun" ? (
-            <Image src="/images/icons3d/sun.webp" alt="sun" width={40} height={40} />
+            <Image src="/images/3D/sun.webp" alt="sun" width={40} height={40} />
           ) : weather.conditionIcon === "rain" ? (
-            <Image src="/images/icons3d/cloud_rain.webp" alt="rain" width={40} height={40} />
+            <Image src="/images/3D/cloud_rain.webp" alt="rain" width={40} height={40} />
           ) : weather.conditionIcon === "cold" ? (
-            <Image src="/images/icons3d/snowflake.webp" alt="cold" width={40} height={40} />
+            <Image src="/images/3D/snowflake.webp" alt="cold" width={40} height={40} />
           ) : weather.conditionIcon === "fog" ? (
             <i className="bx bx-cloud" style={{ color: "#94a3b8" }} />
           ) : (
-            <Image src="/images/icons3d/cloud.webp" alt="cloud" width={40} height={40} />
+            <Image src="/images/3D/cloud.webp" alt="cloud" width={40} height={40} />
           )}
         </div>
 

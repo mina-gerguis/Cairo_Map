@@ -50,7 +50,7 @@ export const ASSETS = {
     saveLocation: "/images/3D/street.webp",
   },
 
-  icons3d: {
+  3D: {
     alert: "/images/3D/alert.webp",
     places: "/images/3D/restaurant.webp",
     book: "/images/3D/book.webp",
@@ -68,4 +68,4 @@ export const ASSETS = {
   fallback: {
     image404: "/images/404.webp",
   },
-} as const;
+} as const ;

@@ -244,7 +244,7 @@ export default function WeatherComfortWidget() {
                 marginTop: "2px",
               }}
             >
-              <img src={ ASSETS.icons3d.alert } alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={ASSETS.3D.alert } alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
 
             <div style={{ flex: 1, minWidth: "240px" }}>
@@ -357,13 +357,13 @@ export default function WeatherComfortWidget() {
             }}
           >
             {weather.icon === "hot" ? (
-              <img src="images/icons3d/sun.webp" alt="hot icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/3D/sun.webp" alt="hot icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : weather.icon === "rain" ? (
-              <img src="images/icons3d/cloud_rain.webp" alt="rain icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/3D/cloud_rain.webp" alt="rain icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : weather.icon === "cold" || weather.icon === "cool" ? (
-              <img src="images/icons3d/snowflake.webp" alt="snow icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/3D/snowflake.webp" alt="snow icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <img src="images/icons3d/cloud.webp" alt="cloud icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/3D/cloud.webp" alt="cloud icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             )}
           </div>
           <div>
@@ -375,7 +375,7 @@ export default function WeatherComfortWidget() {
                 display: "flex",
                 alignItems: "center",
                 flexWrap: "wrap",
-                gap: "6px", 
+                gap: "6px",
               }}
             >
               <span className="font-sub" style={{ display: "inline-block", alignItems: "center", gap: "4px" }}>

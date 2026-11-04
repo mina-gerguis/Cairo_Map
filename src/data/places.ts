@@ -389,9 +389,9 @@ export function getMainCategory(category: string, subCategories: string[] = []):
 export function getMainCategoryImage(category: string, subCategories: string[] = []): string {
   const main = getMainCategory(category, subCategories);
   if (main && main.image) {
-    return `/images/icons3d/${main.image}`;
+    return `/images/3D/${main.image}`;
   }
-  return '/images/icons3d/burger.webp';
+  return '/images/3D/burger.webp';
 }
 
 export interface Branch {

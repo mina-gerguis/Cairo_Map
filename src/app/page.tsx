@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { ASSETS } from "@/constants/assets";
 import {
   FaPlusCircle,
@@ -158,7 +158,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "أحفظ مكاني",
     subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
     href: "/save-location",
-    icon: ASSETS.icons3d.street,
+    icon: ASSETS.3D.street,
     badge: "ميزة جديدة 🎯",
     keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"]
   },
@@ -167,7 +167,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "خريطة مترو الأنفاق",
     subtitle: "خطوط مترو القاهرة الكبري.",
     href: "/metro",
-    icon:  ASSETS.transit.metro,
+    icon: ASSETS.transit.metro,
     badge: "مواصلات المترو",
     keywords: ["مترو", "المترو", "انفاق", "الانفاق", "محطات المترو", "خط المترو", "تذكرة المترو", "مترو القاهرة", "metro"]
   },
@@ -230,7 +230,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مخطط الرحلات الذكي",
     subtitle: "تخطيط يومك بالذكاء الاصطناعي",
     href: "/ai-planner",
-    icon: ASSETS.icons3d.robot,
+    icon: ASSETS.3D.robot,
     badge: "ذكاء اصطناعي",
     keywords: ["خروجة", "تخطيط", "مخطط", "رحلات", "برنامج", "ذكاء", "ذكاء اصطناعي", "ai", "افكار خروج"]
   },
@@ -1016,7 +1016,7 @@ export default function HomePage() {
         label: cat.label,
         description: `تصفح كل أماكن ومحلات ${cat.label}`,
         link: `/places?category=${encodeURIComponent(cat.name)}`,
-        image: `/images/icons3d/${cat.image}`,
+        image: `/images/3D/${cat.image}`,
         badge: "تصنيف",
       });
     });
@@ -1255,7 +1255,7 @@ export default function HomePage() {
                   </div>
                   <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }} className=" flex items-center justify-center font-sub">
                     <p>دورنا كتير بس للاسف ملقناش اللي أنت بدور عليه،
-                  لكن جرب تبحث من تاني أو أضف المكان بنفسك </p><IconMoodSadDizzy stroke={2} /> 
+                      لكن جرب تبحث من تاني أو أضف المكان بنفسك </p><IconMoodSadDizzy stroke={2} />
                   </div>
                   <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
                     <button
@@ -1267,10 +1267,10 @@ export default function HomePage() {
                     </button>
                     <Link
                       href="/propose-place"
-                     className="btn btn-blue fs-sm py-0"
+                      className="btn btn-blue fs-sm py-0"
                     >
-                    ده مكان ؟ تعاله نضيفة
-                    <IconBookmarkPlus stroke={2} /> 
+                      ده مكان ؟ تعاله نضيفة
+                      <IconBookmarkPlus stroke={2} />
                     </Link>
                   </div>
                 </div>
@@ -1583,7 +1583,7 @@ export default function HomePage() {
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "36px", flexWrap: "wrap", gap: "16px" }}>
             <div>
               <h2 style={{ fontSize: "1.8rem", marginBottom: "10px", textAlign: "center", textWrap: "balance" }} className="mt-2 fw-700">
-               دور علي حسب التصنيف
+                دور علي حسب التصنيف
               </h2>
               <p className="sub-title" style={{ fontSize: "0.95rem", color: "var(--text-secondary)", textAlign: "center", textWrap: "pretty" }}>
                 اختر الفئة للاطلاع على كافة الفروع، المواعيد، وتقييمات الزوار
@@ -1603,7 +1603,7 @@ export default function HomePage() {
                   style={{
                   }}
                 >
-                  <Image src={`/images/icons3d/${cat.image}`} alt={cat.label} width={40} height={40} style={{ width: "40px", height: "auto" }} />
+                  <Image src={`/images/3D/${cat.image}`} alt={cat.label} width={40} height={40} style={{ width: "40px", height: "auto" }} />
                 </div>
                 <div>
                   <h5 className="home-category-card-title">
@@ -1640,7 +1640,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <button 
+            <button
               onClick={() => router.push("/blog")}
               className="btn btn-primary active:scale-[0.96] transition-transform"
 
@@ -1715,7 +1715,7 @@ export default function HomePage() {
               justifyContent: "center",
               marginBottom: "20px"
             }}>
-            <Image src="/images/icons3d/robot.webp" alt="الذكاء الاصطناعي لقريب" width={80} height={80} style={{ width: "80px", height: "auto" }} />
+            <Image src="/images/3D/robot.webp" alt="الذكاء الاصطناعي لقريب" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
           <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-foreground)", textWrap: "balance" }}>

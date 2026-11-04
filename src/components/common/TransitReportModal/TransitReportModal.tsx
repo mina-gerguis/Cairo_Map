@@ -289,7 +289,7 @@ ${details.trim()}`;
             <div className={styles.stateWrapper}>
               <div className={styles.stateIconImg}>
                 <img
-                  src="/images/icons3d/error.webp"
+                  src="/images/3D/error.webp"
                   alt="error"
                   loading="lazy"
                 />
@@ -342,9 +342,8 @@ ${details.trim()}`;
                         key={scope.id}
                         type="button"
                         onClick={() => setActiveScope(scope.id)}
-                        className={`${styles.scopeBtn} ${
-                          activeScope === scope.id ? styles.scopeBtnActive : ""
-                        }`}
+                        className={`${styles.scopeBtn} ${activeScope === scope.id ? styles.scopeBtnActive : ""
+                          }`}
                       >
                         {scope.icon && <i className={`${scope.icon} ml-1`} />}
                         {scope.label}
@@ -368,9 +367,8 @@ ${details.trim()}`;
                 <button
                   type="button"
                   onClick={() => setShowProblemTypeDropdown((prev) => !prev)}
-                  className={`${styles.dropdownTrigger} ${
-                    showProblemTypeDropdown ? styles.dropdownTriggerActive : ""
-                  }`}
+                  className={`${styles.dropdownTrigger} ${showProblemTypeDropdown ? styles.dropdownTriggerActive : ""
+                    }`}
                 >
                   <div className={styles.dropdownContent}>
                     <div>
@@ -386,9 +384,8 @@ ${details.trim()}`;
                   </div>
 
                   <i
-                    className={`${styles.chevron} bx ${
-                      showProblemTypeDropdown ? "bx-chevron-up" : "bx-chevron-down"
-                    }`}
+                    className={`${styles.chevron} bx ${showProblemTypeDropdown ? "bx-chevron-up" : "bx-chevron-down"
+                      }`}
                   />
                 </button>
 
@@ -403,9 +400,8 @@ ${details.trim()}`;
                             setSelectedProblemType(opt.id);
                             setShowProblemTypeDropdown(false);
                           }}
-                          className={`${styles.dropdownItem} ${
-                            isSelected ? styles.dropdownItemSelected : ""
-                          }`}
+                          className={`${styles.dropdownItem} ${isSelected ? styles.dropdownItemSelected : ""
+                            }`}
                         >
                           <div className={styles.dropdownContent}>
                             {opt.icon && <i className={`${opt.icon} text-secondary`} />}
@@ -478,9 +474,8 @@ ${details.trim()}`;
                       const droppedFile = e.dataTransfer.files?.[0];
                       if (droppedFile) handleImageSelect(droppedFile);
                     }}
-                    className={`${styles.dropzone} ${
-                      isDraggingImage ? styles.dropzoneDragging : ""
-                    }`}
+                    className={`${styles.dropzone} ${isDraggingImage ? styles.dropzoneDragging : ""
+                      }`}
                   >
                     <input
                       type="file"

@@ -33,7 +33,7 @@ export function AdminBrtStationsDeleteModal({
       onClose={onCancel}
       title={title}
       message={message}
-      iconSrc="/images/icons3d/trash.webp"
+      iconSrc="/images/3D/trash.webp"
       borderColor="#ff000030"
       primaryButton={{
         label: isDeleting ? "جاري الحذف..." : "نعم، احذف",

@@ -93,7 +93,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
                             )}
                           </div>
                           <div className={styles.deviceMetaRow}>
-                            <MapPinHouse size={12}/>
+                            <MapPinHouse size={12} />
                             <span>{device.location || "موقع غير معروف"}</span>
                             <span className={styles.metaDivider}>•</span>
                             <span style={{ fontFamily: "var(--font-heading)" }}>
@@ -126,7 +126,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
                           className={styles.deactivateDeviceBtn}
                           title="تسجيل الخروج وإنهاء الجلسة"
                         >
-                          <LogOut size={16}/>
+                          <LogOut size={16} />
                         </button>
                       )}
                     </div>
@@ -152,7 +152,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
             ? "هل أنت متأكد من تسجيل الخروج من جهازك الحالي؟"
             : "هل أنت متأكد من إنهاء جلسة هذا الجهاز؟ سيتم تسجيل الخروج منه فوراً."
         }
-        iconSrc="/images/icons3d/alert.webp"
+        iconSrc="/images/3D/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: "تأكيد",
@@ -166,12 +166,12 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
               setDeviceToDeactivate(null);
             }
           },
-          icon: <LogOut size={16}/>,
+          icon: <LogOut size={16} />,
         }}
         secondaryButton={{
           label: "إلغاء",
           onClick: () => setDeviceToDeactivate(null),
-          icon: <X size={16}/>,
+          icon: <X size={16} />,
         }}
       />
     </>

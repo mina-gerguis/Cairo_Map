@@ -1456,7 +1456,7 @@ function AdminRoadsInfoInner() {
         onClose={() => setRoadToDelete(null)}
         title="تأكيد حذف الطريق"
         message={`هل أنت متأكد من حذف طريق "${roadToDelete?.name}" نهائياً من قاعدة البيانات؟`}
-        iconSrc="/images/icons3d/trash.webp"
+        iconSrc="/images/3D/trash.webp"
         primaryButton={{
           label: isDeletingRoad ? "جاري الحذف..." : "حذف نهائي",
           onClick: handleConfirmDeleteRoad,
@@ -1474,7 +1474,7 @@ function AdminRoadsInfoInner() {
         onClose={() => setNewsToDelete(null)}
         title="تأكيد حذف الخبر"
         message={`هل أنت متأكد من حذف خبر "${newsToDelete?.title}"؟`}
-        iconSrc="/images/icons3d/trash.webp"
+        iconSrc="/images/3D/trash.webp"
         primaryButton={{
           label: isDeletingNews ? "جاري الحذف..." : "حذف",
           onClick: handleConfirmDeleteNews,
