@@ -48,7 +48,7 @@ html.light {
   min-height: 40px;
   transition-property: transform, opacity, background-color, border-color, box-shadow;
   transition-duration: 150ms;
-  transition-timing-function: var(--ease-out);
+  transition: var(--transition-fast);
 }
 
 .btn:hover {

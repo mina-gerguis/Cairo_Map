@@ -145,7 +145,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={almarai.variable}>
+    <html lang="ar" dir="rtl" className={almarai.variable} suppressHydrationWarning>
       <head>
         {/* Instant preloading flag & theme initialization to eliminate layout/animation shifts */}
         <script
@@ -189,11 +189,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(globalJsonLd) }}
         />
         {/* Google AdSense Main Script */}
-        <Script
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7465662881430123"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
         {/* Service Worker Registration */}
         <Script id="sw-registration" strategy="lazyOnload">

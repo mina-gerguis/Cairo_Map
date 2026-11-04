@@ -26,6 +26,7 @@ import CommunityOrbit, { OrbitItem, OrbitStat, OrbitTag } from "@/components/ui/
 import { AppleSpotlight, SearchResult, SpotlightPlaceholder } from "@/components/ui/AppleSpotlight";
 import { IconBookmarkPlus, IconMoodSadDizzy, IconRefresh } from "@tabler/icons-react";
 import Footer from "@/components/Footer";
+import HomeBentoGrid from "@/components/home/HomeBentoGrid";
 
 // ── 1. دالة توحيد وتنظيف النصوص العربية لبحث دقيق ──
 function normalizeArabic(text: string): string {
@@ -277,6 +278,33 @@ const SITE_SERVICES: SiteServiceItem[] = [
     icon: ASSETS.branding.qareebNoBgBlue,
     badge: "مقالات وأدلة",
     keywords: ["مدونة", "مقالات", "مقال", "اخبار", "أخبار", "دليل", "blog", "نصائح", "مقاله"]
+  },
+  {
+    id: "had-yaaraf",
+    label: "حد يعرف؟ (مجتمع قريب)",
+    subtitle: "اسأل الشارع واستفسر عن المواصلات والأماكن وتجارب الناس",
+    href: "/had-yaaraf",
+    icon: ASSETS.transit.metro,
+    badge: "مجتمع وتجارب 🔥",
+    keywords: ["حد يعرف", "سؤال", "اسأل", "استفسار", "مجتمع", "تجارب", "اسئله", "اجابات", "شات", "community", "had yaaraf"]
+  },
+  {
+    id: "parking",
+    label: "دليل الجراجات وأماكن الركنة",
+    subtitle: "أقرب جراج وموقف سيارات بجوار المترو والمرافق الحيوية",
+    href: "/parking",
+    icon: ASSETS.transit.parking,
+    badge: "ركنات وجراجات 🚗",
+    keywords: ["جراج", "جراجات", "باركينج", "ركنة", "ركنات", "مكان ركنة", "parking", "عربيات", "سيارات", "موقف سيارات"]
+  },
+  {
+    id: "roads-info",
+    label: "معلومات الطرق والسرعات والرادار",
+    subtitle: "السرعات المقررة، رادارات الطرق، والطقس على المحاور الرئيسية",
+    href: "/roads-info",
+    icon: ASSETS.transit.car,
+    badge: "طرق ورادارات 🚦",
+    keywords: ["طريق", "طرق", "رادار", "رادارات", "سرعة", "سرعات", "مخالفات", "الدائري", "طريق السويس", "الأوتوستراد", "roads", "كاميرات"]
   }
 ];
 
@@ -431,7 +459,7 @@ export default function HomePage() {
 
     // 3. Main Services Section
     if (servicesSectionRef.current) {
-      const serviceCards = servicesSectionRef.current.querySelectorAll(".glass-card");
+      const serviceCards = servicesSectionRef.current.querySelectorAll(".glass-card, [class*='bentoCard']");
       if (serviceCards.length > 0) {
         ScrollTrigger.batch(serviceCards, {
           start: "top 88%",
@@ -1033,6 +1061,8 @@ export default function HomePage() {
   };
 
   const quickSearchTags = [
+    { label: "حد يعرف؟", route: "/had-yaaraf", icon: ASSETS.transit.metro },
+    { label: "دليل الجراجات", route: "/parking", icon: ASSETS.transit.parking },
     { label: "موناريل", route: "/monorail", icon: ASSETS.transit.monorail },
     { label: "الأتوبيس الترددي", route: "/brt", icon: ASSETS.transit.brt },
     { label: "القطار الكهربي", route: "/lrt", icon: ASSETS.transit.lrt },
@@ -1158,72 +1188,6 @@ export default function HomePage() {
     },
   ];
 
-  const mainServices = [
-    {
-      id: "save-location",
-      title: "أحفظ مكاني",
-      desc: "عديت كام مره علي مكان وعجبك ومش عايز تنساه؟ احفظه دلوقتي عشان ترجعله بسهوله ومتنساش زي كل مرة.",
-      icon: ASSETS.icons3d.street,
-      link: "/save-location",
-    },
-    {
-      id: "places",
-      title: "دليل الأماكن",
-      desc: "خد عنك فيه جوه مطاعم كافيهات محلات مولات حدائق فنادق ومش كدا وبس صيدليات مستشفيات أحلم واتمني بس .",
-      icon: ASSETS.icons3d.places,
-      link: "/places",
-    },
-    {
-      id: "blog",
-      title: "مدونة ومقالات قريب",
-      desc: "بنعرفك أي اللي حصل بره وأنت علي سريرك ماسك الموبايل بتقلب قبل ما تتحرك وتغرق في الزحمة",
-      icon: ASSETS.icons3d.book,
-      link: "/blog",
-    },
-    {
-      id: "ai-planner",
-      title: "بطل تفكير وخطط لخروجتك يا كبير",
-      desc: "مش عارف تخرج فين ؟, زهقت من كتر التفكير ... أدخل قولنا ميزنيتك ومكانك وسيب الترتيب علينا وقوم ألبس يلا علشان متتأخرش",
-      icon: ASSETS.icons3d.robot,
-      link: "/ai-planner",
-    },
-    {
-      id: "directory",
-      title: "دفتر أرقام وأكواد معاك",
-      desc: "دليل شامل لأرقام الطوارئ، الهيئات الخدمية، وأكواد باقات وفليكسات شبكات المحمول (فودافون، أورنج، اتصالات، وي).",
-      icon: ASSETS.icons3d.vodafone,
-      link: "/directory",
-    },
-    {
-      id: "metro",
-      title: "شبكات مترو القاهرة الكبري",
-      desc: "عارفك أنت هتقولي أيوة صح أنت مولود في المترو ومن المؤاسسين بس نراهن لسه برده بتوه وحدك جوه مش صح ... علشان كدا خد خريطة المترو وأسعار التذاكر ومتكسفناش.",
-      icon: ASSETS.icons3d.metro,
-      link: "/metro",
-    },
-    {
-      id: "directions",
-      title: "قبل ما تركب أسال",
-      desc: "عايز تروح فين وهو قالك فين مش كفاية الدوخة دي وقوله معرفش أو افتح قريب وأعرف المكان وقوله وأكسب فيه ثواب.",
-      icon: ASSETS.icons3d.egypt,
-      link: "/directions",
-    },
-    {
-      id: "microbus-stations",
-      title: "مواقف الميكروباص",
-      desc: "دليل مواقف الميكروباص في القاهرة الكبري و الجيزة  وجميع المحافظات المصرية",
-      icon: ASSETS.icons3d.microbus,
-      link: "/microbus-stations",
-    },
-    {
-      id: "map",
-      title: "خريطة خريطة مافيش كلام",
-      desc: "اكتشف خرائط تفاعلية للطرق الرئيسية والمناطق الحيوية في القاهرة الكبرى، بما في ذلك شبكات المترو والمونوريل والمرافق الهامة.",
-      icon: ASSETS.icons3d.maps,
-      link: "/map",
-    },
-  ];
-
   const orbitStats: OrbitStat[] = [
     {
       value: placesCount > 0 ? `${placesCount.toLocaleString("en-US")}+` : "2,500+",
@@ -1234,7 +1198,7 @@ export default function HomePage() {
       label: "رقم هاتف وكود سريع",
     },
     {
-      value: `${mainServices.length}+`,
+      value: `${SITE_SERVICES.length}+`,
       label: "عدد خدمات الموقع",
     },
   ];
@@ -1602,80 +1566,9 @@ export default function HomePage() {
         />
       </section>
 
-      {/* ── 3. MAIN SERVICES GRID ── */}
-      <section
-        ref={servicesSectionRef}
-        style={{
-          padding: "10px 20px 70px 20px",
-          maxWidth: "1200px",
-          margin: "0 auto"
-        }}>
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "48px"
-          }}>
-          <h2 style={{ fontSize: "2rem", fontWeight: "900", marginBottom: "12px", textWrap: "balance" }}>
-أي كل دي خدمات 
-          </h2>
-          <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto", textWrap: "pretty" }}>
-            اختر الخدمة التي تحتاجها للوصول السريع إلى أدق التفاصيل والمؤشرات الحية.
-          </p>
-        </div>
-
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          gap: "24px"
-        }}>
-          {mainServices.map((service) => (
-            <Link
-              key={service.id}
-              href={service.link}
-              className="glass-card active:scale-[0.96] transition-transform"
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                padding: "28px",
-                backgroundColor: "var(--bg-secondary)",
-                transition: "transform 0.25s ease, box-shadow 0.25s ease",
-                position: "relative",
-                overflow: "hidden"
-              }}
-            >
-              <div>
-                {/* Header icon & badge */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                  <div style={{
-                    width: "64px",
-                    height: "64px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    overflow: "hidden"
-                  }}>
-                    <Image
-                      src={getValidImageSrc(service.icon)}
-                      alt={service.title}
-                      width={80}
-                      height={80}
-                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                    />
-                  </div>
-                </div>
-
-                <h2 style={{ fontSize: "1.3rem", fontWeight: "600", color: "var(--color-foreground)", marginBottom: "10px", textWrap: "balance" }}>
-                  {service.title}
-                </h2>
-                <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: "1.6", marginBottom: "24px", textWrap: "pretty" }}>
-                  {service.desc}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
+      {/* ── 3. MAIN SERVICES BENTO GRID (21ST.DEV STYLE) ── */}
+      <section ref={servicesSectionRef}>
+        <HomeBentoGrid />
       </section>
 
       {/* ── 4. BROWSE BY CATEGORY PREVIEW ── */}
@@ -1870,7 +1763,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/propose-place"
-            className="btn btn-outline active:scale-[0.96] transition-transform"
+            className="btn btn-outline"
             style={{
               display: "inline-flex",
               alignItems: "center",

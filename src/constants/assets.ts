@@ -1,8 +1,6 @@
 
 export const ASSETS = {
   branding: {
-    logoDark: "/images/logo/darkMode_logo.webp",
-    logoLight: "/images/logo/lightMode_logo.webp",
     qareebNoBGLight: "/images/brand/qareeb_nobg_light.webp",
     qareebNoBGDark: "/images/brand/qareeb_nobg_dark.webp",
     qareebTouch: "/images/brand/qareeb_touch.webp",
@@ -48,20 +46,23 @@ export const ASSETS = {
 
   services: {
     cairo: "/images/locations/cities/cairo.webp",
+    places: "/images/3D/restaurant.webp",
+    saveLocation: "/images/3D/street.webp",
   },
 
   icons3d: {
-    alert: "/images/icons3d/alert.webp",
-    places: "/images/icons3d/restaurant.webp",
-    book: "/images/icons3d/book.webp",
-    street: "/images/icons3d/street.webp",
-    robot: "/images/icons3d/robot.webp",
-    restaurant: "/images/icons3d/restaurant.webp",
-    vodafone: "/images/icons3d/vodafone.webp",
-    metro: "/images/icons3d/metro.webp",
-    egypt: "/images/icons3d/egypt.webp",
-    microbus: "/images/icons3d/microbus.webp",
-    maps: "/images/icons3d/map.webp",
+    alert: "/images/3D/alert.webp",
+    places: "/images/3D/restaurant.webp",
+    book: "/images/3D/book.webp",
+    street: "/images/3D/street.webp",
+    robot: "/images/3D/robot.webp",
+    restaurant: "/images/3D/restaurant.webp",
+    vodafone: "/images/3D/vodafone.webp",
+    metro: "/images/3D/metro.webp",
+    egypt: "/images/3D/egypt.webp",
+    microbus: "/images/3D/microbus.webp",
+    maps: "/images/3D/map.webp",
+    padlock: "images/3D/padlock.webp"
   },
 
   fallback: {

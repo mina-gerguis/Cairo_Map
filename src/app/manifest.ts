@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'دليلك الشامل للأماكن والخدمات في مصر',
     start_url: '/',
     display: 'standalone',
-    background_color: '#0a0c23',
-    theme_color: '#6c63ff',
+    background_color: '#0b0f19',
+    theme_color: '#6366f1',
     icons: [
       {
         src: '/icons/icon-192x192.png',
@@ -21,16 +21,6 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable',
-      },
-      {
-        src: '/images/brand/qareeb_touch.webp',
-        sizes: '180x180',
-        type: 'image/png',
-      },
-      {
-        src: '/favicon.ico',
-        sizes: 'any',
-        type: 'image/x-icon',
       },
     ],
   }

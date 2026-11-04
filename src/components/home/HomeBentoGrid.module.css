@@ -1,0 +1,426 @@
+/* ============================================================
+   21st.dev Style Bento Grid — Cairo Map Home Services
+   High-precision layout, frosted glass elevation, concentric radii
+   ============================================================ */
+
+.bentoContainer {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px 20px 80px 20px;
+  position: relative;
+}
+
+.headerWrapper {
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.headerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.headerTitle {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  color: var(--color-foreground);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  text-wrap: balance;
+}
+
+.headerSubtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* 12-Column Responsive Bento Grid */
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+/* Base Bento Card */
+.bentoCard {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px;
+}
+
+.bentoCard:hover {
+  border-color: rgba(0, 111, 238, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 12px 32px -4px rgba(0, 111, 238, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Card Column Spans */
+.colSpan12 { grid-column: span 12; }
+.colSpan7  { grid-column: span 7; }
+.colSpan6  { grid-column: span 6; }
+.colSpan5  { grid-column: span 5; }
+.colSpan4  { grid-column: span 4; }
+
+/* Subtle Ambient Glow inside Card */
+.ambientGlow {
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 111, 238, 0.15) 0%, rgba(0, 111, 238, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambientGlowGreen {
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambientGlowOrange {
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambientGlowPurple {
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Pill Badges */
+.cardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  width: fit-content;
+  margin-bottom: 14px;
+}
+
+.badgeBlue {
+  background: rgba(0, 111, 238, 0.12);
+  color: var(--color-primary);
+  border: 1px solid rgba(0, 111, 238, 0.25);
+}
+
+.badgeGreen {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badgeOrange {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.badgePurple {
+  background: rgba(139, 92, 246, 0.12);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+/* Pulsing live dot */
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: bentoPulse 2s infinite;
+}
+
+@keyframes bentoPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Card Content Typography */
+.cardTitle {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  margin-bottom: 8px;
+  text-wrap: balance;
+  position: relative;
+  z-index: 1;
+}
+
+.cardDesc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  text-wrap: pretty;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Interactive Preview Box inside Bento (Had Yaaraf) */
+.interactivePreview {
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.questionMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.questionText {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--color-foreground);
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
+.bestAnswerBox {
+  background: rgba(16, 185, 129, 0.08);
+  border-right: 3px solid #10b981;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.84rem;
+  color: var(--color-foreground);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.questionStats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Quick Metro Calculator Inside Bento */
+.metroCalculatorWrapper {
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.metroSelectRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.metroSelectField {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  color: var(--color-foreground);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.84rem;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.metroSelectField:focus {
+  border-color: var(--color-primary);
+}
+
+.metroSwapBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  color: var(--color-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.metroSwapBtn:hover {
+  border-color: var(--color-primary);
+  transform: rotate(180deg);
+}
+
+.metroResultCard {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  text-align: center;
+}
+
+.metroResultItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metroResultLabel {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.metroResultValue {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+/* Feature Pills List */
+.featurePills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.pillItem {
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-foreground);
+}
+
+/* Action Link with Animated Arrow */
+.cardActionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.cardActionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.bentoCard:hover .cardActionLink {
+  gap: 10px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .colSpan7, .colSpan5 {
+    grid-column: span 12;
+  }
+  .colSpan4 {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 640px) {
+  .bentoGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .colSpan12, .colSpan7, .colSpan6, .colSpan5, .colSpan4 {
+    grid-column: span 1;
+  }
+  .bentoCard {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .metroSelectRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .metroSwapBtn {
+    margin: 0 auto;
+  }
+  .metroResultCard {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
