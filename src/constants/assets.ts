@@ -62,7 +62,7 @@ export const ASSETS = {
     egypt: "/images/threeD/egypt.webp",
     microbus: "/images/threeD/microbus.webp",
     maps: "/images/threeD/map.webp",
-    padlock: "images/threeD/padlock.webp"
+    padlock: "/images/threeD/padlock.webp"
   },
 
   fallback: {

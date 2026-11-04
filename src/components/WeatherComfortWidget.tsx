@@ -244,7 +244,7 @@ export default function WeatherComfortWidget() {
                 marginTop: "2px",
               }}
             >
-              <img src={ASSETS / threeD / alert} alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={ASSETS.threeD.alert} alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
 
             <div style={{ flex: 1, minWidth: "240px" }}>

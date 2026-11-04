@@ -686,7 +686,7 @@ export default function Navbar() {
         onClose={() => setShowLogoutModal(false)}
         title="تسجيل الخروج"
         message="هل أنت متأكد من تسجيل الخروج؟"
-        iconSrc={ASSETS / threeD / alert}
+        iconSrc={ASSETS.threeD.alert}
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: "تأكيد",
