@@ -4,7 +4,7 @@ import React, { useRef, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { useAuth } from "@/context/AuthContext";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 import { useProposePlace } from "./hooks/useProposePlace";
 import ProposePlaceHero from "./components/ProposePlaceHero";

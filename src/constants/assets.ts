@@ -42,6 +42,13 @@ export const ASSETS = {
     etisalat: "/images/company/etisalat.webp",
     orange: "/images/company/orange.webp",
     we: "/images/company/we.webp",
+    instapay: "/images/company/instapay.webp",
+    fawry: "/images/company/fawry.webp",
+    meeza: "/images/company/meeza.webp",
+    visa: "/images/company/visa.webp",
+    mastercard: "/images/company/mastercard.webp",
+    applepay: "/images/company/applepay.webp",
+    telda: "/images/company/telda.webp",
   },
 
   services: {

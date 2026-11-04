@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import Navbar from "@/components/Navbar/Navbar";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 import MobileBottomNav from "@/components/Navbar/MobileBottomNav";
 import { supabase } from "@/lib/supabase";
 import SiteAlertModal from "@/components/SiteAlertModal";

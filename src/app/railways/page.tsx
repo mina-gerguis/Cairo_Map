@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 import { ReportScope } from "./types";
 import { PROBLEM_TYPE_LABELS } from "./constants";
@@ -268,8 +268,8 @@ export default function RailwaysPage() {
         reportTargetScope === "route" && currentRoute
           ? `مشكلة خط قطار: ${currentRoute.name}`
           : reportTargetScope === "station" && reportSelectedStation
-          ? `مشكلة محطة قطار: ${reportSelectedStation}`
-          : `مشكلة في سكك حديد مصر (${typeLabel})`;
+            ? `مشكلة محطة قطار: ${reportSelectedStation}`
+            : `مشكلة في سكك حديد مصر (${typeLabel})`;
 
       const { error: insertError } = await supabase.from("app_feedback").insert([
         {

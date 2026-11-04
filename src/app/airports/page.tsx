@@ -3,7 +3,7 @@
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 import { useAirportsData, useAirportsReportModal } from "./hooks";
 import {
@@ -37,10 +37,10 @@ export default function AirportsPage() {
     profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = Boolean(
     profile?.is_admin ||
-      promoStatus.isOpen ||
-      ((profile?.subscription_tier === "gold" ||
-        profile?.subscription_tier === "mishwar") &&
-        !isExpired)
+    promoStatus.isOpen ||
+    ((profile?.subscription_tier === "gold" ||
+      profile?.subscription_tier === "mishwar") &&
+      !isExpired)
   );
 
   // Core Data & State Hook

@@ -21,7 +21,7 @@ import {
 import { LineId } from "./types";
 import { METRO_LINES_LIST } from "./constants";
 import styles from "./metro.module.css";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 
 export type {

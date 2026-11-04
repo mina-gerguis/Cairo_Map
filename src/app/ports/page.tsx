@@ -5,7 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useAuth } from "@/context/AuthContext";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 import { usePortsData } from "./hooks/usePortsData";
 import { usePortsReportModal } from "./hooks/usePortsReportModal";
@@ -28,10 +28,10 @@ export default function PortsPage() {
     profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = Boolean(
     profile?.is_admin ||
-      promoStatus.isOpen ||
-      ((profile?.subscription_tier === "gold" ||
-        profile?.subscription_tier === "mishwar") &&
-        !isExpired)
+    promoStatus.isOpen ||
+    ((profile?.subscription_tier === "gold" ||
+      profile?.subscription_tier === "mishwar") &&
+      !isExpired)
   );
 
   // Ports Data Hook

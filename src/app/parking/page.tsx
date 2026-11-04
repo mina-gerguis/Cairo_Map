@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useAuth } from "@/context/AuthContext";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 import {
   useParkingData,

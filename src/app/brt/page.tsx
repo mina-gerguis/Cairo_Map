@@ -20,7 +20,7 @@ import BrtSuccessModal from "./components/BrtSuccessModal";
 import BrtPaywall from "./components/BrtPaywall";
 import BrtLoading from "./components/BrtLoading";
 import styles from "./brt.module.css";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 export default function BrtPage() {
   const { user, profile, loading: authLoading, isPageOpen } = useAuth();

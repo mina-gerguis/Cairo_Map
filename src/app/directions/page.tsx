@@ -20,7 +20,7 @@ import RouteResultsSection from "./components/RouteResultsSection";
 import BottomReportBanner from "./components/BottomReportBanner";
 import DirectionsReportModal from "./components/DirectionsReportModal";
 import { isPageOpenByPromotion } from "@/lib/promotions";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 import { resolvePreciseLocation } from "./utils/gpsLocator";
 import styles from "./page.module.css";
 

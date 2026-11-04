@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 import { useRoadsData, useRoadsNews, useRoadsReportModal } from "./hooks";
 import {
@@ -29,10 +29,10 @@ export default function RoadsInfoPage() {
     profile?.subscription_end && new Date(profile.subscription_end) < new Date();
   const hasAccess = Boolean(
     profile?.is_admin ||
-      promoStatus.isOpen ||
-      ((profile?.subscription_tier === "gold" ||
-        profile?.subscription_tier === "mishwar") &&
-        !isExpired)
+    promoStatus.isOpen ||
+    ((profile?.subscription_tier === "gold" ||
+      profile?.subscription_tier === "mishwar") &&
+      !isExpired)
   );
 
   const [activeTab, setActiveTab] = useState<RoadsTabType>("roads");

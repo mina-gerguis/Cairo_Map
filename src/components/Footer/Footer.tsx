@@ -4,17 +4,18 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ASSETS } from "@/constants/assets";
 import { useGSAP, gsap } from "@/lib/gsap";
 
 const payicon = [
-  { name: "vodafone cash", title: "فودافون كاش", icon: "/images/payment/vodafone.webp" },
-  { name: "instapay", title: "انستاباي", icon: "/images/payment/instapay.webp" },
-  { name: "meeza", title: "ميزة", icon: "/images/payment/meeza.webp" },
-  { name: "fawry", title: "فوري", icon: "/images/payment/fawry.webp" },
-  { name: "visa", title: "فيزا", icon: "/images/payment/visa.webp" },
-  { name: "mastercard", title: "ماستركارد", icon: "/images/payment/mastercard.webp" },
-  { name: "applepay", title: "ابل باي", icon: "/images/payment/applepay.webp" },
-  { name: "telda", title: "تيلدا", icon: "/images/payment/telda.webp" },
+  { name: "vodafone cash", title: "فودافون كاش", icon: ASSETS.company.vodafone },
+  { name: "instapay", title: "انستاباي", icon: ASSETS.company.instapay },
+  { name: "meeza", title: "ميزة", icon: ASSETS.company.meeza },
+  { name: "fawry", title: "فوري", icon: ASSETS.company.fawry },
+  { name: "visa", title: "فيزا", icon: ASSETS.company.visa },
+  { name: "mastercard", title: "ماستركارد", icon: ASSETS.company.mastercard },
+  { name: "applepay", title: "ابل باي", icon: ASSETS.company.applepay },
+  { name: "telda", title: "تيلدا", icon: ASSETS.company.telda },
 ];
 
 export default function Footer() {

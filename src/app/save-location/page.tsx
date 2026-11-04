@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import PageHero from "@/components/common/PageHero";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 import SaveLocationModal from "@/components/SaveLocationModal";
 import {
   SavedLocation,
@@ -109,7 +109,7 @@ export default function SaveLocationPage() {
           text: shareText,
           url: loc.googleMapsUrl,
         });
-      } catch (err) {}
+      } catch (err) { }
     } else {
       const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
       window.open(whatsappUrl, "_blank");

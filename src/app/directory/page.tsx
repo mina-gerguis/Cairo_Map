@@ -14,7 +14,7 @@ import {
 } from "./components";
 import { DirectoryReportTarget } from "./components/DirectoryReportModal";
 import { DirectoryTopCard } from "./types";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 export type { PhoneEntry, TelecomCodeEntry } from "./types";
 export { COMPANY_META } from "./constants";

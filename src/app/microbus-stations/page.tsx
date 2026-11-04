@@ -20,7 +20,7 @@ import MicrobusSuccessModal from "./components/MicrobusSuccessModal";
 import MicrobusPaywall from "./components/MicrobusPaywall";
 import MicrobusLoading from "./components/MicrobusLoading";
 import styles from "./microbus.module.css";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 
 export default function MicrobusStationsPage() {
   const { user, profile, loading: authLoading, isPageOpen } = useAuth();
@@ -432,7 +432,7 @@ export default function MicrobusStationsPage() {
         onClose={() => setSuccessModalOpen(false)}
         message={successMessage}
       />
-      
+
       <Footer />
     </div>
 

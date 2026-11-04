@@ -25,7 +25,7 @@ import { useGSAP, gsap, ScrollTrigger } from "@/lib/gsap";
 import CommunityOrbit, { OrbitItem, OrbitStat, OrbitTag } from "@/components/ui/CommunityOrbit";
 import { AppleSpotlight, SearchResult, SpotlightPlaceholder } from "@/components/ui/AppleSpotlight";
 import { IconBookmarkPlus, IconMoodSadDizzy, IconRefresh } from "@tabler/icons-react";
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer/Footer";
 import HomeBentoGrid from "@/components/home/HomeBentoGrid";
 
 // ── 1. دالة توحيد وتنظيف النصوص العربية لبحث دقيق ──
