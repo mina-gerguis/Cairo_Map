@@ -42,7 +42,7 @@ export default function BusStationsPaywall({ user }: BusStationsPaywallProps) {
           {/* 3D Lock Illustration */}
           <div className={styles.lockIconBox}>
             <img
-              src="/images/3D/lockPage.webp"
+              src="/images/threeD/lockPage.webp"
               alt="Locked"
               loading="lazy"
               decoding="async"

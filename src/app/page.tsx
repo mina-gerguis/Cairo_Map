@@ -158,7 +158,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "أحفظ مكاني",
     subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل",
     href: "/save-location",
-    icon: ASSETS.3D.street,
+    icon: ASSETS.threeD.street,
     badge: "ميزة جديدة 🎯",
     keywords: ["احفظ مكاني", "احفظ مكاني الحالي", "مكان ركنتي", "ركنة عربيتي", "موقعي", "حفظ الموقع", "google maps", "خرائط جوجل", "احفظ مكان", "gps", "save location"]
   },
@@ -230,7 +230,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
     label: "مخطط الرحلات الذكي",
     subtitle: "تخطيط يومك بالذكاء الاصطناعي",
     href: "/ai-planner",
-    icon: ASSETS.3D.robot,
+    icon: ASSETS.threeD.robot,
     badge: "ذكاء اصطناعي",
     keywords: ["خروجة", "تخطيط", "مخطط", "رحلات", "برنامج", "ذكاء", "ذكاء اصطناعي", "ai", "افكار خروج"]
   },
@@ -1016,7 +1016,7 @@ export default function HomePage() {
         label: cat.label,
         description: `تصفح كل أماكن ومحلات ${cat.label}`,
         link: `/places?category=${encodeURIComponent(cat.name)}`,
-        image: `/images/3D/${cat.image}`,
+        image: `/images/threeD/${cat.image}`,
         badge: "تصنيف",
       });
     });
@@ -1603,7 +1603,7 @@ export default function HomePage() {
                   style={{
                   }}
                 >
-                  <Image src={`/images/3D/${cat.image}`} alt={cat.label} width={40} height={40} style={{ width: "40px", height: "auto" }} />
+                  <Image src={`/images/threeD/${cat.image}`} alt={cat.label} width={40} height={40} style={{ width: "40px", height: "auto" }} />
                 </div>
                 <div>
                   <h5 className="home-category-card-title">
@@ -1715,7 +1715,7 @@ export default function HomePage() {
               justifyContent: "center",
               marginBottom: "20px"
             }}>
-            <Image src="/images/3D/robot.webp" alt="الذكاء الاصطناعي لقريب" width={80} height={80} style={{ width: "80px", height: "auto" }} />
+            <Image src="/images/threeD/robot.webp" alt="الذكاء الاصطناعي لقريب" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
           <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-foreground)", textWrap: "balance" }}>

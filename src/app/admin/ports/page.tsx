@@ -654,7 +654,7 @@ function AdminPortsInner() {
         onClose={() => !isDeleting && setPortToDelete(null)}
         title="تأكيد حذف الميناء"
         titleColor="#ff3b30"
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message={portToDelete ? `هل أنت متأكد من رغبتك في حذف ميناء "${portToDelete.name}"؟ لا يمكن التراجع عن هذا الإجراء.` : undefined}
         primaryButton={{

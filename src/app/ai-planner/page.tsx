@@ -1250,7 +1250,7 @@ export default function PlannerPage() {
           <div style={{
             marginBottom: "24px",
           }}>
-            <img src="images/3D/lockPage.webp" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
+            <img src="images/threeD/lockPage.webp" alt="Lock" loading="lazy" decoding="async" style={{ width: "150px", height: "120px", objectFit: "contain" }} />
           </div>
 
           <h2 style={{ fontSize: "1.75rem", fontWeight: "900", color: "var(--color-foreground)", marginBottom: "14px" }}>

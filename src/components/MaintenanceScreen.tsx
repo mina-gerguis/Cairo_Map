@@ -333,7 +333,7 @@ export default function MaintenanceScreen({ maintenance, pathname = "" }: Mainte
             }}
           >
             <Image
-              src="/images/3D/lockPage.webp"
+              src="/images/threeD/lockPage.webp"
               alt="Page In Maintenance"
               width={130}
               height={130}

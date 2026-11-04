@@ -58,7 +58,7 @@ export function ParkingLockState({ user, headerRef, cardRef }: ModernParkingLock
           {/* Lock Icon */}
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/3D/lockPage.webp"
+              src="/images/threeD/lockPage.webp"
               alt="Lock"
               loading="lazy"
               decoding="async"

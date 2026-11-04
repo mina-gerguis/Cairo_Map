@@ -42,7 +42,7 @@ export default function DirectionsPaywall({
           {/* Badge Icon */}
           <div className="mb-4">
             <img
-              src="/images/3D/CairoSilver.webp"
+              src="/images/threeD/CairoSilver.webp"
               alt="Silver Access"
               loading="lazy"
               decoding="async"

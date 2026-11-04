@@ -2120,7 +2120,7 @@ export default function AdminMaintenancePage() {
         onClose={() => setDeletingId(null)}
         title="تأكيد حذف إعداد الصيانة"
         message="هل أنت متأكد من رغبتك في حذف إعداد وقفل الصيانة لهذه الصفحة؟ سيتم فتح الصفحة تلقائياً لجميع الزوار."
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(239, 68, 68, 0.4)"
         primaryButton={{
           label: "نعم، احذف الإعداد",
@@ -2150,7 +2150,7 @@ export default function AdminMaintenancePage() {
             ? "هل تريد فتح كامل الموقع للزوار وإلغاء شاشة الصيانة العامة؟"
             : "تحذير: سيتم قفل كافة صفحات الموقع (ما عدا لوحة الإدارة) وتحويل جميع الزوار لشاشة الصيانة العامة. هل أنت متأكد؟"
         }
-        iconSrc="/images/3D/alert.webp"
+        iconSrc="/images/threeD/alert.webp"
         borderColor={
           isGlobalMaintenanceActive ? "rgba(16, 185, 129, 0.4)" : "rgba(239, 68, 68, 0.5)"
         }

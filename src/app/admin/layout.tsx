@@ -1075,7 +1075,7 @@ export default function AdminLayout({
         onClose={() => !isLoggingOut && setShowLogoutModal(false)}
         title="تسجيل الخروج"
         message="هل أنت متأكد من رغبتك في تسجيل الخروج من لوحة الإدارة؟"
-        iconSrc="/images/3D/alert.webp"
+        iconSrc="/images/threeD/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: isLoggingOut ? "جاري الخروج..." : "تأكيد",

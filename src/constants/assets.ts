@@ -46,23 +46,23 @@ export const ASSETS = {
 
   services: {
     cairo: "/images/locations/cities/cairo.webp",
-    places: "/images/3D/restaurant.webp",
-    saveLocation: "/images/3D/street.webp",
+    places: "/images/threeD/restaurant.webp",
+    saveLocation: "/images/threeD/street.webp",
   },
 
-  3D: {
-    alert: "/images/3D/alert.webp",
-    places: "/images/3D/restaurant.webp",
-    book: "/images/3D/book.webp",
-    street: "/images/3D/street.webp",
-    robot: "/images/3D/robot.webp",
-    restaurant: "/images/3D/restaurant.webp",
-    vodafone: "/images/3D/vodafone.webp",
-    metro: "/images/3D/metro.webp",
-    egypt: "/images/3D/egypt.webp",
-    microbus: "/images/3D/microbus.webp",
-    maps: "/images/3D/map.webp",
-    padlock: "images/3D/padlock.webp"
+  threeD: {
+    alert: "/images/threeD/alert.webp",
+    places: "/images/threeD/restaurant.webp",
+    book: "/images/threeD/book.webp",
+    street: "/images/threeD/street.webp",
+    robot: "/images/threeD/robot.webp",
+    restaurant: "/images/threeD/restaurant.webp",
+    vodafone: "/images/threeD/vodafone.webp",
+    metro: "/images/threeD/metro.webp",
+    egypt: "/images/threeD/egypt.webp",
+    microbus: "/images/threeD/microbus.webp",
+    maps: "/images/threeD/map.webp",
+    padlock: "images/threeD/padlock.webp"
   },
 
   fallback: {

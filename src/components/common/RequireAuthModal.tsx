@@ -23,7 +23,7 @@ export default function RequireAuthModal({
       onClose={onClose}
       title="تسجيل الدخول مطلوب"
       message={message}
-      iconSrc="/images/3D/heart.webp"
+      iconSrc="/images/threeD/heart.webp"
       primaryButton={{
         label: "تسجيل الدخول",
         onClick: () => {

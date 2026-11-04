@@ -46,7 +46,7 @@ export default function AirportsPaywall({ user }: AirportsPaywallProps) {
           {/* Lock Icon */}
           <div className={styles.lockIconWrap}>
             <img
-              src="/images/3D/lockPage.webp"
+              src="/images/threeD/lockPage.webp"
               alt="Lock"
               loading="lazy"
               decoding="async"

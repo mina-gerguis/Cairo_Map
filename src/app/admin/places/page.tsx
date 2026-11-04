@@ -3941,7 +3941,7 @@ export default function AdminDashboard() {
         onClose={() => !isDeletingPlace && setPlaceToDeleteId(null)}
         title="تأكيد الحذف"
         titleColor="#ff3b30"
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message="هل أنت متأكد من حذف هذا المكان؟"
         primaryButton={{
@@ -3972,7 +3972,7 @@ export default function AdminDashboard() {
         onClose={() => !isBulkDeleting && setShowBulkDeleteModal(false)}
         title="تأكيد حذف الأماكن المحددة"
         titleColor="#ff3b30"
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message={`هل أنت متأكد من رغبتك في حذف (${selectedPlaceIds.length}) مكان محدد نهائياً من قاعدة البيانات مع كافة فروعها وبياناتها؟ لا يمكن التراجع عن هذا الإجراء.`}
         primaryButton={{
@@ -4011,7 +4011,7 @@ export default function AdminDashboard() {
                   fontSize: "2.4rem",
                 }}
               >
-                <img src="/images/3D/trash.webp" alt="check-double" style={{ width: "100%", height: "100%" }} />
+                <img src="/images/threeD/trash.webp" alt="check-double" style={{ width: "100%", height: "100%" }} />
               </div>
             ) : (
               <div

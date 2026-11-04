@@ -672,7 +672,7 @@ export default function PrivacyPage() {
             }}
           >
             <Image
-              src="/images/3D/document.webp"
+              src="/images/threeD/document.webp"
               alt="سياسة الخصوصية"
               width={64}
               height={64}

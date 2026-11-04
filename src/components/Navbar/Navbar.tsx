@@ -335,8 +335,8 @@ export default function Navbar() {
                 setOpenDropdown((prev) => (prev === "services" ? null : "services"));
               }}
               className={`relative px-4 py-1.5 text-sm font-medium bg-transparent duration-300 rounded-full flex items-center gap-1 cursor-pointer group border-none outline-none ${openDropdown === "services" || isServicesActive
-                  ? "text-primary font-bold"
-                  : "text-muted-foreground hover:text-foreground"
+                ? "text-primary font-bold"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
               aria-expanded={openDropdown === "services"}
               aria-haspopup="true"
@@ -686,23 +686,23 @@ export default function Navbar() {
         onClose={() => setShowLogoutModal(false)}
         title="تسجيل الخروج"
         message="هل أنت متأكد من تسجيل الخروج؟"
-        iconSrc={ASSETS.3D.alert}
-      borderColor="var(--modelCardBorder)"
-      primaryButton={{
-        label: "تأكيد",
-        onClick: () => {
-          logout();
-          setShowLogoutModal(false);
-        },
-        bgColor: "var(--mainBtn)",
-        icon: <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i>,
-      }}
-      secondaryButton={{
-        label: "إلغاء",
-        onClick: () => setShowLogoutModal(false),
-        icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
-        bgColor: "var(--btn-cancel)",
-      }}
+        iconSrc={ASSETS / threeD / alert}
+        borderColor="var(--modelCardBorder)"
+        primaryButton={{
+          label: "تأكيد",
+          onClick: () => {
+            logout();
+            setShowLogoutModal(false);
+          },
+          bgColor: "var(--mainBtn)",
+          icon: <i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i>,
+        }}
+        secondaryButton={{
+          label: "إلغاء",
+          onClick: () => setShowLogoutModal(false),
+          icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
+          bgColor: "var(--btn-cancel)",
+        }}
       />
     </nav>
   );

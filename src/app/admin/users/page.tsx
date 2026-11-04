@@ -3190,7 +3190,7 @@ export default function AdminUsersPage() {
         onClose={() => !deleting && setDeleteUser(null)}
         title="تأكيد حذف حساب المستخدم"
         titleColor="#ef4444"
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(239, 68, 68, 0.25)"
         message={
           deleteUser

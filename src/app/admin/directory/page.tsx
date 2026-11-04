@@ -1279,7 +1279,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         onClose={() => !isDeleting && setPhoneToDelete(null)}
         title="تأكيد الحذف"
         titleColor="#ff3b30"
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message="هل أنت متأكد من حذف هذا الرقم؟"
         primaryButton={{
@@ -1310,7 +1310,7 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
         onClose={() => !isDeleting && setCodeToDelete(null)}
         title="تأكيد الحذف"
         titleColor="#ff3b30"
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(255, 59, 48, 0.25)"
         message="هل أنت متأكد من حذف هذا الكود؟"
         primaryButton={{

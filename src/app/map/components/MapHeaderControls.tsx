@@ -134,7 +134,7 @@ export default function MapHeaderControls({
                   const thumb =
                     point.images && point.images.length > 0
                       ? point.images[0]
-                      : "/images/3D/burger.webp";
+                      : "/images/threeD/burger.webp";
 
                   return (
                     <button
@@ -153,7 +153,7 @@ export default function MapHeaderControls({
                         className={styles.suggestionThumb}
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src =
-                            "/images/3D/burger.webp";
+                            "/images/threeD/burger.webp";
                         }}
                       />
                       <div className={styles.suggestionInfo}>

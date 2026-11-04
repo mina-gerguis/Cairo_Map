@@ -733,7 +733,7 @@ export default function AdminBlogsPage() {
         onClose={() => !deleting && setDeleteBlogId(null)}
         title="تأكيد حذف المقال"
         titleColor="#ef4444"
-        iconSrc="/images/3D/trash.webp"
+        iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(239, 68, 68, 0.25)"
         message="هل أنت متأكد من رغبتك في حذف هذا المقال نهائياً؟ لا يمكن التراجع عن هذه العملية."
         primaryButton={{

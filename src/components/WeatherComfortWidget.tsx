@@ -244,7 +244,7 @@ export default function WeatherComfortWidget() {
                 marginTop: "2px",
               }}
             >
-              <img src={ASSETS.3D.alert } alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={ASSETS / threeD / alert} alt="alert icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
 
             <div style={{ flex: 1, minWidth: "240px" }}>
@@ -357,13 +357,13 @@ export default function WeatherComfortWidget() {
             }}
           >
             {weather.icon === "hot" ? (
-              <img src="images/3D/sun.webp" alt="hot icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/threeD/sun.webp" alt="hot icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : weather.icon === "rain" ? (
-              <img src="images/3D/cloud_rain.webp" alt="rain icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/threeD/cloud_rain.webp" alt="rain icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : weather.icon === "cold" || weather.icon === "cool" ? (
-              <img src="images/3D/snowflake.webp" alt="snow icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/threeD/snowflake.webp" alt="snow icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <img src="images/3D/cloud.webp" alt="cloud icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="images/threeD/cloud.webp" alt="cloud icon" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             )}
           </div>
           <div>

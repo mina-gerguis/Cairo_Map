@@ -41,7 +41,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
           ? `لديك ${reminders.length} تذكير أو ملاحظة`
           : undefined
       }
-      iconSrc={hasRemindersAccess ? "/images/3D/book.webp" : "/images/3D/padlock.webp"}
+      iconSrc={hasRemindersAccess ? "/images/threeD/book.webp" : "/images/threeD/padlock.webp"}
       borderColor="var(--modelCardBorder)"
       primaryButton={
         !hasRemindersAccess

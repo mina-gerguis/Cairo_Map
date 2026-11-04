@@ -271,7 +271,7 @@ export default function TermsPage() {
             }}
           >
             <Image
-              src="/images/3D/book.webp"
+              src="/images/threeD/book.webp"
               alt="أيقونة شروط الاستخدام ثلاثية الأبعاد"
               width={110}
               height={110}

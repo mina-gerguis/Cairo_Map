@@ -152,7 +152,7 @@ export const ProfileDevicesModal: React.FC<ProfileDevicesModalProps> = ({
             ? "هل أنت متأكد من تسجيل الخروج من جهازك الحالي؟"
             : "هل أنت متأكد من إنهاء جلسة هذا الجهاز؟ سيتم تسجيل الخروج منه فوراً."
         }
-        iconSrc="/images/3D/alert.webp"
+        iconSrc="/images/threeD/alert.webp"
         borderColor="var(--modelCardBorder)"
         primaryButton={{
           label: "تأكيد",

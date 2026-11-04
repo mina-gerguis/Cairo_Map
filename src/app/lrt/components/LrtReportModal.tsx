@@ -184,7 +184,7 @@ export default function LrtReportModal({
                 }}
               >
                 <img
-                  src="/images/3D/error.webp"
+                  src="/images/threeD/error.webp"
                   alt="error"
                   style={{ width: "100%", height: "100%", objectFit: "contain" }}
                   loading="lazy"

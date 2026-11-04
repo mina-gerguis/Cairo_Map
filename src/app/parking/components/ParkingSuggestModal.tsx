@@ -259,7 +259,7 @@ export function ParkingSuggestModal({
                   }}
                 >
                   <img
-                    src="/images/3D/error.webp"
+                    src="/images/threeD/error.webp"
                     alt="Alert"
                     style={{ width: "20px", height: "20px" }}
                   />

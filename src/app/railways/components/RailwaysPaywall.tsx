@@ -41,7 +41,7 @@ export default function RailwaysPaywall({
         <div ref={paywallCardRef} className={styles.paywallCard}>
           <div style={{ marginBottom: "20px" }}>
             <img
-              src="/images/3D/CairoSilver.webp"
+              src="/images/threeD/CairoSilver.webp"
               alt="Silver Access"
               loading="lazy"
               decoding="async"

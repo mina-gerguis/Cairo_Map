@@ -888,7 +888,7 @@ export default function NotFound() {
                           fontSize: "0.85rem"
                         }}
                       >
-                        <Image src={`/images/3D/${cat.image}`} alt={cat.label || cat.name} width={20} height={20} style={{ width: "20px", height: "auto" }} />
+                        <Image src={`/images/threeD/${cat.image}`} alt={cat.label || cat.name} width={20} height={20} style={{ width: "20px", height: "auto" }} />
                         <span>{cat.label}</span>
                       </Link>
                     ))}

@@ -64,7 +64,7 @@ export default function MapSidebarList({
             const thumbnail =
               point.images && point.images.length > 0
                 ? point.images[0]
-                : "/images/3D/burger.webp";
+                : "/images/threeD/burger.webp";
 
             return (
               <div
@@ -77,7 +77,7 @@ export default function MapSidebarList({
                   alt={point.name}
                   className={styles.placeListThumb}
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "/images/3D/burger.webp";
+                    (e.currentTarget as HTMLImageElement).src = "/images/threeD/burger.webp";
                   }}
                 />
 

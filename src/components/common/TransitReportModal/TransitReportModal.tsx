@@ -289,7 +289,7 @@ ${details.trim()}`;
             <div className={styles.stateWrapper}>
               <div className={styles.stateIconImg}>
                 <img
-                  src="/images/3D/error.webp"
+                  src="/images/threeD/error.webp"
                   alt="error"
                   loading="lazy"
                 />
