@@ -65,7 +65,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
               borderRadius: "8px",
             }}
           >
-            <LogIn size={20} color="#fff" /> تسجيل الدخول
+            <LogIn size={20} /> تسجيل الدخول
           </Link>
           <Link href="/signup" className={styles.guestSignupLink}>
             ليس لديك حساب؟ إنشاء حساب جديد الأن
