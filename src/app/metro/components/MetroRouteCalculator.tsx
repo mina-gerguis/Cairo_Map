@@ -6,6 +6,7 @@ import { LINE_COLORS, LINE_NAMES } from "../constants";
 import { normalizeArabic } from "../utils";
 import styles from "../metro.module.css";
 import searchStyles from "@/components/common/RouteSearchCard/RouteSearchCard.module.css";
+import ProjectBanner from "@/components/common/ProjectBanner";
 
 const POPULAR_METRO_PRESETS = [
   "الشهداء",
@@ -135,37 +136,24 @@ export default function MetroRouteCalculator({
   const isSearchDisabled = !selectedFrom || !selectedTo;
 
   return (
-    <div ref={panelRef} className={styles.searchBentoCard}>
+    <div
+      ref={panelRef}
+      className={styles.searchBentoCard}
+      style={{ zIndex: showFromList || showToList ? 50 : 20, position: "relative" }}
+    >
       {/* Title & Nearest Station GPS Button */}
       <div className={searchStyles.header}>
         <h2 className={searchStyles.title}>
-          <i
-            className="fa-solid fa-train-subway"
-            style={{ color: "var(--color-secondary, #3b82f6)" }}
-          />
           <span>علي فين كدا .؟</span>
         </h2>
-
-        <button
-          type="button"
-          onClick={onFindNearest}
-          disabled={locatingNearest}
-          className={styles.gpsBtn}
-          title="تحديد أقرب محطة مترو لموقعي الحالي عبر الـ GPS"
-        >
-          <i
-            className={
-              locatingNearest
-                ? "fa-solid fa-spinner fa-spin"
-                : "fa-solid fa-location-crosshairs"
-            }
-          />
-          <span>{locatingNearest ? "جاري التحديد..." : "أقرب محطة مني"}</span>
-        </button>
       </div>
 
       {/* Search Boxes Container (Styled just like 'إزاي أروح' page) */}
-      <div ref={searchContainerRef} className={searchStyles.searchBoxContainer}>
+      <div
+        ref={searchContainerRef}
+        className={searchStyles.searchBoxContainer}
+        style={{ position: "relative", zIndex: showFromList || showToList ? 40 : 5 }}
+      >
         {/* FROM STATION INPUT */}
         <div
           className={searchStyles.fieldContainer}
@@ -253,8 +241,8 @@ export default function MetroRouteCalculator({
                   const q = normalizeArabic(fromQuery.trim());
                   const matchedLandmark = q
                     ? (s.landmarks || []).find((l) =>
-                        normalizeArabic(l).includes(q)
-                      )
+                      normalizeArabic(l).includes(q)
+                    )
                     : null;
                   return (
                     <button
@@ -438,8 +426,8 @@ export default function MetroRouteCalculator({
                   const q = normalizeArabic(toQuery.trim());
                   const matchedLandmark = q
                     ? (s.landmarks || []).find((l) =>
-                        normalizeArabic(l).includes(q)
-                      )
+                      normalizeArabic(l).includes(q)
+                    )
                     : null;
                   return (
                     <button
@@ -532,15 +520,14 @@ export default function MetroRouteCalculator({
 
           {/* Quick Preset Destination Chips */}
           <div ref={presetsRef} className={searchStyles.presetChipsWrapper}>
-            <span className={searchStyles.presetLabel}>محطات شائعة:</span>
+            <span className={searchStyles.presetLabel}>محطات بتكرر كتير:</span>
             {POPULAR_METRO_PRESETS.map((dest) => (
               <button
                 key={dest}
                 type="button"
                 onClick={() => onSelectTo(dest)}
-                className={`${searchStyles.chipTag} ${
-                  selectedTo === dest ? searchStyles.chipTagActive : ""
-                }`}
+                className={`${searchStyles.chipTag} ${selectedTo === dest ? searchStyles.chipTagActive : ""
+                  }`}
               >
                 {dest}
               </button>
@@ -571,12 +558,11 @@ export default function MetroRouteCalculator({
         type="button"
         onClick={onFindRoute}
         disabled={isSearchDisabled}
-        className={`btn btn-primary w-full ${searchStyles.submitBtn} ${
-          isSearchDisabled ? searchStyles.submitBtnDisabled : ""
-        }`}
+        className={`btn btn-primary w-full ${searchStyles.submitBtn} ${isSearchDisabled ? searchStyles.submitBtnDisabled : ""
+          }`}
       >
         <i className="bx bx-search-alt" style={{ fontSize: "1.25rem" }} />
-        <span>اعرض مسار وتفاصيل الرحلة</span>
+        <span>اعرض مسار الرحلة</span>
       </button>
 
       {/* TRIP RESULTS */}
@@ -643,9 +629,8 @@ export default function MetroRouteCalculator({
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
                   <button
                     type="button"
-                    className={`${styles.actionButton} ${styles.actionButtonPrimary}`}
                     onClick={onStartTrip}
-                    style={{ flex: "1 1 140px", justifyContent: "center", height: "40px" }}
+                    className="btn btn-primary flex-auto"
                   >
                     <i className="fa-solid fa-play"></i>
                     <span>بدء تتبع الرحلة</span>
@@ -653,9 +638,8 @@ export default function MetroRouteCalculator({
 
                   <button
                     type="button"
-                    className={styles.actionButton}
+                    className="btn btn-secondary flex-auto"
                     onClick={onShareRoute}
-                    style={{ flex: "1 1 120px", justifyContent: "center", height: "40px" }}
                   >
                     <i className={copiedRoute ? "fa-solid fa-check" : "fa-solid fa-share-nodes"}></i>
                     <span>{copiedRoute ? "تم النسخ بنجاح ✔" : "مشاركة المسار"}</span>
@@ -665,15 +649,7 @@ export default function MetroRouteCalculator({
                     href={whatsappShareUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={styles.actionButton}
-                    style={{
-                      background: "rgba(37, 211, 102, 0.15)",
-                      borderColor: "rgba(37, 211, 102, 0.3)",
-                      color: "#25d366",
-                      justifyContent: "center",
-                      height: "40px",
-                      flex: "1 1 140px",
-                    }}
+                    className="btn btn-success flex-auto"
                   >
                     <i className="bx bxl-whatsapp" style={{ fontSize: "1.2rem" }} />
                     <span>مشاركة عبر واتساب</span>
@@ -983,15 +959,31 @@ export default function MetroRouteCalculator({
                 </div>
               </div>
 
-              {/* Route Report Problem Button */}
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "2px" }}>
-                <button
-                  type="button"
-                  onClick={() => onOpenReportModal(null, true)}
-                  className="btn btn-report"
-                >
-                  <span>الإبلاغ عن خطأ في هذا المسار</span>
-                </button>
+              {/* Route Report Problem Banner */}
+              <div style={{ marginTop: "16px" }}>
+                <ProjectBanner
+                  variant="error"
+                  label="هل لاحظت بيانات غير دقيقة في هذا المسار؟"
+                  icon={
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{ width: "16px", height: "16px" }}
+                    >
+                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                  }
+                  callToAction={{
+                    label: "الإبلاغ عن خطأ في المسار",
+                    onClick: () => onOpenReportModal(null, true),
+                  }}
+                />
               </div>
             </>
           )}

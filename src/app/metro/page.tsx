@@ -95,7 +95,15 @@ export default function MetroPage() {
         gsap.fromTo(
           sections,
           { opacity: 0, y: 24 },
-          { opacity: 1, y: 0, duration: 0.55, stagger: 0.1, ease: "power2.out", delay: 0.1 }
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.55,
+            stagger: 0.1,
+            ease: "power2.out",
+            delay: 0.1,
+            clearProps: "transform",
+          }
         );
       }
     });
@@ -113,7 +121,13 @@ export default function MetroPage() {
       gsap.fromTo(
         detailsPanelRef.current,
         { opacity: 0.45, y: 10 },
-        { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.35,
+          ease: "power2.out",
+          clearProps: "transform",
+        }
       );
     }
   }, [data.explorerLine, data.line3ActiveBranch]);
@@ -150,15 +164,6 @@ export default function MetroPage() {
           stationsCount={data.allStations.length}
         />
 
-        {/* Top Lines Slider */}
-        <MetroLinesSlider
-          sliderRef={sliderRef}
-          lines={METRO_LINES_LIST}
-          selectedLine={data.explorerLine}
-          onSelectLine={handleSelectLine}
-          stations={data.stations}
-        />
-
         {/* Trip Route Calculator Panel */}
         <MetroRouteCalculator
           panelRef={searchPanelRef}
@@ -186,8 +191,8 @@ export default function MetroPage() {
             const trimmed = q.trim();
             const matched = trimmed
               ? data.allStations.find(
-                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
-                )
+                (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+              )
               : null;
             calculator.setSelectedFrom(matched ? matched.name : null);
             calculator.setShowFromList(true);
@@ -198,8 +203,8 @@ export default function MetroPage() {
             const trimmed = q.trim();
             const matched = trimmed
               ? data.allStations.find(
-                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
-                )
+                (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+              )
               : null;
             calculator.setSelectedTo(matched ? matched.name : null);
             calculator.setShowToList(true);
@@ -227,7 +232,14 @@ export default function MetroPage() {
             reportModal.handleOpenReportModal(stationName, fromRoute)
           }
         />
-
+        {/* Top Lines Slider */}
+        <MetroLinesSlider
+          sliderRef={sliderRef}
+          lines={METRO_LINES_LIST}
+          selectedLine={data.explorerLine}
+          onSelectLine={handleSelectLine}
+          stations={data.stations}
+        />
         {/* Selected Line Explorer & Timeline Panel */}
         <MetroLineExplorer
           panelRef={detailsPanelRef}
@@ -257,12 +269,6 @@ export default function MetroPage() {
 
         {/* Official Cairo Metro Map Download Section */}
         <MetroMapSection mapPanelRef={mapPanelRef} />
-
-        {/* Bottom Report Problem Alert Box */}
-        <MetroReportBanner
-          bannerRef={reportBannerRef}
-          onOpenReportModal={() => reportModal.handleOpenReportModal()}
-        />
       </div>
 
       {/* Report Problem Modal */}

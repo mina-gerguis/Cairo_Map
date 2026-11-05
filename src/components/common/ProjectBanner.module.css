@@ -1,0 +1,172 @@
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 20;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-family: inherit;
+  direction: rtl;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+
+/* ==================== ERROR (Red - Matching Screenshot) ==================== */
+.variantError {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+  fill: #991b1b;
+}
+
+:global(html.dark) .variantError,
+:global(html:not(.light)) .variantError {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  fill: #fca5a5;
+}
+
+:global(html.light) .variantError {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+  fill: #991b1b;
+}
+
+/* ==================== WARNING (Amber) ==================== */
+.variantWarning {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
+  fill: #92400e;
+}
+
+:global(html.dark) .variantWarning,
+:global(html:not(.light)) .variantWarning {
+  background-color: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fde68a;
+  fill: #fde68a;
+}
+
+:global(html.light) .variantWarning {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
+  fill: #92400e;
+}
+
+/* ==================== SUCCESS (Blue) ==================== */
+.variantSuccess {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+  fill: #1e40af;
+}
+
+:global(html.dark) .variantSuccess,
+:global(html:not(.light)) .variantSuccess {
+  background-color: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #bfdbfe;
+  fill: #bfdbfe;
+}
+
+:global(html.light) .variantSuccess {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+  fill: #1e40af;
+}
+
+/* ==================== INNER LAYOUT ==================== */
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: start;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iconWrapper {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.ctaLink {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.ctaLink:hover {
+  opacity: 0.75;
+}
+
+/* Underline decoration colors */
+.variantError .ctaLink {
+  color: #7f1d1d;
+  text-decoration-color: #f87171;
+}
+:global(html.dark) .variantError .ctaLink,
+:global(html:not(.light)) .variantError .ctaLink {
+  color: #ffffff;
+  text-decoration-color: #f87171;
+}
+
+.variantWarning .ctaLink {
+  color: #78350f;
+  text-decoration-color: #f59e0b;
+}
+:global(html.dark) .variantWarning .ctaLink,
+:global(html:not(.light)) .variantWarning .ctaLink {
+  color: #ffffff;
+  text-decoration-color: #f59e0b;
+}
+
+.variantSuccess .ctaLink {
+  color: #1e3a8a;
+  text-decoration-color: #3b82f6;
+}
+:global(html.dark) .variantSuccess .ctaLink,
+:global(html:not(.light)) .variantSuccess .ctaLink {
+  color: #ffffff;
+  text-decoration-color: #3b82f6;
+}

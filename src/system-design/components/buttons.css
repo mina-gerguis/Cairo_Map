@@ -11,6 +11,8 @@
   /* second button */
   --btn-secondary: rgba(143, 143, 143, 0.06);
   --btn-secondary-color: #ffffff;
+/*  */
+  --btn-text-success: #ffffff;
 }
 
 html.light {
@@ -195,13 +197,9 @@ html.light {
 
 /* --- Success --- */
 .btn-success {
-  background: var(--successBtn);
-  color: var(--color-foreground);
-}
-
-.btn-success:hover {
-  background: var(--secondHoverBtn);
-  color: var(--color-foreground);
+  background: var(--color-success);
+  border: 1px solid rgba(10, 255, 47, 0.30);
+  color: var(--btn-text-success);
 }
 
 /* --- Danger --- */

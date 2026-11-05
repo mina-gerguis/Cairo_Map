@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { MetroReportBannerProps } from "../types";
 import styles from "../metro.module.css";
 
@@ -11,10 +12,24 @@ export default function MetroReportBanner({
       ref={bannerRef}
       className={styles.calloutBanner}
       onClick={onOpenReportModal}
-      style={{ cursor: "pointer" }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpenReportModal();
+        }
+      }}
+      aria-label="الإبلاغ عن مشكلة في بيانات المترو"
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "16px", maxWidth: "560px" }}>
-
+      <div style={{ display: "flex", alignItems: "center", gap: "16px", maxWidth: "580px" }}>
+        <Image
+          src="/images/threeD/alert.webp"
+          alt="تنبيه"
+          width={42}
+          height={42}
+          style={{ objectFit: "contain", flexShrink: 0 }}
+        />
         <div>
           <h3
             style={{
@@ -39,6 +54,19 @@ export default function MetroReportBanner({
           </p>
         </div>
       </div>
+
+      <button
+        type="button"
+        className={styles.calloutBtn}
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpenReportModal();
+        }}
+      >
+        <i className="fa-solid fa-triangle-exclamation" style={{ color: "currentColor" }} />
+        <span>إبلاغ عن خطأ</span>
+        <i className="bx bx-chevron-left" style={{ fontSize: "1.1rem" }} />
+      </button>
     </div>
   );
 }
