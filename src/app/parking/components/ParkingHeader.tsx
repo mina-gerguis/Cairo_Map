@@ -33,7 +33,7 @@ export function ParkingHeader({ children }: ParkingHeaderProps) {
             borderRadius: "50%",
             background: "var(--bg-glass)",
             border: "1px solid var(--border-glass)",
-            color: "var(--color-foreground)",
+            color: "var(--color-fg)",
             textDecoration: "none",
             transition: "transform 0.2s ease",
           }}
@@ -52,7 +52,7 @@ export function ParkingHeader({ children }: ParkingHeaderProps) {
             justifyContent: "center",
             fontSize: "clamp(1.5rem, 5vw, 2rem)",
             fontWeight: "bold",
-            color: "var(--color-foreground)",
+            color: "var(--color-fg)",
             margin: "0 0 10px",
             letterSpacing: "-0.5px",
             fontFamily: "var(--font-sub)",

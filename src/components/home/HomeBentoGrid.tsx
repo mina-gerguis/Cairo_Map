@@ -121,7 +121,7 @@ export default function HomeBentoGrid() {
             {/* Simulated Live Question Preview Card */}
             <div className={styles.interactivePreview}>
               <div className={styles.questionMeta}>
-                <span style={{ fontWeight: 700, color: "var(--color-foreground)" }} className="font-sub">م. أحمد كمال · التجمع الخامس</span>
+                <span style={{ fontWeight: 700, color: "var(--color-fg)" }} className="font-sub">م. أحمد كمال · التجمع الخامس</span>
                 <span style={{ display: "flex", alignItems: "center", gap: "4px" }} className="font-sub">
                   <FaClock style={{ fontSize: "0.75rem" }} /> منذ 12 دقيقة
                 </span>
@@ -239,14 +239,14 @@ export default function HomeBentoGrid() {
 
                 <div className={styles.metroResultItem}>
                   <span className={`${styles.metroResultLabel} font-sub`}>عدد المحطات</span>
-                  <span className={`${styles.metroResultValue} font-sub`} style={{ fontVariantNumeric: "tabular-nums", color: "var(--color-foreground)" }}>
+                  <span className={`${styles.metroResultValue} font-sub`} style={{ fontVariantNumeric: "tabular-nums", color: "var(--color-fg)" }}>
                     {metroRouteResult ? `${metroRouteResult.stationCount}` : "--"}
                   </span>
                 </div>
 
                 <div className={styles.metroResultItem}>
                   <span className={`${styles.metroResultLabel} font-sub`}>زمن الرحلة</span>
-                  <span className={`${styles.metroResultValue} font-sub`} style={{ fontVariantNumeric: "tabular-nums", color: "var(--color-foreground)" }}>
+                  <span className={`${styles.metroResultValue} font-sub`} style={{ fontVariantNumeric: "tabular-nums", color: "var(--color-fg)" }}>
                     {metroRouteResult ? `~ ${metroRouteResult.estimatedTime} د` : "--"}
                   </span>
                 </div>
@@ -443,7 +443,7 @@ export default function HomeBentoGrid() {
                 borderRadius: "12px",
                 textDecoration: "none",
               }}>
-                <MdPlace />
+              <MdPlace />
               <span>تصفح دليل الأماكن بالكامل</span>
 
             </Link>

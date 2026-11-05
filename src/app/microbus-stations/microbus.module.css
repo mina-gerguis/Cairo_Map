@@ -253,7 +253,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-sub);
   font-weight: 700;
   font-size: 0.92rem;
@@ -297,7 +297,7 @@
 .searchTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -328,7 +328,7 @@
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 12px;
   padding: 0 16px;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-body);
   font-size: 0.92rem;
   outline: none;
@@ -371,7 +371,7 @@
 
 .clearBtn:hover {
   background: rgba(255, 255, 255, 0.15);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .presetChipsWrapper {
@@ -402,7 +402,7 @@
 
 .chipTag:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
@@ -461,7 +461,7 @@
 .stationName {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0;
   font-family: var(--font-sub);
 }
@@ -483,7 +483,7 @@
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   text-decoration: none;
   font-size: 0.8rem;
   font-weight: 700;
@@ -536,7 +536,7 @@
 }
 
 .routeTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 800;
   font-size: 0.92rem;
   font-family: var(--font-sub);

@@ -30,7 +30,7 @@ export default function TelecomAccordion({
               margin: 0,
               fontSize: "0.92rem",
               fontWeight: "700",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
             }}
           >
             {sectionName}
@@ -90,7 +90,7 @@ export default function TelecomAccordion({
                       <div
                         style={{
                           fontWeight: "700",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                           fontSize: "0.88rem",
                         }}
                       >
@@ -123,7 +123,7 @@ export default function TelecomAccordion({
                             : "1px solid var(--border-glass)",
                           color: isCopied
                             ? "var(--color-success)"
-                            : "var(--color-foreground)",
+                            : "var(--color-fg)",
                           width: "30px",
                           height: "30px",
                           padding: "8px",

@@ -82,7 +82,7 @@ export default function LrtRouteCalculator({
                       style={{
                         fontSize: "0.92rem",
                         fontWeight: "700",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                       }}
                     >
                       {s}
@@ -140,7 +140,7 @@ export default function LrtRouteCalculator({
                       style={{
                         fontSize: "0.92rem",
                         fontWeight: "700",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                       }}
                     >
                       {s}
@@ -172,7 +172,7 @@ export default function LrtRouteCalculator({
               style={{
                 fontSize: "1.05rem",
                 fontWeight: "800",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 margin: 0,
                 display: "flex",
                 alignItems: "center",
@@ -221,7 +221,7 @@ export default function LrtRouteCalculator({
             <div className={styles.metricTile}>
               <div
                 className={styles.metricTileValue}
-                style={{ color: "var(--color-foreground)" }}
+                style={{ color: "var(--color-fg)" }}
               >
                 {result.count}
               </div>
@@ -358,7 +358,7 @@ export default function LrtRouteCalculator({
                     }}
                   >
                     لقد وصلت بنجاح إلى وجهتك محطة{" "}
-                    <strong style={{ color: "var(--color-foreground)" }}>
+                    <strong style={{ color: "var(--color-fg)" }}>
                       {result.stations[currentStepIndex]}
                     </strong>
                     .
@@ -394,7 +394,7 @@ export default function LrtRouteCalculator({
               const isCurrent = isTripActive && idx === currentStepIndex;
 
               let bg = "var(--color-bg)";
-              let color = "var(--color-foreground)";
+              let color = "var(--color-fg)";
               let border = "1px solid var(--border-glass)";
               let boxShadow = "none";
               let icon: string | null = null;

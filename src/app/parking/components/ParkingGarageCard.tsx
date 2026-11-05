@@ -98,7 +98,7 @@ export function ParkingGarageCard({
                 </span>
                 <span
                   style={{
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     fontWeight: "600",
                   }}
                 >
@@ -128,7 +128,7 @@ export function ParkingGarageCard({
                   style={{
                     fontSize: "0.92rem",
                     fontWeight: "800",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                   }}
                 >
                   {parking.capacity ? `${parking.capacity} سيارة` : "غير محدد"}

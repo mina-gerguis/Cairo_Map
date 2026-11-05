@@ -42,7 +42,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
                 borderRadius: "50%",
                 background: "var(--bg-glass)",
                 border: "1px solid var(--border-glass)",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 textDecoration: "none",
               }}
             >
@@ -58,7 +58,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
                 justifyContent: "center",
                 fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
                 fontWeight: "600",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 letterSpacing: "-0.5px",
               }}
             >
@@ -124,7 +124,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
               style={{
                 fontSize: "1.6rem",
                 fontWeight: "800",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 marginBottom: "14px",
               }}
             >
@@ -160,7 +160,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
               <div
                 style={{
                   fontWeight: "800",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   fontSize: "0.92rem",
                   marginBottom: "10px",
                 }}

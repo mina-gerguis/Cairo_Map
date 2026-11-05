@@ -86,7 +86,7 @@ export default function LrtLineExplorer({
               <span
                 className={styles.tabLabel}
                 style={{
-                  color: active ? "var(--color-foreground)" : "var(--text-secondary)",
+                  color: active ? "var(--color-fg)" : "var(--text-secondary)",
                 }}
               >
                 {tab.label}
@@ -215,7 +215,7 @@ export default function LrtLineExplorer({
                           color:
                             details?.status === "تحت الإنشاء"
                               ? "var(--text-secondary)"
-                              : "var(--color-foreground)",
+                              : "var(--color-fg)",
                         }}
                       >
                         {station.name}
@@ -292,7 +292,7 @@ export default function LrtLineExplorer({
                                 border: "1px solid rgba(6, 182, 212, 0.15)",
                               }}
                             >
-                              <strong style={{ color: "var(--color-foreground)" }}>
+                              <strong style={{ color: "var(--color-fg)" }}>
                                 🔗 طبيعة المحطة:
                               </strong>{" "}
                               {details.type}

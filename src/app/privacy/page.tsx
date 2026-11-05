@@ -157,7 +157,7 @@ export default function PrivacyPage() {
               نرحب بك في منصة وتطبيق <strong style={{ color: "var(--color-primary)" }}>قريب (Cairo Map)</strong>، دليلك الذكي الشامل لاستكشاف شوارع القاهرة، شبكات المترو والمونوريل، وسائل النقل، والأماكن الحيوية والخدمية. نضع خصوصية وأمان مستخدمينا في صميم أولوياتنا البرمجية والتصميمية.
             </p>
             <p style={{ lineHeight: "1.8", textWrap: "pretty" }}>
-              تحدد هذه الوثيقة المبادئ الصريحة التي تحكم تعاملنا مع بياناتك الرقمية، ونؤكد التزامنا التام بالشفافية الكاملة وفقاً لأحكام <strong style={{ color: "var(--color-foreground)" }}>قانون حماية البيانات الشخصية المصري رقم 151 لسنة 2020</strong>، وبما يتوافق مع أرقى المعايير العالمية لحماية البيانات والخصوصية الرقمية (GDPR).
+              تحدد هذه الوثيقة المبادئ الصريحة التي تحكم تعاملنا مع بياناتك الرقمية، ونؤكد التزامنا التام بالشفافية الكاملة وفقاً لأحكام <strong style={{ color: "var(--color-fg)" }}>قانون حماية البيانات الشخصية المصري رقم 151 لسنة 2020</strong>، وبما يتوافق مع أرقى المعايير العالمية لحماية البيانات والخصوصية الرقمية (GDPR).
             </p>
             <div
               style={{
@@ -171,7 +171,7 @@ export default function PrivacyPage() {
               }}
             >
               <CheckCircle2 size={20} style={{ color: "var(--color-primary)", flexShrink: 0, marginTop: "2px" }} />
-              <p style={{ margin: 0, fontSize: "0.92rem", color: "var(--color-foreground)", lineHeight: "1.6", textWrap: "pretty" }}>
+              <p style={{ margin: 0, fontSize: "0.92rem", color: "var(--color-fg)", lineHeight: "1.6", textWrap: "pretty" }}>
                 <strong>تعهد واضح:</strong> استخدامك لمنصة قريب يعني أنك تستمتع بدليل موثوق دون أي ممارسات تتبع مخفية أو استغلال تجاري غير مصرح به لمعلوماتك.
               </p>
             </div>
@@ -238,7 +238,7 @@ export default function PrivacyPage() {
               }}
             >
               <ShieldCheck size={20} style={{ color: "#10b981", flexShrink: 0, marginTop: "2px" }} />
-              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--color-foreground)", lineHeight: "1.6", textWrap: "pretty" }}>
+              <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--color-fg)", lineHeight: "1.6", textWrap: "pretty" }}>
                 <strong>عدم الاحتفاظ بسجل المسارات:</strong> لا نقوم بتسجيل أو تخزين خطوط سيرك الجغرافية في أي قواعد بيانات ولا نقوم بإنشاء سجل لتحركاتك اليومية.
               </p>
             </div>
@@ -258,13 +258,13 @@ export default function PrivacyPage() {
             </p>
             <ul style={{ paddingRight: "22px", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px" }}>
               <li style={{ textWrap: "pretty" }}>
-                <strong style={{ color: "var(--color-foreground)" }}>بيانات التسجيل الأساسية:</strong> الاسم والبريد الإلكتروني وصورة الملف الشخصي (عند تسجيل الدخول عبر Google أو البريد).
+                <strong style={{ color: "var(--color-fg)" }}>بيانات التسجيل الأساسية:</strong> الاسم والبريد الإلكتروني وصورة الملف الشخصي (عند تسجيل الدخول عبر Google أو البريد).
               </li>
               <li style={{ textWrap: "pretty" }}>
-                <strong style={{ color: "var(--color-foreground)" }}>كلمات المرور المشفرة:</strong> لا نعرف كلمة مرورك ولا يمكننا قراءتها؛ حيث يتم تشفيرها بخوارزميات تجزئة آمنة أحادية الاتجاه (Salted Hashes) عبر منظومة Supabase Authentication السحابية.
+                <strong style={{ color: "var(--color-fg)" }}>كلمات المرور المشفرة:</strong> لا نعرف كلمة مرورك ولا يمكننا قراءتها؛ حيث يتم تشفيرها بخوارزميات تجزئة آمنة أحادية الاتجاه (Salted Hashes) عبر منظومة Supabase Authentication السحابية.
               </li>
               <li style={{ textWrap: "pretty" }}>
-                <strong style={{ color: "var(--color-foreground)" }}>المفضلات والتقييمات:</strong> قائمة الأماكن التي تحفظها للرجوع السريع لها، والتعليقات أو الاقتراحات التي تشاركها لدعم مجتمع المستخدمين.
+                <strong style={{ color: "var(--color-fg)" }}>المفضلات والتقييمات:</strong> قائمة الأماكن التي تحفظها للرجوع السريع لها، والتعليقات أو الاقتراحات التي تشاركها لدعم مجتمع المستخدمين.
               </li>
             </ul>
             <p style={{ fontSize: "0.92rem", color: "var(--text-secondary)", lineHeight: "1.7", textWrap: "pretty" }}>
@@ -323,7 +323,7 @@ export default function PrivacyPage() {
                   padding: "16px",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-foreground)", fontWeight: "700", marginBottom: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-fg)", fontWeight: "700", marginBottom: "8px" }}>
                   <Server size={18} style={{ color: "var(--color-primary)" }} />
                   <span>التخزين المحلي الضروري (Local Storage)</span>
                 </div>
@@ -340,7 +340,7 @@ export default function PrivacyPage() {
                   padding: "16px",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-foreground)", fontWeight: "700", marginBottom: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-fg)", fontWeight: "700", marginBottom: "8px" }}>
                   <Cookie size={18} style={{ color: "#f59e0b" }} />
                   <span>إعلانات Google المعتمدة</span>
                 </div>
@@ -365,13 +365,13 @@ export default function PrivacyPage() {
             </p>
             <ul style={{ paddingRight: "22px", color: "var(--text-secondary)", display: "flex", flexDirection: "column", gap: "8px" }}>
               <li style={{ textWrap: "pretty" }}>
-                <strong style={{ color: "var(--color-foreground)" }}>تشفير الاتصال الكامل (HTTPS/TLS 1.3):</strong> جميع البيانات المتبادلة بين جهازك وخوادمنا تمر عبر قنوات مشفرة 256-bit لمنع أي تنصت أو اعتراض على الشبكات العامة.
+                <strong style={{ color: "var(--color-fg)" }}>تشفير الاتصال الكامل (HTTPS/TLS 1.3):</strong> جميع البيانات المتبادلة بين جهازك وخوادمنا تمر عبر قنوات مشفرة 256-bit لمنع أي تنصت أو اعتراض على الشبكات العامة.
               </li>
               <li style={{ textWrap: "pretty" }}>
-                <strong style={{ color: "var(--color-foreground)" }}>عزل الصلاحيات (Row Level Security):</strong> نطبق سياسات RLS الصارمة في قواعد بيانات Supabase، والتي تضمن برمجياً عدم قدرة أي مستخدم على قراءة أو تعديل مفضلات أو بيانات مستخدم آخر.
+                <strong style={{ color: "var(--color-fg)" }}>عزل الصلاحيات (Row Level Security):</strong> نطبق سياسات RLS الصارمة في قواعد بيانات Supabase، والتي تضمن برمجياً عدم قدرة أي مستخدم على قراءة أو تعديل مفضلات أو بيانات مستخدم آخر.
               </li>
               <li style={{ textWrap: "pretty" }}>
-                <strong style={{ color: "var(--color-foreground)" }}>مراقبة دورية وفلاتر حماية:</strong> مراقبة مستمرة للتصدي لأي محاولات اختراق أو برمجيات خبيثة وحظر الهجمات الموزعة (DDoS Protection).
+                <strong style={{ color: "var(--color-fg)" }}>مراقبة دورية وفلاتر حماية:</strong> مراقبة مستمرة للتصدي لأي محاولات اختراق أو برمجيات خبيثة وحظر الهجمات الموزعة (DDoS Protection).
               </li>
             </ul>
           </div>
@@ -390,15 +390,15 @@ export default function PrivacyPage() {
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "10px" }}>
               <div style={{ padding: "12px 14px", backgroundColor: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px" }}>
-                <strong style={{ color: "var(--color-foreground)", display: "block", marginBottom: "4px" }}>١. حق الاطلاع والتعديل</strong>
+                <strong style={{ color: "var(--color-fg)", display: "block", marginBottom: "4px" }}>١. حق الاطلاع والتعديل</strong>
                 <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>مراجعة وتعديل بيانات ملفك الشخصي في أي وقت.</span>
               </div>
               <div style={{ padding: "12px 14px", backgroundColor: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px" }}>
-                <strong style={{ color: "var(--color-foreground)", display: "block", marginBottom: "4px" }}>٢. حق سحب الموافقة</strong>
+                <strong style={{ color: "var(--color-fg)", display: "block", marginBottom: "4px" }}>٢. حق سحب الموافقة</strong>
                 <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>تعطيل إذن الموقع الجغرافي أو إشعارات التنبيه فوراً.</span>
               </div>
               <div style={{ padding: "12px 14px", backgroundColor: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border-glass)", borderRadius: "12px" }}>
-                <strong style={{ color: "var(--color-foreground)", display: "block", marginBottom: "4px" }}>٣. حق الحصول على نسخة</strong>
+                <strong style={{ color: "var(--color-fg)", display: "block", marginBottom: "4px" }}>٣. حق الحصول على نسخة</strong>
                 <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>طلب تقرير أو تصدير للأماكن والمفضلات التي قمت بحفظها.</span>
               </div>
             </div>
@@ -419,7 +419,7 @@ export default function PrivacyPage() {
                 <AlertCircle size={22} />
                 <span>الحق المطلق في محو البيانات وحذف الحساب نهائياً</span>
               </div>
-              <p style={{ margin: 0, fontSize: "0.92rem", color: "var(--color-foreground)", lineHeight: "1.7", textWrap: "pretty" }}>
+              <p style={{ margin: 0, fontSize: "0.92rem", color: "var(--color-fg)", lineHeight: "1.7", textWrap: "pretty" }}>
                 نحترم رغبتك بالكامل إذا قررت التوقف عن استخدام المنصة. يمكنك حذف حسابك بشكل فوري ومباشر بنفسك من خلال الدخول إلى صفحة الملف الشخصي واختيار <strong>"حذف الحساب نهائياً"</strong>.
               </p>
               <p style={{ margin: 0, fontSize: "0.86rem", color: "var(--text-secondary)", lineHeight: "1.6", textWrap: "pretty" }}>
@@ -483,7 +483,7 @@ export default function PrivacyPage() {
                 <Mail size={20} style={{ color: "var(--color-primary)" }} />
                 <div>
                   <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>البريد الإلكتروني المعتمد للدعم والخصوصية:</div>
-                  <strong style={{ fontSize: "1rem", color: "var(--color-foreground)", direction: "ltr", display: "inline-block" }}>
+                  <strong style={{ fontSize: "1rem", color: "var(--color-fg)", direction: "ltr", display: "inline-block" }}>
                     cairo.maps@hotmail.com
                   </strong>
                 </div>
@@ -501,7 +501,7 @@ export default function PrivacyPage() {
                     borderRadius: "8px",
                     backgroundColor: "rgba(255, 255, 255, 0.08)",
                     border: "1px solid var(--border-glass)",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     fontSize: "0.85rem",
                     cursor: "pointer",
                     minHeight: "38px",
@@ -568,7 +568,7 @@ export default function PrivacyPage() {
       style={{
         minHeight: "100vh",
         backgroundColor: "var(--color-bg)",
-        color: "var(--color-foreground)",
+        color: "var(--color-fg)",
         fontFamily: "var(--font-heading)",
         paddingBottom: "80px",
       }}
@@ -598,7 +598,7 @@ export default function PrivacyPage() {
               borderRadius: "999px",
               backgroundColor: "var(--bg-glass-card)",
               border: "1px solid var(--border-glass)",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               textDecoration: "none",
               fontSize: "0.9rem",
               fontWeight: "600",
@@ -687,7 +687,7 @@ export default function PrivacyPage() {
               fontSize: "clamp(1.8rem, 4vw, 2.5rem)",
               fontWeight: "900",
               marginBottom: "12px",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               letterSpacing: "-0.02em",
               textWrap: "balance",
             }}
@@ -706,7 +706,7 @@ export default function PrivacyPage() {
               textWrap: "pretty",
             }}
           >
-            نلتزم في <strong style={{ color: "var(--color-foreground)" }}>قريب (Cairo Map)</strong> بالشفافية الكاملة وحماية بياناتك وفق معايير قانون حماية البيانات الشخصية المصري رقم 151 لسنة 2020، لضمان استكشاف آمن وموثوق لكافة المعالم والمواصلات.
+            نلتزم في <strong style={{ color: "var(--color-fg)" }}>قريب (Cairo Map)</strong> بالشفافية الكاملة وحماية بياناتك وفق معايير قانون حماية البيانات الشخصية المصري رقم 151 لسنة 2020، لضمان استكشاف آمن وموثوق لكافة المعالم والمواصلات.
           </p>
 
           {/* ── 3 Trust Highlights ── */}
@@ -764,7 +764,7 @@ export default function PrivacyPage() {
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: "1rem", fontWeight: "700", margin: 0, color: "var(--color-foreground)" }}>
+                  <h3 style={{ fontSize: "1rem", fontWeight: "700", margin: 0, color: "var(--color-fg)" }}>
                     {item.title}
                   </h3>
 
@@ -813,7 +813,7 @@ export default function PrivacyPage() {
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 fontSize: "0.95rem",
                 fontFamily: "inherit",
               }}
@@ -901,7 +901,7 @@ export default function PrivacyPage() {
               }}
             >
               <AlertCircle size={36} style={{ color: "var(--text-muted)", margin: "0 auto 12px auto" }} />
-              <h4 style={{ margin: "0 0 6px 0", color: "var(--color-foreground)" }}>لم نجد بنداً يطابق بحثك "{searchQuery}"</h4>
+              <h4 style={{ margin: "0 0 6px 0", color: "var(--color-fg)" }}>لم نجد بنداً يطابق بحثك "{searchQuery}"</h4>
               <p style={{ margin: "0 0 16px 0", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
                 جرب البحث بكلمات أخرى مثل "الموقع"، "الحساب"، "كوكيز"، أو استعرض البنود كاملة.
               </p>
@@ -972,7 +972,7 @@ export default function PrivacyPage() {
                         style={{
                           fontSize: "1.25rem",
                           fontWeight: "800",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                           margin: "0 0 4px 0",
                           textWrap: "balance",
                         }}
@@ -1037,7 +1037,7 @@ export default function PrivacyPage() {
             style={{
               fontSize: "1.35rem",
               fontWeight: "800",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               marginBottom: "8px",
               textWrap: "balance",
             }}

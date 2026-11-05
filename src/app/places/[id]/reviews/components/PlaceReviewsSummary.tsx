@@ -25,7 +25,7 @@ export function PlaceReviewsSummary({ place }: PlaceReviewsSummaryProps) {
           style={{
             fontSize: "1.5rem",
             fontWeight: "800",
-            color: "var(--color-foreground)",
+            color: "var(--color-fg)",
           }}
         >
           {place.name}

@@ -27,7 +27,7 @@ export const ProfileNotificationDetailsModal: React.FC<ProfileNotificationDetail
           ? "#ff9500"
           : notification?.type === "error"
             ? "#ff3b30"
-            : "var(--color-foreground)"
+            : "var(--color-fg)"
       }
       primaryButton={
         notification?.link
@@ -90,7 +90,7 @@ export const ProfileNotificationDetailsModal: React.FC<ProfileNotificationDetail
             style={{
               margin: 0,
               fontSize: "0.95rem",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               lineHeight: "1.7",
               whiteSpace: "pre-wrap",
               fontFamily: "var(--font-cairo)",

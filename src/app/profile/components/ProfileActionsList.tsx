@@ -802,7 +802,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                               }}
                             >
                               <strong
-                                style={{ fontSize: "0.95rem", color: "var(--color-foreground)" }}
+                                style={{ fontSize: "0.95rem", color: "var(--color-fg)" }}
                               >
                                 {prop.name}
                               </strong>
@@ -911,7 +911,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                               }}
                             >
                               <strong
-                                style={{ fontSize: "0.95rem", color: "var(--color-foreground)" }}
+                                style={{ fontSize: "0.95rem", color: "var(--color-fg)" }}
                               >
                                 {report.place_name}
                               </strong>
@@ -1020,7 +1020,7 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
                             <strong
                               style={{
                                 fontSize: "0.95rem",
-                                color: "var(--color-foreground)",
+                                color: "var(--color-fg)",
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "6px",

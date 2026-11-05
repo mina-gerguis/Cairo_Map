@@ -149,7 +149,7 @@
 .branchCardTitle {
   font-size: 0.92rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0 0 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -196,7 +196,7 @@
 .searchTitle {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -214,7 +214,7 @@
   border-radius: var(--ra-10, 10px);
   background: var(--bg-secondary, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.92rem;
   font-family: inherit;
   direction: rtl;
@@ -254,7 +254,7 @@
 
 .searchClearBtn:hover {
   background: rgba(255, 255, 255, 0.2);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .searchDropdown {
@@ -333,7 +333,7 @@
 .calculatorTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -385,7 +385,7 @@
   border-radius: 50%;
   background: var(--bg-secondary, #18181b);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -619,7 +619,7 @@
 }
 
 .currentStationName {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 1.15rem;
   font-weight: 800;
 }
@@ -666,7 +666,7 @@
 .explorerTitle {
   font-size: 1.35rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0 0 6px;
 }
 
@@ -718,7 +718,7 @@
 .tabLabel {
   font-weight: 800;
   font-size: 0.85rem;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .explorerContainer {
@@ -745,7 +745,7 @@
 .explorerBranchTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0 0 4px;
 }
 
@@ -819,7 +819,7 @@
 .pricingTitle {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0;
 }
 
@@ -902,7 +902,7 @@
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;

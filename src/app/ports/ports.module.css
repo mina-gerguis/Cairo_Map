@@ -265,7 +265,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-sub);
   font-weight: 800;
   font-size: 0.92rem;
@@ -310,7 +310,7 @@
 .searchTitle {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -360,7 +360,7 @@
 
 .clearBtn:hover {
   background: rgba(255, 255, 255, 0.16);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 /* Autocomplete Dropdown */
@@ -412,7 +412,7 @@
 
 .autocompletePortName {
   font-weight: 700;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.95rem;
 }
 
@@ -467,7 +467,7 @@
 
 .chipTag:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
@@ -516,7 +516,7 @@
 
 .filterPillBtn:hover {
   border-color: rgba(255, 255, 255, 0.2);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .filterPillBtnActive {
@@ -591,7 +591,7 @@
   margin: 0 0 6px 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-sub);
 }
 
@@ -697,7 +697,7 @@
 .highlightValue {
   font-size: 0.84rem;
   font-weight: 700;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   line-height: 1.45;
 }
 
@@ -733,7 +733,7 @@
 .sectionTitle {
   font-size: 0.84rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -845,7 +845,7 @@
 .paywallTitle {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 12px;
   font-family: var(--font-sub);
 }
@@ -874,7 +874,7 @@
 
 .paywallFeaturesTitle {
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.88rem;
   margin-bottom: 10px;
   display: flex;
@@ -981,7 +981,7 @@
 .reportBannerTitle {
   font-size: 0.98rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0 0 4px;
 }
 
@@ -1099,7 +1099,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .modalCloseBtn {
@@ -1117,7 +1117,7 @@
 }
 
 .modalCloseBtn:hover {
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .modalBody {
@@ -1185,7 +1185,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1271,7 +1271,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1292,7 +1292,7 @@
 .dropdownOptionTitle {
   font-size: 0.86rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .dropdownOptionDesc {
@@ -1317,7 +1317,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1373,7 +1373,7 @@
 .modalUploadPromptTitle {
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .modalUploadPromptDesc {
@@ -1409,7 +1409,7 @@
 .modalFileName {
   font-size: 0.84rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1494,7 +1494,7 @@
 }
 
 .btnCancelModal:hover:not(:disabled) {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -1576,7 +1576,7 @@
   margin: 0 0 8px;
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .stateDescText {

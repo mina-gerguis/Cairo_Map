@@ -248,7 +248,7 @@ export default function WeatherComfortWidget() {
             </div>
 
             <div style={{ flex: 1, minWidth: "240px" }}>
-              <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-sub)" }}>
+              <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "var(--color-fg)", display: "flex", alignItems: "center", gap: "6px", fontFamily: "var(--font-sub)" }}>
                 <span>شغل الموقع علشان تشوف الطقس</span>
               </div>
               <p style={{ margin: "4px 0 10px", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: "1.5" }}>
@@ -288,7 +288,7 @@ export default function WeatherComfortWidget() {
                     width: "100%",
                   }}
                 >
-                  <FaInfoCircle style={{ color: "var(--color-foreground)", fontSize: "0.85rem" }} />
+                  <FaInfoCircle style={{ color: "var(--color-fg)", fontSize: "0.85rem" }} />
                   <span>طريقة تفعيل الموقع (تعليمات)</span>
                 </button>
               </div>
@@ -371,7 +371,7 @@ export default function WeatherComfortWidget() {
               style={{
                 fontSize: "0.88rem",
                 fontWeight: "700",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 display: "flex",
                 alignItems: "center",
                 flexWrap: "wrap",
@@ -405,7 +405,7 @@ export default function WeatherComfortWidget() {
             style={{
               background: "rgba(255, 255, 255, 0.08)",
               border: "none",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               padding: "10px 14px",
               minHeight: "40px",
               borderRadius: "8px",

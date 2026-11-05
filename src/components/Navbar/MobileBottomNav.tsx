@@ -656,7 +656,7 @@ export default function MobileBottomNav() {
             <div className="mobile-nav-item-wrapper">
               {displayActiveIndex === 1 ? <IconRadarFilled size={25} /> : <IconRadar size={25} />}
             </div>
-          </Link> 
+          </Link>
 
           {/* 3. مربع البحث */}
           <button
@@ -706,13 +706,13 @@ export default function MobileBottomNav() {
                     height: "25px",
                     borderRadius: "50%",
                     objectFit: "cover",
-                    border: displayActiveIndex === 4 ? "2px solid var(--color-foreground)" : "1px solid transparent",
+                    border: displayActiveIndex === 4 ? "2px solid var(--color-fg)" : "1px solid transparent",
                     transition: "border-color 0.2s",
                   }}
                 />
               ) : (
                 <>
-                {displayActiveIndex === 4 ? <IoPerson size={24} /> : <IoPersonOutline size={24} />}
+                  {displayActiveIndex === 4 ? <IoPerson size={24} /> : <IoPersonOutline size={24} />}
                 </>
               )}
               {unreadCount > 0 && <span className="mobile-nav-badge" />}
@@ -789,7 +789,7 @@ export default function MobileBottomNav() {
                             border: "1px solid var(--border-glass)",
                             marginBottom: "8px",
                             textDecoration: "none",
-                            color: "var(--color-foreground)",
+                            color: "var(--color-fg)",
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -834,7 +834,7 @@ export default function MobileBottomNav() {
                         gap: "8px",
                         fontSize: "0.85rem",
                         fontWeight: "700",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                         padding: "6px 4px",
                         marginBottom: "6px",
                         fontFamily: "var(--font-body)"
@@ -858,7 +858,7 @@ export default function MobileBottomNav() {
                             border: "1px solid var(--border-glass)",
                             marginBottom: "8px",
                             textDecoration: "none",
-                            color: "var(--color-foreground)",
+                            color: "var(--color-fg)",
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -922,7 +922,7 @@ export default function MobileBottomNav() {
                               backgroundColor: "var(--bg-glass-card)",
                               border: "1px solid var(--border-glass)",
                               textDecoration: "none",
-                              color: "var(--color-foreground)",
+                              color: "var(--color-fg)",
                               fontSize: "0.84rem",
                               fontFamily: "var(--font-body)"
                             }}
@@ -946,7 +946,7 @@ export default function MobileBottomNav() {
                       marginTop: "12px"
                     }}>
                       <div style={{ fontSize: "2.4rem", marginBottom: "8px" }}>🔍</div>
-                      <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground)", marginBottom: "6px", fontFamily: "var(--font-display)" }}>
+                      <h4 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-fg)", marginBottom: "6px", fontFamily: "var(--font-display)" }}>
                         عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                       </h4>
                       <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", maxWidth: "320px", margin: "0 auto 16px auto", lineHeight: "1.6", fontFamily: "var(--font-body)" }}>
@@ -963,7 +963,7 @@ export default function MobileBottomNav() {
                             borderRadius: "10px",
                             backgroundColor: "var(--bg-secondary)",
                             border: "1px solid var(--border-glass)",
-                            color: "var(--color-foreground)",
+                            color: "var(--color-fg)",
                             fontWeight: "700",
                             fontSize: "0.86rem",
                             cursor: "pointer",
@@ -1045,7 +1045,7 @@ export default function MobileBottomNav() {
               ) : (
                 /* TRENDING SEARCHES */
                 <div>
-                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--color-foreground)" }}>
+                  <h3 style={{ fontFamily: "var(--font-display)", fontSize: "1rem", fontWeight: "700", marginBottom: "12px", color: "var(--color-fg)" }}>
                     📈 عمليات بحث شائعة
                   </h3>
                   <div className="trending-tags" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>

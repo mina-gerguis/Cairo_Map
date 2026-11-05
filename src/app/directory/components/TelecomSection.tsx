@@ -41,7 +41,7 @@ export default function TelecomSection({
             style={{
               fontSize: "1.15rem",
               fontWeight: "800",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               margin: 0,
             }}
           >
@@ -98,7 +98,7 @@ export default function TelecomSection({
                 border: active
                   ? `2px solid ${meta.color}`
                   : "1px solid var(--border-glass)",
-                color: active ? "var(--color-foreground)" : "var(--text-secondary)",
+                color: active ? "var(--color-fg)" : "var(--text-secondary)",
                 padding: "6px 14px",
                 borderRadius: "8px",
                 cursor: "pointer",
@@ -129,7 +129,7 @@ export default function TelecomSection({
           <h4
             style={{
               fontWeight: "700",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               marginBottom: "4px",
             }}
           >

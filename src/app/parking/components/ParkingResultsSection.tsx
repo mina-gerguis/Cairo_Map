@@ -52,7 +52,7 @@ export function ParkingResultsSection({
                 margin: "0 0 6px",
                 fontSize: "1.1rem",
                 fontWeight: "800",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
               }}
             >
               لم يتم العثور على جراجات مطابقة للبحث
@@ -83,7 +83,7 @@ export function ParkingResultsSection({
             <div
               style={{
                 fontSize: "0.88rem",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 fontWeight: "700",
               }}
             >

@@ -1039,7 +1039,7 @@ export default function AdminMaintenancePage() {
                     cursor: "pointer",
                     fontWeight: 700,
                     fontSize: "0.88rem",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                   }}
                 >
                   <input
@@ -1532,7 +1532,7 @@ export default function AdminMaintenancePage() {
           >
             {/* Close Button Header */}
             <div className={styles.maintPreviewModalHeader}>
-              <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--color-foreground)" }}>
+              <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "var(--color-fg)" }}>
                 معاينة حية: كيف تظهر شاشة الصيانة للزوار
               </span>
               <button
@@ -1540,7 +1540,7 @@ export default function AdminMaintenancePage() {
                 style={{
                   background: "var(--bg-muted)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   borderRadius: "50%",
                   width: "30px",
                   height: "30px",
@@ -1615,7 +1615,7 @@ export default function AdminMaintenancePage() {
                 >
                   <i className="bx bx-edit" style={{ fontSize: "1.2rem" }} />
                 </div>
-                <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--color-foreground)" }}>
+                <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--color-fg)" }}>
                   تعديل بيانات صيانة: {getPageInfo(editingItem.page_path).label}
                 </h3>
               </div>
@@ -1698,7 +1698,7 @@ export default function AdminMaintenancePage() {
                     cursor: "pointer",
                     fontSize: "0.88rem",
                     fontWeight: 700,
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                   }}
                 >
                   <input
@@ -1798,7 +1798,7 @@ export default function AdminMaintenancePage() {
                   <i className="bx bx-shield-quarter" />
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "var(--color-foreground)" }}>
+                  <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "var(--color-fg)" }}>
                     قفل جميع الصفحات ما عدا صفحات محددة
                   </h3>
                   <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "var(--text-secondary)" }}>
@@ -2032,7 +2032,7 @@ export default function AdminMaintenancePage() {
                     cursor: "pointer",
                     fontSize: "0.86rem",
                     fontWeight: 700,
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                   }}
                 >
                   <input

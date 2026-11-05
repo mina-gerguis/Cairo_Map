@@ -141,7 +141,7 @@ html.light {
 .btn-secondary {
   background: var(--btn-secondary);
   border-color: var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 /* --- Outlines --- */
@@ -186,13 +186,13 @@ html.light {
 /* --- Cancel --- */
 .btn-cancel {
   background: var(--btn-cancel);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   border-color: var(--border-glass);
 }
 
 .btn-cancel:hover {
   background: var(--cancelHoverBtn);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 /* --- Success --- */
@@ -284,7 +284,7 @@ html.light .btn-report:hover {
 }
 
 .btn-silver:hover {
-  background: var(--color-foreground);
+  background: var(--color-fg);
   color: var(--color-bg);
 }
 
@@ -296,7 +296,7 @@ html.light .btn-report:hover {
 }
 
 .btn-gold:hover {
-  background: var(--color-foreground);
+  background: var(--color-fg);
   color: var(--color-bg);
 }
 
@@ -311,7 +311,7 @@ html.light .btn-report:hover {
   border: 1px solid var(--border-glass);
   border-radius: var(--ra-full);
   background: rgba(131, 131, 131, 0.055);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 1.2rem;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -319,7 +319,7 @@ html.light .btn-report:hover {
 
 .btn-close:hover {
   background: var(--color-bg);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .btn-ra-24 {

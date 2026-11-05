@@ -16,7 +16,7 @@ export default function PlaceTitleSection({
           fontFamily: "var(--font-cairo)",
           fontSize: "1.8rem",
           fontWeight: "800",
-          color: "var(--color-foreground)",
+          color: "var(--color-fg)",
           margin: "0 0 6px",
         }}
       >

@@ -155,7 +155,7 @@ export default function MonorailRouteCalculator({
                         style={{
                           fontSize: "0.92rem",
                           fontWeight: "700",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                         }}
                       >
                         {s.name}
@@ -270,7 +270,7 @@ export default function MonorailRouteCalculator({
                         style={{
                           fontSize: "0.92rem",
                           fontWeight: "700",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                         }}
                       >
                         {s.name}
@@ -323,7 +323,7 @@ export default function MonorailRouteCalculator({
             </div>
 
             <div className={styles.metricTile}>
-              <div className={styles.metricTileVal} style={{ color: "var(--color-foreground)" }}>
+              <div className={styles.metricTileVal} style={{ color: "var(--color-fg)" }}>
                 {routeResult.count}
               </div>
               <div className={styles.metricTileLabel}>عدد المحطات</div>
@@ -370,7 +370,7 @@ export default function MonorailRouteCalculator({
                 border: "1px solid var(--border-glass)",
                 borderRadius: "8px",
                 padding: "8px 14px",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 fontWeight: "700",
                 fontSize: "0.82rem",
                 cursor: "pointer",
@@ -450,7 +450,7 @@ export default function MonorailRouteCalculator({
                       borderRadius: "8px",
                       background: "rgba(255, 255, 255, 0.08)",
                       border: "1px solid var(--border-glass)",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                       fontWeight: "700",
                       fontSize: "0.82rem",
                       cursor: "pointer",
@@ -495,7 +495,7 @@ export default function MonorailRouteCalculator({
               const isCurrent = isTripActive && idx === currentStepIndex;
 
               let bg = "var(--color-bg)";
-              let color = "var(--color-foreground)";
+              let color = "var(--color-fg)";
               let border = "1px solid var(--border-glass)";
 
               if (isTripActive) {

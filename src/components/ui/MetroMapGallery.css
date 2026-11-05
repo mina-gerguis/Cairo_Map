@@ -31,7 +31,7 @@ html.light [data-slot="metro-map-gallery"] .stroke-station-dot {
   stroke: var(--color-bg, #09090b);
 }
 [data-slot="metro-map-gallery"] .fill-foreground {
-  fill: var(--color-foreground, #f4f4f5);
+  fill: var(--color-fg, #f4f4f5);
 }
 
 html.light [data-slot="metro-map-gallery"] .fill-background {
@@ -79,7 +79,7 @@ html.light [data-metro-dialog] .bg-card {
 
 [data-slot="metro-map-gallery"] .text-card-foreground,
 [data-metro-dialog] .text-card-foreground {
-  color: var(--color-foreground, #f4f4f5);
+  color: var(--color-fg, #f4f4f5);
 }
 html.light [data-slot="metro-map-gallery"] .text-card-foreground,
 html.light [data-metro-dialog] .text-card-foreground {

@@ -213,7 +213,7 @@ export default function Navbar() {
         { href: "/brt", label: "الأتوبيس الترددي", description: "محطات ومسارات الأتوبيس على الدائري", imgLogo: ASSETS.transit.brt },
         { href: "/railways", label: "سكك حديد مصر", description: "قطارات القاهرة والمحافظات", imgLogo: ASSETS.transit.train },
         { href: "/airports", label: "المطارات والموانئ", description: "مطار القاهرة والموانئ المصرية", imgLogo: ASSETS.transit.airport },
-         { href: "/ports", label: "الموانئ البحرية", description: "الموانئ البحرية المصرية", imgLogo: ASSETS.transit.ports },
+        { href: "/ports", label: "الموانئ البحرية", description: "الموانئ البحرية المصرية", imgLogo: ASSETS.transit.ports },
       ],
     },
     {
@@ -484,7 +484,7 @@ export default function Navbar() {
                 <>
                   <div className="heroui-dropdown-header">
                     <p style={{ margin: 0, fontSize: "0.75rem", color: "var(--text-muted)" }}>أهلا يا</p>
-                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--color-foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} className="font-inter">
+                    <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: "700", color: "var(--color-fg)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} className="font-inter">
                       {profile?.name || user.user_metadata?.username || "حسابي"}
                     </p>
                   </div>
@@ -669,7 +669,7 @@ export default function Navbar() {
               alignItems: "center",
               cursor: "pointer",
               fontFamily: "var(--font-heading)",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               marginTop: "6px",
               paddingTop: "12px",
               borderTop: "1px solid var(--border-glass)"

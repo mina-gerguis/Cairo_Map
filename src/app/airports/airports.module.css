@@ -66,7 +66,7 @@
   border-radius: 50%;
   background: var(--bg-glass-card, rgba(255, 255, 255, 0.05));
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -88,7 +88,7 @@
   font-family: var(--font-display, var(--font-cairo));
   font-size: clamp(1.6rem, 5vw, 2.2rem);
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   letter-spacing: -0.5px;
   margin: 0 0 10px;
   gap: 12px;
@@ -189,19 +189,19 @@
 }
 
 .tabBtn:hover {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   background: rgba(255, 255, 255, 0.03);
 }
 
 .tabBtnActive {
   background: var(--bg-glass-active, rgba(39, 39, 42, 0.9)) !important;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 :global(html.light) .tabBtnActive {
   background: #ffffff !important;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -267,7 +267,7 @@
 .reportBannerTitle {
   font-size: 0.98rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0 0 4px;
 }
 
@@ -339,7 +339,7 @@
 .searchHeaderTitle {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0;
 }
 
@@ -359,7 +359,7 @@
   padding: 13px 44px 13px 40px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.04);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   border: 1px solid var(--border-glass);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.92rem;
@@ -406,7 +406,7 @@
 }
 
 .clearBtn:hover {
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .filterChipsScroll {
@@ -436,7 +436,7 @@
 }
 
 .filterChip:hover {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   border-color: rgba(59, 130, 246, 0.3);
 }
 
@@ -514,7 +514,7 @@
 .emptyStateTitle {
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0 0 6px;
 }
 
@@ -609,7 +609,7 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   line-height: 1.35;
 }
 
@@ -657,7 +657,7 @@
 
 .badgeCode {
   font-size: 0.72rem;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 800;
   background: var(--bg-secondary);
   padding: 3px 10px;
@@ -699,7 +699,7 @@
 
 .locationGov {
   display: block;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.85rem;
   font-weight: 800;
 }
@@ -745,7 +745,7 @@
 }
 
 .quickStatValue {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 700;
 }
 
@@ -767,7 +767,7 @@
 }
 
 .sectionHeader {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 800;
   font-size: 0.86rem;
   display: flex;
@@ -802,7 +802,7 @@
 
 .specCardTitle {
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.82rem;
   margin-bottom: 8px;
   border-bottom: 1px solid var(--border-glass);
@@ -902,7 +902,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 700;
   font-size: 0.86rem;
   text-decoration: none;
@@ -1045,7 +1045,7 @@
   margin: 0;
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .guideCardSubtitle {
@@ -1183,7 +1183,7 @@
 }
 
 .tipTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.88rem;
   font-weight: 800;
 }
@@ -1254,7 +1254,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .modalCloseBtn {
@@ -1272,7 +1272,7 @@
 }
 
 .modalCloseBtn:hover {
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .modalBody {
@@ -1340,7 +1340,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1436,7 +1436,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1457,7 +1457,7 @@
 .dropdownOptionTitle {
   font-size: 0.86rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .dropdownOptionDesc {
@@ -1482,7 +1482,7 @@
   border-radius: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-heading, var(--font-cairo));
   font-size: 0.88rem;
   outline: none;
@@ -1538,7 +1538,7 @@
 .modalUploadPromptTitle {
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .modalUploadPromptDesc {
@@ -1574,7 +1574,7 @@
 .modalFileName {
   font-size: 0.84rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1659,7 +1659,7 @@
 }
 
 .btnCancelModal:hover:not(:disabled) {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -1741,7 +1741,7 @@
   margin: 0 0 8px;
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .stateDescText {
@@ -1823,7 +1823,7 @@
 .paywallTitle {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 12px;
   line-height: 1.4;
 }
@@ -1848,7 +1848,7 @@
 
 .featuresTitle {
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.92rem;
   margin-bottom: 10px;
 }
@@ -1923,7 +1923,7 @@
 }
 
 .homeReturnBtn:hover {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   background: rgba(255, 255, 255, 0.06);
 }
 

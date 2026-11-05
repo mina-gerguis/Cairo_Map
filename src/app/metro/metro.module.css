@@ -125,7 +125,7 @@
 }
 
 .bentoCardTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-sub, inherit);
   font-weight: 700;
   font-size: 0.92rem;
@@ -179,7 +179,7 @@
 .searchTitle {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -291,7 +291,7 @@
   border-radius: 50%;
   background: var(--bg-glass, rgba(30, 30, 38, 0.85));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.15));
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -409,7 +409,7 @@
 .metricTileVal {
   font-size: 0.92rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0;
 }
 
@@ -431,7 +431,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.85rem;
   line-height: 1.5;
 }
@@ -489,7 +489,7 @@
 
 .actionButton:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .actionButtonPrimary {
@@ -550,7 +550,7 @@
 .stationName {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0;
   font-family: var(--font-sub, inherit);
 }
@@ -585,7 +585,7 @@
 }
 
 .branchTabActive {
-  background: var(--color-foreground) !important;
+  background: var(--color-fg) !important;
   color: var(--bgMode, #18181b) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }

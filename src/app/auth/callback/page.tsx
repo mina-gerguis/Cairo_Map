@@ -168,7 +168,7 @@ function AuthCallbackContent() {
         direction: "rtl",
         fontFamily: "var(--font-heading, inherit)",
         background: "var(--color-background, #ffffff)",
-        color: "var(--color-foreground, #111827)",
+        color: "var(--color-fg, #111827)",
       }}
     >
       <div

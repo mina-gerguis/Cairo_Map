@@ -118,7 +118,7 @@ export default function ProposePlaceForm({
           {/* Sub Categories Pill Toggle */}
           {formData.category && availableSubCategories.length > 0 && (
             <div className={`${styles.fullCol} ${styles.pillsBox}`}>
-              <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--color-foreground)" }}>
+              <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--color-fg)" }}>
                 التصنيفات الفرعية التابعة للقسم الرئيسي
               </label>
               <div className={styles.pillsWrap}>
@@ -169,7 +169,7 @@ export default function ProposePlaceForm({
 
           {/* Features Selection */}
           <div className={`${styles.fullCol} ${styles.pillsBox}`}>
-            <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--color-foreground)" }}>
+            <label className={styles.fieldLabel} style={{ marginBottom: "10px", color: "var(--color-fg)" }}>
               مميزات إضافية للمكان (اختر كل ما ينطبق)
             </label>
             <div className={styles.pillsWrap}>

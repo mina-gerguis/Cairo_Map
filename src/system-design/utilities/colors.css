@@ -135,7 +135,7 @@ html.light .bg-subtle {
 
 /* Theme Semantic Text Colors */
 .text-primary {
-   color: var(--color-foreground);
+   color: var(--color-fg);
 }
 
 .text-secondary {
@@ -155,7 +155,7 @@ html.light .bg-subtle {
 }
 
 .text-tab-active {
-   color: var(--tab-active-color, var(--color-foreground));
+   color: var(--tab-active-color, var(--color-fg));
 }
 
 /* Status Text Colors */
@@ -197,7 +197,7 @@ html.light .bg-subtle {
 }
 
 .text-foreground {
-   color: var(--foreground, var(--color-foreground, #f4f4f5));
+   color: var(--foreground, var(--color-fg, #f4f4f5));
 }
 
 .text-muted-foreground {
@@ -205,7 +205,7 @@ html.light .bg-subtle {
 }
 
 .hover\:text-foreground:hover {
-   color: var(--foreground, var(--color-foreground, #ffffff));
+   color: var(--foreground, var(--color-fg, #ffffff));
 }
 
 .border-border {

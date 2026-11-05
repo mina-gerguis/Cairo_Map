@@ -103,7 +103,7 @@ export default function CustomModal({
           ref={modalBoxRef}
           style={{
             backgroundColor: "var(--color-bg)",
-            color: "var(--color-foreground)",
+            color: "var(--color-fg)",
             border: `1px solid ${borderColor}`,
             borderRadius: "var(--modelCardRadius)",
             padding: "32px 24px 24px 24px",
@@ -138,7 +138,7 @@ export default function CustomModal({
             </div>
           )}
 
-          <h2 className="font-sub" style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--color-foreground)" }}>
+          <h2 className="font-sub" style={{ fontSize: "1.25rem", fontWeight: "800", margin: "0 0 10px 0", color: titleColor || "var(--color-fg)" }}>
             {title}
           </h2>
 
@@ -201,7 +201,7 @@ export default function CustomModal({
                     borderRadius: "var(--radiusBtn)",
                     border: secondaryButton.borderColor || "1px solid var(--btn-cancel)",
                     backgroundColor: secondaryButton.bgColor || "var(--btn-cancel)",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     fontWeight: "600",
                     fontFamily: "var(--font-display)",
                     fontSize: "0.95rem",

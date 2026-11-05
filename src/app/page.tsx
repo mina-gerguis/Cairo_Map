@@ -1225,7 +1225,7 @@ export default function HomePage() {
   const categoryCards = CATEGORIES_STRUCTURE;
 
   return (
-    <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-foreground)", fontFamily: "var(--font-heading)" }}>
+    <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-fg)", fontFamily: "var(--font-heading)" }}>
       {/* ── 1. HERO SECTION (COMMUNITY ORBIT) ── */}
       <section ref={heroSectionRef} style={{ position: "relative", overflow: "visible", zIndex: 10 }}>
         <CommunityOrbit
@@ -1250,7 +1250,7 @@ export default function HomePage() {
                   <div style={{ fontSize: "1.8rem", marginBottom: "6px" }}>
                     <FaInbox style={{ fontSize: "1.8rem", margin: "0 auto 6px auto", opacity: 0.5 }} />
                   </div>
-                  <div style={{ fontWeight: "600", fontSize: "1rem", color: "var(--color-foreground)", marginBottom: "4px" }} className="font-sub">
+                  <div style={{ fontWeight: "600", fontSize: "1rem", color: "var(--color-fg)", marginBottom: "4px" }} className="font-sub">
                     أنت بتبحث عن&nbsp;<strong>&quot;{searchQuery}&quot;</strong>
                   </div>
                   <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }} className=" flex items-center justify-center font-sub">
@@ -1331,7 +1331,7 @@ export default function HomePage() {
       <section ref={citiesSectionRef} style={{ padding: "60px 20px 40px 20px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
 
-          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--color-foreground)", textWrap: "balance" }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: "800", margin: "0 0 8px 0", color: "var(--color-fg)", textWrap: "balance" }}>
             المدن الشهيرة
           </h2>
           <p className="sub-title" style={{ color: "var(--text-secondary)", fontSize: "1rem", maxWidth: "650px", margin: "0 auto", lineHeight: "1.6", textWrap: "pretty" }}>
@@ -1453,7 +1453,7 @@ export default function HomePage() {
                 borderRadius: "50%",
                 backgroundColor: "var(--bg-glass-card)",
                 border: "1px solid var(--border-glass-bright)",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1525,7 +1525,7 @@ export default function HomePage() {
                 borderRadius: "50%",
                 backgroundColor: "var(--bg-glass-card)",
                 border: "1px solid var(--border-glass-bright)",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1632,7 +1632,7 @@ export default function HomePage() {
         }}>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "16px" }}>
             <div>
-              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--color-foreground)", textAlign: "center", textWrap: "balance" }}>
+              <h2 style={{ fontSize: "1.75rem", fontWeight: "700", margin: "0 0 6px 0", color: "var(--color-fg)", textAlign: "center", textWrap: "balance" }}>
                 مدونة ومقالات قريب
               </h2>
               <p className="text-center" style={{ color: "var(--text-secondary)", fontSize: "0.95rem", margin: 0, textWrap: "pretty" }}>
@@ -1679,7 +1679,7 @@ export default function HomePage() {
                   <span style={{ fontSize: "0.78rem", color: "var(--color-secondary)", fontWeight: "700", display: "block", marginBottom: "6px", fontFamily: "var(--font-body)" }}>
                     {post.category || "مقالات خريطة القاهرة"}
                   </span>
-                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--color-foreground)", margin: "0 0 8px 0", lineHeight: "1.45", textWrap: "balance" }}>
+                  <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--color-fg)", margin: "0 0 8px 0", lineHeight: "1.45", textWrap: "balance" }}>
                     {post.title}
                   </h2>
                   {post.excerpt && (
@@ -1718,7 +1718,7 @@ export default function HomePage() {
             <Image src="/images/threeD/robot.webp" alt="الذكاء الاصطناعي لقريب" width={80} height={80} style={{ width: "80px", height: "auto" }} />
           </div>
 
-          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-foreground)", textWrap: "balance" }}>
+          <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "8px 16px", color: "var(--color-fg)", textWrap: "balance" }}>
             محتار تخرج فين النهاردة؟ اترك التخطيط للذكاء الاصطناعي!
           </h2>
           <p className="sub-title" style={{ fontSize: "1rem", color: "var(--text-secondary)", margin: "0 8px 28px 8px", lineHeight: "1.7", textAlign: "center", textWrap: "pretty" }}>

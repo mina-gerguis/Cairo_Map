@@ -45,7 +45,7 @@ export default function RailwaysRouteDetails({
         </div>
 
         <div className={styles.metricTile}>
-          <div className={styles.metricValue} style={{ color: "var(--color-foreground)" }}>
+          <div className={styles.metricValue} style={{ color: "var(--color-fg)" }}>
             {route.duration || "حسب نوع القطار"}
           </div>
           <div className={styles.metricLabel}>متوسط وقت السفر</div>
@@ -125,7 +125,7 @@ export default function RailwaysRouteDetails({
                           color: isUnderConstruction
                             ? "#ef4444"
                             : isFirst || isLast
-                              ? "var(--color-foreground)"
+                              ? "var(--color-fg)"
                               : "var(--text-secondary)",
                         }}
                       >
@@ -177,7 +177,7 @@ export default function RailwaysRouteDetails({
         <div className={styles.tipCard}>
           <i className="bx bxs-info-circle" style={{ color, fontSize: "1.2rem", flexShrink: 0, marginTop: "2px" }} />
           <div>
-            <strong style={{ color: "var(--color-foreground)" }}>نصيحة السفر: </strong>
+            <strong style={{ color: "var(--color-fg)" }}>نصيحة السفر: </strong>
             <span style={{ color: "var(--text-secondary)" }}>{route.tips}</span>
           </div>
         </div>

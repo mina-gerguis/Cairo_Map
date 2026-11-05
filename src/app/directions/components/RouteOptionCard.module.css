@@ -41,7 +41,7 @@
 }
 
 .routeTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 800;
   font-size: 1.05rem;
   font-family: var(--font-sub);

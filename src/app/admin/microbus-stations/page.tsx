@@ -20,7 +20,7 @@ export default function AdminMicrobusStationsPage() {
   return (
     <Suspense
       fallback={
-        <div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>
+        <div style={{ padding: "2rem", color: "var(--color-fgSecondary)" }}>
           جاري التحميل...
         </div>
       }

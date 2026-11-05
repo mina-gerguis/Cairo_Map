@@ -141,7 +141,7 @@ export default function PlaceDetailSheet({
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
               }}
             >
               {selectedPlace.name}
@@ -234,7 +234,7 @@ export default function PlaceDetailSheet({
                 fontFamily: "var(--font-display)",
                 fontSize: "1.6rem",
                 fontWeight: "800",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 margin: "0 0 6px",
               }}
             >
@@ -538,7 +538,7 @@ export default function PlaceDetailSheet({
                         background: isSelected
                           ? "var(--color-secondary)"
                           : "rgba(120,120,120,0.1)",
-                        color: isSelected ? "#fff" : "var(--color-foreground)",
+                        color: isSelected ? "#fff" : "var(--color-fg)",
                         border: isSelected
                           ? "none"
                           : "1px solid var(--border-glass)",
@@ -604,7 +604,7 @@ export default function PlaceDetailSheet({
                   fontSize: "1.05rem",
                   fontWeight: "700",
                   marginBottom: "8px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 نبذة عن المكان
@@ -630,7 +630,7 @@ export default function PlaceDetailSheet({
                 fontSize: "1.1rem",
                 fontWeight: "700",
                 marginBottom: "12px",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
               }}
             >
               معلومات مفيدة
@@ -658,7 +658,7 @@ export default function PlaceDetailSheet({
                         alignItems: "center",
                         gap: "10px",
                         fontSize: "0.92rem",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                       }}
                     >
                       <span style={{ fontSize: "1.1rem" }}>{feat.icon}</span>
@@ -675,7 +675,7 @@ export default function PlaceDetailSheet({
                       alignItems: "center",
                       gap: "10px",
                       fontSize: "0.92rem",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     <span style={{ fontSize: "1.1rem" }}>🥗</span>
@@ -687,7 +687,7 @@ export default function PlaceDetailSheet({
                       alignItems: "center",
                       gap: "10px",
                       fontSize: "0.92rem",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     <span style={{ fontSize: "1.1rem" }}>👥</span>
@@ -699,7 +699,7 @@ export default function PlaceDetailSheet({
                       alignItems: "center",
                       gap: "10px",
                       fontSize: "0.92rem",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     <span style={{ fontSize: "1.1rem" }}>💳</span>
@@ -711,7 +711,7 @@ export default function PlaceDetailSheet({
                       alignItems: "center",
                       gap: "10px",
                       fontSize: "0.92rem",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     <span style={{ fontSize: "1.1rem" }}>📶</span>
@@ -726,7 +726,7 @@ export default function PlaceDetailSheet({
                       alignItems: "center",
                       gap: "10px",
                       fontSize: "0.92rem",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     <span style={{ fontSize: "1.1rem" }}>✔️</span>
@@ -738,7 +738,7 @@ export default function PlaceDetailSheet({
                       alignItems: "center",
                       gap: "10px",
                       fontSize: "0.92rem",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     <span style={{ fontSize: "1.1rem" }}>♿</span>
@@ -750,7 +750,7 @@ export default function PlaceDetailSheet({
                       alignItems: "center",
                       gap: "10px",
                       fontSize: "0.92rem",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     <span style={{ fontSize: "1.1rem" }}>👨‍👩‍👧‍👦</span>
@@ -788,7 +788,7 @@ export default function PlaceDetailSheet({
                           key={subCatKey}
                           style={{
                             background: "rgba(255,255,255,0.06)",
-                            color: "var(--color-foreground)",
+                            color: "var(--color-fg)",
                             border: "1px solid var(--border-glass)",
                             padding: "4px 12px",
                             borderRadius: "16px",
@@ -870,7 +870,7 @@ export default function PlaceDetailSheet({
                 fontSize: "1.1rem",
                 fontWeight: "700",
                 marginBottom: "12px",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
               }}
             >
               التفاصيل
@@ -1006,7 +1006,7 @@ export default function PlaceDetailSheet({
                   style={{
                     textAlign: "left",
                     fontSize: "0.9rem",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     fontWeight: "600",
                     maxWidth: "220px",
                     display: "flex",
@@ -1038,7 +1038,7 @@ export default function PlaceDetailSheet({
                   fontSize: "1.1rem",
                   fontWeight: "700",
                   marginBottom: "12px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 ساعات العمل
@@ -1109,7 +1109,7 @@ export default function PlaceDetailSheet({
                                 style={{
                                   fontWeight: isToday ? "bold" : "normal",
                                   color: isToday
-                                    ? "var(--color-foreground)"
+                                    ? "var(--color-fg)"
                                     : "var(--text-secondary)",
                                 }}
                               >
@@ -1130,7 +1130,7 @@ export default function PlaceDetailSheet({
                                 style={{
                                   fontWeight: "600",
                                   color: day.isWorking
-                                    ? "var(--color-foreground)"
+                                    ? "var(--color-fg)"
                                     : "#ff3b30",
                                   fontSize: "0.95rem",
                                 }}
@@ -1197,7 +1197,7 @@ export default function PlaceDetailSheet({
                   border: "1px solid var(--border-glass)",
                   borderRadius: "12px",
                   padding: "12px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   fontWeight: "600",
                   fontSize: "0.9rem",
                   fontFamily: "var(--font-cairo)",
@@ -1229,7 +1229,7 @@ export default function PlaceDetailSheet({
                   border: "1px solid var(--border-glass)",
                   borderRadius: "12px",
                   padding: "12px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   fontWeight: "600",
                   fontSize: "0.9rem",
                   fontFamily: "var(--font-cairo)",

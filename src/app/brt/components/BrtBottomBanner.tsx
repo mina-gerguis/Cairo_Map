@@ -35,7 +35,7 @@ export default function BrtBottomBanner({
               margin: 0,
               fontSize: "1.05rem",
               fontWeight: "800",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               fontFamily: "var(--font-sub)",
             }}
           >

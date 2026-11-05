@@ -34,7 +34,7 @@
 .title {
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 12px;
 }
 
@@ -58,7 +58,7 @@
   border-radius: 12px;
   border: 1px solid var(--border-glass);
   background: var(--bg-secondary, rgba(255, 255, 255, 0.05));
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.95rem;
   font-family: var(--font-body);
   outline: none;
@@ -117,7 +117,7 @@
 .categoryTitle {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .categoryDesc {
@@ -137,7 +137,7 @@
 .faqSectionTitle {
   font-size: 1.3rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 20px;
   border-bottom: 1px solid var(--border-glass);
   padding-bottom: 14px;
@@ -167,7 +167,7 @@
   justify-content: space-between;
   cursor: pointer;
   text-align: right;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 700;
   font-size: 0.95rem;
   font-family: var(--font-body);
@@ -192,7 +192,7 @@
 .contactBannerTitle {
   font-size: 1.3rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 8px;
 }
 

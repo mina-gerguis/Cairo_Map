@@ -134,10 +134,10 @@ export default function HadYaarafPage() {
       prev.map((q) =>
         q.id === questionId
           ? {
-              ...q,
-              user_reaction: nextReaction,
-              reactions_count: nextCount,
-            }
+            ...q,
+            user_reaction: nextReaction,
+            reactions_count: nextCount,
+          }
           : q
       )
     );
@@ -180,10 +180,10 @@ export default function HadYaarafPage() {
       [qId!]: prev[qId!].map((a) =>
         a.id === answerId
           ? {
-              ...a,
-              user_reaction: nextReaction,
-              reactions_count: nextCount,
-            }
+            ...a,
+            user_reaction: nextReaction,
+            reactions_count: nextCount,
+          }
           : a
       ),
     }));
@@ -512,7 +512,7 @@ export default function HadYaarafPage() {
                 }}
               >
                 <HelpCircle style={{ width: "48px", height: "48px", color: "var(--text-muted)", margin: "0 auto 12px" }} />
-                <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "var(--color-foreground)", marginBottom: "6px" }}>
+                <h3 style={{ fontSize: "1.15rem", fontWeight: 800, color: "var(--color-fg)", marginBottom: "6px" }}>
                   لا توجد أسئلة تطابق البحث أو التصنيف
                 </h3>
                 <p style={{ fontSize: "0.9rem", color: "var(--text-muted)", maxWidth: "420px", margin: "0 auto 20px" }}>

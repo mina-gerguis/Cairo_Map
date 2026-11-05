@@ -73,7 +73,7 @@ export default function BrtTimeline({
                 <span style={{
                   fontSize: "0.72rem",
                   fontWeight: isStart || isEnd ? "bold" : "500",
-                  color: isStart || isEnd ? "var(--color-foreground)" : "var(--text-secondary)",
+                  color: isStart || isEnd ? "var(--color-fg)" : "var(--text-secondary)",
                   textAlign: "center",
                   minWidth: "max-content",
                   whiteSpace: "normal",

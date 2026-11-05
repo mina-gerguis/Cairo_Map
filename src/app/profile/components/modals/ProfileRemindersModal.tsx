@@ -53,7 +53,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
                 router.push("/login");
               },
               bgColor: "var(--accentBtn)",
-              textColor: "var(--color-foreground)",
+              textColor: "var(--color-fg)",
             }
             : {
               label: " اشترك أو رقّي حسابك الآن",
@@ -68,7 +68,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
             label: "إغلاق",
             onClick: onClose,
             bgColor: "var(--btn-cancel)",
-            textColor: "var(--color-foreground)",
+            textColor: "var(--color-fg)",
           }
       }
     >
@@ -79,7 +79,7 @@ export const ProfileRemindersModal: React.FC<ProfileRemindersModalProps> = ({
               style={{
                 fontSize: "1.15rem",
                 fontWeight: "800",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 marginBottom: "10px",
                 fontFamily: "var(--font-cairo)",
               }}

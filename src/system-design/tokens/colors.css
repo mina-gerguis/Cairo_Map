@@ -17,14 +17,13 @@
   --colorMuted: #a1a1aa;
 
   /* --- Status & Feedback Palettes --- */
-  --color-success: #008a50;
+  --color-success: #00d37b;
   --colorWarning: #ffa500;
   --colorDanger: #ff0000;
   --color-error: #ff0000;
   --colorInfo: #0000ff;
 
   /* --- Canvas & Background Layers --- */
-  --bgMode: #000000;
   --color-bg: #000000;
   --bg-secondary: #070707;
   --bgThird: #121212;
@@ -32,14 +31,8 @@
   --bg-glass-active: rgba(39, 39, 42, 0.90);
   --bgAlert: linear-gradient(135deg, rgba(117, 117, 117, 0.08) 0%, rgba(32, 32, 32, 0.08) 100%);
 
-  /* --- Complex Gradients --- */
-  --bgLinear: radial-gradient(ellipse 85% 42% at 85% 24%, rgba(17, 64, 253, 0.88) 0%, rgba(48, 45, 205, 0.45) 35%, transparent 70%),
-    linear-gradient(180deg, var(--bgMode) 100%);
-  --bg-linear-alert: radial-gradient(ellipse 85% 65% at 85% 15%, rgba(239, 68, 68, 0.22) 0%, rgba(185, 28, 28, 0.08) 45%, transparent 75%),
-    linear-gradient(180deg, var(--bgMode) 0%, var(--bgMode) 100%);
-
   /* --- Typography Colors --- */
-  --color-foreground: #f4f4f5;
+  --color-fg: #f4f4f5;
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
   --text-muted: #71717a;
@@ -117,22 +110,16 @@
    ========================================================================== */
 html.light {
   /* --- Canvas & Background Layers --- */
-  --bgMode: #ffffff;
   --color-bg: #ffffff;
   --bg-secondary: #f4f4f5;
+  --color-success: #008a50;
   --bgThird: #f8f8f8;
   --bg-glass: rgba(255, 255, 255, 0.80);
   --bg-glass-active: rgba(228, 228, 231, 0.90);
   --bgAlert: linear-gradient(135deg, rgba(85, 85, 85, 0.11) 0%, rgba(32, 32, 32, 0.20) 100%);
 
-  /* --- Complex Gradients --- */
-  --bgLinear: radial-gradient(ellipse 85% 49% at 85% 14%, rgba(115, 141, 250, 0.88) 0%, rgba(45, 184, 205, 0.45) 35%, transparent 70%),
-    linear-gradient(180deg, var(--bgMode) 100%);
-  --bg-linear-alert: radial-gradient(ellipse 85% 65% at 85% 15%, rgba(255, 60, 60, 0.75) 0%, rgba(255, 106, 106, 0.4) 45%, transparent 75%),
-    linear-gradient(180deg, #ffffff 0%, #fcfcfc 100%);
-
   /* --- Typography Colors --- */
-  --color-foreground: #000000;
+  --color-fg: #000000;
   --text-secondary: #52525b;
   --text-muted: #7a7771;
   --text-muted: #7a7771;

@@ -286,7 +286,7 @@ export default function HelpCenterPage() {
             <Link href="/contact" className={styles.contactBtn}>
               <FaEnvelope /> تواصل مع فريق الدعم
             </Link>
-            <Link href="/propose-place" className={styles.contactBtn} style={{ background: "var(--bg-glass-card)", border: "1px solid var(--border-glass)", color: "var(--color-foreground)" }}>
+            <Link href="/propose-place" className={styles.contactBtn} style={{ background: "var(--bg-glass-card)", border: "1px solid var(--border-glass)", color: "var(--color-fg)" }}>
               <FaPlusCircle /> إضافة مكان جديد
             </Link>
           </div>

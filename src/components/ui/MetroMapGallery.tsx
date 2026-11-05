@@ -903,7 +903,7 @@ export function MetroMapGallery({
       data-open={openId ?? ""}
       className={cx("relative isolate w-full overflow-hidden bg-background text-foreground", className)}
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" style={{ background: "radial-gradient(closest-side at 50% 54%, color-mix(in oklab, var(--color-foreground) 5%, transparent), transparent)" }} />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" style={{ background: "radial-gradient(closest-side at 50% 54%, color-mix(in oklab, var(--color-fg) 5%, transparent), transparent)" }} />
       {(eyebrow || heading) && (
         <header className="relative z-10 flex flex-col items-center gap-2 px-6 pt-7 text-center">
           {eyebrow && <p className="text-[12px] font-bold uppercase tracking-[0.22em] text-muted-foreground">{eyebrow}</p>}
@@ -1401,7 +1401,7 @@ function Card({ station, line, anchor, ring, center, avoid, stageRef, reduced, l
         ref={inner}
         dir="rtl"
         className={cx(
-          "relative rounded-2xl border border-border bg-card p-3 text-card-foreground shadow-[0_22px_44px_-18px_color-mix(in_oklab,var(--color-foreground)_45%,transparent)] dark:shadow-[0_22px_44px_-14px_color-mix(in_oklab,black_80%,transparent)]",
+          "relative rounded-2xl border border-border bg-card p-3 text-card-foreground shadow-[0_22px_44px_-18px_color-mix(in_oklab,var(--color-fg)_45%,transparent)] dark:shadow-[0_22px_44px_-14px_color-mix(in_oklab,black_80%,transparent)]",
           leaving ? "opacity-0 transition-opacity duration-150" : "opacity-100",
         )}
         style={{ width: CARD_W }}

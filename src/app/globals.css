@@ -56,7 +56,7 @@ html.is-preloading *:not([class*="preloader"]):not([class*="SitePreloader"]):not
   --gradient-primary: var(--color-primary);
   --gradient-hero: var(--color-bg);
   --gradient-card: var(--bg-glass-card);
-  --gradient-text: var(--color-foreground);
+  --gradient-text: var(--color-fg);
   --gradient-cta: var(--color-primary);
 
 
@@ -115,7 +115,7 @@ html,
 body {
   font-family: var(--font-sub);
   background-color: var(--bgMode);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
@@ -468,11 +468,11 @@ html.light body::after {
   margin-bottom: 24px;
   letter-spacing: -2px;
   animation: slide-in-section 0.7s ease 0.1s both;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .hero-title-gradient {
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .hero-subtitle {
@@ -527,7 +527,7 @@ html.light body::after {
   padding: 10px 34px;
   border-radius: 8px;
   background: var(--bg-glass-card);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 1.05rem;
   font-weight: 500;
   border: 1px solid var(--border-glass);
@@ -562,7 +562,7 @@ html.light body::after {
   font-family: var(--font-display);
   font-size: 2.4rem;
   font-weight: 700;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   line-height: 1;
 }
 
@@ -593,7 +593,7 @@ html.light body::after {
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
   z-index: 3;
   font-family: var(--font-cairo), sans-serif;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   pointer-events: none;
   user-select: none;
   animation: float-3d 6s ease-in-out infinite;
@@ -707,7 +707,7 @@ html.light .footer {
 .footer-brand-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-heading, var(--font-body));
 }
 
@@ -732,14 +732,14 @@ html.light .footer {
   border: 1px solid var(--border-glass);
   padding: 4px 12px;
   border-radius: 9999px;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 600;
 }
 
 .footer-col-title {
   font-size: 1.02rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -904,7 +904,7 @@ input[type="date"][readonly]::-webkit-calendar-picker-indicator {
   border-radius: var(--ra-full);
   background: var(--bg-glass-card);
   border: 1px solid var(--border-glass);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
@@ -921,7 +921,7 @@ input[type="date"][readonly]::-webkit-calendar-picker-indicator {
 }
 
 .category-pill.active {
-  background: var(--color-foreground);
+  background: var(--color-fg);
   color: var(--color-bg) !important;
   border-color: transparent;
 }
@@ -940,7 +940,7 @@ input[type="date"][readonly]::-webkit-calendar-picker-indicator {
   font-size: 2.4rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -961,7 +961,7 @@ input[type="date"][readonly]::-webkit-calendar-picker-indicator {
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1013,7 +1013,7 @@ input[type="date"][readonly]::-webkit-calendar-picker-indicator {
 .card-title {
   font-size: 1.08rem;
   font-weight: 600;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   line-height: 1.3;
 }
 
@@ -1219,7 +1219,7 @@ html.light .ios-sheet {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-foreground);
+    color: var(--color-fg);
     text-decoration: none;
     transition: all 0.2s ease;
     flex: 1;
@@ -1228,7 +1228,7 @@ html.light .ios-sheet {
   }
 
   .mobile-nav-item:hover {
-    color: var(--color-foreground);
+    color: var(--color-fg);
   }
 
   .mobile-nav-item-wrapper {
@@ -1415,7 +1415,7 @@ html.light .ios-sheet {
   border-radius: var(--ra-full);
   border: 1px solid var(--border-glass);
   background: var(--bg-glass-card);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 1.05rem;
   outline: none;
   transition: var(--transition-smooth);
@@ -1504,11 +1504,11 @@ html.light .auth-card {
    ============================================================ */
 .glow-text {
   text-shadow: none;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .gradient-text {
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 /* ============================================================
@@ -1543,7 +1543,7 @@ html.light .auth-card {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.95rem;
@@ -1594,7 +1594,7 @@ html.light .auth-card {
 .accordion-title {
   font-size: 1.05rem;
   font-weight: 500;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0;
 }
 
@@ -1844,7 +1844,7 @@ html.light .suggestion-icon {
   font-family: var(--font-cairo), sans-serif;
   font-weight: 700;
   font-size: 0.98rem;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1945,7 +1945,7 @@ html.light .suggestion-icon {
 .home-category-card-title {
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 2px;
   text-wrap: balance;
 }
@@ -2000,7 +2000,7 @@ html.light .suggestion-icon {
   justify-content: flex-start;
   font-size: clamp(1.6rem, 5vw, 2.2rem);
   font-weight: bold;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin: 0 0 10px;
   letter-spacing: -0.5px;
 }

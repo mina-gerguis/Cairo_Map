@@ -44,7 +44,7 @@ export default function PhoneCard({
                 margin: 0,
                 fontSize: "0.92rem",
                 fontWeight: "700",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",

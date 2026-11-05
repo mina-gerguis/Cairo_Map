@@ -76,7 +76,7 @@
 .searchLabel {
   font-size: 0.95rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -96,7 +96,7 @@
   border-radius: var(--ra-10, 10px);
   background: var(--bg-secondary, rgba(255, 255, 255, 0.04));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.92rem;
   font-family: inherit;
   direction: rtl;
@@ -136,7 +136,7 @@
 
 .clearSearchBtn:hover {
   background: rgba(255, 255, 255, 0.2);
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 /* ==================== RESULTS CONTAINER ==================== */
@@ -281,7 +281,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   line-height: 1.3;
 }
 
@@ -341,7 +341,7 @@
 }
 
 .sectionTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.88rem;
   font-weight: 800;
   display: flex;
@@ -400,7 +400,7 @@
 }
 
 .companyName {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-weight: 800;
   font-size: 0.88rem;
   display: block;
@@ -446,7 +446,7 @@
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
   padding: 4px 10px;
   border-radius: 8px;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 :global(html.light) .destinationTag {
@@ -542,7 +542,7 @@
 .paywallTitle {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   margin-bottom: 12px;
 }
 
@@ -567,7 +567,7 @@
 
 .perksTitle {
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-size: 0.92rem;
   margin-bottom: 10px;
 }
@@ -670,7 +670,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--color-foreground);
+  color: var(--color-fg);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -688,7 +688,7 @@
 }
 
 .modalCloseBtn:hover {
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .modalBody {
@@ -708,7 +708,7 @@
   display: block;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .requiredStar {
@@ -722,7 +722,7 @@
   padding: 10px 14px;
   border-radius: 10px;
   background: var(--bg-secondary);
-  color: var(--color-foreground);
+  color: var(--color-fg);
   border: 1px solid var(--border-glass);
   font-family: inherit;
   font-size: 0.9rem;

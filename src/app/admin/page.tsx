@@ -1381,7 +1381,7 @@ export default function AdminDashboard() {
               <span>الإيرادات - السحوبات</span>
             </span>
           </div>
-          <p className={styles.statCardValue} style={{ color: liveProfit >= 0 ? "var(--color-foreground)" : "#ef4444" }}>
+          <p className={styles.statCardValue} style={{ color: liveProfit >= 0 ? "var(--color-fg)" : "#ef4444" }}>
             {formatNum(liveProfit)} ج.م
           </p>
         </div>

@@ -51,7 +51,7 @@ export default function RouteResultsSection({
                 style={{
                   fontSize: "1.05rem",
                   fontWeight: "800",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",

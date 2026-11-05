@@ -16,7 +16,7 @@ export default function PlacePhotoGallery({
           fontSize: "1.1rem",
           fontWeight: "700",
           marginBottom: "14px",
-          color: "var(--color-foreground)",
+          color: "var(--color-fg)",
         }}
       >
         معرض الصور

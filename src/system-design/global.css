@@ -90,7 +90,7 @@ html.light {
 .lock-title-subscribe {
     font-size: 1.6rem;
     font-weight: 800;
-    color: var(--color-foreground);
+    color: var(--color-fg);
     margin-bottom: 14px;
 }
 
@@ -117,7 +117,7 @@ html.light {
 
 .lock-perks-title {
     font-weight: 800;
-    color: var(--color-foreground);
+    color: var(--color-fg);
     font-size: 0.9rem;
     margin-bottom: 10px;
     display: flex;

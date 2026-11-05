@@ -124,7 +124,7 @@ export default function BrtStationCard({
             <h4 style={{
               fontSize: "0.88rem",
               fontWeight: "800",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               margin: 0,
               fontFamily: "var(--font-sub)",
               display: "flex",

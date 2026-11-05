@@ -105,10 +105,10 @@ export default function SingleQuestionPage({ params }: PageProps) {
       prev.map((a) =>
         a.id === answerId
           ? {
-              ...a,
-              user_reaction: nextReaction,
-              reactions_count: nextCount,
-            }
+            ...a,
+            user_reaction: nextReaction,
+            reactions_count: nextCount,
+          }
           : a
       )
     );
@@ -251,7 +251,7 @@ export default function SingleQuestionPage({ params }: PageProps) {
             }}
           >
             <HelpCircle style={{ width: "48px", height: "48px", color: "var(--text-muted)", margin: "0 auto 12px" }} />
-            <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--color-foreground)", marginBottom: "8px" }}>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--color-fg)", marginBottom: "8px" }}>
               السؤال غير موجود أو قد تم حذفه
             </h2>
             <p style={{ fontSize: "0.9rem", color: "var(--text-muted)", marginBottom: "20px" }}>

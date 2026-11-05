@@ -109,7 +109,7 @@ export function PlaceReviewCard({
       {review.comment && (
         <p
           style={{
-            color: "var(--color-foreground)",
+            color: "var(--color-fg)",
             fontSize: "0.95rem",
             lineHeight: "1.5",
             marginTop: "10px",

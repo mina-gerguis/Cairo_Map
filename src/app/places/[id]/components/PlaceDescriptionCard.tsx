@@ -23,7 +23,7 @@ export default function PlaceDescriptionCard({
           fontSize: "1.05rem",
           fontWeight: "700",
           marginBottom: "8px",
-          color: "var(--color-foreground)",
+          color: "var(--color-fg)",
         }}
       >
         نبذة عن المكان

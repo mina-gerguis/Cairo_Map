@@ -61,7 +61,7 @@ export default function PlaceDetailsHeader({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            color: "var(--color-foreground)",
+            color: "var(--color-fg)",
           }}
         >
           {place.name}
@@ -109,7 +109,7 @@ export default function PlaceDetailsHeader({
         style={{
           background: "rgba(131, 131, 131, 0.14)",
           border: "1px solid var(--border-glass)",
-          color: "var(--color-foreground)",
+          color: "var(--color-fg)",
           borderRadius: "50%",
           width: "36px",
           height: "36px",

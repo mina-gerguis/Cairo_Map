@@ -50,9 +50,9 @@ export function AdminDirectionsOriginTabs({
             fontWeight: selectedOrigin === "all" ? "700" : "400",
             cursor: "pointer",
             transition: "all 0.2s ease",
-            background: selectedOrigin === "all" ? "var(--color-foreground)" : "transparent",
+            background: selectedOrigin === "all" ? "var(--color-fg)" : "transparent",
             border: "none",
-            color: selectedOrigin === "all" ? "var(--bgMode)" : "var(--color-foreground)",
+            color: selectedOrigin === "all" ? "var(--bgMode)" : "var(--color-fg)",
             whiteSpace: "nowrap"
           }}
         >
@@ -72,9 +72,9 @@ export function AdminDirectionsOriginTabs({
               fontWeight: selectedOrigin === orig.name ? "700" : "400",
               cursor: "pointer",
               transition: "all 0.2s ease",
-              background: selectedOrigin === orig.name ? "var(--color-foreground)" : "transparent",
+              background: selectedOrigin === orig.name ? "var(--color-fg)" : "transparent",
               border: "none",
-              color: selectedOrigin === orig.name ? "var(--bgMode)" : "var(--color-foreground)",
+              color: selectedOrigin === orig.name ? "var(--bgMode)" : "var(--color-fg)",
               whiteSpace: "nowrap"
             }}
           >

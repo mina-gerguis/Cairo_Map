@@ -45,7 +45,7 @@ export function RouteOptionLegEditor({
       <div className={styles.legHeader}>
         <span className={styles.legTitle}>
           <i className="bx bx-current-location" />
-          <span className="sub-title" style={{ color: "var(--color-foreground)" }}>
+          <span className="sub-title" style={{ color: "var(--color-fg)" }}>
             المرحلة رقم {legIndex + 1}
           </span>
         </span>

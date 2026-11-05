@@ -49,7 +49,7 @@ export function ParkingSearchFilter({
               backgroundColor: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "10px",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               fontSize: "0.9rem",
               fontFamily: "var(--font-cairo)",
               outline: "none",
@@ -77,7 +77,7 @@ export function ParkingSearchFilter({
               backgroundColor: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
               borderRadius: "10px",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               fontSize: "0.9rem",
               fontFamily: "var(--font-cairo)",
               outline: "none",
@@ -88,7 +88,7 @@ export function ParkingSearchFilter({
               value="all"
               style={{
                 backgroundColor: "var(--color-bg)",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
               }}
             >
               جميع المناطق
@@ -101,7 +101,7 @@ export function ParkingSearchFilter({
                   value={area}
                   style={{
                     backgroundColor: "var(--color-bg)",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                   }}
                 >
                   {area}

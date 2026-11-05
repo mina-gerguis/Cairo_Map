@@ -11,7 +11,7 @@ export default function MonorailOverviewPanel({
         style={{
           fontSize: "1.15rem",
           fontWeight: "800",
-          color: "var(--color-foreground)",
+          color: "var(--color-fg)",
           margin: "0 0 8px",
         }}
       >

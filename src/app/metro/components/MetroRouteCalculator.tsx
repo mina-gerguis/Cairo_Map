@@ -263,7 +263,7 @@ export default function MetroRouteCalculator({
                           style={{
                             fontSize: "0.92rem",
                             fontWeight: "700",
-                            color: "var(--color-foreground)",
+                            color: "var(--color-fg)",
                           }}
                         >
                           {s.name}
@@ -448,7 +448,7 @@ export default function MetroRouteCalculator({
                           style={{
                             fontSize: "0.92rem",
                             fontWeight: "700",
-                            color: "var(--color-foreground)",
+                            color: "var(--color-fg)",
                           }}
                         >
                           {s.name}
@@ -572,7 +572,7 @@ export default function MetroRouteCalculator({
           {!result.found ? (
             <div style={{ textAlign: "center", color: "var(--text-secondary)", padding: "20px 0" }}>
               <div style={{ fontSize: "2.2rem", marginBottom: "8px" }}>😕</div>
-              <h4 style={{ fontWeight: "700", color: "var(--color-foreground)", marginBottom: "6px" }}>
+              <h4 style={{ fontWeight: "700", color: "var(--color-fg)", marginBottom: "6px" }}>
                 عذراً، تعذر العثور على مسار
               </h4>
               <p style={{ fontSize: "0.88rem", margin: 0 }}>{result.description}</p>
@@ -697,7 +697,7 @@ export default function MetroRouteCalculator({
 
                   <div style={{ fontSize: "0.95rem", fontWeight: "600", color: "var(--text-secondary)" }}>
                     أنت الآن في محطة:{" "}
-                    <strong style={{ color: "var(--color-foreground)", fontSize: "1.1rem" }}>
+                    <strong style={{ color: "var(--color-fg)", fontSize: "1.1rem" }}>
                       {result.detailedPath[currentStepIndex]?.station}
                     </strong>
                     <span style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginRight: "8px" }}>
@@ -780,7 +780,7 @@ export default function MetroRouteCalculator({
                   style={{
                     fontSize: "0.95rem",
                     fontWeight: "800",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     margin: "0 0 14px",
                     fontFamily: "var(--font-sub, inherit)",
                   }}
@@ -880,7 +880,7 @@ export default function MetroRouteCalculator({
                                     : isCurrent
                                       ? "var(--color-secondary, #3b82f6)"
                                       : isFirst || isLast
-                                        ? "var(--color-foreground)"
+                                        ? "var(--color-fg)"
                                         : "var(--text-secondary)",
                                 }}
                               >

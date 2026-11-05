@@ -143,12 +143,12 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
 
         .city-modal-shell {
           background-color: var(--color-bg);
-          color: var(--color-foreground);
+          color: var(--color-fg);
           border: 1px solid var(--border-color);
         }
 
         .city-modal-text-primary {
-          color: var(--color-foreground);
+          color: var(--color-fg);
         }
 
         .city-modal-textSecondary {
@@ -495,7 +495,7 @@ export default function CityDetailModal({ city, onClose }: CityDetailModalProps)
                     fontSize: "1.2rem",
                     fontWeight: "800",
                     margin: 0,
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",

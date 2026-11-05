@@ -26,7 +26,7 @@ export default function ProposePlaceAlerts({
             <h3 style={{ fontSize: "1rem", fontWeight: "800", color: "#ff9500", margin: "0 0 4px" }}>
               وصلت للحد الأقصى (5 طلبات معلقة)
             </h3>
-            <p style={{ margin: 0, color: "var(--color-foreground)", fontSize: "0.88rem", lineHeight: 1.5 }}>
+            <p style={{ margin: 0, color: "var(--color-fg)", fontSize: "0.88rem", lineHeight: 1.5 }}>
               لا يمكنك تقديم مكان جديد حالياً حتى تتم مراجعة الطلبات السابقة، ولكن يمكنك تعديل وإعادة إرسال أي مكان معلق أو مرفوض من قائمة "أماكني المقترحة" بالأسفل.
             </p>
           </div>
@@ -46,8 +46,8 @@ export default function ProposePlaceAlerts({
               gap: "8px",
             }}
           >
-             أنت الآن تقوم بتعديل:{" "}
-            <span style={{ color: "var(--color-foreground)" }}>{placeName || "المكان المقترح"}</span>
+            أنت الآن تقوم بتعديل:{" "}
+            <span style={{ color: "var(--color-fg)" }}>{placeName || "المكان المقترح"}</span>
           </span>
           <button
             type="button"
@@ -67,7 +67,7 @@ export default function ProposePlaceAlerts({
             <h3 style={{ fontSize: "1.05rem", fontWeight: "800", color: "#ff3b30", margin: "0 0 6px" }}>
               سبب رفض الاقتراح السابق من الإدارة:
             </h3>
-            <p style={{ margin: 0, color: "var(--color-foreground)", fontSize: "0.92rem", lineHeight: 1.6 }}>
+            <p style={{ margin: 0, color: "var(--color-fg)", fontSize: "0.92rem", lineHeight: 1.6 }}>
               &ldquo;{rejectionReason}&rdquo;
             </p>
             <p style={{ margin: "10px 0 0", color: "var(--text-muted)", fontSize: "0.82rem" }}>

@@ -433,7 +433,7 @@ export default function NotFound() {
         justifyContent: "center",
         padding: "3rem 1rem 4rem",
         background: "var(--color-bg)",
-        color: "var(--color-foreground)",
+        color: "var(--color-fg)",
         textAlign: "center",
         position: "relative",
         overflow: "hidden",
@@ -647,7 +647,7 @@ export default function NotFound() {
                   background: "transparent",
                   border: "none",
                   outline: "none",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   fontSize: "1rem",
                   fontFamily: "var(--font-heading)",
                   textAlign: "right"
@@ -679,7 +679,7 @@ export default function NotFound() {
                   fontFamily: "inherit",
                   fontSize: "0.75rem",
                   fontWeight: "bold",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -690,7 +690,7 @@ export default function NotFound() {
                   fontFamily: "inherit",
                   fontSize: "0.75rem",
                   fontWeight: "bold",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -751,7 +751,7 @@ export default function NotFound() {
                         border: "1px solid var(--border-glass)",
                         marginBottom: "6px",
                         textDecoration: "none",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                         transition: "var(--transition-fast)"
                       }}
                     >
@@ -820,7 +820,7 @@ export default function NotFound() {
                         border: "1px solid var(--border-glass)",
                         marginBottom: "6px",
                         textDecoration: "none",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                         transition: "var(--transition-fast)"
                       }}
                     >
@@ -884,7 +884,7 @@ export default function NotFound() {
                           backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
                           border: "1px solid var(--border-glass)",
                           textDecoration: "none",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                           fontSize: "0.85rem"
                         }}
                       >
@@ -907,7 +907,7 @@ export default function NotFound() {
                   <div style={{ fontSize: "2rem", marginBottom: "6px" }}>
                     <FaInbox style={{ fontSize: "2rem", marginBottom: "6px" }} />
                   </div>
-                  <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--color-foreground)", marginBottom: "4px" }}>
+                  <div style={{ fontWeight: "700", fontSize: "1rem", color: "var(--color-fg)", marginBottom: "4px" }}>
                     عفواً، لا توجد نتائج مطابقة لـ &quot;{searchQuery}&quot;
                   </div>
                   <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }}>
@@ -922,7 +922,7 @@ export default function NotFound() {
                         borderRadius: "8px",
                         backgroundColor: "var(--hoverBtn, rgba(39, 39, 42, 0.8))",
                         border: "1px solid var(--border-glass)",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                         fontSize: "0.82rem",
                         cursor: "pointer"
                       }}

@@ -94,7 +94,7 @@ export default function AdminAdsPage() {
     setAds(DEFAULT_VIDEO_ADS);
     try {
       localStorage.setItem(STORAGE_KEY_VIDEO_ADS, JSON.stringify(DEFAULT_VIDEO_ADS));
-    } catch {}
+    } catch { }
   };
 
   useEffect(() => {
@@ -375,7 +375,7 @@ export default function AdminAdsPage() {
       {/* ── SECTION 1: HOME PAGE SLOTS (3 SLOTS) ── */}
       <div style={{ marginBottom: "26px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
-          <h2 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground, #ffffff)", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+          <h2 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-fg, #ffffff)", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
             <FaHome style={{ color: "#3b82f6" }} />
             <span>مواضع الصفحة الرئيسية (3 Home Page Slots):</span>
           </h2>
@@ -463,7 +463,7 @@ export default function AdminAdsPage() {
       {/* ── SECTION 2: PLACES PAGE SLOTS (4 SLOTS) ── */}
       <div style={{ marginBottom: "26px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
-          <h2 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-foreground, #ffffff)", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+          <h2 style={{ fontSize: "1.05rem", fontWeight: "800", color: "var(--color-fg, #ffffff)", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
             <FaMapMarkerAlt style={{ color: "#10b981" }} />
             <span>مواضع صفحة دليل الأماكن (4 Places Page Slots):</span>
           </h2>
@@ -665,13 +665,12 @@ export default function AdminAdsPage() {
                 className={styles.adsCardItem}
                 style={{
                   background: "var(--bg-glass-card, rgba(15, 23, 42, 0.75))",
-                  border: `1px solid ${
-                    isAllSlots
+                  border: `1px solid ${isAllSlots
                       ? "rgba(168, 85, 247, 0.45)"
                       : adItem.isActive !== false
-                      ? "var(--border-glass, rgba(255, 255, 255, 0.12))"
-                      : "rgba(239, 68, 68, 0.3)"
-                  }`,
+                        ? "var(--border-glass, rgba(255, 255, 255, 0.12))"
+                        : "rgba(239, 68, 68, 0.3)"
+                    }`,
                 }}
               >
                 {/* Header: Synced Slots Tags + Format + Active Toggle */}
@@ -736,8 +735,8 @@ export default function AdminAdsPage() {
                         background: isGif
                           ? "rgba(168, 85, 247, 0.15)"
                           : isYt
-                          ? "rgba(239, 68, 68, 0.15)"
-                          : "rgba(255, 255, 255, 0.08)",
+                            ? "rgba(239, 68, 68, 0.15)"
+                            : "rgba(255, 255, 255, 0.08)",
                         color: isGif ? "#c084fc" : isYt ? "#f87171" : "#93c5fd",
                       }}
                     >

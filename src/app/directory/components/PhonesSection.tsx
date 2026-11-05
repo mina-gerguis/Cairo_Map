@@ -38,7 +38,7 @@ export default function PhonesSection({
             style={{
               fontSize: "1.15rem",
               fontWeight: "800",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               margin: 0,
             }}
           >
@@ -140,7 +140,7 @@ export default function PhonesSection({
           <h3 className="sub-title"
             style={{
               fontWeight: "700",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               marginBottom: "4px",
 
             }}
@@ -190,7 +190,7 @@ export default function PhonesSection({
             style={{
               background: "var(--bg-secondary)",
               border: "1px solid var(--border-glass)",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               fontSize: "0.85rem",
               fontWeight: "700",
               padding: "8px 24px",

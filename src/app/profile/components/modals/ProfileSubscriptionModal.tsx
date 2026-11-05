@@ -20,7 +20,7 @@ const FeatureItem: React.FC<{
       lineHeight: "1.45",
       color: included
         ? isSpecial
-          ? "var(--color-foreground)"
+          ? "var(--color-fg)"
           : "var(--text-secondary)"
         : "var(--text-muted)",
       opacity: included ? 1 : 0.5,
@@ -123,7 +123,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
             style={{
               fontSize: "1.3rem",
               fontWeight: "900",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               margin: 0,
               display: "flex",
               alignItems: "center",
@@ -155,7 +155,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
               style={{
                 fontSize: "1.1rem",
                 fontWeight: "bold",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 marginTop: "2px",
               }}
             >
@@ -206,7 +206,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
             </div>
             <strong
               style={{
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
                 fontSize: "1.15rem",
                 marginTop: "2px",
                 display: "block",
@@ -344,7 +344,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   margin: "0 0 8px",
                 }}
               >
@@ -354,7 +354,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   marginBottom: "16px",
                 }}
               >
@@ -442,7 +442,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   margin: "0 0 8px",
                 }}
               >
@@ -452,7 +452,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   marginBottom: "16px",
                 }}
               >
@@ -541,7 +541,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   margin: "0 0 8px",
                 }}
               >
@@ -551,7 +551,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   marginBottom: "16px",
                 }}
               >
@@ -672,7 +672,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   margin: "0 0 8px",
                 }}
               >
@@ -682,7 +682,7 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
                 style={{
                   fontSize: "1.5rem",
                   fontWeight: "900",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   marginBottom: "16px",
                 }}
               >

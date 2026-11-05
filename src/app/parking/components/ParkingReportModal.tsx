@@ -92,7 +92,7 @@ export function ParkingReportModal({
               margin: 0,
               fontSize: "1.05rem",
               fontWeight: "800",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               display: "flex",
               alignItems: "center",
               gap: "8px",
@@ -139,7 +139,7 @@ export function ParkingReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.15rem",
                   fontWeight: "800",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 تم استلام بلاغك بنجاح!
@@ -197,7 +197,7 @@ export function ParkingReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.1rem",
                   fontWeight: "800",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 تم الوصول للحد الأقصى من البلاغات المعلقة
@@ -245,7 +245,7 @@ export function ParkingReportModal({
                   margin: "0 0 8px",
                   fontSize: "1.1rem",
                   fontWeight: "800",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 تسجيل الدخول مطلوب
@@ -283,7 +283,7 @@ export function ParkingReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     marginBottom: "8px",
                   }}
                 >
@@ -317,7 +317,7 @@ export function ParkingReportModal({
                           : "var(--bg-secondary)",
                       color:
                         reportTargetScope === "general"
-                          ? "var(--color-foreground)"
+                          ? "var(--color-fg)"
                           : "var(--text-secondary)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
@@ -347,7 +347,7 @@ export function ParkingReportModal({
                           : "var(--bg-secondary)",
                       color:
                         reportTargetScope === "parking"
-                          ? "var(--color-foreground)"
+                          ? "var(--color-fg)"
                           : "var(--text-secondary)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
@@ -370,7 +370,7 @@ export function ParkingReportModal({
                       alignItems: "center",
                       fontSize: "0.85rem",
                       fontWeight: "700",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                       marginBottom: "6px",
                     }}
                   >
@@ -409,7 +409,7 @@ export function ParkingReportModal({
                         width: "100%",
                         padding: "10px 15px 10px 36px",
                         background: "var(--bg-secondary)",
-                        color: "var(--color-foreground)",
+                        color: "var(--color-fg)",
                         border: reportSelectedParking
                           ? "1px solid var(--color-secondary)"
                           : "1px solid var(--border-glass)",
@@ -528,7 +528,7 @@ export function ParkingReportModal({
                                     fontWeight: isSelected ? "700" : "600",
                                     color: isSelected
                                       ? "var(--color-secondary)"
-                                      : "var(--color-foreground)",
+                                      : "var(--color-fg)",
                                   }}
                                 >
                                   {p.name}
@@ -570,7 +570,7 @@ export function ParkingReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     marginBottom: "6px",
                   }}
                 >
@@ -585,7 +585,7 @@ export function ParkingReportModal({
                     padding: "10px 14px",
                     borderRadius: "10px",
                     background: "var(--bg-secondary)",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-cairo)",
                     fontSize: "0.9rem",
@@ -611,7 +611,7 @@ export function ParkingReportModal({
                     display: "block",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     marginBottom: "6px",
                   }}
                 >
@@ -630,7 +630,7 @@ export function ParkingReportModal({
                     padding: "12px",
                     borderRadius: "10px",
                     background: "var(--bg-secondary)",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     border: "1px solid var(--border-glass)",
                     fontFamily: "var(--font-cairo)",
                     fontSize: "0.9rem",
@@ -648,7 +648,7 @@ export function ParkingReportModal({
                     alignItems: "center",
                     fontSize: "0.85rem",
                     fontWeight: "700",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     marginBottom: "6px",
                   }}
                 >
@@ -745,7 +745,7 @@ export function ParkingReportModal({
                         style={{
                           fontSize: "0.88rem",
                           fontWeight: "700",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                           marginBottom: "3px",
                         }}
                       >
@@ -807,7 +807,7 @@ export function ParkingReportModal({
                         style={{
                           fontSize: "0.86rem",
                           fontWeight: "700",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -863,7 +863,7 @@ export function ParkingReportModal({
                           borderRadius: "8px",
                           background: "rgba(255, 255, 255, 0.05)",
                           border: "1px solid var(--border-glass)",
-                          color: "var(--color-foreground)",
+                          color: "var(--color-fg)",
                           fontSize: "0.75rem",
                           fontWeight: "600",
                           display: "flex",

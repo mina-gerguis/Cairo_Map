@@ -10,7 +10,7 @@ import { DEFAULT_HIGHWAYS, DEFAULT_ROAD_NEWS, HighwayItem, RoadNewsItem } from "
 
 export default function AdminRoadsInfoPage() {
   return (
-    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-foregroundSecondary)" }}>جاري التحميل...</div>}>
+    <Suspense fallback={<div style={{ padding: "2rem", color: "var(--color-fgSecondary)" }}>جاري التحميل...</div>}>
       <AdminRoadsInfoInner />
     </Suspense>
   );
@@ -592,7 +592,7 @@ function AdminRoadsInfoInner() {
       {/* Top Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "16px" }}>
         <div>
-          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--color-foreground)", marginBottom: "6px" }}>
+          <h1 style={{ fontSize: "1.85rem", fontWeight: "900", color: "var(--color-fg)", marginBottom: "6px" }}>
             <i className="bx bx-tachometer" style={{ marginLeft: "8px", color: "#3b82f6" }} />
             إدارة معلومات الطرق وأخبار المرور
           </h1>
@@ -654,7 +654,7 @@ function AdminRoadsInfoInner() {
             <i className="bx bx-git-branch" />
           </div>
           <div>
-            <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-foreground)" }}>{roadsData.length}</div>
+            <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-fg)" }}>{roadsData.length}</div>
             <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>إجمالي الطرق المسجلة</div>
           </div>
         </div>
@@ -664,7 +664,7 @@ function AdminRoadsInfoInner() {
             <i className="bx bx-ruler" />
           </div>
           <div>
-            <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-foreground)" }}>
+            <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-fg)" }}>
               {roadsData.reduce((acc, r) => acc + (r.lengthKm || 0), 0).toLocaleString("ar-EG")} كم
             </div>
             <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>إجمالي أطوال الطرق</div>
@@ -676,7 +676,7 @@ function AdminRoadsInfoInner() {
             <i className="bx bx-bell" />
           </div>
           <div>
-            <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-foreground)" }}>{newsData.length}</div>
+            <div style={{ fontSize: "1.4rem", fontWeight: "900", color: "var(--color-fg)" }}>{newsData.length}</div>
             <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>أخبار وتنبيهات المرور</div>
           </div>
         </div>
@@ -747,7 +747,7 @@ function AdminRoadsInfoInner() {
                   borderRadius: "12px",
                   background: "rgba(255,255,255,0.03)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--color-foreground)"
+                  color: "var(--color-fg)"
                 }}
               />
             </div>
@@ -791,7 +791,7 @@ function AdminRoadsInfoInner() {
                 ) : (
                   filteredRoads.map((r) => (
                     <tr key={r.id} className={styles.adminTr}>
-                      <td className={styles.adminTd} style={{ fontWeight: "700", color: "var(--color-foreground)" }}>
+                      <td className={styles.adminTd} style={{ fontWeight: "700", color: "var(--color-fg)" }}>
                         <div>{r.name}</div>
                         {r.code && <span style={{ fontSize: "0.75rem", color: "#60a5fa" }}>كود: {r.code}</span>}
                       </td>
@@ -876,7 +876,7 @@ function AdminRoadsInfoInner() {
                   borderRadius: "12px",
                   background: "rgba(255,255,255,0.03)",
                   border: "1px solid var(--border-glass)",
-                  color: "var(--color-foreground)"
+                  color: "var(--color-fg)"
                 }}
               />
             </div>
@@ -909,7 +909,7 @@ function AdminRoadsInfoInner() {
                   filteredNews.map((n) => (
                     <tr key={n.id} className={styles.adminTr}>
                       <td className={styles.adminTd} style={{ fontWeight: "700", maxWidth: "280px" }}>
-                        <div style={{ color: "var(--color-foreground)" }}>{n.title}</div>
+                        <div style={{ color: "var(--color-fg)" }}>{n.title}</div>
                         <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {n.summary}
                         </div>
@@ -933,7 +933,7 @@ function AdminRoadsInfoInner() {
                           {n.severity === "critical" ? "عاجل" : n.severity === "warning" ? "تنبيه" : "معلومة"}
                         </span>
                       </td>
-                      <td className={styles.adminTd} style={{ color: "var(--color-foreground)" }}>{n.roadName || "كافة الطرق"}</td>
+                      <td className={styles.adminTd} style={{ color: "var(--color-fg)" }}>{n.roadName || "كافة الطرق"}</td>
                       <td className={styles.adminTd} style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>{n.source}</td>
                       <td className={styles.adminTd}>
                         <span style={{ color: n.isActive ? "#16a34a" : "#94a3b8", fontWeight: "700", fontSize: "0.8rem" }}>
@@ -982,10 +982,10 @@ function AdminRoadsInfoInner() {
             style={{ maxWidth: "750px" }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "10px" }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "700", color: "var(--color-foreground)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "700", color: "var(--color-fg)" }}>
                 {editingRoad ? "تعديل بيانات الطريق والسرعات" : "إضافة طريق جديد"}
               </h3>
-              <button onClick={() => setShowRoadModal(false)} style={{ background: "none", border: "none", color: "var(--color-foreground)", fontSize: "1.4rem", cursor: "pointer" }}>
+              <button onClick={() => setShowRoadModal(false)} style={{ background: "none", border: "none", color: "var(--color-fg)", fontSize: "1.4rem", cursor: "pointer" }}>
                 <i className="bx bx-x" />
               </button>
             </div>
@@ -1306,10 +1306,10 @@ function AdminRoadsInfoInner() {
             style={{ maxWidth: "600px" }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px", borderBottom: "1px solid var(--border-glass)", paddingBottom: "10px" }}>
-              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "700", color: "var(--color-foreground)" }}>
+              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "700", color: "var(--color-fg)" }}>
                 {editingNews ? "تعديل الخبر أو التنبيه" : "إضافة خبر مروري جديد"}
               </h3>
-              <button onClick={() => setShowNewsModal(false)} style={{ background: "none", border: "none", color: "var(--color-foreground)", fontSize: "1.4rem", cursor: "pointer" }}>
+              <button onClick={() => setShowNewsModal(false)} style={{ background: "none", border: "none", color: "var(--color-fg)", fontSize: "1.4rem", cursor: "pointer" }}>
                 <i className="bx bx-x" />
               </button>
             </div>
@@ -1429,7 +1429,7 @@ function AdminRoadsInfoInner() {
                   checked={newsForm.isActive}
                   onChange={(e) => setNewsForm({ ...newsForm, isActive: e.target.checked })}
                 />
-                <label htmlFor="isActiveNews" style={{ fontSize: "0.85rem", cursor: "pointer", color: "var(--color-foreground)" }}>
+                <label htmlFor="isActiveNews" style={{ fontSize: "0.85rem", cursor: "pointer", color: "var(--color-fg)" }}>
                   نشر الخبر وجعله فعالاً في صفحة المستخدمين
                 </label>
               </div>

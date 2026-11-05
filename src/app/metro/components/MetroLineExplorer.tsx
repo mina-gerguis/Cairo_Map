@@ -1,6 +1,7 @@
 import React from "react";
 import { LineId, MetroLineExplorerProps } from "../types";
 import { LINE_COLORS, LINE_NAMES } from "../constants";
+import ProjectBanner from "@/components/common/ProjectBanner";
 import styles from "../metro.module.css";
 
 export default function MetroLineExplorer({
@@ -69,7 +70,7 @@ export default function MetroLineExplorer({
 
         <div className={styles.metricTile} style={{ flexDirection: "column", alignItems: "flex-start", gap: "2px" }}>
           <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", fontWeight: "600" }}> المحطات</span>
-          <span style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--color-foreground)" }}>
+          <span style={{ fontSize: "0.92rem", fontWeight: "800", color: "var(--color-fg)" }}>
             {currentExplorerStations.length > 0 ? `${currentExplorerStations.length} محطة` : "تحت الإنشاء"}
           </span>
         </div>
@@ -93,7 +94,7 @@ export default function MetroLineExplorer({
               fontSize: "0.95rem",
               fontWeight: "800",
               margin: 0,
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               fontFamily: "var(--font-sub, inherit)",
             }}
           >
@@ -182,8 +183,8 @@ export default function MetroLineExplorer({
                           color: isUnderConstruction
                             ? "#ef4444"
                             : isFirst || isLast
-                              ? "var(--color-foreground)"
-                              : "var(--color-foreground)",
+                              ? "var(--color-fg)"
+                              : "var(--color-fg)",
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "6px",
@@ -302,7 +303,7 @@ export default function MetroLineExplorer({
                               style={{
                                 fontSize: "0.74rem",
                                 background: "rgba(255, 255, 255, 0.05)",
-                                color: "var(--color-foreground)",
+                                color: "var(--color-fg)",
                                 padding: "4px 10px",
                                 borderRadius: "6px",
                                 border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
@@ -318,24 +319,29 @@ export default function MetroLineExplorer({
                         )}
                       </div>
                       <div
-                        style={{
-                          marginTop: "10px",
-                          paddingTop: "8px",
-                          borderTop: "1px solid rgba(255, 255, 255, 0.06)",
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
+                        style={{ marginTop: "12px" }}
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenReportModal(station);
-                          }}
-                          className="btn btn-report"
-                        >
-                          <span>الإبلاغ عن تصحيح في محطة {station}</span>
-                        </button>
+                        <ProjectBanner
+                          variant="error"
+                          label={`هل لاحظت بيانات غير دقيقة في محطة ${station}؟`}
+                          icon={
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              style={{ width: "16px", height: "16px" }}
+                            >
+                              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                              <line x1="12" y1="9" x2="12" y2="13" />
+                              <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                          }
+                          onClick={() => onOpenReportModal(station)}
+                        />
                       </div>
                     </div>
                   )}

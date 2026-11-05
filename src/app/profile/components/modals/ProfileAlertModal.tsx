@@ -32,7 +32,7 @@ export const ProfileAlertModal: React.FC<ProfileAlertModalProps> = ({ message, o
         isOpen={message !== null}
         onClose={onClose}
         title={message.title || (isSuccess ? "تمت العملية بنجاح" : "تنبيه")}
-        titleColor={isSuccess ? "var(--color-foreground)" : "var(--color-error)"}
+        titleColor={isSuccess ? "var(--color-fg)" : "var(--color-error)"}
         message={message.text}
         borderColor="var(--border-glass)"
         primaryButton={{

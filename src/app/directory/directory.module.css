@@ -41,7 +41,7 @@
 }
 
 .sliderCardTitle {
-  color: var(--color-foreground);
+  color: var(--color-fg);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.92rem;

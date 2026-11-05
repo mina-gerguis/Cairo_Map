@@ -78,7 +78,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
               margin: 0,
               fontSize: "1.15rem",
               fontWeight: "700",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               fontFamily: "var(--font-cairo)",
             }}
           >
@@ -108,7 +108,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             }}
           >
             <Image
-              src={ ASSETS.threeD.coin }
+              src={ASSETS.threeD.coin}
               alt="عملة قريب"
               draggable={false}
               width={100}
@@ -130,7 +130,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
             style={{
               fontSize: "2.4rem",
               fontWeight: "700",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               margin: "4px 0",
               fontFamily: "var(--font-tenor-sans)",
             }}
@@ -198,7 +198,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                 fontSize: "0.9rem",
                 fontFamily: "var(--font-heading)",
                 fontWeight: "700",
-                color: "var(--color-foreground)",
+                color: "var(--color-fg)",
               }}
             >
               تحويل النقاط إلى رصيد محفظة كاش
@@ -427,7 +427,7 @@ export const ProfilePointsModal: React.FC<ProfilePointsModalProps> = ({
                   style={{ color: "#3b82f6", fontSize: "1.05rem", marginTop: "3px" }}
                 ></i>
                 <div>
-                  <span style={{ fontWeight: "bold", color: "var(--color-foreground)" }}>
+                  <span style={{ fontWeight: "bold", color: "var(--color-fg)" }}>
                     الهدايا والمكافآت:
                   </span>{" "}
                   الجوائز اليومية والمسابقات والفعاليات المنظمة.

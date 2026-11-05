@@ -14,9 +14,17 @@
   width: 100%;
   box-sizing: border-box;
   border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
 }
 
-/* ==================== ERROR (Red - Matching Screenshot) ==================== */
+.isClickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+
+/* ==================== ERROR (Red) ==================== */
 .variantError {
   background-color: #fee2e2;
   border-color: #fca5a5;
@@ -37,6 +45,19 @@
   border-color: #fca5a5;
   color: #991b1b;
   fill: #991b1b;
+}
+
+.variantError.isClickable:hover {
+  background-color: #fecdd388;
+  border-color: #f87171;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+:global(html.dark) .variantError.isClickable:hover,
+:global(html:not(.light)) .variantError.isClickable:hover {
+  background-color: rgba(175, 56, 56, 0.22);
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
 }
 
 /* ==================== WARNING (Amber) ==================== */
@@ -62,6 +83,19 @@
   fill: #92400e;
 }
 
+.variantWarning.isClickable:hover {
+  background-color: #fde68a;
+  border-color: #f59e0b;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+
+:global(html.dark) .variantWarning.isClickable:hover,
+:global(html:not(.light)) .variantWarning.isClickable:hover {
+  background-color: rgba(245, 158, 11, 0.22);
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+}
+
 /* ==================== SUCCESS (Blue) ==================== */
 .variantSuccess {
   background-color: #dbeafe;
@@ -85,13 +119,26 @@
   fill: #1e40af;
 }
 
+.variantSuccess.isClickable:hover {
+  background-color: #bfdbfe;
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+:global(html.dark) .variantSuccess.isClickable:hover,
+:global(html:not(.light)) .variantSuccess.isClickable:hover {
+  background-color: rgba(59, 130, 246, 0.22);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.2);
+}
+
 /* ==================== INNER LAYOUT ==================== */
 .container {
   display: flex;
   flex-direction: row;
-  align-items: start;
-  justify-content: start;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   width: 100%;
   max-width: 100%;
   flex-wrap: wrap;
@@ -117,6 +164,11 @@
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.25rem;
+}
+
+.ctaWrapper {
+  display: inline-flex;
+  align-items: center;
 }
 
 .ctaLink {

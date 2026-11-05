@@ -137,7 +137,7 @@
   margin: 0 0 8px;
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-foreground);
+  color: var(--color-fg);
 }
 
 .description {

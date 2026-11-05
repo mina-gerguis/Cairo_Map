@@ -154,7 +154,7 @@ export function MultiSelectSearch({
   return (
     <div ref={containerRef} style={{ position: "relative", width: "100%", textAlign: "right" }} dir="rtl">
       {label && (
-        <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--color-foreground)", display: "block" }}>
+        <label className="help-label" style={{ fontSize: "0.95rem", fontWeight: "700", marginBottom: "8px", color: "var(--color-fg)", display: "block" }}>
           {label}
         </label>
       )}
@@ -323,13 +323,13 @@ export function MultiSelectSearch({
                       borderRadius: "8px",
                       cursor: "pointer",
                       background: isChecked ? "rgba(0, 111, 238, 0.08)" : "transparent",
-                      color: isChecked ? "var(--color-foreground)" : "var(--text-secondary)",
+                      color: isChecked ? "var(--color-fg)" : "var(--text-secondary)",
                       transition: "all 0.15s ease"
                     }}
                     onMouseEnter={(e) => {
                       if (!isChecked) {
                         e.currentTarget.style.background = "var(--hoverBtn, rgba(39, 39, 42, 0.8))";
-                        e.currentTarget.style.color = "var(--color-foreground)";
+                        e.currentTarget.style.color = "var(--color-fg)";
                       }
                     }}
                     onMouseLeave={(e) => {

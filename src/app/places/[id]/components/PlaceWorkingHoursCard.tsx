@@ -19,7 +19,7 @@ export default function PlaceWorkingHoursCard({
           fontSize: "1.1rem",
           fontWeight: "700",
           marginBottom: "12px",
-          color: "var(--color-foreground)",
+          color: "var(--color-fg)",
         }}
       >
         ساعات العمل
@@ -79,7 +79,7 @@ export default function PlaceWorkingHoursCard({
                     style={{
                       fontWeight: isToday ? "bold" : "normal",
                       color: isToday
-                        ? "var(--color-foreground)"
+                        ? "var(--color-fg)"
                         : "var(--text-secondary)",
                     }}
                   >
@@ -99,7 +99,7 @@ export default function PlaceWorkingHoursCard({
                   <div
                     style={{
                       fontWeight: "600",
-                      color: day.isWorking ? "var(--color-foreground)" : "#ff3b30",
+                      color: day.isWorking ? "var(--color-fg)" : "#ff3b30",
                       fontSize: "0.95rem",
                     }}
                   >

@@ -354,7 +354,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
                     style={{
                       fontSize: "0.85rem",
                       fontWeight: "600",
-                      color: "var(--color-foreground)",
+                      color: "var(--color-fg)",
                     }}
                   >
                     اضغط لاختيار صورة، رفع ملف، أو التقاط صورة جديدة
@@ -410,7 +410,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         isOpen={proposalToRetract !== null}
         onClose={() => setProposalToRetract(null)}
         title="تأكيد الحذف"
-        titleColor="var(--color-foreground)"
+        titleColor="var(--color-fg)"
         message="هل أنت متأكد من حذف هذا الاقتراح؟"
         iconSrc="/images/threeD/trash.webp"
         borderColor="rgba(255, 149, 0, 0.25)"
@@ -505,7 +505,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
       {/* Edit FAQ Modal */}
       <CustomModal
         isOpen={Boolean(faqToEdit)}
-        onClose={handleCloseEditFAQ || (() => {})}
+        onClose={handleCloseEditFAQ || (() => { })}
         closeOnOverlayClick={!editFaqLoading}
         title="تعديل السؤال الشائع"
         message="يمكنك تعديل نص السؤال أو الإجابة وحفظ التعديلات مباشرة."
@@ -537,7 +537,7 @@ export const ProfileFeedbackModals: React.FC<ProfileFeedbackModalsProps> = ({
         }}
         secondaryButton={{
           label: "إلغاء",
-          onClick: handleCloseEditFAQ || (() => {}),
+          onClick: handleCloseEditFAQ || (() => { }),
           icon: <i className="bx bx-x" style={{ fontSize: "1.2rem" }}></i>,
           bgColor: "var(--btn-cancel)",
           disabled: editFaqLoading,

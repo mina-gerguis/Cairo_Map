@@ -35,7 +35,7 @@ export function AdminBrtStationsHeader({
             style={{
               fontSize: "1.85rem",
               fontWeight: "900",
-              color: "var(--color-foreground, #fff)",
+              color: "var(--color-fg, #fff)",
               margin: 0
             }}
           >

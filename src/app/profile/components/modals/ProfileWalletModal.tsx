@@ -134,7 +134,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               margin: 0,
               fontSize: "1.15rem",
               fontWeight: "700",
-              color: "var(--color-foreground)",
+              color: "var(--color-fg)",
               fontFamily: "var(--font-sub)",
             }}
           >
@@ -163,7 +163,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontFamily: "var(--font-heading)",
                   fontSize: "2.4rem",
                   fontWeight: "700",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                   margin: "4px 0",
                 }}
               >
@@ -181,7 +181,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               className={clsx("glass-panel", styles.walletSubCard)}
               style={{
                 width: "100%",
-                background: "var(--color-foreground)",
+                background: "var(--color-fg)",
                 border: "1px solid var(--border-glass)",
                 borderRadius: "12px",
                 padding: "10px 18px",
@@ -260,7 +260,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     margin: 0,
                     fontSize: "0.95rem",
                     fontWeight: "800",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                     display: "flex",
                     alignItems: "center",
                     gap: "6px",
@@ -361,7 +361,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                               style={{
                                 fontSize: "0.82rem",
                                 fontWeight: "bold",
-                                color: "var(--color-foreground)",
+                                color: "var(--color-fg)",
                               }}
                             >
                               {tx.type === "deposit" ? "إيداع رصيد" : "سحب رصيد"}
@@ -516,7 +516,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 طريقة الإيداع
@@ -551,9 +551,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               {depositMethod === "instapay" && (
                 <p style={{ margin: 0, lineHeight: "1.6", color: "var(--text-secondary)" }}>
                   قم بالتحويل عبر تطبيق انستا باي إلى الحساب التالي: <br />
-                  العنوان: <strong style={{ color: "var(--color-foreground)" }}>mina0gerguis@instapay</strong>
+                  العنوان: <strong style={{ color: "var(--color-fg)" }}>mina0gerguis@instapay</strong>
                   <br />
-                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina G***** A</strong>
+                  الاسم: <strong style={{ color: "var(--color-fg)" }}>Mina G***** A</strong>
                   <br />
                   الرابط السريع :{" "}
                   <a
@@ -588,7 +588,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     </strong>{" "}
                   </button>
                   <br />
-                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerguis</strong>
+                  الاسم: <strong style={{ color: "var(--color-fg)" }}>Mina Gerguis</strong>
                 </p>
               )}
               {/* Vodafone Cash instructions */}
@@ -611,7 +611,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                       <span style={{ color: "var(--color-primary)" }}>{copied ? "تم النسخ" : "01020372317"}</span> </strong>
                   </button>
                   <br />
-                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>
+                  الاسم: <strong style={{ color: "var(--color-fg)" }}>Mina Gerges</strong>
                 </p>
               )}
               {/* Bank Transfer instructions */}
@@ -620,7 +620,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   قم بالتحويل البنكي المباشر للحساب التالي:
                   <br />
                   البنك:{" "}
-                  <strong style={{ color: "var(--color-foreground)" }}>
+                  <strong style={{ color: "var(--color-fg)" }}>
                     بنك قطر الوطني الأهلي (QNB)
                   </strong>
                   <br />
@@ -640,7 +640,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     </strong>
                   </button>
                   <br />
-                  الاسم: <strong style={{ color: "var(--color-foreground)" }}>Mina Gerges</strong>
+                  الاسم: <strong style={{ color: "var(--color-fg)" }}>Mina Gerges</strong>
                 </p>
               )}
             </div>
@@ -652,7 +652,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 المبلغ المراد شحنه (بالجنيه المصري)
@@ -677,7 +677,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 الرقم/الحساب الذي قمت بالتحويل منه
@@ -701,7 +701,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 إرفاق صورة إيصال التحويل
@@ -850,7 +850,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               <span style={{ color: "var(--text-secondary)", display: "block", marginBottom: "4px" }}>
                 الرصيد المتاح للسحب
               </span>
-              <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "var(--color-foreground)" }}>
+              <h4 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "900", color: "var(--color-fg)" }}>
                 {formatNumber(profile?.balance ?? 0, 2)} ج.م
               </h4>
               <p style={{ margin: "6px 0 0 0", color: "var(--text-muted)", fontSize: "0.72rem" }}>
@@ -865,7 +865,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 طريقة استلام الرصيد
@@ -890,7 +890,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 المبلغ المراد سحبه (بالجنيه المصري)
@@ -915,7 +915,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                   fontSize: "0.85rem",
                   fontWeight: "bold",
                   marginBottom: "6px",
-                  color: "var(--color-foreground)",
+                  color: "var(--color-fg)",
                 }}
               >
                 {withdrawMethod === "instapay" && "عنوان انستا باي المستلم (IPA)"}
@@ -950,7 +950,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                     fontSize: "0.85rem",
                     fontWeight: "bold",
                     marginBottom: "6px",
-                    color: "var(--color-foreground)",
+                    color: "var(--color-fg)",
                   }}
                 >
                   اسم المستلم بالكامل (ثلاثي على الأقل)

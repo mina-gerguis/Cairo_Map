@@ -205,7 +205,7 @@ export default function SaveLocationModal({
           borderRadius: "20px",
           padding: "24px",
           boxShadow: "0 25px 60px rgba(0, 0, 0, 0.6)",
-          color: "var(--color-foreground, #ffffff)",
+          color: "var(--color-fg, #ffffff)",
           position: "relative",
           maxHeight: "90vh",
           overflowY: "auto",
@@ -302,7 +302,7 @@ export default function SaveLocationModal({
               style={{
                 fontSize: "1.25rem",
                 fontWeight: 700,
-                color: "var(--color-foreground, #ffffff)",
+                color: "var(--color-fg, #ffffff)",
                 margin: "0 0 10px 0",
               }}
             >
@@ -493,7 +493,7 @@ export default function SaveLocationModal({
                       ? "rgba(16, 185, 129, 0.2)"
                       : "rgba(255, 255, 255, 0.08)",
                     border: copiedLink ? "1px solid #10b981" : "1px solid rgba(255, 255, 255, 0.15)",
-                    color: copiedLink ? "#10b981" : "var(--color-foreground, #ffffff)",
+                    color: copiedLink ? "#10b981" : "var(--color-fg, #ffffff)",
                     padding: "12px",
                     borderRadius: "10px",
                     cursor: "pointer",
@@ -629,7 +629,7 @@ export default function SaveLocationModal({
                   border: "none",
                   borderRadius: "8px",
                   padding: "6px 10px",
-                  color: "var(--color-foreground, #ffffff)",
+                  color: "var(--color-fg, #ffffff)",
                   cursor: loading ? "not-allowed" : "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -667,7 +667,7 @@ export default function SaveLocationModal({
                   fontSize: "0.9rem",
                   fontWeight: 600,
                   marginBottom: "6px",
-                  color: "var(--color-foreground, #ffffff)",
+                  color: "var(--color-fg, #ffffff)",
                 }}
               >
                 اسم المكان <span style={{ color: "#ef4444" }}>*</span>
@@ -685,7 +685,7 @@ export default function SaveLocationModal({
                   borderRadius: "10px",
                   background: "rgba(255, 255, 255, 0.06)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
-                  color: "var(--color-foreground, #ffffff)",
+                  color: "var(--color-fg, #ffffff)",
                   fontSize: "0.95rem",
                   outline: "none",
                 }}
@@ -700,7 +700,7 @@ export default function SaveLocationModal({
                   fontSize: "0.9rem",
                   fontWeight: 600,
                   marginBottom: "8px",
-                  color: "var(--color-foreground, #ffffff)",
+                  color: "var(--color-fg, #ffffff)",
                 }}
               >
                 نوع أو تصنيف المكان
@@ -754,7 +754,7 @@ export default function SaveLocationModal({
                   fontSize: "0.9rem",
                   fontWeight: 600,
                   marginBottom: "6px",
-                  color: "var(--color-foreground, #ffffff)",
+                  color: "var(--color-fg, #ffffff)",
                 }}
               >
                 ملاحظات إضافية (اختياري)
@@ -771,7 +771,7 @@ export default function SaveLocationModal({
                   borderRadius: "10px",
                   background: "rgba(255, 255, 255, 0.06)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
-                  color: "var(--color-foreground, #ffffff)",
+                  color: "var(--color-fg, #ffffff)",
                   fontSize: "0.9rem",
                   outline: "none",
                   resize: "none",
