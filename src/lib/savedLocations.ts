@@ -1,6 +1,18 @@
 "use client";
 
+import React from "react";
 import { supabase } from "@/lib/supabase";
+import {
+  IconCar,
+  IconHome,
+  IconBriefcase,
+  IconCoffee,
+  IconMapPin,
+  IconShoppingCart,
+  IconPlane,
+  IconDots,
+  IconPin,
+} from "@tabler/icons-react";
 
 export interface SavedLocation {
   id: string;
@@ -21,14 +33,73 @@ export interface SavedLocation {
 
 export const SAVED_LOCATIONS_STORAGE_KEY = "cairo_map_saved_user_places";
 
-export const LOCATION_CATEGORIES = [
-  { id: "parking", label: "ركنة سيارة", icon: "🚗" },
-  { id: "home", label: "المنزل", icon: "🏠" },
-  { id: "work", label: "العمل", icon: "💼" },
-  { id: "cafe", label: "كافيه / مطعم", icon: "☕" },
-  { id: "meeting", label: "نقطة لقاء", icon: "📍" },
-  { id: "shopping", label: "تسوق", icon: "🛒" },
-  { id: "other", label: "مكان عام", icon: "📌" },
+export interface SavedLocationsPlanLimit {
+  limit: number;
+  tier: "free" | "silver" | "gold";
+  tierName: string;
+  isUnlimited: boolean;
+  maxAllowedText: string;
+}
+
+/**
+ * Calculates user's saved places limit based on their subscription tier:
+ * - Free: 3 places
+ * - Silver: 20 places
+ * - Gold / Mishwar / Admin: Unlimited
+ */
+export function getUserSavedPlacesLimit(profile: any): SavedLocationsPlanLimit {
+  const isAdmin = Boolean(profile?.is_admin);
+  const isExpired = profile?.subscription_end && new Date(profile.subscription_end) < new Date();
+  const rawTier = (profile?.subscription_tier || "free").toLowerCase();
+
+  // Admin or Active Gold / Mishwar -> Unlimited
+  if (isAdmin || (!isExpired && (rawTier === "gold" || rawTier === "mishwar"))) {
+    return {
+      limit: Infinity,
+      tier: "gold",
+      tierName: "الذهبية",
+      isUnlimited: true,
+      maxAllowedText: "عدد لا نهائي",
+    };
+  }
+
+  // Active Silver -> 20 places
+  if (!isExpired && rawTier === "silver") {
+    return {
+      limit: 20,
+      tier: "silver",
+      tierName: "الفضية",
+      isUnlimited: false,
+      maxAllowedText: "20 مكاناً",
+    };
+  }
+
+  // Free (or expired subscription) -> 3 places
+  return {
+    limit: 3,
+    tier: "free",
+    tierName: "المجانية",
+    isUnlimited: false,
+    maxAllowedText: "3 أماكن",
+  };
+}
+
+export interface LocationCategory {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+export const LOCATION_CATEGORIES: LocationCategory[] = [
+  { id: "parking", label: "ركنة سيارة", icon: React.createElement(IconCar, { stroke: 2, size: 18 }) },
+  { id: "home", label: "المنزل", icon: React.createElement(IconHome, { stroke: 2, size: 18 }) },
+  { id: "work", label: "العمل", icon: React.createElement(IconBriefcase, { stroke: 2, size: 18 }) },
+  { id: "cafe", label: "كافيه / مطعم", icon: React.createElement(IconCoffee, { stroke: 2, size: 18 }) },
+  { id: "meeting", label: "نقطة لقاء", icon: React.createElement(IconMapPin, { stroke: 2, size: 18 }) },
+  { id: "shopping", label: "تسوق", icon: React.createElement(IconShoppingCart, { stroke: 2, size: 18 }) },
+  { id: "travel", label: "تخطيط للسفر", icon: React.createElement(IconPlane, { stroke: 2, size: 18 }) },
+  { id: "public", label: "مكان عام", icon: React.createElement(IconPin, { stroke: 2, size: 18 }) },
+  { id: "other", label: "أخرى", icon: React.createElement(IconDots, { stroke: 2, size: 18 }) },
 ];
 
 /**
@@ -174,8 +245,20 @@ export async function addUserSavedLocation(
     longitude: number;
     accuracy: number;
     address?: string;
-  }
+  },
+  profile?: any
 ): Promise<SavedLocation> {
+  if (profile !== undefined) {
+    const planLimit = getUserSavedPlacesLimit(profile);
+    if (!planLimit.isUnlimited) {
+      const existing = await fetchUserSavedLocations(userId);
+      if (existing.length >= planLimit.limit) {
+        throw new Error(
+          `لقد بلغت الحد الأقصى للأماكن المحفوظة في باقتك (${planLimit.tierName}: ${planLimit.maxAllowedText}). يرجى ترقية باقتك لحفظ المزيد من الأماكن أو حذف بعض الأماكن القديمة.`
+        );
+      }
+    }
+  }
   const now = new Date();
   const lat = Number(data.latitude.toFixed(6));
   const lng = Number(data.longitude.toFixed(6));
