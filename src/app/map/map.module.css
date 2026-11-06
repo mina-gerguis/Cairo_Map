@@ -395,6 +395,27 @@
   box-shadow: 0 4px 16px rgba(39, 39, 255, 0.45);
 }
 
+.toolButtonCount {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--color-primary, #2727ff);
+  color: #ffffff;
+  font-size: 0.58rem;
+  line-height: 14px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.toolButton.active .toolButtonCount {
+  background: #ffffff;
+  color: var(--color-primary, #2727ff);
+}
+
 .locateBtnPulse {
   position: absolute;
   top: 0;

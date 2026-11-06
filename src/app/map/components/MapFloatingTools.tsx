@@ -32,6 +32,9 @@ interface MapFloatingToolsProps {
   userHasLocation: boolean;
   onSelectDistrict?: (loc: UserLocation) => void;
   onSaveLocation?: () => void;
+  onToggleSidebar: () => void;
+  isSidebarOpen: boolean;
+  totalFilteredCount: number;
 }
 
 export default function MapFloatingTools({
@@ -43,6 +46,9 @@ export default function MapFloatingTools({
   userHasLocation,
   onSelectDistrict,
   onSaveLocation,
+  onToggleSidebar,
+  isSidebarOpen,
+  totalFilteredCount,
 }: MapFloatingToolsProps) {
   const [showLayerMenu, setShowLayerMenu] = useState(false);
   const [showDistrictMenu, setShowDistrictMenu] = useState(false);
@@ -236,6 +242,16 @@ export default function MapFloatingTools({
           </div>
         )}
       </div>
+
+      {/* Places Sidebar Toggle */}
+      <button
+        className={`${styles.toolButton} ${isSidebarOpen ? styles.active : ""}`}
+        onClick={onToggleSidebar}
+        title="عرض قائمة الأماكن"
+      >
+        <i className="bx bx-list-ul" style={{ fontSize: "1.1rem" }} />
+        <span className={styles.toolButtonCount}>{totalFilteredCount}</span>
+      </button>
 
       {/* Zoom In */}
       <button

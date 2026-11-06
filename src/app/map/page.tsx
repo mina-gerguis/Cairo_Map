@@ -119,8 +119,8 @@ function MapPageContent() {
 
   // UI States
   const [isSidebarOpen, setIsSidebarOpen] = useState(Boolean(searchParam));
-  const [mapLayer, setMapLayer] = useState<MapLayerType>("dark");
-  const [isLight, setIsLight] = useState(false);
+  const [mapLayer, setMapLayer] = useState<MapLayerType>("light");
+  const [isLight, setIsLight] = useState(true);
 
   // Full Details Modal Sheet States
   const [fullDetailPoint, setFullDetailPoint] = useState<MapPlacePoint | null>(null);
@@ -130,23 +130,34 @@ function MapPageContent() {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [isSaveLocModalOpen, setIsSaveLocModalOpen] = useState(false);
 
-  // Theme Sync
+  // The map page is always presented in the light theme.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const root = document.documentElement;
+    const hadLightClass = root.classList.contains("light");
+    const hadDarkClass = root.classList.contains("dark");
+
+    root.classList.add("light");
+    root.classList.remove("dark");
+    setIsLight(true);
+    setMapLayer("light");
+
     const checkTheme = () => {
-      const light = document.documentElement.classList.contains("light");
-      setIsLight(light);
+      if (!root.classList.contains("light") || root.classList.contains("dark")) {
+        root.classList.add("light");
+        root.classList.remove("dark");
+      }
+      setIsLight(true);
     };
     checkTheme();
     const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, { attributes: true });
-    return () => observer.disconnect();
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => {
+      observer.disconnect();
+      root.classList.toggle("light", hadLightClass);
+      root.classList.toggle("dark", hadDarkClass);
+    };
   }, []);
-
-  // Sync initial map layer with current theme
-  useEffect(() => {
-    setMapLayer(isLight ? "light" : "dark");
-  }, [isLight]);
 
   // Handle Point Selection
   const handleSelectPoint = (point: MapPlacePoint | null) => {
@@ -200,14 +211,10 @@ function MapPageContent() {
         sortByNearby={sortByNearby}
         setSortByNearby={setSortByNearby}
         onLocateUser={handleLocateUser}
-        locationLoading={locationLoading}
         userHasLocation={Boolean(userLocation)}
         onResetView={handleResetView}
         mapLayer={mapLayer}
         setMapLayer={setMapLayer}
-        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        isSidebarOpen={isSidebarOpen}
-        totalFilteredCount={filteredMapPoints.length}
         points={filteredMapPoints}
         onSelectPoint={handleSelectPoint}
       />
@@ -230,12 +237,15 @@ function MapPageContent() {
         <MapFloatingTools
           mapInstanceRef={mapInstanceRef}
           mapLayer={mapLayer}
-          setMapLayer={setMapLayer}
+          setMapLayer={(layer) => setMapLayer(layer === "dark" ? "light" : layer)}
           onLocateUser={handleLocateUser}
           locationLoading={locationLoading}
           userHasLocation={Boolean(userLocation)}
           onSelectDistrict={setUserLocationManual}
           onSaveLocation={() => setIsSaveLocModalOpen(true)}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          isSidebarOpen={isSidebarOpen}
+          totalFilteredCount={filteredMapPoints.length}
         />
 
         {/* Right Collapsible Places Sidebar */}

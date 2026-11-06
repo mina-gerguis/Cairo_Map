@@ -153,14 +153,15 @@ export default function RootLayout({
             __html: `
               try {
                 var theme = localStorage.getItem('dftry_theme');
-                if (theme === 'light') {
+                var p = window.location.pathname || '';
+                var isMapPage = p === '/map';
+                if (isMapPage || theme === 'light') {
                   document.documentElement.classList.add('light');
                   document.documentElement.classList.remove('dark');
                 } else {
                   document.documentElement.classList.add('dark');
                   document.documentElement.classList.remove('light');
                 }
-                var p = window.location.pathname || '';
                 var isNoPreload = p.startsWith('/admin') || p === '/login' || p === '/signup' || p === '/forgot-password' || p === '/reset-password';
                 if (!isNoPreload) {
                   document.documentElement.classList.add('is-preloading');
