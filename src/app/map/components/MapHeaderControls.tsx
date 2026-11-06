@@ -204,18 +204,6 @@ export default function MapHeaderControls({
               {locationLoading ? "جاري التحديد..." : userHasLocation ? "موقعي محدد" : "موقعي"}
             </span>
           </button>
-
-          {/* Sidebar Toggle Button */}
-          <button
-            className={`${styles.topBtn} ${isSidebarOpen ? styles.active : ""}`}
-            onClick={onToggleSidebar}
-            title="عرض قائمة الأماكن"
-          >
-            <i className="bx bx-list-ul" style={{ fontSize: "1.1rem" }}></i>
-            <span>
-              الأماكن <span className={styles.chipCount}>{totalFilteredCount}</span>
-            </span>
-          </button>
         </div>
       </div>
 
