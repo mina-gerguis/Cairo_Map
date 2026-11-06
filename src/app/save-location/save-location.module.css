@@ -521,7 +521,7 @@
 
 .placeCard {
   background: var(--bg-third);
-  border: 1.5px solid var(--border-primary);
+  border: 1.5px solid var(--border-glass);
   border-radius: var(--radius-card);
   padding: 10px 22px;
   display: flex;
