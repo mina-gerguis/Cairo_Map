@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
                 </span>
               </div>
 
-              <Link href="/login" className={styles.action - btn}>
+              <Link href="/login" className={styles.actionbtn}>
                 <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }} />
                 <span>{RESET_PASSWORD_TEXTS.LOGIN_NOW_BTN}</span>
               </Link>
