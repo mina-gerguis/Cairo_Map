@@ -114,7 +114,7 @@ export function AdminMicrobusStationsTable({
                     <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                       <button
                         onClick={() => onEdit(item)}
-                        className={`${styles.action - btn} ${styles.action - btnEdit}`}
+                        className={`${styles.actionbtn} ${styles.actionbtnEdit}`}
                         title="تعديل"
                         style={{
                           padding: "5px",
@@ -126,7 +126,7 @@ export function AdminMicrobusStationsTable({
                       </button>
                       <button
                         onClick={() => onDelete(item)}
-                        className={`${styles.action - btn} ${styles.action - btnDelete}`}
+                        className={`${styles.actionbtn} ${styles.actionbtnDelete}`}
                         title="حذف"
                         style={{
                           padding: "5px",

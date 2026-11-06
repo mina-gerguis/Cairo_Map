@@ -459,7 +459,7 @@ export default function BlogSlugClient({ slug }: BlogSlugClientProps) {
         <div className={`${styles.actionsBar} metro-animate-slide-up metro-delay-250`}>
           <div className={styles.actionGroup}>
             <button
-              className={`${styles.action - btn} ${isLiked ? styles.likedBtn : ""}`}
+              className={`${styles.actionbtn} ${isLiked ? styles.likedBtn : ""}`}
               onClick={handleToggleLike}
             >
               <i className={`bx ${isLiked ? "bxs-heart" : "bx-heart"}`} />
@@ -467,7 +467,7 @@ export default function BlogSlugClient({ slug }: BlogSlugClientProps) {
             </button>
 
             <button
-              className={`${styles.action - btn} ${isBookmarked ? styles.bookmarkedBtn : ""}`}
+              className={`${styles.actionbtn} ${isBookmarked ? styles.bookmarkedBtn : ""}`}
               onClick={handleToggleBookmark}
             >
               <i className={`bx ${isBookmarked ? "bxs-bookmark" : "bx-bookmark"}`} />
