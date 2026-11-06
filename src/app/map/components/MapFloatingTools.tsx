@@ -113,6 +113,7 @@ export default function MapFloatingTools({
           className={`${styles.toolButton} ${isFullscreen ? styles.active : ""}`}
           onClick={onToggleFullscreen}
           title={isFullscreen ? "إنهاء وضع ملء الشاشة (ESC)" : "ملء الشاشة الكامل (F)"}
+          aria-label={isFullscreen ? "إنهاء وضع ملء الشاشة" : "فتح وضع ملء الشاشة"}
           style={
             isFullscreen
               ? {
@@ -137,6 +138,7 @@ export default function MapFloatingTools({
         className={`${styles.toolButton} ${userHasLocation ? styles.active : ""}`}
         onClick={onLocateUser}
         title="تحديد موقعي الحالي"
+        aria-label="تحديد موقعي الحالي"
         disabled={locationLoading}
       >
         <FaLocationArrow
@@ -154,6 +156,7 @@ export default function MapFloatingTools({
         className={styles.toolButton}
         onClick={handleResetCenter}
         title="إعادة ضبط مركز الخريطة (القاهرة)"
+        aria-label="إعادة ضبط مركز الخريطة على القاهرة"
       >
         <TbFocusCentered style={{ fontSize: "1.3rem" }} />
       </button>
@@ -164,6 +167,7 @@ export default function MapFloatingTools({
           className={styles.toolButton}
           onClick={onSaveLocation}
           title="أحفظ مكاني (GPS دقيق ورابط Google Maps)"
+          aria-label="حفظ موقعي الحالي"
           style={{ color: "#38bdf8" }}
         >
           <FaBookmark style={{ fontSize: "1.05rem" }} />
@@ -176,6 +180,8 @@ export default function MapFloatingTools({
           className={`${styles.toolButton} ${showDistrictMenu ? styles.active : ""}`}
           onClick={() => setShowDistrictMenu(!showDistrictMenu)}
           title="اختيار وتحديد منطقتك / حيك بدقة"
+          aria-label="اختيار منطقة أو حي"
+          aria-expanded={showDistrictMenu}
         >
           <FaMapPin style={{ fontSize: "1.1rem" }} />
         </button>
@@ -234,6 +240,8 @@ export default function MapFloatingTools({
           className={`${styles.toolButton} ${showLayerMenu ? styles.active : ""}`}
           onClick={() => setShowLayerMenu(!showLayerMenu)}
           title="تغيير نوع وطبقة الخريطة"
+          aria-label="تغيير طبقة الخريطة"
+          aria-expanded={showLayerMenu}
         >
           <FaLayerGroup style={{ fontSize: "1.1rem" }} />
         </button>
@@ -281,6 +289,8 @@ export default function MapFloatingTools({
         className={`${styles.toolButton} ${isSidebarOpen ? styles.active : ""}`}
         onClick={onToggleSidebar}
         title="عرض قائمة الأماكن"
+        aria-label={`${isSidebarOpen ? "إخفاء" : "عرض"} قائمة الأماكن`}
+        aria-expanded={isSidebarOpen}
       >
         <i className="bx bx-list-ul" style={{ fontSize: "1.1rem" }} />
         <span className={styles.toolButtonCount}>{totalFilteredCount}</span>
@@ -291,6 +301,7 @@ export default function MapFloatingTools({
         className={styles.toolButton}
         onClick={handleZoomIn}
         title="تكبير الخريطة"
+        aria-label="تكبير الخريطة"
       >
         <FaPlus style={{ fontSize: "0.95rem" }} />
       </button>
@@ -300,6 +311,7 @@ export default function MapFloatingTools({
         className={styles.toolButton}
         onClick={handleZoomOut}
         title="تصغير الخريطة"
+        aria-label="تصغير الخريطة"
       >
         <FaMinus style={{ fontSize: "0.95rem" }} />
       </button>

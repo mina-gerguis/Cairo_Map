@@ -71,6 +71,16 @@ export default function MapSidebarList({
                 key={point.id}
                 className={`${styles.placeListItem} ${isSelected ? styles.selected : ""}`}
                 onClick={() => onSelectPoint(point)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSelectPoint(point);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                aria-label={`عرض ${point.name} على الخريطة`}
               >
                 <img
                   src={thumbnail}
