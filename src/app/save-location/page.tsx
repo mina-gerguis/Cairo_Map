@@ -544,15 +544,12 @@ export default function SaveLocationPage() {
             ) : locations.length > 0 ? (
               /* No Search Results */
               <div className={styles.emptyState}>
-                <div className={styles.emptyIconCircle}>
-                  <FaSearch />
-                </div>
                 <h3 className={styles.emptyTitle}>لا توجد أماكن مطابقة لبحثك</h3>
                 <p className={styles.emptySubtitle}>
                   لم نعثر على نتائج لـ "{searchQuery}". جرب تغيير كلمات البحث أو اختيار تصنيف آخر.
                 </p>
                 <button
-                  className={styles.saveLocationSecondaryBtn}
+                  className="btn btn-cancel w-full"
                   onClick={() => {
                     setSearchQuery("");
                     setSelectedTag("all");

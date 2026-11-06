@@ -710,49 +710,20 @@
    ============================================================ */
 .emptyState {
   text-align: center;
-  padding: 60px 24px;
-  background: rgba(17, 24, 39, 0.6);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
+  padding: 30px 24px;
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border-glass);
+  border-radius: var(--radius-card);
   margin: 32px 0;
   backdrop-filter: blur(10px);
-}
-
-:global(html.light) .emptyState {
-  background: #ffffff;
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-
-.emptyIconCircle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(59, 130, 246, 0.12);
-  border: 2px dashed rgba(59, 130, 246, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 20px auto;
-  font-size: 2.2rem;
-  color: #60a5fa;
-}
-
-:global(html.light) .emptyIconCircle {
-  background: #eff6ff;
-  border-color: #93c5fd;
-  color: #2563eb;
 }
 
 .emptyTitle {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--color-fg);
   margin: 0 0 10px 0;
-}
-
-:global(html.light) .emptyTitle {
-  color: #0f172a;
+  font-family: var(--font-sub);
 }
 
 .emptySubtitle {
