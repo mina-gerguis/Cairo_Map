@@ -3,7 +3,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import L from "leaflet";
 import { MapLayerType, UserLocation } from "../types";
-import { FaLocationArrow, FaPlus, FaMinus, FaLayerGroup, FaMapPin, FaCompass, FaBookmark } from "react-icons/fa";
+import {
+  FaLocationArrow,
+  FaPlus,
+  FaMinus,
+  FaLayerGroup,
+  FaMapPin,
+  FaCompass,
+  FaBookmark,
+  FaExpand,
+  FaCompress,
+} from "react-icons/fa";
 import { TbFocusCentered } from "react-icons/tb";
 import styles from "../map.module.css";
 
@@ -12,6 +22,7 @@ const POPULAR_DISTRICTS = [
   { name: "مصر الجديدة / الكوربة", lat: 30.0911, lng: 31.3256 },
   { name: "مدينة نصر / عباس العقاد", lat: 30.0617, lng: 31.3364 },
   { name: "التجمع الخامس / التسعين", lat: 30.0074, lng: 31.4285 },
+  { name: "العاصمة الإدارية الجديدة", lat: 30.0131, lng: 31.7456 },
   { name: "المعادي / دجلة", lat: 29.9602, lng: 31.2569 },
   { name: "الشيخ زايد", lat: 30.0488, lng: 30.9856 },
   { name: "6 أكتوبر / الحصري", lat: 29.9723, lng: 30.9431 },
@@ -20,6 +31,10 @@ const POPULAR_DISTRICTS = [
   { name: "الزمالك", lat: 30.0619, lng: 31.2198 },
   { name: "شبرا مصر", lat: 30.0768, lng: 31.2464 },
   { name: "الهرم / فيصل", lat: 29.9975, lng: 31.1554 },
+  { name: "الرحاب ومدينتي", lat: 30.0613, lng: 31.4923 },
+  { name: "المقطم / الهضبة الوسطى", lat: 30.0077, lng: 31.3008 },
+  { name: "الشروق", lat: 30.1388, lng: 31.6231 },
+  { name: "حلوان", lat: 29.8497, lng: 31.3342 },
   { name: "الإسكندرية / الرمل", lat: 31.2001, lng: 29.9187 },
 ];
 
@@ -35,6 +50,8 @@ interface MapFloatingToolsProps {
   onToggleSidebar: () => void;
   isSidebarOpen: boolean;
   totalFilteredCount: number;
+  isFullscreen?: boolean;
+  onToggleFullscreen?: () => void;
 }
 
 export default function MapFloatingTools({
@@ -49,6 +66,8 @@ export default function MapFloatingTools({
   onToggleSidebar,
   isSidebarOpen,
   totalFilteredCount,
+  isFullscreen,
+  onToggleFullscreen,
 }: MapFloatingToolsProps) {
   const [showLayerMenu, setShowLayerMenu] = useState(false);
   const [showDistrictMenu, setShowDistrictMenu] = useState(false);
@@ -88,6 +107,31 @@ export default function MapFloatingTools({
 
   return (
     <div className={styles.mapToolsPanel}>
+      {/* Fullscreen Mode Toggle */}
+      {onToggleFullscreen && (
+        <button
+          className={`${styles.toolButton} ${isFullscreen ? styles.active : ""}`}
+          onClick={onToggleFullscreen}
+          title={isFullscreen ? "إنهاء وضع ملء الشاشة (ESC)" : "ملء الشاشة الكامل (F)"}
+          style={
+            isFullscreen
+              ? {
+                  background: "var(--color-primary, #2563eb)",
+                  color: "#ffffff",
+                  borderColor: "rgba(255, 255, 255, 0.4)",
+                  boxShadow: "0 0 16px rgba(37, 99, 235, 0.6)",
+                }
+              : undefined
+          }
+        >
+          {isFullscreen ? (
+            <FaCompress style={{ fontSize: "1.05rem" }} />
+          ) : (
+            <FaExpand style={{ fontSize: "1.05rem" }} />
+          )}
+        </button>
+      )}
+
       {/* Locate Me Button */}
       <button
         className={`${styles.toolButton} ${userHasLocation ? styles.active : ""}`}
@@ -197,17 +241,6 @@ export default function MapFloatingTools({
         {showLayerMenu && (
           <div className={styles.layerSelectorDropdown}>
             <button
-              className={`${styles.layerOption} ${mapLayer === "dark" ? styles.selected : ""}`}
-              onClick={() => {
-                setMapLayer("dark");
-                setShowLayerMenu(false);
-              }}
-            >
-              <span>🌙</span>
-              <span>خريطة ليلية (Dark)</span>
-            </button>
-
-            <button
               className={`${styles.layerOption} ${mapLayer === "light" ? styles.selected : ""}`}
               onClick={() => {
                 setMapLayer("light");
@@ -215,18 +248,7 @@ export default function MapFloatingTools({
               }}
             >
               <span>☀️</span>
-              <span>خريطة نهارية (Light)</span>
-            </button>
-
-            <button
-              className={`${styles.layerOption} ${mapLayer === "satellite" ? styles.selected : ""}`}
-              onClick={() => {
-                setMapLayer("satellite");
-                setShowLayerMenu(false);
-              }}
-            >
-              <span>🛰️</span>
-              <span>قمر صناعي (Satellite)</span>
+              <span>خريطة نهارية ملونة (Light)</span>
             </button>
 
             <button
@@ -238,6 +260,17 @@ export default function MapFloatingTools({
             >
               <span>🗺️</span>
               <span>شوارع عامة (OpenStreet)</span>
+            </button>
+
+            <button
+              className={`${styles.layerOption} ${mapLayer === "satellite" ? styles.selected : ""}`}
+              onClick={() => {
+                setMapLayer("satellite");
+                setShowLayerMenu(false);
+              }}
+            >
+              <span>🛰️</span>
+              <span>قمر صناعي (Satellite)</span>
             </button>
           </div>
         )}

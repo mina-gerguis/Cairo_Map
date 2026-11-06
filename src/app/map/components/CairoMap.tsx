@@ -19,23 +19,27 @@ interface CairoMapProps {
   onUpdateUserLocation?: (loc: UserLocation) => void;
 }
 
-const TILE_URLS: Record<MapLayerType, { url: string; attribution: string; subdomains?: string }> = {
+const TILE_URLS: Record<MapLayerType, { url: string; attribution: string; subdomains?: string; maxZoom?: number }> = {
   dark: {
     url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19,
   },
   light: {
     url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19,
   },
   streets: {
     url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, Tiles style by <a href="https://www.hotosm.org/">HOT</a>',
     subdomains: "abc",
+    maxZoom: 19,
   },
   satellite: {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "&copy; Esri, Maxar, Earthstar Geographics",
+    maxZoom: 19,
   },
 };
 
@@ -57,6 +61,7 @@ export default function CairoMap({
   const userMarkerRef = useRef<L.Marker | null>(null);
   const accuracyCircleRef = useRef<L.Circle | null>(null);
   const routeLineRef = useRef<L.Polyline | null>(null);
+  const distanceMarkerRef = useRef<L.Marker | null>(null);
 
   // Default Cairo coordinates
   const DEFAULT_CENTER: [number, number] = [30.0444, 31.2357];
@@ -80,22 +85,37 @@ export default function CairoMap({
 
     markersLayerRef.current = L.layerGroup().addTo(map);
 
-    // Initial tile layer
-    const activeLayerKey: MapLayerType = mapLayer || (isLight ? "light" : "dark");
-    const tileConfig = TILE_URLS[activeLayerKey] || TILE_URLS.dark;
+    // Initial tile layer (Always Light by default)
+    const activeLayerKey: MapLayerType = mapLayer === "dark" ? "light" : (mapLayer || "light");
+    const tileConfig = TILE_URLS[activeLayerKey] || TILE_URLS.light;
     
-    if (activeLayerKey === "dark") {
-      mapContainerRef.current.classList.add("map-dark-tiles");
-    } else {
-      mapContainerRef.current.classList.remove("map-dark-tiles");
-    }
+    mapContainerRef.current.classList.remove("map-dark-tiles");
 
     tileLayerRef.current = L.tileLayer(tileConfig.url, {
       attribution: tileConfig.attribution,
-      maxZoom: 19,
+      maxZoom: tileConfig.maxZoom || 19,
       subdomains: tileConfig.subdomains || "abc",
-      className: activeLayerKey === "dark" ? "dark-tile-img" : "",
+      className: "",
     }).addTo(map);
+
+    // Update zoom detailed class
+    const updateZoomClass = () => {
+      if (map.getZoom() >= 14) {
+        mapContainerRef.current?.classList.add("cairo-map-zoom-detailed");
+      } else {
+        mapContainerRef.current?.classList.remove("cairo-map-zoom-detailed");
+      }
+    };
+    map.on("zoomend", updateZoomClass);
+    updateZoomClass();
+
+    // Resize observer to ensure full height & width tiles refresh
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize();
+    });
+    if (mapContainerRef.current) {
+      resizeObserver.observe(mapContainerRef.current);
+    }
 
     // Close selected point when clicking on empty map
     map.on("click", (e) => {
@@ -109,6 +129,7 @@ export default function CairoMap({
     });
 
     return () => {
+      resizeObserver.disconnect();
       map.remove();
       internalMapRef.current = null;
       if (mapInstanceRef) {
@@ -117,24 +138,16 @@ export default function CairoMap({
     };
   }, []);
 
-  // 2. Update Tile Layer on Layer or Theme change
+  // 2. Update Tile Layer on Layer change (Exclusively Light modes)
   useEffect(() => {
     const map = internalMapRef.current;
     if (!map) return;
 
-    let targetLayerKey = mapLayer;
-    // If not specified or user selected automatic theme matching
-    if (targetLayerKey === "dark" && isLight) targetLayerKey = "light";
-    if (targetLayerKey === "light" && !isLight) targetLayerKey = "dark";
-
-    const tileConfig = TILE_URLS[targetLayerKey] || TILE_URLS.dark;
+    const targetLayerKey: MapLayerType = mapLayer === "dark" ? "light" : (mapLayer || "light");
+    const tileConfig = TILE_URLS[targetLayerKey] || TILE_URLS.light;
 
     if (mapContainerRef.current) {
-      if (targetLayerKey === "dark") {
-        mapContainerRef.current.classList.add("map-dark-tiles");
-      } else {
-        mapContainerRef.current.classList.remove("map-dark-tiles");
-      }
+      mapContainerRef.current.classList.remove("map-dark-tiles");
     }
 
     if (tileLayerRef.current) {
@@ -143,11 +156,11 @@ export default function CairoMap({
 
     tileLayerRef.current = L.tileLayer(tileConfig.url, {
       attribution: tileConfig.attribution,
-      maxZoom: 19,
+      maxZoom: tileConfig.maxZoom || 19,
       subdomains: tileConfig.subdomains || "abc",
-      className: targetLayerKey === "dark" ? "dark-tile-img" : "",
+      className: "",
     }).addTo(map);
-  }, [mapLayer, isLight]);
+  }, [mapLayer]);
 
   // 3. Render Custom Place Markers
   useEffect(() => {
@@ -164,40 +177,55 @@ export default function CairoMap({
 
       const markerHtml = `
         <div class="cairo-custom-marker ${isSelected ? "active-marker" : ""}">
-          <div class="marker-pin" style="background-color: ${color}; ${
-        isSelected ? "border-color: #ffd700; box-shadow: 0 0 16px " + color : ""
-      }">
-            <span class="marker-pin-emoji">${emoji}</span>
+          <div class="marker-pin-outer" style="--pin-color: ${color};">
+            <div class="marker-pin-pulse"></div>
+            <div class="marker-pin-body">
+              <span class="marker-pin-emoji">${emoji}</span>
+              ${
+                point.rating && point.rating >= 4.0
+                  ? `<span class="marker-rating-tag">★${point.rating.toFixed(1)}</span>`
+                  : ""
+              }
+            </div>
+            <div class="marker-pin-tip"></div>
           </div>
+          <div class="marker-title-badge">${point.name}</div>
         </div>
       `;
 
       const customIcon = L.divIcon({
         html: markerHtml,
         className: "custom-leaflet-marker-wrapper",
-        iconSize: [38, 38],
-        iconAnchor: [19, 38],
-        tooltipAnchor: [0, -38],
+        iconSize: [42, 46],
+        iconAnchor: [21, 46],
+        tooltipAnchor: [0, -46],
       });
 
       const marker = L.marker([point.latitude, point.longitude], {
         icon: customIcon,
-        zIndexOffset: isSelected ? 1000 : 0,
+        zIndexOffset: isSelected ? 10000 : 0,
       });
 
-      // Tooltip
+      // Rich Tooltip positioned snug right above the pin
       const ratingHtml = point.rating
-        ? `<span style="color:#fbbf24; margin-right:4px;">★ ${point.rating.toFixed(1)}</span>`
+        ? `<span class="cairo-tooltip-rating">★ ${point.rating.toFixed(1)}</span>`
         : "";
       marker.bindTooltip(
-        `<div style="display:flex; align-items:center; gap:6px;">
-          <span>${point.name}${point.branchName ? ` - ${point.branchName}` : ""}</span>
-          ${ratingHtml}
+        `<div class="cairo-tooltip-box">
+          <div class="cairo-tooltip-title-row">
+            <span class="cairo-tooltip-name">${point.name}${point.branchName ? ` - ${point.branchName}` : ""}</span>
+            ${ratingHtml}
+          </div>
+          <div class="cairo-tooltip-sub-row">
+            <span style="color: ${color}; font-weight: 700;">${emoji} ${point.categoryLabel}</span>
+            ${typeof point.distanceKm === "number" ? `<span class="cairo-tooltip-dist">${point.distanceKm < 1 ? Math.round(point.distanceKm * 1000) + " م" : point.distanceKm.toFixed(1) + " كم"}</span>` : ""}
+          </div>
         </div>`,
         {
           direction: "top",
           className: "cairo-map-tooltip",
-          offset: [0, -32],
+          offset: [0, -4],
+          interactive: false,
         }
       );
 
@@ -295,7 +323,7 @@ export default function CairoMap({
     }
   }, [userLocation]);
 
-  // 5. Draw Direction Line to Selected Point
+  // 5. Draw Direction Line to Selected Point & Midpoint Distance Badge
   useEffect(() => {
     const map = internalMapRef.current;
     if (!map) return;
@@ -303,6 +331,10 @@ export default function CairoMap({
     if (routeLineRef.current) {
       map.removeLayer(routeLineRef.current);
       routeLineRef.current = null;
+    }
+    if (distanceMarkerRef.current) {
+      map.removeLayer(distanceMarkerRef.current);
+      distanceMarkerRef.current = null;
     }
 
     if (userLocation && selectedPoint) {
@@ -312,11 +344,35 @@ export default function CairoMap({
       ];
 
       routeLineRef.current = L.polyline(latlngs, {
-        color: "#3b82f6",
-        weight: 3,
-        dashArray: "8, 8",
-        opacity: 0.8,
+        color: "#2563eb",
+        weight: 3.5,
+        dashArray: "6, 8",
+        opacity: 0.85,
+        className: "cairo-route-polyline",
       }).addTo(map);
+
+      // Midpoint distance pill
+      const midLat = (userLocation.lat + selectedPoint.latitude) / 2;
+      const midLng = (userLocation.lng + selectedPoint.longitude) / 2;
+      const dist = selectedPoint.distanceKm;
+
+      if (typeof dist === "number") {
+        const distStr = dist < 1 ? `${Math.round(dist * 1000)} م` : `${dist.toFixed(1)} كم`;
+        const estMinutes = Math.max(2, Math.round((dist / 30) * 60));
+
+        const distIcon = L.divIcon({
+          html: `<div class="cairo-distance-midpoint-pill">📍 ${distStr} • 🚗 ${estMinutes} د</div>`,
+          className: "custom-distance-badge-wrapper",
+          iconSize: [140, 28],
+          iconAnchor: [70, 14],
+        });
+
+        distanceMarkerRef.current = L.marker([midLat, midLng], {
+          icon: distIcon,
+          interactive: false,
+          zIndexOffset: 1500,
+        }).addTo(map);
+      }
     }
   }, [userLocation, selectedPoint]);
 

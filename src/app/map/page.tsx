@@ -38,7 +38,7 @@ const CairoMap = dynamic(() => import("./components/CairoMap"), {
       }}
     >
       <i className="bx bx-loader-alt bx-spin" style={{ fontSize: "1.5rem" }}></i>
-      <span>جاري تحميل خريطة القاهرة الذكية...</span>
+      <span>جاري تحميل الخريطة ...</span>
     </div>
   ),
 });
@@ -117,10 +117,11 @@ function MapPageContent() {
     }
   }, [categoryParam, setSelectedCategory]);
 
-  // UI States
+  // UI States (Permanently locked to Light Mode per user request)
   const [isSidebarOpen, setIsSidebarOpen] = useState(Boolean(searchParam));
   const [mapLayer, setMapLayer] = useState<MapLayerType>("light");
-  const [isLight, setIsLight] = useState(true);
+  const isLight = true;
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Full Details Modal Sheet States
   const [fullDetailPoint, setFullDetailPoint] = useState<MapPlacePoint | null>(null);
@@ -130,35 +131,90 @@ function MapPageContent() {
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [isSaveLocModalOpen, setIsSaveLocModalOpen] = useState(false);
 
-  // The map page is always presented in the light theme.
+  // Force Light Mode on Map Page per user specification
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof document === 'undefined') return;
     const root = document.documentElement;
-    const hadLightClass = root.classList.contains("light");
-    const hadDarkClass = root.classList.contains("dark");
-
-    root.classList.add("light");
-    root.classList.remove("dark");
-    setIsLight(true);
-    setMapLayer("light");
-
-    const checkTheme = () => {
-      if (!root.classList.contains("light") || root.classList.contains("dark")) {
-        root.classList.add("light");
-        root.classList.remove("dark");
-      }
-      setIsLight(true);
-    };
-    checkTheme();
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    const hadDark = root.classList.contains('dark');
+    root.classList.remove('dark');
+    root.classList.add('light');
     return () => {
-      observer.disconnect();
-      root.classList.toggle("light", hadLightClass);
-      root.classList.toggle("dark", hadDarkClass);
+      if (hadDark) {
+        root.classList.remove('light');
+        root.classList.add('dark');
+      }
     };
   }, []);
 
+  // Fullscreen Management
+  const handleToggleFullscreen = () => {
+    if (typeof document === "undefined") return;
+
+    if (!document.fullscreenElement && !isFullscreen) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+      setIsFullscreen(true);
+      document.documentElement.setAttribute("data-map-fullscreen", "true");
+    } else {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+      setIsFullscreen(false);
+      document.documentElement.removeAttribute("data-map-fullscreen");
+    }
+
+    setTimeout(() => {
+      mapInstanceRef.current?.invalidateSize();
+    }, 250);
+  };
+
+  // Sync fullscreen change events & keyboard shortcut
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const onFullscreenChange = () => {
+      const isNowFull = Boolean(document.fullscreenElement);
+      setIsFullscreen(isNowFull);
+      if (isNowFull) {
+        document.documentElement.setAttribute("data-map-fullscreen", "true");
+      } else {
+        document.documentElement.removeAttribute("data-map-fullscreen");
+      }
+      setTimeout(() => {
+        mapInstanceRef.current?.invalidateSize();
+      }, 200);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target &&
+        (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+      ) {
+        return;
+      }
+      // 'f' or 'F' toggles fullscreen
+      if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        handleToggleFullscreen();
+      }
+    };
+
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", onFullscreenChange);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
+      window.removeEventListener("keydown", handleKeyDown);
+      document.documentElement.removeAttribute("data-map-fullscreen");
+    };
+  }, [isFullscreen]);
+
+  // Theme is locked to Light Mode for Cairo Map
+  // (No dark mode switching)
   // Handle Point Selection
   const handleSelectPoint = (point: MapPlacePoint | null) => {
     setSelectedPoint(point);
@@ -196,7 +252,7 @@ function MapPageContent() {
       : fullDetailPoint?.originalPlace.menuImages || fullDetailPoint?.originalPlace.images || [];
 
   return (
-    <div className={styles.mapPageWrapper}>
+    <div className={`${styles.mapPageWrapper} ${styles.alwaysLight} light`}>
       {/* ── Top Floating Search & Category Filter Controls ── */}
       <MapHeaderControls
         searchQuery={searchQuery}
@@ -233,7 +289,7 @@ function MapPageContent() {
           onUpdateUserLocation={setUserLocationManual}
         />
 
-        {/* Left Floating Tools (Zoom, Layer, GPS, Center, District Picker) */}
+        {/* Left Floating Tools (Fullscreen, Zoom, Layer, GPS, Center, District Picker) */}
         <MapFloatingTools
           mapInstanceRef={mapInstanceRef}
           mapLayer={mapLayer}
@@ -246,6 +302,8 @@ function MapPageContent() {
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           isSidebarOpen={isSidebarOpen}
           totalFilteredCount={filteredMapPoints.length}
+          isFullscreen={isFullscreen}
+          onToggleFullscreen={handleToggleFullscreen}
         />
 
         {/* Right Collapsible Places Sidebar */}

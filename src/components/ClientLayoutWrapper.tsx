@@ -293,6 +293,7 @@ export default function ClientLayoutWrapper({
 
   // Check if current page is under maintenance
   const activeMaintenance = isPathUnderMaintenance(pathname || "", maintenanceRecords);
+  const isMap = pathname === "/map";
 
   return (
     <>
@@ -308,7 +309,16 @@ export default function ClientLayoutWrapper({
       )}
 
       {/* Page Content: If under maintenance and not admin, show Maintenance Screen */}
-      <main ref={mainContentRef} style={{ paddingTop: "72px" }}>
+      <main
+        ref={mainContentRef}
+        style={{
+          paddingTop: isMap ? 0 : "72px",
+          height: isMap ? "100dvh" : undefined,
+          minHeight: isMap ? "100dvh" : undefined,
+          overflow: isMap ? "hidden" : undefined,
+          position: isMap ? "relative" : undefined,
+        }}
+      >
         {activeMaintenance && !isUserAdmin && !authLoading ? (
           <MaintenanceScreen
             maintenance={activeMaintenance}
