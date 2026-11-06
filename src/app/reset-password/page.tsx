@@ -7,6 +7,8 @@ import { DRIFT_WALL_ITEMS } from "@/app/login/constants";
 import { RESET_PASSWORD_TEXTS } from "./constants";
 import { useResetPasswordForm } from "./hooks/useResetPasswordForm";
 import styles from "./reset-password.module.css";
+import { ASSETS } from "@/constants/assets";
+import { ShieldX } from "lucide-react";
 
 export default function ResetPasswordPage() {
   const form = useResetPasswordForm();
@@ -59,17 +61,17 @@ export default function ResetPasswordPage() {
         <div className={styles.header}>
           <div className={styles.logoWrapper}>
             <img
-              src="/images/logo/darkMode_logo.webp"
+              src= { ASSETS.branding.qareebNoBGLight}
               alt="قريب"
               className={styles.logoImgDark}
             />
             <img
-              src="/images/logo/lightMode_logo.webp"
+              src={ ASSETS.branding.qareebNoBGDark}
               alt="قريب"
               className={styles.logoImgLight}
             />
           </div>
-          <h1 className={styles.title}>{RESET_PASSWORD_TEXTS.TITLE}</h1>
+          <h1 className="text-main">{RESET_PASSWORD_TEXTS.TITLE}</h1>
           <p className={styles.subtitle}>{RESET_PASSWORD_TEXTS.SUBTITLE}</p>
         </div>
 
@@ -97,7 +99,7 @@ export default function ResetPasswordPage() {
                 </span>
               </div>
 
-              <Link href="/login" className={styles.actionbtn}>
+              <Link href="/login" className="btn btn-primary w-full">
                 <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }} />
                 <span>{RESET_PASSWORD_TEXTS.LOGIN_NOW_BTN}</span>
               </Link>
@@ -113,7 +115,7 @@ export default function ResetPasswordPage() {
                 عفواً، رابط إعادة تعيين كلمة المرور غير صالح أو انتهت مدة صلاحيته. يرجى طلب رابط استعادة جديد للمتابعة.
               </p>
 
-              <Link href="/forgot-password" className={styles.actionbtn}>
+              <Link href="/forgot-password" className="btn btn-primary w-full">
                 <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }} />
                 <span>{RESET_PASSWORD_TEXTS.REQUEST_NEW_LINK_BTN}</span>
               </Link>
@@ -128,9 +130,9 @@ export default function ResetPasswordPage() {
             <form onSubmit={form.handleSubmit} className={styles.form}>
               {/* Error Banner */}
               {form.error && (
-                <div className={styles.errorBanner} role="alert">
-                  <span>⚠️</span>
-                  <span>{form.error}</span>
+                <div className="error-alert" role="alert">
+                  <ShieldX size={16} className="error-alert-icon"/>
+                  <span className="error-alert-message">{form.error}</span>
                 </div>
               )}
 
@@ -211,7 +213,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={form.loading || !form.isPasswordValid}
-                className={styles.submitBtn}
+                className="btn btn-primary"
               >
                 {form.loading ? (
                   <>
