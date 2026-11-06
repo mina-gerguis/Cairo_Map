@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
                 عفواً، رابط إعادة تعيين كلمة المرور غير صالح أو انتهت مدة صلاحيته. يرجى طلب رابط استعادة جديد للمتابعة.
               </p>
 
-              <Link href="/forgot-password" className={styles.action - btn}>
+              <Link href="/forgot-password" className={styles.actionbtn}>
                 <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }} />
                 <span>{RESET_PASSWORD_TEXTS.REQUEST_NEW_LINK_BTN}</span>
               </Link>
