@@ -164,7 +164,7 @@ export function AdminDirectionsList({
               >
                 <button
                   type="button"
-                  className="actionBtn actionBtnEdit"
+                  className="action-btn action-btn-edit"
                   onClick={() => onEdit(route)}
                   title="تعديل هذا الطريق"
                 >
@@ -172,7 +172,7 @@ export function AdminDirectionsList({
                 </button>
                 <button
                   type="button"
-                  className="actionBtn actionBtnDelete"
+                  className="action-btn action-btn-delete"
                   onClick={() => onDelete(route.from_location, route.to_location)}
                   title="حذف هذا الطريق"
                 >

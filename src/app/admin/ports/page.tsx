@@ -629,12 +629,12 @@ function AdminPortsInner() {
                   <td className={styles.adminTd}>
                     <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                       <button onClick={() => handleOpenEdit(item)} title="تعديل"
-                        className="actionBtn actionBtnEdit"
+                        className="action-btn action-btn-edit"
                       >
                         <i className="bx bx-edit-alt" />
                       </button>
                       <button onClick={() => handleDelete(item)} title="حذف"
-                        className="actionBtn actionBtnDelete"
+                        className="action-btn action-btn-delete"
                       >
                         <i className="bx bx-trash" />
                       </button>

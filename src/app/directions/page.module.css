@@ -473,7 +473,7 @@
 }
 
 .swapBtn:hover {
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
   transform: rotate(180deg);
   border-color: var(--color-secondary, #3b82f6);
 }

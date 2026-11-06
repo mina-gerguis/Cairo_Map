@@ -484,7 +484,7 @@
 
 .closeModalBtn:hover {
   color: var(--color-fg, #f4f4f5);
-  background-color: var(--hoverBtn);
+  background-color: var(--hover-btn);
 }
 
 .editorModalForm {
@@ -565,7 +565,7 @@
 }
 
 .btn-cancel:hover {
-  background-color: var(--hoverBtn);
+  background-color: var(--hover-btn);
   color: var(--color-fg);
 }
 
@@ -667,7 +667,7 @@
 }
 
 .cancelDeleteBtn:hover {
-  background-color: var(--hoverBtn);
+  background-color: var(--hover-btn);
   color: var(--color-fg);
 }
 

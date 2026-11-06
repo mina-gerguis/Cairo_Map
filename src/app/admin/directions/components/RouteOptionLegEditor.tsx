@@ -52,7 +52,7 @@ export function RouteOptionLegEditor({
         {totalLegs > 1 && (
           <button
             type="button"
-            className="actionBtn actionBtnDelete"
+            className="action-btn action-btn-delete"
             onClick={onRemoveLeg}
             title="حذف هذه المرحلة"
             style={{
@@ -216,7 +216,7 @@ export function RouteOptionLegEditor({
               />
               <button
                 type="button"
-                className="actionBtn actionBtnDelete"
+                className="action-btn action-btn-delete"
                 onClick={() => onRemoveStep(stepIdx)}
                 style={{ padding: "6px 10px" }}
                 disabled={(leg.steps || []).length === 1}

@@ -49,7 +49,7 @@
 }
 
 .toolbarBtn:hover {
-  background-color: var(--hoverBtn, rgba(39, 39, 42, 0.8));
+  background-color: var(--hover-btn, rgba(39, 39, 42, 0.8));
   color: var(--color-primary, #006FEE);
 }
 
@@ -259,7 +259,7 @@
 }
 
 .modalbtn-cancel:hover {
-  background-color: var(--hoverBtn);
+  background-color: var(--hover-btn);
   color: var(--color-fg);
 }
 

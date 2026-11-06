@@ -13,90 +13,6 @@ html.is-preloading *:not([class*="preloader"]):not([class*="SitePreloader"]):not
 }
 
 
-
-
-
-
-
-
-
-/* ============================================================
-   Design Tokens
-   ============================================================ */
-
-
-:root {
-  /* Padding */
-
-  /* HeroUI Dark Palette */
-  /* Pure black */
-  /* Zinc 900 */
-  --bg-muted: #83838324;
-  --bg-glass-active: rgba(39, 39, 42, 0.9);
-  --border-glass-bright: rgba(255, 255, 255, 0.15);
-  --border-break: rgba(39, 39, 39, 0.664);
-  --card-glass: rgba(17, 17, 17, 0.986);
-  --ios-blue: #2600fd;
-  --overlay: rgba(0, 0, 0, 0.75);
-  /* Zinc 100 */
-  /* Zinc 400 */
-  --text-muted: #71717a;
-  /* HeroUI Vibrant Colors */
-  --color-primary: #006FEE;
-  /* HeroUI Blue */
-  --accent-secondary: #10b981;
-  /* Soft green */
-  --accent-pink: #ec4899;
-  --accent-orange: #f59e0b;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
-  --accent-red: #ef4444;
-
-  /* Flat layout constants */
-  --gradient-primary: var(--color-primary);
-  --gradient-hero: var(--color-bg);
-  --gradient-card: var(--bg-glass-card);
-  --gradient-text: var(--color-fg);
-  --gradient-cta: var(--color-primary);
-
-
-
-  --shadow-glow: none;
-  --shadow-glow-green: none;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-
-
-
-  --navbar-height: 72px;
-}
-
-
-
-/* HeroUI Light Mode */
-html.light {
-  /* Pure white */
-  /* Zinc 100 */
-  --bg-glass-active: rgba(228, 228, 231, 0.9);
-  --border-glass-bright: rgba(0, 0, 0, 0.15);
-  --border-break: rgba(114, 114, 114, 0.137);
-  --card-glass: rgba(255, 255, 255, 0.897);
-  /* Zinc 900 */
-  /* Zinc 600 */
-  --text-muted: #7a7771;
-  /* Zinc 500 */
-  /* HeroUI Blue */
-
-  --overlay: rgba(14, 13, 13, 0.6);
-}
-
-/* Custom Profile Background */
-html.light .profile-page-wrapper {
-  background-color: #f0f0f0;
-}
-
 /* ============================================================
    Base Reset
    ============================================================ */
@@ -114,7 +30,7 @@ html.light .profile-page-wrapper {
 html,
 body {
   font-family: var(--font-sub);
-  background-color: var(--bgMode);
+  background-color: var(--color-bg);
   color: var(--color-fg);
   min-height: 100vh;
   width: 100%;

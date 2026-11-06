@@ -1907,7 +1907,7 @@
   white-space: pre-wrap;
 }
 
-.notifModalActionBtn {
+.notifModalaction-btn {
   width: 100%;
   padding: 14px;
   font-size: 1.05rem;
@@ -1976,7 +1976,7 @@
   width: 50px;
   height: 50px;
   border-radius: 14px;
-  background-color: var(--hoverBtn);
+  background-color: var(--hover-btn);
   border: 1px solid var(--border-glass);
   display: flex;
   align-items: center;
@@ -2109,7 +2109,7 @@
 }
 
 .deviceItem:hover {
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
 }
 
 .currentDeviceItem {

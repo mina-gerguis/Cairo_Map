@@ -726,7 +726,7 @@ export default function AdminCitiesPage() {
                 >
                   <button
                     onClick={() => openCityModal(city)}
-                    className="actionBtn actionBtnEdit"
+                    className="action-btn action-btn-edit"
 
                     title="تعديل المدينة"
                   >
@@ -734,7 +734,7 @@ export default function AdminCitiesPage() {
                   </button>
                   <button
                     onClick={() => setCityToDelete({ id: city.id, name: city.name })}
-                    className="actionBtn actionBtnDelete"
+                    className="action-btn action-btn-delete"
                     title="حذف المدينة"
                   >
                     <i className="bx bx-trash" />
@@ -953,13 +953,13 @@ export default function AdminCitiesPage() {
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       <button
                         onClick={() => openLandmarkModal(lm)}
-                        className="actionBtn actionBtnEdit"
+                        className="action-btn action-btn-edit"
                       >
                         <i className="bx bxs-edit"></i>
                       </button>
                       <button
                         onClick={() => setLandmarkToDelete({ id: lm.id, name: lm.name })}
-                        className="actionBtn actionBtnDelete"
+                        className="action-btn action-btn-delete"
                         title="حذف المعلم"
                       >
                         <i className="bx bxs-trash"></i>
@@ -1314,7 +1314,7 @@ export default function AdminCitiesPage() {
                             }).join("\n")
                           );
                         }}
-                        className="actionBtn actionBtnDelete"
+                        className="action-btn action-btn-delete"
                         title="حذف المحطة"
                       >
                         <i className="bx bx-trash"></i>

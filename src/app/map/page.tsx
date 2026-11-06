@@ -16,7 +16,7 @@ import MediaLightbox from "@/app/places/components/MediaLightbox";
 import ReportProblemModal from "@/components/ReportProblemModal";
 import PlaceNoteModal from "@/components/PlaceNoteModal";
 import RequireAuthModal from "@/components/common/RequireAuthModal";
-import SaveLocationModal from "@/components/SaveLocationModal";
+import SaveLocationModal from "@/components/saveLocation/SaveLocationModal";
 import { handleSharePlace } from "@/app/places/utils";
 import styles from "./map.module.css";
 

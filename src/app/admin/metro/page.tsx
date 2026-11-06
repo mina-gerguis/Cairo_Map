@@ -800,7 +800,7 @@ function AdminMetroInner() {
                             <button
                               type="button"
                               onClick={() => handleOpenEditStation(station)}
-                              className="actionBtn actionBtnEdit"
+                              className="action-btn action-btn-edit"
                               title="تعديل"
                             >
                               <i className="bx bx-edit-alt" />
@@ -809,7 +809,7 @@ function AdminMetroInner() {
                               type="button"
                               onClick={() => handleStationDelete(station)}
                               title="حذف"
-                              className="actionBtn actionBtnDelete"
+                              className="action-btn action-btn-delete"
                             >
                               <i className="bx bx-trash" />
                             </button>

@@ -820,7 +820,7 @@ function AdminRoadsInfoInner() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditRoad(r)}
-                            className={styles.actionBtn}
+                            className={styles.action - btn}
                             title="تعديل"
                           >
                             <i className="bx bx-edit" />
@@ -828,7 +828,7 @@ function AdminRoadsInfoInner() {
                           <button
                             type="button"
                             onClick={() => setRoadToDelete(r)}
-                            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                            className={`${styles.action - btn} ${styles.action - btnDelete}`}
                             title="حذف"
                           >
                             <i className="bx bx-trash" />
@@ -945,7 +945,7 @@ function AdminRoadsInfoInner() {
                           <button
                             type="button"
                             onClick={() => handleOpenEditNews(n)}
-                            className={styles.actionBtn}
+                            className={styles.action - btn}
                             title="تعديل"
                           >
                             <i className="bx bx-edit" />
@@ -953,7 +953,7 @@ function AdminRoadsInfoInner() {
                           <button
                             type="button"
                             onClick={() => setNewsToDelete(n)}
-                            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                            className={`${styles.action - btn} ${styles.action - btnDelete}`}
                             title="حذف"
                           >
                             <i className="bx bx-trash" />

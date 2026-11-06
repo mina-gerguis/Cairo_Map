@@ -931,7 +931,7 @@
   transition: all 0.3s ease;
 }
 
-.actionBtnWhite {
+.action-btnWhite {
   width: 100%;
   padding: 12px;
   font-size: 0.95rem;
@@ -950,12 +950,12 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-.actionBtnWhite:hover {
+.action-btnWhite:hover {
   transform: translateY(-1px);
 }
 
-.actionBtnGoogle,
-.actionBtnFacebook {
+.action-btnGoogle,
+.action-btnFacebook {
   width: 100%;
   padding: 12px;
   font-size: 0.95rem;
@@ -974,20 +974,20 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.actionBtnGoogle:hover:not(:disabled),
-.actionBtnFacebook:hover:not(:disabled) {
+.action-btnGoogle:hover:not(:disabled),
+.action-btnFacebook:hover:not(:disabled) {
   background: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
 }
 
-.actionBtnGoogle:disabled,
-.actionBtnFacebook:disabled {
+.action-btnGoogle:disabled,
+.action-btnFacebook:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-.actionBtnOutline {
+.action-btnOutline {
   width: 100%;
   padding: 12px;
   font-size: 0.95rem;
@@ -1009,7 +1009,7 @@
   box-sizing: border-box;
 }
 
-.actionBtnOutline:hover {
+.action-btnOutline:hover {
   background: rgba(255, 255, 255, 0.28);
 }
 

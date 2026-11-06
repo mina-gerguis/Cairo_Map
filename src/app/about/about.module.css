@@ -157,7 +157,7 @@
 
 .featureCard:hover {
   border-color: rgba(0, 111, 238, 0.4);
-  background: var(--hoverBtn, rgba(255, 255, 255, 0.05));
+  background: var(--hover-btn, rgba(255, 255, 255, 0.05));
 }
 
 .featureTitle {
@@ -253,7 +253,7 @@
 }
 
 .secondaryBtn:hover {
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
   border-color: var(--color-primary);
 }
 

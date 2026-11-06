@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import PageHero from "@/components/common/PageHero";
 import { ASSETS } from "@/constants/assets";
 import Footer from "@/components/Footer/Footer";
-import SaveLocationModal from "@/components/SaveLocationModal";
+import SaveLocationModal from "@/components/saveLocation/SaveLocationModal";
 import {
   SavedLocation,
   LOCATION_CATEGORIES,
@@ -46,6 +46,8 @@ import {
   FaLightbulb,
   FaCrown,
 } from "react-icons/fa";
+import { CalendarFold, CircleCheck, Copy, Image, MapPlus, Share2, Signpost } from "lucide-react";
+import { color } from "framer-motion";
 
 type SortOption = "newest" | "oldest" | "name";
 type ViewMode = "grid" | "list";
@@ -270,41 +272,22 @@ export default function SaveLocationPage() {
         ) : !user ? (
           /* Unauthenticated Lock State */
           <div className={styles.lockContainer}>
-            <div className={styles.lockIconBox}>
-              <FaLock />
-            </div>
             <h2 className={styles.lockTitle}>سجّل دخولك لحفظ أماكنك وركناتك</h2>
             <p className={styles.lockSubtitle}>
               ميزة "أحفظ مكاني" توفر لك مساحة سحابية خاصة مرتبطة بحسابك لحفظ إحداثياتك
               بالوقت والتاريخ بدقة فائقة، ومزامنتها لتصل إليها من هاتفك أو أي جهاز بكل سهولة.
             </p>
-
-            <div className={styles.lockBenefitsList}>
-              <div className={styles.lockBenefitItem}>
-                <span className={styles.lockBenefitIcon}>✓</span>
-                <span>تخزين مشفر وآمن خاص بحسابك فقط، بدون ضياع بياناتك</span>
-              </div>
-              <div className={styles.lockBenefitItem}>
-                <span className={styles.lockBenefitIcon}>✓</span>
-                <span>تحديد موقع سيارتك بدقة الأقمار الصناعية (GPS) في المولات والجراجات</span>
-              </div>
-              <div className={styles.lockBenefitItem}>
-                <span className={styles.lockBenefitIcon}>✓</span>
-                <span>فتح بنقرة زر في خرائط Google Maps لبدء الاتجاهات والرجوع بسهولة</span>
-              </div>
-            </div>
-
             <div className={styles.lockBtnGroup}>
               <button
-                className={styles.lockLoginBtn}
+                className="btn btn-primary"
                 onClick={() => router.push("/login?redirect=/save-location")}
               >
                 <FaUserCheck />
-                <span>تسجيل الدخول إلى حسابي</span>
+                <span>تسجيل الدخول</span>
               </button>
 
-              <Link href="/signup?redirect=/save-location" className={styles.lockSignupBtn}>
-                إنشاء حساب جديد مجاناً
+              <Link href="/signup?redirect=/save-location" className="btn btn-cancel">
+                إنشاء حساب جديد
               </Link>
             </div>
           </div>
@@ -334,58 +317,19 @@ export default function SaveLocationPage() {
                   {!planLimit.isUnlimited && (
                     <div className={styles.quotaProgressBar}>
                       <div
-                        className={`${styles.quotaProgressFill} ${
-                          isLimitReached
-                            ? styles.quotaFillFull
-                            : quotaPercentage >= 66
+                        className={`${styles.quotaProgressFill} ${isLimitReached
+                          ? styles.quotaFillFull
+                          : quotaPercentage >= 66
                             ? styles.quotaFillHigh
                             : styles.quotaFillNormal
-                        }`}
+                          }`}
                         style={{ width: `${quotaPercentage}%` }}
                       />
                     </div>
                   )}
                 </div>
-
-                {!planLimit.isUnlimited && (
-                  <Link
-                    href="/profile?expand=subscription"
-                    className={styles.upgradeBtnSmall}
-                  >
-                    <FaCrown style={{ color: "#facc15" }} />
-                    <span>ترقية الباقة</span>
-                  </Link>
-                )}
               </div>
             </div>
-
-            {/* Limit Warning Banner if limit reached */}
-            {isLimitReached && (
-              <div className={styles.limitWarningBanner}>
-                <div className={styles.limitWarningContent}>
-                  <div className={styles.limitWarningIcon}>
-                    <FaLock />
-                  </div>
-                  <div>
-                    <h3 className={styles.limitWarningTitle}>
-                      لقد بلغت الحد الأقصى للأماكن المحفوظة في باقتك ({planLimit.tierName}: {planLimit.maxAllowedText})
-                    </h3>
-                    <p className={styles.limitWarningText}>
-                      {planLimit.tier === "silver"
-                        ? "أنت حالياً على الباقة الفضية (20 مكاناً). للترقية إلى الباقة الذهبية وحفظ عدد غير محدود من الأماكن، اضغط على زر الترقية أدناه أو احذف بعض الأماكن القديمة."
-                        : "أنت حالياً على الباقة المجانية (3 أماكن فقط). للترقية إلى الباقة الفضية (حتى 20 مكاناً) أو الباقة الذهبية (عدد لا نهائي من الأماكن)، اضغط على زر الترقية أدناه أو احذف بعض الأماكن القديمة."}
-                    </p>
-                  </div>
-                </div>
-                <Link
-                  href="/profile?expand=subscription"
-                  className={styles.limitUpgradeBtn}
-                >
-                  <FaCrown />
-                  <span>ترقية باقتي الآن 🚀</span>
-                </Link>
-              </div>
-            )}
 
             {/* Action Banner (Hero Save Card) */}
             <section className={styles.actionBanner}>
@@ -395,14 +339,14 @@ export default function SaveLocationPage() {
                   <h2>احفظ موقعك الحالي بضغطة زر واحدة</h2>
                   <p>
                     نلتقط إحداثياتك بدقة فائقة عبر الأقمار الصناعية <span className="font-inter">(GPS)</span>، ونوثق اسم المكان
-                    والتاريخ والوقت ورابط خرائط <span className="font-inter">Google Maps</span>  مباشرة في حسابك لتصل إليه متى أردت. 
+                    والتاريخ والوقت ورابط خرائط <span className="font-inter">Google Maps</span>  مباشرة في حسابك لتصل إليه متى أردت.
                   </p>
                 </div>
               </div>
 
               <div className={styles.actionBannerButtons}>
                 <button
-                  className={`btn btn-primary ${isLimitReached ? styles.actionBtnLimitReached : ""}`}
+                  className={`btn btn-primary`}
                   onClick={() => setIsModalOpen(true)}
                 >
                   {isLimitReached ? <FaLock /> : <FaPlus />}
@@ -442,7 +386,7 @@ export default function SaveLocationPage() {
                   className={`${styles.tagBtn} ${selectedTag === "all" ? styles.tagBtnActive : ""}`}
                   onClick={() => setSelectedTag("all")}
                 >
-                  <IconClearAll stroke={2} size={18}/>
+                  <IconClearAll stroke={2} size={18} />
                   <span>الكل</span>
                   <span className={styles.tagBadge}>{locations.length}</span>
                 </button>
@@ -487,145 +431,6 @@ export default function SaveLocationPage() {
                     animationDelay: `${Math.min(index * 40, 360)}ms`,
                   };
 
-                  if (viewMode === "list") {
-                    return (
-                      <article
-                        key={loc.id}
-                        className={`${styles.placeCard} ${styles.placeCardList}`}
-                        style={animationDelayStyle}
-                      >
-                        {/* Right colored accent border (RTL) */}
-                        <div className={`${styles.cardAccentBarList} ${accentClass}`}></div>
-
-                        <div className={styles.listContent}>
-                          {/* Main Title & Address info */}
-                          <div className={styles.listMainInfo}>
-                            <div className={styles.listBadgesRow}>
-                              <span className={styles.categoryBadge}>
-                                {catInfo.icon}
-                                <span>{catInfo.label}</span>
-                              </span>
-                              <span className={styles.timePill}>
-                                <FaClock style={{ fontSize: "0.75rem" }} />
-                                <span>{relativeTime}</span>
-                              </span>
-                            </div>
-
-                            <h3 className={styles.placeTitleList}>{loc.name}</h3>
-
-                            {loc.address && (
-                              <div className={styles.listAddressRow}>
-                                <FaMapMarkerAlt style={{ color: "#f87171", flexShrink: 0 }} />
-                                <span>{loc.address}</span>
-                              </div>
-                            )}
-
-                            {loc.notes && (
-                              <div className={styles.listNotesBox}>
-                                <strong>ملاحظة:</strong> {loc.notes}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Date, Time & Coordinates */}
-                          <div className={styles.listMetaColumn}>
-                            <div className={styles.detailRow}>
-                              <FaCalendarAlt style={{ color: "#38bdf8", flexShrink: 0 }} />
-                              <span>
-                                {loc.formattedDate} • <strong>{loc.formattedTime}</strong>
-                              </span>
-                            </div>
-
-                            <div className={styles.coordsBadge}>
-                              <span>
-                                🎯 ±{loc.accuracy}م | {loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)}
-                              </span>
-                              <button
-                                className={styles.coordsCopySmallBtn}
-                                onClick={() => handleCopyCoords(loc)}
-                                title="نسخ الإحداثيات"
-                              >
-                                {isCoordsCopied ? (
-                                  <FaCheck style={{ color: "#10b981" }} />
-                                ) : (
-                                  <FaCopy />
-                                )}
-                                <span>{isCoordsCopied ? "تم" : "نسخ"}</span>
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* List Actions Column */}
-                          <div className={styles.listActionsColumn}>
-                            <a
-                              href={loc.googleMapsUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.googleMapsDirectBtnList}
-                              title="فتح الموقع مباشرة في Google Maps"
-                            >
-                              <FaExternalLinkAlt />
-                              <span>خرائط جوجل</span>
-                            </a>
-
-                            <div className={styles.listSubActionsRow}>
-                              <a
-                                href={loc.directionsUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={styles.actionSubBtn}
-                                title="الاتجاهات عبر خرائط جوجل"
-                              >
-                                <FaRoute style={{ color: "#38bdf8" }} />
-                                <span>الاتجاهات</span>
-                              </a>
-
-                              <button
-                                className={styles.actionSubBtn}
-                                onClick={() => handleCopyLink(loc)}
-                                title="نسخ رابط خرائط جوجل"
-                              >
-                                {isCopied ? (
-                                  <FaCheck style={{ color: "#10b981" }} />
-                                ) : (
-                                  <FaCopy />
-                                )}
-                                <span>{isCopied ? "تم" : "نسخ"}</span>
-                              </button>
-
-                              <button
-                                className={styles.actionSubBtn}
-                                onClick={() => handleShare(loc)}
-                                title="مشاركة المكان"
-                              >
-                                <FaShareAlt style={{ color: "#a855f7" }} />
-                                <span>مشاركة</span>
-                              </button>
-
-                              <Link
-                                href={`/map?lat=${loc.latitude}&lng=${loc.longitude}&zoom=17`}
-                                className={styles.actionSubBtn}
-                                title="عرض على خريطة القاهرة التفاعلية"
-                              >
-                                <FaCompass style={{ color: "#06b6d4" }} />
-                                <span>الخريطة</span>
-                              </Link>
-
-                              <button
-                                className={styles.cardDeleteBtn}
-                                onClick={() => setDeleteCandidate(loc)}
-                                title="حذف المكان من حسابك"
-                                aria-label={`حذف ${loc.name}`}
-                              >
-                                <FaTrashAlt />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </article>
-                    );
-                  }
-
                   // Default: Grid view
                   return (
                     <article
@@ -644,17 +449,13 @@ export default function SaveLocationPage() {
                               {catInfo.icon}
                               <span>{catInfo.label}</span>
                             </span>
-                            <span className={styles.timePill}>
-                              <FaClock style={{ fontSize: "0.75rem" }} />
-                              <span>{relativeTime}</span>
-                            </span>
                           </div>
 
                           <h3 className={styles.placeTitle}>{loc.name}</h3>
                         </div>
 
                         <button
-                          className={styles.cardDeleteBtn}
+                          className="action-btn action-btn-delete rounded-md"
                           onClick={() => setDeleteCandidate(loc)}
                           title="حذف المكان من حسابك"
                           aria-label={`حذف ${loc.name}`}
@@ -666,40 +467,22 @@ export default function SaveLocationPage() {
                       {/* Details: Date, Time, Coords, Address, Notes */}
                       <div className={styles.cardDetails}>
                         <div className={styles.detailRow}>
-                          <FaCalendarAlt style={{ color: "#38bdf8", flexShrink: 0 }} />
+                          <CalendarFold size={16} />
                           <span>
                             {loc.formattedDate} • <strong>{loc.formattedTime}</strong>
                           </span>
                         </div>
 
-                        <div className={styles.coordsBadge}>
-                          <span>
-                            🎯 دقة ±{loc.accuracy}م | {loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)}
-                          </span>
-                          <button
-                            className={styles.coordsCopySmallBtn}
-                            onClick={() => handleCopyCoords(loc)}
-                            title="نسخ الإحداثيات"
-                          >
-                            {isCoordsCopied ? (
-                              <FaCheck style={{ color: "#10b981" }} />
-                            ) : (
-                              <FaCopy />
-                            )}
-                            <span>{isCoordsCopied ? "تم" : "نسخ"}</span>
-                          </button>
-                        </div>
-
                         {loc.address && (
                           <div className={styles.addressRow}>
-                            <FaMapMarkerAlt style={{ color: "#f87171", marginTop: "3px", flexShrink: 0 }} />
+                            <FaMapMarkerAlt style={{ marginTop: "3px", flexShrink: 0 }} />
                             <span>{loc.address}</span>
                           </div>
                         )}
 
                         {loc.notes && (
                           <div className={styles.notesBox}>
-                            <strong>ملاحظة:</strong> {loc.notes}
+                           <span>{loc.notes}</span>
                           </div>
                         )}
                       </div>
@@ -711,11 +494,11 @@ export default function SaveLocationPage() {
                           href={loc.googleMapsUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={styles.googleMapsDirectBtn}
+                          className="btn btn-primary"
                           title="فتح الموقع مباشرة في Google Maps"
                         >
-                          <FaExternalLinkAlt />
-                          <span>فتح في Google Maps 🗺️</span>
+                          <MapPlus />
+                          <span>أفتح ف الخرائط</span>
                         </a>
 
                         {/* Secondary Actions Row */}
@@ -724,43 +507,34 @@ export default function SaveLocationPage() {
                             href={loc.directionsUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={styles.actionSubBtn}
+                            className="btn btn-secondary p-0 pl-2 pr-2 fs-sm w-full"
                             title="بدء الملاحة والاتجاهات عبر Google Maps"
                           >
-                            <FaRoute style={{ color: "#38bdf8" }} />
+                            <Signpost size={16} />
                             <span>الاتجاهات</span>
                           </a>
 
                           <button
-                            className={styles.actionSubBtn}
+                            className="btn btn-secondary p-0 pl-2 pr-2 fs-sm w-full"
                             onClick={() => handleCopyLink(loc)}
                             title="نسخ رابط خرائط جوجل"
                           >
                             {isCopied ? (
-                              <FaCheck style={{ color: "#10b981" }} />
+                              <CircleCheck size={16} style={{ color: "var(--color-success)" }} />
                             ) : (
-                              <FaCopy />
+                              <Copy size={16} />
                             )}
                             <span>{isCopied ? "تم النسخ" : "نسخ الرابط"}</span>
                           </button>
 
                           <button
-                            className={styles.actionSubBtn}
+                            className="btn btn-secondary p-0 pl-2 pr-2 fs-sm w-full"
                             onClick={() => handleShare(loc)}
                             title="مشاركة المكان عبر واتساب أو التطبيقات"
                           >
-                            <FaShareAlt style={{ color: "#a855f7" }} />
+                            <Share2 size={16} />
                             <span>مشاركة</span>
                           </button>
-
-                          <Link
-                            href={`/map?lat=${loc.latitude}&lng=${loc.longitude}&zoom=17`}
-                            className={styles.actionSubBtn}
-                            title="عرض على خريطة القاهرة التفاعلية"
-                          >
-                            <FaCompass style={{ color: "#06b6d4" }} />
-                            <span>الخريطة</span>
-                          </Link>
                         </div>
                       </div>
                     </article>
@@ -837,23 +611,20 @@ export default function SaveLocationPage() {
           aria-modal="true"
         >
           <div className={styles.deleteDialogBox} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.deleteDialogIcon}>
-              <FaTrashAlt />
-            </div>
-            <h3 className={styles.deleteDialogTitle}>تأكيد حذف المكان</h3>
+            <h2 className={styles.deleteDialogTitle}>تأكيد حذف المكان</h2>
             <p className={styles.deleteDialogDesc}>
               هل أنت متأكد من رغبتك في حذف <strong>"{deleteCandidate.name}"</strong> نهائياً من حسابك؟ لن تتمكن من استرجاعه بعد الحذف.
             </p>
             <div className={styles.deleteDialogActions}>
               <button
-                className={styles.deleteDialogConfirmBtn}
+                className="btn btn-delete w-full"
                 onClick={confirmDeleteLocation}
                 disabled={isDeleting}
               >
                 {isDeleting ? "جاري الحذف..." : "نعم، حذف المكان"}
               </button>
               <button
-                className={styles.deleteDialogCancelBtn}
+               className="btn btn-cancel w-full"
                 onClick={() => setDeleteCandidate(null)}
                 disabled={isDeleting}
               >

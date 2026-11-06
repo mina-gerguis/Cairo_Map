@@ -741,7 +741,7 @@ function AdminRailwaysInner() {
                         <button
                           type="button"
                           onClick={() => handleOpenEditLine(line)}
-                          className="actionBtn actionBtnEdit"
+                          className="action-btn action-btn-edit"
                           title="تعديل"
                         >
                           <i className="bx bx-edit-alt" />
@@ -750,7 +750,7 @@ function AdminRailwaysInner() {
                         <button
                           type="button"
                           onClick={() => handleDeleteLine(line)}
-                          className="actionBtn actionBtnDelete"
+                          className="action-btn action-btn-delete"
                           title="حذف"
                         >
                           <i className="bx bx-trash" />
@@ -878,7 +878,7 @@ function AdminRailwaysInner() {
                               <button
                                 type="button"
                                 onClick={() => handleOpenEditStation(index, stop)}
-                                className="actionBtn actionBtnEdit"
+                                className="action-btn action-btn-edit"
                                 title="تعديل"
                               >
                                 <i className="bx bx-edit-alt" />
@@ -886,7 +886,7 @@ function AdminRailwaysInner() {
                               <button
                                 type="button"
                                 onClick={() => handleDeleteStation(index)}
-                                className="actionBtn actionBtnDelete"
+                                className="action-btn action-btn-delete"
                                 title="حذف"
                               >
                                 <i className="bx bx-trash" />

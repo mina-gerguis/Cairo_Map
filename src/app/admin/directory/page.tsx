@@ -1036,14 +1036,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                             <button
                               onClick={() => startEditPhone(entry)}
-                              className="actionBtn actionBtnEdit"
+                              className="action-btn action-btn-edit"
                               title="تعديل"
                             >
                               <i className="bx bx-edit-alt" />
                             </button>
                             <button
                               onClick={() => handleDeletePhone(entry)}
-                              className="actionBtn actionBtnDelete"
+                              className="action-btn action-btn-delete"
                               title="حذف"
                             >
                               <i className="bx bx-trash" />
@@ -1249,14 +1249,14 @@ export default function AdminDirectoryPage({ isSubComponent = false }: { isSubCo
                           <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                             <button
                               onClick={() => startEditCode(item)}
-                              className="actionBtn actionBtnEdit"
+                              className="action-btn action-btn-edit"
                               title="تعديل"
                             >
                               <i className="bx bx-edit-alt" />
                             </button>
                             <button
                               onClick={() => handleDeleteCode(item)}
-                              className="actionBtn actionBtnDelete"
+                              className="action-btn action-btn-delete"
                               title="حذف"
                             >
                               <i className="bx bx-trash" />

@@ -224,7 +224,7 @@ export default function TransitFAQ() {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.borderColor = "var(--colorSecondary)";
-                        e.currentTarget.style.background = "var(--hoverBtn)";
+                        e.currentTarget.style.background = "var(--hover-btn)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.borderColor = "var(--borderGlass)";

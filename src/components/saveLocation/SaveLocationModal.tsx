@@ -117,6 +117,8 @@ export default function SaveLocationModal({
       setAddress("");
       setLoadingAddress(false);
       setSaving(false);
+      setSavedResult(null);
+      setErrorMsg(null);
     }
   }, [isOpen, initialCoords, user, currentCount]);
 
@@ -202,10 +204,10 @@ export default function SaveLocationModal({
       );
 
       setUserPlacesCount((prev) => prev + 1);
-      setSavedResult(saved);
       if (onSaved) {
         onSaved(saved);
       }
+      onClose();
     } catch (err: any) {
       setErrorMsg(err.message || "حدث خطأ أثناء حفظ المكان. يرجى المحاولة مرة أخرى.");
     } finally {
@@ -451,18 +453,9 @@ export default function SaveLocationModal({
         ) : isLimitReached ? (
           /* Limit Reached Full State */
           <div className={styles.limitReachedBox}>
-            <div className={styles.limitReachedIcon}>
-              <FaCrown />
-            </div>
-
-            <h4 className={styles.limitReachedTitle}>
-              بلغت الحد الأقصى لحفظ الأماكن ({planLimit.maxAllowedText})
-            </h4>
-
-            <div className={styles.limitReachedBadge}>
-              {planLimit.tier === "silver" ? "🥈 الباقة الفضية (20 مكان)" : "⚪ الباقة المجانية (3 أماكن)"}
-            </div>
-
+            <h2 className={styles.limitReachedTitle}>
+              بلغت الحد الأقصى لحفظ الأماكن 
+            </h2>
             <p className={styles.limitReachedDesc}>
               {planLimit.tier === "silver"
                 ? "لقد استنفدت السعة المتاحة في باقتك الفضية (20 مكاناً). للترقية إلى الباقة الذهبية وحفظ عدد غير محدود من الأماكن في أي وقت، اضغط على زر الترقية أدناه، أو قم بحذف بعض الأماكن القديمة."
@@ -472,25 +465,25 @@ export default function SaveLocationModal({
             <div className={styles.limitReachedActions}>
               <button
                 type="button"
-                className={styles.modalSubmitBtn}
+                className="btn btn-primary"
                 onClick={() => {
                   onClose();
                   router.push("/profile?expand=subscription");
                 }}
               >
                 <FaCrown />
-                <span>ترقية باقتي الآن 🚀</span>
+                <span>ترقية باقتي الآن </span>
               </button>
 
               <button
                 type="button"
-                className={styles.modalCancelBtn}
+                className="btn btn-secondary"
                 onClick={() => {
                   onClose();
                   router.push("/save-location");
                 }}
               >
-                إدارة وحذف الأماكن المحفوظة
+                 حذف الأماكن المحفوظة
               </button>
             </div>
           </div>

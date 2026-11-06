@@ -601,7 +601,7 @@
   line-height: 1.5;
 }
 
-.bookingActionBtn {
+.bookingaction-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -617,18 +617,18 @@
   cursor: pointer;
 }
 
-.bookingActionBtn:hover {
+.bookingaction-btn:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-1px);
 }
 
-:global(html.light) .bookingActionBtn {
+:global(html.light) .bookingaction-btn {
   background: rgba(0, 0, 0, 0.04);
   border-color: rgba(0, 0, 0, 0.08);
 }
 
-:global(html.light) .bookingActionBtn:hover {
+:global(html.light) .bookingaction-btn:hover {
   background: rgba(0, 0, 0, 0.08);
   border-color: rgba(0, 0, 0, 0.16);
 }

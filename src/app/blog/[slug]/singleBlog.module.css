@@ -184,7 +184,7 @@
   gap: 10px;
 }
 
-.actionBtn {
+.action-btn {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -200,7 +200,7 @@
   font-family: var(--font-body);
 }
 
-.actionBtn:hover {
+.action-btn:hover {
   border-color: var(--color-secondary);
   color: var(--color-secondary);
 }

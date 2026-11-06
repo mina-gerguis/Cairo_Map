@@ -4,6 +4,9 @@
  * ============================================================================
 */
 :root {
+  /*  */
+  --padding-btn: var(--spacing-2) var(--spacing-3);
+  /*  */
   --btn-border-color: rgba(255, 255, 255, 0.2);
   /* main btn background & text color */
   --btn-primary: #ffffff;
@@ -221,6 +224,17 @@ html.light .btn-danger:hover {
   color: #ffffff;
 }
 
+/* --- Delete --- */
+.btn-delete {
+  background:  #ff0000;
+  border: 1px solid rgba(255, 59, 48, 0.30);
+  color: #ffffff;
+}
+
+.btn-delete:hover {
+  background: #ff0000d5;
+}
+
 /* --- Export --- */
 .btn-export {
   background: rgb(16, 185, 129);
@@ -326,7 +340,7 @@ html.light .btn-report:hover {
   border-radius: var(--radiusBtnLg);
 }
 
-.actionBtn {
+.action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -341,24 +355,24 @@ html.light .btn-report:hover {
   transition: var(--transition-fast);
 }
 
-.actionBtnEdit {
+.action-btn-edit {
   background: rgba(59, 130, 246, 0.20);
   border: 1px solid rgba(59, 130, 246, 0.40);
   color: var(--color-primary);
 }
 
-.actionBtnEdit:hover {
+.action-btn-edit:hover {
   background: var(--mainBtn);
   color: #ffffff;
 }
 
-.actionBtnDelete {
+.action-btn-delete {
   background: rgba(255, 0, 0, 0.15);
   border: 1px solid rgba(255, 0, 0, 0.15);
   color: #ff0000f5;
 }
 
-.actionBtnDelete:hover {
+.action-btn-delete:hover {
   background: #ff0000;
   color: #ffffff;
 }

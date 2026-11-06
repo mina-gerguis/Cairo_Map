@@ -88,7 +88,7 @@ export default function RouteOptionCard({
           <button
             type="button"
             onClick={() => setIsShareModalOpen(true)}
-            className={`btn btn-primary ${styles.actionBtn} ${!option.map_link ? styles.actionBtnFull : ""}`}
+            className={`btn btn-primary ${styles.action - btn} ${!option.map_link ? styles.action - btnFull : ""}`}
             title="مشاركة أو نسخ رابط المسار"
           >
             <i className="bx bx-share-alt" />
@@ -100,7 +100,7 @@ export default function RouteOptionCard({
               href={option.map_link}
               target="_blank"
               rel="noopener noreferrer"
-              className={`btn btn-secondary ${styles.actionBtn}`}
+              className={`btn btn-secondary ${styles.action - btn}`}
             >
               <i className="bx bx-navigation" />
               <span>خريطة Google</span>

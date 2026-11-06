@@ -1724,7 +1724,7 @@ export default function AdminUsersPage() {
                           {/* Quick View Profile Card */}
                           <button
                             onClick={() => setViewUser(u)}
-                            className={styles.actionBtn}
+                            className="action-btn"
                             style={{
                               background: "rgba(99, 102, 241, 0.12)",
                               color: "#818cf8",
@@ -1743,7 +1743,7 @@ export default function AdminUsersPage() {
                           {/* Edit User Profile Data */}
                           <button
                             onClick={() => handleOpenEditModal(u)}
-                            className={styles.actionBtn}
+                            className="action-btn"
                             style={{
                               background: "rgba(34, 197, 94, 0.12)",
                               color: "#4ade80",
@@ -1766,7 +1766,7 @@ export default function AdminUsersPage() {
                                 setSuspendTarget(u);
                                 setSuspendReason(u.suspended_reason || "");
                               }}
-                              className={styles.actionBtn}
+                              className="action-btn"
                               style={{
                                 background: u.is_suspended ? "rgba(16, 185, 129, 0.15)" : "rgba(245, 158, 11, 0.15)",
                                 color: u.is_suspended ? "#10b981" : "#f59e0b",
@@ -1801,7 +1801,7 @@ export default function AdminUsersPage() {
                                 link: "/profile",
                               });
                             }}
-                            className={styles.actionBtn}
+                            className="action-btn"
                             style={{
                               background: "rgba(14, 165, 233, 0.12)",
                               color: "#38bdf8",
@@ -1820,7 +1820,7 @@ export default function AdminUsersPage() {
                           {/* View Activity Timeline */}
                           <button
                             onClick={() => handleOpenActivityModal(u)}
-                            className={styles.actionBtn}
+                            className="action-btn"
                             style={{
                               background: "rgba(168, 85, 247, 0.12)",
                               color: "#c084fc",
@@ -1839,7 +1839,7 @@ export default function AdminUsersPage() {
                           {/* Delete User */}
                           <button
                             onClick={() => setDeleteUser(u)}
-                            className={styles.actionBtn}
+                            className="action-btn"
                             style={{
                               background: "rgba(239, 68, 68, 0.12)",
                               color: "#f87171",

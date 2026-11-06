@@ -508,7 +508,7 @@ export function ParkingReportModal({
                               }}
                               onMouseEnter={(e) => {
                                 if (!isSelected)
-                                  e.currentTarget.style.background = "var(--hoverBtn)";
+                                  e.currentTarget.style.background = "var(--hover-btn)";
                               }}
                               onMouseLeave={(e) => {
                                 if (!isSelected)
@@ -698,7 +698,7 @@ export function ParkingReportModal({
                     }}
                     onMouseEnter={(e) => {
                       if (!isDraggingImage)
-                        e.currentTarget.style.background = "var(--hoverBtn)";
+                        e.currentTarget.style.background = "var(--hover-btn)";
                     }}
                     onMouseLeave={(e) => {
                       if (!isDraggingImage)
@@ -931,7 +931,7 @@ export function ParkingReportModal({
               <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
                 <button
                   type="submit"
-                  className="btn actionBtnDelete"
+                  className="btn action-btn-delete"
                   disabled={reportLoading || reportUploading}
                   style={{
                     flex: 1,

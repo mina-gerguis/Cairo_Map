@@ -856,7 +856,7 @@ export function IncomingReportsCard({
                 type="button"
                 disabled={updatingStatusId === item.id}
                 onClick={() => onUpdateStatus(item, "pending")}
-                className={styles.actionBtnMini}
+                className={styles.action - btnMini}
                 style={{
                   border: item.status === "pending" ? "1px solid #f59e0b" : "1px solid var(--border-glass)",
                   background: item.status === "pending" ? "rgba(245, 158, 11, 0.2)" : "rgba(255, 255, 255, 0.03)",
@@ -870,7 +870,7 @@ export function IncomingReportsCard({
                 type="button"
                 disabled={updatingStatusId === item.id}
                 onClick={() => onUpdateStatus(item, "reviewed")}
-                className={styles.actionBtnMini}
+                className={styles.action - btnMini}
                 style={{
                   border: item.status === "reviewed" ? "1px solid #3b82f6" : "1px solid var(--border-glass)",
                   background: item.status === "reviewed" ? "rgba(59, 130, 246, 0.2)" : "rgba(255, 255, 255, 0.03)",
@@ -884,7 +884,7 @@ export function IncomingReportsCard({
                 type="button"
                 disabled={updatingStatusId === item.id}
                 onClick={() => onUpdateStatus(item, isPlaceReport ? "accepted" : "action_taken")}
-                className={styles.actionBtnMini}
+                className={styles.action - btnMini}
                 style={{
                   border:
                     item.status === "action_taken" || item.status === "accepted"
@@ -908,7 +908,7 @@ export function IncomingReportsCard({
                   type="button"
                   disabled={updatingStatusId === item.id}
                   onClick={() => onUpdateStatus(item, "rejected")}
-                  className={styles.actionBtnMini}
+                  className={styles.action - btnMini}
                   style={{
                     border: item.status === "rejected" ? "1px solid #ef4444" : "1px solid var(--border-glass)",
                     background: item.status === "rejected" ? "rgba(239, 68, 68, 0.2)" : "rgba(255, 255, 255, 0.03)",

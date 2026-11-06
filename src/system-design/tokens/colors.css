@@ -113,7 +113,7 @@ html.light {
   --color-bg: #ffffff;
   --bg-secondary: #f4f4f5;
   --color-success: #008a50;
-  --bgThird: #f8f8f8;
+  --bg-third: #f8f8f8;
   --bg-glass: rgba(255, 255, 255, 0.80);
   --bg-glass-active: rgba(228, 228, 231, 0.90);
   --bgAlert: linear-gradient(135deg, rgba(85, 85, 85, 0.11) 0%, rgba(32, 32, 32, 0.20) 100%);

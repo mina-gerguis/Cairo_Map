@@ -257,7 +257,7 @@ html.light .categoryPill {
 }
 
 .categoryPill:hover {
-  background: var(--hoverBtn, rgba(39, 39, 42, 0.8));
+  background: var(--hover-btn, rgba(39, 39, 42, 0.8));
   color: var(--color-fg);
   border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
   transform: translateY(-1px);
@@ -572,7 +572,7 @@ html.light .answersToggleBtn {
 }
 
 .answersToggleBtn:hover {
-  background: var(--hoverBtn, rgba(255, 255, 255, 0.12));
+  background: var(--hover-btn, rgba(255, 255, 255, 0.12));
   border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
 }
 
@@ -670,7 +670,7 @@ html.light .floatingEmojisBar {
   opacity: 1;
 }
 
-.mainReactionBtn {
+.mainReaction-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -685,13 +685,13 @@ html.light .floatingEmojisBar {
   transition: all 0.2s ease;
 }
 
-html.light .mainReactionBtn {
+html.light .mainReaction-btn {
   background: #f1f5f9;
   border-color: rgba(0, 0, 0, 0.08);
   color: #1e293b;
 }
 
-.mainReactionBtnActive {
+.mainReaction-btnActive {
   background: rgba(37, 99, 235, 0.15) !important;
   color: var(--color-primary, #3b82f6) !important;
   border-color: rgba(37, 99, 235, 0.4) !important;

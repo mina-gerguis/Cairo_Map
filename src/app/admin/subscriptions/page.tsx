@@ -948,7 +948,7 @@ export default function AdminSubscriptionsPage() {
                           <div className={styles.actionGroup} style={{ justifyContent: "center" }}>
                             <button
                               onClick={() => handleEditUserSubscription(u)}
-                              className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                              className={`${styles.action - btn} ${styles.action - btnEdit}`}
                               style={{
                                 padding: "5px 5px",
                                 borderRadius: "50%",
@@ -1369,7 +1369,7 @@ export default function AdminSubscriptionsPage() {
                             <div className={styles.actionGroup} style={{ justifyContent: "center" }}>
                               <button
                                 onClick={() => handleToggleOfferStatus(offer)}
-                                className={styles.actionBtn}
+                                className={styles.action - btn}
                                 style={{
                                   padding: "6px 10px",
                                   borderRadius: "8px",
@@ -1383,7 +1383,7 @@ export default function AdminSubscriptionsPage() {
 
                               <button
                                 onClick={() => handleEditOffer(offer)}
-                                className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                                className={`${styles.action - btn} ${styles.action - btnEdit}`}
                                 style={{ padding: "6px 10px", borderRadius: "8px" }}
                                 title="تعديل تفاصيل العرض"
                               >
@@ -1392,7 +1392,7 @@ export default function AdminSubscriptionsPage() {
 
                               <button
                                 onClick={() => handleDeleteOffer(offer.id, offer.title)}
-                                className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                                className={`${styles.action - btn} ${styles.action - btnDelete}`}
                                 style={{ padding: "6px 10px", borderRadius: "8px" }}
                                 title="حذف العرض"
                               >

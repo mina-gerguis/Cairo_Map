@@ -39,7 +39,7 @@
 }
 
 .glass-card:hover {
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
 }
 
 .glass-card:active {

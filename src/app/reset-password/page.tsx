@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
                 </span>
               </div>
 
-              <Link href="/login" className={styles.actionBtn}>
+              <Link href="/login" className={styles.action - btn}>
                 <i className="bx bx-log-in" style={{ fontSize: "1.2rem" }} />
                 <span>{RESET_PASSWORD_TEXTS.LOGIN_NOW_BTN}</span>
               </Link>
@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
                 عفواً، رابط إعادة تعيين كلمة المرور غير صالح أو انتهت مدة صلاحيته. يرجى طلب رابط استعادة جديد للمتابعة.
               </p>
 
-              <Link href="/forgot-password" className={styles.actionBtn}>
+              <Link href="/forgot-password" className={styles.action - btn}>
                 <i className="bx bx-refresh" style={{ fontSize: "1.2rem" }} />
                 <span>{RESET_PASSWORD_TEXTS.REQUEST_NEW_LINK_BTN}</span>
               </Link>

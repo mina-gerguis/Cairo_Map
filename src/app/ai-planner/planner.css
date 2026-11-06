@@ -255,7 +255,7 @@
 }
 
 .preset-pill:hover {
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
   transform: translateY(-2px);
   border-color: var(--border-glass-bright);
 }

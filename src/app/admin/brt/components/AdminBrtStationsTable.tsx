@@ -166,7 +166,7 @@ export function AdminBrtStationsTable({
                           href={item.map_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={styles.actionBtn}
+                          className={styles.action - btn}
                           title="عرض في خرائط جوجل"
                           style={{
                             padding: "5px",
@@ -183,7 +183,7 @@ export function AdminBrtStationsTable({
                       )}
                       <button
                         onClick={() => onEdit(item)}
-                        className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                        className={`${styles.action - btn} ${styles.action - btnEdit}`}
                         title="تعديل"
                         style={{
                           padding: "5px",
@@ -195,7 +195,7 @@ export function AdminBrtStationsTable({
                       </button>
                       <button
                         onClick={() => onDelete(item)}
-                        className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                        className={`${styles.action - btn} ${styles.action - btnDelete}`}
                         title="حذف"
                         style={{
                           padding: "5px",

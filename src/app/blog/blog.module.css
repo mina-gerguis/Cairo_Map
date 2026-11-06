@@ -63,7 +63,7 @@
 .catPill:hover {
   border-color: var(--color-secondary);
   color: var(--color-secondary);
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
 }
 
 .catPillActive {

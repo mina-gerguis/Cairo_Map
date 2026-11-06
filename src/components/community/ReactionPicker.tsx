@@ -124,7 +124,7 @@ export default function ReactionPicker({
           e.preventDefault();
           setIsOpen(!isOpen);
         }}
-        className={`${styles.mainReactionBtn} ${currentMeta ? styles.mainReactionBtnActive : ""}`}
+        className={`${styles.mainReaction - btn} ${currentMeta ? styles.mainReaction - btnActive : ""}`}
         style={size === "sm" ? { padding: "5px 12px", fontSize: "0.8rem" } : undefined}
       >
         {currentMeta ? (

@@ -73,7 +73,7 @@ export function RouteOptionFormBox({
         {totalOptions > 1 && (
           <button
             type="button"
-            className="actionBtn actionBtnDelete"
+            className="action-btn action-btn-delete"
             onClick={onRemoveOption}
             title="حذف هذه الوسيلة"
           >

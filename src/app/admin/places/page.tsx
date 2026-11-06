@@ -3392,7 +3392,7 @@ export default function AdminDashboard() {
                         <div style={{ display: "flex", gap: "8px", justifyContent: "flex-start" }}>
                           <button
                             onClick={() => handleStartEditPlace(place)}
-                            className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                            className={`${styles.action - btn} ${styles.action - btnEdit}`}
                             title="تعديل المكان"
                             style={{
                               padding: "5px 5px",
@@ -3404,7 +3404,7 @@ export default function AdminDashboard() {
                           </button>
                           <button
                             onClick={() => setSelectedPlaceForBranch(place)}
-                            className={`${styles.actionBtn} ${styles.actionBtnBranch}`}
+                            className={`${styles.action - btn} ${styles.action - btnBranch}`}
                             title="إدارة الفروع"
                             style={{
                               padding: "5px 5px",
@@ -3416,7 +3416,7 @@ export default function AdminDashboard() {
                           </button>
                           <button
                             onClick={() => handleDeletePlace(place.id)}
-                            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                            className={`${styles.action - btn} ${styles.action - btnDelete}`}
                             title="حذف المكان"
                             style={{
                               padding: "5px 5px",

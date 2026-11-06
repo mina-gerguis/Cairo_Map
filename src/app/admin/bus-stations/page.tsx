@@ -494,7 +494,7 @@ function AdminBusStationsInner() {
                     </td>
                     <td className={styles.adminTd}>
                       <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                        <button onClick={() => handleOpenEdit(item)} className={`${styles.actionBtn} ${styles.actionBtnEdit}`} title="تعديل"
+                        <button onClick={() => handleOpenEdit(item)} className={`${styles.action - btn} ${styles.action - btnEdit}`} title="تعديل"
                           style={{
                             padding: "5px 5px",
                             borderRadius: "50%",
@@ -504,7 +504,7 @@ function AdminBusStationsInner() {
                         >
                           <i className="bx bx-edit-alt" />
                         </button>
-                        <button onClick={() => handleDelete(item)} className={`${styles.actionBtn} ${styles.actionBtnDelete}`} title="حذف"
+                        <button onClick={() => handleDelete(item)} className={`${styles.action - btn} ${styles.action - btnDelete}`} title="حذف"
                           style={{
                             padding: "5px 5px",
                             borderRadius: "50%",

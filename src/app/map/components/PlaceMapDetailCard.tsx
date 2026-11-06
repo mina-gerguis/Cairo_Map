@@ -153,7 +153,7 @@ export default function PlaceMapDetailCard({
       <div className={styles.floatingCardActionsRow}>
         {/* Full Details Modal */}
         <button
-          className={styles.actionBtnPrimary}
+          className={styles.action - btnPrimary}
           onClick={() => onOpenDetails(point)}
         >
           <FaInfoCircle />
@@ -165,7 +165,7 @@ export default function PlaceMapDetailCard({
           href={googleNavUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={styles.actionBtnSecondary}
+          className={styles.action - btnSecondary}
           title="الاتجاهات عبر خرائط جوجل"
         >
           <FaDirections style={{ color: "#3b82f6" }} />
@@ -176,7 +176,7 @@ export default function PlaceMapDetailCard({
         {primaryPhone && (
           <a
             href={`tel:${primaryPhone}`}
-            className={styles.actionBtnSecondary}
+            className={styles.action - btnSecondary}
             title={`اتصال بـ ${primaryPhone}`}
           >
             <FaPhoneAlt style={{ color: "#10b981" }} />
@@ -185,7 +185,7 @@ export default function PlaceMapDetailCard({
 
         {/* Favorite Button */}
         <button
-          className={styles.actionBtnSecondary}
+          className={styles.action - btnSecondary}
           onClick={(e) => onToggleFavorite(e, point.placeId)}
           title={isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
         >

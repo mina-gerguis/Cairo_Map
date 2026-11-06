@@ -41,7 +41,7 @@ export default function RailwaysBookingSection({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.bookingActionBtn}
+                  className={styles.bookingaction - btn}
                 >
                   <i className={link.icon} style={{ color: link.iconColor || themeColor, fontSize: "1.15rem" }} />
                   <span>{link.name}</span>

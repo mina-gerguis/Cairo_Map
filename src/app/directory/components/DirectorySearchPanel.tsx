@@ -266,7 +266,7 @@ export default function DirectorySearchPanel({
           <button
             type="button"
             onClick={onClearRecentSearches}
-            className="actionBtn actionBtnDelete"
+            className="action-btn action-btn-delete"
             style={{ cursor: "pointer", padding: "2px 6px", fontSize: "0.75rem" }}
             title="مسح سجل البحث"
           >

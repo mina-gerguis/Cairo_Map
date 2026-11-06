@@ -514,7 +514,7 @@ export default function MetroReportModal({
                                 marginBottom: "2px",
                               }}
                               onMouseEnter={(e) => {
-                                if (!isSelected) e.currentTarget.style.background = "var(--hoverBtn)";
+                                if (!isSelected) e.currentTarget.style.background = "var(--hover-btn)";
                               }}
                               onMouseLeave={(e) => {
                                 if (!isSelected) e.currentTarget.style.background = "transparent";
@@ -878,7 +878,7 @@ export default function MetroReportModal({
                       gap: "8px",
                     }}
                     onMouseEnter={(e) => {
-                      if (!isDraggingImage) e.currentTarget.style.background = "var(--hoverBtn)";
+                      if (!isDraggingImage) e.currentTarget.style.background = "var(--hover-btn)";
                     }}
                     onMouseLeave={(e) => {
                       if (!isDraggingImage)
@@ -1053,7 +1053,7 @@ export default function MetroReportModal({
               <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
                 <button
                   type="submit"
-                  className="btn actionBtnDelete"
+                  className="btn action-btn-delete"
                   disabled={loading || uploading}
                   style={{
                     flex: 1,

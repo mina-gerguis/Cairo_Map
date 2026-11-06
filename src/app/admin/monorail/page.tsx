@@ -609,7 +609,7 @@ function AdminMonorailInner() {
                           <button
                             type="button"
                             onClick={() => handleOpenEdit(station)}
-                            className="actionBtn actionBtnEdit"
+                            className="action-btn action-btn-edit"
                             title="تعديل"
                           >
                             <i className="bx bx-edit-alt" />
@@ -617,7 +617,7 @@ function AdminMonorailInner() {
                           <button
                             type="button"
                             onClick={() => handleDelete(station)}
-                            className="actionBtn actionBtnDelete"
+                            className="action-btn action-btn-delete"
                             title="حذف"
                           >
                             <i className="bx bx-trash" />

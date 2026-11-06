@@ -404,7 +404,7 @@ export default function MonorailReportModal({
                             borderBottom: "1px solid rgba(255,255,255,0.03)",
                           }}
                           onMouseEnter={(e) =>
-                            (e.currentTarget.style.background = "var(--hoverBtn)")
+                            (e.currentTarget.style.background = "var(--hover-btn)")
                           }
                           onMouseLeave={(e) =>
                             (e.currentTarget.style.background = "transparent")

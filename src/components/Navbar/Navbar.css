@@ -1,6 +1,10 @@
 /* ============================================================
    NAVBAR COMPONENT STYLES
    ============================================================ */
+   :root{
+    --navbar-height: 72px;
+   }
+   
 .navbar {
   position: fixed;
   top: 0;
@@ -83,7 +87,7 @@ html.light .logo-img-light {
 
 .navbar-link:hover {
   color: var(--color-fg);
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
 }
 
 .navbar-link.active {
@@ -119,7 +123,7 @@ html.light .logo-img-light {
 
 .navbar-icon-btn:hover {
   color: var(--color-fg);
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
 }
 
 .navbar-icon-btn:active {
@@ -250,7 +254,7 @@ html.light .services-megamenu-panel {
 }
 
 .services-megamenu-item-link:hover {
-  background: var(--hoverBtn, rgba(255, 255, 255, 0.07));
+  background: var(--hover-btn, rgba(255, 255, 255, 0.07));
 }
 
 .services-megamenu-icon-box {
@@ -431,7 +435,7 @@ html.light .services-megamenu-panel {
 }
 
 .navbar-hamburger:hover {
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
 }
 
 .navbar-hamburger:active {
@@ -465,7 +469,7 @@ html.light .services-megamenu-panel {
 .navbar-mobile-link:hover,
 .navbar-mobile-link.active {
   color: var(--color-primary);
-  background: var(--hoverBtn);
+  background: var(--hover-btn);
 }
 .navbar-mobile-link:hover,
 .navbar-mobile-link.icon {

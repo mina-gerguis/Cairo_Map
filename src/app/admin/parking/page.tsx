@@ -472,10 +472,10 @@ function AdminParkingInner() {
                   </td>
                   <td className={styles.adminTd}>
                     <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                      <button onClick={() => handleOpenEdit(item)} className="actionBtn actionBtnEdit" title="تعديل">
+                      <button onClick={() => handleOpenEdit(item)} className="action-btn action-btn-edit" title="تعديل">
                         <i className="bx bx-edit-alt" />
                       </button>
-                      <button onClick={() => handleDelete(item)} className="actionBtn actionBtnDelete" title="حذف">
+                      <button onClick={() => handleDelete(item)} className="action-btn action-btn-delete" title="حذف">
                         <i className="bx bx-trash" />
                       </button>
                     </div>

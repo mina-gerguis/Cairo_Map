@@ -328,7 +328,7 @@ export function MultiSelectSearch({
                     }}
                     onMouseEnter={(e) => {
                       if (!isChecked) {
-                        e.currentTarget.style.background = "var(--hoverBtn, rgba(39, 39, 42, 0.8))";
+                        e.currentTarget.style.background = "var(--hover-btn, rgba(39, 39, 42, 0.8))";
                         e.currentTarget.style.color = "var(--color-fg)";
                       }
                     }}
