@@ -1325,3 +1325,220 @@
 :global(html[data-map-fullscreen="true"] .mobile-bottom-nav) {
   display: none !important;
 }
+
+/* Map overlays: keep the map as the visual anchor and make controls easier to scan. */
+.searchBarRow,
+.sidebarDrawer,
+.selectedPlaceFloatingCard,
+.layerSelectorDropdown {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.searchBarRow {
+  border-radius: 14px;
+  padding: 5px 12px;
+}
+
+.searchInput {
+  font-size: 0.98rem;
+  min-height: 38px;
+}
+
+.searchInput:focus-visible {
+  outline: 2px solid var(--color-primary, #2563eb);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.categoryChip {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #334155;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.categoryChip:hover {
+  background: #eff6ff;
+  border-color: rgba(37, 99, 235, 0.28);
+  color: #1d4ed8;
+}
+
+.categoryChip.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.24);
+}
+
+.toolButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #1e293b;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.13);
+}
+
+.toolButton:hover {
+  transform: translateY(-1px);
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.toolButton.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
+}
+
+.toolButton:focus-visible,
+.categoryChip:focus-visible,
+.topBtn:focus-visible,
+.clearSearchBtn:focus-visible,
+.sidebarCloseBtn:focus-visible,
+.floatingCardCloseBtn:focus-visible,
+.actionBtnPrimary:focus-visible,
+.actionBtnSecondary:focus-visible,
+.layerOption:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+.sidebarDrawer {
+  border-radius: 16px;
+}
+
+.sidebarHeader {
+  padding: 16px 18px 14px;
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+.sidebarTitle {
+  font-size: 1rem;
+}
+
+.sidebarContentList {
+  padding: 12px;
+  gap: 8px;
+}
+
+.placeListItem {
+  padding: 11px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+.placeListItem:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+  border-color: rgba(37, 99, 235, 0.24);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.placeListItem.selected {
+  background: #eff6ff;
+  border-color: rgba(37, 99, 235, 0.48);
+  box-shadow: inset 3px 0 0 #2563eb;
+}
+
+.selectedPlaceFloatingCard {
+  border-radius: 16px;
+  padding: 15px;
+}
+
+.floatingCardCover {
+  border-radius: 10px;
+}
+
+.floatingCardStatsRow {
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
+.actionBtnPrimary,
+.action-btnPrimary,
+.actionbtnPrimary {
+  border-radius: 10px;
+  background: #2563eb;
+}
+
+.actionBtnPrimary:hover,
+.action-btnPrimary:hover,
+.actionbtnPrimary:hover {
+  background: #1d4ed8;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.24);
+}
+
+.actionBtnSecondary,
+.action-btnSecondary,
+.actionbtnSecondary {
+  border-radius: 10px;
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #1e293b;
+}
+
+.actionBtnSecondary:hover,
+.action-btnSecondary:hover,
+.actionbtnSecondary:hover {
+  background: #e2e8f0;
+}
+
+@media (max-width: 768px) {
+  .floatingTopBar {
+    top: 72px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .searchBarRow {
+    padding: 5px 10px;
+  }
+
+  .categoriesBar {
+    margin-inline: -2px;
+    padding-bottom: 8px;
+  }
+
+  .categoryChip {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+  }
+
+  .mapToolsPanel {
+    top: 130px;
+    left: 12px;
+  }
+
+  .selectedPlaceFloatingCard {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    padding: 13px;
+  }
+
+  .floatingCardActionsRow {
+    gap: 6px;
+  }
+
+  .actionBtnPrimary,
+  .action-btnPrimary,
+  .actionbtnPrimary,
+  .actionBtnSecondary,
+  .action-btnSecondary,
+  .actionbtnSecondary {
+    min-height: 42px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolButton,
+  .placeListItem,
+  .categoryChip,
+  .selectedPlaceFloatingCard {
+    transition: none;
+    animation: none;
+  }
+}
