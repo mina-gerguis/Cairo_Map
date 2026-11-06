@@ -188,7 +188,7 @@ export const OnboardingSlider: React.FC<OnboardingSliderProps> = ({ onStartSignu
               <button
                 type="button"
                 onClick={() => setCurrentSlide((prev) => prev + 1)}
-                className={styles.actionbtnWhite}
+                className="btn btn-light rounded-full  fs-xl fw-700"
               >
                 التالي <i className="bx bx-left-arrow-alt" style={{ fontSize: "1.2rem" }}></i>
               </button>
