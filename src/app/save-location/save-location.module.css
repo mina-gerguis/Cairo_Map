@@ -4,7 +4,7 @@
 
 .container {
   min-height: 100vh;
-  padding-bottom: 90px;
+  padding-bottom: 0px;
   direction: rtl;
   background-color: var(--color-bg, #090d16);
   color: var(--color-fg, #f8fafc);
@@ -1133,7 +1133,7 @@
 
 @media (max-width: 640px) {
   .contentWrapper {
-    padding: 0 14px 40px 14px;
+    padding: 0 14px 0px 14px;
   }
 
   .placesGrid {
