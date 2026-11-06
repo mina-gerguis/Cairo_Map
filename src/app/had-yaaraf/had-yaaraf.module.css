@@ -670,7 +670,7 @@ html.light .floatingEmojisBar {
   opacity: 1;
 }
 
-.mainReaction-btn {
+.mainReactionBtn, .mainReaction-btn, .mainReactionbtn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -685,13 +685,13 @@ html.light .floatingEmojisBar {
   transition: all 0.2s ease;
 }
 
-html.light .mainReaction-btn {
+html.light .mainReactionBtn, .mainReaction-btn, .mainReactionbtn {
   background: #f1f5f9;
   border-color: rgba(0, 0, 0, 0.08);
   color: #1e293b;
 }
 
-.mainReaction-btnActive {
+.mainReactionBtn, .mainReaction-btn, .mainReactionbtnActive {
   background: rgba(37, 99, 235, 0.15) !important;
   color: var(--color-primary, #3b82f6) !important;
   border-color: rgba(37, 99, 235, 0.4) !important;

@@ -521,7 +521,7 @@
   flex-wrap: wrap;
 }
 
-.action-btnMini {
+.actionBtnMini, .action-btnMini, .actionbtnMini {
   padding: 5px 12px;
   border-radius: 8px;
   font-size: 0.78rem;

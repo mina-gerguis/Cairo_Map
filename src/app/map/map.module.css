@@ -838,7 +838,7 @@
   margin-top: 4px;
 }
 
-.action-btnPrimary {
+.actionBtnPrimary, .action-btnPrimary, .actionbtnPrimary {
   flex: 1;
   background: var(--color-primary, #2727ff);
   border: none;
@@ -856,12 +856,12 @@
   transition: all 0.2s ease;
 }
 
-.action-btnPrimary:hover {
+.actionBtnPrimary, .action-btnPrimary, .actionbtnPrimary:hover {
   background: #1a1aff;
   box-shadow: 0 4px 14px rgba(39, 39, 255, 0.4);
 }
 
-.action-btnSecondary {
+.actionBtnSecondary, .action-btnSecondary, .actionbtnSecondary {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
   color: var(--color-fg, #ffffff);
@@ -878,13 +878,13 @@
   transition: all 0.2s ease;
 }
 
-:global(html.light) .action-btnSecondary {
+:global(html.light) .actionBtnSecondary, .action-btnSecondary, .actionbtnSecondary {
   background: rgba(0, 0, 0, 0.05);
   border-color: rgba(0, 0, 0, 0.08);
   color: #18181b;
 }
 
-.action-btnSecondary:hover {
+.actionBtnSecondary, .action-btnSecondary, .actionbtnSecondary:hover {
   background: rgba(255, 255, 255, 0.16);
 }
 

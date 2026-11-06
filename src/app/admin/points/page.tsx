@@ -703,7 +703,7 @@ function AdminPointsPageInner() {
                         <td className={styles.adminTd} style={{ textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
                           <button
                             onClick={() => handleOpenEditModal(u)}
-                            className={`${styles.action - btn} ${styles.action - btnEdit}`}
+                            className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
                             style={{ padding: "4px 10px", fontSize: "0.78rem" }}
                           >
                             <i className="bx bx-edit-alt"></i> تعديل

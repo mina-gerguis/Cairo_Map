@@ -553,7 +553,7 @@
   flex-wrap: wrap;
 }
 
-.action-btn {
+.actionBtn, .action-btn, .actionbtn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -566,35 +566,35 @@
   white-space: nowrap;
 }
 
-.action-btn-edit {
+.actionBtnEdit, .action-btn-edit, .actionbtnEdit {
   background: rgba(34, 197, 94, 0.12);
   color: #4ade80;
   border-color: rgba(34, 197, 94, 0.25);
 }
 
-.action-btn-edit:hover {
+.actionBtnEdit:hover, .action-btn-edit:hover, .actionbtnEdit:hover {
   background: rgba(34, 197, 94, 0.25);
   color: #ffffff;
 }
 
-.action-btnBranch {
+.actionBtnBranch, .action-btnBranch, .actionbtnBranch {
   background: rgba(99, 102, 241, 0.12);
   color: #818cf8;
   border-color: rgba(99, 102, 241, 0.25);
 }
 
-.action-btnBranch:hover {
+.actionBtnBranch:hover, .action-btnBranch:hover, .actionbtnBranch:hover {
   background: rgba(99, 102, 241, 0.25);
   color: #ffffff;
 }
 
-.action-btn-delete {
+.actionBtnDelete, .action-btn-delete, .actionbtnDelete {
   background: rgb(255, 0, 0);
   color: #f87171;
   border-color: rgba(239, 68, 68, 0.25);
 }
 
-.action-btn-delete:hover {
+.actionBtnDelete:hover, .action-btn-delete:hover, .actionbtnDelete:hover {
   background: rgb(255, 0, 0);
   color: #ffffff;
 }
@@ -702,7 +702,7 @@
     gap: 4px;
   }
 
-  .action-btn {
+  .actionBtn, .action-btn, .actionbtn {
     padding: 5px 8px;
     font-size: 0.75rem;
     gap: 4px;
@@ -1955,7 +1955,7 @@
   gap: 8px;
 }
 
-.action-btn {
+.actionBtn, .action-btn, .actionbtn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1970,17 +1970,17 @@
   font-size: 0.95rem;
 }
 
-.action-btnView:hover {
+.actionBtnView:hover, .action-btnView:hover, .actionbtnView:hover {
   background: rgba(255, 255, 255, 0.05);
   color: #38bdf8;
 }
 
-.action-btn-edit:hover {
+.actionBtnEdit:hover, .action-btn-edit:hover, .actionbtnEdit:hover {
   background: rgba(16, 185, 129, 0.1);
   color: #34d399;
 }
 
-.action-btn-delete:hover {
+.actionBtnDelete:hover, .action-btn-delete:hover, .actionbtnDelete:hover {
   background: rgba(239, 68, 68, 0.1);
   color: #f87171;
 }
@@ -2431,21 +2431,21 @@
   background: #f1f5f9;
 }
 
-:global(.light) .action-btn {
+:global(.light) .actionBtn, .action-btn, .actionbtn {
   color: #475569;
 }
 
-:global(.light) .action-btnView:hover {
+:global(.light) .actionBtnView:hover, .action-btnView:hover, .actionbtnView:hover {
   background: #f0f9ff;
   color: #0284c7;
 }
 
-:global(.light) .action-btn-edit:hover {
+:global(.light) .actionBtnEdit:hover, .action-btn-edit:hover, .actionbtnEdit:hover {
   background: #f0fdf4;
   color: #16a34a;
 }
 
-:global(.light) .action-btn-delete:hover {
+:global(.light) .actionBtnDelete:hover, .action-btn-delete:hover, .actionbtnDelete:hover {
   background: #fef2f2;
   color: #dc2626;
 }
