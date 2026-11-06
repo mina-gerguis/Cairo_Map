@@ -127,6 +127,7 @@ export default function ClientLayoutWrapper({
 
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "m") {
         e.preventDefault();
+        if (pathname === "/map") return;
         const currentTheme = document.documentElement.classList.contains("light") ? "light" : "dark";
         const next = currentTheme === "dark" ? "light" : "dark";
 
@@ -139,7 +140,7 @@ export default function ClientLayoutWrapper({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [pathname]);
 
   // Prevent right-click and dragging on images across the site
   useEffect(() => {

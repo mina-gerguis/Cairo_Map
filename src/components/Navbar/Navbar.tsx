@@ -122,19 +122,23 @@ export default function Navbar() {
 
   useEffect(() => {
     const saved = localStorage.getItem("dftry_theme") as "dark" | "light" | null;
-    const initial = saved ?? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    const initial =
+      pathname === "/map"
+        ? "light"
+        : saved ?? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
     setTheme(initial);
     document.documentElement.classList.toggle("light", initial === "light");
     document.documentElement.classList.toggle("dark", initial !== "light");
 
     const handleGlobalThemeChange = (e: any) => {
-      setTheme(e.detail);
-      document.documentElement.classList.toggle("light", e.detail === "light");
-      document.documentElement.classList.toggle("dark", e.detail !== "light");
+      const nextTheme = pathname === "/map" ? "light" : e.detail;
+      setTheme(nextTheme);
+      document.documentElement.classList.toggle("light", nextTheme === "light");
+      document.documentElement.classList.toggle("dark", nextTheme !== "light");
     };
     window.addEventListener("themechange", handleGlobalThemeChange);
     return () => window.removeEventListener("themechange", handleGlobalThemeChange);
-  }, []);
+  }, [pathname]);
 
   // Close menu on auth pages
   useEffect(() => {
@@ -142,6 +146,7 @@ export default function Navbar() {
   }, [isAuthPage]);
 
   const toggleTheme = () => {
+    if (pathname === "/map") return;
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
     localStorage.setItem("dftry_theme", next);

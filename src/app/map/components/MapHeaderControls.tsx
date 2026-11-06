@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { CATEGORIES_STRUCTURE } from "@/data/places";
 import { MapLayerType, MapPlacePoint } from "../types";
 import { IoSearchOutline, IoClose, IoLayersOutline } from "react-icons/io5";
-import { FaLocationArrow, FaHeart, FaStar, FaStore, FaCompass } from "react-icons/fa";
+import { FaHeart, FaStar, FaStore, FaCompass } from "react-icons/fa";
 import { getCategoryColor, CATEGORY_EMOJIS } from "@/app/places/constants";
 import styles from "../map.module.css";
 
@@ -21,14 +21,10 @@ interface MapHeaderControlsProps {
   sortByNearby: boolean;
   setSortByNearby: (val: boolean) => void;
   onLocateUser: () => void;
-  locationLoading: boolean;
   userHasLocation: boolean;
   onResetView: () => void;
   mapLayer: MapLayerType;
   setMapLayer: (layer: MapLayerType) => void;
-  onToggleSidebar: () => void;
-  isSidebarOpen: boolean;
-  totalFilteredCount: number;
   points?: MapPlacePoint[];
   onSelectPoint?: (point: MapPlacePoint) => void;
 }
@@ -46,14 +42,10 @@ export default function MapHeaderControls({
   sortByNearby,
   setSortByNearby,
   onLocateUser,
-  locationLoading,
   userHasLocation,
   onResetView,
   mapLayer,
   setMapLayer,
-  onToggleSidebar,
-  isSidebarOpen,
-  totalFilteredCount,
   points = [],
   onSelectPoint,
 }: MapHeaderControlsProps) {
@@ -183,27 +175,6 @@ export default function MapHeaderControls({
               )}
             </div>
           )}
-        </div>
-
-        {/* Action Buttons Group */}
-        <div className={styles.topActionsGroup}>
-          {/* Locate Me Button */}
-          <button
-            className={`${styles.topBtn} ${userHasLocation ? styles.active : ""}`}
-            onClick={onLocateUser}
-            title="تحديد موقعي الحالي على الخريطة"
-            disabled={locationLoading}
-          >
-            <FaLocationArrow
-              style={{
-                transform: "rotate(-45deg)",
-                animation: locationLoading ? "spin 1s linear infinite" : "none",
-              }}
-            />
-            <span className="hidden-mobile">
-              {locationLoading ? "جاري التحديد..." : userHasLocation ? "موقعي محدد" : "موقعي"}
-            </span>
-          </button>
         </div>
       </div>
 

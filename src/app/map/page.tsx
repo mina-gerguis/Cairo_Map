@@ -215,7 +215,6 @@ function MapPageContent() {
 
   // Theme is locked to Light Mode for Cairo Map
   // (No dark mode switching)
-
   // Handle Point Selection
   const handleSelectPoint = (point: MapPlacePoint | null) => {
     setSelectedPoint(point);
@@ -268,14 +267,10 @@ function MapPageContent() {
         sortByNearby={sortByNearby}
         setSortByNearby={setSortByNearby}
         onLocateUser={handleLocateUser}
-        locationLoading={locationLoading}
         userHasLocation={Boolean(userLocation)}
         onResetView={handleResetView}
         mapLayer={mapLayer}
         setMapLayer={setMapLayer}
-        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        isSidebarOpen={isSidebarOpen}
-        totalFilteredCount={filteredMapPoints.length}
         points={filteredMapPoints}
         onSelectPoint={handleSelectPoint}
       />
@@ -298,17 +293,17 @@ function MapPageContent() {
         <MapFloatingTools
           mapInstanceRef={mapInstanceRef}
           mapLayer={mapLayer}
-          setMapLayer={setMapLayer}
+          setMapLayer={(layer) => setMapLayer(layer === "dark" ? "light" : layer)}
           onLocateUser={handleLocateUser}
           locationLoading={locationLoading}
           userHasLocation={Boolean(userLocation)}
           onSelectDistrict={setUserLocationManual}
           onSaveLocation={() => setIsSaveLocModalOpen(true)}
-          isFullscreen={isFullscreen}
-          onToggleFullscreen={handleToggleFullscreen}
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           isSidebarOpen={isSidebarOpen}
-          totalPlacesCount={filteredMapPoints.length}
+          totalFilteredCount={filteredMapPoints.length}
+          isFullscreen={isFullscreen}
+          onToggleFullscreen={handleToggleFullscreen}
         />
 
         {/* Right Collapsible Places Sidebar */}
