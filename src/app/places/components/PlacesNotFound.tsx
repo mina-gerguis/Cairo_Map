@@ -173,7 +173,7 @@ export function PlacesNotFound({ categoryLabel, onReset }: PlacesNotFoundProps) 
                 onClick={onReset}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="btn btn-primary px-6 py-2.5 rounded-full text-base font-medium select-none shadow-lg cursor-pointer"
+                className="btn btn-primary px-6 py-2.5 rounded-full text-base font-medium select-none shadow-lg cursor-pointer w-full flex-1"
               >
                 عرض كل الأماكن
               </motion.button>
@@ -184,7 +184,7 @@ export function PlacesNotFound({ categoryLabel, onReset }: PlacesNotFoundProps) 
             >
               <Link 
                 href="/propose-place"
-                className="btn btn-secondary px-6 py-2.5 rounded-full text-base font-medium select-none inline-flex items-center gap-2"
+                className="btn btn-secondary px-6 py-2.5 rounded-full text-base font-medium w-full flex-1"
               >
                 <span>أضف مكاناً في هذا القسم</span>
                 <span>✨</span>
