@@ -2,6 +2,7 @@ import React from "react";
 import { DirectorySearchPanelProps } from "../types";
 import { getDialUrl } from "../utils";
 import styles from "../directory.module.css";
+import { IconXFilled } from "@tabler/icons-react";
 
 export default function DirectorySearchPanel({
   searchPanelRef,
@@ -152,7 +153,7 @@ export default function DirectorySearchPanel({
                 fontSize: "0.9rem",
               }}
             >
-              ✕
+              <IconXFilled size={16}/>
             </button>
           )}
         </div>

@@ -7,3 +7,4 @@ export { default as TelecomSection } from "./TelecomSection";
 export { default as ReportAlertBanner } from "./ReportAlertBanner";
 export { default as DirectoryModal } from "./DirectoryModal";
 export { default as DirectoryReportModal } from "./DirectoryReportModal";
+export { default as DirectoryNotFound } from "./DirectoryNotFound";

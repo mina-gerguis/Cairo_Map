@@ -3,6 +3,7 @@ import Image from "next/image";
 import { TelecomSectionProps } from "../types";
 import { COMPANY_META } from "../constants";
 import TelecomAccordion from "./TelecomAccordion";
+import DirectoryNotFound from "./DirectoryNotFound";
 import styles from "../directory.module.css";
 
 export default function TelecomSection({
@@ -20,6 +21,7 @@ export default function TelecomSection({
   searchQuery,
   sectionIcons,
   onOpenSuggestModal,
+  onResetSearch,
 }: TelecomSectionProps) {
   const currentCompanyMeta = COMPANY_META[activeCompany];
 
@@ -124,36 +126,12 @@ export default function TelecomSection({
 
       {/* Accordions of codes */}
       {Object.keys(groupedCodes).length === 0 ? (
-        <div className={styles.emptyState}>
-          <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🔍</div>
-          <h4
-            style={{
-              fontWeight: "700",
-              color: "var(--color-fg)",
-              marginBottom: "4px",
-            }}
-          >
-            لا توجد أكواد مطابقة لبحثك في شبكة {currentCompanyMeta?.label}
-          </h4>
-          <p
-            style={{
-              fontSize: "0.82rem",
-              color: "var(--text-secondary)",
-              margin: "0 0 14px",
-            }}
-          >
-            إذا كنت تعرف كود هذه الخدمة، اقترحه الآن على الإدارة لإضافته للدليل!
-          </p>
-          <button
-            type="button"
-            onClick={() => onOpenSuggestModal()}
-            className="btn btn-primary"
-            style={{ fontSize: "0.82rem", padding: "6px 14px" }}
-          >
-            <i className="fa-solid fa-plus" style={{ marginLeft: "6px" }}></i>
-            اقترح إضافة هذا الكود
-          </button>
-        </div>
+        <DirectoryNotFound
+          searchQuery={searchQuery}
+          specialty={currentCompanyMeta?.label}
+          onOpenSuggestModal={() => onOpenSuggestModal(searchQuery)}
+          onResetSearch={onResetSearch}
+        />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {Object.entries(groupedCodes).map(([sectionName, codeList]) => {

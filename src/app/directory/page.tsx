@@ -159,6 +159,11 @@ export default function PhoneDirectoryPage() {
               suggestModal.handleOpenModal("suggest", "phone", query || data.searchQuery)
             }
             onOpenReportModal={(name, phone) => handleOpenReport("phone", name, phone)}
+            searchQuery={data.searchQuery}
+            onResetSearch={() => {
+              data.setSearchQuery("");
+              data.setSelectedSpecialty("الكل");
+            }}
           />
         )}
 
@@ -183,6 +188,9 @@ export default function PhoneDirectoryPage() {
             onOpenSuggestModal={(query) =>
               suggestModal.handleOpenModal("suggest", "code", query || data.searchQuery)
             }
+            onResetSearch={() => {
+              data.setSearchQuery("");
+            }}
           />
         )}
 

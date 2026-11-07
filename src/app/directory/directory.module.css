@@ -103,7 +103,7 @@
   left: 0;
   right: 0;
   z-index: 2000;
-  background-color: var(--bg-glass);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-card);
   max-height: 280px;

@@ -175,6 +175,8 @@ export interface PhonesSectionProps {
   onCopy: (phone: string, id: string) => void;
   onOpenSuggestModal: (query?: string) => void;
   onOpenReportModal: (name: string, phone: string) => void;
+  searchQuery?: string;
+  onResetSearch?: () => void;
 }
 
 export interface TelecomAccordionProps {
@@ -205,6 +207,7 @@ export interface TelecomSectionProps {
   searchQuery: string;
   sectionIcons: Record<string, string>;
   onOpenSuggestModal: (query?: string) => void;
+  onResetSearch?: () => void;
 }
 
 export interface ReportAlertBannerProps {

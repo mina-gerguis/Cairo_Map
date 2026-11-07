@@ -2,7 +2,9 @@ import React from "react";
 import { formatBoxIcon } from "@/data/places";
 import { PhonesSectionProps } from "../types";
 import PhoneCard from "./PhoneCard";
+import DirectoryNotFound from "./DirectoryNotFound";
 import styles from "../directory.module.css";
+import { IconClearAll } from "@tabler/icons-react";
 
 export default function PhonesSection({
   phonesPanelRef,
@@ -19,6 +21,8 @@ export default function PhonesSection({
   onCopy,
   onOpenSuggestModal,
   onOpenReportModal,
+  searchQuery,
+  onResetSearch,
 }: PhonesSectionProps) {
   return (
     <div ref={phonesPanelRef} className="details-panel">
@@ -81,6 +85,7 @@ export default function PhonesSection({
         <button
           type="button"
           onClick={() => setSelectedSpecialty("all")}
+          className="flex gap-1"
           style={{
             background:
               selectedSpecialty === "all"
@@ -100,7 +105,7 @@ export default function PhonesSection({
             transition: "all 0.2s ease",
           }}
         >
-          🌐 الكل ({entries.length})
+          <IconClearAll stroke={2} size={16} /> الكل ({entries.length})
         </button>
         {specialties.map((spec) => {
           const count = entries.filter((e) => e.specialty === spec).length;
@@ -136,36 +141,12 @@ export default function PhonesSection({
 
       {/* Phone Cards Grid */}
       {slicedEntries.length === 0 ? (
-        <div className={styles.emptyState}>
-          <h3 className="sub-title"
-            style={{
-              fontWeight: "700",
-              color: "var(--color-fg)",
-              marginBottom: "4px",
-
-            }}
-          >
-            لم يتم العثور على أرقام مطابقة لبحثك
-          </h3>
-          <p
-            style={{
-              fontSize: "0.82rem",
-              color: "var(--text-secondary)",
-              margin: "0 0 14px",
-            }}
-          >
-            إذا كنت تعرف رقم هذه الجهة أو الخدمة، ساعدنا في إضافتها ليستفيد الجميع!
-          </p>
-          <button
-            type="button"
-            onClick={() => onOpenSuggestModal()}
-            className="btn btn-primary"
-            style={{ fontSize: "0.82rem", padding: "6px 14px" }}
-          >
-            <i className="fa-solid fa-plus" style={{ marginLeft: "6px" }}></i>
-            اقترح إضافة هذا الرقم الآن
-          </button>
-        </div>
+        <DirectoryNotFound
+          searchQuery={searchQuery}
+          specialty={selectedSpecialty}
+          onOpenSuggestModal={() => onOpenSuggestModal(searchQuery)}
+          onResetSearch={onResetSearch}
+        />
       ) : (
         <div className={styles.phoneGrid}>
           {slicedEntries.map((entry) => (
