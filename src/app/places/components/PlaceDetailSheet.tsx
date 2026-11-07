@@ -18,6 +18,7 @@ import { CATEGORY_ICONS, CATEGORY_LABELS } from "../constants";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import ImageWithSkeleton from "./ImageWithSkeleton";
 import { useGSAP, gsap } from "@/lib/gsap";
+import { IconAlertSquareRoundedFilled, IconClipboardDataFilled, IconGpsFilled, IconShare } from "@tabler/icons-react";
 
 export default function PlaceDetailSheet({
   selectedPlace,
@@ -107,7 +108,7 @@ export default function PlaceDetailSheet({
             onClick={() => onShare(selectedPlace)}
             style={{
               background: "var(--color-secondary)",
-              border: "1px solid var(--border-glass)",
+              border: "1px solid var(--color-secondary)",
               color: "#ffffff",
               borderRadius: "50%",
               width: "36px",
@@ -263,7 +264,7 @@ export default function PlaceDetailSheet({
               }}
             >
               <span>
-                <FaMapMarkerAlt /> {displayBranch.city} /{" "}
+                <FaMapMarkerAlt /> {displayBranch.city} {" "}
                 {displayBranch.governorate}
               </span>
             </div>
@@ -301,7 +302,7 @@ export default function PlaceDetailSheet({
                 transition: "opacity 0.2s",
               }}
             >
-              <BiSolidMapPin style={{ fontSize: "1rem" }} />
+             <IconGpsFilled size={20}/>
               <span style={{ fontSize: "0.75rem", fontWeight: "bold" }}>
                 الاتجاهات
               </span>
@@ -1163,55 +1164,18 @@ export default function PlaceDetailSheet({
           >
             <button
               onClick={onOpenReportModal}
-              style={{
-                width: "100%",
-                background: "rgba(255, 59, 48, 0.1)",
-                border: "1px solid rgba(255, 59, 48, 0.2)",
-                borderRadius: "12px",
-                padding: "14px",
-                color: "#ff3b30",
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-                fontFamily: "var(--font-cairo)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                cursor: "pointer",
-                transition: "all 0.2s",
-              }}
+              className="btn btn-danger"
             >
-              <i
-                className="bx bx-error-circle"
-                style={{ fontSize: "1.2rem" }}
-              />
+             <IconAlertSquareRoundedFilled size={18}/>
               <span>الإبلاغ عن مشكلة في البيانات</span>
             </button>
 
             <div style={{ display: "flex", gap: "10px" }}>
               <button
                 onClick={onOpenNoteModal}
-                style={{
-                  flex: 1,
-                  background: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid var(--border-glass)",
-                  borderRadius: "12px",
-                  padding: "12px",
-                  color: "var(--color-fg)",
-                  fontWeight: "600",
-                  fontSize: "0.9rem",
-                  fontFamily: "var(--font-cairo)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  cursor: "pointer",
-                }}
+                className="btn btn-secondary w-full"
               >
-                <i
-                  className="bx bx-notepad"
-                  style={{ fontSize: "1.1rem", color: "#34c759" }}
-                />
+               <IconClipboardDataFilled size={18}/>
                 <span>أضف تذكير</span>
                 {!hasAccess && (
                   <i
@@ -1223,24 +1187,9 @@ export default function PlaceDetailSheet({
 
               <button
                 onClick={() => onShare(selectedPlace)}
-                style={{
-                  flex: 1,
-                  background: "rgba(255, 255, 255, 0.05)",
-                  border: "1px solid var(--border-glass)",
-                  borderRadius: "12px",
-                  padding: "12px",
-                  color: "var(--color-fg)",
-                  fontWeight: "600",
-                  fontSize: "0.9rem",
-                  fontFamily: "var(--font-cairo)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  cursor: "pointer",
-                }}
+                className="btn btn-secondary w-full"
               >
-                <MdOutlineIosShare size={18} />
+               <IconShare stroke={2} size={18} />
                 <span>مشاركة </span>
               </button>
             </div>

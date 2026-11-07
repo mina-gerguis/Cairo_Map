@@ -221,7 +221,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
   const displayedReviews = filteredAndSortedReviews.slice(0, 5);
 
   return (
-    <div id="reviews-section" style={{ marginTop: "40px", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "24px" }}>
+    <div id="reviews-section" style={{ margin: "40px 0", borderTop: "1px solid rgba(120,120,120,0.1)", paddingTop: "24px" }}>
       <h2 style={{ fontSize: "1.3rem", fontWeight: "800", marginBottom: "20px", color: "var(--color-fg)" }}>
         التقييمات والتعليقات ({filteredAndSortedReviews.length !== reviews.length ? `${filteredAndSortedReviews.length} من ${reviews.length}` : reviews.length})
       </h2>
@@ -270,7 +270,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
               ))}
             </div>
             <textarea
-              className="input-fields"
+              className="input-fields h-auto p-2"
               placeholder="اكتب تعليقك هنا..."
               value={commentInput}
               onChange={(e) => setCommentInput(e.target.value)}
@@ -281,8 +281,7 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
             <button
               type="submit"
               disabled={submittingReview || ratingInput === 0}
-              className="btn btn-primary"
-              style={{ width: "100%", padding: "var(--padding-btn)", borderRadius: "8px" }}
+              className="btn btn-primary w-full"
             >
               {submittingReview ? "جاري الإرسال..." : <><i className="bx bx-save" style={{ fontSize: "1.2rem" }}></i> حفظ التقييم</>}
             </button>
@@ -291,12 +290,12 @@ export default function ReviewSection({ place, onRatingUpdate, selectedBranchId 
       ) : (
         <div style={{ textAlign: "center", padding: "20px", background: "rgba(120, 120, 120, 0.04)", borderRadius: "16px", marginBottom: "30px" }}>
           <p style={{ color: "var(--text-secondary)", marginBottom: "12px" }}>سجل دخولك لتتمكن من تقييم هذا المكان</p>
-          <button className="btn btn-primary" onClick={() => router.push("/login")} style={{ padding: "var(--padding-btn)", borderRadius: "8px" }}><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
+          <button className="btn btn-primary w-full" onClick={() => router.push("/login")} ><i className="bx bx-log-in" style={{ fontSize: "1.2rem" }}></i> تسجيل الدخول</button>
         </div>
       )}
 
       {/* Reviews List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "50px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "120px" }}>
         {displayedReviews.length > 0 ? (
           displayedReviews.map(review => (
             <div key={review.id} style={{ background: "var(--bg-glass)", border: "1px solid var(--border-glass)", borderRadius: "16px", padding: "16px" }}>

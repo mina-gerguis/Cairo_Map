@@ -55,13 +55,13 @@ export interface PlacesHeroProps {
   searchQuery: string;
   setSearchQuery: (val: string) => void;
   suggestions: PlaceWithDist[];
-  showSuggestions: boolean;
-  setShowSuggestions: (val: boolean) => void;
-  activeSuggestionIndex: number;
-  setActiveSuggestionIndex: React.Dispatch<React.SetStateAction<number>>;
+  showSuggestions?: boolean;
+  setShowSuggestions?: (val: boolean) => void;
+  activeSuggestionIndex?: number;
+  setActiveSuggestionIndex?: React.Dispatch<React.SetStateAction<number>>;
   onSelectSuggestion: (place: PlaceWithDist) => void;
-  searchRef: React.RefObject<HTMLDivElement | null>;
-  isLight: boolean;
+  searchRef?: React.RefObject<HTMLDivElement | null>;
+  isLight?: boolean;
   isProximityEnabled: boolean;
   locationLoading: boolean;
   onToggleProximity: () => void;
@@ -113,6 +113,7 @@ export interface PlacesSearchResultsViewProps {
   getCategoryColor: (cat: string) => string;
   toggleFavorite: (e: React.MouseEvent, placeId: string) => void;
   favoriteIds: Set<string>;
+  onResetFilters?: () => void;
 }
 
 export interface PlaceDetailSheetProps {

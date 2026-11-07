@@ -163,16 +163,10 @@ function PlacesContent() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         suggestions={suggestions}
-        showSuggestions={showSuggestions}
-        setShowSuggestions={setShowSuggestions}
-        activeSuggestionIndex={activeSuggestionIndex}
-        setActiveSuggestionIndex={setActiveSuggestionIndex}
         onSelectSuggestion={(place) => {
           setSelectedPlace(place);
-          setShowSuggestions(false);
         }}
         searchRef={searchRef}
-        isLight={isLight}
         isProximityEnabled={isProximityEnabled}
         locationLoading={locationLoading}
         onToggleProximity={handleToggleProximity}
@@ -240,6 +234,14 @@ function PlacesContent() {
             getCategoryColor={getCategoryColor}
             toggleFavorite={toggleFavorite}
             favoriteIds={favoriteIds}
+            onResetFilters={() => {
+              setSelectedCategory("all");
+              setSelectedSubCategory(null);
+              setSelectedType(null);
+              setSearchQuery("");
+              setMinRating(0);
+              setActiveFeatures([]);
+            }}
           />
         )}
 

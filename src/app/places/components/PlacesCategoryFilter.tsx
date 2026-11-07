@@ -76,44 +76,10 @@ export default function PlacesCategoryFilter({
         }}
       >
         <button
-          className={`btn ${isProximityEnabled ? "btn-primary" : ""}`}
+          className={`btn w-full ${isProximityEnabled ? "btn-primary" : "btn-cancel"}`}
           onClick={onToggleProximity}
           disabled={locationLoading}
-          style={{
-            padding: "10px 16px",
-            fontSize: "0.9rem",
-            flexShrink: 0,
-            gap: "6px",
-            border: "1px solid var(--border-glass)",
-            fontFamily: "var(--font-sub)",
-            width: "100%",
-          }}
         >
-          {locationLoading ? (
-            <span
-              style={{
-                width: "16px",
-                height: "16px",
-                border: "2px solid rgba(255,255,255,0.4)",
-                borderTopColor: "#fff",
-                borderRadius: "50%",
-                display: "inline-block",
-                animation: "spin 0.8s linear infinite",
-              }}
-            />
-          ) : (
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-            </svg>
-          )}
           {isProximityEnabled ? "قريب مني ✓" : "قريب مني"}
         </button>
 

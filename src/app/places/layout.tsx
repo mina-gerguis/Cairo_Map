@@ -1,4 +1,5 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
+import "./places.css";
 
 export const metadata: Metadata = {
   title: "دليل الأماكن والخدمات والمعالم السياحية في مصر 2026",

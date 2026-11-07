@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useRef } from "react";
-import Image from "next/image";
-import AdBanner from "@/components/AdBanner";
 import { PlacesSearchResultsViewProps } from "../types";
 import { CATEGORY_LABELS } from "../constants";
 import PlaceCard from "./PlaceCard";
+import PlacesNotFound from "./PlacesNotFound";
 import { gsap, useGSAP } from "@/lib/gsap";
 
 export default function PlacesSearchResultsView({
@@ -20,6 +19,7 @@ export default function PlacesSearchResultsView({
   getCategoryColor,
   toggleFavorite,
   favoriteIds,
+  onResetFilters,
 }: PlacesSearchResultsViewProps) {
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -38,6 +38,12 @@ export default function PlacesSearchResultsView({
       });
     }
   }, [filteredPlaces, searchQuery, selectedCategory, selectedSubCategory, selectedType]);
+
+  const currentCategoryLabel = selectedSubCategory 
+    ? (CATEGORY_LABELS[selectedSubCategory] || selectedSubCategory)
+    : selectedCategory !== "all" 
+      ? (CATEGORY_LABELS[selectedCategory] || selectedCategory)
+      : undefined;
 
   return (
     <>
@@ -63,42 +69,32 @@ export default function PlacesSearchResultsView({
       </p>
 
       {filteredPlaces.length > 0 ? (
-        <>
-          <div ref={gridRef} className="grid-places">
-            {filteredPlaces.map((place) => (
-              <div
-                key={place.id}
-                className="glass-card"
-                onClick={() => setSelectedPlace(place)}
-                style={{ cursor: "pointer", position: "relative" }}
-              >
-                <PlaceCard
-                  place={place}
-                  getCategoryColor={getCategoryColor}
-                  toggleFavorite={toggleFavorite}
-                  favoriteIds={favoriteIds}
-                />
-              </div>
-            ))}
-          </div>
-        </>
+        <div ref={gridRef} className="grid-places">
+          {filteredPlaces.map((place) => (
+            <div
+              key={place.id}
+              className="glass-card"
+              onClick={() => setSelectedPlace(place)}
+              style={{ cursor: "pointer", position: "relative" }}
+            >
+              <PlaceCard
+                place={place}
+                getCategoryColor={getCategoryColor}
+                toggleFavorite={toggleFavorite}
+                favoriteIds={favoriteIds}
+              />
+            </div>
+          ))}
+        </div>
       ) : (
         <div
           className="glass-panel"
-          style={{ padding: "60px 20px", textAlign: "center", border: "none" }}
+          style={{ padding: "40px 20px", textAlign: "center", border: "none" }}
         >
-          <div style={{ fontSize: "3.5rem", marginBottom: "16px" }}>
-            <Image
-              src="/images/404.webp"
-              alt="Not Found"
-              width={250}
-              height={250}
-              style={{ width: "250px", height: "auto" }}
-            />
-          </div>
-          <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem" }}>
-            لم يُعثر على نتائج — جرّب كلمة بحث أخرى
-          </p>
+          <PlacesNotFound 
+            categoryLabel={currentCategoryLabel} 
+            onReset={onResetFilters} 
+          />
         </div>
       )}
     </>

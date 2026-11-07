@@ -1,28 +1,101 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import Link from "next/link";
+import { FaInbox } from "react-icons/fa";
+import { IconBookmarkPlus, IconMoodSadDizzy, IconRefresh } from "@tabler/icons-react";
+import { AppleSpotlight, SearchResult } from "@/components/ui/AppleSpotlight";
+import { getMainCategoryImage, CATEGORIES_STRUCTURE } from "@/data/places";
 import { PlacesHeroProps } from "../types";
-import PlacesSearchSuggestions from "./PlacesSearchSuggestions";
+import { getSearchWords, getSearchCleanedText } from "../utils";
 import { useGSAP, gsap } from "@/lib/gsap";
+
+const HERO_PLACEHOLDERS = [
+  "ابحث عن مطعم، كافيه، أو حديقة...",
+  "ابحث باسم المكان، المنطقة، أو المدينة...",
+  "ابحث عن أماكن عائلية أو هادئة...",
+  "ابحث بالأنشطة: سينما، ألعاب، صيدلية..."
+];
 
 export default function PlacesHero({
   placesCount,
   searchQuery,
   setSearchQuery,
   suggestions,
-  showSuggestions,
-  setShowSuggestions,
-  activeSuggestionIndex,
-  setActiveSuggestionIndex,
   onSelectSuggestion,
   searchRef,
-  isLight,
   isProximityEnabled,
   locationLoading,
   onToggleProximity,
   onExploreClick,
 }: PlacesHeroProps) {
   const heroContainerRef = useRef<HTMLElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [heroPlaceholderIndex, setHeroPlaceholderIndex] = useState(0);
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.userAgent));
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroPlaceholderIndex((prev) => (prev + 1) % HERO_PLACEHOLDERS.length);
+    }, 3200);
+    return () => clearInterval(timer);
+  }, []);
+
+  // تحويل اقتراحات البحث والفئات إلى بنية AppleSpotlight
+  const spotlightResults = useMemo<SearchResult[] | undefined>(() => {
+    if (!searchQuery.trim()) return undefined;
+    const queryWords = getSearchWords(searchQuery);
+    if (queryWords.length === 0) return undefined;
+
+    const list: SearchResult[] = [];
+
+    // 1. الأماكن المطابقة
+    suggestions.forEach((place) => {
+      list.push({
+        label: place.name + (place.name_en ? ` (${place.name_en})` : ""),
+        description: `${place.categoryLabel || ""} ${place.briefLocation ? `• ${place.briefLocation}` : place.city ? `• ${place.city}` : ""}`.trim(),
+        link: `/places/${place.id}`,
+        image: getMainCategoryImage(place.category, place.subCategories),
+        badge: place.categoryLabel || "مكان مسجل",
+        onClick: () => {
+          onSelectSuggestion(place);
+        },
+      });
+    });
+
+    // 2. الفئات المتطابقة
+    const matchedCategories = CATEGORIES_STRUCTURE.filter((cat) => {
+      const categorySearchable = getSearchCleanedText(
+        [cat.label, ...cat.subCategories.map((sub) => sub.label)].join(" ")
+      );
+      return queryWords.every((word) => categorySearchable.includes(word));
+    }).slice(0, 2);
+
+    matchedCategories.forEach((cat) => {
+      list.push({
+        label: cat.label,
+        description: `تصفح كل أماكن ومحلات ${cat.label}`,
+        link: `/places?category=${encodeURIComponent(cat.name)}`,
+        image: `/images/threeD/${cat.image}`,
+        badge: "تصنيف",
+      });
+    });
+
+    return list;
+  }, [searchQuery, suggestions, onSelectSuggestion]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (suggestions.length > 0) {
+      onSelectSuggestion(suggestions[0]);
+    }
+  };
 
   useGSAP(
     () => {
@@ -88,30 +161,6 @@ export default function PlacesHero({
     { scope: heroContainerRef }
   );
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setShowSuggestions(true);
-      setActiveSuggestionIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : prev
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActiveSuggestionIndex((prev) => (prev > 0 ? prev - 1 : -1));
-    } else if (e.key === "Enter") {
-      if (
-        activeSuggestionIndex >= 0 &&
-        activeSuggestionIndex < suggestions.length
-      ) {
-        e.preventDefault();
-        onSelectSuggestion(suggestions[activeSuggestionIndex]);
-        setShowSuggestions(false);
-      }
-    } else if (e.key === "Escape") {
-      setShowSuggestions(false);
-    }
-  };
-
   return (
     <section ref={heroContainerRef} className="hero-places">
       <div className="hero-bg" />
@@ -172,53 +221,97 @@ export default function PlacesHero({
           بحسب موقعك. كل مكان تحتاجه الآن بضغطة واحدة.
         </p>
 
-        {/* Integrated Search in Hero */}
+        {/* Integrated Apple Spotlight Search in Hero */}
         <div
-          className="hero-search-wrapper"
+          className="hero-search-wrapper w-full"
           ref={searchRef}
-          style={{ position: "relative", zIndex: 110 }}
+          style={{ position: "relative", zIndex: 9999 }}
         >
-          <div className="hero-search-icon">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </div>
-          <input
-            id="search-input"
-            type="text"
-            className="hero-search-input"
-            placeholder="ابحث عن مطعم، كافيه، حديقة..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setShowSuggestions(true)}
-            onKeyDown={handleKeyDown}
+          <AppleSpotlight
+            inputRef={searchInputRef}
+            searchValue={searchQuery}
+            onSearchChange={(val) => setSearchQuery(val)}
+            onSubmit={handleSearchSubmit}
+            searchResults={spotlightResults}
+            isMac={isMac}
+            placeholder={HERO_PLACEHOLDERS[heroPlaceholderIndex]}
+            emptyState={
+              <div style={{ padding: "24px 16px", textAlign: "center", color: "var(--text-secondary)" }}>
+                <div style={{ fontSize: "1.8rem", marginBottom: "6px" }}>
+                  <FaInbox style={{ fontSize: "1.8rem", margin: "0 auto 6px auto", opacity: 0.5 }} />
+                </div>
+                <div style={{ fontWeight: "600", fontSize: "1rem", color: "var(--color-fg)", marginBottom: "4px" }} className="font-sub">
+                  أنت بتبحث عن&nbsp;<strong>&quot;{searchQuery}&quot;</strong>
+                </div>
+                <div style={{ fontSize: "0.82rem", marginBottom: "14px", color: "var(--text-secondary)" }} className="flex items-center justify-center font-sub">
+                  <p>
+                    دورنا كتير بس للاسف ملقناش اللي أنت بدور عليه، لكن جرب تبحث من تاني أو أضف المكان بنفسك{" "}
+                  </p>
+                  <IconMoodSadDizzy stroke={2} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="btn btn-primary fs-sm py-0"
+                  >
+                    جرب أبحث من جديد <IconRefresh stroke={2} />
+                  </button>
+                  <Link
+                    href="/propose-place"
+                    className="btn btn-blue fs-sm py-0"
+                  >
+                    ده مكان ؟ تعاله نضيفة
+                    <IconBookmarkPlus stroke={2} />
+                  </Link>
+                </div>
+              </div>
+            }
+            footer={
+              <div
+                style={{
+                  padding: "16px 18px",
+                  borderTop: "1px solid rgba(120, 120, 128, 0.15)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  fontSize: "0.78rem",
+                  color: "var(--text-muted)",
+                }}
+              >
+                <div style={{ gap: "12px", alignItems: "center" }} className="flex media-max-sm">
+                  <span><kbd className="apple-spotlight-kbd">↵</kbd> للانتقال</span>
+                  <span><kbd className="apple-spotlight-kbd">↑↓</kbd> للتنقل</span>
+                  <span><kbd className="apple-spotlight-kbd">ESC</kbd> للمسح</span>
+                </div>
+                {searchQuery.trim() && (
+                  <Link
+                    href={`/map?search=${encodeURIComponent(searchQuery.trim())}`}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "var(--color-primary, #006fee)",
+                      fontWeight: "700",
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <span>عرض كل النتائج في الخريطة</span>
+                    <span>←</span>
+                  </Link>
+                )}
+              </div>
+            }
           />
-
-          {showSuggestions && suggestions.length > 0 && (
-            <PlacesSearchSuggestions
-              suggestions={suggestions}
-              activeSuggestionIndex={activeSuggestionIndex}
-              setActiveSuggestionIndex={setActiveSuggestionIndex}
-              onSelectPlace={(place) => {
-                onSelectSuggestion(place);
-                setShowSuggestions(false);
-              }}
-              isLight={isLight}
-            />
-          )}
         </div>
 
-        <div className="hero-actions" style={{ zIndex: "10" }}>
+        <div className="hero-actions" style={{ position: "relative", zIndex: 1 }}>
           <button
-            className="hero-btn-primary sub-title"
+            className="btn btn-primary w-full flex-1"
             onClick={onExploreClick}
           >
             <svg
@@ -235,7 +328,7 @@ export default function PlacesHero({
             اكتشف الأماكن
           </button>
           <button
-            className="hero-btn-secondary sub-title"
+            className="btn btn-secondary w-full flex-1"
             onClick={onToggleProximity}
             disabled={locationLoading}
           >
