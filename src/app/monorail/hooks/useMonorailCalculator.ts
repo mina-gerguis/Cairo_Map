@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { MonorailStation, TrackerStationItem } from "../types";
 import { MONORAIL_STATION_COORDINATES, MONORAIL_STATION_DETAILS } from "../constants";
 import { normalizeArabic, getDistanceInKm, calculateMonorailRoute } from "../utils";
@@ -58,32 +58,13 @@ export function useMonorailCalculator(
 
   // Combined path stations for step tracking
   const trackerStationsList: TrackerStationItem[] = useMemo(() => {
-    if (!routeResult) return [];
-    if (routeResult.sameLine && routeResult.stations) {
-      return routeResult.stations.map((name) => ({
-        name,
-        lineColor: routeResult.lineColor,
-        isTransfer: false,
-      }));
-    }
-    if (!routeResult.sameLine && routeResult.leg1 && routeResult.leg3) {
-      const leg1Items = routeResult.leg1.stations
-        ? routeResult.leg1.stations.map((name) => ({
-          name,
-          lineColor: routeResult.leg1?.lineColor,
-          isTransfer: name === routeResult.leg1?.to,
-        }))
-        : [];
-      const leg3Items = routeResult.leg3.stations
-        ? routeResult.leg3.stations.slice(1).map((name) => ({
-          name,
-          lineColor: routeResult.leg3?.lineColor,
-          isTransfer: false,
-        }))
-        : [];
-      return [...leg1Items, ...leg3Items];
-    }
-    return [];
+    if (!routeResult || !routeResult.detailedPath) return [];
+    return routeResult.detailedPath.map((node) => ({
+      name: node.station,
+      lineColor: node.lineColor,
+      isTransfer: node.isTransferPoint,
+      targetLine: node.targetLine,
+    }));
   }, [routeResult]);
 
   // Swap Stations

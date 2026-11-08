@@ -76,7 +76,16 @@ export function useLrtData() {
         const local = getLocalStations();
         setStations(local);
       } else {
-        setStations(data);
+        const mapped = data.map((st: any) => ({
+          ...st,
+          landmarks:
+            st.landmarks && Array.isArray(st.landmarks) && st.landmarks.length > 0
+              ? st.landmarks
+              : (typeof st.landmarks === "string" && st.landmarks.trim()
+                  ? st.landmarks.split(",").map((s: string) => s.trim()).filter(Boolean)
+                  : undefined),
+        }));
+        setStations(mapped);
       }
     } catch {
       const local = getLocalStations();

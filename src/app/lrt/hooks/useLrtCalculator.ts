@@ -20,6 +20,7 @@ export function useLrtCalculator(
   // Active Trip Tracker
   const [isTripActive, setIsTripActive] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [copiedRoute, setCopiedRoute] = useState(false);
 
   // Initialize selectors with default stations once stations are available
   useEffect(() => {
@@ -97,6 +98,29 @@ export function useLrtCalculator(
     }
   };
 
+  const prevStep = () => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleShareRoute = () => {
+    if (!result) return;
+    const text = `رحلتي بالقطار الكهربائي الخفيف LRT:\nمن: ${selectedFrom}\nإلى: ${selectedTo}\nعدد المحطات: ${result.count}\nسعر التذكرة: ${result.price} ج.م\nالزمن التقديري: ${result.estimatedTime} دقيقة\nعبر قريب https://qareeb.app/lrt`;
+    navigator.clipboard?.writeText(text).then(() => {
+      setCopiedRoute(true);
+      setTimeout(() => setCopiedRoute(false), 2500);
+    });
+  };
+
+  const whatsappShareUrl = useMemo(() => {
+    if (!result) return "";
+    const text = encodeURIComponent(
+      `رحلتي بالقطار الكهربائي الخفيف LRT:\nمن ${selectedFrom} إلى ${selectedTo} (${result.count} محطات - ${result.price} ج.م - ${result.estimatedTime} دقيقة)\nعبر تطبيق قريب: https://qareeb.app/lrt`
+    );
+    return `https://wa.me/?text=${text}`;
+  }, [result, selectedFrom, selectedTo]);
+
   return {
     fromQuery,
     setFromQuery,
@@ -121,5 +145,9 @@ export function useLrtCalculator(
     startTrip,
     endTrip,
     nextStep,
+    prevStep,
+    copiedRoute,
+    handleShareRoute,
+    whatsappShareUrl,
   };
 }

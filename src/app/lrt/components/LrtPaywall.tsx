@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
+import { ASSETS } from "@/constants/assets";
 
 interface LrtPaywallProps {
   user: User | null;
@@ -63,8 +64,8 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
               }}
             >
               <img
-                src="/images/icons2d/Cairo_lrt.webp"
-                alt="Cairo Lrt"
+                src= {ASSETS.transit.lrt}
+                alt="Lrt"
                 loading="lazy"
                 decoding="async"
                 style={{ width: "35px", marginLeft: "10px" }}
@@ -110,9 +111,9 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
             }}
           >
             {/* Lock Icon */}
-            <div style={{ marginBottom: "24px" }}>
+            <div>
               <img
-                src="/images/threeD/lockPage.webp"
+                src= {ASSETS.threeD.silver}
                 alt="Lock"
                 loading="lazy"
                 decoding="async"
@@ -217,17 +218,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
               ) : (
                 <Link
                   href="/login"
-                  style={{
-                    padding: "var(--padding-btn)",
-                    borderRadius: "var(--radiusBtn)",
-                    background: "var(--bg-subscribe-button-base)",
-                    color: "#fff",
-                    textDecoration: "none",
-                    fontWeight: "bold",
-                    fontSize: "0.95rem",
-                    boxShadow: "var(--bs-subscribe-button-base)",
-                    display: "block",
-                  }}
+                 className="btn btn-primary w-full"
                 >
                   سجل دخولك أولاً لتفعيل الاشتراك
                 </Link>
@@ -235,17 +226,7 @@ export default function LrtPaywall({ user }: LrtPaywallProps) {
 
               <Link
                 href="/"
-                style={{
-                  padding: "var(--padding-btn)",
-                  borderRadius: "var(--radiusBtn)",
-                  background: "var(--bg-secondary)",
-                  color: "var(--text-secondary)",
-                  textDecoration: "none",
-                  fontWeight: "bold",
-                  fontSize: "0.9rem",
-                  border: "1px solid var(--border-glass)",
-                  display: "block",
-                }}
+               className="btn btn-cancel w-full"
               >
                 الرجوع للرئيسية
               </Link>

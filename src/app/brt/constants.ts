@@ -22,6 +22,78 @@ export const POPULAR_DESTINATIONS = [
   "شبرا الخيمة",
 ];
 
+export const BRT_PROBLEM_OPTIONS: import("./types").BrtProblemOption[] = [
+  {
+    id: "fare",
+    title: "سعر التذكرة غير صحيح",
+    desc: "قيمة الأجرة المعلنة للمسار أو المحطة غير مطابقة للواقع",
+    icon: "fa-solid fa-tags",
+    badge: "أجرة",
+    badgeColor: "#10b981",
+  },
+  {
+    id: "route_error",
+    title: "خطأ في مسار الحافلة أو محطات التوقف",
+    desc: "مسار السير أو المحطات التي يمر بها الأتوبيس غير دقيقة",
+    icon: "fa-regular fa-clock",
+    badge: "مسار",
+    badgeColor: "#e11d48",
+  },
+  {
+    id: "transfer",
+    title: "خطأ في محطة التبديل مع المترو أو القطار",
+    desc: "محطة التحويل التبادلية غير صحيحة أو تفتقر للإرشادات",
+    icon: "fa-solid fa-repeat",
+    badge: "تبديل",
+    badgeColor: "#f59e0b",
+  },
+  {
+    id: "station_info",
+    title: "اسم المحطة أو موقعها على الخريطة غير دقيق",
+    desc: "بيانات المعالم المحيطة بالمحطة أو الإحداثيات غير صحيحة",
+    icon: "fa-regular fa-building",
+    badge: "بيانات",
+    badgeColor: "#8b5cf6",
+  },
+  {
+    id: "construction",
+    title: "محطة مغلقة أو قيد الإنشاء أو تغيرت حالة تشغيلها",
+    desc: "تحديث بشأن تشغيل محطة جديدة أو تغيير جدول المسارات",
+    icon: "fa-solid fa-person-digging",
+    badge: "حالة",
+    badgeColor: "#ec4899",
+  },
+  {
+    id: "app_bug",
+    title: "مشكلة تقنية أو زر لا يستجيب في الصفحة",
+    desc: "خلل في البحث، التحديد عبر GPS أو الأزرار التفاعلية",
+    icon: "fa-solid fa-bug",
+    badge: "تقني",
+    badgeColor: "#ef4444",
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو اقتراح آخر",
+    desc: "أي استفسار أو اقتراح لتحسين وتدقيق دليل الأتوبيس الترددي BRT",
+    icon: "fa-regular fa-comment-dots",
+    badge: "عام",
+    badgeColor: "#64748b",
+  },
+];
+
+export const BRT_STATION_COORDINATES: Record<string, { lat: number; lng: number }> = {
+  "محطة عدلي منصور التبادلية (BRT)": { lat: 30.1472, lng: 31.4208 },
+  "محطة كايرو فستيفال سيتي (CFC)": { lat: 30.0305, lng: 31.4082 },
+  "محطة المشير طنطاوي التبادلية": { lat: 30.0195, lng: 31.3855 },
+  "محطة كارفور المعادي": { lat: 29.9782, lng: 31.3095 },
+  "محطة المنيب التبادلية (BRT)": { lat: 29.9815, lng: 31.2125 },
+  "محطة محور 26 يوليو التبادلية": { lat: 30.0475, lng: 31.1465 },
+  "محطة بشتيل (قطارات صعيد مصر)": { lat: 30.0768, lng: 31.1965 },
+  "محطة شبرا الخيمة التبادلية (BRT)": { lat: 30.1225, lng: 31.2442 },
+  "محطة مسطرد": { lat: 30.1345, lng: 31.3015 },
+  "محطة المرج الغربية التبادلية (BRT)": { lat: 30.1612, lng: 31.3365 },
+};
+
 export const DEFAULT_BRT_STATIONS: BrtStation[] = [
   {
     name: "محطة عدلي منصور التبادلية (BRT)",

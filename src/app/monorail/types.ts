@@ -47,6 +47,15 @@ export interface MonorailRouteLeg {
   description?: string;
 }
 
+export interface MonorailPathNode {
+  station: string;
+  line: MonorailLineId | "line3";
+  lineName: string;
+  lineColor: string;
+  isTransferPoint: boolean;
+  targetLine?: string;
+}
+
 export interface MonorailRouteResult {
   sameLine: boolean;
   count: number;
@@ -62,12 +71,14 @@ export interface MonorailRouteResult {
   leg2?: MonorailRouteLeg;
   leg3?: MonorailRouteLeg;
   description: string;
+  detailedPath: MonorailPathNode[];
 }
 
 export interface TrackerStationItem {
   name: string;
   lineColor?: string;
   isTransfer: boolean;
+  targetLine?: string;
 }
 
 export type ReportScope = "general" | "route" | "station";
@@ -75,6 +86,8 @@ export type ReportScope = "general" | "route" | "station";
 // Component Props Interfaces
 export interface MonorailHeaderProps {
   headerRef: React.RefObject<HTMLDivElement | null>;
+  linesCount?: number;
+  stationsCount?: number;
 }
 
 export interface MonorailLinesSliderProps {
@@ -95,6 +108,7 @@ export interface MonorailRouteCalculatorProps {
   showToList: boolean;
   filteredFromStations: MonorailStation[];
   filteredToStations: MonorailStation[];
+  stations: MonorailStation[];
   onSelectFrom: (name: string) => void;
   onSelectTo: (name: string) => void;
   onFromQueryChange: (query: string) => void;
@@ -108,6 +122,7 @@ export interface MonorailRouteCalculatorProps {
   locatingNearest: boolean;
   nearestDistance: string | null;
   routeResult: MonorailRouteResult | null;
+  onFindRoute?: () => void;
   isTripActive: boolean;
   currentStepIndex: number;
   trackerStationsList: TrackerStationItem[];
@@ -136,8 +151,12 @@ export interface MonorailLineExplorerProps {
   onOpenReportModal: (stationName: string) => void;
 }
 
+export interface MonorailMapSectionProps {
+  mapPanelRef: React.RefObject<HTMLDivElement | null>;
+}
+
 export interface MonorailOverviewPanelProps {
-  panelRef: React.RefObject<HTMLDivElement | null>;
+  panelRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export interface MonorailReportBannerProps {
@@ -152,7 +171,7 @@ export interface MonorailReportModalProps {
   user: User | null;
   targetScope: ReportScope;
   setTargetScope: (scope: ReportScope) => void;
-  selectedStation: string;
+  selectedStation: string | null;
   setSelectedStation: (station: string) => void;
   stationQuery: string;
   setStationQuery: (query: string) => void;
@@ -161,19 +180,25 @@ export interface MonorailReportModalProps {
   filteredStations: MonorailStation[];
   problemType: string;
   setProblemType: (type: string) => void;
+  showProblemTypeDropdown?: boolean;
+  setShowProblemTypeDropdown?: (show: boolean | ((prev: boolean) => boolean)) => void;
   details: string;
   setDetails: (details: string) => void;
   imageFile: File | null;
   imagePreview: string | null;
   isDraggingImage: boolean;
-  setIsDraggingImage: (dragging: boolean) => void;
+  setIsDraggingImage: (isDragging: boolean) => void;
   onImageSelect: (file: File | null) => void;
-  error: string;
+  error: string | null;
   loading: boolean;
   uploading: boolean;
   success: boolean;
-  limitChecking: boolean;
+  limitChecking?: boolean;
   limitReached: boolean;
   onSubmit: (e: React.FormEvent) => void;
   hasRouteResult: boolean;
+  selectedFrom?: string | null;
+  selectedTo?: string | null;
+  routeResult?: MonorailRouteResult | null;
+  color?: string;
 }

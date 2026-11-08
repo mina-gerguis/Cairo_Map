@@ -48,13 +48,23 @@ export default function BrtPage() {
   const [expandedStationId, setExpandedStationId] = useState<string | null>(null);
   const [expandedRouteKey, setExpandedRouteKey] = useState<string | null>(null);
 
-  // Report Modal State
+  // Report Modal State (Alike Metro, Monorail, LRT)
   const [reportModalOpen, setReportModalOpen] = useState(false);
-  const [reportingStationName, setReportingStationName] = useState("");
-  const [reportingRouteDestination, setReportingRouteDestination] = useState("");
-  const [reportReason, setReportReason] = useState<"fare" | "via" | "location" | "other">("fare");
-  const [reportComment, setReportComment] = useState("");
-  const [submittingReport, setSubmittingReport] = useState(false);
+  const [reportTargetScope, setReportTargetScope] = useState<import("./types").BrtReportScope>("general");
+  const [reportSelectedStation, setReportSelectedStation] = useState("");
+  const [reportStationSearchQuery, setReportStationSearchQuery] = useState("");
+  const [showReportStationList, setShowReportStationList] = useState(false);
+  const [reportRouteDestination, setReportRouteDestination] = useState("");
+  const [reportProblemType, setReportProblemType] = useState("fare");
+  const [showProblemTypeDropdown, setShowProblemTypeDropdown] = useState(false);
+  const [reportDetails, setReportDetails] = useState("");
+  const [reportImageFile, setReportImageFile] = useState<File | null>(null);
+  const [reportImagePreview, setReportImagePreview] = useState<string | null>(null);
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportUploading, setReportUploading] = useState(false);
+  const [reportSuccess, setReportSuccess] = useState(false);
+  const [reportError, setReportError] = useState("");
   const [limitChecking, setLimitChecking] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
 
@@ -75,6 +85,7 @@ export default function BrtPage() {
   const sliderRef = useRef<HTMLDivElement>(null);
   const searchPanelRef = useRef<HTMLDivElement>(null);
   const resultsPanelRef = useRef<HTMLDivElement>(null);
+  const bannerRef = useRef<HTMLDivElement>(null);
   const modalBoxRef = useRef<HTMLDivElement>(null);
   const missingModalBoxRef = useRef<HTMLDivElement>(null);
 
@@ -147,40 +158,57 @@ export default function BrtPage() {
     }, 60);
   };
 
-  // Handler: Open Report Modal
+  const filteredReportStations = React.useMemo(() => {
+    const q = (reportStationSearchQuery || "").trim().toLowerCase();
+    if (!q) return stations;
+    return stations.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        (s.landmarks && s.landmarks.some((l) => l.toLowerCase().includes(q)))
+    );
+  }, [reportStationSearchQuery, stations]);
+
+  const handleReportImageSelect = React.useCallback((file: File | null) => {
+    if (reportImagePreview) {
+      URL.revokeObjectURL(reportImagePreview);
+    }
+    if (!file) {
+      setReportImageFile(null);
+      setReportImagePreview(null);
+      return;
+    }
+    setReportImageFile(file);
+    setReportImagePreview(URL.createObjectURL(file));
+  }, [reportImagePreview]);
+
+  // Handler: Open Report Modal (Matching Metro, Monorail, LRT)
   const handleOpenReportModal = async (stationName: string = "", destination: string = "") => {
     if (!user) {
       alert("يرجى تسجيل الدخول أولاً للإبلاغ عن مشكلة.");
       return;
     }
-    setReportingStationName(stationName || (selectedStation !== "all" ? selectedStation : "عام"));
-    setReportingRouteDestination(destination || "بيانات الأتوبيس الترددي BRT");
-    setReportReason("fare");
-    setReportComment("");
+
+    const defaultStation = stationName || (selectedStation !== "all" ? selectedStation : "");
+    if (destination) {
+      setReportTargetScope("route");
+    } else if (defaultStation) {
+      setReportTargetScope("station");
+    } else {
+      setReportTargetScope("general");
+    }
+
+    setReportSelectedStation(defaultStation);
+    setReportStationSearchQuery(defaultStation);
+    setShowReportStationList(false);
+    setReportRouteDestination(destination || "");
+    setReportProblemType("fare");
+    setShowProblemTypeDropdown(false);
+    setReportDetails("");
+    setReportImageFile(null);
+    setReportImagePreview(null);
+    setReportSuccess(false);
+    setReportError("");
     setReportModalOpen(true);
-
-    setLimitChecking(true);
-    try {
-      const reached = await isFeedbackLimitReached(user.id);
-      setLimitReached(reached);
-    } catch (e) {
-      console.error("Error checking feedback limit:", e);
-    } finally {
-      setLimitChecking(false);
-    }
-  };
-
-  // Handler: Open Missing Route Modal
-  const handleOpenMissingRouteModal = async () => {
-    if (!user) {
-      alert("يرجى تسجيل الدخول أولاً لاقتراح محطة أو مسار جديد.");
-      return;
-    }
-    setMissingStationName(selectedStation && selectedStation !== "all" ? selectedStation : "");
-    setMissingDestination("");
-    setMissingFare("");
-    setMissingNotes("");
-    setMissingRouteModalOpen(true);
 
     setLimitChecking(true);
     try {
@@ -198,48 +226,95 @@ export default function BrtPage() {
     e.preventDefault();
     if (!user || !supabase) return;
 
+    if (!reportDetails.trim()) {
+      setReportError("يرجى كتابة تفاصيل المشكلة أولاً.");
+      return;
+    }
+
+    if (reportTargetScope === "station" && !reportSelectedStation) {
+      setReportError("يرجى تحديد المحطة المعنية بالبلاغ.");
+      return;
+    }
+
     try {
       const reached = await isFeedbackLimitReached(user.id);
       if (reached) {
         setLimitReached(true);
-        alert("لقد وصلت للحد الأقصى المسموح به (5 بلاغات معلقة). يرجى انتظار رد الإدارة على بلاغاتك السابقة قبل تقديم بلاغات جديدة.");
+        setReportError("لقد وصلت للحد الأقصى المسموح به (5 بلاغات معلقة).");
         return;
       }
     } catch (err) {
       console.error("Error checking feedback limit:", err);
     }
 
-    setSubmittingReport(true);
+    setReportLoading(true);
+    setReportError("");
+
     try {
+      let uploadedImageUrl: string | null = null;
+
+      if (reportImageFile) {
+        setReportUploading(true);
+        const fileExt = reportImageFile.name.split(".").pop();
+        const fileName = `brt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+        const filePath = `reports/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("feedback-images")
+          .upload(filePath, reportImageFile);
+
+        if (!uploadError) {
+          const { data: publicUrlData } = supabase.storage
+            .from("feedback-images")
+            .getPublicUrl(filePath);
+          uploadedImageUrl = publicUrlData?.publicUrl || null;
+        }
+        setReportUploading(false);
+      }
+
+      const problemOpt = (await import("./constants")).BRT_PROBLEM_OPTIONS.find((o) => o.id === reportProblemType);
+      const categoryLabel = problemOpt?.title || reportProblemType;
+
       const payload = {
         user_id: user.id,
-        station_name: reportingStationName,
-        route_destination: reportingRouteDestination,
+        station_name:
+          reportTargetScope === "general"
+            ? "عام / شبكة BRT"
+            : reportSelectedStation || "غير محدد",
+        route_destination:
+          reportTargetScope === "route"
+            ? reportRouteDestination || "مسار BRT"
+            : "محطة الأتوبيس الترددي",
         interaction_type: "report",
-        report_reason: reportReason,
-        comment: `[الأتوبيس الترددي BRT] ${reportComment}`,
+        report_reason: reportProblemType,
+        comment: `[الأتوبيس الترددي BRT - ${categoryLabel}] ${reportDetails}${
+          uploadedImageUrl ? `\n[مرفق صورة]: ${uploadedImageUrl}` : ""
+        }`,
       };
 
-      const { data, error } = await supabase
+      const { data, error: insertError } = await supabase
         .from("route_interactions")
         .insert([payload])
         .select();
 
-      if (error) {
-        alert("فشل إرسال البلاغ، يرجى المحاولة مرة أخرى.");
+      if (insertError) {
+        setReportError("فشل إرسال البلاغ، يرجى المحاولة مرة أخرى.");
       } else {
         if (data && data.length > 0) {
-          setInteractions(prev => [...prev, data[0] as RouteInteraction]);
+          setInteractions((prev) => [...prev, data[0] as RouteInteraction]);
         }
-        setReportModalOpen(false);
-        setSuccessMessage("شكراً لك! تم إرسال البلاغ بنجاح وجاري مراجعته من قبل الإدارة لتحديث بيانات الأتوبيس الترددي.");
-        setSuccessModalOpen(true);
+        setReportSuccess(true);
+        setTimeout(() => {
+          setReportModalOpen(false);
+          setReportSuccess(false);
+        }, 2200);
       }
     } catch (err) {
       console.error("Failed to submit report:", err);
-      alert("حدث خطأ غير متوقع.");
+      setReportError("حدث خطأ غير متوقع أثناء إرسال البلاغ.");
     } finally {
-      setSubmittingReport(false);
+      setReportLoading(false);
+      setReportUploading(false);
     }
   };
 
@@ -366,25 +441,47 @@ export default function BrtPage() {
 
         {/* Problem Report Callout Banner */}
         <BrtBottomBanner
+          bannerRef={bannerRef}
           onOpenReportModal={() => handleOpenReportModal()}
         />
       </div>
 
-      {/* Problem Report Modal */}
+      {/* Problem Report Modal (Matching Metro, Monorail, LRT) */}
       <BrtReportModal
         isOpen={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
         modalBoxRef={modalBoxRef}
-        reportingStationName={reportingStationName}
-        reportingRouteDestination={reportingRouteDestination}
-        reportReason={reportReason}
-        setReportReason={setReportReason}
-        reportComment={reportComment}
-        setReportComment={setReportComment}
-        onSubmit={handleReportSubmit}
-        submitting={submittingReport}
-        limitReached={limitReached}
+        user={user}
+        targetScope={reportTargetScope}
+        setTargetScope={setReportTargetScope}
+        selectedStation={reportSelectedStation}
+        setSelectedStation={setReportSelectedStation}
+        stationSearchQuery={reportStationSearchQuery}
+        setStationSearchQuery={setReportStationSearchQuery}
+        showStationList={showReportStationList}
+        setShowStationList={setShowReportStationList}
+        filteredStations={filteredReportStations}
+        reportingRouteDestination={reportRouteDestination}
+        setReportingRouteDestination={setReportRouteDestination}
+        problemType={reportProblemType}
+        setProblemType={setReportProblemType}
+        showProblemTypeDropdown={showProblemTypeDropdown}
+        setShowProblemTypeDropdown={setShowProblemTypeDropdown}
+        details={reportDetails}
+        setDetails={setReportDetails}
+        imageFile={reportImageFile}
+        imagePreview={reportImagePreview}
+        isDraggingImage={isDraggingImage}
+        setIsDraggingImage={setIsDraggingImage}
+        onImageSelect={handleReportImageSelect}
+        loading={reportLoading}
+        uploading={reportUploading}
+        success={reportSuccess}
+        error={reportError}
         limitChecking={limitChecking}
+        limitReached={limitReached}
+        color="#e11d48"
+        onSubmit={handleReportSubmit}
       />
 
       {/* Missing Route Modal */}

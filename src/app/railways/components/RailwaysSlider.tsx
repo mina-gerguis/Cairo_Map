@@ -1,6 +1,6 @@
 import React, { RefObject } from "react";
 import { RailwayRoute } from "../types";
-import { getRouteColor, getRouteShortName, getRouteIconData } from "../utils";
+import { getRouteColor, getRouteShortName } from "../utils";
 import styles from "../railways.module.css";
 
 interface RailwaysSliderProps {
@@ -34,8 +34,9 @@ export default function RailwaysSlider({
           const active = selectedRouteId === route.id;
           const routeColor = getRouteColor(route.id, idx);
           const shortName = getRouteShortName(route);
-          const iconData = getRouteIconData(route.id, idx, routeColor);
           const stopsCount = route.stops ? route.stops.length : 0;
+          const startStation = route.stops?.[0]?.name?.replace(" (رمسيس)", "")?.replace(" (محطة رمسيس)", "") || route.from || "القاهرة";
+          const endStation = route.stops?.[route.stops.length - 1]?.name?.replace(" (محطة سيدي جابر / مصر)", "") || route.to || "";
 
           return (
             <button
@@ -45,30 +46,28 @@ export default function RailwaysSlider({
               className={`${styles.bentoCard} ${active ? styles.bentoCardActive : ""}`}
               style={{
                 "--card-color": routeColor,
-                "--card-glow": iconData.glowColor,
-                background: active
-                  ? `radial-gradient(circle at 100% 0%, ${iconData.glowColor}25 0%, transparent 70%), var(--bg-glass)`
-                  : undefined,
+                "--card-glow": `${routeColor}40`,
               } as React.CSSProperties}
             >
               <div className={styles.bentoCardTop}>
-                <span className={styles.bentoPill}>
-                  <i className="fa-solid fa-train" style={{ fontSize: "0.68rem" }} />
-                  <span>{stopsCount} محطات</span>
+                <span className={styles.bentoPill} style={{ color: routeColor }}>
+                  <span
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      backgroundColor: routeColor,
+                      display: "inline-block",
+                    }}
+                  />
+                  {shortName}
                 </span>
-
-                <div
-                  className={styles.bentoIconBox}
-                  style={{ background: iconData.bgGradient }}
-                >
-                  <i className={iconData.icon} />
-                </div>
               </div>
 
               <div>
-                <div className={styles.bentoCardTitle}>{shortName}</div>
+                <div className={styles.bentoCardTitle}>{route.name}</div>
                 <div className={styles.bentoCardSubtitle}>
-                  {route.duration}
+                  {stopsCount > 0 ? `${stopsCount} محطة` : ""} • {startStation} - {endStation}
                 </div>
               </div>
             </button>

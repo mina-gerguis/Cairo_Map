@@ -2,6 +2,7 @@ import React from "react";
 import { BrtRoute, VoteStats } from "../types";
 import BrtTimeline from "./BrtTimeline";
 import styles from "../brt.module.css";
+import { IconAlertSquareRoundedFilled } from "@tabler/icons-react";
 
 interface BrtRouteItemProps {
   route: BrtRoute;
@@ -148,13 +149,9 @@ export default function BrtRouteItem({
                   e.stopPropagation();
                   onOpenReport();
                 }}
-                className="btn btn-report"
-                style={{
-                  padding: "6px 12px",
-                  borderRadius: "6px",
-                }}
+                className="btn btn-report min-h-min rounded-1 fs-sm"
               >
-                <i className="bx bx-error" />
+                <IconAlertSquareRoundedFilled size={18}/>
                 <span>إبلاغ عن خطأ</span>
               </button>
             </div>

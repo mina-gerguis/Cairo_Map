@@ -1,4 +1,4 @@
-import { MonorailStation, MonorailRouteResult } from "./types";
+import { MonorailStation, MonorailRouteResult, MonorailPathNode } from "./types";
 import { MONORAIL_LINES_CONFIG, MONORAIL_STATION_DETAILS } from "./constants";
 
 /**
@@ -94,6 +94,17 @@ export function calculateMonorailRoute(
 
     const lineConfig = MONORAIL_LINES_CONFIG.find((l) => l.id === fromObj.line_type);
 
+    const detailedPath: MonorailPathNode[] = pathOrdered.map((name, i) => {
+      const isLast = i === pathOrdered.length - 1;
+      return {
+        station: name,
+        line: fromObj.line_type,
+        lineName: lineConfig?.shortName || "",
+        lineColor: lineConfig?.color || "#3b82f6",
+        isTransferPoint: false,
+      };
+    });
+
     return {
       sameLine: true,
       count,
@@ -105,10 +116,11 @@ export function calculateMonorailRoute(
       lineType: fromObj.line_type,
       lineName: lineConfig?.name || "",
       lineColor: lineConfig?.color || "#3b82f6",
-      description: `رحلة مباشرة على ${lineConfig?.name}، تمر عبر ${count} محطات في زمن تقديري حوالي ${Math.max(
+      description: `رحلة مباشرة على ${lineConfig?.name}، تمر عبر ${count} محطة في زمن تقديري حوالي ${Math.max(
         2,
         Math.round(time)
       )} دقيقة.`,
+      detailedPath,
     };
   }
 
@@ -166,6 +178,45 @@ export function calculateMonorailRoute(
   const fromLineConfig = MONORAIL_LINES_CONFIG.find((l) => l.id === fromObj.line_type);
   const toLineConfig = MONORAIL_LINES_CONFIG.find((l) => l.id === toObj.line_type);
 
+  // Build detailedPath nodes
+  const detailedPath: MonorailPathNode[] = [];
+
+  path1Ordered.forEach((st, idx) => {
+    const isTransfer = st === fromConnector;
+    detailedPath.push({
+      station: st,
+      line: fromObj.line_type,
+      lineName: fromLineConfig?.shortName || "",
+      lineColor: fromLineConfig?.color || "#3b82f6",
+      isTransferPoint: isTransfer,
+      targetLine: isTransfer ? "الخط الثالث لمترو الأنفاق" : undefined,
+    });
+  });
+
+  // Intermediate metro transfer station if destination connector is different
+  if (toConnector !== fromConnector) {
+    detailedPath.push({
+      station: toConnector,
+      line: "line3",
+      lineName: "مترو الخط الثالث",
+      lineColor: "#10b981",
+      isTransferPoint: true,
+      targetLine: toLineConfig?.name || "",
+    });
+  }
+
+  // Leg 3 stations (exclude first if it matches toConnector)
+  const remainingLeg3 = path3Ordered.filter((s) => s !== toConnector);
+  remainingLeg3.forEach((st) => {
+    detailedPath.push({
+      station: st,
+      line: toObj.line_type,
+      lineName: toLineConfig?.shortName || "",
+      lineColor: toLineConfig?.color || "#10b981",
+      isTransferPoint: false,
+    });
+  });
+
   return {
     sameLine: false,
     count: totalStationsCount,
@@ -204,5 +255,6 @@ export function calculateMonorailRoute(
       lineColor: toLineConfig?.color || "#10b981",
     },
     description: `رحلة تبادلية تربط ${fromLineConfig?.shortName} بـ ${toLineConfig?.shortName} عبر الخط الثالث للمترو.`,
+    detailedPath,
   };
 }

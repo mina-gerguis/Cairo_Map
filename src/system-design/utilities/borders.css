@@ -140,7 +140,7 @@
 }
 
 .border-danger {
-   border-color: var(--colorDanger);
+   border-color: var(--color-danger);
 }
 
 .border-danger-subtle {

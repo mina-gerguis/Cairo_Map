@@ -35,7 +35,16 @@ export function useMonorailData() {
       if (error || !data || data.length === 0) {
         setStations(getLocalStations());
       } else {
-        setStations(data);
+        const mapped = data.map((st: any) => ({
+          ...st,
+          landmarks:
+            st.landmarks && Array.isArray(st.landmarks) && st.landmarks.length > 0
+              ? st.landmarks
+              : MONORAIL_STATION_DETAILS[st.name]?.landmarks || [],
+          status: st.status || MONORAIL_STATION_DETAILS[st.name]?.status || "تشغيل تجريبي",
+          type: st.type || MONORAIL_STATION_DETAILS[st.name]?.type || "عادية",
+        }));
+        setStations(mapped);
       }
     } catch {
       setStations(getLocalStations());
@@ -47,7 +56,16 @@ export function useMonorailData() {
     const local = localStorage.getItem("local_monorail");
     if (local) {
       try {
-        return JSON.parse(local);
+        const parsed = JSON.parse(local);
+        return parsed.map((st: any) => ({
+          ...st,
+          landmarks:
+            st.landmarks && Array.isArray(st.landmarks) && st.landmarks.length > 0
+              ? st.landmarks
+              : MONORAIL_STATION_DETAILS[st.name]?.landmarks || [],
+          status: st.status || MONORAIL_STATION_DETAILS[st.name]?.status || "تشغيل تجريبي",
+          type: st.type || MONORAIL_STATION_DETAILS[st.name]?.type || "عادية",
+        }));
       } catch {
         return DEFAULT_MONORAIL_STATIONS;
       }

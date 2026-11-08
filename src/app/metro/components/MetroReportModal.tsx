@@ -132,6 +132,7 @@ export default function MetroReportModal({
                 <i className="bx bx-check"></i>
               </div>
               <h4
+              className="font-sub"
                 style={{
                   margin: "0 0 8px",
                   fontSize: "1.15rem",
@@ -296,7 +297,7 @@ export default function MetroReportModal({
                       borderRadius: "8px",
                       border: "none",
                       background: targetScope === "general" ? "var(--color-fg)" : "transparent",
-                      color: targetScope === "general" ? "var(--bgMode)" : "var(--color-fg)",
+                      color: targetScope === "general" ? "var(--color-bg)" : "var(--color-fg)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
                       cursor: "pointer",
@@ -317,7 +318,7 @@ export default function MetroReportModal({
                       borderRadius: "8px",
                       border: "none",
                       background: targetScope === "station" ? "var(--color-fg)" : "transparent",
-                      color: targetScope === "station" ? "var(--bgMode)" : "var(--color-fg)",
+                      color: targetScope === "station" ? "var(--color-bg)" : "var(--color-fg)",
                       fontWeight: "700",
                       fontSize: "0.8rem",
                       cursor: "pointer",

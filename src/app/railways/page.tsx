@@ -342,13 +342,6 @@ export default function RailwaysPage() {
       <div className={styles.ambientGlow} />
 
       <div className={styles.contentContainer}>
-        {/* Back Link */}
-        <div className={styles.backLinkNav}>
-          <Link href="/" className={styles.backLink}>
-            <i className="bx bx-right-arrow-alt" style={{ fontSize: "1.2rem" }} />
-            <span>العودة للرئيسية</span>
-          </Link>
-        </div>
 
         {/* Hero Section */}
         <RailwaysHero
@@ -389,10 +382,10 @@ export default function RailwaysPage() {
           themeColor={color}
         />
 
-        {/* Report Problem Callout Banner */}
+        {/* Report Problem Callout Banner
         <RailwaysReportBanner
           onOpenReport={() => handleOpenReportModal(null, false)}
-        />
+        /> */}
       </div>
 
       {/* Report Modal */}

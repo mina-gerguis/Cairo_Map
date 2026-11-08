@@ -145,6 +145,65 @@ export const LRT_LINE_TABS: LrtLineTabConfig[] = [
   },
 ];
 
+export const LRT_PROBLEM_OPTIONS = [
+  {
+    id: "route_error",
+    title: "خطأ في حساب مسار الرحلة أو زمن الوصول",
+    desc: "المسار المقترح غير دقيق أو وقت الرحلة التقديري غير مطابق",
+    icon: "fa-regular fa-clock",
+    badge: "مسار",
+    badgeColor: "#06b6d4",
+  },
+  {
+    id: "price",
+    title: "سعر التذكرة غير صحيح أو عدد المحطات غير دقيق",
+    desc: "تغيير في تسعير شرائح تذاكر القطار الكهربائي الخفيف LRT",
+    icon: "fa-solid fa-tags",
+    badge: "أسعار",
+    badgeColor: "#10b981",
+  },
+  {
+    id: "transfer",
+    title: "خطأ في محطة التبديل (عدلي منصور أو بدر)",
+    desc: "محطة التحويل التبادلية غير صحيحة أو تفتقر للإرشادات",
+    icon: "fa-solid fa-repeat",
+    badge: "تبديل",
+    badgeColor: "#f59e0b",
+  },
+  {
+    id: "station_info",
+    title: "اسم محطة غير صحيح أو معالم غير دقيقة",
+    desc: "بيانات المعالم والأماكن الحيوية المحيطة بالمحطة غير مطابقة",
+    icon: "fa-regular fa-building",
+    badge: "بيانات",
+    badgeColor: "#8b5cf6",
+  },
+  {
+    id: "construction",
+    title: "محطة مغلقة أو قيد الإنشاء أو تغيرت حالة تشغيلها",
+    desc: "تحديث بشأن تشغيل محطة جديدة أو تغيير جدول المسارات",
+    icon: "fa-solid fa-person-digging",
+    badge: "حالة",
+    badgeColor: "#ec4899",
+  },
+  {
+    id: "app_bug",
+    title: "مشكلة تقنية أو زر لا يستجيب في الصفحة",
+    desc: "خلل في البحث، التحديد عبر GPS أو الأزرار التفاعلية",
+    icon: "fa-solid fa-bug",
+    badge: "تقني",
+    badgeColor: "#ef4444",
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو اقتراح آخر",
+    desc: "أي استفسار أو اقتراح لتحسين وتدقيق دليل القطار الكهربائي LRT",
+    icon: "fa-regular fa-comment-dots",
+    badge: "عام",
+    badgeColor: "#64748b",
+  },
+];
+
 export const PROBLEM_TYPE_LABELS: Record<string, string> = {
   route_error: "خطأ في حساب مسار الرحلة أو زمن الوصول",
   price: "سعر التذكرة غير صحيح أو عدد المحطات غير دقيق",

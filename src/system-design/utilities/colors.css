@@ -91,7 +91,7 @@ html.light .bg-subtle {
 }
 
 .bg-danger {
-   background-color: var(--colorDanger);
+   background-color: var(--color-danger);
 }
 
 .bg-danger-subtle {
@@ -99,7 +99,7 @@ html.light .bg-subtle {
 }
 
 .bg-info {
-   background-color: var(--colorInfo);
+   background-color: var(--color-info);
 }
 
 .bg-brand-subtle {
@@ -168,11 +168,11 @@ html.light .bg-subtle {
 }
 
 .text-danger {
-   color: var(--colorDanger);
+   color: var(--color-danger);
 }
 
 .text-info {
-   color: var(--colorInfo);
+   color: var(--color-info);
 }
 
 /*  Error Text */

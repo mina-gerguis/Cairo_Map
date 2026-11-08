@@ -72,6 +72,14 @@ export const ASSETS = {
     lamp: "/images/threeD/light.webp",
     padlock: "/images/threeD/padlock.webp",
     coin: "/images/threeD/coin_qareeb.webp",
+    silver: "/images/threeD/qareeb_silver.webp",
+    gold: "/images/threeD/qareeb_gold.webp",
+  },
+
+  maps: {
+    mapMetro: "/images/map/map_metro.webp",
+    mapMonorail: "/images/map/map_monorail.webp",
+    mapLRT: "/images/map/map_lrt.webp",
   },
 
   fallback: {

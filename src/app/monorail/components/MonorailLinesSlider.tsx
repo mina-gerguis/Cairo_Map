@@ -10,43 +10,45 @@ export default function MonorailLinesSlider({
   stations,
 }: MonorailLinesSliderProps) {
   return (
-    <div className={styles.sliderSection}>
-      <div ref={sliderRef} className={styles.sliderTrack}>
+    <div ref={sliderRef} className={styles.sliderSection}>
+      <div className={styles.sliderTrack}>
         {lines.map((line) => {
           const active = selectedLine === line.id;
           const lineStatsCount = stations.filter((s) => s.line_type === line.id).length;
-          const lineIcon = line.id === "east" ? "🏛️" : "🏭";
 
           return (
-            <div
+            <button
               key={line.id}
+              type="button"
               onClick={() => onSelectLine(line.id)}
               className={`${styles.bentoCard} ${active ? styles.bentoCardActive : ""}`}
-              style={
-                {
-                  "--line-color": line.color,
-                  "--line-glow": `${line.color}40`,
-                  "--line-bg": `${line.color}12`,
-                } as React.CSSProperties
-              }
+              style={{
+                "--card-color": line.color,
+                "--card-glow": `${line.color}40`,
+              } as React.CSSProperties}
             >
               <div className={styles.bentoCardTop}>
-                <div className={styles.bentoIconBox}>
-                  <span>{lineIcon}</span>
-                </div>
-                <div className={styles.bentoPill}>
-                  <i className="fa-solid fa-route" style={{ fontSize: "0.7rem", color: line.color }} />
-                  <span>{line.length}</span>
-                </div>
+                <span className={styles.bentoPill} style={{ color: line.color }}>
+                  <span
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      backgroundColor: line.color,
+                      display: "inline-block",
+                    }}
+                  />
+                  {line.shortName}
+                </span>
               </div>
 
               <div>
-                <h3 className={styles.bentoCardTitle}>{line.name}</h3>
-                <p className={styles.bentoCardSubtitle}>
-                  {lineStatsCount > 0 ? `${lineStatsCount} محطة` : "تحت الإنشاء"} • {line.time} تقريباً
-                </p>
+                <div className={styles.bentoCardTitle}>{line.name}</div>
+                <div className={styles.bentoCardSubtitle}>
+                  {lineStatsCount > 0 ? `${lineStatsCount} محطة` : "تحت الإنشاء"} • {line.from} - {line.to}
+                </div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>

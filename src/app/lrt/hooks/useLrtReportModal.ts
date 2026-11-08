@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
 import { LrtStation, LrtRouteResult, ReportScope } from "../types";
-import { PROBLEM_TYPE_LABELS, STATION_DETAILS } from "../constants";
+import { LRT_PROBLEM_OPTIONS, STATION_DETAILS } from "../constants";
 import { normalizeArabic } from "../utils";
 
 export function useLrtReportModal(
@@ -19,6 +19,7 @@ export function useLrtReportModal(
   const [reportStationSearchQuery, setReportStationSearchQuery] = useState<string>("");
   const [showReportStationList, setShowReportStationList] = useState<boolean>(false);
   const [reportProblemType, setReportProblemType] = useState<string>("route_error");
+  const [showProblemTypeDropdown, setShowProblemTypeDropdown] = useState(false);
   const [reportDetails, setReportDetails] = useState<string>("");
   const [reportImageFile, setReportImageFile] = useState<File | null>(null);
   const [reportImagePreview, setReportImagePreview] = useState<string | null>(null);
@@ -43,11 +44,11 @@ export function useLrtReportModal(
     });
   }, [reportStationSearchQuery, allStationsList]);
 
-  const handleReportImageSelect = (file: File | null) => {
+  const handleReportImageSelect = useCallback((file: File | null) => {
+    if (reportImagePreview) {
+      URL.revokeObjectURL(reportImagePreview);
+    }
     if (!file) {
-      if (reportImagePreview) {
-        URL.revokeObjectURL(reportImagePreview);
-      }
       setReportImageFile(null);
       setReportImagePreview(null);
       return;
@@ -62,37 +63,25 @@ export function useLrtReportModal(
     }
     setReportError("");
     setReportImageFile(file);
-    setReportImagePreview(URL.createObjectURL(file));
-  };
+    const objectUrl = URL.createObjectURL(file);
+    setReportImagePreview(objectUrl);
+  }, [reportImagePreview]);
 
-  const handleOpenReportModal = async (
-    stationName: string | null = null,
-    fromRoute: boolean = false
-  ) => {
+  const handleOpenReportModal = async (stationName?: string | null, fromRoute?: boolean) => {
     setReportError("");
     setReportSuccess(false);
-    setReportDetails("");
-    if (reportImagePreview) {
-      URL.revokeObjectURL(reportImagePreview);
-    }
-    setReportImageFile(null);
-    setReportImagePreview(null);
-    setIsDraggingImage(false);
+    setShowProblemTypeDropdown(false);
 
-    if (stationName) {
+    if (fromRoute && result) {
+      setReportTargetScope("route");
+      setReportProblemType("route_error");
+    } else if (stationName) {
       setReportTargetScope("station");
       setReportSelectedStation(stationName);
       setReportStationSearchQuery(stationName);
       setReportProblemType("station_info");
-    } else if (fromRoute && result && selectedFrom && selectedTo) {
-      setReportTargetScope("route");
-      setReportSelectedStation("");
-      setReportStationSearchQuery("");
-      setReportProblemType("route_error");
     } else {
       setReportTargetScope("general");
-      setReportSelectedStation("");
-      setReportStationSearchQuery("");
       setReportProblemType("route_error");
     }
 
@@ -112,125 +101,107 @@ export function useLrtReportModal(
   };
 
   const handleCloseReportModal = () => {
-    if (!reportLoading) {
-      setReportModalOpen(false);
-      handleReportImageSelect(null);
+    if (reportLoading || reportUploading) return;
+    setReportModalOpen(false);
+    setShowProblemTypeDropdown(false);
+    if (reportImagePreview) {
+      URL.revokeObjectURL(reportImagePreview);
     }
+    setReportImageFile(null);
+    setReportImagePreview(null);
+    setReportDetails("");
+    setReportError("");
+    setReportSuccess(false);
   };
 
   const handleSubmitReport = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      setReportError("يرجى تسجيل الدخول أولاً لتتمكن من تقديم بلاغ.");
-      return;
-    }
-    if (reportTargetScope === "station" && !reportSelectedStation) {
-      setReportError("يرجى اختيار وتحديد المحطة المراد الإبلاغ عنها أولاً.");
-      return;
-    }
     if (!reportDetails.trim()) {
-      setReportError("يرجى كتابة تفاصيل المشكلة أو الخطأ.");
+      setReportError("يرجى كتابة تفاصيل المشكلة أو الملاحظة.");
+      return;
+    }
+
+    if (reportTargetScope === "station" && !reportSelectedStation) {
+      setReportError("يرجى اختيار المحطة المعنية بالبلاغ.");
       return;
     }
 
     setReportLoading(true);
     setReportError("");
 
+    let imageUrl: string | null = null;
+
     try {
-      if (!supabase) {
-        throw new Error("Supabase client is not initialized.");
-      }
-
-      let finalImageUrl = "";
-      if (reportImageFile) {
+      if (reportImageFile && supabase) {
         setReportUploading(true);
-        const fileExt = reportImageFile.name.split(".").pop() || "jpg";
-        const fileName = `lrt_${user.id}_${Date.now()}.${fileExt}`;
+        const ext = reportImageFile.name.split(".").pop();
+        const fileName = `lrt_${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
         const filePath = `reports/${fileName}`;
-        const { error: uploadError } = await supabase.storage
-          .from("avatars")
-          .upload(filePath, reportImageFile, { upsert: true });
 
-        if (!uploadError) {
-          const {
-            data: { publicUrl },
-          } = supabase.storage.from("avatars").getPublicUrl(filePath);
-          if (publicUrl) {
-            finalImageUrl = publicUrl;
-          }
+        const { error: uploadErr } = await supabase.storage
+          .from("feedback")
+          .upload(filePath, reportImageFile);
+
+        if (uploadErr) {
+          throw new Error("فشل رفع الصورة المرفقة، يرجى المحاولة مرة أخرى.");
         }
+
+        const { data: pubData } = supabase.storage
+          .from("feedback")
+          .getPublicUrl(filePath);
+
+        imageUrl = pubData.publicUrl;
         setReportUploading(false);
       }
 
-      const typeLabel =
-        PROBLEM_TYPE_LABELS[reportProblemType] || "مشكلة في القطار الكهربائي LRT";
+      const reportPayload = {
+        scope: reportTargetScope,
+        problem_type: reportProblemType,
+        details: reportDetails.trim(),
+        station_name: reportTargetScope === "station" ? reportSelectedStation : null,
+        route_info:
+          reportTargetScope === "route" && result
+            ? {
+                from: selectedFrom,
+                to: selectedTo,
+                count: result.count,
+                price: result.price,
+                estimatedTime: result.estimatedTime,
+              }
+            : null,
+        image_url: imageUrl,
+        user_id: user?.id || null,
+        user_email: user?.email || null,
+        system: "lrt",
+        created_at: new Date().toISOString(),
+      };
 
-      let scopeInfo = "";
-      if (reportTargetScope === "route" && selectedFrom && selectedTo) {
-        scopeInfo = `📍 المسار المعني: من ${selectedFrom} إلى ${selectedTo}
-💰 السعر المحسوب: ${result?.price || "غير محدد"} ج.م
-⏱️ الوقت المقدر: ${result?.estimatedTime || "غير محدد"} دقيقة
-🚉 عدد المحطات: ${result?.count || "غير محدد"}`;
-      } else if (reportTargetScope === "station" && reportSelectedStation) {
-        scopeInfo = `🚉 المحطة المعنية: ${reportSelectedStation}`;
-      }
+      if (supabase) {
+        const { error: insertErr } = await supabase
+          .from("system_reports")
+          .insert([reportPayload]);
 
-      const contentText = `بلاغ عن مشكلة في صفحة القطار الكهربائي LRT:
-${scopeInfo ? scopeInfo + "\n\n" : ""}⚠️ نوع المشكلة: ${typeLabel}
-
-📝 تفاصيل المشكلة المبلغ عنها:
-${reportDetails.trim()}`;
-
-      const reportTitle =
-        reportTargetScope === "route" && selectedFrom && selectedTo
-          ? `مشكلة مسار LRT: من ${selectedFrom} إلى ${selectedTo}`
-          : reportTargetScope === "station" && reportSelectedStation
-          ? `مشكلة محطة LRT: ${reportSelectedStation}`
-          : `مشكلة في القطار الكهربائي LRT (${typeLabel})`;
-
-      const { error: insertError } = await supabase.from("app_feedback").insert([
-        {
-          user_id: user.id,
-          type: "bug",
-          category: "القطار الكهربائي LRT",
-          title: reportTitle,
-          content: contentText,
-          image_url: finalImageUrl || null,
-          status: "pending",
-        },
-      ]);
-
-      if (insertError) throw insertError;
-
-      // Send notification to user
-      try {
-        await supabase.from("notifications").insert([
-          {
-            user_id: user.id,
-            title: "تم استلام بلاغك بنجاح 🚊",
-            message: `شكراً لمساعدتنا في تحسين وتدقيق خدمة القطار الكهربائي LRT. تم تسجيل بلاغك بخصوص "${reportTitle}" وجاري مراجعته.`,
-            type: "info",
-            link: "/profile",
-          },
-        ]);
-      } catch (notifErr) {
-        console.error("Failed to insert notification:", notifErr);
+        if (insertErr) {
+          const localReports = JSON.parse(
+            localStorage.getItem("local_lrt_reports") || "[]"
+          );
+          localReports.push(reportPayload);
+          localStorage.setItem("local_lrt_reports", JSON.stringify(localReports));
+        }
+      } else {
+        const localReports = JSON.parse(
+          localStorage.getItem("local_lrt_reports") || "[]"
+        );
+        localReports.push(reportPayload);
+        localStorage.setItem("local_lrt_reports", JSON.stringify(localReports));
       }
 
       setReportSuccess(true);
       setTimeout(() => {
-        setReportModalOpen(false);
-        setReportSuccess(false);
-        setReportDetails("");
-        if (reportImagePreview) {
-          URL.revokeObjectURL(reportImagePreview);
-        }
-        setReportImageFile(null);
-        setReportImagePreview(null);
-      }, 2200);
+        handleCloseReportModal();
+      }, 2400);
     } catch (err: any) {
-      console.error("Error submitting LRT report:", err);
-      setReportError(err?.message || "حدث خطأ أثناء إرسال البلاغ. يرجى المحاولة لاحقاً.");
+      setReportError(err.message || "حدث خطأ أثناء إرسال البلاغ، يرجى المحاولة لاحقاً.");
     } finally {
       setReportLoading(false);
       setReportUploading(false);
@@ -239,7 +210,6 @@ ${reportDetails.trim()}`;
 
   return {
     reportModalOpen,
-    setReportModalOpen,
     reportTargetScope,
     setReportTargetScope,
     reportSelectedStation,
@@ -248,22 +218,24 @@ ${reportDetails.trim()}`;
     setReportStationSearchQuery,
     showReportStationList,
     setShowReportStationList,
+    filteredReportStations,
     reportProblemType,
     setReportProblemType,
+    showProblemTypeDropdown,
+    setShowProblemTypeDropdown,
     reportDetails,
     setReportDetails,
     reportImageFile,
     reportImagePreview,
     isDraggingImage,
     setIsDraggingImage,
+    handleReportImageSelect,
     reportLoading,
     reportUploading,
     reportSuccess,
     reportError,
     limitChecking,
     limitReached,
-    filteredReportStations,
-    handleReportImageSelect,
     handleOpenReportModal,
     handleCloseReportModal,
     handleSubmitReport,

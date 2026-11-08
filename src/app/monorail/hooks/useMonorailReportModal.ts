@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { isFeedbackLimitReached } from "@/lib/feedbackLimit";
 import { MonorailStation, MonorailRouteResult, ReportScope } from "../types";
-import { PROBLEM_TYPE_LABELS, MONORAIL_STATION_DETAILS } from "../constants";
+import { MONORAIL_PROBLEM_OPTIONS, MONORAIL_STATION_DETAILS } from "../constants";
 import { normalizeArabic } from "../utils";
 
 export function useMonorailReportModal(
@@ -19,6 +19,7 @@ export function useMonorailReportModal(
   const [reportStationSearchQuery, setReportStationSearchQuery] = useState("");
   const [showReportStationList, setShowReportStationList] = useState(false);
   const [reportProblemType, setReportProblemType] = useState("route_error");
+  const [showProblemTypeDropdown, setShowProblemTypeDropdown] = useState(false);
   const [reportDetails, setReportDetails] = useState("");
   const [reportImageFile, setReportImageFile] = useState<File | null>(null);
   const [reportImagePreview, setReportImagePreview] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export function useMonorailReportModal(
   }, [allStationsList, reportStationSearchQuery]);
 
   // Image Selection Handler
-  const handleReportImageSelect = (file: File | null) => {
+  const handleReportImageSelect = useCallback((file: File | null) => {
     if (reportImagePreview) {
       URL.revokeObjectURL(reportImagePreview);
     }
@@ -65,7 +66,7 @@ export function useMonorailReportModal(
     setReportError("");
     setReportImageFile(file);
     setReportImagePreview(URL.createObjectURL(file));
-  };
+  }, [reportImagePreview]);
 
   // Open Report Modal Handler
   const handleOpenReportModal = async (
@@ -81,6 +82,7 @@ export function useMonorailReportModal(
     setReportImageFile(null);
     setReportImagePreview(null);
     setIsDraggingImage(false);
+    setShowProblemTypeDropdown(false);
 
     if (stationName) {
       setReportTargetScope("station");
@@ -159,43 +161,44 @@ export function useMonorailReportModal(
           const {
             data: { publicUrl },
           } = supabase.storage.from("avatars").getPublicUrl(filePath);
-          if (publicUrl) {
-            finalImageUrl = publicUrl;
-          }
+          finalImageUrl = publicUrl;
         }
-        setReportUploading(false);
       }
 
-      const typeLabel = PROBLEM_TYPE_LABELS[reportProblemType] || "مشكلة في المونوريل";
+      const problemOpt = MONORAIL_PROBLEM_OPTIONS.find((o) => o.id === reportProblemType);
+      const problemLabel = problemOpt ? problemOpt.title : reportProblemType;
 
-      let scopeInfo = "";
-      if (reportTargetScope === "route" && selectedFrom && selectedTo) {
-        scopeInfo = `📍 المسار المعني: من ${selectedFrom} إلى ${selectedTo}
-💰 السعر المحسوب: ${routeResult?.price || "غير محدد"} ج.م
-⏱️ الوقت المقدر: ${routeResult?.time || "غير محدد"} دقيقة
-🚉 عدد المحطات: ${routeResult?.count || "غير محدد"}`;
-      } else if (reportTargetScope === "station" && reportSelectedStation) {
-        scopeInfo = `🚉 المحطة المعنية: ${reportSelectedStation}`;
+      let reportTitle = "";
+      let contentText = "";
+
+      if (reportTargetScope === "station" && reportSelectedStation) {
+        reportTitle = `مشكلة في محطة مونوريل: ${reportSelectedStation}`;
+        contentText = `[نطاق البلاغ: محطة مونوريل (${reportSelectedStation})]
+[نوع المشكلة: ${problemLabel}]
+تفاصيل البلاغ:
+${reportDetails}`;
+      } else if (reportTargetScope === "route" && selectedFrom && selectedTo) {
+        reportTitle = `مشكلة في مسار المونوريل: ${selectedFrom} إلى ${selectedTo}`;
+        contentText = `[نطاق البلاغ: مسار رحلة مونوريل]
+من محطة: ${selectedFrom}
+إلى محطة: ${selectedTo}
+[نوع المشكلة: ${problemLabel}]
+تفاصيل المشكلة:
+${reportDetails}`;
+      } else {
+        reportTitle = `مشكلة عامة في خدمة مونوريل القاهرة`;
+        contentText = `[نطاق البلاغ: عام - شبكة المونوريل]
+[نوع المشكلة: ${problemLabel}]
+تفاصيل البلاغ:
+${reportDetails}`;
       }
 
-      const contentText = `بلاغ عن مشكلة في خدمة قطار المونوريل:
-${scopeInfo ? scopeInfo + "\n\n" : ""}⚠️ نوع المشكلة: ${typeLabel}
-
-📝 تفاصيل المشكلة المبلغ عنها:
-${reportDetails.trim()}`;
-
-      const reportTitle =
-        reportTargetScope === "route" && selectedFrom && selectedTo
-          ? `مشكلة مسار مونوريل: من ${selectedFrom} إلى ${selectedTo}`
-          : reportTargetScope === "station" && reportSelectedStation
-          ? `مشكلة محطة مونوريل: ${reportSelectedStation}`
-          : `مشكلة في المونوريل (${typeLabel})`;
-
-      const { error: insertError } = await supabase.from("app_feedback").insert([
+      const { error: insertError } = await supabase.from("feedbacks").insert([
         {
           user_id: user.id,
-          type: "bug",
-          category: "مونوريل",
+          user_name: user.user_metadata?.full_name || user.email || "مستخدم",
+          user_email: user.email || "",
+          type: "report",
           title: reportTitle,
           content: contentText,
           image_url: finalImageUrl || null,
@@ -253,6 +256,8 @@ ${reportDetails.trim()}`;
     setShowReportStationList,
     reportProblemType,
     setReportProblemType,
+    showProblemTypeDropdown,
+    setShowProblemTypeDropdown,
     reportDetails,
     setReportDetails,
     reportImageFile,

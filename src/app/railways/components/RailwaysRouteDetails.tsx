@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import { RailwayRoute } from "../types";
+import ProjectBanner from "@/components/common/ProjectBanner";
 import styles from "../railways.module.css";
 
 interface RailwaysRouteDetailsProps {
@@ -52,7 +53,7 @@ export default function RailwaysRouteDetails({
         </div>
       </div>
 
-      {/* Train Classes & Ticket Prices */}
+      {/* Train Classes & Ticket Prices
       {route.classes && route.classes.length > 0 && (
         <div className={styles.classesBox}>
           <h3 className={styles.sectionHeaderTitle}>
@@ -76,103 +77,143 @@ export default function RailwaysRouteDetails({
             ))}
           </div>
         </div>
-      )}
+      )} */}
 
-      {/* Detailed Stops Vertical Timeline */}
+      {/* Horizontal Route Stops Stepper */}
       <div className={styles.timelineBox}>
-        <h3 className={styles.sectionHeaderTitle}>
-          <i className="fa-solid fa-route" style={{ color }} />
-          <span>المحطات الرئيسية على هذا الخط ({route.stops?.length || 0} محطة)</span>
-        </h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "8px" }}>
+          <h3 className={styles.sectionHeaderTitle} style={{ margin: 0 }}>
+            <i className="bx bx-transfer" style={{ color, fontSize: "1.2rem" }} />
+            <span>المسار والمحطات التي يمر بها القطار ({route.stops?.length || 0} محطة):</span>
+          </h3>
+        </div>
 
-        <div className={styles.stopsTimeline}>
-          {route.stops && route.stops.length > 0 ? (
-            route.stops.map((stop, sIdx) => {
-              const isFirst = sIdx === 0;
-              const isLast = sIdx === route.stops.length - 1;
-              const isUnderConstruction = stop.status === "تحت الإنشاء";
+        {route.stops && route.stops.length > 0 ? (
+          <div style={{ overflowX: "auto", paddingBottom: "12px", paddingTop: "8px" }} className="hide-scrollbar">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                position: "relative",
+                minWidth: `${Math.max(route.stops.length * 130, 480)}px`,
+                padding: "0 24px",
+              }}
+            >
+              {/* Connecting Line between stops */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: "11px",
+                  left: "32px",
+                  right: "32px",
+                  height: "2px",
+                  background: "var(--border-glass, rgba(255, 255, 255, 0.12))",
+                  zIndex: 1,
+                }}
+              />
 
-              return (
-                <div key={sIdx} style={{ display: "flex", flexDirection: "column" }}>
-                  <div className={styles.stopRow}>
-                    {/* Dot */}
-                    <div className={styles.stopDotContainer}>
+              {route.stops.map((stop, idx, arr) => {
+                const isStart = idx === 0;
+                const isEnd = idx === arr.length - 1;
+                const isUnderConstruction = stop.status === "تحت الإنشاء";
+
+                // Terminal or intermediate colors
+                const dotColor = isUnderConstruction
+                  ? "#ef4444"
+                  : isStart
+                    ? "#ef4444"
+                    : isEnd
+                      ? "#10b981"
+                      : color || "#3b82f6";
+
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      flex: "1 1 0%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      position: "relative",
+                      zIndex: 2,
+                      minWidth: "100px",
+                      padding: "0 4px",
+                    }}
+                  >
+                    {/* Stepper Dot */}
+                    <div
+                      style={{
+                        width: "22px",
+                        height: "22px",
+                        borderRadius: "50%",
+                        border: `3px solid ${dotColor}`,
+                        backgroundColor: "var(--color-bg, #18181b)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginBottom: "10px",
+                        boxShadow: `0 0 10px ${dotColor}40`,
+                        transition: "all 0.2s ease",
+                      }}
+                    >
                       <div
-                        className={styles.stopDot}
                         style={{
-                          width: isFirst || isLast ? "12px" : "8px",
-                          height: isFirst || isLast ? "12px" : "8px",
-                          backgroundColor: isUnderConstruction ? "transparent" : color,
-                          border: isUnderConstruction
-                            ? "2px dashed #ef4444"
-                            : isFirst || isLast
-                              ? "2px solid var(--color-bg, #18181b)"
-                              : "none",
-                          boxShadow: isUnderConstruction
-                            ? "none"
-                            : isFirst || isLast
-                              ? `0 0 0 2px ${color}`
-                              : "none",
+                          width: "7px",
+                          height: "7px",
+                          borderRadius: "50%",
+                          backgroundColor: isUnderConstruction ? "transparent" : dotColor,
                         }}
                       />
                     </div>
 
-                    {/* Stop Info */}
-                    <div className={styles.stopName}>
+                    {/* Stop Name & Status */}
+                    <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
                       <span
                         style={{
-                          fontWeight: isFirst || isLast ? "800" : "600",
+                          fontSize: "0.82rem",
+                          fontWeight: isStart || isEnd ? "800" : "600",
                           color: isUnderConstruction
                             ? "#ef4444"
-                            : isFirst || isLast
+                            : isStart || isEnd
                               ? "var(--color-fg)"
                               : "var(--text-secondary)",
+                          textAlign: "center",
+                          lineHeight: "1.35",
+                          whiteSpace: "normal",
                         }}
                       >
                         {stop.name}
                       </span>
 
-                      {isUnderConstruction && (
-                        <span className={`${styles.stopBadge} ${styles.stopBadgeConstructing}`}>
-                          تحت الإنشاء 🚧
-                        </span>
-                      )}
-                      {isFirst && (
-                        <span className={`${styles.stopBadge} ${styles.stopBadgeTerminal}`}>
+                      {isStart && (
+                        <span style={{ fontSize: "0.66rem", color: "#ef4444", fontWeight: "700" }}>
                           (بداية الخط)
                         </span>
                       )}
-                      {isLast && (
-                        <span className={`${styles.stopBadge} ${styles.stopBadgeTerminal}`}>
+                      {isEnd && (
+                        <span style={{ fontSize: "0.66rem", color: "#10b981", fontWeight: "700" }}>
                           (نهاية الخط)
+                        </span>
+                      )}
+                      {isUnderConstruction && (
+                        <span style={{ fontSize: "0.64rem", color: "#ef4444", fontWeight: "700" }}>
+                          تحت الإنشاء 🚧
                         </span>
                       )}
                     </div>
                   </div>
-
-                  {/* Connecting Line */}
-                  {!isLast && (
-                    <div className={styles.connectorLine}>
-                      <div className={styles.stopDotContainer}>
-                        <div
-                          className={styles.connectorBar}
-                          style={{ backgroundColor: color }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          ) : (
-            <div style={{ color: "var(--text-secondary)", textAlign: "center", padding: "16px", fontSize: "0.88rem" }}>
-              لا توجد محطات مضافة لهذا الخط حالياً.
+                );
+              })}
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div style={{ color: "var(--text-secondary)", textAlign: "center", padding: "16px", fontSize: "0.88rem" }}>
+            لا توجد محطات مضافة لهذا الخط حالياً.
+          </div>
+        )}
       </div>
 
-      {/* Travel Tip */}
+      {/* Travel Tip
       {route.tips && (
         <div className={styles.tipCard}>
           <i className="bx bxs-info-circle" style={{ color, fontSize: "1.2rem", flexShrink: 0, marginTop: "2px" }} />
@@ -181,27 +222,33 @@ export default function RailwaysRouteDetails({
             <span style={{ color: "var(--text-secondary)" }}>{route.tips}</span>
           </div>
         </div>
-      )}
+      )} */}
 
-      {/* Report Button for this route */}
-      <div className={styles.routeReportBtnWrapper}>
-        <button
-          type="button"
-          onClick={onOpenReport}
-          className="btn btn-report"
-          style={{
-            fontSize: "0.82rem",
-            fontWeight: "700",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            padding: "8px 14px",
-            borderRadius: "10px",
+      {/* Report Banner for this route using ProjectBanner */}
+      <div style={{ marginTop: "16px" }} onClick={(e) => e.stopPropagation()}>
+        <ProjectBanner
+          variant="error"
+          label={`هل لاحظت بيانات غير دقيقة في خط ${route.name}؟`}
+          icon={
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ width: "16px", height: "16px" }}
+            >
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          }
+          callToAction={{
+            label: "إبلاغ الآن",
+            onClick: onOpenReport,
           }}
-        >
-          <i className="fa-solid fa-triangle-exclamation" />
-          <span>الإبلاغ عن خطأ في مواعيد أو تفاصيل هذا الخط</span>
-        </button>
+        />
       </div>
     </div>
   );

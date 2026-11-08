@@ -3997,8 +3997,8 @@ export default function AdminDashboard() {
           isOpen={deleteAlertModal.isOpen}
           onClose={() => setDeleteAlertModal(null)}
           title={deleteAlertModal.title}
-          titleColor={deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--colorDanger)"}
-          borderColor={deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--colorDanger)"}
+          titleColor={deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--color-danger)"}
+          borderColor={deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--color-danger)"}
           iconNode={
             deleteAlertModal.type === "success" ? (
               <div
@@ -4037,7 +4037,7 @@ export default function AdminDashboard() {
           primaryButton={{
             label: "حسناً",
             onClick: () => setDeleteAlertModal(null),
-            bgColor: deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--colorDanger)",
+            bgColor: deleteAlertModal.type === "success" ? "var(--color-primary)" : "var(--color-danger)",
             icon: <i className={deleteAlertModal.type === "success" ? "bx bx-check" : "bx bx-x"} style={{ fontSize: "1.2rem" }} />,
           }}
         >

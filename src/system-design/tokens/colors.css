@@ -18,10 +18,10 @@
 
   /* --- Status & Feedback Palettes --- */
   --color-success: #00d37b;
-  --colorWarning: #ffa500;
-  --colorDanger: #ff0000;
+  --color-warning: #ffe600;
+  --color-danger: #ff0000;
   --color-error: #ff0000;
-  --colorInfo: #0000ff;
+  --color-info: #006eff;
 
   /* --- Canvas & Background Layers --- */
   --color-bg: #000000;
@@ -123,6 +123,10 @@ html.light {
   --text-secondary: #52525b;
   --text-muted: #7a7771;
   --text-muted: #7a7771;
+
+
+/*  */
+ --color-info: #0000ff;
 
   /* --- Border Tokens --- */
   --border-glass: rgba(0, 0, 0, 0.08);

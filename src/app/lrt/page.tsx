@@ -3,18 +3,21 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
+import Footer from "@/components/Footer/Footer";
 import { useLrtData, useLrtCalculator, useLrtReportModal } from "./hooks";
 import {
   LrtLoading,
   LrtPaywall,
   LrtHeader,
-  LrtSearchCard,
+  LrtLinesSlider,
   LrtRouteCalculator,
   LrtLineExplorer,
   LrtPricingCard,
+  LrtMapSection,
   LrtReportBanner,
   LrtReportModal,
 } from "./components";
+import { normalizeArabic } from "./utils";
 import styles from "./lrt.module.css";
 import { LRT_LINE_TABS } from "./constants";
 
@@ -53,45 +56,47 @@ export default function LrtPage() {
   // GSAP Animation Refs
   const headerRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
-  const searchCardRef = useRef<HTMLDivElement>(null);
   const calculatorRef = useRef<HTMLDivElement>(null);
   const lineExplorerRef = useRef<HTMLDivElement>(null);
   const pricingCardRef = useRef<HTMLDivElement>(null);
+  const mapPanelRef = useRef<HTMLDivElement>(null);
   const reportBannerRef = useRef<HTMLDivElement>(null);
   const modalBoxRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
 
-  // Initial Entrance Animation
+  // Initial Entrance Animation matching Metro & Monorail
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.5 } });
-
       if (headerRef.current) {
-        tl.fromTo(headerRef.current, { opacity: 0, y: -20 }, { opacity: 1, y: 0 });
-      }
-
-      if (sliderRef.current) {
-        tl.fromTo(
-          sliderRef.current.children,
-          { opacity: 0, y: 15, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, stagger: 0.06 },
-          "-=0.2"
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: -15 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
         );
       }
 
       const sections = [
-        searchCardRef.current,
         calculatorRef.current,
+        sliderRef.current,
         lineExplorerRef.current,
         pricingCardRef.current,
+        mapPanelRef.current,
         reportBannerRef.current,
       ].filter(Boolean);
 
       if (sections.length > 0) {
-        tl.fromTo(
+        gsap.fromTo(
           sections,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, stagger: 0.1 },
-          "-=0.2"
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.55,
+            stagger: 0.1,
+            ease: "power2.out",
+            delay: 0.1,
+            clearProps: "transform",
+          }
         );
       }
     });
@@ -99,16 +104,46 @@ export default function LrtPage() {
     return () => ctx.revert();
   }, [data.hasAccess, data.loading]);
 
+  // Tab switch animation
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (lineExplorerRef.current) {
+      gsap.fromTo(
+        lineExplorerRef.current,
+        { opacity: 0.45, y: 10 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.35,
+          ease: "power2.out",
+          clearProps: "transform",
+        }
+      );
+    }
+  }, [data.activeLine]);
+
   // Modal Entrance Animation
   useEffect(() => {
     if (reportModal.reportModalOpen && modalBoxRef.current) {
       gsap.fromTo(
         modalBoxRef.current,
         { opacity: 0, scale: 0.94, y: 16 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out" }
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(1.4)" }
       );
     }
   }, [reportModal.reportModalOpen]);
+
+  // Handler for tab select with smooth scroll
+  const handleSelectTab = (tabId: typeof data.activeLine) => {
+    data.setActiveLine(tabId);
+    data.setExpandedStation(null);
+    if (lineExplorerRef.current) {
+      lineExplorerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   // 1. Auth Loading State
   if (data.authLoading) {
@@ -131,90 +166,23 @@ export default function LrtPage() {
       {/* Electric Ambient Glow */}
       <div className={styles.ambientGlow} />
 
-      {/* Modern Page Hero Banner */}
-      <LrtHeader
-        headerRef={headerRef}
-        onOpenReportModal={() => reportModal.handleOpenReportModal()}
-      />
-
-      {/* Promotional Page Banner */}
-      {data.promoStatus.isOpen && data.promoStatus.offer && (
-        <div style={{ maxWidth: "780px", margin: "16px auto 0", padding: "0 16px" }}>
-          <PromotionalPageBanner
-            offer={data.promoStatus.offer}
-            remainingDays={data.promoStatus.remainingDays}
-          />
-        </div>
-      )}
-
-      {/* Main Content Container */}
       <div className={styles.contentContainer}>
-        {/* Branch Quick Switcher Bento Cards */}
-        <div className={styles.branchSliderSection}>
-          <div ref={sliderRef} className={styles.branchSliderTrack}>
-            {LRT_LINE_TABS.map((tab) => {
-              const active = data.activeLine === tab.id;
-              let icon = "🚄";
-              let countText = "الشبكة كاملة";
-
-              if (tab.id === "trunk") {
-                icon = "🚊";
-                countText = "6 محطات";
-              } else if (tab.id === "capital") {
-                icon = "🏛️";
-                countText = "4 محطات";
-              } else if (tab.id === "ramadan") {
-                icon = "🏭";
-                countText = "2 محطات";
-              }
-
-              return (
-                <div
-                  key={tab.id}
-                  onClick={() => {
-                    data.setActiveLine(tab.id);
-                    data.setExpandedStation(null);
-                    // Scroll to explorer
-                    if (lineExplorerRef.current) {
-                      lineExplorerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }
-                  }}
-                  className={`${styles.branchBentoCard} ${
-                    active ? styles.branchBentoCardActive : ""
-                  }`}
-                  style={
-                    {
-                      "--card-accent": tab.color,
-                      "--card-accent-glow": `${tab.color}40`,
-                      "--card-accent-bg": `${tab.color}14`,
-                    } as React.CSSProperties
-                  }
-                >
-                  <div className={styles.branchCardHeader}>
-                    <div className={styles.branchIconBadge}>
-                      <span>{icon}</span>
-                    </div>
-                    <span className={styles.branchCardTag}>{countText}</span>
-                  </div>
-                  <h4 className={styles.branchCardTitle}>{tab.label}</h4>
-                  <p className={styles.branchCardSubtitle}>{tab.title.split("(")[0].trim()}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Instant Search Card */}
-        <LrtSearchCard
-          panelRef={searchCardRef}
-          searchContainerRef={data.searchContainerRef}
-          searchQuery={data.searchQuery}
-          onSearchQueryChange={data.setSearchQuery}
-          isDropdownOpen={data.isDropdownOpen}
-          setIsDropdownOpen={data.setIsDropdownOpen}
-          searchResults={data.searchResults}
-          onSelectStation={data.handleSelectSearchStation}
+        {/* Modern Page Hero Banner */}
+        <LrtHeader
+          headerRef={headerRef}
+          linesCount={LRT_LINE_TABS.length}
+          stationsCount={data.allStationsList.length}
         />
+
+        {/* Promotional Page Banner */}
+        {data.promoStatus.isOpen && data.promoStatus.offer && (
+          <div style={{ maxWidth: "780px", margin: "16px auto 0", padding: "0 16px" }}>
+            <PromotionalPageBanner
+              offer={data.promoStatus.offer}
+              remainingDays={data.promoStatus.remainingDays}
+            />
+          </div>
+        )}
 
         {/* Route Calculator & Active Trip Tracker */}
         <LrtRouteCalculator
@@ -227,25 +195,38 @@ export default function LrtPage() {
           showToList={calculator.showToList}
           filteredFrom={calculator.filteredFrom}
           filteredTo={calculator.filteredTo}
+          stations={data.allStationsList}
           onSelectFrom={(name) => {
-            calculator.setSelectedFrom(name);
-            calculator.setFromQuery(name);
+            calculator.setSelectedFrom(name || null);
+            calculator.setFromQuery(name || "");
             calculator.setShowFromList(false);
           }}
           onSelectTo={(name) => {
-            calculator.setSelectedTo(name);
-            calculator.setToQuery(name);
+            calculator.setSelectedTo(name || null);
+            calculator.setToQuery(name || "");
             calculator.setShowToList(false);
           }}
           onFromQueryChange={(val) => {
             calculator.setFromQuery(val);
-            calculator.setSelectedFrom(null);
+            const trimmed = val.trim();
+            const matched = trimmed
+              ? data.allStationsList.find(
+                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+                )
+              : null;
+            calculator.setSelectedFrom(matched ? matched.name : null);
             calculator.setShowFromList(true);
             calculator.setResult(null);
           }}
           onToQueryChange={(val) => {
             calculator.setToQuery(val);
-            calculator.setSelectedTo(null);
+            const trimmed = val.trim();
+            const matched = trimmed
+              ? data.allStationsList.find(
+                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+                )
+              : null;
+            calculator.setSelectedTo(matched ? matched.name : null);
             calculator.setShowToList(true);
             calculator.setResult(null);
           }}
@@ -258,13 +239,26 @@ export default function LrtPage() {
           result={calculator.result}
           isTripActive={calculator.isTripActive}
           currentStepIndex={calculator.currentStepIndex}
+          copiedRoute={calculator.copiedRoute}
+          whatsappShareUrl={calculator.whatsappShareUrl}
           onStartTrip={calculator.startTrip}
           onEndTrip={calculator.endTrip}
+          onPrevStep={calculator.prevStep}
           onNextStep={calculator.nextStep}
+          onShareRoute={calculator.handleShareRoute}
           onOpenReportModal={(stationName, fromRoute) =>
             reportModal.handleOpenReportModal(stationName, fromRoute)
           }
         />
+
+        {/* Lines / Branches Bento Slider
+        <LrtLinesSlider
+          sliderRef={sliderRef}
+          tabs={LRT_LINE_TABS}
+          selectedTab={data.activeLine}
+          onSelectTab={handleSelectTab}
+          stations={data.allStationsList}
+        /> */}
 
         {/* Line Explorer & Station Timeline */}
         <LrtLineExplorer
@@ -285,11 +279,14 @@ export default function LrtPage() {
         {/* Official Approved Fares Legend */}
         <LrtPricingCard cardRef={pricingCardRef} />
 
-        {/* Bottom Alert Banner to Report Issues */}
+        {/* Official Cairo LRT Map Section */}
+        <LrtMapSection mapPanelRef={mapPanelRef} />
+
+        {/* Bottom Alert Banner to Report Issues
         <LrtReportBanner
           bannerRef={reportBannerRef}
           onOpenReportModal={() => reportModal.handleOpenReportModal()}
-        />
+        /> */}
       </div>
 
       {/* Report Problem Modal */}
@@ -309,6 +306,8 @@ export default function LrtPage() {
         filteredStations={reportModal.filteredReportStations}
         problemType={reportModal.reportProblemType}
         setProblemType={reportModal.setReportProblemType}
+        showProblemTypeDropdown={reportModal.showProblemTypeDropdown}
+        setShowProblemTypeDropdown={reportModal.setShowProblemTypeDropdown}
         details={reportModal.reportDetails}
         setDetails={reportModal.setReportDetails}
         imageFile={reportModal.reportImageFile}
@@ -326,7 +325,10 @@ export default function LrtPage() {
         selectedFrom={calculator.selectedFrom}
         selectedTo={calculator.selectedTo}
         routeResult={calculator.result}
+        color="#06b6d4"
       />
+
+      <Footer />
     </div>
   );
 }

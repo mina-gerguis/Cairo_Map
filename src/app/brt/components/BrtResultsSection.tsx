@@ -63,6 +63,8 @@ export default function BrtResultsSection({
         gap: "18px",
         marginBottom: "28px",
         scrollMarginTop: "24px",
+        position: "relative",
+        zIndex: 1,
       }}
     >
       {/* Notice: Specific station selected, but NO direct match for query */}

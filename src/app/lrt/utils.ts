@@ -111,5 +111,55 @@ export function calculateLrtRoute(
   const price = getLrtFare(count);
   const estimatedTime = (count - 1) * 4;
 
-  return { stations: stationsPath, count, price, estimatedTime };
+  const getStationBranch = (stName: string): "trunk" | "capital" | "ramadan" => {
+    if (capitalStations.includes(stName) && stName !== "بدر") return "capital";
+    if (ramadanStations.includes(stName) && stName !== "بدر") return "ramadan";
+    return "trunk";
+  };
+
+  const detailedPath = stationsPath.map((st, idx) => {
+    const branch = getStationBranch(st);
+    const isTransfer =
+      st === "عدلي منصور" ||
+      st === "بدر" ||
+      st === "مدينة الفنون والثقافة" ||
+      st === "العاصمة المركزية";
+
+    let lineName = "الجذع الرئيسي";
+    let lineColor = "#06b6d4";
+
+    if (branch === "capital") {
+      lineName = "تفريعة العاصمة الإدارية";
+      lineColor = "#a855f7";
+    } else if (branch === "ramadan") {
+      lineName = "تفريعة العاشر من رمضان";
+      lineColor = "#10b981";
+    }
+
+    let targetLine: string | undefined;
+    if (st === "عدلي منصور") targetLine = "الخط الثالث للمترو / BRT / السكك الحديدية";
+    else if (st === "مدينة الفنون والثقافة") targetLine = "مونوريل العاصمة";
+    else if (st === "بدر") targetLine = "تفريعة المسارين";
+    else if (st === "العاصمة المركزية") targetLine = "القطار الكهربائي السريع";
+
+    return {
+      station: st,
+      line: branch,
+      lineName,
+      lineColor,
+      isTransferPoint: isTransfer,
+      targetLine,
+    };
+  });
+
+  return {
+    stations: stationsPath,
+    count,
+    price,
+    estimatedTime,
+    detailedPath,
+    description: `الرحلة من ${from} إلى ${to} تشمل ${count} محطة بمدة تقريبية ${estimatedTime} دقيقة.`,
+    lineName: detailedPath[0]?.lineName,
+    lineColor: detailedPath[0]?.lineColor,
+  };
 }

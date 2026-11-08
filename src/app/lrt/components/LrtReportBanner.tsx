@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { LrtReportBannerProps } from "../types";
 import styles from "../lrt.module.css";
 
@@ -7,52 +8,64 @@ export default function LrtReportBanner({
   onOpenReportModal,
 }: LrtReportBannerProps) {
   return (
-    <div ref={bannerRef} className={styles.calloutBanner}>
-      <div style={{ flex: "1 1 300px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            marginBottom: "8px",
-          }}
-        >
-          <img
-            src="/images/threeD/alert.webp"
-            alt="Alert"
-            style={{ width: "32px", height: "32px", objectFit: "contain" }}
-          />
+    <div
+      ref={bannerRef}
+      className={styles.calloutBanner}
+      onClick={onOpenReportModal}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpenReportModal();
+        }
+      }}
+      aria-label="الإبلاغ عن مشكلة في بيانات القطار الكهربائي LRT"
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "16px", maxWidth: "580px" }}>
+        <Image
+          src="/images/threeD/alert.webp"
+          alt="تنبيه"
+          width={42}
+          height={42}
+          style={{ objectFit: "contain", flexShrink: 0 }}
+        />
+        <div>
           <h3
             style={{
-              margin: 0,
-              fontSize: "1.02rem",
+              margin: "0 0 4px",
+              fontSize: "1.05rem",
               fontWeight: "800",
               color: "var(--color-fg)",
+              fontFamily: "var(--font-sub, inherit)",
             }}
           >
-            الإبلاغ عن مشكلة فى بيانات القطار الكهربائي LRT
+            الإبلاغ عن مشكلة في بيانات القطار الكهربائي LRT
           </h3>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "0.84rem",
+              color: "var(--text-secondary)",
+              lineHeight: "1.6",
+            }}
+          >
+            هل لاحظت أي خطأ في مسارات القطار، أو أسعار التذاكر، أو محطات التبديل؟ ساعدنا في تدقيق وتحديث البيانات لخدمة الجميع.
+          </p>
         </div>
-
-        <p
-          style={{
-            margin: 0,
-            fontSize: "0.84rem",
-            color: "var(--text-secondary)",
-            lineHeight: "1.6",
-          }}
-        >
-          هل لاحظت أي خطأ في مسارات القطار، أو أسعار التذاكر، أو محطات التبديل؟ ساعدنا في تدقيق وتحديث البيانات لخدمة الجميع.
-        </p>
       </div>
 
       <button
         type="button"
         className={styles.calloutBtn}
-        onClick={onOpenReportModal}
+        onClick={(e) => {
+          e.stopPropagation();
+          onOpenReportModal();
+        }}
       >
-        <i className="fa-solid fa-flag" style={{ color: "#ef4444" }} />
-        <span>تقديم بلاغ عن خطأ</span>
+        <i className="fa-solid fa-triangle-exclamation" style={{ color: "currentColor" }} />
+        <span>إبلاغ عن خطأ</span>
+        <i className="bx bx-chevron-left" style={{ fontSize: "1.1rem" }} />
       </button>
     </div>
   );

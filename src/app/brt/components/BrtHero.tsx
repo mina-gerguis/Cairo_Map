@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import PageHero from "@/components/common/PageHero";
+import { ASSETS } from "@/constants/assets";
 
 interface BrtHeroProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -15,9 +16,9 @@ export default function BrtHero({
   return (
     <PageHero
       headerRef={headerRef}
-      title="الأتوبيس الترددي السريع (BRT)"
+      title="الأتوبيس الترددي"
       icon={{
-        src: "/images/icons2d/brt.webp",
+        src: ASSETS.transit.brt,
         alt: "Cairo BRT",
         width: 60,
         height: 42,

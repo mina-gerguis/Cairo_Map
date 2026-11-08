@@ -12,7 +12,6 @@ html.is-preloading *:not([class*="preloader"]):not([class*="SitePreloader"]):not
   animation-play-state: paused !important;
 }
 
-
 /* ============================================================
    Base Reset
    ============================================================ */
@@ -68,7 +67,6 @@ picture {
   -khtml-user-drag: none !important;
   -moz-user-drag: none !important;
   -o-user-drag: none !important;
-  user-drag: none !important;
   -webkit-touch-callout: none !important; /* Disable iOS long-press context menu */
 }
 

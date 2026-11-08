@@ -14,10 +14,13 @@ import {
   MonorailRouteCalculator,
   MonorailLineExplorer,
   MonorailOverviewPanel,
+  MonorailMapSection,
   MonorailReportBanner,
   MonorailReportModal,
 } from "./components";
+import { normalizeArabic } from "./utils";
 import styles from "./monorail.module.css";
+import Footer from "@/components/Footer/Footer";
 
 export type {
   MonorailLineId,
@@ -56,47 +59,75 @@ export default function MonorailPage() {
   const mapPanelRef = useRef<HTMLDivElement>(null);
   const reportBannerRef = useRef<HTMLDivElement>(null);
   const modalBoxRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
 
-  // Entrance Animations
+  // Initial page entrance animation matching Metro page
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power2.out", duration: 0.5 } });
-
       if (headerRef.current) {
-        tl.fromTo(headerRef.current, { opacity: 0, y: -20 }, { opacity: 1, y: 0 });
-      }
-      if (sliderRef.current) {
-        tl.fromTo(
-          sliderRef.current.children,
-          { opacity: 0, y: 15, scale: 0.96 },
-          { opacity: 1, y: 0, scale: 1, stagger: 0.08 },
-          "-=0.2"
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: -15 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
         );
       }
-      if (searchPanelRef.current) {
-        tl.fromTo(searchPanelRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
-      }
-      if (detailsPanelRef.current) {
-        tl.fromTo(detailsPanelRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
-      }
-      if (mapPanelRef.current) {
-        tl.fromTo(mapPanelRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
-      }
-      if (reportBannerRef.current) {
-        tl.fromTo(reportBannerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0 }, "-=0.2");
+
+      const sections = [
+        searchPanelRef.current,
+        sliderRef.current,
+        detailsPanelRef.current,
+        mapPanelRef.current,
+        reportBannerRef.current,
+      ].filter(Boolean);
+
+      if (sections.length > 0) {
+        gsap.fromTo(
+          sections,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.55,
+            stagger: 0.1,
+            ease: "power2.out",
+            delay: 0.1,
+            clearProps: "transform",
+          }
+        );
       }
     });
 
     return () => ctx.revert();
   }, []);
 
-  // Modal Animation on Open
+  // Line switch animation
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (detailsPanelRef.current) {
+      gsap.fromTo(
+        detailsPanelRef.current,
+        { opacity: 0.45, y: 10 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.35,
+          ease: "power2.out",
+          clearProps: "transform",
+        }
+      );
+    }
+  }, [data.selectedLine]);
+
+  // Modal entrance animation
   useEffect(() => {
     if (reportModal.reportModalOpen && modalBoxRef.current) {
       gsap.fromTo(
         modalBoxRef.current,
-        { opacity: 0, scale: 0.95, y: 15 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out" }
+        { opacity: 0, scale: 0.94, y: 16 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "back.out(1.4)" }
       );
     }
   }, [reportModal.reportModalOpen]);
@@ -114,18 +145,12 @@ export default function MonorailPage() {
       {/* Ambient Radial Glow */}
       <div className={styles.ambientGlow} />
 
-      {/* Header Banner */}
-      <MonorailHeader headerRef={headerRef} />
-
-      {/* Main Content Container */}
       <div className={styles.contentContainer}>
-        {/* Top Lines Slider */}
-        <MonorailLinesSlider
-          sliderRef={sliderRef}
-          lines={data.allLines}
-          selectedLine={data.selectedLine}
-          onSelectLine={handleSelectLine}
-          stations={data.stations}
+        {/* Header Hero Banner */}
+        <MonorailHeader
+          headerRef={headerRef}
+          linesCount={data.allLines.length}
+          stationsCount={data.allStationsList.length}
         />
 
         {/* Trip Route Calculator Panel */}
@@ -139,23 +164,38 @@ export default function MonorailPage() {
           showToList={calculator.showToList}
           filteredFromStations={calculator.filteredFromStations}
           filteredToStations={calculator.filteredToStations}
+          stations={data.stations}
           onSelectFrom={(name) => {
-            calculator.setSelectedFrom(name);
-            calculator.setFromQuery(name);
+            calculator.setSelectedFrom(name || null);
+            calculator.setFromQuery(name || "");
             calculator.setShowFromList(false);
           }}
           onSelectTo={(name) => {
-            calculator.setSelectedTo(name);
-            calculator.setToQuery(name);
+            calculator.setSelectedTo(name || null);
+            calculator.setToQuery(name || "");
             calculator.setShowToList(false);
           }}
           onFromQueryChange={(q) => {
             calculator.setFromQuery(q);
-            calculator.setSelectedFrom(null);
+            const trimmed = q.trim();
+            const matched = trimmed
+              ? data.allStationsList.find(
+                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+                )
+              : null;
+            calculator.setSelectedFrom(matched ? matched.name : null);
+            calculator.setShowFromList(true);
           }}
           onToQueryChange={(q) => {
             calculator.setToQuery(q);
-            calculator.setSelectedTo(null);
+            const trimmed = q.trim();
+            const matched = trimmed
+              ? data.allStationsList.find(
+                  (s) => normalizeArabic(s.name) === normalizeArabic(trimmed)
+                )
+              : null;
+            calculator.setSelectedTo(matched ? matched.name : null);
+            calculator.setShowToList(true);
           }}
           onFromFocus={() => calculator.setShowFromList(true)}
           onFromBlur={() => calculator.setShowFromList(false)}
@@ -176,7 +216,9 @@ export default function MonorailPage() {
           onPrevStep={calculator.prevStep}
           onNextStep={calculator.nextStep}
           onShareRoute={calculator.handleShareRoute}
-          onOpenReportModal={reportModal.handleOpenReportModal}
+          onOpenReportModal={(stationName, fromRoute) =>
+            reportModal.handleOpenReportModal(stationName, fromRoute)
+          }
         />
 
         {/* Selected Line Explorer & Timeline Panel */}
@@ -195,14 +237,9 @@ export default function MonorailPage() {
           onOpenReportModal={(stationName) => reportModal.handleOpenReportModal(stationName)}
         />
 
-        {/* Project Overview Panel */}
-        <MonorailOverviewPanel panelRef={mapPanelRef} />
+        {/* Official Transit & Monorail Map Section */}
+        <MonorailMapSection mapPanelRef={mapPanelRef} />
 
-        {/* Bottom Report Problem Alert Box */}
-        <MonorailReportBanner
-          bannerRef={reportBannerRef}
-          onOpenReportModal={() => reportModal.handleOpenReportModal()}
-        />
       </div>
 
       {/* Report Problem Modal */}
@@ -222,6 +259,8 @@ export default function MonorailPage() {
         filteredStations={reportModal.filteredReportStations}
         problemType={reportModal.reportProblemType}
         setProblemType={reportModal.setReportProblemType}
+        showProblemTypeDropdown={reportModal.showProblemTypeDropdown}
+        setShowProblemTypeDropdown={reportModal.setShowProblemTypeDropdown}
         details={reportModal.reportDetails}
         setDetails={reportModal.setReportDetails}
         imageFile={reportModal.reportImageFile}
@@ -237,7 +276,13 @@ export default function MonorailPage() {
         limitReached={reportModal.limitReached}
         onSubmit={reportModal.handleSubmitReport}
         hasRouteResult={Boolean(calculator.routeResult)}
+        selectedFrom={calculator.selectedFrom}
+        selectedTo={calculator.selectedTo}
+        routeResult={calculator.routeResult}
+        color={data.selectedLineObj?.color || "#3b82f6"}
       />
+
+      <Footer />
     </div>
   );
 }

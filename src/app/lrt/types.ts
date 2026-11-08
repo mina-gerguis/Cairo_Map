@@ -28,11 +28,33 @@ export interface LrtLineTabConfig {
   description: string;
 }
 
+export interface LrtPathNode {
+  station: string;
+  line: LrtLineType;
+  lineName: string;
+  lineColor: string;
+  isTransferPoint: boolean;
+  targetLine?: string;
+}
+
+export interface LrtProblemOption {
+  id: string;
+  title: string;
+  desc: string;
+  icon: string;
+  badge: string;
+  badgeColor: string;
+}
+
 export interface LrtRouteResult {
   stations: string[];
   count: number;
   price: number;
   estimatedTime: number;
+  detailedPath?: LrtPathNode[];
+  description?: string;
+  lineName?: string;
+  lineColor?: string;
 }
 
 export type ReportScope = "general" | "route" | "station";
@@ -40,7 +62,9 @@ export type ReportScope = "general" | "route" | "station";
 // Component Props
 export interface LrtHeaderProps {
   headerRef?: React.RefObject<HTMLDivElement | null>;
-  onOpenReportModal: () => void;
+  linesCount?: number;
+  stationsCount?: number;
+  onOpenReportModal?: () => void;
 }
 
 export interface LrtSearchCardProps {
@@ -64,6 +88,7 @@ export interface LrtRouteCalculatorProps {
   showToList: boolean;
   filteredFrom: string[];
   filteredTo: string[];
+  stations?: LrtStation[];
   onSelectFrom: (name: string) => void;
   onSelectTo: (name: string) => void;
   onFromQueryChange: (val: string) => void;
@@ -73,13 +98,20 @@ export interface LrtRouteCalculatorProps {
   onToFocus: () => void;
   onToBlur: () => void;
   onSwapStations: () => void;
+  onFindNearest?: () => void;
+  locatingNearest?: boolean;
+  nearestDistance?: number | null;
   onFindRoute: () => void;
   result: LrtRouteResult | null;
   isTripActive: boolean;
   currentStepIndex: number;
+  copiedRoute?: boolean;
+  whatsappShareUrl?: string;
   onStartTrip: () => void;
   onEndTrip: () => void;
+  onPrevStep?: () => void;
   onNextStep: () => void;
+  onShareRoute?: () => void;
   onOpenReportModal: (stationName?: string | null, fromRoute?: boolean) => void;
 }
 
@@ -118,6 +150,8 @@ export interface LrtReportModalProps {
   filteredStations: LrtStation[];
   problemType: string;
   setProblemType: (type: string) => void;
+  showProblemTypeDropdown?: boolean;
+  setShowProblemTypeDropdown?: (show: boolean | ((prev: boolean) => boolean)) => void;
   details: string;
   setDetails: (details: string) => void;
   imageFile: File | null;
@@ -135,4 +169,5 @@ export interface LrtReportModalProps {
   selectedFrom?: string | null;
   selectedTo?: string | null;
   routeResult?: LrtRouteResult | null;
+  color?: string;
 }

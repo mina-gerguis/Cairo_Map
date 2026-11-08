@@ -25,12 +25,11 @@ export default function LrtSearchCard({
       className={styles.searchBentoCard}
     >
       <div className={styles.searchHeader}>
-        <h3 className={styles.searchTitle}>
+        <h3 className="font-sub fs-md fw-medium flex items-center gap-x-2">
           <i
             className="fa-solid fa-magnifying-glass"
-            style={{ color: "#06b6d4" }}
           />
-          ابحث في محطات القطار الكهربائي LRT
+          ابحث في محطات القطار الكهربائي
         </h3>
         {searchQuery.trim().length > 0 && (
           <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>

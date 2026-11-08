@@ -324,6 +324,74 @@ export const MONORAIL_STATION_COORDINATES: Record<string, { lat: number; lng: nu
   "أكتوبر الجديدة": { lat: 29.8956, lng: 30.8654 },
 };
 
+export interface MonorailProblemOption {
+  id: string;
+  title: string;
+  desc: string;
+  icon: string;
+  badge: string;
+  badgeColor: string;
+}
+
+export const MONORAIL_PROBLEM_OPTIONS: MonorailProblemOption[] = [
+  {
+    id: "route_error",
+    title: "خطأ في حساب مسار الرحلة أو زمن الوصول",
+    desc: "المسار المقترح غير دقيق أو وقت الرحلة التقديري غير مطابق",
+    icon: "fa-regular fa-clock",
+    badge: "مسار",
+    badgeColor: "#3b82f6",
+  },
+  {
+    id: "price",
+    title: "سعر التذكرة غير صحيح أو عدد المحطات غير دقيق",
+    desc: "تغيير في تسعير شرائح تذاكر المونوريل الرسمية",
+    icon: "fa-solid fa-tags",
+    badge: "أسعار",
+    badgeColor: "#10b981",
+  },
+  {
+    id: "transfer",
+    title: "خطأ في محطة التبديل أو تعليمات التحويل مع المترو/LRT",
+    desc: "محطة التحويل التبادلية غير صحيحة أو تفتقر للإرشادات",
+    icon: "fa-solid fa-repeat",
+    badge: "تبديل",
+    badgeColor: "#f59e0b",
+  },
+  {
+    id: "station_info",
+    title: "اسم محطة غير صحيح أو معالم غير دقيقة",
+    desc: "بيانات المعالم والأماكن الحيوية المحيطة بالمحطة غير مطابقة",
+    icon: "fa-regular fa-building",
+    badge: "بيانات",
+    badgeColor: "#8b5cf6",
+  },
+  {
+    id: "construction",
+    title: "محطة مغلقة أو قيد الإنشاء أو تغيرت حالة تشغيلها",
+    desc: "تحديث بشأن تشغيل محطة جديدة أو إغلاق محطة للتجهيز",
+    icon: "fa-solid fa-person-digging",
+    badge: "حالة",
+    badgeColor: "#ec4899",
+  },
+  {
+    id: "app_bug",
+    title: "مشكلة تقنية أو زر لا يستجيب في الصفحة",
+    desc: "خلل في البحث، التحديد عبر GPS أو الأزرار التفاعلية",
+    icon: "fa-solid fa-bug",
+    badge: "تقني",
+    badgeColor: "#ef4444",
+  },
+  {
+    id: "other",
+    title: "ملاحظة أو اقتراح آخر",
+    desc: "أي استفسار أو اقتراح لتحسين وتدقيق دليل مونوريل القاهرة",
+    icon: "fa-regular fa-comment-dots",
+    badge: "عام",
+    badgeColor: "#64748b",
+  },
+];
+
 export const PROBLEM_TYPE_LABELS: Record<string, string> = {
   route_error: "خطأ في حساب مسار الرحلة أو زمن الوصول",
   price: "سعر التذكرة غير صحيح أو عدد المحطات غير دقيق",
