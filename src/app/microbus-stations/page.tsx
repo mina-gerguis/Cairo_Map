@@ -342,14 +342,14 @@ export default function MicrobusStationsPage() {
           linesCount={totalLines.length}
         />
 
-        {/* Bento Quick Slider */}
+        {/* Bento Quick Slider
         <MicrobusStationsSlider
           sliderRef={sliderRef}
           stations={stations}
           totalLinesCount={totalLines.length}
           selectedStation={selectedStation}
           onSelectStation={handleSelectStation}
-        />
+        /> */}
 
         {/* Spotlight Search & Filter Panel */}
         <MicrobusSearchCard

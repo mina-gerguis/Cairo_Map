@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import PageHero from "@/components/common/PageHero";
+import { ASSETS } from "@/constants/assets";
 
 interface MicrobusHeroProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -17,7 +18,7 @@ export default function MicrobusHero({
       headerRef={headerRef}
       title="مواقف الميكروباص"
       icon={{
-        src: "/images/icons2d/microbus.webp",
+        src: ASSETS.transit.microbus,
         alt: "Cairo Microbus",
         width: 60,
         height: 42,

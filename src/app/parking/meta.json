@@ -1,0 +1,70 @@
+{
+  "parking_egypt": {
+    "version": "1.0.0",
+    "last_updated": "2026-11-09",
+    "main": {
+      "name_en": "parking",
+      "name_ar": "دليل الجراجات وساحات الانتظار",
+      "country": "egypt",
+      "tier_required": ["Silver User", "Gold User", "Mishwar"],
+      "type": [
+        "Service",
+        "Directory",
+        "Interactive Guide"
+      ],
+      "bugs": [],
+      "notes": [
+        "يتم تحميل البيانات من جدول parking_spots في Supabase مع الاعتماد على LocalStorage و DEFAULT_PARKING كـ fallback عند انقطاع الاتصال.",
+        "صلاحية الوصول تشمل مشتركي Silver و Gold و Mishwar بالإضافة لحسابات الإدارة والعروض الترويجية (Promotions).",
+        "البحث يشمل اسم الجراج، المنطقة/الحي، العنوان، وأقرب محطة مترو متاحة.",
+        "يتضمن نظامين للملاحظات: الإبلاغ عن مشكلة في جراج حالي، واقتراح جراج أو ساحة انتظار جديدة."
+      ]
+    },
+    "integrations": {
+      "database": "Supabase (Table: parking_spots)",
+      "feedback_system": "Supabase Feedback / Reports with daily rate-limiting (isFeedbackLimitReached)",
+      "storage": "Image attachments for parking reports and suggestions",
+      "maps": "Google Maps external navigation for parking spots"
+    },
+    "features": [
+      "دليل شامل للجراجات وساحات الانتظار العامة والذكية والخاصة",
+      "عرض أسعار الساعة والحد الأقصى اليومي ومواعيد العمل وسعة الجراج",
+      "توضيح الميزات المتاحة بكل جراج (مغطى، حراسة، كاميرات مراقبة، غسيل، شحن سيارات كهربائية، متعدد الطوابق)",
+      "ربط كل جراج بأقرب محطة مترو لتسهيل التنقل التبادلي (Park & Ride)",
+      "شريط تمرير المناطق والأحياء (ParkingAreasSlider) للتصفية الجغرافية السريعة",
+      "نافذة مخصصة لاقتراح وإضافة جراج جديد مع تحديد أسعاره وموقعه (ParkingSuggestModal)",
+      "نافذة للإبلاغ عن تعديل تسعيرة أو بيانات جراج قائم مع رفع صور (ParkingReportModal)"
+    ],
+    "roadmap": [
+      "إتاحة خريطة تفاعلية تعرض الجراجات القريبة من موقع السائق ومسار الوصول إليها",
+      "مؤشر حي/تقريبي لتوافر الأماكن الشاغرة (Live Availability Status)"
+    ],
+    "files": {
+      "layout.tsx": "غلاف الصفحة وبيانات الميتا وعناوين الـ SEO الخاصة بدليل الجراجات.",
+      "page.tsx": "الصفحة الرئيسية لدليل الجراجات؛ تدير الصلاحيات، البحث، التصفية حسب المنطقة، والتفاعل مع النوافذ المنبثقة.",
+      "constants.ts": "البيانات الافتراضية للجراجات (DEFAULT_PARKING)، المناطق، أنواع الجراجات، والميزات، وخيارات البلاغات والاقتراحات.",
+      "types.ts": "تعريفات TypeScript للجراجات (ParkingSpot)، أنواع الجراجات، نماذج البلاغات والاقتراحات، والإحصائيات.",
+      "utils.ts": "دوال مساعدة لتوحيد النصوص العربية، قراءة البيانات المحلية، وفلترة الجراجات وتنسيق البلاغات.",
+      "parking.module.css": "التنسيقات الخاصة بصفحة الجراجات وجميع البطاقات والمودال والشرائح التابعة لها.",
+      "meta.json": "ملف توثيق مجلد دليل الجراجات ومعلوماته التقنية والوظيفية.",
+      "components/index.ts": "ملف تصدير وتجميع لكافة مكونات دليل الجراجات.",
+      "components/ParkingHeader.tsx": "الترويسة وعنوان الصفحة وزر العودة الرئيسي.",
+      "components/ParkingHero.tsx": "واجهة الترحيب وعرض الإحصائيات (إجمالي الجراجات، المناطق المغطاة، متوسط سعر الساعة).",
+      "components/ParkingAreasSlider.tsx": "شريط تمرير أفقي للمناطق والأحياء مع عدد الجراجات في كل منطقة لتسهيل التصفية.",
+      "components/ParkingSearchCard.tsx": "شريط البحث الذكي والتصفية حسب الموقع، أقرب محطة مترو، والاسم.",
+      "components/ParkingSearchFilter.tsx": "مكون فرعي لخيارات الفلترة والتصنيف داخل شريط البحث.",
+      "components/ParkingResultsSection.tsx": "يعرض قائمة وبطاقات الجراجات المفلترة وحالات النتائج الفارغة أو التحميل.",
+      "components/ParkingGarageList.tsx": "قائمة عرض الجراجات وترتيب البطاقات التفاعلية.",
+      "components/ParkingGarageCard.tsx": "بطاقة الجراج الفردية؛ تعرض السعر، السعة، الميزات، أقرب مترو، ورابط الخريطة المباشر.",
+      "components/ParkingActions.tsx": "أزرار الإجراءات السريعة كالانتقال للخريطة وفتح نموذج الإبلاغ ومشاركة الموقع.",
+      "components/ParkingReportModal.tsx": "نافذة الإبلاغ عن خطأ أو تحديث بيانات جراج قائم مع إمكانية رفع صورة.",
+      "components/ParkingSuggestModal.tsx": "نافذة اقتراح إضافة جراج أو ساحة انتظار جديدة غير مدرجة بالدليل.",
+      "components/ParkingBottomBanner.tsx": "بانر ختامي يشجع الزوار على الإبلاغ عن التغييرات أو اقتراح جراجات جديدة.",
+      "components/ParkingStates.tsx": "مكونات حالات الصفحة (شاشة التحميل ParkingLoading وشاشة الحجب والاشتراك ParkingLockState).",
+      "hooks/index.ts": "ملف تجميع وتصدير الـ Custom Hooks الخاصة بالجراجات.",
+      "hooks/useParkingData.ts": "يدير استرجاع بيانات الجراجات من Supabase/البيانات المحلية، التحقق من الصلاحيات والاشتراك، والبحث والتوسيع.",
+      "hooks/useParkingReportModal.ts": "يدير فتح وإرسال نموذج الإبلاغ عن مشكلة بجراج قائم والتحقق من الحد اليومي.",
+      "hooks/useParkingSuggestModal.ts": "يدير فتح وإرسال نموذج اقتراح جراج جديد والتحقق من القيود ورفع المرفقات."
+    }
+  }
+}

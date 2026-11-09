@@ -203,6 +203,10 @@ html.light .ambient-glow {
    tab button
    ============================================================ */
 .tab {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
     background-color: var(--tab-active-bg);
     color: var(--tab-active-color);
     padding: var(--pd-2) var(--pd-12);

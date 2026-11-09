@@ -148,11 +148,7 @@ export default function MicrobusRouteItem({
                   e.stopPropagation();
                   onOpenReport();
                 }}
-                className="btn btn-report"
-                style={{
-                  padding: "6px 12px",
-                  borderRadius: "6px",
-                }}
+                className="btn btn-report min-h-min pt-1 pb-1 fs-sm rounded-md"
               >
                 <i className="bx bx-error" />
                 <span>إبلاغ عن خطأ</span>

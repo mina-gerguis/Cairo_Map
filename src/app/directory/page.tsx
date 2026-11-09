@@ -122,7 +122,7 @@ export default function PhoneDirectoryPage() {
       />
 
       {/* Main Content Container */}
-      <div className="container">
+      <div className="container" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
 
         {/* Search Panel Card */}
         <DirectorySearchPanel
@@ -131,74 +131,69 @@ export default function PhoneDirectoryPage() {
           setSearchQuery={data.setSearchQuery}
           isFocused={data.isFocused}
           setIsFocused={data.setIsFocused}
-          activeMainTab={data.activeMainTab}
-          setActiveMainTab={data.setActiveMainTab}
-          telecomCodesCount={data.codes.length}
           recentSearches={data.recentSearches}
           searchSuggestions={data.searchSuggestions}
           onSaveSearch={data.handleSaveSearch}
           onClearRecentSearches={data.clearRecentSearches}
         />
 
-        {/* Phones Section */}
-        {data.activeMainTab === "phones" && (
-          <PhonesSection
-            phonesPanelRef={phonesPanelRef}
-            entries={data.entries}
-            filteredEntries={data.filteredEntries}
-            slicedEntries={data.slicedEntries}
-            specialties={data.specialties}
-            specialtyIcons={data.specialtyIcons}
-            selectedSpecialty={data.selectedSpecialty}
-            setSelectedSpecialty={data.setSelectedSpecialty}
-            visibleCount={data.visibleCount}
-            setVisibleCount={data.setVisibleCount}
-            copiedId={data.copiedId}
-            onCopy={data.handleCopyCode}
-            onOpenSuggestModal={(query) =>
-              suggestModal.handleOpenModal("suggest", "phone", query || data.searchQuery)
-            }
-            onOpenReportModal={(name, phone) => handleOpenReport("phone", name, phone)}
-            searchQuery={data.searchQuery}
-            onResetSearch={() => {
-              data.setSearchQuery("");
-              data.setSelectedSpecialty("الكل");
-            }}
-          />
-        )}
+        {/* 1. Telecom Codes Section (أكواد شبكات المحمول) */}
+        <TelecomSection
+          telecomPanelRef={telecomPanelRef}
+          codes={data.codes}
+          activeCompany={data.activeCompany}
+          setActiveCompany={data.setActiveCompany}
+          groupedCodes={data.groupedCodes}
+          expandedSections={data.expandedSections}
+          onToggleSection={data.toggleSection}
+          codeInputs={data.codeInputs}
+          onInputChange={(id, value) =>
+            data.setCodeInputs((prev) => ({ ...prev, [id]: value }))
+          }
+          copiedId={data.copiedId}
+          onCopy={data.handleCopyCode}
+          searchQuery={data.searchQuery}
+          sectionIcons={data.sectionIcons}
+          hasMatchingPhones={data.filteredEntries.length > 0}
+          onOpenSuggestModal={(query) =>
+            suggestModal.handleOpenModal("suggest", "code", query || data.searchQuery)
+          }
+          onResetSearch={() => {
+            data.setSearchQuery("");
+          }}
+        />
 
-        {/* Telecom Codes Section */}
-        {data.activeMainTab === "telecom" && (
-          <TelecomSection
-            telecomPanelRef={telecomPanelRef}
-            codes={data.codes}
-            activeCompany={data.activeCompany}
-            setActiveCompany={data.setActiveCompany}
-            groupedCodes={data.groupedCodes}
-            expandedSections={data.expandedSections}
-            onToggleSection={data.toggleSection}
-            codeInputs={data.codeInputs}
-            onInputChange={(id, value) =>
-              data.setCodeInputs((prev) => ({ ...prev, [id]: value }))
-            }
-            copiedId={data.copiedId}
-            onCopy={data.handleCopyCode}
-            searchQuery={data.searchQuery}
-            sectionIcons={data.sectionIcons}
-            onOpenSuggestModal={(query) =>
-              suggestModal.handleOpenModal("suggest", "code", query || data.searchQuery)
-            }
-            onResetSearch={() => {
-              data.setSearchQuery("");
-            }}
-          />
-        )}
+        {/* 2. Phones Section (أرقام وخدمات وخطوط ساخنة) */}
+        <PhonesSection
+          phonesPanelRef={phonesPanelRef}
+          entries={data.entries}
+          filteredEntries={data.filteredEntries}
+          slicedEntries={data.slicedEntries}
+          specialties={data.specialties}
+          specialtyIcons={data.specialtyIcons}
+          selectedSpecialty={data.selectedSpecialty}
+          setSelectedSpecialty={data.setSelectedSpecialty}
+          visibleCount={data.visibleCount}
+          setVisibleCount={data.setVisibleCount}
+          copiedId={data.copiedId}
+          onCopy={data.handleCopyCode}
+          onOpenSuggestModal={(query) =>
+            suggestModal.handleOpenModal("suggest", "phone", query || data.searchQuery)
+          }
+          onOpenReportModal={(name, phone) => handleOpenReport("phone", name, phone)}
+          searchQuery={data.searchQuery}
+          hasMatchingCodes={Object.keys(data.groupedCodes).length > 0}
+          onResetSearch={() => {
+            data.setSearchQuery("");
+            data.setSelectedSpecialty("الكل");
+          }}
+        />
 
-        {/* Bottom Report Problem Alert Banner */}
+        {/* Bottom Report Problem Alert Banner
         <ReportAlertBanner
           reportBannerRef={reportBannerRef}
           onOpenModal={() => handleOpenReport("general")}
-        />
+        /> */}
       </div>
 
       {/* Suggest New Number / Code Modal */}

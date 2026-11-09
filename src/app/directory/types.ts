@@ -144,9 +144,9 @@ export interface DirectorySearchPanelProps {
   setSearchQuery: (query: string) => void;
   isFocused: boolean;
   setIsFocused: (focused: boolean) => void;
-  activeMainTab: MainTab;
-  setActiveMainTab: (tab: MainTab) => void;
-  telecomCodesCount: number;
+  activeMainTab?: MainTab;
+  setActiveMainTab?: (tab: MainTab) => void;
+  telecomCodesCount?: number;
   recentSearches: string[];
   searchSuggestions: PhoneEntry[];
   onSaveSearch: (queryText: string) => void;
@@ -176,6 +176,7 @@ export interface PhonesSectionProps {
   onOpenSuggestModal: (query?: string) => void;
   onOpenReportModal: (name: string, phone: string) => void;
   searchQuery?: string;
+  hasMatchingCodes?: boolean;
   onResetSearch?: () => void;
 }
 
@@ -206,6 +207,7 @@ export interface TelecomSectionProps {
   onCopy: (code: string, id: string) => void;
   searchQuery: string;
   sectionIcons: Record<string, string>;
+  hasMatchingPhones?: boolean;
   onOpenSuggestModal: (query?: string) => void;
   onResetSearch?: () => void;
 }

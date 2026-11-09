@@ -74,10 +74,10 @@ export default function MicrobusStationCard({
             target="_blank"
             rel="noopener noreferrer"
             onClick={e => e.stopPropagation()}
-            className={styles.mapButton}
+            className="tab py-2"
           >
             <i className="bx bx-navigation" />
-            <span>خريطة Google</span>
+            <span>مكان الموقف</span>
           </a>
         )}
       </div>

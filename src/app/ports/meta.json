@@ -1,0 +1,49 @@
+{
+  "ports_egypt": {
+    "version": "1.0.0",
+    "last_updated": "2026-11-09",
+    "main": {
+      "name_en": "ports",
+      "name_ar": "المواني",
+      "country": "egypt",
+      "tier_required": ["Gold User", "Mishwar"],
+      "type": [
+        "Service",
+        "Directory",
+        "Interactive Guide"
+      ],
+      "bugs": [],
+      "notes": []
+    },
+    "integrations": {
+      "database": "Supabase (Table: ports)",
+      "feedback_system": "Supabase Feedback / Reports with daily rate-limiting (isFeedbackLimitReached)",
+      "storage": "Image attachments for reports",
+      "maps": "Google Maps external routing"
+    },
+    "features": [],
+    "roadmap": [
+      "إضافة عرض الخريطة التفاعلية الجغرافية لمواقع الموانئ المصرية",
+      "إتاحة خيار تصدير وطباعة تقارير الموانئ للمشتركين"
+    ],
+    "files": {
+      "page.tsx": "الصفحة الرئيسية لدليل الموانئ؛ تدير الصلاحيات، التحميل، البحث، التصفية، النتائج، والإبلاغ عن الأخطاء.",
+      "constants.ts": "يحتوي على بيانات الموانئ الافتراضية، خيارات التصفية، عمليات البحث الشائعة، وخيارات وأنواع بلاغات الأخطاء.",
+      "types.ts": "يعرّف أنواع TypeScript الخاصة بالموانئ، التصفية، الإحصائيات، وبلاغات الأخطاء.",
+      "utils.ts": "دوال مساعدة لتوحيد النص العربي، قراءة بيانات الموانئ المحلية، وتنسيق محتوى البلاغات.",
+      "ports.module.css": "تنسيقات CSS الخاصة بصفحة دليل الموانئ وجميع مكوناتها.",
+      "NOTES.json": "ملف توثيق مجلد الموانئ ومعلوماته الوظيفية.",
+      "components/PortCard.tsx": "يعرض بطاقة ميناء واحدة مع بياناته الأساسية والتفاصيل القابلة للفتح ورابط الخريطة.",
+      "components/PortsHero.tsx": "يعرض العنوان والوصف والإحصائيات الرئيسية في مقدمة صفحة الموانئ.",
+      "components/PortsSearchCard.tsx": "يوفر البحث الفوري، الاقتراحات التلقائية، ومرشحات تصنيف الموانئ.",
+      "components/PortsResultsSection.tsx": "يعرض نتائج الموانئ أو حالة التحميل ورسالة عدم وجود نتائج.",
+      "components/PortsSlider.tsx": "يعرض بطاقات التنقل السريع بين تصنيفات الموانئ مع أعداد كل تصنيف.",
+      "components/PortsLoading.tsx": "يعرض شاشة التحميل أثناء التحقق من الوصول إلى دليل الموانئ.",
+      "components/PortsPaywall.tsx": "يعرض شاشة الاشتراك للمستخدمين غير المصرح لهم بالوصول إلى الدليل.",
+      "components/PortsReportBanner.tsx": "يعرض تنبيهًا وزرًا لفتح نموذج الإبلاغ عن خطأ أو تحديث بيانات ميناء.",
+      "components/PortsReportModal.tsx": "يعرض نموذج اختيار الميناء ونوع المشكلة والتفاصيل والصورة لإرسال البلاغ.",
+      "hooks/usePortsData.ts": "يدير تحميل بيانات الموانئ من Supabase أو البيانات المحلية، والبحث والتصفية والتوسيع.",
+      "hooks/usePortsReportModal.ts": "يدير حالة نموذج البلاغ، رفع الصور، التحقق من الحدود، وإرسال البلاغ إلى النظام."
+    }
+  }
+}

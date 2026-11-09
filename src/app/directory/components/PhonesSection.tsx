@@ -22,8 +22,17 @@ export default function PhonesSection({
   onOpenSuggestModal,
   onOpenReportModal,
   searchQuery,
+  hasMatchingCodes = false,
   onResetSearch,
 }: PhonesSectionProps) {
+  const isSearching = !!searchQuery && searchQuery.trim() !== "";
+  const hasNoPhones = slicedEntries.length === 0;
+
+  // إذا كان المستخدم يبحث وهناك بالفعل أكواد محمول مطابقة معروضة بالأعلى ولكن لا توجد أرقام هواتف،
+  // نخفي قسم أرقام الهواتف ورسالة عدم العثور حتى لا تظهر رسالة 404 تحت نتائج الأكواد الناجحة
+  if (isSearching && hasNoPhones && hasMatchingCodes) {
+    return null;
+  }
   return (
     <div ref={phonesPanelRef} className="details-panel">
       {/* Header with Title and Specialty Filter */}

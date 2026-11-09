@@ -1,0 +1,71 @@
+{
+  "directions_egypt": {
+    "version": "1.0.0",
+    "last_updated": "2026-11-09",
+    "main": {
+      "name_en": "directions",
+      "name_ar": "ازاي اروح - مخطط مسارات المواصلات والرحلات",
+      "country": "egypt",
+      "tier_required": ["Gold User", "Mishwar"],
+      "type": [
+        "Service",
+        "Interactive Planner",
+        "Transit Routing",
+        "Smart Navigation"
+      ],
+      "bugs": [],
+      "notes": [
+        "يتم تحميل مسارات النقل من جدول transit_routes في Supabase مع الاعتماد على قاعدة البيانات الشاملة comprehensiveRoutesDataset كـ fallback.",
+        "محرك بحث ذكي يعتمد على خريطة المرادفات والأحياء (LOCATION_ALIASES_MAP) وتطبيع النصوص وحساب النقاط المكانية (calculateLocationScore).",
+        "تكامل تحديد موقع المستخدم الحالي بالـ GPS عبر resolvePreciseLocation لتعيين نقطة الانطلاق تلقائياً لأقرب محطة أو منطقة.",
+        "تسجيل المسارات الأكثر طلباً في localStorage (transit_search_counts) وتحديث سلايدر الرحلات الشائعة ديناميكياً.",
+        "دعم صلاحيات Gold و Mishwar بالإضافة إلى المشرفين والعروض الترويجية المفتوحة (isPageOpenByPromotion)."
+      ]
+    },
+    "integrations": {
+      "database": "Supabase (Tables: transit_routes, feedback)",
+      "geolocation": "HTML5 Geolocation API with Reverse Geocoding & Landmark resolution (gpsLocator)",
+      "weather_widget": "WeatherComfortWidget (Dynamic transit weather comfort index)",
+      "feedback_system": "Supabase Feedback with daily rate-limiting (isFeedbackLimitReached)",
+      "storage": "Image attachments for route reports"
+    },
+    "features": [
+      "تخطيط الرحلات بين أي نقطتين في القاهرة الكبرى والمحافظات (ازاي اروح)",
+      "تقديم بدائل متعددة لكل رحلة: الأسرع، الأوفر، الأسهل (أقل تبديل)، أو بالمترو/المونوريل/الأوتوبيس/الميكروباص",
+      "عرض الجدول الزمني التفصيلي لمراحل الرحلة (RouteLegTimeline) مع محطات الركوب والنزول والأجرة والوقت التقريبي",
+      "تحديد الموقع التلقائي بالـ GPS لاقتراح أقرب نقطة انطلاق للمستخدم",
+      "شريط المسارات الأكثر بحثاً وشعبية (PopularRoutesSlider) للاختيار السريع",
+      "أداة قياس راحة الطقس أثناء الانتقال (WeatherComfortWidget)",
+      "بطاقة إرشادية عند عدم توفر مسار مباشر مع إمكانية الإبلاغ واقتراح المسار",
+      "قسم الأسئلة الشائعة حول المواصلات (TransitFAQ)"
+    ],
+    "roadmap": [
+      "رسم مسار الرحلة بالكامل على خريطة جغرافية تفاعلية بخطوط ملونة لكل وسيلة نقل",
+      "إتاحة تنبيهات ذكية للمستخدم عند اقتراب محطة النزول أو التحويل"
+    ],
+    "files": {
+      "layout.tsx": "غلاف الصفحة وبيانات الميتا وعناوين الـ SEO الخاصة بمخطط مسارات المواصلات.",
+      "page.tsx": "الصفحة الرئيسية لمخطط الرحلات؛ تدير التحقق من الاشتراك، البحث بالـ GPS، عرض المسارات المقترحة، والربط بالمكونات التفاعلية.",
+      "page.module.css": "التنسيقات الخاصة بصفحة ازاي اروح ومحرك البحث وشبكة الخيارات.",
+      "constants.ts": "خريطة الأسماء البديلة والمرادفات المكانية (LOCATION_ALIASES_MAP) وأنواع وسائل المواصلات وخيارات البلاغات.",
+      "types.ts": "تعريفات TypeScript لبيانات المسار (RouteData, RouteOption, RouteLeg)، وسجلات قاعدة البيانات، وبلاغات المسارات.",
+      "utils.ts": "دوال مساعدة لمعالجة وتطبيع النصوص، مطابقة المرادفات وحساب الدرجات، وحساب المسارات الشائعة وتنسيق البلاغات.",
+      "utils/gpsLocator.ts": "وحدة تحديد موقع المستخدم بالـ GPS ومطابقته بأقرب معلم أو منطقة في القاهرة.",
+      "meta.json": "ملف توثيق مجلد مخطط المواصلات ومعلوماته التقنية والوظيفية.",
+      "components/DirectionsHero.tsx": "الترويسة وعنوان الصفحة الترحيبي مع إحصائيات شبكة المسارات.",
+      "components/PopularRoutesSlider.tsx": "شريط تمرير أفقي للمسارات الأكثر بحثاً في التطبيق لملء البحث بنقرة واحدة.",
+      "components/RouteSearchCard.tsx": "بطاقة إدخال نقطتي الانطلاق والوصول مع زر تحديد موقعي بالـ GPS وزر عكس الاتجاه والاقتراحات التلقائية.",
+      "components/RouteResultsSection.tsx": "عرض بدائل وخيارات الرحلة الناتجة (RouteOptionCard) مرتبة حسب الأفضلية أو حالة عدم العثور على مسار.",
+      "components/RouteOptionCard.tsx": "بطاقة خيار الرحلة؛ توضح التكلفة، الوقت الإجمالي، عدد التبديلات، والخط الزمني للركوب.",
+      "components/RouteOptionCard.module.css": "تنسيقات بطاقة خيار الرحلة وألوان وسائط النقل (مترو، أتوبيس، ميكروباص...).",
+      "components/RouteLegTimeline.tsx": "عرض تفصيلي مرئي لمحطات الركوب والنزول والتبديل لكل مرحلة في الرحلة.",
+      "components/RouteLegTimeline.module.css": "تنسيقات الخط الزمني والربط بين المحطات ووسائط النقل.",
+      "components/RouteNotFoundCard.tsx": "بطاقة إرشادية تعرض نصائح بديلة وزر لفتح نموذج اقتراح مسار عند عدم وجود نتائج.",
+      "components/BottomReportBanner.tsx": "بانر في أسفل الصفحة لدعوة المستخدمين للإبلاغ عن أي تعديل في خطوط السير أو الأجرة.",
+      "components/DirectionsReportModal.tsx": "نافذة الإبلاغ عن مشكلة في مسار أو خطأ في الأجرة أو اقتراح خط جديد مع رفع صورة.",
+      "components/DirectionsLoading.tsx": "شاشة التحميل المؤقتة أثناء التحقق من اشتراك المستخدم وجلب بيانات المسارات.",
+      "components/DirectionsPaywall.tsx": "شاشة حجب المحتوى ودعوة الترقية والاشتراك لباقات Gold و Mishwar.",
+      "hooks/useDirectionsData.ts": "يدير جلب المسارات من Supabase أو الداتا الشاملة، خوارزمية البحث والترجيح، تتبع المسارات الشائعة، والاقتراحات."
+    }
+  }
+}

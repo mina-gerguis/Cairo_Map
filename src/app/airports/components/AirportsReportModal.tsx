@@ -1,14 +1,14 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, RefObject } from "react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import { Airport, AirportReportOption, AirportReportProblemType, AirportReportScope } from "../types";
 import { AIRPORT_REPORT_PROBLEM_OPTIONS } from "../constants";
 import { normalizeArabic } from "../utils";
-import styles from "../airports.module.css";
 
 interface AirportsReportModalProps {
   isOpen: boolean;
   onClose: () => void;
+  modalBoxRef?: RefObject<HTMLDivElement | null>;
   user: User | null;
   airports: Airport[];
   targetScope: AirportReportScope;
@@ -33,11 +33,13 @@ interface AirportsReportModalProps {
   limitChecking: boolean;
   limitReached: boolean;
   onSubmit: (e: React.FormEvent) => void;
+  color?: string;
 }
 
 export default function AirportsReportModal({
   isOpen,
   onClose,
+  modalBoxRef,
   user,
   airports,
   targetScope,
@@ -61,17 +63,18 @@ export default function AirportsReportModal({
   success,
   limitChecking,
   limitReached,
-  onSubmit
+  onSubmit,
+  color = "#3b82f6",
 }: AirportsReportModalProps) {
   const [showAirportList, setShowAirportList] = useState(false);
-  const [showProblemDropdown, setShowProblemDropdown] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
+  const [showProblemTypeDropdown, setShowProblemTypeDropdown] = useState(false);
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
 
   const filteredAirports = useMemo(() => {
     const q = normalizeArabic(airportQuery.trim());
     if (!q) return airports;
     return airports.filter(
-      a =>
+      (a) =>
         normalizeArabic(a.name_ar).includes(q) ||
         normalizeArabic(a.city_ar).includes(q) ||
         (a.iata_code && a.iata_code.toLowerCase().includes(q.toLowerCase())) ||
@@ -81,107 +84,259 @@ export default function AirportsReportModal({
 
   if (!isOpen) return null;
 
-  const currentProblemOption =
-    AIRPORT_REPORT_PROBLEM_OPTIONS.find(o => o.id === problemType) ||
-    AIRPORT_REPORT_PROBLEM_OPTIONS[0];
-
   return (
     <div
-      className={styles.modalOverlay}
-      onClick={e => {
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px",
+        direction: "rtl",
+      }}
+      onClick={(e) => {
         if (e.target === e.currentTarget && !loading && !uploading) onClose();
       }}
       role="dialog"
       aria-modal="true"
     >
-      <div className={styles.modalBox}>
+      <div
+        ref={modalBoxRef}
+        style={{
+          backgroundColor: "var(--color-bg)",
+          borderRadius: "var(--radius-card, 16px)",
+          border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.1))",
+          width: "100%",
+          maxWidth: "520px",
+          maxHeight: "90vh",
+          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          fontFamily: "var(--font-cairo, sans-serif)",
+        }}
+      >
         {/* Modal Header */}
-        <div className={styles.modalHeader}>
-          <div className={styles.modalTitleWrap}>
-            <div className={styles.modalHeaderIcon}>
-              <i className="bx bx-error-circle" />
-            </div>
-            <h3 className={styles.modalTitle}>الإبلاغ عن خطأ في دليل المطارات</h3>
-          </div>
+        <div
+          style={{
+            padding: "16px 20px",
+            borderBottom: "1px solid var(--border-glass, rgba(255, 255, 255, 0.08))",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.02)",
+          }}
+        >
+          <h5
+            style={{
+              margin: 0,
+              fontSize: "1.05rem",
+              fontWeight: "800",
+              color: "var(--color-fg)",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <i className="fa-solid fa-triangle-exclamation" style={{ color: "#ef4444", fontSize: "1.1rem" }} />
+            <span>الإبلاغ عن خطأ في بيانات المطارات</span>
+          </h5>
           <button
             type="button"
             onClick={onClose}
-            className={styles.modalCloseBtn}
             disabled={loading || uploading}
-            aria-label="إغلاق النافذة"
+            className="btn-close"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--text-secondary)",
+              fontSize: "1.3rem",
+              cursor: "pointer",
+            }}
           >
             <i className="bx bx-x" />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className={styles.modalBody}>
+        {/* Modal Content */}
+        <div style={{ padding: "20px", maxHeight: "80vh", overflowY: "auto" }}>
           {success ? (
-            <div className={styles.stateCenter}>
-              <div className={styles.stateSuccessCircle}>
+            <div style={{ textAlign: "center", padding: "30px 10px" }}>
+              <div
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(52, 199, 89, 0.15)",
+                  color: "#34c759",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "2rem",
+                  margin: "0 auto 16px",
+                }}
+              >
                 <i className="bx bx-check" />
               </div>
-              <h4 className={styles.stateTitleText}>تم استلام بلاغك بنجاح!</h4>
-              <p className={styles.stateDescText}>
-                شكراً لمساهمتك القيمة في تحسين وتدقيق بيانات المطارات المصرية. سيتم مراجعة تقريرك وتحديث البيانات فور التحقق.
+              <h4
+                style={{
+                  margin: "0 0 8px",
+                  fontSize: "1.15rem",
+                  fontWeight: "800",
+                  color: "var(--color-fg)",
+                }}
+              >
+                تم استلام بلاغك بنجاح!
+              </h4>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "0.9rem",
+                  color: "var(--text-secondary)",
+                  lineHeight: "1.6",
+                }}
+              >
+                شكراً لمساهمتك في تدقيق وتحديث دليل المطارات المصرية. سيتم مراجعة تقريرك وتحديث البيانات في أقرب وقت.
               </p>
             </div>
           ) : limitChecking ? (
-            <div className={styles.stateCenter}>
-              <div className={styles.spinner} />
-              <span className={styles.stateDescText}>جاري التحقق من سجل البلاغات...</span>
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <div
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  border: "3px solid rgba(255,255,255,0.1)",
+                  borderTopColor: "var(--color-secondary, #3b82f6)",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite",
+                  margin: "0 auto 12px",
+                }}
+              />
+              <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>جاري التحقق...</span>
             </div>
           ) : limitReached ? (
-            <div className={styles.stateCenter}>
-              <div className={styles.stateIconWarningWrap}>
-                <i className="bx bx-time-five" />
+            <div style={{ textAlign: "center", padding: "20px 10px" }}>
+              <div
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "0 auto 14px",
+                }}
+              >
+                <img
+                  src="/images/threeD/error.webp"
+                  alt="error"
+                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                  loading="lazy"
+                />
               </div>
-              <h4 className={styles.stateTitleText}>
+              <h5
+                style={{
+                  margin: "0 0 8px",
+                  fontSize: "1.1rem",
+                  fontWeight: "800",
+                  color: "var(--color-fg)",
+                }}
+              >
                 تم الوصول للحد الأقصى من البلاغات المعلقة
-              </h4>
-              <p className={styles.stateDescText}>
-                لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قِبل الإدارة قبل تقديم بلاغات جديدة.
+              </h5>
+              <p
+                style={{
+                  margin: "0 0 16px",
+                  fontSize: "0.88rem",
+                  color: "var(--text-secondary)",
+                  lineHeight: "1.6",
+                }}
+              >
+                لديك 5 بلاغات أو اقتراحات معلقة قيد المراجعة حالياً. يرجى الانتظار حتى يتم فحصها من قبل الإدارة قبل تقديم بلاغات جديدة.
               </p>
               <button
                 type="button"
+                className="btn btn-primary"
                 onClick={onClose}
-                className={styles.btnPrimaryFull}
+                style={{ width: "100%" }}
               >
                 حسناً، فهمت
               </button>
             </div>
           ) : !user ? (
-            <div className={styles.stateCenter}>
-              <div className={styles.stateIconUserWrap}>
+            <div style={{ textAlign: "center", padding: "20px 10px" }}>
+              <div
+                style={{
+                  width: "56px",
+                  height: "56px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(59, 130, 246, 0.15)",
+                  color: "var(--color-secondary, #3b82f6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "1.8rem",
+                  margin: "0 auto 14px",
+                }}
+              >
                 <i className="bx bx-user" />
               </div>
-              <h4 className={styles.stateTitleText}>تسجيل الدخول مطلوب</h4>
-              <p className={styles.stateDescText}>
-                يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ عن أي خطأ ومتابعة حالته وكسب نقاط المساهمة.
+              <h5
+                style={{
+                  margin: "0 0 8px",
+                  fontSize: "1.1rem",
+                  fontWeight: "800",
+                  color: "var(--color-fg)",
+                }}
+              >
+                تسجيل الدخول مطلوب
+              </h5>
+              <p
+                style={{
+                  margin: "0 0 20px",
+                  fontSize: "0.88rem",
+                  color: "var(--text-secondary)",
+                  lineHeight: "1.6",
+                }}
+              >
+                يرجى تسجيل الدخول إلى حسابك لتتمكن من تقديم بلاغ ومتابعة حالته وكسب نقاط المساهمة.
               </p>
-              <div className={styles.modalActionsRow}>
-                <Link
-                  href="/login"
-                  className={styles.btnPrimaryFull}
-                  style={{ textDecoration: "none", textAlign: "center" }}
-                >
+              <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+                <Link href="/login" className="btn btn-primary" style={{ width: "100%", textAlign: "center" }}>
                   تسجيل الدخول
                 </Link>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className={styles.btnCancelModal}
-                >
-                  إلغاء
-                </button>
               </div>
             </div>
           ) : (
-            <form onSubmit={onSubmit} className={styles.modalForm}>
-              {/* Target Scope Tabs */}
+            <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {/* Scope Segmented Control */}
               <div>
-                <label className={styles.modalFieldLabel}>نطاق البلاغ:</label>
-                <div className={styles.scopeTabsGrid}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.85rem",
+                    fontWeight: "700",
+                    color: "var(--color-fg)",
+                    marginBottom: "8px",
+                  }}
+                >
+                  نطاق المشكلة:
+                </label>
+                <div
+                  className="tabs"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: "6px",
+                  }}
+                >
                   <button
                     type="button"
                     onClick={() => {
@@ -190,12 +345,20 @@ export default function AirportsReportModal({
                       setAirportQuery("");
                       setShowAirportList(false);
                     }}
-                    className={`${styles.scopeTabBtn} ${
-                      targetScope === "general" ? styles.scopeTabBtnActive : ""
-                    }`}
+                    style={{
+                      padding: "8px 4px",
+                      borderRadius: "8px",
+                      border: "none",
+                      background: targetScope === "general" ? "var(--color-fg)" : "rgba(255, 255, 255, 0.05)",
+                      color: targetScope === "general" ? "var(--color-bg)" : "var(--color-fg)",
+                      fontWeight: "700",
+                      fontSize: "0.82rem",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-cairo, sans-serif)",
+                      transition: "all 0.2s ease",
+                    }}
                   >
-                    <i className="bx bx-globe" />
-                    <span>مشكلة عامة بالدليل</span>
+                    ملاحظة عامة
                   </button>
 
                   <button
@@ -204,38 +367,52 @@ export default function AirportsReportModal({
                       setTargetScope("airport");
                       setShowAirportList(true);
                     }}
-                    className={`${styles.scopeTabBtn} ${
-                      targetScope === "airport" ? styles.scopeTabBtnActive : ""
-                    }`}
+                    style={{
+                      padding: "8px 4px",
+                      borderRadius: "8px",
+                      border: "none",
+                      background: targetScope === "airport" ? "var(--color-fg)" : "rgba(255, 255, 255, 0.05)",
+                      color: targetScope === "airport" ? "var(--color-bg)" : "var(--color-fg)",
+                      fontWeight: "700",
+                      fontSize: "0.82rem",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-cairo, sans-serif)",
+                      transition: "all 0.2s ease",
+                    }}
                   >
-                    <i className="bx bx-buildings" />
-                    <span>مطار محدد</span>
+                    مطار محدد
                   </button>
                 </div>
               </div>
 
-              {/* Airport Autocomplete Selector */}
+              {/* If Scope is Airport: Searchable airport autocomplete selector */}
               {targetScope === "airport" && (
                 <div style={{ position: "relative" }}>
                   <label
-                    className={styles.modalFieldLabel}
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      fontSize: "0.85rem",
+                      fontWeight: "700",
+                      color: "var(--color-fg)",
+                      marginBottom: "6px",
+                    }}
                   >
-                    <span>المطار المعني: <span style={{ color: "#ef4444" }}>*</span></span>
+                    <span>اختر المطار المعني:</span>
                     {selectedAirport && (
-                      <span className={styles.selectedConfirmedBadge}>
-                        ✔ تم اختيار: {selectedAirport.name_ar}
+                      <span style={{ fontSize: "0.74rem", color, fontWeight: "700" }}>
+                        تم تحديد: {selectedAirport.name_ar} ✔
                       </span>
                     )}
                   </label>
-
-                  <div className={styles.modalInputWrapper}>
+                  <div style={{ position: "relative" }}>
                     <input
                       type="text"
-                      className={styles.modalInputField}
-                      placeholder="ابحث باسم المطار، المدينة، أو الكود..."
+                      className="input-fields"
+                      placeholder="ابحث باسم المطار، المدينة أو الكود CAI..."
                       value={airportQuery}
-                      onChange={e => {
+                      onChange={(e) => {
                         const val = e.target.value;
                         setAirportQuery(val);
                         setShowAirportList(true);
@@ -245,9 +422,34 @@ export default function AirportsReportModal({
                       }}
                       onFocus={() => setShowAirportList(true)}
                       onBlur={() => setTimeout(() => setShowAirportList(false), 250)}
+                      style={{
+                        width: "100%",
+                        padding: "10px 36px 10px 36px",
+                        borderRadius: "10px",
+                        background: "var(--bg-secondary)",
+                        color: "var(--color-fg)",
+                        border: selectedAirport
+                          ? `1px solid var(--color-fg)`
+                          : "1px solid var(--border-glass, rgba(255, 255, 255, 0.1))",
+                        fontSize: "0.9rem",
+                        direction: "rtl",
+                      }}
                     />
-                    <div className={styles.modalInputIconRight}>
-                      <i className="bx bx-search" />
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: "12px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        color: "var(--text-secondary)",
+                        pointerEvents: "none",
+                        fontSize: "0.85rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <i className="bx bx-search" style={{ fontSize: "1rem" }} />
                     </div>
 
                     {airportQuery && (
@@ -256,270 +458,583 @@ export default function AirportsReportModal({
                         onClick={() => {
                           setSelectedAirport(null);
                           setAirportQuery("");
-                          setCustomAirportName("");
                           setShowAirportList(true);
                         }}
-                        className={styles.modalInputClearBtn}
+                        title="مسح"
+                        style={{
+                          position: "absolute",
+                          left: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "rgba(255, 255, 255, 0.08)",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "22px",
+                          height: "22px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "0.75rem",
+                          color: "var(--text-secondary)",
+                          cursor: "pointer",
+                        }}
                       >
                         ✕
                       </button>
                     )}
                   </div>
 
+                  {/* Airport suggestions list popup */}
                   {showAirportList && (
-                    <div className={styles.modalPopupList}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        background: "var(--color-bg)",
+                        border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.12))",
+                        borderRadius: "var(--radius-card, 12px)",
+                        overflow: "hidden",
+                        zIndex: 1100,
+                        maxHeight: "220px",
+                        overflowY: "auto",
+                        marginTop: "6px",
+                        padding: "4px",
+                        boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
+                      }}
+                    >
                       {filteredAirports.length === 0 ? (
                         <div
                           style={{
-                            padding: "12px",
+                            padding: "14px",
                             textAlign: "center",
-                            fontSize: "0.85rem",
-                            color: "var(--text-secondary)"
+                            fontSize: "0.82rem",
+                            color: "var(--text-secondary)",
                           }}
                         >
-                          <div>لم يتم العثور على مطار مطابق لـ "{airportQuery}"</div>
-                          <button
-                            type="button"
-                            onMouseDown={() => {
-                              setSelectedAirport(null);
-                              setCustomAirportName(airportQuery);
-                              setShowAirportList(false);
-                            }}
-                            className={styles.addCustomAirportBtn}
-                          >
-                            ➕ تحديد "{airportQuery}" كمطار جديد غير مسجل
-                          </button>
+                          <i
+                            className="bx bx-search"
+                            style={{ fontSize: "1.2rem", display: "block", marginBottom: "4px" }}
+                          />
+                          لا يوجد مطار مطابق لبحثك "{airportQuery}"
                         </div>
                       ) : (
-                        <>
-                          {filteredAirports.map(airport => {
-                            const isSelected = selectedAirport?.id === airport.id;
-                            return (
-                              <div
-                                key={airport.id}
-                                onMouseDown={() => {
-                                  setSelectedAirport(airport);
-                                  setAirportQuery(airport.name_ar);
-                                  setCustomAirportName("");
-                                  setShowAirportList(false);
-                                }}
-                                className={`${styles.modalPopupItem} ${
-                                  isSelected ? styles.modalPopupItemSelected : ""
-                                }`}
-                              >
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                  <i
-                                    className="bx bx-map-pin"
+                        filteredAirports.map((ap) => {
+                          const isSelected = selectedAirport?.id === ap.id;
+                          return (
+                            <div
+                              key={ap.id}
+                              onMouseDown={() => {
+                                setSelectedAirport(ap);
+                                setAirportQuery(ap.name_ar);
+                                setShowAirportList(false);
+                              }}
+                              style={{
+                                padding: "9px 12px",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "8px",
+                                background: isSelected ? "rgba(59, 130, 246, 0.15)" : "transparent",
+                                border: isSelected
+                                  ? "1px solid rgba(59, 130, 246, 0.3)"
+                                  : "1px solid transparent",
+                                transition: "all 0.15s ease",
+                                marginBottom: "2px",
+                              }}
+                              onMouseEnter={(e) => {
+                                if (!isSelected) e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!isSelected) e.currentTarget.style.background = "transparent";
+                              }}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <i
+                                  className="bx bxs-plane-alt"
+                                  style={{
+                                    color: isSelected ? "var(--color-secondary, #3b82f6)" : "var(--text-secondary)",
+                                    fontSize: "1rem",
+                                  }}
+                                />
+                                <div>
+                                  <div
                                     style={{
+                                      fontSize: "0.88rem",
+                                      fontWeight: isSelected ? "700" : "600",
                                       color: isSelected
-                                        ? "var(--color-secondary)"
-                                        : "var(--text-muted)"
+                                        ? "var(--color-secondary, #3b82f6)"
+                                        : "var(--color-fg)",
                                     }}
-                                  />
-                                  <div>
-                                    <span style={{ fontWeight: 700, fontSize: "0.88rem" }}>
-                                      {airport.name_ar}
-                                    </span>
-                                    {airport.iata_code && (
-                                      <span className={styles.popupCodeBadge}>
-                                        {airport.iata_code}
-                                      </span>
-                                    )}
+                                  >
+                                    {ap.name_ar}
+                                  </div>
+                                  <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                                    {ap.city_ar} {ap.iata_code ? `• (${ap.iata_code})` : ""}
                                   </div>
                                 </div>
-                                <span style={{ fontSize: "0.74rem", color: "var(--text-muted)" }}>
-                                  {airport.city_ar}، {airport.governorate_ar}
-                                </span>
                               </div>
-                            );
-                          })}
-                        </>
+
+                              {isSelected && (
+                                <span
+                                  style={{
+                                    fontSize: "0.78rem",
+                                    color: "var(--color-success, #10b981)",
+                                    fontWeight: "700",
+                                  }}
+                                >
+                                  ✔
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })
                       )}
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Problem Type Selector */}
+              {/* Custom Problem Type Dropdown Selector */}
               <div style={{ position: "relative" }}>
-                <label className={styles.modalFieldLabel}>نوع المشكلة أو الخطأ:</label>
-
-                <button
-                  type="button"
-                  onClick={() => setShowProblemDropdown(p => !p)}
-                  className={styles.modalDropdownTrigger}
+                <label
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    fontSize: "0.85rem",
+                    fontWeight: "700",
+                    color: "var(--color-fg)",
+                    marginBottom: "6px",
+                  }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <i
-                      className={`${currentProblemOption.icon || "bx bx-detail"} ${styles.problemIconAccent}`}
-                    />
-                    <div style={{ textAlign: "right" }}>
-                      <div className={styles.dropdownOptionTitle}>
-                        {currentProblemOption.title}
-                      </div>
-                      <div className={styles.dropdownOptionDesc}>
-                        {currentProblemOption.desc}
-                      </div>
-                    </div>
-                  </div>
-                  <i
-                    className={`bx ${
-                      showProblemDropdown ? "bx-chevron-up" : "bx-chevron-down"
-                    }`}
-                    style={{ fontSize: "1.2rem", color: "var(--text-secondary)" }}
-                  />
-                </button>
+                  <span>نوع المشكلة أو التحديث:</span>
+                </label>
 
-                {showProblemDropdown && (
-                  <div className={styles.modalPopupList}>
-                    {AIRPORT_REPORT_PROBLEM_OPTIONS.map(opt => (
-                      <div
-                        key={opt.id}
-                        onClick={() => {
-                          setProblemType(opt.id);
-                          setShowProblemDropdown(false);
-                        }}
-                        className={`${styles.modalPopupItem} ${
-                          opt.id === problemType ? styles.modalPopupItemSelected : ""
-                        }`}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                          <i
-                            className={`${opt.icon || "bx bx-detail"} ${styles.problemIconAccent}`}
-                          />
-                          <div>
-                            <div className={styles.dropdownOptionTitle}>{opt.title}</div>
-                            <div className={styles.dropdownOptionDesc}>{opt.desc}</div>
+                {/* Dropdown Trigger Box */}
+                {(() => {
+                  const curOpt =
+                    AIRPORT_REPORT_PROBLEM_OPTIONS.find((o) => o.id === problemType) ||
+                    AIRPORT_REPORT_PROBLEM_OPTIONS[0];
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => setShowProblemTypeDropdown((prev) => !prev)}
+                      style={{
+                        width: "100%",
+                        padding: "9px 12px",
+                        borderRadius: "var(--radius-card, 12px)",
+                        background: "var(--bg-secondary)",
+                        color: "var(--color-fg)",
+                        border: showProblemTypeDropdown
+                          ? `1px solid var(--color-fg)`
+                          : "1px solid var(--border-glass, rgba(255, 255, 255, 0.1))",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                        textAlign: "right",
+                        fontFamily: "var(--font-cairo, sans-serif)",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                        <div
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "8px",
+                            backgroundColor: "rgba(59, 130, 246, 0.12)",
+                            color: "var(--color-secondary, #3b82f6)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "1.1rem",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <i className={curOpt.icon || "bx bx-detail"} />
+                        </div>
+                        <div style={{ minWidth: 0, textAlign: "right" }}>
+                          <div
+                            style={{
+                              fontSize: "0.88rem",
+                              fontWeight: "700",
+                              color: "var(--color-fg)",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {curOpt.title}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "0.74rem",
+                              color: "var(--text-muted)",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {curOpt.desc}
                           </div>
                         </div>
-                        {opt.badge && (
-                          <span className={styles.problemOptionBadge}>{opt.badge}</span>
-                        )}
                       </div>
-                    ))}
+
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        {curOpt.badge && (
+                          <span
+                            style={{
+                              fontSize: "0.7rem",
+                              padding: "2px 8px",
+                              borderRadius: "6px",
+                              background: "rgba(255, 255, 255, 0.06)",
+                              color: "var(--text-secondary)",
+                              fontWeight: "600",
+                            }}
+                          >
+                            {curOpt.badge}
+                          </span>
+                        )}
+                        <i
+                          className={`bx bx-chevron-down`}
+                          style={{
+                            fontSize: "1.2rem",
+                            color: "var(--text-secondary)",
+                            transform: showProblemTypeDropdown ? "rotate(180deg)" : "none",
+                            transition: "transform 0.2s ease",
+                          }}
+                        />
+                      </div>
+                    </button>
+                  );
+                })()}
+
+                {/* Dropdown Menu Options */}
+                {showProblemTypeDropdown && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      right: 0,
+                      background: "var(--color-bg)",
+                      border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.12))",
+                      borderRadius: "var(--radius-card, 12px)",
+                      overflow: "hidden",
+                      zIndex: 1100,
+                      maxHeight: "280px",
+                      overflowY: "auto",
+                      marginTop: "6px",
+                      padding: "4px",
+                      boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
+                    }}
+                  >
+                    {AIRPORT_REPORT_PROBLEM_OPTIONS.map((opt) => {
+                      const isSelected = problemType === opt.id;
+                      return (
+                        <div
+                          key={opt.id}
+                          onClick={() => {
+                            setProblemType(opt.id);
+                            setShowProblemTypeDropdown(false);
+                          }}
+                          style={{
+                            padding: "8px 10px",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "8px",
+                            background: isSelected ? "rgba(59, 130, 246, 0.15)" : "transparent",
+                            border: isSelected
+                              ? "1px solid rgba(59, 130, 246, 0.3)"
+                              : "1px solid transparent",
+                            transition: "all 0.15s ease",
+                            marginBottom: "2px",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isSelected) e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isSelected) e.currentTarget.style.background = "transparent";
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                            <div
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "8px",
+                                backgroundColor: isSelected
+                                  ? "rgba(59, 130, 246, 0.25)"
+                                  : "rgba(255, 255, 255, 0.04)",
+                                color: isSelected
+                                  ? "var(--color-secondary, #3b82f6)"
+                                  : "var(--text-secondary)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "1rem",
+                                flexShrink: 0,
+                              }}
+                            >
+                              <i className={opt.icon || "bx bx-detail"} />
+                            </div>
+                            <div style={{ minWidth: 0, textAlign: "right" }}>
+                              <div
+                                style={{
+                                  fontSize: "0.85rem",
+                                  fontWeight: isSelected ? "700" : "600",
+                                  color: isSelected
+                                    ? "var(--color-secondary, #3b82f6)"
+                                    : "var(--color-fg)",
+                                }}
+                              >
+                                {opt.title}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "0.72rem",
+                                  color: "var(--text-muted)",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {opt.desc}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                            {opt.badge && (
+                              <span
+                                style={{
+                                  fontSize: "0.68rem",
+                                  padding: "2px 6px",
+                                  borderRadius: "6px",
+                                  background: "rgba(255, 255, 255, 0.06)",
+                                  color: "var(--text-secondary)",
+                                  fontWeight: "600",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {opt.badge}
+                              </span>
+                            )}
+                            {isSelected && (
+                              <span
+                                style={{
+                                  fontSize: "0.78rem",
+                                  color: "var(--color-success, #10b981)",
+                                  fontWeight: "700",
+                                }}
+                              >
+                                ✔
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
 
-              {/* Details Textarea */}
+              {/* Details Text Area */}
               <div>
-                <label className={styles.modalFieldLabel}>
-                  تفاصيل المشكلة / التصحيح المقترح: <span style={{ color: "#ef4444" }}>*</span>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.85rem",
+                    fontWeight: "700",
+                    color: "var(--color-fg)",
+                    marginBottom: "6px",
+                  }}
+                >
+                  تفاصيل المشكلة أو الخطأ:
                 </label>
                 <textarea
-                  placeholder="اكتب تفاصيل الملاحظة أو الخطأ والبيانات الصحيحة (مثال: رقم هاتف الاستعلامات الصحيح هو... أو تم افتتاح صالة جديدة للمغادرة)..."
+                  className="input-fields"
+                  rows={4}
+                  placeholder="يرجى كتابة التفاصيل الدقيقة (مثال: رقم هاتف الصالة رقم 3 تم تغييره إلى... أو رابط الخريطة غير دقيق...)"
                   value={details}
-                  onChange={e => setDetails(e.target.value)}
-                  className={styles.modalTextarea}
-                  required
+                  onChange={(e) => setDetails(e.target.value)}
+                  style={{
+                    width: "100%",
+                    borderRadius: "10px",
+                    padding: "10px 12px",
+                    fontSize: "0.88rem",
+                    background: "var(--bg-secondary)",
+                    color: "var(--color-fg)",
+                    border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.1))",
+                    resize: "vertical",
+                    direction: "rtl",
+                    lineHeight: "1.5",
+                  }}
                 />
               </div>
 
-              {/* Image Upload Area */}
+              {/* Image Upload Drag & Drop Area */}
               <div>
                 <label
-                  className={styles.modalFieldLabel}
-                  style={{ display: "flex", justifyContent: "space-between" }}
+                  style={{
+                    display: "block",
+                    fontSize: "0.85rem",
+                    fontWeight: "700",
+                    color: "var(--color-fg)",
+                    marginBottom: "6px",
+                  }}
                 >
-                  <span>صورة توضيحية (اختياري):</span>
-                  <span style={{ fontSize: "0.74rem", color: "var(--text-muted)" }}>
-                    JPG, PNG, WEBP (حتى 5MB)
-                  </span>
+                  إرفاق صورة توضيحية (اختياري):
                 </label>
-
-                {!imagePreview ? (
+                {imagePreview ? (
                   <div
-                    onDragOver={e => {
-                      e.preventDefault();
-                      setIsDragging(true);
+                    style={{
+                      position: "relative",
+                      borderRadius: "10px",
+                      overflow: "hidden",
+                      border: "1px solid var(--border-glass, rgba(255, 255, 255, 0.1))",
+                      maxHeight: "160px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "rgba(0,0,0,0.2)",
                     }}
-                    onDragLeave={() => setIsDragging(false)}
-                    onDrop={e => {
-                      e.preventDefault();
-                      setIsDragging(false);
-                      const dropped = e.dataTransfer.files?.[0];
-                      if (dropped) onImageSelect(dropped);
-                    }}
-                    className={`${styles.modalDropzone} ${
-                      isDragging ? styles.modalDropzoneActive : ""
-                    }`}
                   >
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={e => {
-                        const f = e.target.files?.[0];
-                        if (f) onImageSelect(f);
-                      }}
-                      className={styles.modalHiddenFileInput}
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      style={{ maxHeight: "160px", width: "auto", objectFit: "contain" }}
                     />
-                    <div className={styles.modalUploadIconBox}>
-                      <i className="bx bx-cloud-upload" />
-                    </div>
-                    <div>
-                      <div className={styles.modalUploadPromptTitle}>
-                        اضغط لاختيار صورة أو اسحبها هنا
-                      </div>
-                      <div className={styles.modalUploadPromptDesc}>
-                        أرفق صورة لافتة، تذكرة، أو مستند لتسهيل الفحص
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className={styles.modalPreviewBox}>
-                    <div className={styles.modalThumbnail}>
-                      <img src={imagePreview} alt="معاينة المرفق" />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div className={styles.modalFileName}>
-                        {imageFile?.name || "صورة مرفقة"}
-                      </div>
-                      <div className={styles.modalFileSize}>
-                        {imageFile ? `${(imageFile.size / 1024).toFixed(0)} KB` : ""}
-                      </div>
-                    </div>
                     <button
                       type="button"
                       onClick={() => onImageSelect(null)}
-                      className={styles.modalRemoveImgBtn}
+                      style={{
+                        position: "absolute",
+                        top: "8px",
+                        left: "8px",
+                        background: "rgba(0,0,0,0.7)",
+                        border: "none",
+                        color: "#fff",
+                        borderRadius: "50%",
+                        width: "26px",
+                        height: "26px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      title="حذف الصورة"
                     >
-                      <i className="bx bx-trash" />
-                      <span>حذف</span>
+                      <i className="bx bx-x" />
                     </button>
+                  </div>
+                ) : (
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDraggingImage(true);
+                    }}
+                    onDragLeave={() => setIsDraggingImage(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDraggingImage(false);
+                      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        onImageSelect(e.dataTransfer.files[0]);
+                      }
+                    }}
+                    style={{
+                      border: isDraggingImage
+                        ? "2px dashed var(--color-secondary, #3b82f6)"
+                        : "2px dashed var(--border-glass, rgba(255, 255, 255, 0.15))",
+                      borderRadius: "10px",
+                      padding: "16px",
+                      textAlign: "center",
+                      backgroundColor: isDraggingImage
+                        ? "rgba(59, 130, 246, 0.05)"
+                        : "rgba(255, 255, 255, 0.01)",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                    }}
+                    onClick={() => {
+                      const input = document.getElementById("airports-report-file-input");
+                      if (input) input.click();
+                    }}
+                  >
+                    <input
+                      id="airports-report-file-input"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          onImageSelect(e.target.files[0]);
+                        }
+                      }}
+                    />
+                    <i
+                      className="bx bx-image-add"
+                      style={{ fontSize: "1.8rem", color: "var(--text-secondary)", marginBottom: "4px" }}
+                    />
+                    <div style={{ fontSize: "0.82rem", color: "var(--color-fg)", fontWeight: "600" }}>
+                      انقر لاختيار صورة أو اسحبها هنا
+                    </div>
+                    <div style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+                      الحد الأقصى 5 ميجابايت (PNG, JPG, WEBP)
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* Error Alert */}
-              {error && <div className={styles.modalErrorAlert}>{error}</div>}
-
-              {/* Actions Row */}
-              <div className={styles.modalActionsRow}>
-                <button
-                  type="submit"
-                  disabled={loading || uploading || !details.trim()}
-                  className={styles.btnSubmitReport}
+              {/* Error Display */}
+              {error && (
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(239, 68, 68, 0.12)",
+                    border: "1px solid rgba(239, 68, 68, 0.25)",
+                    color: "#ef4444",
+                    fontSize: "0.82rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
                 >
-                  {loading || uploading ? (
-                    <>
-                      <div className={styles.btnSpinner} />
-                      <span>{uploading ? "جاري رفع الصورة..." : "جاري الإرسال..."}</span>
-                    </>
-                  ) : (
-                    <>
-                      <i className="bx bx-send" />
-                      <span>إرسال البلاغ</span>
-                    </>
-                  )}
-                </button>
+                  <i className="bx bx-error-circle" style={{ fontSize: "1.1rem" }} />
+                  <span>{error}</span>
+                </div>
+              )}
 
+              {/* Action Buttons */}
+              <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
                 <button
                   type="button"
+                  className="btn btn-secondary"
                   onClick={onClose}
                   disabled={loading || uploading}
-                  className={styles.btnCancelModal}
+                  style={{ flex: 1 }}
                 >
                   إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={loading || uploading}
+                  style={{ flex: 2 }}
+                >
+                  {uploading
+                    ? "جاري رفع الصورة..."
+                    : loading
+                    ? "جاري الإرسال..."
+                    : "إرسال البلاغ"}
                 </button>
               </div>
             </form>

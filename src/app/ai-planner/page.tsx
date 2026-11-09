@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import VoiceInputButton from "@/components/VoiceInputButton";
 import { isPageOpenByPromotion } from "@/lib/promotions";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
+import AiChatDrawer from "@/components/AiChatDrawer";
 import { gsap, useGSAP } from "@/lib/gsap";
 import "./planner.css";
 
@@ -1364,27 +1365,53 @@ export default function PlannerPage() {
           حوّل بحثك إلى تجربة متكاملة. خطط ليوم خروج كامل بنفسك أو دع مساعدنا الذكي ينظم لك المسار الأمثل والأوقات والميزانية بلمسة واحدة.
         </p>
 
-        {/* Database Connectivity Status Badge */}
-        <div
-          className="planner-status-badge"
-          style={{
-            background: isLiveConnected ? "rgba(16, 185, 129, 0.1)" : "rgba(234, 179, 8, 0.1)",
-            border: `1px solid ${isLiveConnected ? "rgba(16, 185, 129, 0.3)" : "rgba(234, 179, 8, 0.3)"}`,
-            color: isLiveConnected ? "#10b981" : "#eab308"
-          }}
-        >
-          <span style={{
-            width: "8px",
-            height: "8px",
-            borderRadius: "50%",
-            background: isLiveConnected ? "#10b981" : "#eab308",
-            boxShadow: `0 0 8px ${isLiveConnected ? "#10b981" : "#eab308"}`
-          }} />
-          <span>
-            {isLiveConnected
-              ? `مربوط حياً بقاعدة بيانات القاهرة (${allPlaces.length} مكان متاح من الإدارة)`
-              : `الأماكن الافتراضية (${allPlaces.length} مكان)`}
-          </span>
+        {/* Database Connectivity Status Badge & Chat Button */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: "10px", marginTop: "12px" }}>
+          <div
+            className="planner-status-badge"
+            style={{
+              background: isLiveConnected ? "rgba(16, 185, 129, 0.1)" : "rgba(234, 179, 8, 0.1)",
+              border: `1px solid ${isLiveConnected ? "rgba(16, 185, 129, 0.3)" : "rgba(234, 179, 8, 0.3)"}`,
+              color: isLiveConnected ? "#10b981" : "#eab308"
+            }}
+          >
+            <span style={{
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              background: isLiveConnected ? "#10b981" : "#eab308",
+              boxShadow: `0 0 8px ${isLiveConnected ? "#10b981" : "#eab308"}`
+            }} />
+            <span>
+              {isLiveConnected
+                ? `مربوط حياً بقاعدة بيانات القاهرة (${allPlaces.length} مكان متاح من الإدارة)`
+                : `الأماكن الافتراضية (${allPlaces.length} مكان)`}
+            </span>
+          </div>
+
+          <Link
+            href="/ai-planner/chat"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "7px 18px",
+              background: "linear-gradient(135deg, #f59e0b, #ea580c)",
+              color: "#ffffff",
+              borderRadius: "9999px",
+              fontSize: "0.85rem",
+              fontWeight: "700",
+              boxShadow: "0 4px 15px rgba(245, 158, 11, 0.35)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              textDecoration: "none"
+            }}
+            className="hover:scale-105 active:scale-95"
+          >
+            <span>💬 دردشة حرة مع AI القاهرة (شاشة كاملة)</span>
+            <span style={{ background: "rgba(255,255,255,0.25)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.75rem" }}>
+              مجاني
+            </span>
+          </Link>
         </div>
       </header>
 
@@ -2340,6 +2367,14 @@ export default function PlannerPage() {
           </div>
         </div>
       )}
+
+      {/* Floating AI Chat Assistant */}
+      <AiChatDrawer 
+        currentPlanContext={{ 
+          startingZone: selectedStartZone, 
+          selectedPlaces: selectedPlaces.map(p => ({ name: p.name, category: p.category })) 
+        }} 
+      />
 
     </div>
   );

@@ -20,10 +20,19 @@ export default function TelecomSection({
   onCopy,
   searchQuery,
   sectionIcons,
+  hasMatchingPhones = false,
   onOpenSuggestModal,
   onResetSearch,
 }: TelecomSectionProps) {
   const currentCompanyMeta = COMPANY_META[activeCompany];
+  const hasNoCodes = Object.keys(groupedCodes).length === 0;
+
+  // إذا كان المستخدم يبحث ولا توجد أكواد لشبكات المحمول:
+  // نخفي قسم الأكواد ورسالة عدم العثور هنا لمنع التكرار
+  // (فإذا كانت هناك أرقام مطابقة ستظهر أرقام الهواتف مباشرة، وإذا لم تكن هناك أرقام أيضاً ستظهر رسالة عدم العثور مرة واحدة فقط في الأسفل)
+  if (searchQuery.trim() !== "" && hasNoCodes) {
+    return null;
+  }
 
   return (
     <div ref={telecomPanelRef} className="details-panel">
@@ -125,7 +134,7 @@ export default function TelecomSection({
       </div>
 
       {/* Accordions of codes */}
-      {Object.keys(groupedCodes).length === 0 ? (
+      {hasNoCodes ? (
         <DirectoryNotFound
           searchQuery={searchQuery}
           specialty={currentCompanyMeta?.label}

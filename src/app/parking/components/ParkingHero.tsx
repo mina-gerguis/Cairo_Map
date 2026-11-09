@@ -2,6 +2,7 @@
 
 import React, { RefObject } from "react";
 import PageHero from "@/components/common/PageHero";
+import { ASSETS } from "@/constants/assets";
 
 interface ParkingHeroProps {
   headerRef?: RefObject<HTMLDivElement | null>;
@@ -19,7 +20,7 @@ export function ParkingHero({
       headerRef={headerRef}
       title="دليل الجراجات"
       icon={{
-        src: "/images/icons2d/parking.webp",
+        src: ASSETS.transit.parking,
         alt: "Cairo Parking",
         width: 60,
         height: 42,

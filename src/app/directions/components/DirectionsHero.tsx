@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import PageHero from "@/components/common/PageHero";
+import { ASSETS } from "@/constants/assets";
 
 interface DirectionsHeroProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -15,7 +16,7 @@ export default function DirectionsHero({
       headerRef={headerRef}
       title="ازاي اروح ..؟"
       icon={{
-        src: "/images/transit/arab_republic _of_egypt.webp",
+        src: ASSETS.locations.governorates.egypt,
         alt: "Egypt",
         width: 42,
         height: 52,

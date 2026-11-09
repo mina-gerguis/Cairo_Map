@@ -2,7 +2,8 @@ import React from "react";
 import { DirectorySearchPanelProps } from "../types";
 import { getDialUrl } from "../utils";
 import styles from "../directory.module.css";
-import { IconXFilled } from "@tabler/icons-react";
+import searchStyles from "@/components/common/RouteSearchCard/RouteSearchCard.module.css";
+import VoiceInputButton from "@/components/VoiceInputButton";
 
 export default function DirectorySearchPanel({
   searchPanelRef,
@@ -10,9 +11,6 @@ export default function DirectorySearchPanel({
   setSearchQuery,
   isFocused,
   setIsFocused,
-  activeMainTab,
-  setActiveMainTab,
-  telecomCodesCount,
   recentSearches,
   searchSuggestions,
   onSaveSearch,
@@ -36,58 +34,6 @@ export default function DirectorySearchPanel({
         <h5 className="text-lg fw-bold" style={{ margin: 0 }}>
           ابحث في دليل الأرقام والخدمات
         </h5>
-
-        {/* Quick Section Tabs */}
-        <div style={{ display: "flex", gap: "6px" }}>
-          <button
-            type="button"
-            onClick={() => setActiveMainTab("phones")}
-            style={{
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "0.75rem",
-              fontWeight: "700",
-              cursor: "pointer",
-              background:
-                activeMainTab === "phones"
-                  ? "var(--color-secondary)"
-                  : "var(--bg-secondary)",
-              color: activeMainTab === "phones" ? "#ffffff" : "var(--text-secondary)",
-              border:
-                activeMainTab === "phones"
-                  ? "1px solid var(--color-secondary)"
-                  : "1px solid var(--border-glass)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            <i className="fa-solid fa-phone" style={{ marginLeft: "4px" }}></i>
-            أرقام وخطوط ساخنة
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveMainTab("telecom")}
-            style={{
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "0.75rem",
-              fontWeight: "700",
-              cursor: "pointer",
-              background:
-                activeMainTab === "telecom"
-                  ? "var(--color-secondary)"
-                  : "var(--bg-secondary)",
-              color: activeMainTab === "telecom" ? "#ffffff" : "var(--text-secondary)",
-              border:
-                activeMainTab === "telecom"
-                  ? "1px solid var(--color-secondary)"
-                  : "1px solid var(--border-glass)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            <i className="fa-solid fa-hashtag" style={{ marginLeft: "4px" }}></i>
-            أكواد المحمول ({telecomCodesCount})
-          </button>
-        </div>
       </div>
 
       {/* Search Input Container */}
@@ -116,9 +62,22 @@ export default function DirectorySearchPanel({
           </label>
         </div>
 
-        <div style={{ position: "relative" }}>
+        <div className={searchStyles.inputWrapper}>
+          {/* Left search icon like Metro & Monorail */}
+          <div className={searchStyles.inputStartIcon}>
+            <span
+              className={searchStyles.inputStartBtnStatic}
+              style={{
+                color: "var(--text-muted, #71717a)",
+                fontSize: "1.05rem",
+              }}
+            >
+              <i className="fa-solid fa-magnifying-glass" />
+            </span>
+          </div>
+
           <input
-            className="input-fields"
+            className={`input-fields ${searchStyles.input}`}
             type="text"
             placeholder="مثال: البنك الأهلي، الإسعاف، تحويل فودافون كاش، طوارئ الغاز..."
             value={searchQuery}
@@ -135,27 +94,45 @@ export default function DirectorySearchPanel({
               width: "100%",
               direction: "rtl",
               fontFamily: "var(--font-body)",
+              paddingRight: "48px",
+              paddingLeft: "48px",
+              outline: "none",
+              border: "none",
+              boxShadow: "none",
             }}
           />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              style={{
-                position: "absolute",
-                left: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                background: "transparent",
-                border: "none",
-                color: "var(--text-muted)",
-                cursor: "pointer",
-                fontSize: "0.9rem",
-              }}
-            >
-              <IconXFilled size={16}/>
-            </button>
-          )}
+
+          {/* End actions: Clear button or Voice Input */}
+          <div className={searchStyles.inputEndActions} style={{ right: "14px" }}>
+            {searchQuery ? (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                title="مسح"
+                aria-label="مسح البحث"
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--text-muted, #71717a)",
+                  cursor: "pointer",
+                  padding: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.9rem",
+                }}
+              >
+                <i className="fa-solid fa-xmark" />
+              </button>
+            ) : (
+              <VoiceInputButton
+                onTranscript={(text) => {
+                  setSearchQuery(text);
+                  onSaveSearch(text);
+                }}
+              />
+            )}
+          </div>
         </div>
 
         {/* Instant Suggestions Dropdown */}

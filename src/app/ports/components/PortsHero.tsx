@@ -1,5 +1,6 @@
 import React, { RefObject } from "react";
 import styles from "../ports.module.css";
+import { ASSETS } from "@/constants/assets";
 
 interface PortsHeroProps {
   headerRef: RefObject<HTMLDivElement | null>;
@@ -16,14 +17,10 @@ export default function PortsHero({
 }: PortsHeroProps) {
   return (
     <div ref={headerRef} className={styles.heroSection}>
-      <div className={styles.livePill}>
-        <span className={styles.liveDot} />
-        <span>دليل الملاحة والشحن البحري المصري</span>
-      </div>
 
       <h1 className={styles.heroTitle}>
         <img
-          src="/images/icons2d/arab_republice.webp"
+          src= { ASSETS.transit.ports }
           alt="جمهورية مصر العربية"
           loading="lazy"
           decoding="async"

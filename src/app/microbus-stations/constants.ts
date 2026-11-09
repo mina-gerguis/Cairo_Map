@@ -21,6 +21,14 @@ export const POPULAR_DESTINATIONS = [
   "المعادي"
 ];
 
+export const MICROBUS_STATION_COORDINATES: Record<string, { lat: number; lng: number }> = {
+  "موقف رمسيس (أحمد حلمي / رمسيس الكبرى)": { lat: 30.0626, lng: 31.2497 },
+  "موقف المرج الجديدة": { lat: 30.1612, lng: 31.3365 },
+  "موقف ميدان الجيزة": { lat: 30.0105, lng: 31.2065 },
+  "موقف السيدة عائشة": { lat: 30.0275, lng: 31.2585 },
+  "موقف المنيب الكبرى": { lat: 29.9815, lng: 31.2125 },
+};
+
 export const DEFAULT_MICROBUS_STATIONS: MicrobusStation[] = [
   {
     name: "موقف رمسيس (أحمد حلمي / رمسيس الكبرى)",

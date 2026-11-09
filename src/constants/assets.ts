@@ -35,6 +35,8 @@ export const ASSETS = {
     ai: "/images/transit/ai.webp",
     shop: "/images/transit/shop.webp",
     ports: "/images/transit/arab_republice.webp",
+    uber: "/images/transit/uber.webp",
+    multi: "/images/transit/multi.webp",
   },
 
   company: {

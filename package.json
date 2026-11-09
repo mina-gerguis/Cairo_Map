@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@boxicons/react": "^1.0.3",
+    "@google/genai": "^3.0.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "@supabase/supabase-js": "^2.116.0",

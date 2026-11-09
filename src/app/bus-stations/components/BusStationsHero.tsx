@@ -1,5 +1,6 @@
 import React from "react";
 import PageHero from "@/components/common/PageHero";
+import { ASSETS } from "@/constants/assets";
 
 interface BusStationsHeroProps {
   stationsCount: number;
@@ -16,15 +17,12 @@ export default function BusStationsHero({
     <PageHero
       title="مواقف الأتوبيسات والسفر البري"
       icon={{
-        src: "/images/icons2d/bus.webp",
+        src: ASSETS.transit.bus ,
         alt: "Cairo Bus",
         width: 48,
         height: 48,
       }}
-      pillBadge={{
-        text: "دليل مواقف السفر الإقليمي والنقل البري",
-        showDot: true,
-      }}
+
       subtitle="دليلك الشامل لمعرفة مواقف السفر البري الإقليمي في القاهرة الكبرى والوجهات والمحافظات المتاحة وشركات النقل وأرقام الحجز."
       statsType="tab"
       stats={[

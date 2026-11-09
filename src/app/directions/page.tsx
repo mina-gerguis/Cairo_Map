@@ -282,11 +282,11 @@ export default function DirectionsPage() {
         />
 
         {/* Dynamic Popular Searches Slider (Ranked by user search counts) */}
-        <PopularRoutesSlider
+        {/* <PopularRoutesSlider
           sliderRef={sliderRef}
           routes={popularRoutes}
           onSelectRoute={handlePresetSearch}
-        />
+        /> */}
 
         {/* Search Panel Card */}
         <RouteSearchCard
@@ -327,10 +327,10 @@ export default function DirectionsPage() {
         {/* Emergency Quick Bar & FAQ */}
         {/* <TransitFAQ /> */}
 
-        {/* Bottom Report Problem Banner */}
+        {/* Bottom Report Problem Banner
         <BottomReportBanner
           onOpenReportModal={() => handleOpenReportModal(null)}
-        />
+        /> */}
       </div>
 
       {/* Problem Report Modal */}

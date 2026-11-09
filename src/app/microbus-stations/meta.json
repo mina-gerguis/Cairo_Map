@@ -1,0 +1,66 @@
+{
+  "microbus_stations_egypt": {
+    "version": "1.0.0",
+    "last_updated": "2026-11-09",
+    "main": {
+      "name_en": "microbus-stations",
+      "name_ar": "مواقف وخطوط الميكروباص",
+      "country": "egypt",
+      "tier_required": ["Gold User", "Mishwar"],
+      "type": [
+        "Service",
+        "Directory",
+        "Interactive Guide"
+      ],
+      "bugs": [],
+      "notes": [
+        "يتم تحميل البيانات من جدول microbus_stations في Supabase مع الاعتماد على getLocalMicrobusStations() كـ fallback عند انقطاع الاتصال.",
+        "نظام التفاعل والتصويت المجتمعي على خطوط السير وتأكيد الأجرة ومسار الخط مخزن في جدول route_interactions.",
+        "دعم صلاحيات المشتركين لباقات Gold و Mishwar، والأدمن، وفترات العروض الترويجية المفتوحة (isPageOpenByPromotion).",
+        "يتضمن نظامين للبلاغات: نموذج الإبلاغ عن مشكلة بخط أو موقف موجود، ونموذج طلب إضافة موقف أو خط مفقود (Missing Modal)."
+      ]
+    },
+    "integrations": {
+      "database": "Supabase (Tables: microbus_stations, route_interactions)",
+      "feedback_system": "Supabase Feedback / Reports with daily rate-limiting (isFeedbackLimitReached)",
+      "storage": "Image attachments for route and station reports",
+      "maps": "Google Maps external navigation for stations and intermediate stops"
+    },
+    "features": [
+      "دليل مواقف الميكروباص الرئيسية والفرعية مع خطوط السير لكل موقف",
+      "عرض تسعيرة الأجرة التقريبية ومحطات التوقف والمسار التفصيلي لكل خط (Timeline)",
+      "نظام تقييم وتصويت تفاعلي للمستخدمين لتأكيد دقة الأجرة والمسار (Vote on Route)",
+      "شريط تمرير سريع (Stations Slider) لاختيار الموقف والفلترة المباشرة",
+      "بحث فوري بالوجهة أو اسم الموقف أو المحطات الوسيطة على طول الخط",
+      "نافذة مخصصة لطلب إضافة موقف ميكروباص أو خط سير غير مسجل (Missing Modal)",
+      "حماية المحتوى وعرض شاشة الاشتراك لباقات Gold و Mishwar"
+    ],
+    "roadmap": [
+      "إتاحة خريطة ملاحة حية ترسم مسار خط الميكروباص وتوقفاته بالكامل",
+      "تنبيهات فورية عند تحديث تعريفة الركوب الرسمية للمواقف"
+    ],
+    "files": {
+      "layout.tsx": "غلاف الصفحة وبيانات الميتا وعناوين الـ SEO الخاصة بدليل مواقف وخطوط الميكروباص.",
+      "page.tsx": "الصفحة الرئيسية لدليل الميكروباص؛ تدير التحقق من الصلاحيات والاشتراك، البحث، الفلاتر، ونوافذ البلاغات والإضافة والمودال التفاعلية.",
+      "constants.ts": "البيانات الافتراضية للمواقف والخطوط، أنواع مشاكل البلاغات وخيارات الملاحظات، وخيارات الشكاوى.",
+      "types.ts": "تعريفات TypeScript للمواقف (MicrobusStation)، الخطوط (MicrobusRoute)، التفاعلات والتصويت (RouteInteraction, VoteStats)، والبلاغات.",
+      "utils.ts": "دوال مساعدة لتوحيد النصوص، قراءة البيانات المحلية، وفلترة الخطوط وتنسيق البلاغات.",
+      "microbus.module.css": "التنسيقات الخاصة بصفحة مواقف الميكروباص وجميع المكونات والخط الزمني والنوافذ المنبثقة.",
+      "meta.json": "ملف توثيق مجلد مواقف الميكروباص ومعلوماته التقنية والوظيفية.",
+      "components/MicrobusHero.tsx": "الترويسة الرئيسية مع عرض الإحصائيات (إجمالي المواقف، إجمالي الخطوط).",
+      "components/MicrobusStationsSlider.tsx": "شريط تمرير أفقي لاختيار الموقف والتنقل السريع بين المواقف المختلفة.",
+      "components/MicrobusSearchCard.tsx": "كارت البحث الذكي بالوجهة أو المحطة مع خيارات التصفية.",
+      "components/MicrobusResultsSection.tsx": "يعرض قائمة مواقف الميكروباص والخطوط التابعة لكل موقف بناءً على البحث.",
+      "components/MicrobusStationCard.tsx": "بطاقة الموقف الفردية؛ تعرض اسم الموقف، عدد الخطوط، زر الخريطة، وقائمة خطوط السير.",
+      "components/MicrobusRouteItem.tsx": "عنصر خط السير داخل الموقف؛ يعرض الوجهة، الأجرة، زر التقييم، وتفاصيل المسار.",
+      "components/MicrobusTimeline.tsx": "عرض مرئي لمسار خط الميكروباص ومحطات التوقف ونقاط النزول بالترتيب.",
+      "components/MicrobusReportModal.tsx": "نافذة الإبلاغ عن مشكلة في خط سير أو تعديل أجرة أو محطة مع رفع صورة.",
+      "components/MicrobusMissingModal.tsx": "نافذة لاقتراح موقف ميكروباص جديد أو خط غير متوفر بالدليل.",
+      "components/MicrobusSuccessModal.tsx": "نافذة تأكيد نجاح إرسال البلاغ أو الملاحظة للمستخدم.",
+      "components/MicrobusBottomBanner.tsx": "بانر في أسفل الصفحة لدعوة المستخدمين للمساهمة في تحديث الخطوط أو إرسال الملاحظات.",
+      "components/MicrobusLoading.tsx": "شاشة التحميل أثناء جلب بيانات المواقف والتحقق من حساب المستخدم.",
+      "components/MicrobusPaywall.tsx": "شاشة الاشتراك وحجب المحتوى للمستخدمين غير المشتركين في باقات Gold أو Mishwar.",
+      "hooks/useMicrobusData.ts": "يدير جلب بيانات المواقف والخطوط من Supabase/البيانات المحلية، التفاعلات (route_interactions)، التصويت على الأجرة والمسار، والبحث."
+    }
+  }
+}

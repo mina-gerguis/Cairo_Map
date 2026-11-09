@@ -1,5 +1,32 @@
 import { ParkingSpot } from "./types";
 
+export const POPULAR_PARKING_AREAS = [
+  "وسط البلد",
+  "التحرير",
+  "مصر الجديدة",
+  "مدينة نصر",
+  "الدقي",
+  "المعادي",
+  "المهندسين",
+  "التجمع الخامس",
+];
+
+export const PARKING_AREA_COORDINATES: Record<string, { lat: number; lng: number }> = {
+  "وسط البلد": { lat: 30.0444, lng: 31.2357 },
+  "التحرير": { lat: 30.0444, lng: 31.2357 },
+  "مصر الجديدة": { lat: 30.0906, lng: 31.3255 },
+  "مدينة نصر": { lat: 30.0612, lng: 31.3325 },
+  "الدقي": { lat: 30.0385, lng: 31.2125 },
+  "المهندسين": { lat: 30.0575, lng: 31.2015 },
+  "المعادي": { lat: 29.9602, lng: 31.2568 },
+  "التجمع الخامس": { lat: 30.0074, lng: 31.4312 },
+  "العتبة": { lat: 30.0525, lng: 31.2472 },
+  "شبرا": { lat: 30.0825, lng: 31.2455 },
+  "الجيزة": { lat: 30.0105, lng: 31.2065 },
+  "الزمالك": { lat: 30.0615, lng: 31.2215 },
+  "روكسي": { lat: 30.0935, lng: 31.3185 },
+};
+
 export const DEFAULT_PARKING: ParkingSpot[] = [];
 
 export const GARAGE_TYPE_BADGES = [

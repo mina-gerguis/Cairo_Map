@@ -177,7 +177,8 @@
   padding: 22px;
   margin-bottom: 24px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 30;
 }
 
 .searchBentoHeader {
@@ -674,22 +675,44 @@
 
 /* ==================== 21ST.DEV CALLOUT BANNER ==================== */
 .calloutBanner {
-  background: radial-gradient(135% 120% at 100% 0%, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.08) 50%, rgba(20, 20, 24, 0.8) 100%);
+  background: radial-gradient(135% 120% at 100% 0%,
+      rgba(245, 158, 11, 0.08) 0%,
+      rgba(59, 130, 246, 0.05) 50%,
+      rgba(20, 20, 24, 0.85) 100%);
   border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  padding: 22px 24px;
+  border-radius: var(--radius-card, 16px);
+  padding: 20px 24px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-  margin-top: 28px;
+  margin-top: 24px;
+  margin-bottom: 24px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 :global(html.light) .calloutBanner {
-  background: radial-gradient(135% 120% at 100% 0%, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 50%, rgba(255, 255, 255, 0.95) 100%);
+  background: radial-gradient(135% 120% at 100% 0%,
+      rgba(245, 158, 11, 0.07) 0%,
+      rgba(59, 130, 246, 0.04) 50%,
+      rgba(255, 255, 255, 0.95) 100%);
+}
+
+.calloutBanner:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+:global(html.light) .calloutBanner:hover {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .calloutIcon {
@@ -731,6 +754,43 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.calloutBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1.5px solid rgba(245, 158, 11, 0.38);
+  color: #f59e0b;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-sub, inherit);
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.12);
+}
+
+:global(html.light) .calloutBtn {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #d97706;
+}
+
+.calloutBtn:hover {
+  background: rgba(245, 158, 11, 0.24);
+  border-color: rgba(245, 158, 11, 0.65);
+  color: #fbbf24;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+}
+
+:global(html.light) .calloutBtn:hover {
+  background: rgba(245, 158, 11, 0.18);
+  color: #b45309;
 }
 
 .suggestBtn {

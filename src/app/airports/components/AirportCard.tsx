@@ -41,14 +41,6 @@ export default function AirportCard({
       {/* Top Header */}
       <div className={styles.cardHeader}>
         <div className={styles.airportHeaderMain}>
-          <div
-            className={`${styles.airportIconBox} ${
-              isInternational ? styles.airportIconBoxIntl : styles.airportIconBoxLocal
-            }`}
-          >
-            <i className={isInternational ? "bx bxs-plane-alt" : "bx bx-plane-takeoff"} />
-          </div>
-
           <div className={styles.headerInfo}>
             <div className={styles.titleRow}>
               <h3 className={styles.airportTitle}>{airport.name_ar}</h3>
@@ -58,15 +50,13 @@ export default function AirportCard({
             </div>
 
             {airport.name_en && (
-              <div className={styles.airportTitleEn}>{airport.name_en}</div>
+              <div className="font-inter fs-sm my-1 text-secondary">{airport.name_en}</div>
             )}
 
             <div className={styles.badgesRow}>
               {airport.type && (
                 <span
-                  className={`${styles.badgeType} ${
-                    isInternational ? styles.badgeTypeIntl : styles.badgeTypeLocal
-                  }`}
+                  className="tab"
                 >
                   <i className={isInternational ? "bx bx-globe" : "bx bx-home"} />
                   <span>{airport.type}</span>
@@ -74,13 +64,13 @@ export default function AirportCard({
               )}
 
               {airportCodes && (
-                <span className={styles.badgeCode} title="IATA / ICAO Code">
+                <span className="tab" title="IATA / ICAO Code">
                   <i className="bx bx-barcode" />
-                  <span>{airportCodes}</span>
+                  <span className="font-inter">{airportCodes}</span>
                 </span>
               )}
 
-              <span className={styles.badgeLocation}>
+              <span className="tab">
                 <i className="bx bx-map-pin" />
                 <span>{airport.city_ar}</span>
               </span>
@@ -112,15 +102,6 @@ export default function AirportCard({
             {airport.terminals_count || "صالة واحدة"}
           </span>
         </div>
-
-        {airport.capacity && (
-          <div className={styles.quickStatItem}>
-            <span className={styles.quickStatLabel}>
-              <i className="bx bx-group" /> الطاقة الاستيعابية:
-            </span>
-            <span className={styles.quickStatValue}>{airport.capacity}</span>
-          </div>
-        )}
 
         {airport.runways_count && (
           <div className={styles.quickStatItem}>
