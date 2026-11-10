@@ -130,7 +130,7 @@ export default function AdminBlogsPage() {
     setStatus("published");
     setReadingTime(3);
     setTagsInput("");
-    const defaultName = profile?.full_name || user?.email?.split("@")[0] || "فريق خريطة القاهرة";
+    const defaultName = profile?.full_name || user?.email?.split("@")[0] || "فريق قريب";
     const defaultAvatar = profile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(defaultName)}`;
     setAuthorName(defaultName);
     setAuthorAvatar(defaultAvatar);
@@ -148,7 +148,7 @@ export default function AdminBlogsPage() {
     setStatus(blog.status || "published");
     setReadingTime(blog.reading_time || 3);
     setTagsInput((blog.tags || []).join(", "));
-    const name = blog.author_name || profile?.full_name || "فريق خريطة القاهرة";
+    const name = blog.author_name || profile?.full_name || "فريق قريب";
     const avatar = blog.author_avatar || profile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`;
     setAuthorName(name);
     setAuthorAvatar(avatar);
@@ -183,7 +183,7 @@ export default function AdminBlogsPage() {
         .map((t) => t.trim())
         .filter(Boolean);
 
-      const finalAuthorName = authorName.trim() || profile?.full_name || user?.email?.split("@")[0] || "فريق خريطة القاهرة";
+      const finalAuthorName = authorName.trim() || profile?.full_name || user?.email?.split("@")[0] || "فريق قريب";
       const finalAuthorAvatar = authorAvatar.trim() || profile?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(finalAuthorName)}`;
 
       const payload = {

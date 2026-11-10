@@ -28,7 +28,7 @@ export default function BlogHeaderBanner({
               fontSize: "2rem",
             }}
           />
-          مدونة خريطة القاهرة
+          مدونة قريب
         </h1>
         <p className={styles.headerSubtitle}>
           اكتشف أحدث النصائح، خطوط السفر، وأدلة التنقل الذكي داخل القاهرة الكبرى والمحافظات.

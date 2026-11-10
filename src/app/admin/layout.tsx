@@ -73,6 +73,7 @@ export default function AdminLayout({
           { label: "البلاغات والاقتراحات الواردة", href: "/admin/reports", category: "صفحة إدارية", icon: "bx bx-inbox" },
           { label: "الرصيد والشحن المالي", href: "/admin/points?tab=users", category: "صفحة إدارية", icon: "bx bx-coin-stack" },
           { label: "طلبات الإيداع والسحب المعلقة", href: "/admin/points?tab=requests", category: "صفحة إدارية", icon: "bx bx-transfer" },
+          { label: "إدارة القسائم والأكواد الترويجية", href: "/admin/vouchers", category: "صفحة إدارية", icon: "bx bxs-coupon" },
           { label: "إدارة الحسابات والمستخدمين", href: "/admin/users", category: "صفحة إدارية", icon: "bx bx-group" },
           { label: "الاشتراكات المميزة والذهبية", href: "/admin/subscriptions", category: "صفحة إدارية", icon: "bx bx-crown" },
           { label: "العروض والخصومات للاشتراكات", href: "/admin/subscriptions?tab=promotions", category: "صفحة إدارية", icon: "bx bx-gift" },
@@ -410,6 +411,7 @@ export default function AdminLayout({
     if (activeSubTab === "requests") pageTitle = "طلبات الإيداع والسحب";
     else pageTitle = "الرصيد والشحن";
   }
+  else if (pathname === "/admin/vouchers") pageTitle = "إدارة القسائم والأكواد";
   else if (pathname === "/admin/subscriptions") {
     if (activeSubTab === "promotions" || activeSubTab === "offers") pageTitle = "العروض والخصومات";
     else pageTitle = "الاشتراكات المميزة";
@@ -470,7 +472,7 @@ export default function AdminLayout({
           {/* Navigation Links */}
           <nav className={styles.sidebarNav}>
             {/* ── الرئيسية والإحصائيات ── */}
-            <div className={styles.sidebarGroupLabel}>الرئيسية والإحصائيات</div>
+            <div className={styles.sidebarGroupLabel}>الرئيسية والتحليلات</div>
             <Link
               href="/admin"
               className={`${styles.sidebarNavLink} ${pathname === "/admin" ? styles.sidebarNavLinkActive : ""}`}
@@ -484,10 +486,189 @@ export default function AdminLayout({
               </div>
             </Link>
 
-            {/* ── إدارة الخدمات (مسطحة) ── */}
+            {/* ── المالية والقسائم والاشتراكات ── */}
+            <div className={styles.sidebarGroupLabel}>المالية والقسائم والاشتراكات</div>
+
+            <Link
+              href="/admin/points?tab=users"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/points" && (activeSubTab === "users" || !activeSubTab) ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab("users");
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-coin-stack ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>الرصيد والشحن</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/points?tab=requests"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/points" && activeSubTab === "requests" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab("requests");
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-transfer ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>طلبات الإيداع والسحب</span>
+              </div>
+              {pendingPointsCount > 0 && (
+                <span className={styles.sidebarBadge} title={`هناك ${pendingPointsCount} معلقة`}>
+                  {pendingPointsCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              href="/admin/vouchers"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/vouchers" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab(null);
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bxs-coupon ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة القسائم والأكواد</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/subscriptions"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/subscriptions" && (!activeSubTab || activeSubTab === "users" || activeSubTab === "plans") ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab(null);
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-crown ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>الاشتراكات المميزة</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/subscriptions?tab=promotions"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/subscriptions" && (activeSubTab === "promotions" || activeSubTab === "offers") ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab("promotions");
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-gift ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>العروض والخصومات</span>
+              </div>
+            </Link>
+
+            {/* ── المستخدمون والدعم ── */}
+            <div className={styles.sidebarGroupLabel}>المستخدمون والدعم</div>
+
+            <Link
+              href="/admin/users"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/users" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-group ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة الحسابات والمستخدمين</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/reports"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/reports" || pathname === "/admin/incoming-reports" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-inbox ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>البلاغات والاقتراحات</span>
+              </div>
+              {pendingIncomingCount > 0 && (
+                <span className={styles.sidebarBadge} style={{ background: "#ef4444", color: "#fff" }} title={`هناك ${pendingIncomingCount} بلاغات واقتراحات معلقة`}>
+                  {pendingIncomingCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              href="/admin/notifications"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/notifications" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-bell ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>الإشعارات والرسائل</span>
+              </div>
+            </Link>
+
+            {/* ── المحتوى والنظام ── */}
+            <div className={styles.sidebarGroupLabel}>المحتوى والنظام</div>
+
+            <Link
+              href="/admin/blogs"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/blogs" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-news ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة المدونة والمقالات</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/ads"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/ads" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-slideshow ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة الإعلانات</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/alerts"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/alerts" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-info-circle ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>تنبيهات الموقع</span>
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/maintenance"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/maintenance" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-wrench ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة وضع الصيانة</span>
+              </div>
+            </Link>
+
+            {/* ── الخدمات والمواقع (قائمة قابلة للطي) ── */}
             <div className={styles.sidebarGroupLabel}>الخدمات والمواقع</div>
 
-            {/* إدارة الأماكن */}
             <Link
               href="/admin/places"
               className={`${styles.sidebarNavLink} ${pathname === "/admin/places" ? styles.sidebarNavLinkActive : ""}`}
@@ -514,395 +695,144 @@ export default function AdminLayout({
               </div>
             </Link>
 
-            {/* المدن الشهيرة */}
-            <Link
-              href="/admin/cities"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/cities" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
+            <button
+              type="button"
+              onClick={() => setIsServicesDropdownOpen((prev) => !prev)}
+              className={styles.sidebarNavLink}
+              style={{
+                width: "100%",
+                background: "transparent",
+                cursor: "pointer",
+                textAlign: "right",
               }}
+              aria-expanded={isServicesDropdownOpen}
             >
               <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-building-house ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>المدن الشهيرة والمعالم</span>
+                <i className={`bx bx-directions ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>شبكات النقل والدليل</span>
               </div>
-            </Link>
+              <i
+                className={`bx ${isServicesDropdownOpen ? "bx-chevron-down" : "bx-chevron-left"}`}
+                style={{ fontSize: "1.1rem", opacity: 0.7 }}
+              />
+            </button>
 
-            {/* المطارات */}
-            <Link
-              href="/admin/airports"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/airports" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`fa fa-plane ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>المطارات</span>
+            {isServicesDropdownOpen && (
+              <div className={styles.submenu}>
+                <Link
+                  href="/admin/directions"
+                  className={`${styles.submenuLink} ${pathname === "/admin/directions" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-compass" />
+                  <span>إدارة ازاي اروح</span>
+                </Link>
+                <Link
+                  href="/admin/metro"
+                  className={`${styles.submenuLink} ${pathname === "/admin/metro" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bxs-train" />
+                  <span>مترو الأنفاق</span>
+                </Link>
+                <Link
+                  href="/admin/lrt"
+                  className={`${styles.submenuLink} ${pathname === "/admin/lrt" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-train" />
+                  <span>القطار الكهربائي LRT</span>
+                </Link>
+                <Link
+                  href="/admin/monorail"
+                  className={`${styles.submenuLink} ${pathname === "/admin/monorail" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-navigation" />
+                  <span>المنوريل</span>
+                </Link>
+                <Link
+                  href="/admin/railways"
+                  className={`${styles.submenuLink} ${pathname === "/admin/railways" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-train" />
+                  <span>سكك حديد مصر</span>
+                </Link>
+                <Link
+                  href="/admin/brt"
+                  className={`${styles.submenuLink} ${pathname === "/admin/brt" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-bus" />
+                  <span>الأتوبيس الترددي (BRT)</span>
+                </Link>
+                <Link
+                  href="/admin/bus-stations"
+                  className={`${styles.submenuLink} ${pathname === "/admin/bus-stations" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-bus" />
+                  <span>الأتوبيسات (سوبرجيت)</span>
+                </Link>
+                <Link
+                  href="/admin/microbus-stations"
+                  className={`${styles.submenuLink} ${pathname === "/admin/microbus-stations" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-map-pin" />
+                  <span>المواقف (سرفيس)</span>
+                </Link>
+                <Link
+                  href="/admin/parking"
+                  className={`${styles.submenuLink} ${pathname === "/admin/parking" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-car" />
+                  <span>الجراجات ومواقف السيارات</span>
+                </Link>
+                <Link
+                  href="/admin/roads-info"
+                  className={`${styles.submenuLink} ${pathname === "/admin/roads-info" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-tachometer" />
+                  <span>معلومات الطرق والرادار</span>
+                </Link>
+                <Link
+                  href="/admin/cities"
+                  className={`${styles.submenuLink} ${pathname === "/admin/cities" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-building-house" />
+                  <span>المدن الشهيرة والمعالم</span>
+                </Link>
+                <Link
+                  href="/admin/airports"
+                  className={`${styles.submenuLink} ${pathname === "/admin/airports" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bxs-plane-alt" />
+                  <span>المطارات</span>
+                </Link>
+                <Link
+                  href="/admin/ports"
+                  className={`${styles.submenuLink} ${pathname === "/admin/ports" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-anchor" />
+                  <span>الموانئ</span>
+                </Link>
+                <Link
+                  href="/admin/directory"
+                  className={`${styles.submenuLink} ${pathname === "/admin/directory" ? styles.submenuLinkActive : ""}`}
+                  onClick={() => { if (isMobile) setIsSidebarOpen(false); }}
+                >
+                  <i className="bx bx-phone-call" />
+                  <span>دليل الهواتف والأكواد</span>
+                </Link>
               </div>
-            </Link>
-
-            {/* الموانئ */}
-            <Link
-              href="/admin/ports"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/ports" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-anchor ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>الموانئ</span>
-              </div>
-            </Link>
-
-            {/* المنوريل */}
-            <Link
-              href="/admin/monorail"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/monorail" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`fa fa-train ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>المنوريل</span>
-              </div>
-            </Link>
-
-            {/* القطار الكهربائي LRT */}
-            <Link
-              href="/admin/lrt"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/lrt" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-train ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>القطار الكهربائي LRT</span>
-              </div>
-            </Link>
-
-            {/* مترو الأنفاق */}
-            <Link
-              href="/admin/metro"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/metro" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bxs-train ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>مترو الأنفاق</span>
-              </div>
-            </Link>
-
-            {/* سكك حديد مصر */}
-            <Link
-              href="/admin/railways"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/railways" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-train ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>سكك حديد مصر</span>
-              </div>
-            </Link>
-
-            {/* الأتوبيسات */}
-            <Link
-              href="/admin/bus-stations"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/bus-stations" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-bus ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>الأتوبيسات (سوبرجيت)</span>
-              </div>
-            </Link>
-
-            {/* المواقف سرفيس */}
-            <Link
-              href="/admin/microbus-stations"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/microbus-stations" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-map-pin ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>المواقف (سرفيس)</span>
-              </div>
-            </Link>
-
-            {/* الأتوبيس الترددي BRT */}
-            <Link
-              href="/admin/brt"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/brt" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-bus ${styles.linkIcon}`} style={{ color: "#e11d48" }} />
-                <span className={styles.linkLabel}>الأتوبيس الترددي (BRT)</span>
-              </div>
-            </Link>
-
-            {/* الجراجات والانتظار */}
-            <Link
-              href="/admin/parking"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/parking" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-car ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>الجراجات ومواقف السيارات</span>
-              </div>
-            </Link>
-
-            {/* إدارة معلومات الطرق والسرعات */}
-            <Link
-              href="/admin/roads-info"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/roads-info" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-tachometer ${styles.linkIcon}`} style={{ color: "#38bdf8" }} />
-                <span className={styles.linkLabel}>إدارة معلومات الطرق</span>
-              </div>
-            </Link>
-
-            {/* دليل الهواتف والأكواد */}
-            <Link
-              href="/admin/directory"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/directory" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-phone-call ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>دليل الهواتف والأكواد</span>
-              </div>
-            </Link>
-
-            {/* إدارة ازاي اروح (خطوط المواصلات) */}
-            <Link
-              href="/admin/directions"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/directions" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-compass ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>إدارة ازاي اروح</span>
-              </div>
-            </Link>
-
-            {/* ── إدارة المحتوى والتنبيهات ── */}
-            <div className={styles.sidebarGroupLabel}>المحتوى والإعلانات</div>
-
-            {/* إدارة المدونة والمقالات */}
-            <Link
-              href="/admin/blogs"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/blogs" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-news ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>إدارة المدونة والمقالات</span>
-              </div>
-            </Link>
-
-            {/* إدارة الإعلانات */}
-            <Link
-              href="/admin/ads"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/ads" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-slideshow ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>إدارة الإعلانات</span>
-              </div>
-            </Link>
-
-            {/* تنبيهات الموقع */}
-            <Link
-              href="/admin/alerts"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/alerts" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-info-circle ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>تنبيهات الموقع</span>
-              </div>
-            </Link>
-
-            {/* إدارة وضع الصيانة */}
-            <Link
-              href="/admin/maintenance"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/maintenance" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-wrench ${styles.linkIcon}`} style={{ color: "#fb923c" }} />
-                <span className={styles.linkLabel}>إدارة وضع الصيانة</span>
-              </div>
-            </Link>
-
-            {/* ── البلاغات والدعم ── */}
-            <div className={styles.sidebarGroupLabel}>البلاغات والدعم</div>
-
-            {/* البلاغات الواردة (وصول سريع) */}
-            <Link
-              href="/admin/reports"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/reports" || pathname === "/admin/incoming-reports" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-inbox ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>البلاغات والاقتراحات الواردة</span>
-              </div>
-              {pendingIncomingCount > 0 && (
-                <span className={styles.sidebarBadge} style={{ background: "#ef4444", color: "#fff" }} title={`هناك ${pendingIncomingCount} بلاغات واقتراحات معلقة`}>
-                  {pendingIncomingCount}
-                </span>
-              )}
-            </Link>
-
-
-
-            {/* الإشعارات والرسائل */}
-            <Link
-              href="/admin/notifications"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/notifications" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-bell ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>الإشعارات والرسائل</span>
-              </div>
-            </Link>
-
-            {/* ── الحسابات والمستخدمين ── */}
-            <div className={styles.sidebarGroupLabel}>الحسابات والمستخدمين</div>
-            <Link
-              href="/admin/users"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/users" ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-group ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>إدارة الحسابات والمستخدمين</span>
-              </div>
-            </Link>
-
-            {/* ── الرصيد والاشتراكات ── */}
-            <div className={styles.sidebarGroupLabel}>المالية والاشتراكات</div>
-
-            {/* الرصيد والشحن */}
-            <Link
-              href="/admin/points?tab=users"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/points" && (activeSubTab === "users" || !activeSubTab) ? styles.sidebarNavLinkActive : ""
-                }`}
-              onClick={() => {
-                setActiveSubTab("users");
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-coin-stack ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>الرصيد والشحن</span>
-              </div>
-            </Link>
-
-            {/* طلبات الإيداع والسحب */}
-            <Link
-              href="/admin/points?tab=requests"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/points" && activeSubTab === "requests" ? styles.sidebarNavLinkActive : ""
-                }`}
-              onClick={() => {
-                setActiveSubTab("requests");
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-transfer ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>طلبات الإيداع والسحب</span>
-              </div>
-              {pendingPointsCount > 0 && (
-                <span className={styles.sidebarBadge} title={`هناك ${pendingPointsCount} معلقة`}>
-                  {pendingPointsCount}
-                </span>
-              )}
-            </Link>
-
-            {/* الاشتراكات المميزة */}
-            <Link
-              href="/admin/subscriptions"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/subscriptions" && (!activeSubTab || activeSubTab === "users" || activeSubTab === "plans") ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab(null);
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-crown ${styles.linkIcon}`} />
-                <span className={styles.linkLabel}>الاشتراكات المميزة</span>
-              </div>
-            </Link>
-
-            {/* العروض والخصومات */}
-            <Link
-              href="/admin/subscriptions?tab=promotions"
-              className={`${styles.sidebarNavLink} ${pathname === "/admin/subscriptions" && (activeSubTab === "promotions" || activeSubTab === "offers") ? styles.sidebarNavLinkActive : ""}`}
-              onClick={() => {
-                setActiveSubTab("promotions");
-                if (isMobile) setIsSidebarOpen(false);
-              }}
-            >
-              <div className={styles.linkLeftGroup}>
-                <i className={`bx bx-gift ${styles.linkIcon}`} style={{ color: "#f59e0b" }} />
-                <span className={styles.linkLabel}>العروض والخصومات</span>
-              </div>
-            </Link>
+            )}
           </nav>
 
           {/* Sidebar Footer Operations */}

@@ -10,6 +10,7 @@ import VoiceInputButton from "@/components/VoiceInputButton";
 import { isPageOpenByPromotion } from "@/lib/promotions";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
 import AiChatDrawer from "@/components/AiChatDrawer";
+import PlannerEmbeddedChat from "./components/PlannerEmbeddedChat";
 import { gsap, useGSAP } from "@/lib/gsap";
 import "./planner.css";
 
@@ -1756,6 +1757,23 @@ export default function PlannerPage() {
                 </div>
               </div>
             )}
+
+            {/* Embedded Google Gemini AI Chat */}
+            <div style={{ marginTop: "16px" }}>
+              <PlannerEmbeddedChat
+                planContext={{
+                  startingZone: selectedStartZone,
+                  placesCount: selectedPlaces.length,
+                  selectedPlaces: selectedPlaces.map(p => ({ name: p.name, category: p.category })),
+                  budget: budget,
+                  hours: maxDriveMinutes
+                }}
+                onApplySuggestion={(suggestionText) => {
+                  setNlpInput(suggestionText);
+                  executeAiPlanner(suggestionText);
+                }}
+              />
+            </div>
           </div>
 
           {/* Preset options */}

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     const ai = new GoogleGenAI({ apiKey });
 
-    const systemInstruction = `أنت "دليل القاهرة الذكي" (Cairo Map AI).
+    const systemInstruction = `أنت "دليل قريب الذكي" (Qareeb AI).
 أهم القواعد للرد:
 1. كن سريعاً ومباشراً ومختصراً. لا تطيل في الكلام إلا لو طلب المستخدم تفاصيل.
 2. اتكلم بلهجة مصرية ودودة أو فصحى بسيطة وواضحة.

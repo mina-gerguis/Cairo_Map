@@ -2546,3 +2546,216 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* ─── Dual Wallet Summary Card (Main vs Promotional Balance) ─── */
+.walletDualCard {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 16px;
+  background: var(--color-bg);
+  border: 1px solid var(--border-glass);
+  margin-top: 8px;
+  margin-bottom: 24px;
+  direction: rtl;
+}
+
+@media (max-width: 440px) {
+  .walletDualCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+.walletTileBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  text-align: right;
+  font-family: var(--font-sub);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.walletTileBtn:disabled {
+  cursor: default;
+}
+
+.walletTileBtn:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.walletTileMain {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.walletTileMain:not(:disabled):hover {
+  border-color: rgba(16, 185, 129, 0.42);
+  background: rgba(16, 185, 129, 0.09);
+}
+
+.walletTilePoints {
+  border-color: rgba(245, 158, 11, 0.22);
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.walletTilePoints:not(:disabled):hover {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.walletTileIconPoints {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+:global(html.light) .walletTileIconPoints {
+  color: #b45309;
+}
+
+.walletTileHintPoints {
+  background: rgba(245, 158, 11, 0.14);
+  color: #f59e0b;
+}
+
+:global(html.light) .walletTileHintPoints {
+  color: #b45309;
+}
+
+.walletTilePromo {
+  border-color: rgba(99, 102, 241, 0.22);
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.walletTilePromo:not(:disabled):hover {
+  border-color: rgba(99, 102, 241, 0.45);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.walletTileTop {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.walletTileIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.walletTileIconMain {
+  background: rgba(16, 185, 129, 0.14);
+  color: #10b981;
+}
+
+.walletTileIconPromo {
+  background: rgba(99, 102, 241, 0.16);
+  color: #818cf8;
+}
+
+:global(html.light) .walletTileIconPromo {
+  color: #4f46e5;
+}
+
+.walletTileLabel {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--color-fg);
+  flex: 1;
+}
+
+.walletTileChevron {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.walletTileValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.walletTileAmount {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-fg);
+  line-height: 1.1;
+}
+
+.walletTileCurrency {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.walletTileHint {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.walletTileHintMain {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+
+:global(html.light) .walletTileHintMain {
+  color: #047857;
+}
+
+.walletTileHintPromo {
+  background: rgba(99, 102, 241, 0.12);
+  color: #818cf8;
+}
+
+:global(html.light) .walletTileHintPromo {
+  color: #4338ca;
+}
+
+/* ─── Voucher Redemption & Wallet Polish Styles ─── */
+.voucherChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-secondary);
+  color: var(--color-fg);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.voucherChip:hover {
+  border-color: var(--color-secondary);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.voucherChip:active {
+  transform: scale(0.96);
+}
+
+.modalPressBtn {
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.modalPressBtn:active:not(:disabled) {
+  transform: scale(0.96);
+}

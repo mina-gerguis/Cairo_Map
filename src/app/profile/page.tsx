@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNotifications } from "@/context/NotificationContext";
 import { useProfileData } from "./hooks/useProfileData";
@@ -18,6 +18,7 @@ import {
   ProfileAlertModal,
   ProfilePointsModal,
   ProfileWalletModal,
+  ProfileVoucherModal,
   ProfileSubscriptionModal,
   ProfileSubscriptionConfirmModal,
   ProfilePasswordModal,
@@ -31,6 +32,11 @@ import {
 } from "./components";
 import { getGreetingTitle } from "./utils";
 import styles from "./page.module.css";
+import {
+  ActiveUnlockedPerk,
+  VoucherRedemptionLog,
+} from "@/types/vouchers";
+import { fetchUserVoucherOverview } from "@/lib/vouchers";
 
 export default function ProfilePage() {
   const { refreshProfile } = useAuth();
@@ -39,6 +45,12 @@ export default function ProfilePage() {
   const [selectedNotification, setSelectedNotification] = useState<any | null>(null);
   const [isRemindersModalOpen, setIsRemindersModalOpen] = useState(false);
   const [globalLoading, setGlobalLoading] = useState(false);
+
+  // Voucher Redemption & Perks state (backed by Supabase)
+  const [showVoucherModal, setShowVoucherModal] = useState(false);
+  const [unlockedPerks, setUnlockedPerks] = useState<ActiveUnlockedPerk[]>([]);
+  const [voucherRedemptions, setVoucherRedemptions] = useState<VoucherRedemptionLog[]>([]);
+  const [loadingVouchers, setLoadingVouchers] = useState(false);
 
   // 1. Core Profile Data Hook
   const {
@@ -86,6 +98,7 @@ export default function ProfilePage() {
     dbPlans,
     fetchProfileData,
     refreshProfile,
+    onPurchaseSuccess: wallet.fetchPromoOverview,
   });
 
   // 4. Security, 2FA, Devices Hook
@@ -104,6 +117,26 @@ export default function ProfilePage() {
     setFaqs,
     setMessage,
   });
+
+  const loadVoucherOverview = useCallback(async () => {
+    if (!user?.id) return;
+    setLoadingVouchers(true);
+    try {
+      const overview = await fetchUserVoucherOverview(user.id);
+      setUnlockedPerks(overview.unlockedPerks);
+      setVoucherRedemptions(overview.redemptions);
+    } catch (err) {
+      console.error("Error fetching voucher overview:", err);
+    } finally {
+      setLoadingVouchers(false);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      loadVoucherOverview();
+    }
+  }, [user?.id, loadVoucherOverview]);
 
   if (loading || authLoading || globalLoading) {
     return <ProfileLoading />;
@@ -128,6 +161,22 @@ export default function ProfilePage() {
   const handleOpenRemindersModal = () => {
     fetchProfileData();
     setIsRemindersModalOpen(true);
+  };
+
+
+
+  const handleOpenVoucherModal = () => {
+    setShowVoucherModal(true);
+    loadVoucherOverview();
+  };
+
+  const handleVoucherRedeemSuccess = async () => {
+    await Promise.all([
+      fetchProfileData(),
+      refreshProfile(),
+      wallet.fetchPromoOverview(),
+      loadVoucherOverview(),
+    ]);
   };
 
   return (
@@ -233,6 +282,8 @@ export default function ProfilePage() {
           subscription.setSubMessage(null);
           subscription.setShowSubModal(true);
         }}
+        onOpenVoucherModal={() => handleOpenVoucherModal()}
+        unlockedPerksCount={unlockedPerks.length}
         onOpenRemindersModal={handleOpenRemindersModal}
         onOpenLogoutModal={() => security.setShowLogoutModal(true)}
         onOpenDeleteModal={() => {
@@ -250,10 +301,6 @@ export default function ProfilePage() {
       <ProfilePointsModal
         isOpen={wallet.showPointsModal}
         onClose={() => wallet.setShowPointsModal(false)}
-        onBack={() => {
-          wallet.setShowPointsModal(false);
-          wallet.setShowWalletModal(true);
-        }}
         profile={profile}
         showConvertSection={wallet.showConvertSection}
         setShowConvertSection={wallet.setShowConvertSection}
@@ -273,7 +320,11 @@ export default function ProfilePage() {
           wallet.setShowPointsModal(true);
           wallet.setShowConvertSection(false);
         }}
+        onOpenVoucherModal={handleOpenVoucherModal}
         profile={profile}
+        promoBatches={wallet.promoBatches}
+        promoLedger={wallet.promoLedger}
+        loadingPromo={wallet.loadingPromo}
         walletTab={wallet.walletTab}
         setWalletTab={wallet.setWalletTab}
         depositMethod={wallet.depositMethod}
@@ -304,6 +355,18 @@ export default function ProfilePage() {
         pendingTransactionsCount={wallet.pendingTransactionsCount}
       />
 
+      {/* 2B. Voucher Redemption Modal */}
+      <ProfileVoucherModal
+        isOpen={showVoucherModal}
+        onClose={() => setShowVoucherModal(false)}
+        unlockedPerks={unlockedPerks}
+        redemptionHistory={voucherRedemptions}
+        loadingVouchers={loadingVouchers}
+        onRedeemSuccess={handleVoucherRedeemSuccess}
+        onOpenWalletPromo={() => wallet.handleOpenWalletModal("promo")}
+        onOpenWalletMain={() => wallet.handleOpenWalletModal("main")}
+      />
+
       {/* 3. Subscription Modal */}
       <ProfileSubscriptionModal
         isOpen={subscription.showSubModal}
@@ -312,6 +375,8 @@ export default function ProfilePage() {
         selectedPlanId={subscription.selectedPlanId}
         subscriptionPeriod={subscription.subscriptionPeriod}
         setSubscriptionPeriod={subscription.setSubscriptionPeriod}
+        usePromoBalance={subscription.usePromoBalance}
+        setUsePromoBalance={subscription.setUsePromoBalance}
         subscribing={subscription.subscribing}
         subMessage={subscription.subMessage}
         setSubMessage={subscription.setSubMessage}

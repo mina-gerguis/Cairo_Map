@@ -59,6 +59,8 @@ interface ProfileSubscriptionModalProps {
   selectedPlanId: string;
   subscriptionPeriod: "monthly" | "yearly";
   setSubscriptionPeriod: (period: "monthly" | "yearly") => void;
+  usePromoBalance?: boolean;
+  setUsePromoBalance?: (val: boolean) => void;
   subscribing: boolean;
   subMessage: ProfileAlertMessage | null;
   setSubMessage: (msg: ProfileAlertMessage | null) => void;
@@ -78,6 +80,8 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
   selectedPlanId,
   subscriptionPeriod,
   setSubscriptionPeriod,
+  usePromoBalance = true,
+  setUsePromoBalance,
   subscribing,
   subMessage,
   setSubMessage,
@@ -202,18 +206,54 @@ export const ProfileSubscriptionModal: React.FC<ProfileSubscriptionModalProps> =
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
-              رصيد المحفظة:
+              رصيد المحفظة الأساسي:
             </div>
             <strong
               style={{
                 color: "var(--color-fg)",
-                fontSize: "1.15rem",
+                fontSize: "1.1rem",
                 marginTop: "2px",
                 display: "block",
+                fontVariantNumeric: "tabular-nums",
               }}
             >
               {(profile?.balance ?? 0).toFixed(2)} ج.م
             </strong>
+            {(profile?.promo_balance ?? 0) > 0 && (
+              <div style={{ marginTop: "6px" }}>
+                <span
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "#818cf8",
+                    fontWeight: "bold",
+                    display: "block",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  الرصيد الترويجي: {(profile?.promo_balance ?? 0).toFixed(2)} ج.م
+                </span>
+                {setUsePromoBalance && (
+                  <label
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      fontSize: "0.72rem",
+                      color: "var(--text-secondary)",
+                      marginTop: "3px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={usePromoBalance}
+                      onChange={(e) => setUsePromoBalance(e.target.checked)}
+                    />
+                    <span>استخدام الترويجي في الدفع</span>
+                  </label>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

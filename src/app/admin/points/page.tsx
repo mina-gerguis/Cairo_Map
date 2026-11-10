@@ -5,6 +5,11 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../admin.module.css";
+import {
+  adminAdjustPromoBalance,
+  fetchAdminPromoLedger,
+  AdminPromoLedgerEntry,
+} from "@/lib/promoBalance";
 
 interface UserProfile {
   id: string;
@@ -44,7 +49,13 @@ function AdminPointsPageInner() {
   const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Deposit/Withdraw requests states
-  const [activeTab, setActiveTab] = useState<"users" | "requests">((tabParam === "requests" || tabParam === "users") ? tabParam : "users");
+  const [activeTab, setActiveTab] = useState<"users" | "requests" | "promo_ledger">((tabParam === "requests" || tabParam === "users" || tabParam === "promo_ledger") ? tabParam : "users");
+  const [promoExpiryOption, setPromoExpiryOption] = useState<"unlimited" | "30d" | "90d" | "custom">("30d");
+  const [promoCustomExpiryDate, setPromoCustomExpiryDate] = useState<string>("");
+  const [promoReason, setPromoReason] = useState<string>("");
+  const [promoLedgerItems, setPromoLedgerItems] = useState<AdminPromoLedgerEntry[]>([]);
+  const [loadingPromoLedger, setLoadingPromoLedger] = useState(false);
+  const [promoSchemaReady, setPromoSchemaReady] = useState(true);
   const [requestsList, setRequestsList] = useState<any[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(true);
   const [requestSearchQuery, setRequestSearchQuery] = useState("");
@@ -57,7 +68,7 @@ function AdminPointsPageInner() {
 
 
   useEffect(() => {
-    if (tabParam === "requests" || tabParam === "users") {
+    if (tabParam === "requests" || tabParam === "users" || tabParam === "promo_ledger") {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
@@ -97,6 +108,7 @@ function AdminPointsPageInner() {
           setIsAdmin(true);
           fetchUsers();
           fetchRequests();
+          loadPromoLedger();
         }
       } catch (error) {
         setIsAdmin(false);
@@ -125,6 +137,17 @@ function AdminPointsPageInner() {
       console.error("Error fetching profiles:", err);
     } finally {
       setLoadingUsers(false);
+    }
+  };
+
+  const loadPromoLedger = async () => {
+    setLoadingPromoLedger(true);
+    try {
+      const { items, schemaReady } = await fetchAdminPromoLedger(60);
+      setPromoLedgerItems(items);
+      setPromoSchemaReady(schemaReady);
+    } finally {
+      setLoadingPromoLedger(false);
     }
   };
 
@@ -278,6 +301,8 @@ function AdminPointsPageInner() {
     setActionType("deposit");
     setAssetType("points");
     setTransactionAmount("");
+    setPromoReason("");
+    setPromoCustomExpiryDate("");
     setStatusMessage(null);
   };
 
@@ -293,9 +318,82 @@ function AdminPointsPageInner() {
       return;
     }
 
+    // Dedicated Promotional Balance Business Logic (batches + expiration + separate ledger)
+    if (assetType === "promo_balance") {
+      const amountFixed = parseFloat(amount.toFixed(2));
+      let expiresAt: string | null = null;
+
+      if (actionType === "deposit") {
+        if (promoExpiryOption === "30d") {
+          expiresAt = new Date(Date.now() + 30 * 86400000).toISOString();
+        } else if (promoExpiryOption === "90d") {
+          expiresAt = new Date(Date.now() + 90 * 86400000).toISOString();
+        } else if (promoExpiryOption === "custom") {
+          if (!promoCustomExpiryDate) {
+            setStatusMessage({ type: "error", text: "يرجى تحديد تاريخ انتهاء الصلاحية." });
+            setUpdating(false);
+            return;
+          }
+          const parsed = new Date(`${promoCustomExpiryDate}T23:59:59Z`);
+          if (isNaN(parsed.getTime()) || parsed.getTime() <= Date.now()) {
+            setStatusMessage({ type: "error", text: "تاريخ انتهاء الصلاحية يجب أن يكون في المستقبل." });
+            setUpdating(false);
+            return;
+          }
+          expiresAt = parsed.toISOString();
+        }
+      }
+
+      try {
+        const res = await adminAdjustPromoBalance({
+          userId: selectedUser.id,
+          action: actionType,
+          amount: amountFixed,
+          expiresAt,
+          reason: promoReason.trim() || undefined,
+          fallbackCurrentPromo: selectedUser.promo_balance || 0,
+          currentPoints: selectedUser.points || 0,
+          currentBalance: selectedUser.balance || 0,
+        });
+
+        if (!res.success) {
+          setStatusMessage({ type: "error", text: res.message });
+          setUpdating(false);
+          return;
+        }
+
+        const updatedPromo =
+          res.newPromoBalance !== undefined
+            ? res.newPromoBalance
+            : actionType === "deposit"
+              ? parseFloat(((selectedUser.promo_balance || 0) + amountFixed).toFixed(2))
+              : parseFloat(Math.max(0, (selectedUser.promo_balance || 0) - amountFixed).toFixed(2));
+
+        setUsersList((prev) =>
+          prev.map((u) =>
+            u.id === selectedUser.id ? { ...u, promo_balance: updatedPromo } : u
+          )
+        );
+        setSelectedUser({ ...selectedUser, promo_balance: updatedPromo });
+        setTransactionAmount("");
+        setPromoReason("");
+        setStatusMessage({ type: "success", text: res.message });
+        loadPromoLedger();
+
+        setTimeout(() => {
+          setSelectedUser(null);
+        }, 1500);
+      } catch (err: any) {
+        setStatusMessage({ type: "error", text: err?.message || "فشل تعديل الرصيد الترويجي." });
+      } finally {
+        setUpdating(false);
+      }
+      return;
+    }
+
     let finalPoints = selectedUser.points || 0;
     let finalBalance = selectedUser.balance || 0;
-    let finalPromoBalance = selectedUser.promo_balance || 0;
+    const finalPromoBalance = selectedUser.promo_balance || 0;
 
     if (assetType === "points") {
       const amountInt = Math.floor(amount);
@@ -327,18 +425,6 @@ function AdminPointsPageInner() {
         }
         finalBalance -= amountFixed;
       }
-    } else if (assetType === "promo_balance") {
-      const amountFixed = parseFloat(amount.toFixed(2));
-      if (actionType === "deposit") {
-        finalPromoBalance += amountFixed;
-      } else {
-        if (finalPromoBalance < amountFixed) {
-          setStatusMessage({ type: "error", text: `الرصيد الإضافي للمستخدم غير كافٍ للخصم (الرصيد الحالي: ${finalPromoBalance} ج.م).` });
-          setUpdating(false);
-          return;
-        }
-        finalPromoBalance -= amountFixed;
-      }
     }
 
     try {
@@ -363,8 +449,8 @@ function AdminPointsPageInner() {
         )
       );
 
-      // Log transaction for financial audit
-      if (assetType === "balance" || assetType === "promo_balance") {
+      // Log transaction for main cash balance audit
+      if (assetType === "balance") {
         try {
           const isDeposit = actionType === "deposit";
           await supabase.from("balance_transactions").insert({
@@ -376,7 +462,7 @@ function AdminPointsPageInner() {
             recipient_name: selectedUser.full_name || selectedUser.username || "مستخدم",
             transaction_id: "ADM_" + Date.now(),
             status: "approved",
-            admin_notes: `تعديل إداري (${assetType === "promo_balance" ? "رصيد إضافي" : "رصيد أساسي"}): ${isDeposit ? "إضافة مكافأة" : "خصم رصيد"}`
+            admin_notes: `تعديل إداري (رصيد أساسي): ${isDeposit ? "إضافة مكافأة" : "خصم رصيد"}`
           });
         } catch (logErr) {
           console.warn("Error logging admin asset modification:", logErr);
@@ -558,6 +644,28 @@ function AdminPointsPageInner() {
             </span>
           )}
         </button>
+        <button
+          onClick={() => {
+            setActiveTab("promo_ledger");
+            loadPromoLedger();
+          }}
+          className="btn"
+          style={{
+            background: activeTab === "promo_ledger" ? "#6366f1" : "transparent",
+            color: activeTab === "promo_ledger" ? "#fff" : "var(--text-secondary)",
+            border: activeTab === "promo_ledger" ? "1px solid #6366f1" : "1px solid transparent",
+            fontWeight: "bold",
+            padding: "8px 16px",
+            fontSize: "0.88rem",
+            borderRadius: "10px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px"
+          }}
+        >
+          <i className="bx bx-gift" style={{ fontSize: "1.1rem" }}></i>
+          سجل الرصيد الترويجي
+        </button>
       </div>
 
       {/* VIEW 1: USERS LIST MANAGEMENT */}
@@ -660,7 +768,7 @@ function AdminPointsPageInner() {
                       <th className={styles.adminTh}>الاسم الكامل</th>
                       <th className={styles.adminTh}>البريد الإلكتروني</th>
                       <th className={styles.adminTh}>الرصيد الأساسي</th>
-                      <th className={styles.adminTh}>الرصيد الإضافي</th>
+                      <th className={styles.adminTh}>الرصيد الترويجي</th>
                       <th className={styles.adminTh}>النقاط</th>
                       <th className={styles.adminTh} style={{ textAlign: "center" }}>
                         خيارات
@@ -690,10 +798,10 @@ function AdminPointsPageInner() {
                         <td className={styles.adminTd} style={{ direction: "ltr", textAlign: "right" }}>
                           {u.email}
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700", color: "#10b981" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", color: "#10b981", fontVariantNumeric: "tabular-nums" }}>
                           {u.balance?.toFixed(2)} ج.م
                         </td>
-                        <td className={styles.adminTd} style={{ fontWeight: "700", color: "#3b82f6" }}>
+                        <td className={styles.adminTd} style={{ fontWeight: "700", color: "#818cf8", fontVariantNumeric: "tabular-nums" }}>
                           {u.promo_balance?.toFixed(2)} ج.م
                         </td>
                         <td className={styles.adminTd} style={{ fontWeight: "700", color: "#fbbf24" }}>
@@ -1000,6 +1108,135 @@ function AdminPointsPageInner() {
         </>
       )}
 
+      {/* VIEW 3: PROMOTIONAL BALANCE LEDGER */}
+      {activeTab === "promo_ledger" && (
+        <div className={styles.tableCard}>
+          <div className={styles.tableHeaderBar}>
+            <div className={styles.tableTitleGroup}>
+              <div className={styles.tableIcon} style={{ background: "rgba(99, 102, 241, 0.14)", color: "#818cf8" }}>
+                <i className="bx bx-gift" />
+              </div>
+              <div>
+                <h3 className={styles.tableTitle}>سجل حركات الرصيد الترويجي</h3>
+                <p className={styles.tableSubtitle}>
+                  متابعة الإضافات، الخصومات للشراء داخل الموقع، وتواريخ انتهاء الصلاحية ({promoLedgerItems.length} حركة)
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <button
+                type="button"
+                onClick={loadPromoLedger}
+                disabled={loadingPromoLedger}
+                className="btn"
+                style={{ padding: "8px 14px", fontSize: "0.82rem", gap: "6px" }}
+              >
+                <i className={`bx bx-refresh ${loadingPromoLedger ? "bx-spin" : ""}`} />
+                <span>تحديث</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push("/admin/vouchers")}
+                className="btn btn-primary"
+                style={{ padding: "8px 14px", fontSize: "0.82rem", gap: "6px" }}
+              >
+                <i className="bx bxs-coupon" />
+                <span>إدارة القسائم والأكواد</span>
+              </button>
+            </div>
+          </div>
+
+          {!promoSchemaReady ? (
+            <div style={{ padding: "40px 24px", textAlign: "center", color: "var(--text-secondary)" }}>
+              <i className="bx bx-data" style={{ fontSize: "2.5rem", color: "#818cf8", marginBottom: "10px" }} />
+              <p style={{ margin: "0 0 6px", fontWeight: 700, color: "var(--color-fg)" }}>
+                جداول تتبع الرصيد الترويجي غير مفعّلة في قاعدة البيانات بعد
+              </p>
+              <p style={{ margin: 0, fontSize: "0.82rem" }}>
+                يرجى تشغيل ملف <code dir="ltr">supabase/supabase_promo_balance_schema.sql</code> داخل Supabase SQL Editor لتفعيل الدفعات والسجل الكامل.
+              </p>
+            </div>
+          ) : loadingPromoLedger ? (
+            <div style={{ textAlign: "center", padding: "48px" }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>جاري تحميل سجل الرصيد الترويجي...</p>
+            </div>
+          ) : promoLedgerItems.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "48px" }}>
+              <i className="bx bx-gift" style={{ fontSize: "3rem", color: "var(--text-muted)", marginBottom: "10px" }} />
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", margin: 0 }}>
+                لا توجد حركات مسجلة للرصيد الترويجي حتى الآن.
+              </p>
+            </div>
+          ) : (
+            <div className={styles.tableResponsive}>
+              <table className={styles.adminTable}>
+                <thead className={styles.adminThead}>
+                  <tr>
+                    <th className={styles.adminTh}>المستخدم</th>
+                    <th className={styles.adminTh}>العملية</th>
+                    <th className={styles.adminTh}>التفاصيل</th>
+                    <th className={styles.adminTh}>القيمة</th>
+                    <th className={styles.adminTh}>الكود المرجعي</th>
+                    <th className={styles.adminTh}>تاريخ الانتهاء</th>
+                    <th className={styles.adminTh}>التاريخ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {promoLedgerItems.map((item) => {
+                    const isCredit = item.type === "credit";
+                    const isExpired = item.type === "expired";
+                    const color = isCredit ? "#10b981" : isExpired ? "#f59e0b" : "#818cf8";
+                    return (
+                      <tr key={item.id} className={styles.adminTr}>
+                        <td className={styles.adminTd}>
+                          <div style={{ fontWeight: 700, fontSize: "0.85rem" }}>
+                            {item.userName || "مستخدم"}
+                          </div>
+                          {item.userUsername && (
+                            <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", direction: "ltr", textAlign: "right" }}>
+                              @{item.userUsername}
+                            </div>
+                          )}
+                        </td>
+                        <td className={styles.adminTd} style={{ fontWeight: 700, color }}>
+                          <i
+                            className={`bx ${isCredit ? "bx-down-arrow-circle" : isExpired ? "bx-time" : "bx-up-arrow-circle"}`}
+                            style={{ marginLeft: "6px", verticalAlign: "middle" }}
+                          />
+                          {item.title}
+                        </td>
+                        <td className={styles.adminTd}>{item.description || "—"}</td>
+                        <td className={styles.adminTd} style={{ fontWeight: 800, color, fontVariantNumeric: "tabular-nums" }}>
+                          {isCredit ? "+" : "-"} {item.amount.toFixed(2)} ج.م
+                        </td>
+                        <td className={styles.adminTd}>
+                          {item.sourceCode ? (
+                            <code dir="ltr" style={{ padding: "2px 8px", borderRadius: "6px", background: "rgba(99, 102, 241, 0.12)", color: "#818cf8", fontWeight: 700 }}>
+                              {item.sourceCode}
+                            </code>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td className={styles.adminTd} style={{ fontVariantNumeric: "tabular-nums" }}>
+                          {item.expiresAt
+                            ? new Date(item.expiresAt).toLocaleDateString("ar-EG", { year: "numeric", month: "short", day: "numeric" })
+                            : "غير محدد المدة"}
+                        </td>
+                        <td className={styles.adminTd} style={{ fontVariantNumeric: "tabular-nums" }}>
+                          {new Date(item.createdAt).toLocaleDateString("ar-EG", { year: "numeric", month: "short", day: "numeric" })}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Edit Points & Balance Modal */}
       {selectedUser && (
         <div
@@ -1098,16 +1335,22 @@ function AdminPointsPageInner() {
             {/* Current Values Indicators (3 columns) */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginBottom: "24px" }}>
               <div style={{ background: "rgba(251, 191, 36, 0.05)", border: "1px solid rgba(251, 191, 36, 0.15)", borderRadius: "14px", padding: "10px", textAlign: "center" }}>
-                <span style={{ fontSize: "0.72rem", color: "#fbbf24", display: "block", marginBottom: "4px", fontWeight: "bold" }}>🪙 النقاط</span>
-                <strong style={{ fontSize: "1.1rem", color: "#fbbf24", fontWeight: "800" }}>{selectedUser.points || 0}</strong>
+                <span style={{ fontSize: "0.72rem", color: "#fbbf24", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", marginBottom: "4px", fontWeight: "bold" }}>
+                  <i className="bx bxs-coin" /> النقاط
+                </span>
+                <strong style={{ fontSize: "1.1rem", color: "#fbbf24", fontWeight: "800", fontVariantNumeric: "tabular-nums" }}>{selectedUser.points || 0}</strong>
               </div>
               <div style={{ background: "rgba(16, 185, 129, 0.05)", border: "1px solid rgba(16, 185, 129, 0.15)", borderRadius: "14px", padding: "10px", textAlign: "center" }}>
-                <span style={{ fontSize: "0.72rem", color: "#10b981", display: "block", marginBottom: "4px", fontWeight: "bold" }}>💵 الأساسي</span>
-                <strong style={{ fontSize: "1.1rem", color: "#10b981", fontWeight: "800" }}>{(selectedUser.balance || 0).toFixed(2)}</strong>
+                <span style={{ fontSize: "0.72rem", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", marginBottom: "4px", fontWeight: "bold" }}>
+                  <i className="bx bx-wallet" /> الأساسي
+                </span>
+                <strong style={{ fontSize: "1.1rem", color: "#10b981", fontWeight: "800", fontVariantNumeric: "tabular-nums" }}>{(selectedUser.balance || 0).toFixed(2)}</strong>
               </div>
-              <div style={{ background: "rgba(59, 130, 246, 0.05)", border: "1px solid rgba(59, 130, 246, 0.15)", borderRadius: "14px", padding: "10px", textAlign: "center" }}>
-                <span style={{ fontSize: "0.72rem", color: "#3b82f6", display: "block", marginBottom: "4px", fontWeight: "bold" }}>🎁 الترويجي</span>
-                <strong style={{ fontSize: "1.1rem", color: "#3b82f6", fontWeight: "800" }}>{(selectedUser.promo_balance || 0).toFixed(2)}</strong>
+              <div style={{ background: "rgba(99, 102, 241, 0.08)", border: "1px solid rgba(99, 102, 241, 0.25)", borderRadius: "14px", padding: "10px", textAlign: "center" }}>
+                <span style={{ fontSize: "0.72rem", color: "#818cf8", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", marginBottom: "4px", fontWeight: "bold" }}>
+                  <i className="bx bx-gift" /> الترويجي
+                </span>
+                <strong style={{ fontSize: "1.1rem", color: "#818cf8", fontWeight: "800", fontVariantNumeric: "tabular-nums" }}>{(selectedUser.promo_balance || 0).toFixed(2)}</strong>
               </div>
             </div>
 
@@ -1130,10 +1373,11 @@ function AdminPointsPageInner() {
                       borderColor: actionType === "deposit" ? "#10b981" : "var(--border-glass)",
                       color: actionType === "deposit" ? "#fff" : "var(--text-secondary)",
                       fontWeight: "bold",
-                      padding: "10px"
+                      padding: "10px",
+                      gap: "6px"
                     }}
                   >
-                    📥 إيداع / إضافة
+                    <i className="bx bx-down-arrow-circle" /> إيداع / إضافة
                   </button>
                   <button
                     type="button"
@@ -1146,10 +1390,11 @@ function AdminPointsPageInner() {
                       borderColor: actionType === "withdraw" ? "#ef4444" : "var(--border-glass)",
                       color: actionType === "withdraw" ? "#fff" : "var(--text-secondary)",
                       fontWeight: "bold",
-                      padding: "10px"
+                      padding: "10px",
+                      gap: "6px"
                     }}
                   >
-                    📤 سحب / خصم
+                    <i className="bx bx-up-arrow-circle" /> سحب / خصم
                   </button>
                 </div>
               </div>
@@ -1172,10 +1417,11 @@ function AdminPointsPageInner() {
                       color: assetType === "points" ? "#fbbf24" : "var(--text-secondary)",
                       fontWeight: "bold",
                       padding: "10px",
-                      fontSize: "0.82rem"
+                      fontSize: "0.82rem",
+                      gap: "5px"
                     }}
                   >
-                    🪙 النقاط
+                    <i className="bx bxs-coin" /> النقاط
                   </button>
                   <button
                     type="button"
@@ -1189,10 +1435,11 @@ function AdminPointsPageInner() {
                       color: assetType === "balance" ? "#10b981" : "var(--text-secondary)",
                       fontWeight: "bold",
                       padding: "10px",
-                      fontSize: "0.82rem"
+                      fontSize: "0.82rem",
+                      gap: "5px"
                     }}
                   >
-                    💵 أساسي
+                    <i className="bx bx-wallet" /> أساسي
                   </button>
                   <button
                     type="button"
@@ -1201,18 +1448,77 @@ function AdminPointsPageInner() {
                     style={{
                       flex: 1,
                       justifyContent: "center",
-                      background: assetType === "promo_balance" ? "rgba(59, 130, 246, 0.15)" : "transparent",
-                      borderColor: assetType === "promo_balance" ? "#3b82f6" : "var(--border-glass)",
-                      color: assetType === "promo_balance" ? "#3b82f6" : "var(--text-secondary)",
+                      background: assetType === "promo_balance" ? "rgba(99, 102, 241, 0.16)" : "transparent",
+                      borderColor: assetType === "promo_balance" ? "#818cf8" : "var(--border-glass)",
+                      color: assetType === "promo_balance" ? "#818cf8" : "var(--text-secondary)",
                       fontWeight: "bold",
                       padding: "10px",
-                      fontSize: "0.82rem"
+                      fontSize: "0.82rem",
+                      gap: "5px"
                     }}
                   >
-                    🎁 ترويجي
+                    <i className="bx bx-gift" /> ترويجي
                   </button>
                 </div>
               </div>
+
+              {assetType === "promo_balance" && (
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: "12px",
+                    background: "rgba(99, 102, 241, 0.08)",
+                    border: "1px solid rgba(99, 102, 241, 0.25)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "0.76rem", color: "#818cf8", fontWeight: "700", lineHeight: 1.5 }}>
+                    الرصيد الترويجي منفصل عن المحفظة الأساسية ويُستخدم للشراء داخل الموقع فقط (غير قابل للسحب أو التحويل).
+                  </div>
+                  {actionType === "deposit" && (
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "4px" }}>
+                        صلاحية الرصيد الترويجي:
+                      </label>
+                      <select
+                        className="input-fields"
+                        value={promoExpiryOption}
+                        onChange={(e) => setPromoExpiryOption(e.target.value as "unlimited" | "30d" | "90d" | "custom")}
+                        style={{ width: "100%", padding: "8px 10px", fontSize: "0.8rem" }}
+                      >
+                        <option value="30d">صالح لمدة 30 يوماً</option>
+                        <option value="90d">صالح لمدة 90 يوماً</option>
+                        <option value="custom">تاريخ انتهاء مخصص</option>
+                        <option value="unlimited">غير محدد المدة</option>
+                      </select>
+                      {promoExpiryOption === "custom" && (
+                        <input
+                          type="date"
+                          className="input-fields"
+                          value={promoCustomExpiryDate}
+                          onChange={(e) => setPromoCustomExpiryDate(e.target.value)}
+                          style={{ width: "100%", padding: "8px 10px", fontSize: "0.8rem", marginTop: "8px" }}
+                        />
+                      )}
+                    </div>
+                  )}
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "bold", marginBottom: "4px" }}>
+                      السبب / الملاحظة (اختياري):
+                    </label>
+                    <input
+                      type="text"
+                      className="input-fields"
+                      placeholder="مثال: مكافأة ترويجية للترحيب أو تعويض"
+                      value={promoReason}
+                      onChange={(e) => setPromoReason(e.target.value)}
+                      style={{ width: "100%", padding: "8px 10px", fontSize: "0.8rem" }}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Row 3: Transaction Amount */}
               <div>

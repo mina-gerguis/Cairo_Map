@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
+import { adminAdjustPromoBalance } from "@/lib/promoBalance";
 import { useRouter } from "next/navigation";
 import styles from "../admin.module.css";
 import uStyles from "./users.module.css";
@@ -464,6 +465,49 @@ export default function AdminUsersPage() {
 
     setSavingAdjust(true);
     try {
+      if (adjustAsset === "promo_balance") {
+        const res = await adminAdjustPromoBalance({
+          userId: adjustTargetUser.id,
+          action: adjustType,
+          amount: amountNum,
+          expiresAt: null,
+          reason: adjustReason.trim() || undefined,
+          fallbackCurrentPromo: Number(adjustTargetUser.promo_balance || 0),
+          currentPoints: Number(adjustTargetUser.points || 0),
+          currentBalance: Number(adjustTargetUser.balance || 0),
+        });
+
+        if (!res.success) {
+          setStatusMessage({ type: "error", text: res.message });
+          setSavingAdjust(false);
+          return;
+        }
+
+        const updatedVal =
+          res.newPromoBalance !== undefined
+            ? res.newPromoBalance
+            : adjustType === "deposit"
+              ? Number(adjustTargetUser.promo_balance || 0) + amountNum
+              : Math.max(0, Number(adjustTargetUser.promo_balance || 0) - amountNum);
+
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === adjustTargetUser.id ? { ...u, promo_balance: updatedVal } : u
+          )
+        );
+        if (viewUser && viewUser.id === adjustTargetUser.id) {
+          setViewUser((prev) => (prev ? { ...prev, promo_balance: updatedVal } : null));
+        }
+
+        setStatusMessage({
+          type: "success",
+          text: `تم ${adjustType === "deposit" ? "إضافة" : "خصم"} ${amountNum} من (الرصيد الترويجي) لحساب (${adjustTargetUser.full_name || adjustTargetUser.username}) بنجاح!`,
+        });
+        setAdjustTargetUser(null);
+        setSavingAdjust(false);
+        return;
+      }
+
       const currentVal = Number(adjustTargetUser[adjustAsset] || 0);
       let newVal = 0;
       if (adjustType === "deposit") {
@@ -485,8 +529,8 @@ export default function AdminUsersPage() {
 
       if (profileErr) throw profileErr;
 
-      // Log to balance_transactions if balance or promo_balance
-      if (adjustAsset === "balance" || adjustAsset === "promo_balance") {
+      // Log to balance_transactions if main balance
+      if (adjustAsset === "balance") {
         try {
           const isDeposit = adjustType === "deposit";
           await supabase.from("balance_transactions").insert({
@@ -500,7 +544,7 @@ export default function AdminUsersPage() {
             status: "approved",
             admin_notes:
               adjustReason.trim() ||
-              `تعديل إداري (${adjustAsset === "promo_balance" ? "رصيد ترويجي" : "رصيد أساسي"}): ${isDeposit ? "إضافة رصيد" : "خصم رصيد"}`,
+              `تعديل إداري (رصيد أساسي): ${isDeposit ? "إضافة رصيد" : "خصم رصيد"}`,
           });
         } catch (logErr) {
           console.warn("Could not log balance transaction:", logErr);
@@ -519,11 +563,7 @@ export default function AdminUsersPage() {
       }
 
       const assetLabel =
-        adjustAsset === "balance"
-          ? "رصيد المحفظة الأساسي"
-          : adjustAsset === "promo_balance"
-            ? "الرصيد الترويجي"
-            : "نقاط المكافآت";
+        adjustAsset === "balance" ? "رصيد المحفظة الأساسي" : "نقاط المكافآت";
 
       setStatusMessage({
         type: "success",

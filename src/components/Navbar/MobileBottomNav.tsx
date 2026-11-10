@@ -198,7 +198,7 @@ const SITE_SERVICES: SiteServiceItem[] = [
   },
   {
     id: "blog",
-    label: "مدونة ومقالات خريطة القاهرة",
+    label: "مدونة ومقالات قريب",
     subtitle: "أدلة الترانزيت، النصائح، والأماكن",
     href: "/blog",
     icon: "cairo.webp",

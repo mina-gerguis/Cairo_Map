@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       url: `${siteUrl}/blog/${encodeURIComponent(blog.slug || slug)}`,
-      siteName: "قريب - Cairo Map",
+      siteName: "قريب - Qareeb",
       type: "article",
       publishedTime: blog.created_at,
       authors: [blog.author_name || "فريق قريب"],

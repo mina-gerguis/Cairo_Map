@@ -44,7 +44,7 @@ export default function FeaturedBlogCard({ post }: FeaturedBlogCardProps) {
                   objectFit: "cover",
                 }}
               />
-              {post.author_name || "خريطة القاهرة"}
+              {post.author_name || "فريق قريب"}
             </span>
             <span>
               <i className="bx bx-time" /> {post.reading_time || 3} دقائق

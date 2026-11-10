@@ -45,7 +45,7 @@ export default function BlogCard({ post }: BlogCardProps) {
                 objectFit: "cover",
               }}
             />
-            {post.author_name || "خريطة القاهرة"}
+            {post.author_name || "فريق قريب"}
           </span>
 
           <div className={styles.cardStats}>

@@ -7,15 +7,34 @@ import { PiHandDepositBold, PiHandWithdrawBold } from "react-icons/pi";
 import { UserProfile, BalanceTransaction, ProfileAlertMessage } from "../../types";
 import { formatNumber } from "../../utils";
 import styles from "../../page.module.css";
-import { ChevronRight } from "lucide-react";
+import {
+  ChevronRight,
+  Sparkles,
+  Ticket,
+  Lock,
+  Clock,
+  ArrowDownLeft,
+  ArrowUpRight,
+  AlertCircle,
+  CheckCircle2,
+  ShieldCheck,
+} from "lucide-react";
+import { PromoBalanceBatch, PromoBalanceLedgerItem } from "@/types/vouchers";
+import { IconClockHour10Filled, IconVersionsFilled } from "@tabler/icons-react";
 
 interface ProfileWalletModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenPointsModal?: () => void;
+  onOpenVoucherModal?: () => void;
   profile: UserProfile | null;
-  walletTab: "main" | "deposit" | "withdraw" | "history";
-  setWalletTab: (tab: "main" | "deposit" | "withdraw" | "history") => void;
+  walletTab: "main" | "promo" | "deposit" | "withdraw" | "history";
+  setWalletTab: (tab: "main" | "promo" | "deposit" | "withdraw" | "history") => void;
+  mainBalanceOverride?: number;
+  promoBalanceOverride?: number;
+  promoBatches?: PromoBalanceBatch[];
+  promoLedger?: PromoBalanceLedgerItem[];
+  loadingPromo?: boolean;
   // Deposit
   depositMethod: string;
   setDepositMethod: (m: string) => void;
@@ -51,9 +70,15 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
   isOpen,
   onClose,
   onOpenPointsModal,
+  onOpenVoucherModal,
   profile,
   walletTab,
   setWalletTab,
+  mainBalanceOverride,
+  promoBalanceOverride,
+  promoBatches = [],
+  promoLedger = [],
+  loadingPromo = false,
   depositMethod,
   setDepositMethod,
   depositAmount,
@@ -85,6 +110,9 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
 
   if (!isOpen) return null;
 
+  const mainBalance = mainBalanceOverride ?? profile?.balance ?? 0;
+  const promoBalance = promoBalanceOverride ?? profile?.promo_balance ?? 0;
+
   return (
     <div className={`modal-backdrop ${styles.modalBackdropSlow}`} onClick={onClose}>
       <div
@@ -100,7 +128,7 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
           boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
           border: "1px solid var(--border-glass)",
           animation: "slide-up 0.3s ease",
-          maxHeight: "80vh",
+          maxHeight: "82vh",
           overflowY: "auto",
           direction: "rtl",
           textAlign: "right",
@@ -110,40 +138,64 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
         <div
           style={{
             display: "flex",
-            justifyContent: "start",
+            justifyContent: "space-between",
             alignItems: "center",
             gap: "10px",
             marginBottom: "20px",
           }}
         >
-          {walletTab !== "main" ? (
-            <button
-              onClick={() => setWalletTab("main")}
-              className="btn-close border-none"
-              style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {walletTab !== "main" && walletTab !== "promo" ? (
+              <button
+                onClick={() => setWalletTab("main")}
+                className="btn-close border-none"
+                style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                aria-label="العودة للمحفظة"
+              >
+                <ChevronRight size={18} />
+              </button>
+            ) : (
+              <button
+                onClick={onClose}
+                className="btn-close border-none"
+                aria-label="إغلاق النافذة"
+              >
+                <ChevronRight size={18} />
+              </button>
+            )}
+            <h3
+              style={{
+                margin: 0,
+                fontSize: "1.15rem",
+                fontWeight: "700",
+                color: "var(--color-fg)",
+                fontFamily: "var(--font-sub)",
+              }}
             >
-              <ChevronRight size={18} />
+              {walletTab === "main" && "رصيد قريب"}
+              {walletTab === "promo" && "الرصيد الترويجي"}
+              {walletTab === "deposit" && "طلب إيداع رصيد"}
+              {walletTab === "withdraw" && "طلب سحب رصيد"}
+              {walletTab === "history" && "سجل المعاملات"}
+            </h3>
+          </div>
+
+          {onOpenVoucherModal && walletTab === "main" ? (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenVoucherModal();
+              }}
+              className={styles.voucherChip}
+              title="استرداد كود قسيمة"
+            >
+              <Ticket size={14} strokeWidth={1.9} />
+              <span>استرداد قسيمة</span>
             </button>
           ) : (
-            <button onClick={onClose} className="btn-close border-none">
-              <ChevronRight size={18} />
-            </button>
+            <div style={{ width: "38px" }} />
           )}
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "1.15rem",
-              fontWeight: "700",
-              color: "var(--color-fg)",
-              fontFamily: "var(--font-sub)",
-            }}
-          >
-            {walletTab === "main" && "رصيد قريب"}
-            {walletTab === "deposit" && "طلب إيداع رصيد"}
-            {walletTab === "withdraw" && "طلب سحب رصيد"}
-            {walletTab === "history" && "سجل المعاملات"}
-          </h3>
-          <div style={{ width: "38px" }}></div>
         </div>
 
         {/* TAB 1: MAIN WALLET DASHBOARD */}
@@ -156,62 +208,37 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                gap: "6px",
               }}
             >
+              <span
+                style={{
+                  fontSize: "0.74rem",
+                  fontWeight: "700",
+                  padding: "3px 10px",
+                  borderRadius: "999px",
+                  background: "rgba(16, 185, 129, 0.12)",
+                  color: "#10b981",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "5px",
+                }}
+              >
+                <ShieldCheck size={13} />
+                الرصيد الأساسي • قابل للسحب والاستخدام
+              </span>
               <span
                 style={{
                   fontFamily: "var(--font-heading)",
                   fontSize: "2.4rem",
                   fontWeight: "700",
                   color: "var(--color-fg)",
-                  margin: "4px 0",
+                  margin: "2px 0",
+                  fontVariantNumeric: "tabular-nums",
                 }}
               >
-                {formatNumber(profile?.balance ?? 0, 2)} ج.م
+                {formatNumber(mainBalance, 2)} ج.م
               </span>
-            </div>
-
-            {/* Points Overview Card */}
-            <div
-              onClick={() => {
-                if (onOpenPointsModal) {
-                  onOpenPointsModal();
-                }
-              }}
-              className={clsx("glass-panel", styles.walletSubCard)}
-              style={{
-                width: "100%",
-                background: "var(--color-fg)",
-                border: "1px solid var(--border-glass)",
-                borderRadius: "12px",
-                padding: "10px 18px",
-                cursor: onOpenPointsModal ? "pointer" : "default",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "20px",
-                textAlign: "right",
-              }}
-              title={onOpenPointsModal ? "اضغط لعرض تفاصيل وتحويل النقاط" : "رصيد النقاط"}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <i className="bx bxs-coin" style={{ color: "var(--color-bg)", fontSize: "1.4rem" }}></i>
-                <div>
-                  <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--color-bg)" }}>
-                    {formatNumber(profile?.points ?? 0)}{" "}
-                    <span style={{ fontSize: "0.8rem", fontWeight: "600" }}>نقطة</span>
-                  </div>
-                </div>
-              </div>
-
-              {onOpenPointsModal && (
-                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span style={{ fontSize: "0.78rem", color: "var(--color-bg)", fontWeight: "600" }}>
-                    تحويل النقاط
-                  </span>
-                  <i className="bx bx-chevron-left" style={{ color: "var(--color-bg)", fontSize: "1.2rem" }}></i>
-                </div>
-              )}
             </div>
 
             {/* Actions Buttons */}
@@ -228,7 +255,6 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
                 type="button"
                 onClick={() => setWalletTab("withdraw")}
                 className={clsx("btn", "btn-secondary", styles.actionsButton)}
-
               >
                 <PiHandDepositBold style={{ fontSize: "1.1rem" }} />
                 سحب
@@ -474,6 +500,287 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               )}
             </div>
           </>
+        )}
+
+        {/* TAB 1B: PROMOTIONAL BALANCE DASHBOARD */}
+        {walletTab === "promo" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {/* Promo Balance Hero Card */}
+            <div
+              className="bg-secondary rounded-md p-3 border border-glass"
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: "2.15rem",
+                  fontWeight: "800",
+                  color: "var(--color-fg)",
+                  fontVariantNumeric: "tabular-nums",
+                  lineHeight: 1.15,
+                }}
+              >
+                {formatNumber(promoBalance, 2)}{" "}
+                <span style={{ fontSize: "1rem", fontWeight: "700" }}>ج.م</span>
+              </div>
+
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  fontSize: "0.76rem",
+                  color: "var(--text-secondary)",
+                  lineHeight: 1.55,
+                }}
+              >
+                يُستخدم لشراء الخدمات والمميزات والاشتراكات داخل الموقع، ولا يمكن سحبه أو تحويله للمحفظة الأساسية.
+              </p>
+            </div>
+
+            {/* Active Promo Balance Batches & Expiry */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: "0.9rem",
+                    fontWeight: "800",
+                    color: "var(--color-fg)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <IconClockHour10Filled size={15} />
+                  تفاصيل الصلاحية والدفعات
+                </h3>
+                {onOpenVoucherModal && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onOpenVoucherModal();
+                    }}
+                    className="btn min-h-min fs-xs p-1 fw-500 btn-secondary"
+                  >
+                    <Ticket size={13} />
+                    إضافة بكود قسيمة
+                  </button>
+                )}
+              </div>
+
+              {loadingPromo ? (
+                <div style={{ textAlign: "center", padding: "18px 0", fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                  جاري تحميل تفاصيل الصلاحية...
+                </div>
+              ) : promoBatches.length === 0 ? (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "16px",
+                    border: "1px dashed var(--border-glass)",
+                    borderRadius: "10px",
+                    fontSize: "0.78rem",
+                    color: "var(--text-muted)",
+                  }}
+                >
+                  لا توجد دفعات رصيد ترويجي نشطة حالياً.
+                </div>
+              ) : (
+                promoBatches.map((batch) => (
+                  <div
+                    key={batch.id}
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: "10px",
+                      border: "1px solid var(--border-glass)",
+                      background: "var(--bg-secondary)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "10px",
+                    }}
+                  >
+                    <div style={{ minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontSize: "0.82rem",
+                          fontWeight: "700",
+                          color: "var(--color-fg)",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <span>{batch.sourceLabel}</span>
+                        {batch.sourceCode && (
+                          <code
+                            dir="ltr"
+                            className="tab mr-1 fs-xs"
+                          >
+                            {batch.sourceCode}
+                          </code>
+                        )}
+                      </div>
+                      <span
+                        style={{
+                          display: "block",
+                          marginTop: "3px",
+                          fontSize: "0.72rem",
+                          color: "var(--text-muted)",
+                          fontWeight: batch.status === "expiring_soon" || batch.status === "expired" ? "700" : "500",
+                        }}
+                      >
+                        {batch.status === "expired"
+                          ? `منتهي الصلاحية (${batch.expiresAt ? new Date(batch.expiresAt).toLocaleDateString("ar-EG") : ""})`
+                          : batch.expiresAt
+                            ? `ينتهي في ${new Date(batch.expiresAt).toLocaleDateString("ar-EG", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}`
+                            : "صلاحية غير محددة المدة"}
+                      </span>
+                    </div>
+
+                    <div style={{ textAlign: "left", flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>
+                      <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "var(--color-fg)" }}>
+                        {formatNumber(batch.remainingAmount, 2)} ج.م
+                      </div>
+                      <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
+                        من أصل {formatNumber(batch.initialAmount, 2)}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Promo Ledger History */}
+            <div
+              style={{
+                borderTop: "1px solid var(--border-glass)",
+                paddingTop: "14px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+              }}
+            >
+              <h3
+                className="flex gap-1"
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: "800",
+                  color: "var(--color-fg)",
+                }}
+              >
+                <IconVersionsFilled size={18} />
+                سجل معاملاتك بالرصيد الترويجي
+              </h3>
+
+              {loadingPromo ? (
+                <div style={{ textAlign: "center", padding: "18px 0", fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                  جاري تحميل سجل الحركات...
+                </div>
+              ) : promoLedger.length === 0 ? (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "16px",
+                    border: "1px dashed var(--border-glass)",
+                    borderRadius: "10px",
+                    fontSize: "0.78rem",
+                    color: "var(--text-muted)",
+                  }}
+                >
+                  لا توجد حركات مسجلة للرصيد الترويجي حتى الآن.
+                </div>
+              ) : (
+                promoLedger.map((entry) => {
+                  const isCredit = entry.type === "credit";
+                  const isExpired = entry.type === "expired";
+                  const toneColor = isCredit ? "var(--color-success)" : isExpired ? "#f59e0b" : "#818cf8";
+                  const toneBg = isCredit
+                    ? "rgba(16, 185, 129, 0.12)"
+                    : isExpired
+                      ? "rgba(245, 158, 11, 0.12)"
+                      : "rgba(99, 102, 241, 0.12)";
+
+                  return (
+                    <div
+                      key={entry.id}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: "10px",
+                        border: "1px solid var(--border-glass)",
+                        background: "var(--bg-secondary)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "10px",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                        <span
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            borderRadius: "8px",
+                            background: toneBg,
+                            color: toneColor,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {isCredit ? (
+                            <ArrowDownLeft size={16} />
+                          ) : isExpired ? (
+                            <Clock size={15} />
+                          ) : (
+                            <ArrowUpRight size={16} />
+                          )}
+                        </span>
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: "0.82rem", fontWeight: "700", color: "var(--color-fg)" }}>
+                            {entry.title}
+                          </div>
+                          <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                            {entry.description}
+                          </div>
+                          <div style={{ fontSize: "0.68rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                            {new Date(entry.createdAt).toLocaleDateString("ar-EG", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          fontSize: "0.92rem",
+                          fontWeight: "800",
+                          color: toneColor,
+                          fontVariantNumeric: "tabular-nums",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {isCredit ? "+" : "-"} {formatNumber(entry.amount, 2)} ج.م
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
         )}
 
         {/* TAB 2: DEPOSIT FORM */}

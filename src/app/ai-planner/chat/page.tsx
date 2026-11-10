@@ -3,10 +3,12 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import Link from "next/link";
 import { 
-  ImageIcon,
-  FileUp,
-  MonitorIcon,
-  CircleUserRound,
+  Compass,
+  MapPin,
+  Utensils,
+  Train,
+  Camera,
+  Coffee,
   ArrowUpIcon,
   Paperclip,
   PlusIcon,
@@ -17,21 +19,9 @@ import {
   User,
   Copy,
   Check,
-  RotateCcw
+  RotateCcw,
+  Sparkles
 } from "lucide-react";
-
-// Figma custom SVG icon
-function FigmaIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 38 57" fill="currentColor">
-      <path fill="#EA4C1D" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/>
-      <path fill="#F24E1E" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z"/>
-      <path fill="#FF7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z"/>
-      <path fill="#1ABCFE" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/>
-      <path fill="#A259FF" d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/>
-    </svg>
-  );
-}
 import { cn } from "@/lib/utils";
 
 interface UseAutoResizeTextareaProps {
@@ -228,7 +218,10 @@ export default function VercelV0Chat() {
             <span>AI Planner</span>
           </Link>
           <span className="text-neutral-300 dark:text-neutral-700">/</span>
-          <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">v0 Chat</span>
+          <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 flex items-center gap-1">
+            <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+            شات دليل القاهرة الذكي (Gemini)
+          </span>
         </div>
 
         <div className="flex items-center gap-3">
@@ -332,21 +325,25 @@ export default function VercelV0Chat() {
           </div>
         )}
 
-        {/* Hero Title (Matches your original v0 prompt exactly) */}
+        {/* Hero Title */}
         {messages.length === 0 && (
           <div className="text-center space-y-3 mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-semibold mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              مدعوم بنماذج Google Gemini السريعة
+            </div>
             <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-black dark:text-white">
-              What can I help you ship?
+              كيف يمكنني مساعدتك في يومك؟
             </h1>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              أو اسأل دليلك الذكي عن أي مكان، مطعم، خروجة، أو خط سير مواصلات في مصر.
+            <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-lg mx-auto">
+              اسأل دليلك الذكي عن أي مكان، مطعم، كافيه، خروجة عائلية، ميزانية، أو خطوط المترو والمواصلات في القاهرة ومصر.
             </p>
           </div>
         )}
 
-        {/* Exact v0 Input Container */}
+        {/* Input Container */}
         <div className="w-full">
-          <div className="relative bg-white dark:bg-neutral-900 rounded-xl border border-neutral-300 dark:border-neutral-800 shadow-md dark:shadow-2xl transition-all focus-within:border-neutral-400 dark:focus-within:border-neutral-700">
+          <div className="relative bg-white dark:bg-neutral-900 rounded-xl border border-neutral-300 dark:border-neutral-800 shadow-md dark:shadow-2xl transition-all focus-within:border-blue-500 dark:focus-within:border-blue-500">
             <div className="overflow-y-auto">
               <textarea
                 ref={textareaRef}
@@ -356,7 +353,7 @@ export default function VercelV0Chat() {
                   adjustHeight();
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask v0 or Cairo AI Planner a question..."
+                placeholder="اسأل مساعد القاهرة الذكي عن أي خروجة، مكان، أو وسيلة نقل..."
                 className={cn(
                   "w-full px-4 py-3",
                   "resize-none",
@@ -384,7 +381,7 @@ export default function VercelV0Chat() {
                 >
                   <Paperclip className="w-4 h-4 text-neutral-600 dark:text-white" />
                   <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden group-hover:inline transition-opacity">
-                    Attach
+                    إرفاق
                   </span>
                 </button>
               </div>
@@ -393,10 +390,10 @@ export default function VercelV0Chat() {
                 <button
                   type="button"
                   onClick={() => handleSend("اقترحلي خطة يوم كامل للتنقل وزيارة معالم في القاهرة")}
-                  className="px-2 py-1 rounded-lg text-sm text-zinc-600 dark:text-zinc-400 transition-colors border border-dashed border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-between gap-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 transition-colors border border-dashed border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-between gap-1 cursor-pointer"
                 >
-                  <PlusIcon className="w-4 h-4" />
-                  Project
+                  <PlusIcon className="w-3.5 h-3.5" />
+                  خطة كاملة
                 </button>
 
                 <button
@@ -404,9 +401,9 @@ export default function VercelV0Chat() {
                   onClick={() => handleSend()}
                   disabled={!value.trim() || isLoading}
                   className={cn(
-                    "px-2 py-2 rounded-lg text-sm transition-all border flex items-center justify-center cursor-pointer",
+                    "px-2.5 py-2 rounded-lg text-sm transition-all border flex items-center justify-center cursor-pointer",
                     value.trim() && !isLoading
-                      ? "bg-black text-white dark:bg-white dark:text-black border-transparent shadow-sm active:scale-95"
+                      ? "bg-blue-600 text-white hover:bg-blue-700 border-transparent shadow-sm active:scale-95"
                       : "text-zinc-400 dark:text-zinc-500 bg-neutral-100 dark:bg-neutral-800 border-neutral-200 dark:border-zinc-700 cursor-not-allowed opacity-50"
                   )}
                 >
@@ -414,42 +411,42 @@ export default function VercelV0Chat() {
                     className={cn(
                       "w-4 h-4",
                       value.trim() && !isLoading
-                        ? "text-white dark:text-black"
+                        ? "text-white"
                         : "text-zinc-400 dark:text-zinc-500"
                     )}
                   />
-                  <span className="sr-only">Send</span>
+                  <span className="sr-only">إرسال</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Action Buttons Row (Exact match to your layout & icons) */}
+          {/* Action Buttons Row */}
           <div className="flex items-center justify-center gap-2 sm:gap-3 mt-4 flex-wrap">
             <ActionButton
-              icon={<ImageIcon className="w-4 h-4" />}
-              label="Clone a Screenshot"
-              onClick={() => handleSend("ازاي اعمل تصميم واجهة مستخدم بنفس أسلوب v0 مع Next.js و Tailwind؟")}
+              icon={<Coffee className="w-4 h-4 text-amber-500" />}
+              label="كافيهات ومذاكرة"
+              onClick={() => handleSend("عايز كافيهات هادية ومناسبة للمذاكرة والشغل في مصر الجديدة")}
             />
             <ActionButton
-              icon={<FigmaIcon className="w-4 h-4" />}
-              label="Import from Figma"
-              onClick={() => handleSend("ازاي احول تصميم من فيجما إلى كود ريأكت نظيف؟")}
+              icon={<Utensils className="w-4 h-4 text-orange-500" />}
+              label="أفضل مطاعم"
+              onClick={() => handleSend("اقترحلي مطاعم مشهورة ومميزة للخروج والأكل في الزمالك")}
             />
             <ActionButton
-              icon={<FileUp className="w-4 h-4" />}
-              label="Upload a Project"
-              onClick={() => handleSend("عايز ارفع مشروع جديد على Vercel أو Supabase، ايه الخطوات؟")}
+              icon={<Train className="w-4 h-4 text-emerald-500" />}
+              label="مسارات المترو"
+              onClick={() => handleSend("إزاي أروح المتحف المصري الكبير وبرج القاهرة بالمترو؟")}
             />
             <ActionButton
-              icon={<MonitorIcon className="w-4 h-4" />}
-              label="Landing Page"
-              onClick={() => handleSend("اقترحلي أفكار وتوزيع سكاشن لصفحة هبوط Landing Page عصرية")}
+              icon={<Camera className="w-4 h-4 text-pink-500" />}
+              label="أماكن تصوير وفوتوسيشن"
+              onClick={() => handleSend("أفضل أماكن تصوير وفوتوسيشن مجانية أو بأسعار معقولة في القاهرة")}
             />
             <ActionButton
-              icon={<CircleUserRound className="w-4 h-4" />}
-              label="Sign Up Form"
-              onClick={() => handleSend("اعملي كود صفحة تسجيل دخول Login و Sign Up بشكل مودرن")}
+              icon={<Compass className="w-4 h-4 text-blue-500" />}
+              label="خروجة بميزانية محددة"
+              onClick={() => handleSend("اقترحلي خروجة جميلة لشخصين بميزانية 600 جنيه في وسط البلد")}
             />
           </div>
         </div>
@@ -457,7 +454,7 @@ export default function VercelV0Chat() {
 
       {/* Footer hint */}
       <footer className="py-4 text-center text-xs text-neutral-400 dark:text-neutral-600">
-        v0 Style Chatbot • Powered by Google Gemini
+        دليل القاهرة الذكي • مدعوم بتقنيات Google Gemini
       </footer>
     </div>
   );

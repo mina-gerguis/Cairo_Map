@@ -22,9 +22,9 @@
   line-height: 1.5;
   transition: var(--transition-smooth);
   height: 44px;
-  border: 1px solid #cbd5e1;
   padding: 0 14px;
   font-family: var(--font-heading);
+  border: 1px solid var(--border-glass);
 }
 
 input[type="date"].input-fields {

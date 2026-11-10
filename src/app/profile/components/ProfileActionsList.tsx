@@ -17,7 +17,7 @@ import {
 } from "../types";
 import { getProblemLabelAr } from "../utils";
 import { CONTACT_SUBJECT_OPTIONS } from "../constants";
-import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash, BookmarkCheck, Shredder, Send, Fingerprint } from 'lucide-react';
+import { ChessKing, HeartPlus, Sun, Moon, Bookmark, Bell, Store, GalleryHorizontalEnd, ShieldLock, ScanFace, TabletSmartphone, Lightbulb, Bug, BadgeQuestionMark, Shield, BookMarked, LogOut, Trash, BookmarkCheck, Shredder, Send, Fingerprint, Ticket } from 'lucide-react';
 import styles from "../page.module.css";
 
 interface ProfileActionsListProps {
@@ -86,6 +86,8 @@ interface ProfileActionsListProps {
   handleContactSubmit: (e: React.FormEvent) => Promise<void>;
   // Account
   onOpenSubModal: () => void;
+  onOpenVoucherModal?: (variant: "vouchers" | "coupons") => void;
+  unlockedPerksCount?: number;
   onOpenRemindersModal: () => void;
   onOpenLogoutModal: () => void;
   onOpenDeleteModal: () => void;
@@ -152,6 +154,8 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
   contactLoading,
   handleContactSubmit,
   onOpenSubModal,
+  onOpenVoucherModal,
+  unlockedPerksCount = 0,
   onOpenRemindersModal,
   onOpenLogoutModal,
   onOpenDeleteModal,
@@ -403,6 +407,31 @@ export const ProfileActionsList: React.FC<ProfileActionsListProps> = ({
               </div>
             </div>
             <hr className={styles.dividerDashed} />
+
+            {/* Voucher Redemption («استرداد القسائم») */}
+            {isOwnProfile && onOpenVoucherModal && (
+              <>
+                <div
+                  className={styles.cardContainer}
+                  onClick={() => onOpenVoucherModal("vouchers")}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardIcon}>
+                      <Ticket size={22} />
+                    </div>
+                    <div>
+                      <h3 className={styles.cardTitle}>استرداد القسائم</h3>
+
+                    </div>
+                  </div>
+                  <div className={styles.badgeRight}>
+                    <i className={`bx bx-chevron-left ${styles.chevronIcon}`}></i>
+                  </div>
+                </div>
+                <hr className={styles.dividerDashed} />
+              </>
+            )}
           </>
         )}
 

@@ -1677,7 +1677,7 @@ export default function HomePage() {
               >
                 <div>
                   <span style={{ fontSize: "0.78rem", color: "var(--color-secondary)", fontWeight: "700", display: "block", marginBottom: "6px", fontFamily: "var(--font-body)" }}>
-                    {post.category || "مقالات خريطة القاهرة"}
+                    {post.category || "مقالات قريب"}
                   </span>
                   <h2 style={{ fontSize: "0.98rem", fontWeight: "700", color: "var(--color-fg)", margin: "0 0 8px 0", lineHeight: "1.45", textWrap: "balance" }}>
                     {post.title}

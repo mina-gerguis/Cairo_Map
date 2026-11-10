@@ -227,3 +227,8 @@ html.light .bg-subtle {
 .bg-primary\/10 {
    background-color: rgba(39, 39, 255, 0.1);
 }
+
+/*  */
+.color-fg {
+   color: var(--color-fg);
+}

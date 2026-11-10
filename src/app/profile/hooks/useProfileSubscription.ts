@@ -11,6 +11,7 @@ interface UseProfileSubscriptionProps {
   dbPlans: SubscriptionPlan[];
   fetchProfileData: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  onPurchaseSuccess?: () => Promise<void> | void;
 }
 
 export const useProfileSubscription = ({
@@ -19,10 +20,12 @@ export const useProfileSubscription = ({
   dbPlans,
   fetchProfileData,
   refreshProfile,
+  onPurchaseSuccess,
 }: UseProfileSubscriptionProps) => {
   const [showSubModal, setShowSubModal] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string>("silver");
   const [subscriptionPeriod, setSubscriptionPeriod] = useState<"monthly" | "yearly">("monthly");
+  const [usePromoBalance, setUsePromoBalance] = useState<boolean>(true);
   const [subscribing, setSubscribing] = useState(false);
   const [subMessage, setSubMessage] = useState<ProfileAlertMessage | null>(null);
 
@@ -31,6 +34,8 @@ export const useProfileSubscription = ({
     planId: string;
     period: SubscriptionPeriod | null;
     message: string;
+    promoUsed?: number;
+    mainUsed?: number;
   } | null>(null);
 
   const [activeCardIndex, setActiveCardIndex] = useState(0);
@@ -131,13 +136,20 @@ export const useProfileSubscription = ({
     }
 
     const price = getPlanPrice(planId, period);
+    const mainAvailable = profile.balance ?? 0;
+    const promoAvailable = profile.promo_balance ?? 0;
+    const promoUsed =
+      planId !== "free" && usePromoBalance && promoAvailable > 0
+        ? Number(Math.min(promoAvailable, price).toFixed(2))
+        : 0;
+    const mainUsed = planId !== "free" ? Number((price - promoUsed).toFixed(2)) : 0;
 
-    if (planId !== "free" && (profile.balance ?? 0) < price) {
+    if (planId !== "free" && mainAvailable < mainUsed) {
       setSubMessage({
         type: "error",
-        text: `رصيد محفظتك غير كافٍ للاشتراك (مطلوب ${price} ج.م، رصيدك الحالي ${(
-          profile.balance ?? 0
-        ).toFixed(2)} ج.م). يرجى شحن الرصيد أولاً.`,
+        text: `رصيدك المتاح غير كافٍ للاشتراك (المطلوب ${price.toFixed(2)} ج.م — الرصيد الأساسي: ${mainAvailable.toFixed(
+          2
+        )} ج.م${promoAvailable > 0 ? `، الرصيد الترويجي: ${promoAvailable.toFixed(2)} ج.م` : ""}). يرجى شحن الرصيد أولاً.`,
       });
       return;
     }
@@ -164,14 +176,16 @@ export const useProfileSubscription = ({
         currentRank < newRank;
 
       confirmMessage = isUpgrade
-        ? `هل أنت متأكد من ترقية اشتراكك إلى ${planLabel} ${periodLabel} بقيمة فرق الترقية فقط البالغ ${price} ج.م؟ سيتم الخصم من رصيد محفظتك مباشرة.`
-        : `هل أنت متأكد من الاشتراك في ${planLabel} ${periodLabel} بقيمة ${price} ج.م؟ سيتم الخصم من رصيد محفظتك مباشرة.`;
+        ? `هل أنت متأكد من ترقية اشتراكك إلى ${planLabel} ${periodLabel} بقيمة فرق الترقية فقط البالغ ${price.toFixed(2)} ج.م؟`
+        : `هل أنت متأكد من الاشتراك في ${planLabel} ${periodLabel} بقيمة ${price.toFixed(2)} ج.م؟`;
     }
 
     setSubConfirmData({
       planId,
       period,
       message: confirmMessage,
+      promoUsed,
+      mainUsed,
     });
     setShowSubConfirmModal(true);
   };
@@ -185,10 +199,21 @@ export const useProfileSubscription = ({
     setShowSubConfirmModal(false);
 
     try {
-      const { data, error } = await supabase.rpc("subscribe_to_plan", {
+      let { data, error } = await supabase.rpc("subscribe_to_plan", {
         p_plan_id: planId,
         p_period: period,
+        p_use_promo: usePromoBalance,
       });
+
+      // Fallback if the 2-arg version of subscribe_to_plan is still active on DB
+      if (error && (error.code === "PGRST202" || error.message?.includes("p_use_promo"))) {
+        const legacyCall = await supabase.rpc("subscribe_to_plan", {
+          p_plan_id: planId,
+          p_period: period,
+        });
+        data = legacyCall.data;
+        error = legacyCall.error;
+      }
 
       if (error) {
         setSubMessage({ type: "error", text: error.message });
@@ -197,6 +222,9 @@ export const useProfileSubscription = ({
           setSubMessage({ type: "success", text: data.message });
           await fetchProfileData();
           await refreshProfile();
+          if (onPurchaseSuccess) {
+            await onPurchaseSuccess();
+          }
         } else {
           setSubMessage({ type: "error", text: data.message });
         }
@@ -218,6 +246,8 @@ export const useProfileSubscription = ({
     setSelectedPlanId,
     subscriptionPeriod,
     setSubscriptionPeriod,
+    usePromoBalance,
+    setUsePromoBalance,
     subscribing,
     subMessage,
     setSubMessage,

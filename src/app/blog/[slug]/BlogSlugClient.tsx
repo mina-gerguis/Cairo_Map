@@ -64,7 +64,7 @@ export const SAMPLE_POST: BlogArticle = {
     <h3>نصائح ذهبية لرحلة يومية مريحة:</h3>
     <ol>
       <li>استخدم كارت التذاكر الذكي المميكن لتجنب طوابير الشباك.</li>
-      <li>تحقق من الخريطة المباشرة عبر موقع خريطة القاهرة قبل التحرك.</li>
+      <li>تحقق من الخريطة المباشرة عبر موقع قريب قبل التحرك.</li>
       <li>تجنب أوقات الذروة الصباحية (8-10 صباحاً) إن أمكن.</li>
     </ol>
   `,
@@ -72,7 +72,7 @@ export const SAMPLE_POST: BlogArticle = {
   cover_image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1200",
   category: "مواصلات وترانزيت",
   tags: ["مترو", "منوريل", "أتوبيس", "قاهرة"],
-  author_name: "فريق خريطة القاهرة",
+  author_name: "فريق قريب",
   status: "published",
   views_count: 1420,
   likes_count: 98,
@@ -426,7 +426,7 @@ export default function BlogSlugClient({ slug }: BlogSlugClientProps) {
                 className={styles.authorAvatar}
               />
               <div>
-                <strong className={styles.authorName}>{blog.author_name || "فريق خريطة القاهرة"}</strong>
+                <strong className={styles.authorName}>{blog.author_name || "فريق قريب"}</strong>
                 <span className={styles.postDate}>
                   {new Date(blog.created_at).toLocaleDateString("ar-EG", {
                     year: "numeric",

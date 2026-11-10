@@ -7,6 +7,7 @@ export { ProfileLoading } from "./ProfileLoading";
 
 export { ProfilePointsModal } from "./modals/ProfilePointsModal";
 export { ProfileWalletModal } from "./modals/ProfileWalletModal";
+export { ProfileVoucherModal } from "./modals/ProfileVoucherModal";
 export { ProfileSubscriptionModal } from "./modals/ProfileSubscriptionModal";
 export { ProfileSubscriptionConfirmModal } from "./modals/ProfileSubscriptionConfirmModal";
 export { ProfilePasswordModal } from "./modals/ProfilePasswordModal";

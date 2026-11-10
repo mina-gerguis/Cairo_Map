@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [mfaPending, setMfaPending] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any | null>(null);
+  const [unlockedPerks, setUnlockedPerks] = useState<any[]>([]);
   const [isSessionRegistered, setIsSessionRegistered] = useState(false);
   const [openOffers, setOpenOffers] = useState<OpenPageAccessOffer[]>(() => {
     if (typeof window === "undefined") return [];
@@ -107,19 +108,68 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const isPageOpen = useCallback(
     (pathname: string) => {
-      return isPageOpenByPromotion(pathname, openOffers);
+      const promoResult = isPageOpenByPromotion(pathname, openOffers);
+      if (promoResult.isOpen) return promoResult;
+
+      const now = Date.now();
+      const matchingPerk = unlockedPerks.find((perk) => {
+        if (perk.kind !== "page_access") return false;
+        if (perk.expires_at && new Date(perk.expires_at).getTime() <= now) return false;
+        const target = perk.perk_key || "";
+        return target === "all" || target === pathname || (target !== "/" && pathname.startsWith(target));
+      });
+
+      if (matchingPerk) {
+        const remainingDays = matchingPerk.expires_at
+          ? Math.max(1, Math.ceil((new Date(matchingPerk.expires_at).getTime() - now) / 86400000))
+          : null;
+        return {
+          isOpen: true,
+          offer: {
+            id: matchingPerk.id,
+            type: "open_page_access" as const,
+            title: matchingPerk.title || "صلاحية دخول مفعّلة بقسيمة",
+            target_page: matchingPerk.perk_key,
+            is_active: true,
+            start_date: matchingPerk.unlocked_at,
+            end_date: matchingPerk.expires_at || null,
+            banner_message: `تم فتح هذا القسم لك عبر كود القسيمة (${matchingPerk.source_code})`,
+          },
+          remainingDays,
+        };
+      }
+
+      return promoResult;
     },
-    [openOffers]
+    [openOffers, unlockedPerks]
   );
 
   const fetchProfile = async (userId: string, currentUser?: User | null) => {
     if (!supabase) return;
     try {
-      // Auto-check and reset expired subscription in DB
+      // Auto-check and reset expired subscription & promo balances in DB
       try {
         await supabase.rpc("check_user_subscription_status", { p_user_id: userId });
       } catch (rpcErr) {
         // Fallback silently if RPC doesn't exist yet
+      }
+      try {
+        await supabase.rpc("expire_user_promo_balances", { p_user_id: userId });
+      } catch {
+        // Fallback silently if RPC doesn't exist yet
+      }
+      try {
+        const nowIso = new Date().toISOString();
+        const { data: perksData, error: perksError } = await supabase
+          .from("user_unlocked_perks")
+          .select("*")
+          .eq("user_id", userId)
+          .or(`expires_at.is.null,expires_at.gt.${nowIso}`);
+        if (!perksError && perksData) {
+          setUnlockedPerks(perksData);
+        }
+      } catch {
+        // Fallback silently if table doesn't exist yet
       }
 
       const { data, error } = await supabase

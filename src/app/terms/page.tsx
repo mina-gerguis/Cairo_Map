@@ -34,7 +34,7 @@ export default function TermsPage() {
       content: (
         <>
           <p>
-            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--color-primary)" }}>قريب (Cairo Map)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
+            باستخدامك لتطبيق وموقع <strong style={{ color: "var(--color-primary)" }}>قريب (Qareeb)</strong>، فإنك توافق التام وغير المشروط على الالتزام بجميع بنود شروط الاستخدام الموضحة هنا، بالإضافة إلى <Link href="/privacy" style={{ color: "var(--color-secondary)", textDecoration: "underline" }}>سياسة الخصوصية</Link> الخاصة بنا.
           </p>
           <p style={{ marginTop: "8px" }}>
             إذا كنت لا توافق على أي بند من هذه الشروط، يرجى التوقف الفوري عن استخدام التطبيق وكافة خدمات الدليل المرتبطة به.

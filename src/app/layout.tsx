@@ -131,7 +131,7 @@ const globalJsonLd = {
     {
       "@type": "Organization",
       "@id": `${siteUrl}/#organization`,
-      name: "قريب - Cairo Map",
+      name: "قريب - Qareeb",
       url: siteUrl,
       logo: `${ASSETS.branding.qareebTouch}`,
       sameAs: [],

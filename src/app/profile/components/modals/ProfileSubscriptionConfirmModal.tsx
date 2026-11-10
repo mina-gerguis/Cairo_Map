@@ -11,6 +11,8 @@ interface ProfileSubscriptionConfirmModalProps {
     planId: string;
     period: SubscriptionPeriod | null;
     message: string;
+    promoUsed?: number;
+    mainUsed?: number;
   } | null;
   onConfirm: (planId: string, period: SubscriptionPeriod | null) => void;
 }
@@ -60,10 +62,42 @@ export const ProfileSubscriptionConfirmModal: React.FC<ProfileSubscriptionConfir
 
         {/* Message */}
         <p
-          className="text-muted leading-6 mb-7"
+          className="text-muted leading-6 mb-4"
         >
           {confirmData.message}
         </p>
+
+        {/* Payment Breakdown (Promo + Main Balance) */}
+        {confirmData.planId !== "free" && ((confirmData.promoUsed ?? 0) > 0 || (confirmData.mainUsed ?? 0) > 0) && (
+          <div
+            style={{
+              width: "100%",
+              padding: "10px 14px",
+              borderRadius: "12px",
+              border: "1px solid var(--border-glass)",
+              background: "var(--bg-secondary)",
+              marginBottom: "20px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px",
+              fontSize: "0.82rem",
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {(confirmData.promoUsed ?? 0) > 0 && (
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ color: "#818cf8", fontWeight: 700 }}>من الرصيد الترويجي:</span>
+                <strong style={{ color: "#818cf8" }}>{(confirmData.promoUsed ?? 0).toFixed(2)} ج.م</strong>
+              </div>
+            )}
+            {(confirmData.mainUsed ?? 0) > 0 && (
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ color: "#10b981", fontWeight: 700 }}>من الرصيد الأساسي:</span>
+                <strong style={{ color: "#10b981" }}>{(confirmData.mainUsed ?? 0).toFixed(2)} ج.م</strong>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div style={{ display: "flex", gap: "12px", width: "100%" }}>

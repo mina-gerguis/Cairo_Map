@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { UserProfile, BalanceTransaction, ProfileAlertMessage } from "../types";
+import { PromoBalanceBatch, PromoBalanceLedgerItem } from "@/types/vouchers";
+import { fetchUserPromoOverview } from "@/lib/promoBalance";
 
 interface UseProfileWalletProps {
   user: any;
@@ -32,7 +34,7 @@ export const useProfileWallet = ({
 
   // Wallet Modal States
   const [showWalletModal, setShowWalletModal] = useState(false);
-  const [walletTab, setWalletTab] = useState<"main" | "deposit" | "withdraw" | "history">("main");
+  const [walletTab, setWalletTab] = useState<"main" | "promo" | "deposit" | "withdraw" | "history">("main");
 
   // Deposit States
   const [depositMethod, setDepositMethod] = useState<string>("instapay");
@@ -57,6 +59,34 @@ export const useProfileWallet = ({
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const pendingTransactionsCount = userTransactions.filter((tx) => tx.status === "pending").length;
 
+  // Promotional Balance States
+  const [promoBatches, setPromoBatches] = useState<PromoBalanceBatch[]>([]);
+  const [promoLedger, setPromoLedger] = useState<PromoBalanceLedgerItem[]>([]);
+  const [loadingPromo, setLoadingPromo] = useState(false);
+  const [promoSchemaReady, setPromoSchemaReady] = useState(true);
+
+  const fetchPromoOverview = useCallback(async () => {
+    if (!user?.id) return;
+    setLoadingPromo(true);
+    try {
+      const overview = await fetchUserPromoOverview(user.id);
+      setPromoBatches(overview.batches);
+      setPromoLedger(overview.transactions);
+      setPromoSchemaReady(overview.schemaReady);
+      if (overview.schemaReady) {
+        setProfile((prev) =>
+          prev && prev.promo_balance !== overview.promoBalance
+            ? { ...prev, promo_balance: overview.promoBalance }
+            : prev
+        );
+      }
+    } catch (err) {
+      console.error("Error fetching promo balance overview:", err);
+    } finally {
+      setLoadingPromo(false);
+    }
+  }, [user?.id, setProfile]);
+
   const fetchUserTransactions = async () => {
     if (!supabase || !user) return;
     setLoadingTransactions(true);
@@ -76,9 +106,9 @@ export const useProfileWallet = ({
     }
   };
 
-  const handleOpenWalletModal = () => {
+  const handleOpenWalletModal = (initialTab: "main" | "promo" = "main") => {
     setShowWalletModal(true);
-    setWalletTab("main");
+    setWalletTab(initialTab);
     setShowConvertBalanceSection(false);
     setConvertBalanceStatus(null);
     setDepositAmount("");
@@ -92,6 +122,7 @@ export const useProfileWallet = ({
     setWithdrawName("");
     setWithdrawStatus(null);
     fetchUserTransactions();
+    fetchPromoOverview();
   };
 
   const handleConvertPoints = async () => {
@@ -484,6 +515,11 @@ export const useProfileWallet = ({
     userTransactions,
     loadingTransactions,
     pendingTransactionsCount,
+    promoBatches,
+    promoLedger,
+    loadingPromo,
+    promoSchemaReady,
+    fetchPromoOverview,
     handleOpenWalletModal,
     handleConvertPoints,
     handleConvertBalanceToPoints,
