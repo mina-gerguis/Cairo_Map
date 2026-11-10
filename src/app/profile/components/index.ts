@@ -1,6 +1,7 @@
 export { ProfileHeaderGreeting } from "./ProfileHeaderGreeting";
 export { ProfileCard } from "./ProfileCard";
 export { ProfileBadges } from "./ProfileBadges";
+export { ProfileVoucherCard } from "./ProfileVoucherCard";
 export { ProfileActionsList } from "./ProfileActionsList";
 export { ProfileFooter } from "./ProfileFooter";
 export { ProfileLoading } from "./ProfileLoading";

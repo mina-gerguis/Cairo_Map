@@ -12,6 +12,7 @@ import {
   ProfileHeaderGreeting,
   ProfileCard,
   ProfileBadges,
+  ProfileVoucherCard,
   ProfileActionsList,
   ProfileFooter,
   ProfileLoading,
@@ -165,6 +166,8 @@ export default function ProfilePage() {
           onOpenWalletModal={wallet.handleOpenWalletModal}
         />
       )}
+
+      <ProfileVoucherCard profile={profile} isOwnProfile={isOwnProfile} />
 
       {/* ─── Main Actions & Navigation List ─── */}
       <ProfileActionsList

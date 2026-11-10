@@ -171,6 +171,33 @@ export const ProfileWalletModal: React.FC<ProfileWalletModalProps> = ({
               </span>
             </div>
 
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px",
+                padding: "14px 16px",
+                marginBottom: "18px",
+                borderRadius: "14px",
+                background: "rgba(108, 99, 255, 0.12)",
+                border: "1px solid rgba(108, 99, 255, 0.24)",
+                textAlign: "right",
+              }}
+            >
+              <div>
+                <div style={{ color: "var(--text-muted)", fontSize: "0.78rem", marginBottom: "4px" }}>
+                  الرصيد الترويجي
+                </div>
+                <strong style={{ color: "var(--color-fg)", fontSize: "1.25rem" }}>
+                  {formatNumber(profile?.promo_balance ?? 0, 2)} ج.م
+                </strong>
+              </div>
+              <span style={{ color: "var(--text-muted)", fontSize: "0.72rem", maxWidth: "125px" }}>
+                صالح للشراء داخل الموقع فقط ولا يمكن سحبه نقدًا
+              </span>
+            </div>
+
             {/* Points Overview Card */}
             <div
               onClick={() => {

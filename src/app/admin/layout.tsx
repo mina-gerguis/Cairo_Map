@@ -76,6 +76,7 @@ export default function AdminLayout({
           { label: "إدارة الحسابات والمستخدمين", href: "/admin/users", category: "صفحة إدارية", icon: "bx bx-group" },
           { label: "الاشتراكات المميزة والذهبية", href: "/admin/subscriptions", category: "صفحة إدارية", icon: "bx bx-crown" },
           { label: "العروض والخصومات للاشتراكات", href: "/admin/subscriptions?tab=promotions", category: "صفحة إدارية", icon: "bx bx-gift" },
+          { label: "إدارة القسائم والأكواد", href: "/admin/vouchers", category: "صفحة إدارية", icon: "bx bx-purchase-tag" },
           { label: "إدارة المدن الشهيرة والمعالم", href: "/admin/cities", category: "خدمة موقع", icon: "bx bx-building-house" },
           { label: "إدارة المطارات", href: "/admin/airports", category: "خدمة موقع", icon: "bx bx-plane" },
           { label: "إدارة الموانئ البحرية", href: "/admin/ports", category: "خدمة موقع", icon: "bx bx-anchor" },
@@ -415,6 +416,7 @@ export default function AdminLayout({
     else pageTitle = "الاشتراكات المميزة";
   }
   else if (pathname === "/admin/users") pageTitle = "إدارة الحسابات والمستخدمين";
+  else if (pathname === "/admin/vouchers") pageTitle = "إدارة القسائم والأكواد";
 
   // Compute greeting based on time
   const currentHour = new Date().getHours();
@@ -903,6 +905,21 @@ export default function AdminLayout({
                 <span className={styles.linkLabel}>العروض والخصومات</span>
               </div>
             </Link>
+
+            {/* القسائم والأكواد */}
+            <Link
+              href="/admin/vouchers"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/vouchers" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                setActiveSubTab(null);
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-purchase-tag ${styles.linkIcon}`} style={{ color: "#a5b4fc" }} />
+                <span className={styles.linkLabel}>القسائم والأكواد</span>
+              </div>
+            </Link>
           </nav>
 
           {/* Sidebar Footer Operations */}
@@ -1095,4 +1112,3 @@ export default function AdminLayout({
     </div>
   );
 }
-
