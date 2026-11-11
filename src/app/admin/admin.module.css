@@ -967,11 +967,11 @@
   transform: translateY(-1px);
 }
 
-/* Stats Grid Cards */
+/* Stats Grid Cards — Bento Style with Royal Blue Accents */
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
 }
 
@@ -988,21 +988,37 @@
 }
 
 .statCard {
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  padding: 20px;
+  background: rgba(13, 17, 30, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 24px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  gap: 10px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
   transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(39, 39, 255, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .statCard:hover {
   transform: translateY(-2px);
-  border-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(39, 39, 255, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .statCardHeader {
@@ -1021,29 +1037,32 @@
 .trendBadge {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-size: 0.75rem;
   font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 20px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-family: monospace;
 }
 
 .trendBadgeUp {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
+  background: rgba(39, 39, 255, 0.12);
+  color: #818cf8;
 }
 
 .trendBadgeDown {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.12);
   color: #f87171;
 }
 
 .statCardValue {
-  font-size: 1.5rem;
+  font-family: var(--font-heading, monospace);
+  font-size: 1.75rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: #ffffff;
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Charts Section */
@@ -4189,14 +4208,17 @@
    Admin Action Banner & Alert Cards
    ========================================================= */
 .adminActionBanner {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.75) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 20px 24px;
+  background: rgba(13, 17, 30, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 26px;
+  padding: 22px 24px;
   margin-bottom: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
   position: relative;
   overflow: hidden;
+  transition: all 0.25s ease;
 }
 
 .adminActionBanner::before {
@@ -4204,9 +4226,9 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 160px;
-  height: 160px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(39, 39, 255, 0.16) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
 }
@@ -4215,9 +4237,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .actionBannerTitleGroup {
@@ -4230,8 +4252,8 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #f59e0b;
-  box-shadow: 0 0 12px #f59e0b;
+  background: #2727ff;
+  box-shadow: 0 0 14px #2727ff;
   animation: pulseAnimation 2s infinite ease-in-out;
 }
 
@@ -4240,18 +4262,19 @@
   font-weight: 800;
   color: #f8fafc;
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .actionBannerSubtitle {
   font-size: 0.8rem;
   color: #94a3b8;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .adminActionCardsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 
 @media (max-width: 1200px) {
@@ -4267,44 +4290,48 @@
 }
 
 .actionCard {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
-  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
 }
 
-
+.actionCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(39, 39, 255, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
 
 .actionCardAlert {
-  border-color: rgba(245, 158, 11, 0.3);
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.06) 0%, rgba(15, 23, 42, 0.6) 100%);
+  border-color: rgba(245, 158, 11, 0.35);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
 }
 
 .actionCardAlert.actionCardDanger {
   border-color: rgba(239, 68, 68, 0.35);
-  background: linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(15, 23, 42, 0.6) 100%);
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
 }
 
 .actionCardAlert.actionCardInfo {
-  border-color: rgba(59, 130, 246, 0.35);
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.06) 0%, rgba(15, 23, 42, 0.6) 100%);
+  border-color: rgba(39, 39, 255, 0.35);
+  background: linear-gradient(180deg, rgba(39, 39, 255, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
 }
 
 .actionCardAlert.actionCardPurple {
   border-color: rgba(168, 85, 247, 0.35);
-  background: linear-gradient(180deg, rgba(168, 85, 247, 0.06) 0%, rgba(15, 23, 42, 0.6) 100%);
+  background: linear-gradient(180deg, rgba(168, 85, 247, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
 }
 
 .actionCardSuccess {
   border-color: rgba(16, 185, 129, 0.2);
-  background: linear-gradient(180deg, rgba(16, 185, 129, 0.03) 0%, rgba(15, 23, 42, 0.6) 100%);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, rgba(15, 23, 42, 0.5) 100%);
 }
 
 .actionCardTop {
@@ -4315,13 +4342,13 @@
 }
 
 .actionCardIconWrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   flex-shrink: 0;
 }
 
@@ -4336,8 +4363,8 @@
 }
 
 .actionCardIconBlue {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
+  background: rgba(39, 39, 255, 0.15);
+  color: #818cf8;
 }
 
 .actionCardIconPurple {
@@ -4353,8 +4380,9 @@
 .actionCardStatusBadge {
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 20px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-family: monospace;
 }
 
 .actionCardStatusBadgeWarning {
@@ -4368,8 +4396,8 @@
 }
 
 .actionCardStatusBadgeInfo {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
+  background: rgba(39, 39, 255, 0.15);
+  color: #818cf8;
 }
 
 .actionCardStatusBadgePurple {
@@ -4395,10 +4423,12 @@
 }
 
 .actionCardCount {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: #f8fafc;
+  font-family: var(--font-heading, monospace);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #ffffff;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .actionCardUnit {
@@ -4408,7 +4438,7 @@
 }
 
 .actionCardTitle {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #e2e8f0;
   margin: 0;
@@ -4426,15 +4456,20 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 4px 12px;
-  border-radius: var(--radiusBtn);
+  padding: 8px 14px;
+  border-radius: 12px;
   text-decoration: none;
-  transition: var(--transition-spring);
+  transition: all 0.2s ease;
   border: none;
   cursor: pointer;
   font-family: var(--font-heading);
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 0.82rem;
   margin-top: 4px;
+}
+
+.actionCardBtn:hover {
+  transform: translateY(-1px);
 }
 
 .actionCardBtnPrimary {
