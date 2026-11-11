@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import VoiceInputButton from "@/components/VoiceInputButton";
 import { isPageOpenByPromotion } from "@/lib/promotions";
 import PromotionalPageBanner from "@/components/PromotionalPageBanner";
+import PlannerChatModal from "@/components/PlannerChatModal";
 import { gsap, useGSAP } from "@/lib/gsap";
 import "./planner.css";
 
@@ -265,6 +266,7 @@ export default function PlannerPage() {
   const [showNotification, setShowNotification] = useState<string | null>(null);
 
   // ── AI ASSISTANT STATES ──
+  const [showAiChatModal, setShowAiChatModal] = useState<boolean>(false);
   const [aiIsGenerating, setAiIsGenerating] = useState<boolean>(false);
   const [aiThinkingStep, setAiThinkingStep] = useState<string>("");
   const [selectedVibe, setSelectedVibe] = useState<string>("all");
@@ -1388,6 +1390,32 @@ export default function PlannerPage() {
             </span>
           </div>
 
+          <button
+            type="button"
+            onClick={() => setShowAiChatModal(true)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "7px 18px",
+              background: "linear-gradient(135deg, #2563eb, #7c3aed)",
+              color: "#ffffff",
+              borderRadius: "9999px",
+              fontSize: "0.85rem",
+              fontWeight: "700",
+              boxShadow: "0 4px 15px rgba(37, 99, 235, 0.35)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              border: "none",
+              cursor: "pointer"
+            }}
+            className="hover:scale-105 active:scale-95"
+          >
+            <span>💬 فتح شات الذكاء الاصطناعي (Gemini)</span>
+            <span style={{ background: "rgba(255,255,255,0.25)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.75rem" }}>
+              مجاني
+            </span>
+          </button>
+
           <Link
             href="/ai-planner/chat"
             style={{
@@ -1406,10 +1434,7 @@ export default function PlannerPage() {
             }}
             className="hover:scale-105 active:scale-95"
           >
-            <span>💬 دردشة حرة مع AI القاهرة (شاشة كاملة)</span>
-            <span style={{ background: "rgba(255,255,255,0.25)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.75rem" }}>
-              مجاني
-            </span>
+            <span>🖥️ شاشة مستقلة كاملة</span>
           </Link>
         </div>
       </header>
@@ -1557,10 +1582,89 @@ export default function PlannerPage() {
                 <i className="bx bx-bot" style={{ color: "var(--color-primary)", fontSize: "1.4rem" }} />
                 <span>اسأل الذكاء الاصطناعي 🤖</span>
               </h2>
-              <div className="ai-engine-pill">
-                <span className="ai-dot-pulse" />
-                <span>Cairo AI Engine v2.5</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowAiChatModal(true)}
+                  className="btn"
+                  style={{
+                    height: "30px",
+                    padding: "0 10px",
+                    fontSize: "0.75rem",
+                    fontWeight: "700",
+                    background: "rgba(37, 99, 235, 0.15)",
+                    borderColor: "rgba(37, 99, 235, 0.4)",
+                    color: "var(--color-primary)",
+                    borderRadius: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px"
+                  }}
+                  title="فتح محادثة كاملة مع شات الذكاء الاصطناعي"
+                >
+                  <i className="bx bx-message-rounded-dots" />
+                  <span>فتح الشات</span>
+                </button>
+                <div className="ai-engine-pill">
+                  <span className="ai-dot-pulse" />
+                  <span>Gemini AI</span>
+                </div>
               </div>
+            </div>
+
+            {/* Special Chat Card Banner Trigger */}
+            <div
+              onClick={() => setShowAiChatModal(true)}
+              style={{
+                marginBottom: "16px",
+                padding: "12px 14px",
+                borderRadius: "14px",
+                background: "linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(124, 58, 237, 0.12))",
+                border: "1px solid rgba(37, 99, 235, 0.25)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "10px",
+                cursor: "pointer",
+                transition: "all 0.2s ease"
+              }}
+              className="hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <div style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "10px",
+                  background: "linear-gradient(135deg, #2563eb, #7c3aed)",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "1.1rem",
+                  flexShrink: 0
+                }}>
+                  💬
+                </div>
+                <div>
+                  <div style={{ fontSize: "0.85rem", fontWeight: "700", color: "var(--color-fg)" }}>
+                    مساعد جوجل الذكي (Gemini) جاهز لمساعدتك!
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                    اضغط هنا لفتح نافذة الشات الكاملة والدردشة عن أي مكان أو وسيلة نقل
+                  </div>
+                </div>
+              </div>
+              <span style={{
+                background: "var(--color-primary)",
+                color: "#fff",
+                fontSize: "0.72rem",
+                padding: "4px 10px",
+                borderRadius: "12px",
+                fontWeight: "700",
+                whiteSpace: "nowrap"
+              }}>
+                ابدأ الشات ✨
+              </span>
             </div>
 
             {/* Quick Prompt Chips */}
@@ -2366,6 +2470,19 @@ export default function PlannerPage() {
           </div>
         </div>
       )}
+
+      {/* Dedicated AI Chat Modal (Google Gemini) */}
+      <PlannerChatModal
+        isOpen={showAiChatModal}
+        onClose={() => setShowAiChatModal(false)}
+        currentPlanContext={{
+          startingZone: selectedStartZone,
+          placesCount: selectedPlaces.length,
+          selectedPlaces: selectedPlaces.map((p) => ({ name: p.name, category: p.category })),
+          budget: budget,
+          driveZoneMinutes: maxDriveMinutes,
+        }}
+      />
 
     </div>
   );

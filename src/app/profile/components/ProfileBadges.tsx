@@ -5,6 +5,7 @@ import { Coins, Sparkles, ChevronLeft, PiggyBank } from "lucide-react";
 import { UserProfile } from "../types";
 import { formatNumber } from "../utils";
 import styles from "../page.module.css";
+import { IconTicket } from "@tabler/icons-react";
 
 interface ProfileBadgesProps {
   profile: UserProfile | null;
@@ -157,10 +158,10 @@ export const ProfileBadges: React.FC<ProfileBadgesProps> = ({
           title="عرض الرصيد الترويجي وصلاحيته"
         >
           <div className={styles.walletTileTop}>
-            <span className="p-1">
-              <PiggyBank size={18} strokeWidth={1.8} className="color-fg" />
+            <span className="pt-1">
+              <IconTicket stroke={2} size={18} strokeWidth={1.8} className="color-fg" />
             </span>
-            <span className={styles.walletTileLabel}>الرصيد الترويجي</span>
+            <span className={styles.walletTileLabel}>المكأفات</span>
             {isOwnProfile && <ChevronLeft size={14} className={styles.walletTileChevron} />}
           </div>
 

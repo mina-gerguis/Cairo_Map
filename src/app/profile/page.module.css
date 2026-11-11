@@ -2562,12 +2562,6 @@
   direction: rtl;
 }
 
-@media (max-width: 440px) {
-  .walletDualCard {
-    grid-template-columns: 1fr;
-  }
-}
-
 .walletTileBtn {
   display: flex;
   flex-direction: column;

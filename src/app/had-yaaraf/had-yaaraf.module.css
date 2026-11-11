@@ -7,226 +7,651 @@
   background-color: var(--color-bg);
   color: var(--color-fg);
   direction: rtl;
-  padding: calc(var(--navbar-height, 64px) + 20px) 16px 80px;
+  padding: calc(var(--navbar-height, 64px) + 24px) 16px 120px;
   font-family: var(--font-body, system-ui, -apple-system, sans-serif);
 }
 
+@media (max-width: 768px) {
+  .pageShell {
+    padding-bottom: 140px; /* Safe distance above mobile bottom navigation */
+  }
+}
+
 .container {
-  max-width: 980px;
+  max-width: 960px;
   margin: 0 auto;
   width: 100%;
 }
 
 /* ==========================================================================
-   1. HERO STATS BANNER
+   1. BENTO HERO SECTION & STATS (INSPIRED BY ADMIN ANALYTICS BENTO)
    ========================================================================== */
-.heroBanner {
-  position: relative;
-  overflow: hidden;
-  border-radius: 24px;
-  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
-  background: radial-gradient(ellipse 90% 70% at 85% 20%, rgba(37, 99, 235, 0.35) 0%, rgba(30, 27, 75, 0.6) 45%, rgba(10, 10, 15, 0.95) 100%),
-              linear-gradient(180deg, var(--bg-secondary, #0a0a0c) 0%, var(--color-bg, #000) 100%);
-  padding: 44px 24px 36px;
+.bentoHeroSection {
+  width: 100%;
   margin-bottom: 32px;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  text-align: center;
 }
 
-html.light .heroBanner {
-  background: radial-gradient(ellipse 90% 70% at 85% 20%, rgba(59, 130, 246, 0.18) 0%, rgba(238, 242, 255, 0.8) 50%, #ffffff 100%);
-  border-color: rgba(37, 99, 235, 0.18);
-  box-shadow: 0 16px 36px -8px rgba(37, 99, 235, 0.12);
+/* Top Status Navigation Strip */
+.bentoStatusBar {
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
 }
 
-.heroGlowCircle {
-  position: absolute;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(80px);
-  opacity: 0.35;
+.bentoStatusRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.heroGlowBlue {
-  top: -100px;
-  left: -80px;
-  background: #2563eb;
-}
-
-.heroGlowAmber {
-  bottom: -100px;
-  right: -80px;
-  background: #f59e0b;
-}
-
-.heroBadge {
+.bentoLiveBadge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 16px;
   border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.6);
+  padding: 6px 16px;
   font-size: 0.82rem;
   font-weight: 700;
-  background: rgba(37, 99, 235, 0.18);
-  color: #60a5fa;
-  border: 1px solid rgba(96, 165, 250, 0.3);
-  margin-bottom: 16px;
+  color: #ffffff;
   backdrop-filter: blur(12px);
 }
 
-html.light .heroBadge {
-  background: rgba(37, 99, 235, 0.1);
-  color: #1d4ed8;
-  border-color: rgba(37, 99, 235, 0.25);
+html.light .bentoLiveBadge {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a;
 }
 
-.heroTitle {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+.bentoLiveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #2727ff;
+  box-shadow: 0 0 10px #2727ff, 0 0 16px #3b82f6;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.bentoCityPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+html.light .bentoCityPill {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+.bentoPeriodPills {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(18, 18, 24, 0.65);
+  padding: 3px;
+  backdrop-filter: blur(12px);
+}
+
+html.light .bentoPeriodPills {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.bentoPeriodBtn {
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+html.light .bentoPeriodBtn {
+  color: #64748b;
+}
+
+.bentoPeriodBtn:hover {
+  color: #ffffff;
+}
+
+html.light .bentoPeriodBtn:hover {
+  color: #0f172a;
+}
+
+.bentoPeriodBtnActive {
+  background: #2727ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(39, 39, 255, 0.45);
+}
+
+/* ── Bento Grid ── */
+.bentoHeroGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 840px) {
+  .bentoHeroGrid {
+    grid-template-columns: 1.6fr 1fr;
+  }
+}
+
+/* Base Bento Tile */
+.bentoTile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 17, 30, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 24px;
+  color: #f8fafc;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.bentoTile:hover {
+  border-color: rgba(39, 39, 255, 0.35);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+}
+
+html.light .bentoTile {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  color: #0f172a;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+}
+
+html.light .bentoTile:hover {
+  border-color: rgba(39, 39, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(39, 39, 255, 0.1);
+}
+
+/* TILE 1: Main Welcome & Search Tile */
+@media (min-width: 840px) {
+  .bentoTileMain {
+    grid-column: span 2;
+  }
+}
+
+.bentoTileGlow {
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(39, 39, 255, 0.28) 0%, transparent 70%);
+  pointer-events: none;
+  filter: blur(40px);
+}
+
+.bentoMainHeader {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 24px;
+}
+
+.bentoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: rgba(39, 39, 255, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(147, 197, 253, 0.25);
+  margin-bottom: 12px;
+}
+
+html.light .bentoBadge {
+  background: rgba(37, 99, 235, 0.08);
+  color: #1d4ed8;
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.bentoTitle {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 900;
   line-height: 1.25;
-  color: var(--color-fg);
-  margin: 0 0 12px 0;
+  color: #ffffff;
+  margin: 0 0 10px 0;
   font-family: var(--font-display, inherit);
   letter-spacing: -0.5px;
 }
 
-.heroTitleHighlight {
-  background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #facc15 100%);
+html.light .bentoTitle {
+  color: #0f172a;
+}
+
+.bentoTitleHighlight {
+  background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 45%, #facc15 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
-.heroSubtitle {
-  font-size: clamp(0.95rem, 2vw, 1.15rem);
-  color: var(--text-secondary);
-  max-width: 680px;
-  margin: 0 auto 28px;
+.bentoSubtitle {
+  font-size: 0.98rem;
+  color: #cbd5e1;
   line-height: 1.65;
+  max-width: 720px;
+  margin: 0;
 }
 
-/* Hero Controls */
-.heroControls {
+html.light .bentoSubtitle {
+  color: #475569;
+}
+
+/* Bento Search Area */
+.bentoSearchArea {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-width: 620px;
-  margin: 0 auto;
+  margin-bottom: 16px;
 }
 
 @media (min-width: 640px) {
-  .heroControls {
+  .bentoSearchArea {
     flex-direction: row;
     align-items: center;
   }
 }
 
-.searchBox {
+.bentoSearchBox {
   position: relative;
   flex: 1;
 }
 
-.searchInput {
-  width: 100%;
-  padding: 14px 44px 14px 16px;
-  border-radius: 16px;
-  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.15));
-  background: var(--inputBg, rgba(24, 24, 27, 0.85));
-  color: var(--color-fg);
-  font-size: 0.95rem;
-  font-family: inherit;
-  outline: none;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(16px);
-}
-
-html.light .searchInput {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #0f172a;
-}
-
-.searchInput:focus {
-  border-color: var(--color-primary, #2563eb);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
-}
-
-.searchIcon {
+.bentoSearchIcon {
   position: absolute;
-  right: 15px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-muted);
+  width: 20px;
+  height: 20px;
+  color: #94a3b8;
   pointer-events: none;
 }
 
-.askBtnPrimary {
+.bentoSearchInput {
+  width: 100%;
+  padding: 14px 48px 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(18, 18, 24, 0.9);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.22s ease;
+}
+
+html.light .bentoSearchInput {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.bentoSearchInput:focus {
+  border-color: #2727ff;
+  box-shadow: 0 0 0 3px rgba(39, 39, 255, 0.25);
+  background: rgba(22, 22, 30, 0.98);
+}
+
+html.light .bentoSearchInput:focus {
+  background: #ffffff;
+}
+
+.bentoClearBtn {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.bentoAskBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   padding: 14px 24px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #2727ff 0%, #1e40af 100%);
   color: #ffffff;
   font-weight: 800;
   font-size: 0.95rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 20px -2px rgba(39, 39, 255, 0.5);
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s ease;
 }
 
-.askBtnPrimary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.6);
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+.bentoAskBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px -2px rgba(39, 39, 255, 0.65);
+  background: linear-gradient(135deg, #3b82f6 0%, #2727ff 100%);
 }
 
-.askBtnPrimary:active {
-  transform: scale(0.98);
-}
-
-/* Hero Stats Bar */
-.heroStats {
+/* Quick Tags */
+.bentoQuickTags {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 20px 32px;
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-  font-size: 0.88rem;
-  color: var(--text-secondary);
+  gap: 8px;
+  font-size: 0.82rem;
 }
 
-.statItem {
+.bentoQuickTagsLabel {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  font-weight: 800;
+  color: #cbd5e1;
 }
 
-.statItem strong {
-  color: var(--color-fg);
+html.light .bentoQuickTagsLabel {
+  color: #475569;
+}
+
+.bentoMiniTag {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #93c5fd;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+html.light .bentoMiniTag {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #2563eb;
+}
+
+.bentoMiniTag:hover {
+  background: rgba(39, 39, 255, 0.18);
+  border-color: rgba(39, 39, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Tile Headers */
+.bentoTileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.bentoTileTitle {
+  font-size: 0.88rem;
   font-weight: 800;
+  color: #94a3b8;
+}
+
+html.light .bentoTileTitle {
+  color: #64748b;
+}
+
+.bentoPillSuccess {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.bentoLiveStreamBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: rgba(39, 39, 255, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+/* TILE 2: Gauge Center */
+.bentoGaugeCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 6px 0 14px;
+}
+
+.bentoGaugeCircleWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.bentoGaugeValue {
+  position: absolute;
+  bottom: 0;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+html.light .bentoGaugeValue {
+  color: #0f172a;
+}
+
+.bentoGaugeUnit {
+  font-size: 0.95rem;
+  color: #60a5fa;
+  margin-right: 2px;
+}
+
+.bentoGaugeDesc {
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  max-width: 220px;
+  margin: 0;
+}
+
+html.light .bentoGaugeDesc {
+  color: #64748b;
+}
+
+.bentoGaugeFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.light .bentoGaugeFooter {
+  border-top-color: #f1f5f9;
+}
+
+.bentoGaugeFooterItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.bentoGaugeFooterItem span {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.bentoGaugeFooterItem strong {
   font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+html.light .bentoGaugeFooterItem strong {
+  color: #0f172a;
+}
+
+.bentoGaugeDivider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* TILE 3: Metrics Grid & Tip */
+.bentoMetricsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.bentoMetricItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+html.light .bentoMetricItem {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.bentoMetricIconCircle {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bentoMetricVal {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+html.light .bentoMetricVal {
+  color: #0f172a;
+}
+
+.bentoMetricLabel {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+html.light .bentoMetricLabel {
+  color: #64748b;
+}
+
+.bentoStatsTip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(39, 39, 255, 0.08);
+  border: 1px solid rgba(39, 39, 255, 0.18);
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  margin-top: auto;
+}
+
+html.light .bentoStatsTip {
+  background: rgba(37, 99, 235, 0.05);
+  border-color: rgba(37, 99, 235, 0.14);
+  color: #334155;
+}
+
+.bentoStatsTip strong {
+  color: #60a5fa;
+}
+
+html.light .bentoStatsTip strong {
+  color: #2563eb;
 }
 
 /* ==========================================================================
    2. CATEGORIES FILTER CAROUSEL
    ========================================================================== */
+.categoryBarWrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
 .categoryBar {
   display: flex;
   align-items: center;
   gap: 10px;
   overflow-x: auto;
-  padding-bottom: 12px;
-  margin-bottom: 24px;
+  padding: 4px 6px 12px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  mask-image: linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
 }
 
 .categoryBar::-webkit-scrollbar {
@@ -237,37 +662,44 @@ html.light .searchInput {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 18px;
-  border-radius: 14px;
+  padding: 11px 20px;
+  border-radius: 16px;
   font-size: 0.88rem;
   font-weight: 700;
   white-space: nowrap;
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-  background: var(--cardGlassBg, rgba(24, 24, 27, 0.6));
-  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(22, 22, 28, 0.8);
+  color: #cbd5e1;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(12px);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 html.light .categoryPill {
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.09);
   color: #475569;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .categoryPill:hover {
-  background: var(--hover-btn, rgba(39, 39, 42, 0.8));
-  color: var(--color-fg);
-  border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
+  background: rgba(39, 39, 50, 0.95);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-1px);
 }
 
+html.light .categoryPill:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
 .categoryPillActive {
-  background: var(--color-primary, #2563eb) !important;
+  background: linear-gradient(135deg, #2727ff 0%, #1e40af 100%) !important;
   color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 18px rgba(39, 39, 255, 0.45);
   transform: translateY(-1px);
 }
 
@@ -350,32 +782,32 @@ html.light .sortTabBtnActive {
    ========================================================================== */
 .questionCard {
   position: relative;
-  border-radius: 20px;
-  border: 1px solid var(--cardGlassBorder, rgba(255, 255, 255, 0.1));
-  background: var(--cardGlassBg, rgba(20, 20, 24, 0.75));
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 18, 24, 0.82);
+  padding: 26px;
+  margin-bottom: 22px;
+  box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html.light .questionCard {
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.09);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .questionCard:hover {
-  border-color: var(--border-glass-bright, rgba(255, 255, 255, 0.2));
-  box-shadow: 0 14px 32px -6px rgba(0, 0, 0, 0.5);
+  border-color: rgba(96, 165, 250, 0.35);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6);
   transform: translateY(-2px);
 }
 
 html.light .questionCard:hover {
-  border-color: rgba(37, 99, 235, 0.3);
-  box-shadow: 0 14px 32px -6px rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: 0 14px 30px -6px rgba(37, 99, 235, 0.12);
 }
 
 /* Question Header */
@@ -895,167 +1327,206 @@ html.light .replyInputWrapper {
 .modalBackdrop {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .modalBox {
   position: relative;
   width: 100%;
-  max-width: 580px;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  border-radius: 24px;
-  border: 1px solid var(--border-glass-bright, rgba(255, 255, 255, 0.2));
-  background: var(--cardGlassBg, #101014);
-  padding: 32px 24px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
-  color: var(--color-fg);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #111116; /* Fully solid opaque background to prevent bleed-through */
+  padding: 34px 28px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #f4f4f5;
   text-align: right;
 }
 
 html.light .modalBox {
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+  border-color: rgba(0, 0, 0, 0.14);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+  color: #0f172a;
 }
 
 .modalCloseBtn {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 36px;
-  height: 36px;
+  top: 22px;
+  left: 22px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
+}
+
+html.light .modalCloseBtn {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 .modalCloseBtn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--color-fg);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+html.light .modalCloseBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 .modalHeader {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 24px;
+  gap: 16px;
+  margin-bottom: 26px;
 }
 
 .modalIconCircle {
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-  background: rgba(37, 99, 235, 0.15);
-  color: #3b82f6;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  background: rgba(39, 39, 255, 0.18);
+  color: #60a5fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   flex-shrink: 0;
+  border: 1px solid rgba(96, 165, 250, 0.3);
 }
 
 .modalTitle {
-  font-size: 1.35rem;
-  font-weight: 800;
-  margin: 0 0 4px 0;
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin: 0 0 6px 0;
+  color: #ffffff;
   font-family: var(--font-display, inherit);
 }
 
+html.light .modalTitle {
+  color: #0f172a;
+}
+
 .modalDesc {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-size: 0.88rem;
+  color: #a1a1aa;
   margin: 0;
 }
 
+html.light .modalDesc {
+  color: #64748b;
+}
+
 .formGroup {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .formLabel {
   display: block;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-fg);
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #f4f4f5;
   margin-bottom: 8px;
+}
+
+html.light .formLabel {
+  color: #1e293b;
 }
 
 .formInput,
 .formSelect,
 .formTextarea {
   width: 100%;
-  padding: 12px 16px;
-  border-radius: 14px;
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
-  background: var(--inputBg, rgba(24, 24, 28, 0.7));
-  color: var(--color-fg);
-  font-size: 0.9rem;
+  padding: 13px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(26, 26, 34, 0.95);
+  color: #ffffff;
+  font-size: 0.92rem;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 html.light .formInput,
 html.light .formSelect,
 html.light .formTextarea {
   background: #f8fafc;
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.12);
   color: #0f172a;
 }
 
 .formInput:focus,
 .formSelect:focus,
 .formTextarea:focus {
-  border-color: var(--color-primary, #2563eb);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
 .tagsGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .tagChip {
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 0.78rem;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
   font-weight: 700;
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: #e4e4e7;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
+}
+
+html.light .tagChip {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #475569;
 }
 
 .tagChipSelected {
-  background: var(--color-primary, #2563eb) !important;
+  background: #2727ff !important;
   color: #ffffff !important;
-  border-color: var(--color-primary, #2563eb) !important;
+  border-color: #2727ff !important;
+  box-shadow: 0 2px 10px rgba(39, 39, 255, 0.4);
 }
 
 .authorIdentityCard {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding: 12px 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 20px;
+}
+
+html.light .authorIdentityCard {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .modalFooter {
@@ -1064,19 +1535,40 @@ html.light .formTextarea {
   justify-content: flex-end;
   gap: 12px;
   margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+html.light .modalFooter {
+  border-top-color: rgba(0, 0, 0, 0.08);
 }
 
 .cancelBtn {
   padding: 10px 20px;
   border-radius: 12px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  font-weight: 800;
   font-size: 0.9rem;
   cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+html.light .cancelBtn {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #475569;
+}
+
+.cancelBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+html.light .cancelBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 .submitBtn {

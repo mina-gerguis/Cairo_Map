@@ -294,11 +294,12 @@ export default function ClientLayoutWrapper({
   // Check if current page is under maintenance
   const activeMaintenance = isPathUnderMaintenance(pathname || "", maintenanceRecords);
   const isMap = pathname === "/map";
+  const isAiChat = pathname === "/ai-planner/chat";
 
   return (
     <>
       <SitePreloader />
-      <Navbar />
+      {!isAiChat && <Navbar />}
 
       {/* Admin Floating Banner when visiting locked page */}
       {activeMaintenance && isUserAdmin && (
@@ -312,11 +313,11 @@ export default function ClientLayoutWrapper({
       <main
         ref={mainContentRef}
         style={{
-          paddingTop: isMap ? 0 : "72px",
-          height: isMap ? "100dvh" : undefined,
-          minHeight: isMap ? "100dvh" : undefined,
-          overflow: isMap ? "hidden" : undefined,
-          position: isMap ? "relative" : undefined,
+          paddingTop: isMap || isAiChat ? 0 : "72px",
+          height: isMap || isAiChat ? "100dvh" : undefined,
+          minHeight: isMap || isAiChat ? "100dvh" : undefined,
+          overflow: isMap || isAiChat ? "hidden" : undefined,
+          position: isMap || isAiChat ? "relative" : undefined,
         }}
       >
         {activeMaintenance && !isUserAdmin && !authLoading ? (
@@ -330,9 +331,9 @@ export default function ClientLayoutWrapper({
       </main>
 
       {/* <Footer /> */}
-      <MobileBottomNav />
-      <ScrollToTop />
-      <MobileInstallPrompt />
+      {!isAiChat && <MobileBottomNav />}
+      {!isAiChat && <ScrollToTop />}
+      {!isAiChat && <MobileInstallPrompt />}
 
       {activeAlert && (
         <SiteAlertModal alert={activeAlert} onClose={handleAlertClose} />
