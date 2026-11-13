@@ -33,10 +33,27 @@ export const useLoginForm = (): UseLoginFormReturn => {
     setPasswordState(val);
   };
   const [loading, setLoading] = useState<boolean>(false);
+  const [failedAttempts, setFailedAttempts] = useState<number>(0);
+  const [lockoutSeconds, setLockoutSeconds] = useState<number>(0);
   const [googleLoading, setGoogleLoading] = useState<boolean>(false);
   const [facebookLoading, setFacebookLoading] = useState<boolean>(false);
   const [passkeyLoading, setPasskeyLoading] = useState<boolean>(false);
   const [hasPasskeySupport, setHasPasskeySupport] = useState<boolean>(false);
+
+  // Countdown timer for brute force lockout
+  useEffect(() => {
+    if (lockoutSeconds <= 0) return;
+    const interval = setInterval(() => {
+      setLockoutSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockoutSeconds]);
 
   // Check Passkey/WebAuthn availability on mount
   useEffect(() => {
@@ -165,6 +182,12 @@ export const useLoginForm = (): UseLoginFormReturn => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     clearPasskeyAuthentication();
+
+    if (lockoutSeconds > 0) {
+      setError(`تم تجاوز عدد المحاولات المسموح بها. يرجى الانتظار ${lockoutSeconds} ثانية.`);
+      return;
+    }
+
     if (!supabase) {
       setError(LOGIN_MESSAGES.DB_NOT_CONFIGURED);
       return;
@@ -172,6 +195,18 @@ export const useLoginForm = (): UseLoginFormReturn => {
 
     setLoading(true);
     setError("");
+
+    const handleFailure = (msg: string = LOGIN_MESSAGES.INVALID_CREDENTIALS) => {
+      const nextCount = failedAttempts + 1;
+      setFailedAttempts(nextCount);
+      if (nextCount >= 5) {
+        setLockoutSeconds(30);
+        setError("تم تجاوز الحد الأقصى للمحاولات الخاطئة. يرجى الانتظار 30 ثانية قبل المحاولة مجدداً.");
+      } else {
+        setError(msg);
+      }
+      setLoading(false);
+    };
 
     let loginEmail = email.trim();
     const isEmail = isEmailAddress(loginEmail);
@@ -185,8 +220,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
         .maybeSingle();
 
       if (profileError || !profileData?.email) {
-        setError(LOGIN_MESSAGES.INVALID_USER_OR_PWD);
-        setLoading(false);
+        handleFailure(LOGIN_MESSAGES.INVALID_CREDENTIALS);
         return;
       }
 
@@ -218,10 +252,11 @@ export const useLoginForm = (): UseLoginFormReturn => {
     });
 
     if (authError) {
-      setError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
-      setLoading(false);
+      handleFailure(LOGIN_MESSAGES.INVALID_CREDENTIALS);
       return;
     }
+
+    setFailedAttempts(0);
 
     if (data.user) {
       // Check if user's account is suspended

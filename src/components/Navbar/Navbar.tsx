@@ -12,21 +12,46 @@ import { ASSETS } from "@/constants/assets";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import "./Navbar.css";
+import { IconCircleCaretDownFilled, IconFolderOpenFilled, IconHomeFilled, IconLibraryFilled, IconLogout, IconMapPinFilled, IconTableFilled, IconUserFilled } from "@tabler/icons-react";
 
 interface NavSubItem {
   href: string;
   label: string;
   subtitle?: string;
   imgLogo?: string;
-  icon?: string;
+  icon?: React.ReactNode;
 }
 
 interface NavLink {
   href?: string;
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   isDropdown?: boolean;
   subItems?: NavSubItem[];
+}
+
+function renderNavIcon(icon?: React.ReactNode, extraStyle?: React.CSSProperties) {
+  if (!icon) return null;
+  if (typeof icon === "string") {
+    return <i className={icon} style={{ fontSize: "1.15rem", marginLeft: "8px", flexShrink: 0, ...extraStyle }} />;
+  }
+  return (
+    <span
+      className="nav-icon-wrapper"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginLeft: "8px",
+        flexShrink: 0,
+        ...extraStyle,
+      }}
+    >
+      {React.isValidElement(icon) && !(icon.props as any).size
+        ? React.cloneElement(icon as React.ReactElement<any>, { size: 19 })
+        : icon}
+    </span>
+  );
 }
 
 /* ─── مكون الشريط العلوي للرأس والقوائم (Navbar Component) ─── */
@@ -157,12 +182,12 @@ export default function Navbar() {
 
   // ── قائمة الروابط الرئيسية للموقع ──
   const mainLinks: NavLink[] = [
-    { href: "/", label: "الصفحة الرئيسية", icon: "fa-solid fa-house-chimney" },
-    { href: "/map", label: "الخريطة", icon: "fa-solid fa-map-location-dot" },
+    { href: "/", label: "الصفحة الرئيسية", icon: <IconHomeFilled /> },
+    { href: "/map", label: "الخريطة", icon: <IconMapPinFilled /> },
     {
       label: "الخدمات",
       isDropdown: true,
-      icon: "fa-solid fa-star-of-life",
+      icon: <IconFolderOpenFilled />,
       subItems: [
         { href: "/save-location", label: "أحفظ مكاني", subtitle: "حفظ موقعك الحالي بدقة 100% ورابط خرائط جوجل", imgLogo: ASSETS.threeD.street },
         { href: "/map", label: "خريطة الأماكن التفاعلية", subtitle: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.threeD.maps },
@@ -186,8 +211,8 @@ export default function Navbar() {
         { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.branding.qareebNoBgBlue },
       ]
     },
-    { href: "/blog", label: "المدونة والمقالات", icon: "bx bx-news" },
-    { href: "/doc", label: "التوثيق والتحديثات", icon: "bx bx-book-content" },
+    { href: "/blog", label: "المدونة والمقالات", icon: <IconLibraryFilled /> },
+    { href: "/doc", label: "التوثيق والتحديثات", icon: <IconTableFilled /> },
   ];
 
   // Mobile dropdown state
@@ -581,21 +606,13 @@ export default function Navbar() {
               return (
                 <div key={idx} className="navbar-mobile-dropdown-group">
                   <button
-                    className="navbar-mobile-link"
+                    className="flex py-3 px-4 rounded-md font-display fw-700 fs-md border-none bg-transparent color-fg"
                     onClick={() => toggleMobileDropdown(idx)}
-                    style={{
-                      width: "100%",
-                      background: "none",
-                      border: "none",
-                      textAlign: "right",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      fontFamily: "var(--font-heading)"
-                    }}
                   >
-                    <span className="text-primary"> <i className={link.icon} style={{ fontSize: "1.1rem" }}></i> {link.label}</span>
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      {renderNavIcon(link.icon)}
+                      <span>{link.label}</span>
+                    </span>
                     <i
                       className={`bx bx-chevron-down`}
                       style={{
@@ -612,7 +629,7 @@ export default function Navbar() {
                         <Link
                           key={sIdx}
                           href={sub.href}
-                          className={`text-primary navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
+                          className={`navbar-mobile-link sub-link ${pathname === sub.href ? "active" : ""}`}
                           onClick={() => setMenuOpen(false)}
                           style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 10px" }}
                         >
@@ -620,18 +637,18 @@ export default function Navbar() {
                             <Image
                               src={sub.imgLogo}
                               alt={sub.label}
-                              width={22}
-                              height={22}
-                              style={{ width: "22px", height: "22px", objectFit: "contain", flexShrink: 0 }}
+                              width={28}
+                              height={28}
+                              style={{ width: "28px", height: "28px", objectFit: "contain", flexShrink: 0 }}
                             />
                           ) : (
-                            <i className={sub.icon} style={{ fontSize: "1.1rem", marginLeft: "8px" }} />
+                            renderNavIcon(sub.icon)
                           )}
                           <div style={{ display: "flex", flexDirection: "column" }}>
-                            <span className="text-primary" style={{ fontWeight: "700", fontSize: "0.86rem" }}>{sub.label}</span>
-                            {sub.subtitle && (
-                              <span style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "1px" }}>{sub.subtitle}</span>
-                            )}
+                            <span className="fw-700 font-sub">{sub.label}</span>
+                            {/* {sub.subtitle && (
+                              <span className="fs-xs mt-1 font-sub">{sub.subtitle}</span>
+                            )} */}
                           </div>
                         </Link>
                       ))}
@@ -644,44 +661,38 @@ export default function Navbar() {
               <Link
                 key={link.href || idx}
                 href={link.href || ""}
-                className={`navbar-mobile-link ${pathname === link.href ? "active" : ""}`}
+                className={`navbar-mobile-link font-display fw-700 fs-md border-none ${pathname === link.href ? "active" : ""}`}
                 onClick={() => setMenuOpen(false)}
+                style={{ display: "flex", alignItems: "center" }}
               >
-                <i className={link.icon} style={{ fontSize: "1.1rem", marginLeft: "8px" }} />
-                {link.label}
+                {renderNavIcon(link.icon)}
+                <span>{link.label}</span>
               </Link>
             );
           })}
           {user ? (
             <>
-              <Link href="/profile" className="navbar-mobile-link" onClick={() => setMenuOpen(false)}>
-                <i className="fa-solid fa-user" style={{ fontSize: "1.2rem", marginLeft: "8px" }}></i>
+              <Link href="/profile" className="flex py-3 px-4 font-display fw-700 fs-md border-none" onClick={() => setMenuOpen(false)}>
+                <IconUserFilled />
                 الحساب ({profile?.username || user.user_metadata?.username || "حسابي"}@)
               </Link>
-              <button onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }} className="navbar-mobile-link" style={{ color: "#ff3f8e", textAlign: "right", background: "none", border: "none", width: "100%", fontSize: "1rem", fontWeight: "700" }}><i className="bx bx-log-out" style={{ fontSize: "1.2rem" }}></i> تسجيل الخروج</button>
+              {/* Log Out */}
+              <button
+                onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }}
+                className="flex py-3 px-4 font-display fw-700 fs-md border-none color-error bg-transparent">
+                <IconCircleCaretDownFilled size={24} className="ml-1"/>
+                تسجيل الخروج
+              </button>
             </>
           ) : (
-            <Link href="/login" className="navbar-mobile-link" style={{ color: "var(--color-primary)", fontWeight: "700" }} onClick={() => setMenuOpen(false)}>
+            <Link href="/login" className="flex py-3 px-4 font-display fw-700 fs-md border-none btn-primary rounded-xl" onClick={() => setMenuOpen(false)}>
+              <IconUserFilled />
               تسجيل الدخول
             </Link>
           )}
           <button
             onClick={() => { toggleTheme(); }}
-            className="navbar-mobile-link"
-            style={{
-              width: "100%",
-              background: "none",
-              border: "none",
-              textAlign: "right",
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              fontFamily: "var(--font-heading)",
-              color: "var(--color-fg)",
-              marginTop: "6px",
-              paddingTop: "12px",
-              borderTop: "1px solid var(--border-glass)"
-            }}
+            className="flex py-3 px-4 font-display fw-700 fs-md border-none bg-transparent color-fg " 
           >
             <i className={theme === "dark" ? "bx bx-sun" : "bx bx-moon"} style={{ fontSize: "1.2rem", marginLeft: "8px" }} />
             <span>{theme === "dark" ? "الوضع النهاري" : "الوضع الليلي"}</span>

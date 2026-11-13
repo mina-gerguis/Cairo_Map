@@ -18,6 +18,7 @@ import dynamic from "next/dynamic";
 import VideoAdBanner from "@/components/VideoAdBanner";
 const WeatherComfortWidget = dynamic(() => import("@/components/WeatherComfortWidget"), { ssr: false });
 const MetroMapGallery = dynamic(() => import("@/components/ui/MetroMapGallery"), { ssr: false });
+const HomeGlassFolders = dynamic(() => import("@/components/home/HomeGlassFolders"), { ssr: false });
 import { CAIRO_METRO_LINES, CAIRO_METRO_STATIONS, CAIRO_METRO_LABELS } from "@/data/cairoMetroGalleryData";
 import { FamousCity, INITIAL_FAMOUS_CITIES, getStoredCities, saveStoredCities } from "@/data/cities";
 import CityDetailModal from "@/components/cities/CityDetailModal";
@@ -1225,9 +1226,9 @@ export default function HomePage() {
   const categoryCards = CATEGORIES_STRUCTURE;
 
   return (
-    <main style={{ minHeight: "100vh", backgroundColor: "var(--color-bg)", color: "var(--color-fg)", fontFamily: "var(--font-heading)" }}>
+    <main style={{ minHeight: "100vh",  color: "var(--color-fg)", fontFamily: "var(--font-heading)" }}>
       {/* ── 1. HERO SECTION (COMMUNITY ORBIT) ── */}
-      <section ref={heroSectionRef} style={{ position: "relative", overflow: "visible", zIndex: 10 }}>
+      <section  ref={heroSectionRef} style={{ position: "relative", overflow: "visible", zIndex: 10 }}>
         <CommunityOrbit
           items={orbitItems}
           stats={orbitStats}
@@ -1566,6 +1567,9 @@ export default function HomePage() {
         />
       </section>
 
+      {/* ── INTERACTIVE GLASS FOLDERS (حقيبة خدمات قريب الذكية) ── */}
+      <HomeGlassFolders />
+
       {/* ── 3. MAIN SERVICES BENTO GRID (21ST.DEV STYLE) ── */}
       <section ref={servicesSectionRef}>
         <HomeBentoGrid />
@@ -1727,16 +1731,7 @@ export default function HomePage() {
 
           <Link
             href="/ai-planner"
-            className="btn btn-primary active:scale-[0.96] transition-transform"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              fontWeight: "700",
-              fontSize: "1rem",
-              minHeight: "44px",
-              textDecoration: "none",
-            }}
+            className="btn btn-primary"
           >
             <span className="sub-title">جرب مخطط الرحلات الذكي </span>
             <FaArrowLeft style={{ fontSize: "0.9rem" }} />
@@ -1763,16 +1758,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/propose-place"
-            className="btn btn-outline"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              fontWeight: "700",
-              fontSize: "0.95rem",
-              minHeight: "44px",
-              textDecoration: "none"
-            }}
+            className="btn btn-blue"
           >
             <FaPlusCircle />
             <span className="sub-title">اقتراح أو إضافة مكان جديد</span>

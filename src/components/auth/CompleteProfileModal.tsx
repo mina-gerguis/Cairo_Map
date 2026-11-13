@@ -10,6 +10,7 @@ import { calculateAge, getMaxDobDateString } from "@/app/signup/utils";
 import { extractUserEmail, generateSmartUsername } from "@/lib/profileValidation";
 import styles from "./completeProfileModal.module.css";
 import { AlertCircle } from "lucide-react";
+import { ASSETS } from "@/constants/assets";
 
 interface CompleteProfileModalProps {
   isOpen: boolean;
@@ -604,10 +605,10 @@ export default function CompleteProfileModal({ isOpen }: CompleteProfileModalPro
             <div className={styles.phoneWrapper}>
               <span className={styles.phonePrefix}>
                 <Image
-                  src="/images/profile/flag-egypt.webp"
+                  src= { ASSETS.locations.governorates.flagEgypt }
                   alt="Egypt"
-                  width={30}
-                  height={25}
+                  width={25}
+                  height={20}
                   style={{ borderRadius: "2px" }}
                 />
                 <span>+20</span>

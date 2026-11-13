@@ -2,16 +2,46 @@ import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import { generateOtpEmailHtml } from '@/lib/emailTemplates';
+import { getClientIp, recordIpAttempt } from '@/lib/ipRateLimit';
 
-// Secret for HMAC hashing
-const OTP_SECRET = process.env.OTP_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'cairo-map-otp-token-secret';
+// Secure retrieval of secret for HMAC hashing - no weak hardcoded fallback in production
+function getOtpSecret(): string {
+  const secret = process.env.OTP_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'development') {
+      return 'cairo-map-dev-temporary-secret-key-for-local-testing';
+    }
+    throw new Error('Missing server secret configuration (OTP_SECRET or SUPABASE_SERVICE_ROLE_KEY)');
+  }
+  return secret;
+}
 
 export async function POST(request: Request) {
   try {
+    const clientIp = getClientIp(request);
+    // Rate limit: max 4 OTP requests per 15-minute window
+    const rateLimit = recordIpAttempt(clientIp, 'otp-send', 4, 15 * 60 * 1000);
+    if (rateLimit.blocked) {
+      return NextResponse.json(
+        { error: 'تم تجاوز الحد الأقصى لطلب رموز التحقق. يرجى الانتظار 15 دقيقة قبل المحاولة مجدداً.' },
+        { status: 429 }
+      );
+    }
+
     const { email } = await request.json();
 
     if (!email || typeof email !== 'string' || !email.includes('@')) {
       return NextResponse.json({ error: 'يرجى إدخال بريد إلكتروني صحيح' }, { status: 400 });
+    }
+
+    let otpSecret: string;
+    try {
+      otpSecret = getOtpSecret();
+    } catch {
+      return NextResponse.json(
+        { error: 'خطأ في إعدادات الأمان بالخادم. يرجى التواصل مع الإدارة.' },
+        { status: 500 }
+      );
     }
 
     const smtpUser = process.env.SMTP_USER;
@@ -24,7 +54,7 @@ export async function POST(request: Request) {
 
     // Create HMAC hash of (email + otp + expiresAt)
     const hashData = `${email.toLowerCase().trim()}:${otp}:${expiresAt}`;
-    const hash = crypto.createHmac('sha256', OTP_SECRET).update(hashData).digest('hex');
+    const hash = crypto.createHmac('sha256', otpSecret).update(hashData).digest('hex');
 
     if (!smtpUser || !smtpPass) {
       // In development mode, log the OTP to console and allow testing without blockage
@@ -55,7 +85,7 @@ export async function POST(request: Request) {
         pass: smtpPass,
       },
       tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: process.env.NODE_ENV === 'production'
       }
     });
 

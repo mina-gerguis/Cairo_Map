@@ -1,5 +1,6 @@
 ﻿import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { supabase } from '@/lib/supabase';
 
 const escapeHtml = (str: string = "") =>
   String(str)
@@ -12,12 +13,52 @@ const escapeHtml = (str: string = "") =>
 const formatParagraphs = (str: string = "") =>
   escapeHtml(str).replace(/\r\n|\r|\n/g, "<br />");
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function POST(request: Request) {
   try {
+    // 1. Authorization check: Ensure requester is an authenticated Admin
+    const authHeader = request.headers.get('authorization') || '';
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+
+    if (!token && process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ error: 'غير مصرح بالوصول: يتطلب تسجيل دخول مسؤول' }, { status: 401 });
+    }
+
+    if (token && supabase) {
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      if (authError || !user) {
+        return NextResponse.json({ error: 'جلسة المستخدم غير صالحة' }, { status: 401 });
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!profile?.is_admin) {
+        return NextResponse.json({ error: 'غير مصرح لك: هذه العملية مخصصة للمسؤولين فقط' }, { status: 403 });
+      }
+    }
+
+    // 2. Server-Side Validation of Form Fields
     const { toEmail, toName, originalMessage, replyText } = await request.json();
 
     if (!toEmail || !toName || !replyText) {
-      return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+      return NextResponse.json({ error: 'جميع الحقول الأساسية مطلوبة' }, { status: 400 });
+    }
+
+    if (typeof toEmail !== 'string' || !EMAIL_REGEX.test(toEmail.trim()) || toEmail.length > 254) {
+      return NextResponse.json({ error: 'صيغة البريد الإلكتروني للمستلم غير صالحة' }, { status: 400 });
+    }
+
+    if (typeof toName !== 'string' || toName.trim().length === 0 || toName.length > 100) {
+      return NextResponse.json({ error: 'اسم المستلم غير صالح أو يتجاوز الحد المسموح' }, { status: 400 });
+    }
+
+    if (typeof replyText !== 'string' || replyText.trim().length === 0 || replyText.length > 5000) {
+      return NextResponse.json({ error: 'نص الرد غير صالح أو يتجاوز الحد المسموح (5000 حرف)' }, { status: 400 });
     }
 
     const smtpUser = process.env.SMTP_USER;
@@ -29,7 +70,7 @@ export async function POST(request: Request) {
       }, { status: 500 });
     }
 
-    // Configure a generic and robust SMTP transporter
+    // Configure a modern, secure TLS transporter (no deprecated SSLv3)
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp-mail.outlook.com",
       port: parseInt(process.env.SMTP_PORT || "587", 10),
@@ -39,8 +80,7 @@ export async function POST(request: Request) {
         pass: smtpPass,
       },
       tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: false
+        rejectUnauthorized: process.env.NODE_ENV === 'production'
       }
     });
 

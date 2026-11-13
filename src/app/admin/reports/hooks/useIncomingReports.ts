@@ -541,9 +541,14 @@ export function useIncomingReports() {
           if (updateError) throw updateError;
 
           if (item.sender_email) {
+            const { data: { session } } = await supabase.auth.getSession();
+            const token = session?.access_token;
             const emailResponse = await fetch("/api/contact/reply", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
               body: JSON.stringify({
                 toEmail: item.sender_email,
                 toName: item.user_profile?.full_name || `${item.first_name || ""} ${item.last_name || ""}`.trim() || "المستخدم",

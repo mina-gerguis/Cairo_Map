@@ -113,7 +113,7 @@ html.light {
 /* BTN BLUE */
 .btn-blue {
   background: var(--color-primary);
-  border-color: var(--mainBtnBorder);
+  border-color: var(--color-primary);
   color: #ffffff !important;
 }
 /* BTN LIGHT */

@@ -3,29 +3,76 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS points INTEGER DEFAULT 0 NO
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS balance NUMERIC(10,2) DEFAULT 0.00 NOT NULL;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS promo_balance NUMERIC(10,2) DEFAULT 0.00 NOT NULL;
 
--- 2. إنشاء دالة التحقق لمنع تعديل هذه الحقول الحساسة بواسطة غير المسؤولين (is_admin = true)
+-- 1. Helper function with SECURITY DEFINER to avoid RLS infinite recursion
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+STABLE
+AS $$
+  SELECT COALESCE(
+    (SELECT is_admin FROM public.profiles WHERE id = auth.uid()),
+    FALSE
+  );
+$$;
+
+GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated, anon;
+
+-- 2. إنشاء دالة التحقق لمنع تعديل الحقول الحساسة (الصلاحيات الإدارية، الحظر، الأرصدة، والنقاط) إلا للمسؤولين
 CREATE OR REPLACE FUNCTION public.check_profile_updates()
 RETURNS TRIGGER AS $$
+DECLARE
+  v_is_caller_admin BOOLEAN := FALSE;
 BEGIN
-  -- السماح بالتحديثات التي تتم عبر دوال النظام الآمنة (مثل عمليات الشراء والتحويل)
+  -- السماح بالتحديثات التي تتم عبر دوال النظام والـ service_role
   IF current_user IN ('postgres', 'supabase_admin') THEN
     RETURN NEW;
   END IF;
 
-  -- التحقق من حدوث تغيير في الحقول الحساسة
+  -- فحص ما إذا كان المستخدم الحالي مسؤولاً مسجلاً عبر دالة is_admin() الآمنة
+  v_is_caller_admin := public.is_admin();
+
+  -- منع تعديل المعرف الأساسي
+  IF OLD.id IS DISTINCT FROM NEW.id THEN
+    RAISE EXCEPTION 'غير مسموح بتعديل المعرف الأساسي للملف الشخصي.';
+  END IF;
+
+  -- منع الترقية الذاتية إلى مسؤول (Privilege Escalation Protection)
+  IF OLD.is_admin IS DISTINCT FROM NEW.is_admin THEN
+    IF NOT v_is_caller_admin THEN
+      RAISE EXCEPTION 'غير مسموح لك بتعديل الصلاحيات الإدارية.';
+    END IF;
+  END IF;
+
+  -- منع تعديل حالة الحظر
+  IF (
+    OLD.is_suspended IS DISTINCT FROM NEW.is_suspended OR
+    OLD.suspended_at IS DISTINCT FROM NEW.suspended_at OR
+    OLD.suspended_reason IS DISTINCT FROM NEW.suspended_reason
+  ) THEN
+    IF NOT v_is_caller_admin THEN
+      RAISE EXCEPTION 'غير مسموح لك بتعديل حالة تعليق الحساب.';
+    END IF;
+  END IF;
+
+  -- منع التلاعب بالنقاط أو الأرصدة المالية
   IF (
     OLD.points IS DISTINCT FROM NEW.points OR
     OLD.balance IS DISTINCT FROM NEW.balance OR
     OLD.promo_balance IS DISTINCT FROM NEW.promo_balance
   ) THEN
-    -- التحقق مما إذا كان المستخدم المسؤول الحالي آدمن
-    IF NOT EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE id = auth.uid() AND is_admin = true
-    ) THEN
-      RAISE EXCEPTION 'غير مسموح لك بتعديل النقاط أو الرصيد.';
+    IF NOT v_is_caller_admin THEN
+      RAISE EXCEPTION 'غير مسموح لك بتعديل النقاط أو الرصيد المالي مباشرة.';
     END IF;
   END IF;
+
+  -- تثبيت تاريخ الإنشاء
+  IF OLD.created_at IS DISTINCT FROM NEW.created_at THEN
+    NEW.created_at := OLD.created_at;
+  END IF;
+
+  NEW.updated_at := timezone('utc'::text, now());
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

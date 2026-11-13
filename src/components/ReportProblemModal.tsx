@@ -264,6 +264,20 @@ export default function ReportProblemModal({ isOpen, onClose, place }: ReportPro
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Security check: restrict upload size to 5MB and image types only
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+    if (file.size > MAX_FILE_SIZE) {
+      setErrorMsg("حجم الصورة كبير جداً، الحد الأقصى المسموح به هو 5 ميجابايت.");
+      return;
+    }
+
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      setErrorMsg("صيغة الملف غير مدعومة. يرجى رفع صورة بصيغة JPG أو PNG أو WEBP فقط.");
+      return;
+    }
+
     setIsUploading(true);
     setErrorMsg("");
     try {

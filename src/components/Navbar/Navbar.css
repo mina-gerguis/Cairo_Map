@@ -454,17 +454,29 @@ html.light .services-megamenu-panel {
 .navbar-mobile-link {
   padding: 12px 18px;
   border-radius: var(--ra-14);
-  font-size: 1rem;
-  font-weight: 500;
   text-decoration: none;
   transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+}
+
+.nav-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-icon-wrapper svg {
   display: block;
 }
 
-.navbar-mobile-link:hover,
+.navbar-mobile-link:hover{
+  background-color: var(--bg-secondary);
+}
 .navbar-mobile-link.active {
-  color: var(--color-primary);
-  background: var(--hover-btn);
+  color: #fff;
+  background: var(--color-primary);
 }
 .navbar-mobile-link:hover,
 .navbar-mobile-link.icon {

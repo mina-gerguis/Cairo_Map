@@ -108,7 +108,7 @@ export default function HomeBentoGrid() {
       <div className={styles.bentoGrid}>
 
         {/* ── CARD 1: «حد يعرف؟» مجتمع وتجارب الناس (7 COLS) ── */}
-        <div className={`${styles.bentoCard} ${styles.colSpan7} active:scale-[0.99] transition-transform`}>
+        <div className={`${styles.bentoCard} ${styles.colSpan7}`}>
           <div className={styles.ambientGlowOrange} />
           <div>
             <h2 className={styles.cardTitle}>

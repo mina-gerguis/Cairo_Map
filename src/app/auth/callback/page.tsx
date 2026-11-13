@@ -6,6 +6,28 @@ import { supabase } from "@/lib/supabase";
 import { applyNewUserTrialIfActive } from "@/lib/promotions";
 import { extractUserEmail, generateSmartUsername } from "@/lib/profileValidation";
 
+/**
+ * Validates and sanitizes a redirection URL to prevent Open Redirect attacks.
+ * Only allows relative paths on the same origin (starting with a single forward slash).
+ */
+function getSafeRedirectUrl(target: string | null | undefined, defaultPath: string = "/"): string {
+  if (!target) return defaultPath;
+  const trimmed = target.trim();
+
+  // Reject empty or protocol-relative (//example.com) or backslash (/\example.com) URLs
+  if (
+    !trimmed.startsWith("/") ||
+    trimmed.startsWith("//") ||
+    trimmed.startsWith("/\\") ||
+    trimmed.includes(":") ||
+    /[\r\n\0]/.test(trimmed)
+  ) {
+    return defaultPath;
+  }
+
+  return trimmed;
+}
+
 function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,7 +42,8 @@ function AuthCallbackContent() {
         return;
       }
 
-      const next = searchParams.get("next") || "/";
+      const rawNext = searchParams.get("next") || "/";
+      const next = getSafeRedirectUrl(rawNext, "/");
       const errorParam = searchParams.get("error");
       const errorDescription = searchParams.get("error_description");
 
@@ -141,7 +164,7 @@ function AuthCallbackContent() {
         }
 
         setStatusMessage("تم الدخول بنجاح! جاري تحويلك...");
-        const targetUrl = next.startsWith("/") ? next : `/${next}`;
+        const targetUrl = getSafeRedirectUrl(next, "/");
         router.replace(targetUrl);
       } catch (err: any) {
         console.error("Auth callback exception:", err);

@@ -1,9 +1,41 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
+import { getClientIp, recordIpAttempt } from '@/lib/ipRateLimit';
 
 export async function POST(req: Request) {
   try {
-    const { messages, context } = await req.json();
+    // Rate limit check: max 25 prompts per 5-minute window per IP
+    const clientIp = getClientIp(req);
+    const rateLimit = recordIpAttempt(clientIp, 'ai-chat', 25, 5 * 60 * 1000);
+    if (rateLimit.blocked) {
+      return NextResponse.json(
+        { 
+          error: 'تم تجاوز الحد الأقصى للأسئلة المسموح بها مؤقتاً. يرجى الانتظار بضع دقائق قبل إرسال سؤال جديد.' 
+        }, 
+        { status: 429 }
+      );
+    }
+
+    const body = await req.json();
+    const { messages, context } = body;
+
+    // Server-side validation
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json({ error: 'لا توجد رسائل مرسلة أو صيغة الطلب غير صالحة' }, { status: 400 });
+    }
+
+    if (messages.length > 20) {
+      return NextResponse.json({ error: 'تم تجاوز الحد الأقصى لعدد الرسائل المسموح به (20 رسالة)' }, { status: 400 });
+    }
+
+    for (const m of messages) {
+      if (!m || typeof m !== 'object' || typeof m.content !== 'string') {
+        return NextResponse.json({ error: 'صيغة محتوى الرسالة غير صالحة' }, { status: 400 });
+      }
+      if (m.content.length > 2000) {
+        return NextResponse.json({ error: 'طول الرسالة يتجاوز الحد الأقصى المسموح به (2000 حرف)' }, { status: 400 });
+      }
+    }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
@@ -17,21 +49,21 @@ export async function POST(req: Request) {
 
     const ai = new GoogleGenAI({ apiKey });
 
+    const safeContext = typeof context === 'object' && context !== null 
+      ? JSON.stringify(context).slice(0, 4000) 
+      : '';
+
     const systemInstruction = `أنت "دليل قريب الذكي" (Qareeb AI).
 أهم القواعد للرد:
 1. كن سريعاً ومباشراً ومختصراً. لا تطيل في الكلام إلا لو طلب المستخدم تفاصيل.
 2. اتكلم بلهجة مصرية ودودة أو فصحى بسيطة وواضحة.
 3. قدم اقتراحات محددة بالاسم (كافيهات، مطاعم، مزارات، محطات مترو).
-${context ? `\nسياق خطة المستخدم الحالية:\n${JSON.stringify(context, null, 2)}` : ''}`;
+${safeContext ? `\nسياق خطة المستخدم الحالية:\n${safeContext}` : ''}`;
 
-    const contents = (messages || []).map((m: { role: string; content: string }) => ({
+    const contents = messages.map((m: { role: string; content: string }) => ({
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
     }));
-
-    if (contents.length === 0) {
-      return NextResponse.json({ error: 'لا توجد رسائل مرسلة' }, { status: 400 });
-    }
 
     // Try fastest lightweight models first with auto-fallback
     const modelsToTry = [

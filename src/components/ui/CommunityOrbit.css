@@ -9,16 +9,10 @@
   width: 100%;
   overflow: visible;
   z-index: 50;
-  background-color: #ffffff;
+  background: var(--color-bg);
   padding: 1.5rem 1rem 3.5rem;
-  color: #1f1f1f;
+  color: var(--color-fg);
   box-sizing: border-box;
-}
-
-html:not(.light) .orbit-section,
-.dark .orbit-section {
-  background-color: #09090b;
-  color: #f4f4f5;
 }
 
 /* ── 2. Responsive Frame & Stage ── */
@@ -464,7 +458,6 @@ body[dir="rtl"] .orbit-tag-pill {
 .orbit-tag-pill:hover {
   border-color: rgba(0, 0, 0, 0.15);
   box-shadow: 0 6px 18px -4px rgba(0, 0, 0, 0.12);
-  transform: translateY(-1.5px);
 }
 
 .orbit-tag-pill:focus-visible {

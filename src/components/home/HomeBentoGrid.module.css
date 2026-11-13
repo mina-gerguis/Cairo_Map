@@ -76,7 +76,6 @@
 .bentoCard:hover {
   border-color: rgba(0, 111, 238, 0.4);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 12px 32px -4px rgba(0, 111, 238, 0.12);
-  transform: translateY(-2px);
 }
 
 /* Card Column Spans */

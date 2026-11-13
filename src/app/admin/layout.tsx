@@ -18,10 +18,8 @@ export default function AdminLayout({
   const { user, profile, loading, logout } = useAuth();
 
   useEffect(() => {
-    if (!loading) {
-      if (!user || !profile?.is_admin) {
-        router.push("/");
-      }
+    if (!loading && (!user || !profile?.is_admin)) {
+      router.push("/");
     }
   }, [user, profile, loading, router]);
 
@@ -325,7 +323,7 @@ export default function AdminLayout({
   };
 
   const fetchPendingCounts = async () => {
-    if (!supabase || !user) return;
+    if (!supabase || !user || !profile?.is_admin) return;
     try {
       const [placeReportsRes, appFeedbackRes, contactMessagesRes, balanceTransactionsRes] = await Promise.all([
         supabase
@@ -357,10 +355,12 @@ export default function AdminLayout({
   };
 
   useEffect(() => {
-    fetchPendingCounts();
-    const interval = setInterval(fetchPendingCounts, 30000);
-    return () => clearInterval(interval);
-  }, [user, pathname]);
+    if (user && profile?.is_admin) {
+      fetchPendingCounts();
+      const interval = setInterval(fetchPendingCounts, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user, profile?.is_admin, pathname]);
 
   // Helper to extract a friendly admin username
   const adminName = profile?.full_name || user?.email?.split("@")[0] || "مدير النظام";
@@ -434,15 +434,24 @@ export default function AdminLayout({
 
   if (loading) {
     return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner} />
-        <span>جاري تحميل لوحة التحكم ...</span>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#09090b" }}>
+        <div style={{ width: "40px", height: "40px", borderRadius: "50%", border: "3px solid rgba(59, 130, 246, 0.2)", borderTopColor: "#3b82f6", animation: "spin 0.8s linear infinite" }} />
+        <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
   if (!user || !profile?.is_admin) {
-    return null;
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", direction: "rtl", background: "#09090b", color: "#f4f4f5" }}>
+        <i className="bx bx-shield-x" style={{ fontSize: "3.5rem", color: "#ef4444" }} />
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0 }}>منطقة إدارية محمية (403)</h1>
+        <p style={{ color: "#a1a1aa", margin: 0, fontSize: "0.95rem" }}>ليس لديك الصلاحيات الكافية للوصول إلى لوحة التحكم الإدارية.</p>
+        <Link href="/" style={{ marginTop: "12px", padding: "10px 20px", background: "#2563eb", color: "#ffffff", borderRadius: "8px", textDecoration: "none", fontWeight: 600 }}>
+          العودة للصفحة الرئيسية
+        </Link>
+      </div>
+    );
   }
 
   return (
