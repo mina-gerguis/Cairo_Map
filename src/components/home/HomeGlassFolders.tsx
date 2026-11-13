@@ -109,25 +109,6 @@ export default function HomeGlassFolders() {
           />
         </div>
 
-        {/* FOLDER 2: دليل الأماكن والخدمات */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <GlassFolder
-            label="دليل الأماكن والخدمات"
-            meta="آلاف العناوين والمواعيد"
-            art="ember"
-            seed={88}
-            width={310}
-            files={placesFiles}
-            action="more"
-            menu={[
-              { label: "المطاعم والكافيهات", onSelect: () => (window.location.href = "/places?category=restaurants") },
-              { label: "المستشفيات والصيدليات", onSelect: () => (window.location.href = "/places?category=hospitals") },
-              { label: "المولات ومراكز التسوق", onSelect: () => (window.location.href = "/places?category=malls") },
-              { label: "البنوك و ATM", onSelect: () => (window.location.href = "/directory?category=banks") },
-            ]}
-          />
-        </div>
-
         {/* FOLDER 3: مخطط الرحلات الذكي */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <GlassFolder
