@@ -266,7 +266,7 @@
 .searchInput {
   width: 100%;
   padding: 12px 42px 12px 14px;
-  background: var(--inputBg, rgba(15, 23, 42, 0.6));
+  background: var(--input-bg, rgba(15, 23, 42, 0.6));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
   border-radius: 12px;
   color: var(--color-fg, #ffffff);
@@ -288,7 +288,7 @@
 
 .filterSelect {
   padding: 12px 16px;
-  background: var(--inputBg, rgba(15, 23, 42, 0.6));
+  background: var(--input-bg, rgba(15, 23, 42, 0.6));
   border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.12));
   border-radius: 12px;
   color: var(--color-fg, #ffffff);

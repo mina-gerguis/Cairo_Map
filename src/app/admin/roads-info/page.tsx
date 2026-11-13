@@ -1117,7 +1117,7 @@ function AdminRoadsInfoInner() {
               </div>
 
               {/* Vehicle Speed Limits */}
-              <div style={{ background: "var(--inputBg, rgba(15,23,42,0.6))", padding: "14px", borderRadius: "14px", marginBottom: "14px", border: "1px solid var(--border-glass)" }}>
+              <div style={{ background: "var(--input-bg, rgba(15,23,42,0.6))", padding: "14px", borderRadius: "14px", marginBottom: "14px", border: "1px solid var(--border-glass)" }}>
                 <div style={{ fontSize: "0.9rem", fontWeight: "700", color: "#3b82f6", marginBottom: "10px" }}>
                   السرعات المحددة للرادار (كم/ساعة لكل نوع مركبة):
                 </div>

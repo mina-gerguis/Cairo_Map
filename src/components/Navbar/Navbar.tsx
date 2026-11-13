@@ -182,10 +182,12 @@ export default function Navbar() {
         { href: "/directions", label: "أزاي أروح ؟", subtitle: "ازاي اروح من ... ل ...", imgLogo: ASSETS.locations.governorates.egypt },
         { href: "/ai-planner", label: "مخطط الرحلات الذكي", subtitle: "تخطيط خروجتك بالذكاء الاصطناعي", imgLogo: ASSETS.threeD.robot },
         { href: "/had-yaaraf", label: "حد يعرف ؟", subtitle: "اسأل مجتمع قريب وجاوب وتفاعل مع الناس", imgLogo: ASSETS.threeD.lamp },
+        { href: "/doc", label: "التوثيق وسجل التحديثات", subtitle: "سجل التحديثات والمميزات وخريطة الطريق", imgLogo: ASSETS.threeD.book },
         { href: "/help", label: "المساعدة والدعم", subtitle: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.branding.qareebNoBgBlue },
       ]
     },
     { href: "/blog", label: "المدونة والمقالات", icon: "bx bx-news" },
+    { href: "/doc", label: "التوثيق والتحديثات", icon: "bx bx-book-content" },
   ];
 
   // Mobile dropdown state
@@ -240,6 +242,7 @@ export default function Navbar() {
         { href: "/places", label: "دليل الأماكن", description: "المتاجر والمحلات والأماكن الحيوية", imgLogo: ASSETS.services.places },
         { href: "/map", label: "الخريطة التفاعلية", description: "استكشاف الأماكن وموقعي على الخريطة", imgLogo: ASSETS.threeD.maps },
         { href: "/had-yaaraf", label: "حد يعرف ؟", description: "اسأل مجتمع قريب وجاوب وتفاعل", imgLogo: ASSETS.threeD.lamp },
+        { href: "/doc", label: "التوثيق والتحديثات", description: "سجل التحديثات والمميزات وخريطة الطريق", imgLogo: ASSETS.threeD.book },
         { href: "/help", label: "المساعدة والدعم", description: "الأسئلة الشائعة والدعم الفني", imgLogo: ASSETS.branding.qareebNoBgBlue },
       ],
     },

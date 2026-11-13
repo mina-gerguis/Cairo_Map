@@ -48,6 +48,7 @@ import {
 } from "react-icons/fa";
 import { CalendarFold, CircleCheck, Copy, Image, MapPlus, Share2, Signpost } from "lucide-react";
 import { color } from "framer-motion";
+import SearchBox from "./searchBox";
 
 type SortOption = "newest" | "oldest" | "name";
 type ViewMode = "grid" | "list";
@@ -357,28 +358,13 @@ export default function SaveLocationPage() {
 
             {/* Filter and Search Bar */}
             <section className={styles.filterBar}>
-              <div className={styles.searchAndControlsRow}>
-                <div className={styles.searchInputWrapper}>
-                  <FaSearch className={styles.searchIcon} />
-                  <input
-                    type="text"
-                    className={`input-fields ${styles.searchInput}`}
-                    placeholder="ابحث في أماكنك المحفوظة (بالاسم، العنوان، الملاحظات)..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  {searchQuery && (
-                    <button
-                      className={styles.clearSearchBtn}
-                      onClick={() => setSearchQuery("")}
-                      title="مسح البحث"
-                      aria-label="مسح البحث"
-                    >
-                      <FaTimes />
-                    </button>
-                  )}
-                </div>
-              </div>
+              <SearchBox
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                totalLocations={locations.length}
+                filteredLocationsCount={filteredAndSortedLocations.length}
+              />
+              
 
               {/* Category Filter Pills */}
               <div className={styles.tagsRow} role="tablist">

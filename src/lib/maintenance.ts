@@ -46,6 +46,7 @@ export const SITE_PAGES_LIST: PageInfo[] = [
   { path: "/terms", label: "الشروط والأحكام", category: "صفحات عامة", icon: "bx bx-file" },
   { path: "/privacy", label: "سياسة الخصوصية", category: "صفحات عامة", icon: "bx bx-shield-quarter" },
   { path: "/live-updates", label: "التحديثات الحية", category: "صفحات عامة", icon: "bx bx-broadcast" },
+  { path: "/doc", label: "التوثيق وسجل التحديثات", category: "صفحات عامة", icon: "bx bx-book-content" },
 ];
 
 export const getPageInfo = (path: string): PageInfo => {

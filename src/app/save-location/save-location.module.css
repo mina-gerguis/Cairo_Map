@@ -269,58 +269,7 @@
 }
 
 
-.searchAndControlsRow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.searchInputWrapper {
-  flex: 1;
-  min-width: 260px;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.searchIcon {
-  position: absolute;
-  right: 14px;
-  color: #94a3b8;
-  font-size: 1.05rem;
-  pointer-events: none;
-}
-
-:global(html.light) .searchIcon {
-  color: #64748b;
-}
-
-.searchInput {
-  padding: 12px 42px 12px 38px;;
-}
-
-:global(html.light) .searchInput {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
-}
-
-.searchInput:focus {
-  border-color: #3b82f6;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-}
-
-:global(html.light) .searchInput:focus {
-  background: #ffffff;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
 .clearSearchBtn {
-  position: absolute;
-  left: 10px;
   background: transparent;
   border: none;
   color: #94a3b8;
@@ -331,15 +280,53 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  pointer-events: auto;
 }
 
 .clearSearchBtn:hover {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 :global(html.light) .clearSearchBtn:hover {
   color: #0f172a;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.searchEndAdornment {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.searchResultsCount {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #94a3b8;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+:global(html.light) .searchResultsCount {
+  color: #64748b;
+}
+
+.searchInputCustom {
+  padding-left: 95px !important;
+}
+
+.searchInputWithClear {
+  padding-left: 125px !important;
 }
 
 .controlsGroup {

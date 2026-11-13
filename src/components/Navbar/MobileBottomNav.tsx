@@ -205,6 +205,15 @@ const SITE_SERVICES: SiteServiceItem[] = [
     badge: "مقالات وأدلة",
     keywords: ["مدونة", "مقالات", "مقال", "اخبار", "أخبار", "دليل", "blog", "نصائح", "مقاله"],
   },
+  {
+    id: "doc",
+    label: "التوثيق وسجل التحديثات",
+    subtitle: "تاريخ التحديثات والمميزات وخريطة الطريق",
+    href: "/doc",
+    icon: "cairo.webp",
+    badge: "جديد",
+    keywords: ["doc", "تحديثات", "مميزات", "خريطة الطريق", "سجل", "توثيق", "تطوير", "اصدارات"],
+  },
 ];
 
 export default function MobileBottomNav() {

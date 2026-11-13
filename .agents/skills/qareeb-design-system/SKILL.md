@@ -140,7 +140,7 @@ export default function FeaturePage() {
             <input
               type="text"
               placeholder="ابحث هنا..."
-              className="w-full bg-[var(--inputBg)] border border-[var(--inputBorder)] rounded-xl px-4 py-2.5 pe-10 text-sm text-[var(--color-fg)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm"
+              className="w-full bg-[var(--input-bg)] border border-[var(--inputBorder)] rounded-xl px-4 py-2.5 pe-10 text-sm text-[var(--color-fg)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-primary)] transition-all duration-200 shadow-sm"
             />
             <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-lg" />
           </div>

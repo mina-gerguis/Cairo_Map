@@ -63,6 +63,7 @@ export default function AdminLayout({
         // 1. Search in local page routes (Quick Navigation Link matches)
         const allAdminPages = [
           { label: "لوحة الإحصائيات الرئيسية", href: "/admin", category: "صفحة إدارية", icon: "bx bx-grid-alt" },
+          { label: "إدارة التوثيق والتحديثات (Doc)", href: "/admin/doc", category: "صفحة إدارية", icon: "bx bx-book-content" },
           { label: "إدارة المدونة والمقالات", href: "/admin/blogs", category: "صفحة إدارية", icon: "bx bx-news" },
           { label: "إدارة الأماكن والمواقع", href: "/admin/places", category: "صفحة إدارية", icon: "bx bx-map" },
           { label: "اقتراحات الأماكن والمواقع", href: "/admin/places/suggestions", category: "صفحة إدارية", icon: "bx bx-map-pin" },
@@ -386,6 +387,7 @@ export default function AdminLayout({
   // Get current page header title
   let pageTitle = "لوحة التحكم";
   if (pathname === "/admin") pageTitle = "لوحة الإحصائيات";
+  else if (pathname === "/admin/doc") pageTitle = "إدارة التوثيق والتحديثات";
   else if (pathname === "/admin/blogs") pageTitle = "إدارة المدونة والمقالات";
   else if (pathname === "/admin/places") pageTitle = "إدارة الأماكن";
   else if (pathname === "/admin/places/suggestions") pageTitle = "اقتراحات الأماكن";
@@ -613,6 +615,19 @@ export default function AdminLayout({
 
             {/* ── المحتوى والنظام ── */}
             <div className={styles.sidebarGroupLabel}>المحتوى والنظام</div>
+
+            <Link
+              href="/admin/doc"
+              className={`${styles.sidebarNavLink} ${pathname === "/admin/doc" ? styles.sidebarNavLinkActive : ""}`}
+              onClick={() => {
+                if (isMobile) setIsSidebarOpen(false);
+              }}
+            >
+              <div className={styles.linkLeftGroup}>
+                <i className={`bx bx-book-content ${styles.linkIcon}`} />
+                <span className={styles.linkLabel}>إدارة التوثيق والتحديثات</span>
+              </div>
+            </Link>
 
             <Link
               href="/admin/blogs"
