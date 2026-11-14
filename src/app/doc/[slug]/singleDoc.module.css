@@ -229,11 +229,12 @@
   display: block;
   padding: 0 0.5rem;
   margin-bottom: 0.5rem;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.68rem;
+  font-size: 0.88rem;
+  font-family: var(--font-sub);
   font-weight: 700;
-  color: #71717a;
+  color: var(--color-fg);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .sidebarList {
@@ -242,7 +243,111 @@
   gap: 0.15rem;
   list-style: none;
   padding: 0;
-  margin: 0 0 1.25rem 0;
+  margin: 0;
+}
+
+.sidebarItemBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #a1a1aa;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: right;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.sidebarItemBtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:global(html.light) .sidebarItemBtn {
+  color: #71717a;
+}
+
+:global(html.light) .sidebarItemBtn:hover {
+  color: #18181b;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.sidebarItemBtnActive {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+:global(html.light) .sidebarItemBtnActive {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #09090b !important;
+}
+
+.sidebarItemLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.sidebarItemCount {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #71717a;
+  flex-shrink: 0;
+}
+
+:global(html.light) .sidebarItemCount {
+  background: rgba(0, 0, 0, 0.06);
+  color: #52525b;
+}
+
+/* ── Tags Cloud in Sidebar ── */
+.tagsCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0 0.5rem;
+}
+
+.tagChip {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.tagChip:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:global(html.light) .tagChip {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
+  color: #52525b;
+}
+
+:global(html.light) .tagChip:hover {
+  border-color: rgba(0, 0, 0, 0.22);
+  color: #09090b;
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .sidebarLink {
@@ -291,6 +396,8 @@
   flex: 1;
   min-width: 0;
   max-width: 52rem;
+  margin-top: 30px;
+  padding: 0 20px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -321,8 +428,9 @@
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 600;
-  border: 1px solid;
   white-space: nowrap;
+  background-color: var(--color-primary);
+  color: #ffffff;
 }
 
 .versionBadge {
@@ -364,7 +472,6 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   font-size: 0.75rem;
-  font-family: var(--font-mono, monospace);
   color: #71717a;
 }
 
@@ -401,7 +508,6 @@
   font-weight: 500;
   padding: 0.85rem 1rem;
   border-radius: 0.65rem;
-  border-right: 3px solid #3b82f6;
   background: rgba(59, 130, 246, 0.04);
   word-break: break-word;
 }
@@ -430,7 +536,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
   margin-bottom: 0.4rem;
 }
@@ -475,12 +580,8 @@
   gap: 0.35rem;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #e4e4e7;
+  color: var(--color-fg);
   margin-bottom: 0.75rem;
-}
-
-:global(html.light) .highlightsTitle {
-  color: #18181b;
 }
 
 .highlightsList {
@@ -711,21 +812,16 @@
 }
 
 .paginationLabel {
-  font-size: 0.68rem;
-  font-family: var(--font-mono, monospace);
-  color: #71717a;
+  font-size: 1rem;
   margin-bottom: 0.2rem;
-}
-
-.paginationTitle {
-  font-size: 0.85rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-fg);
   display: -webkit-box;
-  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+
 
 :global(html.light) .paginationTitle {
   color: #09090b;
@@ -867,13 +963,9 @@
   border: none;
   font-size: 0.78rem;
   font-weight: 600;
-  color: #d4d4d8;
+  color: var(--color-fg);
   cursor: pointer;
   text-align: right;
-}
-
-:global(html.light) .mobileTocToggleBtn {
-  color: #27272a;
 }
 
 .mobileTocMenu {
@@ -1032,11 +1124,6 @@
 
   .breadcrumbCurrent {
     max-width: 7rem;
-  }
-
-  .paginationNav {
-    grid-template-columns: 1fr;
-    gap: 0.65rem;
   }
 
   .articleTitle {

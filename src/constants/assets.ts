@@ -84,6 +84,14 @@ export const ASSETS = {
     mapLRT: "/images/map/map_lrt.webp",
   },
 
+  memoji: {
+    memoji1: "/images/memoji/memo_1.webp",
+    memoji2: "/images/memoji/memo_2.webp",
+    memoji3: "/images/memoji/memo_3.webp",
+    memoji4: "/images/memoji/memo_4.webp",
+    memoji5: "/images/memoji/memo_5.webp",
+  },
+
   fallback: {
     image404: "/images/404.webp",
   },

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 import type { SiteDoc } from "@/types/doc";
 import { DOC_TYPE_META, ROADMAP_STATUS_META, formatDocDate } from "@/lib/docs";
 import styles from "./singleDoc.module.css";
@@ -20,6 +21,11 @@ import {
   ChevronUp,
   User,
   List,
+  BookOpen,
+  Zap,
+  Compass,
+  Settings,
+  ExternalLink,
 } from "lucide-react";
 
 interface TocHeading {
@@ -46,10 +52,33 @@ export default function SingleDocClient({
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [activeHeadingId, setActiveHeadingId] = useState<string>("");
 
+  const { profile } = useAuth();
+  const isAdmin = Boolean(profile?.is_admin);
+
   const typeMeta = DOC_TYPE_META[doc.doc_type] || DOC_TYPE_META.update;
   const statusMeta =
     ROADMAP_STATUS_META[doc.roadmap_status] || ROADMAP_STATUS_META.released;
   const isRoadmapItem = doc.doc_type === "roadmap";
+
+  // Summary counts for sections
+  const counts = useMemo(() => {
+    const total = allDocs.length;
+    const updates = allDocs.filter((d) => d.doc_type === "update").length;
+    const features = allDocs.filter((d) => d.doc_type === "feature").length;
+    const roadmap = allDocs.filter((d) => d.doc_type === "roadmap").length;
+    return { total, updates, features, roadmap };
+  }, [allDocs]);
+
+  // Suggested / popular tags
+  const allTags = useMemo(() => {
+    const set = new Set<string>();
+    for (const d of allDocs) {
+      if (Array.isArray(d.tags)) {
+        d.tags.forEach((t) => t && set.add(t));
+      }
+    }
+    return Array.from(set).slice(0, 14);
+  }, [allDocs]);
 
   // 1. Process content HTML: dynamically extract all h1, h2, h3 and inject matching unique IDs
   const { processedHtml, tocHeadings } = useMemo(() => {
@@ -176,168 +205,10 @@ export default function SingleDocClient({
 
   return (
     <div className={styles.pageWrapper}>
-      {/* ── Top SubNavBar ── */}
-      <nav className={styles.subNavBar}>
-        <div className={styles.subNavBarInner}>
-          <div className={styles.breadcrumbNav}>
-            <button
-              type="button"
-              onClick={() => setMobileSidebarOpen(true)}
-              className={styles.mobileMenuToggle}
-              aria-label="فتح قائمة التوثيق"
-            >
-              <Menu size={16} />
-            </button>
-
-            <Link href="/" className={styles.breadcrumbLink}>
-              <span>قريب</span>
-            </Link>
-            <span className={styles.breadcrumbSeparator}>/</span>
-            <Link href="/doc" className={styles.breadcrumbLink}>
-              التوثيق
-            </Link>
-            <span className={styles.breadcrumbSeparator}>/</span>
-            <span className={styles.breadcrumbCurrent}>{doc.title}</span>
-          </div>
-
-          <div className={styles.navActions}>
-            <Link href="/doc" className={styles.backBtn} title="العودة لكل التوثيق">
-              <ArrowRight size={14} />
-              <span className={styles.backBtnText}>كل التوثيق</span>
-            </Link>
-
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              title="مشاركة ورابط التوثيق"
-              className={styles.actionIconBtn}
-            >
-              {isCopied ? (
-                <Check size={14} style={{ color: "#10b981" }} />
-              ) : (
-                <Share2 size={14} />
-              )}
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* ── Main Layout ── */}
       <div className={styles.mainLayout}>
         {/* ── Left Sidebar (All Docs Navigator) ── */}
-        <aside
-          className={`${styles.sidebar} ${
-            mobileSidebarOpen ? styles.sidebarOpen : ""
-          }`}
-        >
-          {/* Mobile Close Button Header */}
-          <div className={styles.sidebarMobileHeader}>
-            <span className={styles.sidebarGroupTitle} style={{ margin: 0 }}>
-              فهرس التوثيق
-            </span>
-            <button
-              type="button"
-              onClick={() => setMobileSidebarOpen(false)}
-              className={styles.sidebarCloseBtn}
-              aria-label="إغلاق القائمة"
-            >
-              <X size={18} />
-            </button>
-          </div>
-
-          {/* Group 1: Updates */}
-          <div className={styles.sidebarGroup}>
-            <span className={styles.sidebarGroupTitle}>سجل التحديثات</span>
-            <ul className={styles.sidebarList}>
-              {allDocs
-                .filter((d) => d.doc_type === "update")
-                .slice(0, 10)
-                .map((item) => {
-                  const isActive = item.id === doc.id;
-                  const itemUrl = `/doc/${encodeURIComponent(item.slug || item.id)}`;
-                  return (
-                    <li key={item.id}>
-                      <Link
-                        href={itemUrl}
-                        onClick={() => setMobileSidebarOpen(false)}
-                        className={`${styles.sidebarLink} ${
-                          isActive ? styles.sidebarLinkActive : ""
-                        }`}
-                      >
-                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {item.title}
-                        </span>
-                        {item.version && (
-                          <span style={{ fontSize: "0.68rem", opacity: 0.6, fontFamily: "monospace" }}>
-                            {item.version}
-                          </span>
-                        )}
-                      </Link>
-                    </li>
-                  );
-                })}
-            </ul>
-          </div>
-
-          {/* Group 2: Features */}
-          <div className={styles.sidebarGroup}>
-            <span className={styles.sidebarGroupTitle}>المميزات الجديدة</span>
-            <ul className={styles.sidebarList}>
-              {allDocs
-                .filter((d) => d.doc_type === "feature")
-                .slice(0, 10)
-                .map((item) => {
-                  const isActive = item.id === doc.id;
-                  const itemUrl = `/doc/${encodeURIComponent(item.slug || item.id)}`;
-                  return (
-                    <li key={item.id}>
-                      <Link
-                        href={itemUrl}
-                        onClick={() => setMobileSidebarOpen(false)}
-                        className={`${styles.sidebarLink} ${
-                          isActive ? styles.sidebarLinkActive : ""
-                        }`}
-                      >
-                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {item.title}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-            </ul>
-          </div>
-
-          {/* Group 3: Roadmap */}
-          <div className={styles.sidebarGroup}>
-            <span className={styles.sidebarGroupTitle}>خريطة الطريق</span>
-            <ul className={styles.sidebarList}>
-              {allDocs
-                .filter((d) => d.doc_type === "roadmap")
-                .slice(0, 10)
-                .map((item) => {
-                  const isActive = item.id === doc.id;
-                  const itemUrl = `/doc/${encodeURIComponent(item.slug || item.id)}`;
-                  return (
-                    <li key={item.id}>
-                      <Link
-                        href={itemUrl}
-                        onClick={() => setMobileSidebarOpen(false)}
-                        className={`${styles.sidebarLink} ${
-                          isActive ? styles.sidebarLinkActive : ""
-                        }`}
-                      >
-                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                          {item.title}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-            </ul>
-          </div>
-        </aside>
-
+       
         {/* Mobile Backdrop */}
         {mobileSidebarOpen && (
           <div
@@ -354,11 +225,6 @@ export default function SingleDocClient({
               {/* Type Badge */}
               <span
                 className={styles.typeBadge}
-                style={{
-                  backgroundColor: typeMeta.bg,
-                  color: typeMeta.color,
-                  borderColor: typeMeta.border,
-                }}
               >
                 <i className={`${typeMeta.icon} text-xs`} />
                 <span>{typeMeta.label}</span>
@@ -389,13 +255,6 @@ export default function SingleDocClient({
                 <Clock size={13} />
                 <span>نُشر في: {formatDocDate(doc.release_date)}</span>
               </div>
-
-              {doc.author_name && (
-                <div className={styles.metaItem}>
-                  <User size={13} />
-                  <span>بواسطة: {doc.author_name}</span>
-                </div>
-              )}
             </div>
           </header>
 
@@ -426,7 +285,7 @@ export default function SingleDocClient({
                 className={styles.mobileTocToggleBtn}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <List size={14} style={{ color: "#60a5fa" }} />
+                  <List size={14} />
                   <span>في هذه الصفحة ({tocHeadings.length} أقسام)</span>
                 </div>
                 {mobileTocOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -481,7 +340,6 @@ export default function SingleDocClient({
           {Array.isArray(doc.highlights) && doc.highlights.length > 0 && (
             <div id="highlights" className={styles.highlightsBox}>
               <div className={styles.highlightsTitle}>
-                <Sparkles size={15} style={{ color: "#60a5fa" }} />
                 <span>أبرز المميزات والتفاصيل:</span>
               </div>
               <ul className={styles.highlightsList}>
@@ -507,12 +365,9 @@ export default function SingleDocClient({
           {/* Tags */}
           {Array.isArray(doc.tags) && doc.tags.length > 0 && (
             <div id="tags" className={styles.tagsBox}>
-              <span style={{ fontSize: "0.75rem", color: "#71717a", marginLeft: "0.4rem" }}>
-                الوسوم:
-              </span>
               {doc.tags.map((tag, idx) => (
                 <span key={idx} className={styles.tagPill}>
-                  #{tag}
+                  {tag}
                 </span>
               ))}
             </div>
@@ -525,10 +380,9 @@ export default function SingleDocClient({
                 href={`/doc/${encodeURIComponent(prevDoc.slug || prevDoc.id)}`}
                 className={styles.paginationCard}
               >
-                <span className={styles.paginationLabel}>
-                  <ChevronRight size={12} style={{ display: "inline" }} /> التوثيق السابق
-                </span>
-                <strong className={styles.paginationTitle}>{prevDoc.title}</strong>
+                <div className={styles.paginationLabel}>
+                  <ChevronRight size={12} style={{ display: "inline" }} />  {prevDoc.title}
+                </div>
               </Link>
             ) : (
               <div />
@@ -541,9 +395,8 @@ export default function SingleDocClient({
                 style={{ textAlign: "left" }}
               >
                 <span className={styles.paginationLabel}>
-                  التالي <ChevronLeft size={12} style={{ display: "inline" }} />
+                  {nextDoc.title} <ChevronLeft size={12} style={{ display: "inline" }} />
                 </span>
-                <strong className={styles.paginationTitle}>{nextDoc.title}</strong>
               </Link>
             )}
           </nav>

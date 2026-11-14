@@ -443,7 +443,25 @@ export default function Navbar() {
               )}
             </AnimatePresence>
           </div>
-
+          {/* Main Link: Docs */}
+          <Link
+            href="/doc"
+            className={`relative px-4 py-1.5 text-sm font-medium transition-colors duration-300 rounded-full flex items-center ${pathname === "/" ? "text-primary font-bold" : "text-muted-foreground hover:text-foreground"
+              }`}
+            onMouseEnter={() => {
+              setHoveredLink("/");
+              setOpenDropdown(null);
+            }}
+          >
+            <span className="relative z-10"> التوثيقات</span>
+            {(hoveredLink === "/" || (pathname === "/" && !hoveredLink)) && (
+              <motion.div
+                layoutId="navbar-hover-capsule"
+                className="absolute inset-0 size-full bg-primary/10 rounded-full"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.3 }}
+              />
+            )}
+          </Link>
           {/* Main Link: Blog */}
           <Link
             href="/blog"
@@ -680,7 +698,7 @@ export default function Navbar() {
               <button
                 onClick={() => { setShowLogoutModal(true); setMenuOpen(false); }}
                 className="flex py-3 px-4 font-display fw-700 fs-md border-none color-error bg-transparent">
-                <IconCircleCaretDownFilled size={24} className="ml-1"/>
+                <IconCircleCaretDownFilled size={24} className="ml-1" />
                 تسجيل الخروج
               </button>
             </>
@@ -692,7 +710,7 @@ export default function Navbar() {
           )}
           <button
             onClick={() => { toggleTheme(); }}
-            className="flex py-3 px-4 font-display fw-700 fs-md border-none bg-transparent color-fg " 
+            className="flex py-3 px-4 font-display fw-700 fs-md border-none bg-transparent color-fg "
           >
             <i className={theme === "dark" ? "bx bx-sun" : "bx bx-moon"} style={{ fontSize: "1.2rem", marginLeft: "8px" }} />
             <span>{theme === "dark" ? "الوضع النهاري" : "الوضع الليلي"}</span>

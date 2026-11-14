@@ -13,29 +13,26 @@ import {
   stripHtmlToText,
   SUGGESTED_DOC_TAGS,
 } from "@/lib/docs";
-import DocHero from "@/components/doc/DocHero";
+import DocHero from "@/app/doc/components/DocHero";
 import styles from "./doc.module.css";
 import {
   Search,
   CheckCircle2,
   Clock,
   Sparkles,
-  Share2,
   Check,
   RefreshCw,
   ExternalLink,
   Command,
   X,
-  LayoutGrid,
-  ListFilter,
   ArrowUp,
   BookOpen,
   Compass,
   Zap,
   Settings,
   Menu,
-  ArrowLeft,
 } from "lucide-react";
+import { IconPinFilled } from "@tabler/icons-react";
 
 export default function DocPublicPage() {
   const router = useRouter();
@@ -46,16 +43,14 @@ export default function DocPublicPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Filters & view modes
+  // Filters
   const [selectedType, setSelectedType] = useState<"all" | DocType>("all");
   const [selectedStatus, setSelectedStatus] = useState<"all" | DocRoadmapStatus>("all");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [viewMode, setViewMode] = useState<"grid" | "timeline">("grid");
 
   // Mobile sidebar drawer
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Global Command Menu (⌘K) modal
   const [commandMenuOpen, setCommandMenuOpen] = useState<boolean>(false);
@@ -121,10 +116,10 @@ export default function DocPublicPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Body scroll lock when mobile sidebar is open
+  // Body scroll lock when mobile sidebar or command menu is open
   useEffect(() => {
     if (typeof document === "undefined") return;
-    if (mobileSidebarOpen) {
+    if (mobileSidebarOpen || commandMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -132,7 +127,7 @@ export default function DocPublicPage() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [mobileSidebarOpen]);
+  }, [mobileSidebarOpen, commandMenuOpen]);
 
   // Track active section for table of contents
   useEffect(() => {
@@ -157,24 +152,6 @@ export default function DocPublicPage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [docs]);
-
-  // Copy direct link to clipboard
-  const handleCopyLink = async (doc: SiteDoc, e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    if (typeof window === "undefined") return;
-    const path = `/doc/${encodeURIComponent(doc.slug || doc.id)}`;
-    const url = `${window.location.origin}${path}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopiedId(doc.id);
-      setTimeout(() => setCopiedId(null), 2500);
-    } catch {
-      // Fallback
-    }
-  };
 
   // Navigate to single doc page
   const navigateToDoc = (doc: SiteDoc) => {
@@ -250,9 +227,19 @@ export default function DocPublicPage() {
       .slice(0, 10);
   }, [docs, searchQuery]);
 
+  const scrollToDocsExplorer = useCallback(() => {
+    document.body.style.overflow = "";
+    setTimeout(() => {
+      const el = document.getElementById("docs-explorer");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 60);
+  }, []);
+
   return (
     <div className={styles.pageWrapper}>
-      {/* ── Neo-Brutalist High-Energy Hero Section ── */}
+      {/* ── Hero Section ── */}
       <DocHero
         counts={counts}
         onSearchClick={() => setCommandMenuOpen(true)}
@@ -260,88 +247,20 @@ export default function DocPublicPage() {
           setSelectedType(type);
           setSelectedStatus("all");
           setSelectedTag(null);
+          scrollToDocsExplorer();
         }}
+        isAdmin={isAdmin}
+        onRefresh={fetchDocs}
+        loading={loading}
+        onToggleMobileSidebar={() => setMobileSidebarOpen(true)}
       />
 
-      {/* ── Top Vercel Sub-Header / Breadcrumb Navigation Bar ── */}
-      <nav className={styles.subNavBar} id="docs-explorer">
-        <div className={styles.subNavBarInner}>
-          {/* Breadcrumb & Mobile Menu Toggle */}
-          <div className={styles.breadcrumbNav}>
-            <button
-              type="button"
-              onClick={() => setMobileSidebarOpen(true)}
-              className={styles.mobileMenuToggle}
-              aria-label="فتح قائمة التوثيق"
-            >
-              <Menu size={16} />
-            </button>
-
-            <Link href="/" className={styles.breadcrumbLink}>
-              <span>قريب</span>
-            </Link>
-            <span className={styles.breadcrumbSeparator}>/</span>
-            <Link href="/doc" className={styles.breadcrumbLink}>
-              التوثيق
-            </Link>
-            {selectedType !== "all" && (
-              <>
-                <span className={styles.breadcrumbSeparator}>/</span>
-                <span className={styles.breadcrumbCurrent}>
-                  {DOC_TYPE_META[selectedType]?.shortLabel || selectedType}
-                </span>
-              </>
-            )}
-          </div>
-
-          {/* Quick Search Trigger & Header Action Buttons */}
-          <div className={styles.navActions}>
-            {/* Search Docs Button (⌘K) */}
-            <button
-              type="button"
-              onClick={() => setCommandMenuOpen(true)}
-              className={styles.searchTriggerBtn}
-              title="بحث سريع (⌘K)"
-            >
-              <div className={styles.searchTriggerInner}>
-                <Search size={14} />
-                <span className={styles.searchTriggerText}>بحث في التوثيق...</span>
-              </div>
-              <kbd className={styles.searchKbdBadge}>
-                <Command size={10} />
-                <span>K</span>
-              </kbd>
-            </button>
-
-            {/* Admin Link if Admin */}
-            {isAdmin && (
-              <Link href="/admin/doc" className={styles.adminBtn} title="إدارة التوثيق">
-                <Settings size={14} />
-                <span>إدارة التوثيق</span>
-              </Link>
-            )}
-
-            {/* Refresh */}
-            <button
-              type="button"
-              onClick={fetchDocs}
-              disabled={loading}
-              title="تحديث المحتوى"
-              className={styles.actionIconBtn}
-            >
-              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* ── Main Layout Container (Sidebar + Center Content + TOC) ── */}
-      <div className={styles.mainLayout}>
+      <div className={styles.mainLayout} id="docs-explorer">
         {/* ── 1. Left Navigation Sidebar ── */}
         <aside
-          className={`${styles.sidebar} ${
-            mobileSidebarOpen ? styles.sidebarOpen : ""
-          }`}
+          className={`${styles.sidebar} ${mobileSidebarOpen ? styles.sidebarOpen : ""
+            }`}
         >
           {/* Mobile Close Button */}
           <div className={styles.sidebarMobileHeader}>
@@ -351,7 +270,7 @@ export default function DocPublicPage() {
             <button
               type="button"
               onClick={() => setMobileSidebarOpen(false)}
-              className={styles.sidebarCloseBtn}
+              className="btn-close"
               aria-label="إغلاق القائمة"
             >
               <X size={18} />
@@ -370,12 +289,12 @@ export default function DocPublicPage() {
                     setSelectedStatus("all");
                     setSelectedTag(null);
                     setMobileSidebarOpen(false);
+                    scrollToDocsExplorer();
                   }}
-                  className={`${styles.sidebarItemBtn} ${
-                    selectedType === "all" && selectedStatus === "all" && !selectedTag
-                      ? styles.sidebarItemBtnActive
-                      : ""
-                  }`}
+                  className={`${styles.sidebarItemBtn} ${selectedType === "all" && selectedStatus === "all" && !selectedTag
+                    ? styles.sidebarItemBtnActive
+                    : ""
+                    }`}
                 >
                   <div className={styles.sidebarItemLabel}>
                     <BookOpen size={15} />
@@ -391,10 +310,10 @@ export default function DocPublicPage() {
                   onClick={() => {
                     setSelectedType("update");
                     setMobileSidebarOpen(false);
+                    scrollToDocsExplorer();
                   }}
-                  className={`${styles.sidebarItemBtn} ${
-                    selectedType === "update" ? styles.sidebarItemBtnActive : ""
-                  }`}
+                  className={`${styles.sidebarItemBtn} ${selectedType === "update" ? styles.sidebarItemBtnActive : ""
+                    }`}
                 >
                   <div className={styles.sidebarItemLabel}>
                     <Clock size={15} />
@@ -410,10 +329,10 @@ export default function DocPublicPage() {
                   onClick={() => {
                     setSelectedType("feature");
                     setMobileSidebarOpen(false);
+                    scrollToDocsExplorer();
                   }}
-                  className={`${styles.sidebarItemBtn} ${
-                    selectedType === "feature" ? styles.sidebarItemBtnActive : ""
-                  }`}
+                  className={`${styles.sidebarItemBtn} ${selectedType === "feature" ? styles.sidebarItemBtnActive : ""
+                    }`}
                 >
                   <div className={styles.sidebarItemLabel}>
                     <Zap size={15} />
@@ -429,10 +348,10 @@ export default function DocPublicPage() {
                   onClick={() => {
                     setSelectedType("roadmap");
                     setMobileSidebarOpen(false);
+                    scrollToDocsExplorer();
                   }}
-                  className={`${styles.sidebarItemBtn} ${
-                    selectedType === "roadmap" ? styles.sidebarItemBtnActive : ""
-                  }`}
+                  className={`${styles.sidebarItemBtn} ${selectedType === "roadmap" ? styles.sidebarItemBtnActive : ""
+                    }`}
                 >
                   <div className={styles.sidebarItemLabel}>
                     <Compass size={15} />
@@ -465,10 +384,10 @@ export default function DocPublicPage() {
                       onClick={() => {
                         setSelectedStatus(isActive ? "all" : st.id);
                         setMobileSidebarOpen(false);
+                        scrollToDocsExplorer();
                       }}
-                      className={`${styles.sidebarItemBtn} ${
-                        isActive ? styles.sidebarItemBtnActive : ""
-                      }`}
+                      className={`${styles.sidebarItemBtn} ${isActive ? styles.sidebarItemBtnActive : ""
+                        }`}
                     >
                       <div className={styles.sidebarItemLabel}>
                         <Icon size={14} />
@@ -495,10 +414,10 @@ export default function DocPublicPage() {
                     onClick={() => {
                       setSelectedTag(isActive ? null : tag);
                       setMobileSidebarOpen(false);
+                      scrollToDocsExplorer();
                     }}
-                    className={`${styles.tagChip} ${
-                      isActive ? styles.tagChipActive : ""
-                    }`}
+                    className={`${styles.tagChip} ${isActive ? styles.tagChipActive : ""
+                      }`}
                   >
                     #{tag}
                   </button>
@@ -506,25 +425,6 @@ export default function DocPublicPage() {
               })}
             </div>
           </div>
-
-          {/* Quick Admin Footer */}
-          {isAdmin && (
-            <div
-              className={styles.sidebarGroup}
-              style={{
-                paddingTop: "0.85rem",
-                borderTop: "1px solid rgba(255,255,255,0.1)",
-              }}
-            >
-              <Link href="/admin/doc" className={styles.sidebarItemBtn}>
-                <div className={styles.sidebarItemLabel}>
-                  <Settings size={15} />
-                  <span>لوحة تحكم التوثيق</span>
-                </div>
-                <ExternalLink size={13} />
-              </Link>
-            </div>
-          )}
         </aside>
 
         {/* Mobile Backdrop */}
@@ -539,12 +439,6 @@ export default function DocPublicPage() {
         <main className={styles.centerContent}>
           {/* ── Explorer Section Header ── */}
           <div className={styles.heroSection}>
-            <div className={styles.heroBadge}>
-              <span className={styles.heroBadgePulse} />
-              <span>مستكشف التوثيقات</span>
-              <span>•</span>
-              <span>الإصدار 2.4.0</span>
-            </div>
 
             <h2 className={styles.heroTitle} style={{ fontSize: "1.75rem" }}>
               {selectedType === "all"
@@ -556,91 +450,46 @@ export default function DocPublicPage() {
               {selectedType === "update"
                 ? "تصفح سجل التحديثات الدورية وتفاصيل الإصدارات السابقة والحالية."
                 : selectedType === "feature"
-                ? "تعرف على الأدوات والمميزات الجديدة التي تمت إضافتها للمنصة."
-                : selectedType === "roadmap"
-                ? "تابع خطط التطوير والمشاريع الجاري العمل عليها والخطط المستقبلية."
-                : "دليل شامل وموثق لجميع التحديثات المستمرة، الأدوات والميزات التي أُطلقت حديثاً، والخطط الجارية لتطوير خدمات النقل والخرائط."}
+                  ? "تعرف على الأدوات والمميزات الجديدة التي تمت إضافتها للمنصة."
+                  : selectedType === "roadmap"
+                    ? "تابع خطط التطوير والمشاريع الجاري العمل عليها والخطط المستقبلية."
+                    : "دليل شامل وموثق لجميع التحديثات المستمرة، الأدوات والميزات التي أُطلقت حديثاً، والخطط الجارية لتطوير خدمات النقل والخرائط."}
             </p>
+            {selectedTag && (
+              <div className={styles.toolbar}>
+                <div className={styles.toolbarActions}>
+                  <div
+                    className={styles.tagChipActive}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.3rem",
+                      padding: "0.3rem 0.6rem",
+                    }}
+                  >
+                    <span>#{selectedTag}</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTag(null)}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "inherit",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                      }}
+                      aria-label="إزالة الوسم"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
 
           {/* ── Toolbar: Search & View Mode Switcher ── */}
-          <div className={styles.toolbar}>
-            <div className={styles.searchInputWrapper}>
-              <input
-                type="text"
-                placeholder="ابحث في التحديثات، المميزات، أو الإصدارات..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
-              />
-              <Search className={styles.searchIcon} />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className={styles.searchClearBtn}
-                  aria-label="مسح البحث"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-
-            <div className={styles.toolbarActions}>
-              {selectedTag && (
-                <div
-                  className={styles.tagChipActive}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.3rem",
-                    padding: "0.3rem 0.6rem",
-                  }}
-                >
-                  <span>#{selectedTag}</span>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTag(null)}
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      color: "inherit",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                    }}
-                    aria-label="إزالة الوسم"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              )}
-
-              {/* View Mode Switcher */}
-              <div className={styles.viewModeSwitcher}>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("grid")}
-                  className={`${styles.viewModeBtn} ${
-                    viewMode === "grid" ? styles.viewModeBtnActive : ""
-                  }`}
-                >
-                  <LayoutGrid size={14} />
-                  <span>بطاقات</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setViewMode("timeline")}
-                  className={`${styles.viewModeBtn} ${
-                    viewMode === "timeline" ? styles.viewModeBtnActive : ""
-                  }`}
-                >
-                  <ListFilter size={14} />
-                  <span>خط زمني</span>
-                </button>
-              </div>
-            </div>
-          </div>
 
           {/* ── Content Presentation ── */}
           {loading ? (
@@ -675,14 +524,14 @@ export default function DocPublicPage() {
                   setSelectedTag(null);
                   setSearchQuery("");
                 }}
-                className={styles.searchTriggerBtn}
+                className="btn btn-blue"
                 style={{ margin: "0.85rem auto 0" }}
               >
                 إعادة ضبط الفلاتر
               </button>
             </div>
-          ) : viewMode === "grid" ? (
-            /* ── VIEW 1: VERCEL SIGNATURE CARDS GRID ── */
+          ) : (
+            /* ── CARDS GRID ── */
             <div className={styles.cardsGrid}>
               {filteredDocs.map((doc) => {
                 const typeMeta = DOC_TYPE_META[doc.doc_type] || DOC_TYPE_META.update;
@@ -691,16 +540,15 @@ export default function DocPublicPage() {
                   ROADMAP_STATUS_META.released;
                 const anchorId = doc.slug || doc.id;
                 const docUrl = `/doc/${encodeURIComponent(anchorId)}`;
-                const isCopied = copiedId === doc.id;
                 const isRoadmapItem = doc.doc_type === "roadmap";
 
                 return (
                   <article
                     key={doc.id}
                     id={anchorId}
-                    className={`${styles.docCard} ${
-                      doc.is_pinned ? styles.docCardPinned : ""
-                    }`}
+                    onClick={() => router.push(docUrl)}
+                    className={`${styles.docCard} ${doc.is_pinned ? styles.docCardPinned : ""
+                      }`}
                   >
                     <div>
                       {/* Top Badges Row */}
@@ -708,11 +556,6 @@ export default function DocPublicPage() {
                         <div className={styles.badgesGroup}>
                           <span
                             className={styles.typeBadge}
-                            style={{
-                              backgroundColor: typeMeta.bg,
-                              color: typeMeta.color,
-                              borderColor: typeMeta.border,
-                            }}
                           >
                             <i className={`${typeMeta.icon} text-xs`} />
                             <span>{typeMeta.shortLabel}</span>
@@ -726,25 +569,16 @@ export default function DocPublicPage() {
 
                           {doc.is_pinned && (
                             <span className={styles.pinnedMarker}>
-                              مثبت
+                              <IconPinFilled size={18} />
                             </span>
                           )}
                         </div>
-
-                        <button
-                          type="button"
-                          onClick={(e) => handleCopyLink(doc, e)}
-                          title="نسخ رابط مباشر"
-                          className={styles.actionIconBtn}
-                        >
-                          {isCopied ? (
-                            <Check size={14} style={{ color: "#10b981" }} />
-                          ) : (
-                            <Share2 size={14} />
-                          )}
-                        </button>
                       </div>
 
+                      {/* Title linked to single page */}
+                      <h3 className={styles.cardTitle}>
+                        <Link href={docUrl}>{doc.title}</Link>
+                      </h3>
                       {/* Optional Cover Image */}
                       {doc.cover_image && (
                         <Link href={docUrl} className={styles.coverWrapper} style={{ display: "block" }}>
@@ -756,11 +590,6 @@ export default function DocPublicPage() {
                           />
                         </Link>
                       )}
-
-                      {/* Title linked to single page */}
-                      <h3 className={styles.cardTitle}>
-                        <Link href={docUrl}>{doc.title}</Link>
-                      </h3>
 
                       {/* Summary */}
                       {doc.summary && (
@@ -786,29 +615,6 @@ export default function DocPublicPage() {
                           </div>
                         </div>
                       )}
-
-                      {/* Highlights */}
-                      {Array.isArray(doc.highlights) && doc.highlights.length > 0 && (
-                        <div className={styles.highlightsWrapper}>
-                          {doc.highlights.slice(0, 3).map((h, i) => (
-                            <div key={i} className={styles.highlightRow}>
-                              <span className={styles.highlightCheckIcon}>✓</span>
-                              <span>{h}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Link to Full Doc Page */}
-                      <div style={{ paddingTop: "0.5rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                        <Link
-                          href={docUrl}
-                          className={styles.expandToggleBtn}
-                        >
-                          <span>فتح التوثيق في صفحة مستقلة</span>
-                          <ArrowLeft size={13} />
-                        </Link>
-                      </div>
                     </div>
 
                     {/* Footer */}
@@ -823,145 +629,6 @@ export default function DocPublicPage() {
                           <span key={idx}>#{t}</span>
                         ))}
                       </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          ) : (
-            /* ── VIEW 2: VERCEL CHANGELOG TIMELINE FEED ── */
-            <div className={styles.timelineFeed}>
-              {filteredDocs.map((doc) => {
-                const typeMeta = DOC_TYPE_META[doc.doc_type] || DOC_TYPE_META.update;
-                const statusMeta =
-                  ROADMAP_STATUS_META[doc.roadmap_status] ||
-                  ROADMAP_STATUS_META.released;
-                const anchorId = doc.slug || doc.id;
-                const docUrl = `/doc/${encodeURIComponent(anchorId)}`;
-                const isCopied = copiedId === doc.id;
-
-                return (
-                  <article
-                    key={doc.id}
-                    id={anchorId}
-                    className={styles.timelineArticle}
-                  >
-                    {/* Node Dot */}
-                    <div className={styles.timelineNode}>
-                      <div className={styles.timelineNodeDot} />
-                    </div>
-
-                    {/* Timeline Article Header */}
-                    <div className={styles.docCardHeader}>
-                      <div className={styles.badgesGroup}>
-                        <span
-                          className={styles.typeBadge}
-                          style={{
-                            backgroundColor: typeMeta.bg,
-                            color: typeMeta.color,
-                            borderColor: typeMeta.border,
-                          }}
-                        >
-                          <i className={`${typeMeta.icon} text-xs`} />
-                          <span>{typeMeta.shortLabel}</span>
-                        </span>
-
-                        <span
-                          className={styles.typeBadge}
-                          style={{
-                            backgroundColor: statusMeta.bg,
-                            color: statusMeta.color,
-                            borderColor: statusMeta.border,
-                          }}
-                        >
-                          <span>{statusMeta.label}</span>
-                        </span>
-
-                        {doc.version && (
-                          <span className={styles.versionBadge}>
-                            {doc.version}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className={styles.navActions}>
-                        <div className={styles.dateRow} style={{ fontSize: "0.78rem", color: "#a1a1aa" }}>
-                          <Clock size={13} />
-                          <span>{formatDocDate(doc.release_date)}</span>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={(e) => handleCopyLink(doc, e)}
-                          className={styles.actionIconBtn}
-                        >
-                          {isCopied ? (
-                            <Check size={14} style={{ color: "#10b981" }} />
-                          ) : (
-                            <Share2 size={14} />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Title */}
-                    <h2 className={styles.cardTitle} style={{ fontSize: "1.2rem", marginBottom: "0.6rem" }}>
-                      <Link href={docUrl}>{doc.title}</Link>
-                    </h2>
-
-                    {/* Summary */}
-                    {doc.summary && (
-                      <p className={styles.cardSummary} style={{ WebkitLineClamp: "unset" }}>
-                        {doc.summary}
-                      </p>
-                    )}
-
-                    {/* Highlights */}
-                    {Array.isArray(doc.highlights) && doc.highlights.length > 0 && (
-                      <div className={styles.progressBox} style={{ margin: "0.85rem 0" }}>
-                        <span className={styles.sidebarGroupTitle} style={{ padding: 0 }}>
-                          أبرز ما يتضمنه هذا التحديث:
-                        </span>
-                        <div className={styles.highlightsWrapper} style={{ marginTop: "0.45rem" }}>
-                          {doc.highlights.map((point, pIdx) => (
-                            <div key={pIdx} className={styles.highlightRow}>
-                              <span className={styles.highlightCheckIcon}>✓</span>
-                              <span>{point}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Open in Dedicated Page Link */}
-                    <div style={{ paddingTop: "0.65rem", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-                      <Link
-                        href={docUrl}
-                        className={styles.expandToggleBtn}
-                      >
-                        <span>فتح المقال والتفاصيل الكاملة في صفحة مستقلة</span>
-                        <ArrowLeft size={13} />
-                      </Link>
-                    </div>
-
-                    {/* Footer */}
-                    <div className={styles.cardFooter}>
-                      <div className={styles.tagsMiniRow}>
-                        {(doc.tags || []).map((t, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => setSelectedTag(t)}
-                            className={styles.tagChip}
-                          >
-                            #{t}
-                          </button>
-                        ))}
-                      </div>
-
-                      {doc.author_name && (
-                        <span>بواسطة: {doc.author_name}</span>
-                      )}
                     </div>
                   </article>
                 );
@@ -985,9 +652,8 @@ export default function DocPublicPage() {
                     <li key={doc.id}>
                       <Link
                         href={docUrl}
-                        className={`${styles.tocLink} ${
-                          isActive ? styles.tocLinkActive : ""
-                        }`}
+                        className={`${styles.tocLink} ${isActive ? styles.tocLinkActive : ""
+                          }`}
                       >
                         {doc.title}
                       </Link>
@@ -1033,9 +699,11 @@ export default function DocPublicPage() {
               <button
                 type="button"
                 onClick={() => setCommandMenuOpen(false)}
-                className={styles.commandEscBadge}
+                className="btn-close"
+                aria-label="إغلاق البحث"
               >
-                ESC
+                <span className={styles.commandEscText}>ESC</span>
+                <X size={15} className={styles.commandCloseIcon} />
               </button>
             </div>
 
@@ -1058,15 +726,6 @@ export default function DocPublicPage() {
                     className={styles.commandItem}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", minWidth: 0 }}>
-                      <div className={styles.commandItemIconBox}>
-                        {doc.doc_type === "feature" ? (
-                          <Zap size={15} style={{ color: "#34d399" }} />
-                        ) : doc.doc_type === "roadmap" ? (
-                          <Compass size={15} style={{ color: "#fbbf24" }} />
-                        ) : (
-                          <Clock size={15} style={{ color: "#60a5fa" }} />
-                        )}
-                      </div>
                       <div style={{ minWidth: 0, textAlign: "right" }}>
                         <div className={styles.commandItemTitle}>{doc.title}</div>
                         {doc.summary && (
@@ -1083,15 +742,6 @@ export default function DocPublicPage() {
                   </button>
                 ))
               )}
-            </div>
-
-            {/* Footer */}
-            <div className={styles.commandFooter}>
-              <span>اضغط على أي نتيجة لفتح صفحة التوثيق الخاصة بها</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <span>إغلاق</span>
-                <span className={styles.commandEscBadge}>ESC</span>
-              </div>
             </div>
           </div>
         </div>
