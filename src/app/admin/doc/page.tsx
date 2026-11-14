@@ -29,6 +29,7 @@ export default function AdminDocPage() {
   const [loading, setLoading] = useState(true);
   const [isTableMissing, setIsTableMissing] = useState(false);
   const [isCopiedSql, setIsCopiedSql] = useState(false);
+  const [isCoverImageMissing, setIsCoverImageMissing] = useState(false);
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<{
@@ -285,17 +286,56 @@ export default function AdminDocPage() {
           .from("site_docs")
           .update(payload)
           .eq("id", editingId);
-        if (error) throw error;
+
+        if (error) {
+          // If cover_image column is missing in Supabase schema cache, retry without it
+          if (error.message?.includes("cover_image") || error.details?.includes("cover_image")) {
+            setIsCoverImageMissing(true);
+            const { cover_image, ...fallbackPayload } = payload;
+            const { error: retryErr } = await supabase
+              .from("site_docs")
+              .update(fallbackPayload)
+              .eq("id", editingId);
+            if (retryErr) throw retryErr;
+            showToast(
+              "تم الحفظ بنجاح! ملحوظة: لإتاحة صور الغلاف، يرجى تشغيل استعلام SQL أعلى الصفحة في Supabase",
+              "success"
+            );
+            setIsFormOpen(false);
+            fetchDocs();
+            return;
+          }
+          throw error;
+        }
         showToast("تم تحديث عنصر التوثيق بنجاح!", "success");
       } else {
-        const { error } = await supabase.from("site_docs").insert([
-          {
-            ...payload,
-            created_by: user?.id || null,
-            created_at: new Date().toISOString(),
-          },
-        ]);
-        if (error) throw error;
+        const insertData = {
+          ...payload,
+          created_by: user?.id || null,
+          created_at: new Date().toISOString(),
+        };
+
+        const { error } = await supabase.from("site_docs").insert([insertData]);
+
+        if (error) {
+          // If cover_image column is missing in Supabase schema cache, retry without it
+          if (error.message?.includes("cover_image") || error.details?.includes("cover_image")) {
+            setIsCoverImageMissing(true);
+            const { cover_image, ...fallbackInsertData } = insertData;
+            const { error: retryErr } = await supabase
+              .from("site_docs")
+              .insert([fallbackInsertData]);
+            if (retryErr) throw retryErr;
+            showToast(
+              "تمت الإضافة بنجاح! ملحوظة: لإتاحة صور الغلاف، يرجى تشغيل استعلام SQL أعلى الصفحة في Supabase",
+              "success"
+            );
+            setIsFormOpen(false);
+            fetchDocs();
+            return;
+          }
+          throw error;
+        }
         showToast("تمت إضافة عنصر التوثيق الجديد بنجاح!", "success");
       }
 
@@ -502,6 +542,41 @@ export default function AdminDocPage() {
           </div>
 
           <pre className={styles.sqlCodeBox}>{DOCS_SCHEMA_SQL}</pre>
+        </div>
+      )}
+
+      {/* ── Missing cover_image Column Banner ── */}
+      {isCoverImageMissing && !isTableMissing && (
+        <div className={styles.sqlBanner} style={{ borderColor: "#f59e0b" }}>
+          <div className={styles.sqlHeader}>
+            <div className={styles.sqlTitleGroup}>
+              <i className="bx bx-image-alt" style={{ color: "#f59e0b", fontSize: "1.75rem" }} />
+              <div>
+                <h3 className={styles.sqlTitle} style={{ color: "#f59e0b" }}>
+                  ترقية قاعدة البيانات: إضافة عمود صورة الغلاف (cover_image)
+                </h3>
+                <p className={styles.sqlSub}>
+                  تم الحفظ بنجاح بدون صورة. لتفعيل حفظ صور الغلاف، يرجى نسخ كود SQL التالي وتشغيله في Supabase SQL Editor:
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText("ALTER TABLE public.site_docs ADD COLUMN IF NOT EXISTS cover_image TEXT DEFAULT '';");
+                showToast("تم نسخ كود SQL لإضافة العمود بنجاح!", "success");
+              }}
+              className={styles.sqlCopyBtn}
+            >
+              <i className="bx bx-copy" />
+              <span>نسخ كود الترقية</span>
+            </button>
+          </div>
+
+          <pre className={styles.sqlCodeBox}>
+ALTER TABLE public.site_docs ADD COLUMN IF NOT EXISTS cover_image TEXT DEFAULT '';
+          </pre>
         </div>
       )}
 

@@ -128,6 +128,7 @@ export const DOCS_SCHEMA_SQL = `CREATE TABLE IF NOT EXISTS public.site_docs (
     version TEXT DEFAULT '',
     summary TEXT DEFAULT '',
     content TEXT NOT NULL DEFAULT '',
+    cover_image TEXT DEFAULT '',
     highlights TEXT[] DEFAULT '{}',
     tags TEXT[] DEFAULT '{}',
     roadmap_status TEXT NOT NULL DEFAULT 'released' CHECK (roadmap_status IN ('released', 'testing', 'in_progress', 'planned')),
@@ -141,6 +142,8 @@ export const DOCS_SCHEMA_SQL = `CREATE TABLE IF NOT EXISTS public.site_docs (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+ALTER TABLE public.site_docs ADD COLUMN IF NOT EXISTS cover_image TEXT DEFAULT '';
 
 ALTER TABLE public.site_docs ENABLE ROW LEVEL SECURITY;
 

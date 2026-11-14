@@ -478,7 +478,7 @@ html.light .services-megamenu-panel {
   color: #fff;
   background: var(--color-primary);
 }
-.navbar-mobile-link:hover,
+
 .navbar-mobile-link.icon {
   color: #fff;
 }

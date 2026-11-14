@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import type { DocRoadmapStatus, DocType, SiteDoc } from "@/types/doc";
@@ -10,26 +11,34 @@ import {
   ROADMAP_STATUS_META,
   formatDocDate,
   stripHtmlToText,
+  SUGGESTED_DOC_TAGS,
 } from "@/lib/docs";
+import DocHero from "@/components/doc/DocHero";
+import styles from "./doc.module.css";
 import {
   Search,
   CheckCircle2,
   Clock,
   Sparkles,
-  Layers,
-  ArrowUpRight,
-  ChevronDown,
-  ChevronUp,
   Share2,
   Check,
-  Flame,
-  ShieldCheck,
-  SlidersHorizontal,
   RefreshCw,
   ExternalLink,
+  Command,
+  X,
+  LayoutGrid,
+  ListFilter,
+  ArrowUp,
+  BookOpen,
+  Compass,
+  Zap,
+  Settings,
+  Menu,
+  ArrowLeft,
 } from "lucide-react";
 
 export default function DocPublicPage() {
+  const router = useRouter();
   const { profile } = useAuth();
   const isAdmin = Boolean(profile?.is_admin);
 
@@ -37,14 +46,20 @@ export default function DocPublicPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Filters & search
+  // Filters & view modes
   const [selectedType, setSelectedType] = useState<"all" | DocType>("all");
   const [selectedStatus, setSelectedStatus] = useState<"all" | DocRoadmapStatus>("all");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [viewMode, setViewMode] = useState<"grid" | "timeline">("grid");
 
-  // Expanded items state for viewing full content inline
-  const [expandedDocIds, setExpandedDocIds] = useState<Record<string, boolean>>({});
+  // Mobile sidebar drawer
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Global Command Menu (⌘K) modal
+  const [commandMenuOpen, setCommandMenuOpen] = useState<boolean>(false);
+  const [activeArticleId, setActiveArticleId] = useState<string>("");
 
   // Fetch docs from Supabase
   const fetchDocs = useCallback(async () => {
@@ -66,7 +81,6 @@ export default function DocPublicPage() {
         .order("created_at", { ascending: false });
 
       if (error) {
-        // Table might not exist yet before admin runs schema SQL
         if (
           error.code === "PGRST205" ||
           error.code === "42P01" ||
@@ -91,38 +105,68 @@ export default function DocPublicPage() {
     fetchDocs();
   }, [fetchDocs]);
 
-  // Handle URL hash anchor (e.g. #slug) to auto-expand targeted doc
+  // Global keyboard shortcut for ⌘K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setCommandMenuOpen((prev) => !prev);
+      }
+      if (e.key === "Escape") {
+        setCommandMenuOpen(false);
+        setMobileSidebarOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Body scroll lock when mobile sidebar is open
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (mobileSidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileSidebarOpen]);
+
+  // Track active section for table of contents
   useEffect(() => {
     if (typeof window === "undefined" || docs.length === 0) return;
-    const hash = window.location.hash.replace("#", "");
-    if (hash) {
-      const match = docs.find((d) => d.slug === hash || d.id === hash);
-      if (match) {
-        setExpandedDocIds((prev) => ({ ...prev, [match.id]: true }));
-        const el = document.getElementById(match.slug || match.id);
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 180;
+      for (const doc of docs) {
+        const anchor = doc.slug || doc.id;
+        const el = document.getElementById(anchor);
         if (el) {
-          setTimeout(() => {
-            el.scrollIntoView({ behavior: "smooth", block: "center" });
-          }, 200);
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveArticleId(doc.id);
+            break;
+          }
         }
       }
-    }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [docs]);
 
-  // Toggle inline content expansion
-  const toggleExpand = (id: string) => {
-    setExpandedDocIds((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  // Copy direct anchor link to clipboard
-  const handleCopyLink = async (doc: SiteDoc, e: React.MouseEvent) => {
-    e.stopPropagation();
+  // Copy direct link to clipboard
+  const handleCopyLink = async (doc: SiteDoc, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (typeof window === "undefined") return;
-    const anchor = doc.slug || doc.id;
-    const url = `${window.location.origin}/doc#${encodeURIComponent(anchor)}`;
+    const path = `/doc/${encodeURIComponent(doc.slug || doc.id)}`;
+    const url = `${window.location.origin}${path}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopiedId(doc.id);
@@ -130,6 +174,13 @@ export default function DocPublicPage() {
     } catch {
       // Fallback
     }
+  };
+
+  // Navigate to single doc page
+  const navigateToDoc = (doc: SiteDoc) => {
+    setCommandMenuOpen(false);
+    setMobileSidebarOpen(false);
+    router.push(`/doc/${encodeURIComponent(doc.slug || doc.id)}`);
   };
 
   // Counts for summary metrics
@@ -147,17 +198,15 @@ export default function DocPublicPage() {
   // Filtered docs list
   const filteredDocs = useMemo(() => {
     return docs.filter((doc) => {
-      // Type filter
       if (selectedType !== "all" && doc.doc_type !== selectedType) {
         return false;
       }
-
-      // Status filter
       if (selectedStatus !== "all" && doc.roadmap_status !== selectedStatus) {
         return false;
       }
-
-      // Search term
+      if (selectedTag && !(doc.tags || []).includes(selectedTag)) {
+        return false;
+      }
       if (searchQuery.trim()) {
         const query = searchQuery.trim().toLowerCase();
         const inTitle = doc.title.toLowerCase().includes(query);
@@ -172,849 +221,881 @@ export default function DocPublicPage() {
           return false;
         }
       }
-
       return true;
     });
-  }, [docs, selectedType, selectedStatus, searchQuery]);
+  }, [docs, selectedType, selectedStatus, selectedTag, searchQuery]);
+
+  // Extract all unique tags
+  const allTags = useMemo(() => {
+    const set = new Set<string>();
+    docs.forEach((d) => {
+      (d.tags || []).forEach((t) => set.add(t));
+    });
+    SUGGESTED_DOC_TAGS.forEach((t) => set.add(t));
+    return Array.from(set);
+  }, [docs]);
+
+  // Command Menu search items
+  const commandSearchResults = useMemo(() => {
+    if (!searchQuery.trim()) return docs.slice(0, 8);
+    const q = searchQuery.trim().toLowerCase();
+    return docs
+      .filter(
+        (d) =>
+          d.title.toLowerCase().includes(q) ||
+          (d.summary || "").toLowerCase().includes(q) ||
+          (d.version || "").toLowerCase().includes(q) ||
+          (d.tags || []).some((t) => t.toLowerCase().includes(q))
+      )
+      .slice(0, 10);
+  }, [docs, searchQuery]);
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen bg-surface text-primary pb-24 pt-4 transition-colors duration-200"
-      style={{
-        backgroundColor: "var(--color-bg)",
-        color: "var(--color-fg)",
-        fontFamily: "var(--font-body)",
-      }}
-    >
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
-        {/* ── 1. Hero Header Banner ── */}
-        <header
-          className="mb-8 p-6 sm:p-8 rounded-3xl border border-glass backdrop-blur-md transition-all duration-300 relative overflow-hidden"
-          style={{
-            background:
-              "linear-gradient(135deg, var(--cardGlassBg) 0%, var(--bg-secondary) 100%)",
-            borderColor: "var(--border-glass)",
-            boxShadow: "var(--shadow-sm)",
-          }}
-        >
-          {/* Subtle Ambient Accent Glow */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-20"
-            style={{
-              background:
-                "radial-gradient(circle, var(--color-primary) 0%, transparent 70%)",
-            }}
-          />
+    <div className={styles.pageWrapper}>
+      {/* ── Neo-Brutalist High-Energy Hero Section ── */}
+      <DocHero
+        counts={counts}
+        onSearchClick={() => setCommandMenuOpen(true)}
+        onFilterClick={(type) => {
+          setSelectedType(type);
+          setSelectedStatus("all");
+          setSelectedTag(null);
+        }}
+      />
 
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="max-w-2xl">
-              {/* Badge */}
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-3 border border-glass"
-                style={{
-                  backgroundColor: "rgba(39, 39, 255, 0.12)",
-                  color: "var(--color-primary)",
-                  borderColor: "rgba(39, 39, 255, 0.25)",
-                }}
-              >
-                <i className="bx bx-book-bookmark text-base" />
-                <span>مركز التوثيق والتحديثات الرسمية</span>
-                <span
-                  className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold"
-                  style={{
-                    backgroundColor: "var(--color-primary)",
-                    color: "#ffffff",
-                  }}
-                >
-                  LIVE
+      {/* ── Top Vercel Sub-Header / Breadcrumb Navigation Bar ── */}
+      <nav className={styles.subNavBar} id="docs-explorer">
+        <div className={styles.subNavBarInner}>
+          {/* Breadcrumb & Mobile Menu Toggle */}
+          <div className={styles.breadcrumbNav}>
+            <button
+              type="button"
+              onClick={() => setMobileSidebarOpen(true)}
+              className={styles.mobileMenuToggle}
+              aria-label="فتح قائمة التوثيق"
+            >
+              <Menu size={16} />
+            </button>
+
+            <Link href="/" className={styles.breadcrumbLink}>
+              <span>قريب</span>
+            </Link>
+            <span className={styles.breadcrumbSeparator}>/</span>
+            <Link href="/doc" className={styles.breadcrumbLink}>
+              التوثيق
+            </Link>
+            {selectedType !== "all" && (
+              <>
+                <span className={styles.breadcrumbSeparator}>/</span>
+                <span className={styles.breadcrumbCurrent}>
+                  {DOC_TYPE_META[selectedType]?.shortLabel || selectedType}
                 </span>
+              </>
+            )}
+          </div>
+
+          {/* Quick Search Trigger & Header Action Buttons */}
+          <div className={styles.navActions}>
+            {/* Search Docs Button (⌘K) */}
+            <button
+              type="button"
+              onClick={() => setCommandMenuOpen(true)}
+              className={styles.searchTriggerBtn}
+              title="بحث سريع (⌘K)"
+            >
+              <div className={styles.searchTriggerInner}>
+                <Search size={14} />
+                <span className={styles.searchTriggerText}>بحث في التوثيق...</span>
               </div>
+              <kbd className={styles.searchKbdBadge}>
+                <Command size={10} />
+                <span>K</span>
+              </kbd>
+            </button>
 
-              {/* Title */}
-              <h1
-                className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight"
-                style={{
-                  color: "var(--color-fg)",
-                  fontFamily: "var(--font-heading)",
-                  lineHeight: 1.25,
-                }}
-              >
-                سجل التحديثات والمميزات وخريطة الطريق
-              </h1>
+            {/* Admin Link if Admin */}
+            {isAdmin && (
+              <Link href="/admin/doc" className={styles.adminBtn} title="إدارة التوثيق">
+                <Settings size={14} />
+                <span>إدارة التوثيق</span>
+              </Link>
+            )}
 
-              {/* Subtitle */}
-              <p
-                className="text-sm sm:text-base leading-relaxed mt-2"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                تابع كل ما هو جديد في منصة <strong>قريب</strong>: تاريخ الإصدارات،
-                الميزات المضافة حديثاً، والخطط التي نعمل عليها لتطوير خدمات النقل
-                والخرائط والأماكن في مصر.
-              </p>
-            </div>
-
-            {/* Admin Quick Action Button & Refresh */}
-            <div className="flex items-center flex-wrap gap-2.5">
-              {isAdmin && (
-                <Link
-                  href="/admin/doc"
-                  className="btn btn-primary inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-md transition-all hover-lift"
-                  style={{
-                    backgroundColor: "var(--color-primary)",
-                    color: "#ffffff",
-                    borderColor: "var(--color-primary)",
-                  }}
-                >
-                  <i className="bx bx-cog text-base" />
-                  <span>إدارة التوثيق في لوحة التحكم</span>
-                </Link>
-              )}
-
-              <button
-                type="button"
-                onClick={fetchDocs}
-                disabled={loading}
-                className="inline-flex items-center justify-center p-2.5 rounded-xl border border-glass cursor-pointer transition-all hover-lift"
-                style={{
-                  backgroundColor: "var(--cardGlassBg)",
-                  borderColor: "var(--border-glass)",
-                  color: "var(--text-secondary)",
-                }}
-                title="تحديث البيانات"
-              >
-                <RefreshCw
-                  className={`w-4 h-4 ${loading ? "animate-spin text-brand" : ""}`}
-                />
-              </button>
-            </div>
+            {/* Refresh */}
+            <button
+              type="button"
+              onClick={fetchDocs}
+              disabled={loading}
+              title="تحديث المحتوى"
+              className={styles.actionIconBtn}
+            >
+              <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+            </button>
           </div>
+        </div>
+      </nav>
 
-          {/* Metric Stats Strip */}
-          <div
-            className="mt-6 pt-5 border-t grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-start"
-            style={{ borderColor: "var(--border-glass)" }}
-          >
-            <div className="p-3 rounded-2xl bg-subtle">
-              <span
-                className="block text-xs font-semibold mb-1"
-                style={{ color: "var(--text-muted)" }}
-              >
-                إجمالي التوثيقات
-              </span>
-              <strong
-                className="text-xl sm:text-2xl font-extrabold"
-                style={{
-                  color: "var(--color-fg)",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {counts.total}
-              </strong>
-            </div>
-
-            <div className="p-3 rounded-2xl bg-subtle">
-              <span
-                className="block text-xs font-semibold mb-1"
-                style={{ color: "var(--text-muted)" }}
-              >
-                تاريخ التحديثات
-              </span>
-              <strong
-                className="text-xl sm:text-2xl font-extrabold"
-                style={{
-                  color: "var(--color-info)",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {counts.updates}
-              </strong>
-            </div>
-
-            <div className="p-3 rounded-2xl bg-subtle">
-              <span
-                className="block text-xs font-semibold mb-1"
-                style={{ color: "var(--text-muted)" }}
-              >
-                مميزات تم إطلاقها
-              </span>
-              <strong
-                className="text-xl sm:text-2xl font-extrabold"
-                style={{
-                  color: "var(--color-success)",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {counts.features}
-              </strong>
-            </div>
-
-            <div className="p-3 rounded-2xl bg-subtle">
-              <span
-                className="block text-xs font-semibold mb-1"
-                style={{ color: "var(--text-muted)" }}
-              >
-                خطط قيد العمل والتنفيذ
-              </span>
-              <strong
-                className="text-xl sm:text-2xl font-extrabold"
-                style={{
-                  color: "var(--warningBtn)",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {counts.inProgress}
-              </strong>
-            </div>
-          </div>
-        </header>
-
-        {/* ── 2. Filter & Search Controls Bar ── */}
-        <section className="mb-8 space-y-3">
-          {/* Main Category Tabs */}
-          <div
-            className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar border-b pb-3"
-            style={{ borderColor: "var(--border-glass)" }}
-          >
+      {/* ── Main Layout Container (Sidebar + Center Content + TOC) ── */}
+      <div className={styles.mainLayout}>
+        {/* ── 1. Left Navigation Sidebar ── */}
+        <aside
+          className={`${styles.sidebar} ${
+            mobileSidebarOpen ? styles.sidebarOpen : ""
+          }`}
+        >
+          {/* Mobile Close Button */}
+          <div className={styles.sidebarMobileHeader}>
+            <span className={styles.sidebarGroupTitle} style={{ margin: 0 }}>
+              فهرس التوثيق
+            </span>
             <button
               type="button"
-              onClick={() => {
-                setSelectedType("all");
-                setSelectedStatus("all");
-              }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap cursor-pointer transition-all duration-200"
-              style={{
-                backgroundColor:
-                  selectedType === "all"
-                    ? "var(--color-fg)"
-                    : "var(--cardGlassBg)",
-                color:
-                  selectedType === "all"
-                    ? "var(--color-bg)"
-                    : "var(--text-secondary)",
-                border:
-                  selectedType === "all"
-                    ? "1px solid var(--color-fg)"
-                    : "1px solid var(--border-glass)",
-              }}
+              onClick={() => setMobileSidebarOpen(false)}
+              className={styles.sidebarCloseBtn}
+              aria-label="إغلاق القائمة"
             >
-              <i className="bx bx-grid-alt text-base" />
-              <span>الكل ({counts.total})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setSelectedType("update")}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap cursor-pointer transition-all duration-200"
-              style={{
-                backgroundColor:
-                  selectedType === "update"
-                    ? "var(--color-fg)"
-                    : "var(--cardGlassBg)",
-                color:
-                  selectedType === "update"
-                    ? "var(--color-bg)"
-                    : "var(--text-secondary)",
-                border:
-                  selectedType === "update"
-                    ? "1px solid var(--color-fg)"
-                    : "1px solid var(--border-glass)",
-              }}
-            >
-              <i className="bx bx-history text-base" />
-              <span>تاريخ التحديثات ({counts.updates})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setSelectedType("feature")}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap cursor-pointer transition-all duration-200"
-              style={{
-                backgroundColor:
-                  selectedType === "feature"
-                    ? "var(--color-fg)"
-                    : "var(--cardGlassBg)",
-                color:
-                  selectedType === "feature"
-                    ? "var(--color-bg)"
-                    : "var(--text-secondary)",
-                border:
-                  selectedType === "feature"
-                    ? "1px solid var(--color-fg)"
-                    : "1px solid var(--border-glass)",
-              }}
-            >
-              <i className="bx bx-bolt-circle text-base" />
-              <span>المميزات الجديدة ({counts.features})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setSelectedType("roadmap")}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap cursor-pointer transition-all duration-200"
-              style={{
-                backgroundColor:
-                  selectedType === "roadmap"
-                    ? "var(--color-fg)"
-                    : "var(--cardGlassBg)",
-                color:
-                  selectedType === "roadmap"
-                    ? "var(--color-bg)"
-                    : "var(--text-secondary)",
-                border:
-                  selectedType === "roadmap"
-                    ? "1px solid var(--color-fg)"
-                    : "1px solid var(--border-glass)",
-              }}
-            >
-              <i className="bx bx-compass text-base" />
-              <span>الخطط التي نعمل عليها ({counts.roadmap})</span>
+              <X size={18} />
             </button>
           </div>
 
-          {/* Search & Sub-status Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-            {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
-              <input
-                type="text"
-                placeholder="ابحث في التحديثات، المميزات، الإصدارات، أو الكلمات الدلالية..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-fields w-full rounded-xl text-sm transition-all"
-                style={{
-                  backgroundColor: "var(--input-bg)",
-                  borderColor: "var(--border-glass)",
-                  color: "var(--color-fg)",
-                  paddingRight: "2.5rem",
-                  paddingLeft: searchQuery ? "2.5rem" : "1rem",
-                }}
-              />
-              <Search
-                className="w-4 h-4 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-                style={{ color: "var(--text-muted)" }}
-              />
-              {searchQuery && (
+          {/* Nav Group 1: General Sections */}
+          <div className={styles.sidebarGroup}>
+            <span className={styles.sidebarGroupTitle}>نظرة عامة</span>
+            <ul className={styles.sidebarList}>
+              <li>
                 <button
                   type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-1 text-xs rounded-full hover:opacity-80 transition-opacity"
-                  style={{ color: "var(--text-muted)" }}
-                  aria-label="مسح البحث"
+                  onClick={() => {
+                    setSelectedType("all");
+                    setSelectedStatus("all");
+                    setSelectedTag(null);
+                    setMobileSidebarOpen(false);
+                  }}
+                  className={`${styles.sidebarItemBtn} ${
+                    selectedType === "all" && selectedStatus === "all" && !selectedTag
+                      ? styles.sidebarItemBtnActive
+                      : ""
+                  }`}
                 >
-                  ✕
+                  <div className={styles.sidebarItemLabel}>
+                    <BookOpen size={15} />
+                    <span>جميع التوثيقات</span>
+                  </div>
+                  <span className={styles.sidebarItemCount}>{counts.total}</span>
                 </button>
-              )}
-            </div>
+              </li>
 
-            {/* Status Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedType("update");
+                    setMobileSidebarOpen(false);
+                  }}
+                  className={`${styles.sidebarItemBtn} ${
+                    selectedType === "update" ? styles.sidebarItemBtnActive : ""
+                  }`}
+                >
+                  <div className={styles.sidebarItemLabel}>
+                    <Clock size={15} />
+                    <span>سجل التحديثات</span>
+                  </div>
+                  <span className={styles.sidebarItemCount}>{counts.updates}</span>
+                </button>
+              </li>
+
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedType("feature");
+                    setMobileSidebarOpen(false);
+                  }}
+                  className={`${styles.sidebarItemBtn} ${
+                    selectedType === "feature" ? styles.sidebarItemBtnActive : ""
+                  }`}
+                >
+                  <div className={styles.sidebarItemLabel}>
+                    <Zap size={15} />
+                    <span>المميزات الجديدة</span>
+                  </div>
+                  <span className={styles.sidebarItemCount}>{counts.features}</span>
+                </button>
+              </li>
+
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedType("roadmap");
+                    setMobileSidebarOpen(false);
+                  }}
+                  className={`${styles.sidebarItemBtn} ${
+                    selectedType === "roadmap" ? styles.sidebarItemBtnActive : ""
+                  }`}
+                >
+                  <div className={styles.sidebarItemLabel}>
+                    <Compass size={15} />
+                    <span>خريطة الطريق</span>
+                  </div>
+                  <span className={styles.sidebarItemCount}>{counts.roadmap}</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Nav Group 2: Statuses */}
+          <div className={styles.sidebarGroup}>
+            <span className={styles.sidebarGroupTitle}>حالة التنفيذ</span>
+            <ul className={styles.sidebarList}>
               {(
                 [
-                  { id: "all", label: "كل الحالات" },
-                  { id: "released", label: "تم الإطلاق" },
-                  { id: "in_progress", label: "جاري العمل" },
-                  { id: "testing", label: "قيد التجربة" },
-                  { id: "planned", label: "مخطط لها" },
+                  { id: "released", label: "تم الإطلاق", icon: CheckCircle2 },
+                  { id: "in_progress", label: "قيد التطوير", icon: RefreshCw },
+                  { id: "testing", label: "مرحلة التجربة", icon: Sparkles },
+                  { id: "planned", label: "مخطط لها", icon: Clock },
                 ] as const
               ).map((st) => {
+                const Icon = st.icon;
                 const isActive = selectedStatus === st.id;
                 return (
+                  <li key={st.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedStatus(isActive ? "all" : st.id);
+                        setMobileSidebarOpen(false);
+                      }}
+                      className={`${styles.sidebarItemBtn} ${
+                        isActive ? styles.sidebarItemBtnActive : ""
+                      }`}
+                    >
+                      <div className={styles.sidebarItemLabel}>
+                        <Icon size={14} />
+                        <span>{st.label}</span>
+                      </div>
+                      {isActive && <Check size={14} />}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Nav Group 3: Popular Tags */}
+          <div className={styles.sidebarGroup}>
+            <span className={styles.sidebarGroupTitle}>الموضوعات الشائعة</span>
+            <div className={styles.tagsCloud}>
+              {allTags.map((tag) => {
+                const isActive = selectedTag === tag;
+                return (
                   <button
-                    key={st.id}
+                    key={tag}
                     type="button"
-                    onClick={() => setSelectedStatus(st.id)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all"
-                    style={{
-                      backgroundColor: isActive
-                        ? "rgba(39, 39, 255, 0.16)"
-                        : "var(--cardGlassBg)",
-                      color: isActive
-                        ? "var(--color-primary)"
-                        : "var(--text-muted)",
-                      border: isActive
-                        ? "1px solid var(--color-primary)"
-                        : "1px solid var(--border-glass)",
+                    onClick={() => {
+                      setSelectedTag(isActive ? null : tag);
+                      setMobileSidebarOpen(false);
                     }}
+                    className={`${styles.tagChip} ${
+                      isActive ? styles.tagChipActive : ""
+                    }`}
                   >
-                    {st.label}
+                    #{tag}
                   </button>
                 );
               })}
             </div>
           </div>
-        </section>
 
-        {/* ── 3. Content Presentation (Timeline / Feed) ── */}
-        {loading ? (
-          /* Loading Skeleton */
-          <div className="space-y-4">
-            {[1, 2, 3].map((n) => (
-              <div
-                key={n}
-                className="p-6 rounded-2xl border border-glass animate-pulse space-y-4"
-                style={{
-                  backgroundColor: "var(--cardGlassBg)",
-                  borderColor: "var(--border-glass)",
-                }}
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-24 h-6 rounded-lg"
-                      style={{ backgroundColor: "var(--bg-secondary)" }}
-                    />
-                    <div
-                      className="w-16 h-6 rounded-lg"
-                      style={{ backgroundColor: "var(--bg-secondary)" }}
-                    />
-                  </div>
-                  <div
-                    className="w-28 h-5 rounded-lg"
-                    style={{ backgroundColor: "var(--bg-secondary)" }}
-                  />
-                </div>
-                <div
-                  className="w-3/4 h-7 rounded-lg"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                />
-                <div
-                  className="w-full h-4 rounded-lg"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                />
-                <div
-                  className="w-2/3 h-4 rounded-lg"
-                  style={{ backgroundColor: "var(--bg-secondary)" }}
-                />
-              </div>
-            ))}
-          </div>
-        ) : errorMsg ? (
-          /* Error State */
-          <div
-            className="p-8 rounded-3xl border text-center space-y-3"
-            style={{
-              backgroundColor: "rgba(239, 68, 68, 0.08)",
-              borderColor: "rgba(239, 68, 68, 0.3)",
-            }}
-          >
-            <i className="bx bx-error-circle text-4xl text-danger" />
-            <h3
-              className="text-lg font-bold"
-              style={{ color: "var(--color-fg)" }}
-            >
-              تعذر تحميل سجل التوثيق
-            </h3>
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              {errorMsg}
-            </p>
-            <button
-              type="button"
-              onClick={fetchDocs}
-              className="btn btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold"
-              style={{
-                backgroundColor: "var(--color-primary)",
-                color: "#ffffff",
-              }}
-            >
-              <RefreshCw className="w-4 h-4" />
-              <span>إعادة المحاولة</span>
-            </button>
-          </div>
-        ) : filteredDocs.length === 0 ? (
-          /* Empty State */
-          <div
-            className="p-12 rounded-3xl border border-glass text-center space-y-4"
-            style={{
-              backgroundColor: "var(--cardGlassBg)",
-              borderColor: "var(--border-glass)",
-            }}
-          >
+          {/* Quick Admin Footer */}
+          {isAdmin && (
             <div
-              className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-3xl"
+              className={styles.sidebarGroup}
               style={{
-                backgroundColor: "rgba(39, 39, 255, 0.1)",
-                color: "var(--color-primary)",
+                paddingTop: "0.85rem",
+                borderTop: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              <i className="bx bx-file-blank" />
+              <Link href="/admin/doc" className={styles.sidebarItemBtn}>
+                <div className={styles.sidebarItemLabel}>
+                  <Settings size={15} />
+                  <span>لوحة تحكم التوثيق</span>
+                </div>
+                <ExternalLink size={13} />
+              </Link>
+            </div>
+          )}
+        </aside>
+
+        {/* Mobile Backdrop */}
+        {mobileSidebarOpen && (
+          <div
+            className={styles.mobileBackdrop}
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+        )}
+
+        {/* ── 2. Center Content Area ── */}
+        <main className={styles.centerContent}>
+          {/* ── Explorer Section Header ── */}
+          <div className={styles.heroSection}>
+            <div className={styles.heroBadge}>
+              <span className={styles.heroBadgePulse} />
+              <span>مستكشف التوثيقات</span>
+              <span>•</span>
+              <span>الإصدار 2.4.0</span>
             </div>
 
-            <div className="max-w-md mx-auto">
-              <h3
-                className="text-lg font-bold mb-1"
-                style={{ color: "var(--color-fg)" }}
+            <h2 className={styles.heroTitle} style={{ fontSize: "1.75rem" }}>
+              {selectedType === "all"
+                ? "جميع التوثيقات وسجل التحديثات"
+                : DOC_TYPE_META[selectedType]?.label || "التوثيق"}
+            </h2>
+
+            <p className={styles.heroSubtitle}>
+              {selectedType === "update"
+                ? "تصفح سجل التحديثات الدورية وتفاصيل الإصدارات السابقة والحالية."
+                : selectedType === "feature"
+                ? "تعرف على الأدوات والمميزات الجديدة التي تمت إضافتها للمنصة."
+                : selectedType === "roadmap"
+                ? "تابع خطط التطوير والمشاريع الجاري العمل عليها والخطط المستقبلية."
+                : "دليل شامل وموثق لجميع التحديثات المستمرة، الأدوات والميزات التي أُطلقت حديثاً، والخطط الجارية لتطوير خدمات النقل والخرائط."}
+            </p>
+          </div>
+
+          {/* ── Toolbar: Search & View Mode Switcher ── */}
+          <div className={styles.toolbar}>
+            <div className={styles.searchInputWrapper}>
+              <input
+                type="text"
+                placeholder="ابحث في التحديثات، المميزات، أو الإصدارات..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+              <Search className={styles.searchIcon} />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className={styles.searchClearBtn}
+                  aria-label="مسح البحث"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            <div className={styles.toolbarActions}>
+              {selectedTag && (
+                <div
+                  className={styles.tagChipActive}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                    padding: "0.3rem 0.6rem",
+                  }}
+                >
+                  <span>#{selectedTag}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTag(null)}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "inherit",
+                      cursor: "pointer",
+                      display: "inline-flex",
+                    }}
+                    aria-label="إزالة الوسم"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
+
+              {/* View Mode Switcher */}
+              <div className={styles.viewModeSwitcher}>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("grid")}
+                  className={`${styles.viewModeBtn} ${
+                    viewMode === "grid" ? styles.viewModeBtnActive : ""
+                  }`}
+                >
+                  <LayoutGrid size={14} />
+                  <span>بطاقات</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setViewMode("timeline")}
+                  className={`${styles.viewModeBtn} ${
+                    viewMode === "timeline" ? styles.viewModeBtnActive : ""
+                  }`}
+                >
+                  <ListFilter size={14} />
+                  <span>خط زمني</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Content Presentation ── */}
+          {loading ? (
+            <div className={styles.emptyStateBox}>
+              <p>جاري تحميل سجل التوثيق...</p>
+            </div>
+          ) : errorMsg ? (
+            <div className={styles.errorStateBox}>
+              <h3>تعذر تحميل سجل التوثيق</h3>
+              <p>{errorMsg}</p>
+              <button
+                type="button"
+                onClick={fetchDocs}
+                className={styles.adminBtn}
+                style={{ marginTop: "1rem" }}
               >
-                {searchQuery || selectedType !== "all" || selectedStatus !== "all"
-                  ? "لا توجد نتائج مطابقة لبحثك"
-                  : "لا توجد عناصر منشورة بعد"}
-              </h3>
-              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                {searchQuery || selectedType !== "all" || selectedStatus !== "all"
-                  ? "جرّب تغيير فلاتر التصنيف أو البحث بكلمات أخرى."
-                  : "سجل التحديثات جاهز؛ سيقوم مدير النظام بنشر التحديثات والمميزات وخطط التطوير قريباً."}
-              </p>
+                إعادة المحاولة
+              </button>
             </div>
-
-            {searchQuery || selectedType !== "all" || selectedStatus !== "all" ? (
+          ) : filteredDocs.length === 0 ? (
+            <div className={styles.emptyStateBox}>
+              <BookOpen size={36} style={{ margin: "0 auto 0.75rem", opacity: 0.5 }} />
+              <h3 style={{ fontSize: "1rem" }}>لا توجد نتائج مطابقة لبحثك</h3>
+              <p style={{ marginTop: "0.4rem", fontSize: "0.8rem" }}>
+                جرّب إزالة الفلاتر أو استخدام كلمات بحث أخرى.
+              </p>
               <button
                 type="button"
                 onClick={() => {
                   setSelectedType("all");
                   setSelectedStatus("all");
+                  setSelectedTag(null);
                   setSearchQuery("");
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border border-glass cursor-pointer"
-                style={{
-                  backgroundColor: "var(--bg-secondary)",
-                  color: "var(--color-fg)",
-                  borderColor: "var(--border-glass)",
-                }}
+                className={styles.searchTriggerBtn}
+                style={{ margin: "0.85rem auto 0" }}
               >
-                <i className="bx bx-reset text-base" />
-                <span>إعادة ضبط الفلاتر</span>
+                إعادة ضبط الفلاتر
               </button>
-            ) : isAdmin ? (
-              <Link
-                href="/admin/doc"
-                className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-md"
-                style={{
-                  backgroundColor: "var(--color-primary)",
-                  color: "#ffffff",
-                }}
-              >
-                <i className="bx bx-plus-circle text-base" />
-                <span>إضافة أول تحديث الآن</span>
-              </Link>
-            ) : null}
-          </div>
-        ) : (
-          /* List of Doc Entries */
-          <div className="space-y-6">
-            {filteredDocs.map((doc) => {
-              const typeMeta = DOC_TYPE_META[doc.doc_type] || DOC_TYPE_META.update;
-              const statusMeta =
-                ROADMAP_STATUS_META[doc.roadmap_status] ||
-                ROADMAP_STATUS_META.released;
-              const isExpanded = Boolean(expandedDocIds[doc.id]);
-              const anchorId = doc.slug || doc.id;
-              const isCopied = copiedId === doc.id;
-              const isRoadmapItem = doc.doc_type === "roadmap";
+            </div>
+          ) : viewMode === "grid" ? (
+            /* ── VIEW 1: VERCEL SIGNATURE CARDS GRID ── */
+            <div className={styles.cardsGrid}>
+              {filteredDocs.map((doc) => {
+                const typeMeta = DOC_TYPE_META[doc.doc_type] || DOC_TYPE_META.update;
+                const statusMeta =
+                  ROADMAP_STATUS_META[doc.roadmap_status] ||
+                  ROADMAP_STATUS_META.released;
+                const anchorId = doc.slug || doc.id;
+                const docUrl = `/doc/${encodeURIComponent(anchorId)}`;
+                const isCopied = copiedId === doc.id;
+                const isRoadmapItem = doc.doc_type === "roadmap";
 
-              return (
-                <article
-                  key={doc.id}
-                  id={anchorId}
-                  className="rounded-3xl border border-glass backdrop-blur-md p-5 sm:p-7 transition-all duration-200 relative overflow-hidden"
-                  style={{
-                    backgroundColor: "var(--cardGlassBg)",
-                    borderColor: doc.is_pinned
-                      ? "rgba(39, 39, 255, 0.4)"
-                      : "var(--border-glass)",
-                    boxShadow: doc.is_pinned
-                      ? "0 8px 30px rgba(39, 39, 255, 0.08)"
-                      : "var(--shadow-sm)",
-                  }}
-                >
-                  {/* Pinned Accent Header Tag */}
-                  {doc.is_pinned && (
-                    <div
-                      className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-bold mb-3 border"
-                      style={{
-                        backgroundColor: "rgba(39, 39, 255, 0.12)",
-                        color: "var(--color-primary)",
-                        borderColor: "rgba(39, 39, 255, 0.3)",
-                      }}
-                    >
-                      <i className="bx bx-pin text-sm" />
-                      <span>تحديث مثبت ومهم</span>
-                    </div>
-                  )}
-
-                  {/* Header Row: Badges, Date & Direct Anchor Link */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                    {/* Left/Start: Type badge, Roadmap Status, Version */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      {/* Doc Type Badge */}
-                      <span
-                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border"
-                        style={{
-                          backgroundColor: typeMeta.bg,
-                          color: typeMeta.color,
-                          borderColor: typeMeta.border,
-                        }}
-                      >
-                        <i className={`${typeMeta.icon} text-sm`} />
-                        <span>{typeMeta.shortLabel}</span>
-                      </span>
-
-                      {/* Status Badge */}
-                      <span
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border"
-                        style={{
-                          backgroundColor: statusMeta.bg,
-                          color: statusMeta.color,
-                          borderColor: statusMeta.border,
-                        }}
-                      >
-                        <i className={`${statusMeta.icon} text-sm`} />
-                        <span>{statusMeta.label}</span>
-                      </span>
-
-                      {/* Version Pill (if available) */}
-                      {doc.version && (
-                        <span
-                          className="px-2.5 py-1 rounded-full text-xs font-mono font-bold border"
-                          style={{
-                            backgroundColor: "var(--bg-secondary)",
-                            borderColor: "var(--border-glass)",
-                            color: "var(--color-fg)",
-                            fontVariantNumeric: "tabular-nums",
-                          }}
-                        >
-                          {doc.version}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Right/End: Date & Share Button */}
-                    <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-muted)" }}>
-                      <span
-                        className="inline-flex items-center gap-1.5"
-                        style={{ fontVariantNumeric: "tabular-nums" }}
-                      >
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>{formatDocDate(doc.release_date)}</span>
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={(e) => handleCopyLink(doc, e)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-glass cursor-pointer transition-all hover-lift"
-                        style={{
-                          backgroundColor: isCopied
-                            ? "rgba(0, 211, 123, 0.15)"
-                            : "var(--bg-secondary)",
-                          borderColor: isCopied
-                            ? "var(--color-success)"
-                            : "var(--border-glass)",
-                          color: isCopied
-                            ? "var(--color-success)"
-                            : "var(--text-muted)",
-                        }}
-                        title="نسخ رابط مباشر لهذا التحديث"
-                      >
-                        {isCopied ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            <span>تم النسخ</span>
-                          </>
-                        ) : (
-                          <>
-                            <Share2 className="w-3.5 h-3.5" />
-                            <span>مشاركة</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Optional Cover Banner */}
-                  {doc.cover_image && (
-                    <div
-                      className="mb-4 rounded-2xl overflow-hidden border border-glass w-full"
-                      style={{
-                        borderColor: "var(--border-glass)",
-                        maxHeight: "320px",
-                      }}
-                    >
-                      <img
-                        src={doc.cover_image}
-                        alt={doc.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        style={{ maxHeight: "320px" }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Title */}
-                  <h2
-                    className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight mb-2"
-                    style={{
-                      color: "var(--color-fg)",
-                      fontFamily: "var(--font-heading)",
-                      lineHeight: 1.35,
-                    }}
+                return (
+                  <article
+                    key={doc.id}
+                    id={anchorId}
+                    className={`${styles.docCard} ${
+                      doc.is_pinned ? styles.docCardPinned : ""
+                    }`}
                   >
-                    {doc.title}
-                  </h2>
-
-                  {/* Summary */}
-                  {doc.summary && (
-                    <p
-                      className="text-sm sm:text-base leading-relaxed mb-4"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {doc.summary}
-                    </p>
-                  )}
-
-                  {/* Roadmap Progress Bar (For in_progress / testing / planned roadmap items) */}
-                  {isRoadmapItem && (
-                    <div
-                      className="mb-4 p-3.5 rounded-2xl border border-glass"
-                      style={{
-                        backgroundColor: "var(--bg-secondary)",
-                        borderColor: "var(--border-glass)",
-                      }}
-                    >
-                      <div className="flex items-center justify-between text-xs font-bold mb-2">
-                        <span style={{ color: "var(--text-secondary)" }}>
-                          نسبة الإنجاز ومرحلة العمل:
-                        </span>
-                        <span
-                          className="font-mono font-extrabold"
-                          style={{
-                            color:
-                              doc.progress_percent >= 100
-                                ? "var(--color-success)"
-                                : "var(--color-primary)",
-                            fontVariantNumeric: "tabular-nums",
-                          }}
-                        >
-                          {doc.progress_percent}%
-                        </span>
-                      </div>
-                      <div
-                        className="w-full h-2 rounded-full overflow-hidden"
-                        style={{ backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-                      >
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${Math.max(4, Math.min(100, doc.progress_percent))}%`,
-                            backgroundColor:
-                              doc.progress_percent >= 100
-                                ? "var(--color-success)"
-                                : "var(--color-primary)",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Highlights Checklist (if specified) */}
-                  {Array.isArray(doc.highlights) && doc.highlights.length > 0 && (
-                    <div className="mb-4">
-                      <h4
-                        className="text-xs font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-brand" />
-                        <span>أبرز ما يتضمنه هذا التحديث:</span>
-                      </h4>
-                      <ul className="space-y-2">
-                        {doc.highlights.map((point, pIdx) => (
-                          <li
-                            key={pIdx}
-                            className="flex items-start gap-2.5 text-xs sm:text-sm leading-relaxed"
-                            style={{ color: "var(--color-fg)" }}
-                          >
-                            <span
-                              className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[11px]"
-                              style={{
-                                backgroundColor: "rgba(0, 211, 123, 0.15)",
-                                color: "var(--color-success)",
-                              }}
-                            >
-                              ✓
-                            </span>
-                            <span>{point}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Full Rich Content (Collapsible / Expandable) */}
-                  {doc.content && (
-                    <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border-glass)" }}>
-                      {isExpanded ? (
-                        <div className="space-y-3">
-                          <div
-                            className="text-sm leading-relaxed doc-content-body"
+                    <div>
+                      {/* Top Badges Row */}
+                      <div className={styles.docCardHeader}>
+                        <div className={styles.badgesGroup}>
+                          <span
+                            className={styles.typeBadge}
                             style={{
-                              color: "var(--text-secondary)",
-                              lineHeight: 1.8,
+                              backgroundColor: typeMeta.bg,
+                              color: typeMeta.color,
+                              borderColor: typeMeta.border,
                             }}
-                            dangerouslySetInnerHTML={{ __html: doc.content }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => toggleExpand(doc.id)}
-                            className="inline-flex items-center gap-1 text-xs font-bold cursor-pointer transition-colors pt-2 hover:underline"
-                            style={{ color: "var(--color-primary)" }}
                           >
-                            <ChevronUp className="w-4 h-4" />
-                            <span>طي التفاصيل الكاملة</span>
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => toggleExpand(doc.id)}
-                          className="inline-flex items-center gap-1 text-xs font-bold cursor-pointer transition-colors hover:underline"
-                          style={{ color: "var(--color-primary)" }}
-                        >
-                          <ChevronDown className="w-4 h-4" />
-                          <span>عرض التفاصيل والشرح الكامل</span>
-                        </button>
-                      )}
-                    </div>
-                  )}
+                            <i className={`${typeMeta.icon} text-xs`} />
+                            <span>{typeMeta.shortLabel}</span>
+                          </span>
 
-                  {/* Footer: Tags & Author */}
-                  <div
-                    className="mt-4 pt-3 border-t flex flex-wrap items-center justify-between gap-2"
-                    style={{ borderColor: "var(--border-glass)" }}
-                  >
-                    {/* Tags */}
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      {(doc.tags || []).map((tag, tIdx) => (
+                          {doc.version && (
+                            <span className={styles.versionBadge}>
+                              {doc.version}
+                            </span>
+                          )}
+
+                          {doc.is_pinned && (
+                            <span className={styles.pinnedMarker}>
+                              مثبت
+                            </span>
+                          )}
+                        </div>
+
                         <button
-                          key={tIdx}
                           type="button"
-                          onClick={() => setSearchQuery(tag)}
-                          className="text-[11px] px-2.5 py-0.5 rounded-full border border-glass cursor-pointer transition-colors hover-lift"
+                          onClick={(e) => handleCopyLink(doc, e)}
+                          title="نسخ رابط مباشر"
+                          className={styles.actionIconBtn}
+                        >
+                          {isCopied ? (
+                            <Check size={14} style={{ color: "#10b981" }} />
+                          ) : (
+                            <Share2 size={14} />
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Optional Cover Image */}
+                      {doc.cover_image && (
+                        <Link href={docUrl} className={styles.coverWrapper} style={{ display: "block" }}>
+                          <img
+                            src={doc.cover_image}
+                            alt={doc.title}
+                            className={styles.coverImage}
+                            loading="lazy"
+                          />
+                        </Link>
+                      )}
+
+                      {/* Title linked to single page */}
+                      <h3 className={styles.cardTitle}>
+                        <Link href={docUrl}>{doc.title}</Link>
+                      </h3>
+
+                      {/* Summary */}
+                      {doc.summary && (
+                        <p className={styles.cardSummary}>{doc.summary}</p>
+                      )}
+
+                      {/* Roadmap Progress Bar */}
+                      {isRoadmapItem && (
+                        <div className={styles.progressBox}>
+                          <div className={styles.progressInfo}>
+                            <span>مرحلة الإنجاز:</span>
+                            <span style={{ color: "#10b981", fontWeight: "bold" }}>
+                              {doc.progress_percent}%
+                            </span>
+                          </div>
+                          <div className={styles.progressTrack}>
+                            <div
+                              className={styles.progressBar}
+                              style={{
+                                width: `${Math.max(5, Math.min(100, doc.progress_percent))}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Highlights */}
+                      {Array.isArray(doc.highlights) && doc.highlights.length > 0 && (
+                        <div className={styles.highlightsWrapper}>
+                          {doc.highlights.slice(0, 3).map((h, i) => (
+                            <div key={i} className={styles.highlightRow}>
+                              <span className={styles.highlightCheckIcon}>✓</span>
+                              <span>{h}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Link to Full Doc Page */}
+                      <div style={{ paddingTop: "0.5rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                        <Link
+                          href={docUrl}
+                          className={styles.expandToggleBtn}
+                        >
+                          <span>فتح التوثيق في صفحة مستقلة</span>
+                          <ArrowLeft size={13} />
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className={styles.cardFooter}>
+                      <div className={styles.dateRow}>
+                        <Clock size={12} />
+                        <span>{formatDocDate(doc.release_date)}</span>
+                      </div>
+
+                      <div className={styles.tagsMiniRow}>
+                        {(doc.tags || []).slice(0, 2).map((t, idx) => (
+                          <span key={idx}>#{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            /* ── VIEW 2: VERCEL CHANGELOG TIMELINE FEED ── */
+            <div className={styles.timelineFeed}>
+              {filteredDocs.map((doc) => {
+                const typeMeta = DOC_TYPE_META[doc.doc_type] || DOC_TYPE_META.update;
+                const statusMeta =
+                  ROADMAP_STATUS_META[doc.roadmap_status] ||
+                  ROADMAP_STATUS_META.released;
+                const anchorId = doc.slug || doc.id;
+                const docUrl = `/doc/${encodeURIComponent(anchorId)}`;
+                const isCopied = copiedId === doc.id;
+
+                return (
+                  <article
+                    key={doc.id}
+                    id={anchorId}
+                    className={styles.timelineArticle}
+                  >
+                    {/* Node Dot */}
+                    <div className={styles.timelineNode}>
+                      <div className={styles.timelineNodeDot} />
+                    </div>
+
+                    {/* Timeline Article Header */}
+                    <div className={styles.docCardHeader}>
+                      <div className={styles.badgesGroup}>
+                        <span
+                          className={styles.typeBadge}
                           style={{
-                            backgroundColor: "var(--bg-secondary)",
-                            borderColor: "var(--border-glass)",
-                            color: "var(--text-muted)",
+                            backgroundColor: typeMeta.bg,
+                            color: typeMeta.color,
+                            borderColor: typeMeta.border,
                           }}
                         >
-                          #{tag}
+                          <i className={`${typeMeta.icon} text-xs`} />
+                          <span>{typeMeta.shortLabel}</span>
+                        </span>
+
+                        <span
+                          className={styles.typeBadge}
+                          style={{
+                            backgroundColor: statusMeta.bg,
+                            color: statusMeta.color,
+                            borderColor: statusMeta.border,
+                          }}
+                        >
+                          <span>{statusMeta.label}</span>
+                        </span>
+
+                        {doc.version && (
+                          <span className={styles.versionBadge}>
+                            {doc.version}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className={styles.navActions}>
+                        <div className={styles.dateRow} style={{ fontSize: "0.78rem", color: "#a1a1aa" }}>
+                          <Clock size={13} />
+                          <span>{formatDocDate(doc.release_date)}</span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={(e) => handleCopyLink(doc, e)}
+                          className={styles.actionIconBtn}
+                        >
+                          {isCopied ? (
+                            <Check size={14} style={{ color: "#10b981" }} />
+                          ) : (
+                            <Share2 size={14} />
+                          )}
                         </button>
-                      ))}
+                      </div>
                     </div>
 
-                    {/* Author note */}
-                    {doc.author_name && (
-                      <span
-                        className="text-[11px]"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        بواسطة: {doc.author_name}
-                      </span>
+                    {/* Title */}
+                    <h2 className={styles.cardTitle} style={{ fontSize: "1.2rem", marginBottom: "0.6rem" }}>
+                      <Link href={docUrl}>{doc.title}</Link>
+                    </h2>
+
+                    {/* Summary */}
+                    {doc.summary && (
+                      <p className={styles.cardSummary} style={{ WebkitLineClamp: "unset" }}>
+                        {doc.summary}
+                      </p>
                     )}
-                  </div>
-                </article>
-              );
-            })}
+
+                    {/* Highlights */}
+                    {Array.isArray(doc.highlights) && doc.highlights.length > 0 && (
+                      <div className={styles.progressBox} style={{ margin: "0.85rem 0" }}>
+                        <span className={styles.sidebarGroupTitle} style={{ padding: 0 }}>
+                          أبرز ما يتضمنه هذا التحديث:
+                        </span>
+                        <div className={styles.highlightsWrapper} style={{ marginTop: "0.45rem" }}>
+                          {doc.highlights.map((point, pIdx) => (
+                            <div key={pIdx} className={styles.highlightRow}>
+                              <span className={styles.highlightCheckIcon}>✓</span>
+                              <span>{point}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Open in Dedicated Page Link */}
+                    <div style={{ paddingTop: "0.65rem", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+                      <Link
+                        href={docUrl}
+                        className={styles.expandToggleBtn}
+                      >
+                        <span>فتح المقال والتفاصيل الكاملة في صفحة مستقلة</span>
+                        <ArrowLeft size={13} />
+                      </Link>
+                    </div>
+
+                    {/* Footer */}
+                    <div className={styles.cardFooter}>
+                      <div className={styles.tagsMiniRow}>
+                        {(doc.tags || []).map((t, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedTag(t)}
+                            className={styles.tagChip}
+                          >
+                            #{t}
+                          </button>
+                        ))}
+                      </div>
+
+                      {doc.author_name && (
+                        <span>بواسطة: {doc.author_name}</span>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </main>
+
+        {/* ── 3. Right Sticky "On This Page" TOC ── */}
+        <aside className={styles.tocSidebar}>
+          <div className={styles.tocInner}>
+            <span className={styles.tocTitle}>في هذه الصفحة</span>
+            {filteredDocs.length === 0 ? (
+              <span style={{ color: "#71717a", fontSize: "0.75rem" }}>لا توجد عناصر</span>
+            ) : (
+              <ul className={styles.tocList}>
+                {filteredDocs.slice(0, 15).map((doc) => {
+                  const isActive = activeArticleId === doc.id;
+                  const docUrl = `/doc/${encodeURIComponent(doc.slug || doc.id)}`;
+                  return (
+                    <li key={doc.id}>
+                      <Link
+                        href={docUrl}
+                        className={`${styles.tocLink} ${
+                          isActive ? styles.tocLinkActive : ""
+                        }`}
+                      >
+                        {doc.title}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className={styles.backToTopBtn}
+            >
+              <ArrowUp size={14} />
+              <span>العودة للأعلى</span>
+            </button>
           </div>
-        )}
+        </aside>
       </div>
+
+      {/* ── 4. Global Command Palette Modal (⌘K) ── */}
+      {commandMenuOpen && (
+        <div
+          className={styles.commandBackdrop}
+          onClick={() => setCommandMenuOpen(false)}
+        >
+          <div
+            className={styles.commandBox}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Input Bar */}
+            <div className={styles.commandInputBar}>
+              <Search size={18} style={{ color: "#71717a", marginLeft: "0.65rem", flexShrink: 0 }} />
+              <input
+                type="text"
+                autoFocus
+                placeholder="ما الذي تبحث عنه في التوثيق؟..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.commandInput}
+              />
+              <button
+                type="button"
+                onClick={() => setCommandMenuOpen(false)}
+                className={styles.commandEscBadge}
+              >
+                ESC
+              </button>
+            </div>
+
+            {/* Results List */}
+            <div className={styles.commandResultsList}>
+              <div className={styles.commandGroupTitle}>
+                {searchQuery ? "نتائج البحث" : "مقترحات سريعة"}
+              </div>
+
+              {commandSearchResults.length === 0 ? (
+                <div style={{ padding: "2rem", textAlign: "center", color: "#71717a", fontSize: "0.8rem" }}>
+                  لم يتم العثور على أي نتيجة مطابقة لـ "{searchQuery}"
+                </div>
+              ) : (
+                commandSearchResults.map((doc) => (
+                  <button
+                    key={doc.id}
+                    type="button"
+                    onClick={() => navigateToDoc(doc)}
+                    className={styles.commandItem}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", minWidth: 0 }}>
+                      <div className={styles.commandItemIconBox}>
+                        {doc.doc_type === "feature" ? (
+                          <Zap size={15} style={{ color: "#34d399" }} />
+                        ) : doc.doc_type === "roadmap" ? (
+                          <Compass size={15} style={{ color: "#fbbf24" }} />
+                        ) : (
+                          <Clock size={15} style={{ color: "#60a5fa" }} />
+                        )}
+                      </div>
+                      <div style={{ minWidth: 0, textAlign: "right" }}>
+                        <div className={styles.commandItemTitle}>{doc.title}</div>
+                        {doc.summary && (
+                          <div className={styles.commandItemSubtitle}>
+                            {doc.summary}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {doc.version && (
+                      <span className={styles.versionBadge}>{doc.version}</span>
+                    )}
+                  </button>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className={styles.commandFooter}>
+              <span>اضغط على أي نتيجة لفتح صفحة التوثيق الخاصة بها</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span>إغلاق</span>
+                <span className={styles.commandEscBadge}>ESC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
